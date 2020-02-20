@@ -2,14 +2,13 @@
 using System.Reflection ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Logging.Common ;
 using NLog ;
 using NLog.Config ;
 using NLog.Layouts ;
 using NLog.Targets ;
 using Xunit.Sdk ;
 
-namespace KayMcCormick.Test.Common
+namespace KayMcCormick.Dev.TestLib
 {
     /// <summary></summary>
     /// <seealso cref="Xunit.Sdk.BeforeAfterTestAttribute" />

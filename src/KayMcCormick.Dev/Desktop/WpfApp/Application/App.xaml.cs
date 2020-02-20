@@ -109,9 +109,8 @@ namespace WpfApp.Application
                                           "ExecutionContext"
                                         , new ExecutionContextImpl
                                         {
-                                            Application = KayMcCormick
-                                                           .Logging.Common.Application
-                                                           .MainApplication
+                                            Application = KayMcCormick.Dev.Logging.Application
+                                                                      .MainApplication
                                         }
                                          );
 
@@ -737,17 +736,11 @@ namespace WpfApp.Application
             "Cheese", "Food");
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:NLog.Logger" /> class.
-        /// </summary>
         public MyLogger()
         {
             SetProperty(
                         "Cheese", "Food");
         }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:NLog.Logger" /> class.
-        /// </summary>
         // protected internal MyLogger()
         // {
         //     SetProperty(

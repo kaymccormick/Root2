@@ -2,7 +2,7 @@
 using System.Reflection ;
 using Castle.DynamicProxy ;
 
-namespace KayMcCormick.Logging.Common
+namespace KayMcCormick.Dev.Logging
 {
     /// <summary></summary>
     /// <seealso cref="Castle.DynamicProxy.IProxyGenerationHook" />

@@ -18,8 +18,10 @@ namespace WcfService1
             try
             {
                 var conf = new LoggingConfiguration();
-                var t0 = new EventLogTarget ( "elog" ) ;
-                t0.Source = "Application" ;
+                var t0 = new EventLogTarget("elog")
+                {
+                    Source = "Application"
+                };
                 conf.AddTarget ( t0 ) ;
                 conf.AddRuleForAllLevels(t0);
 

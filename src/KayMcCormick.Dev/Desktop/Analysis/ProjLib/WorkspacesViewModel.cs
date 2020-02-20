@@ -16,7 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.Settings;
-using ProjLib.Annotations;
+using ProjLib.Properties ;
 
 namespace ProjLib
 {

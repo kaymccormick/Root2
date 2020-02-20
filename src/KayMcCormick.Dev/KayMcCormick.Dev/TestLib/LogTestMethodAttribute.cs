@@ -4,7 +4,7 @@ using NLog ;
 using NLog.Fluent ;
 using Xunit.Sdk ;
 
-namespace KayMcCormick.Test.Common
+namespace KayMcCormick.Dev.TestLib
 {
     /// <summary></summary>
     /// <seealso cref="Xunit.Sdk.BeforeAfterTestAttribute" />

@@ -1,14 +1,13 @@
 ﻿using System ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Logging.Common ;
-using KayMcCormick.Test.Common.Logging ;
+using KayMcCormick.Dev.TestLib.Logging ;
 using NLog.Layouts ;
 using Xunit ;
 using Xunit.Abstractions ;
 using Xunit.Sdk ;
 
-namespace KayMcCormick.Test.Common.Fixtures
+namespace KayMcCormick.Dev.TestLib.Fixtures
 {
     /// <summary>Test fixture to provide logging for the individual test case. In order to use, the individual test class must be tagged with the <seealso cref="IClassFixture{TFixture}"/>. Method <seealso cref="SetOutputHelper"/> must be invoked with the <seealso cref="ITestOutputHelper"/> instance supplied by Xunit through the class constructor.</summary>
     [ UsedImplicitly ]

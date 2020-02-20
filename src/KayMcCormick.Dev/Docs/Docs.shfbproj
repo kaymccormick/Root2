@@ -31,10 +31,8 @@
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\WpfApp\bin\$(Platform)\$(Configuration)\WpfApp.exe" />
-      <DocumentationSource sourceFile="..\WpfApp\bin\$(Platform)\$(Configuration)\WpfApp.xml" />
-      <DocumentationSource sourceFile="..\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common\bin\$(Platform)\$(Configuration)\KayMcCormick.Logging.Common.xml" />
-      <DocumentationSource sourceFile="..\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common\bin\$(Platform)\$(Configuration)\KayMcCormick.Logging.Common.dll" />
+      <DocumentationSource sourceFile="..\KayMcCormick.Dev\bin\x86\Release\KayMcCormick.Dev.xml" />
+      <DocumentationSource sourceFile="..\KayMcCormick.Dev\bin\x86\Release\KayMcCormick.Dev.dll" />
     </DocumentationSources>
     <HelpFileFormat>Website</HelpFileFormat>
     <SyntaxFilters>C#, Visual Basic, Visual Basic Usage, Managed C++, F#, XAML Usage, X#</SyntaxFilters>
@@ -109,27 +107,14 @@
     <Content Include="icons\Help.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common.csproj">
-      <Name>KayMcCormick.Logging.Common</Name>
-      <Project>{122608b7-60d4-4182-a670-e8be067c4f88}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\KayMcCormick.Test.Common\KayMcCormick.Test.Common\KayMcCormick.Test.Common.csproj">
-      <Name>KayMcCormick.Test.Common</Name>
-      <Project>{fa345b13-66b5-4378-b88c-e4737af69894}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Tests\Tests.csproj">
-      <Name>Tests</Name>
-      <Project>{963A7522-EE3E-4487-BAF5-8600141A0350}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\WpfApp\WpfApp.csproj">
-      <Name>WpfApp</Name>
-      <Project>{74792445-F224-4C75-B204-094FF689D950}</Project>
-    </ProjectReference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+      <Name>KayMcCormick.Dev</Name>
+      <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />

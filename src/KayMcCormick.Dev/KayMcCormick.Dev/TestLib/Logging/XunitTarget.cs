@@ -14,7 +14,7 @@ using NLog ;
 using NLog.Targets ;
 using Xunit.Abstractions ;
 
-namespace KayMcCormick.Test.Common.Logging
+namespace KayMcCormick.Dev.TestLib.Logging
 {
     /// <summary></summary>
     /// <seealso cref="NLog.Targets.TargetWithLayout" />

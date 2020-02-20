@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DeployedProjects>
+    <string>Desktop\App1\App1.csproj</string>
+    <string>Desktop\Analysis\CodeAnalysisApp1\CodeAnalysisApp1.csproj</string>
+    <string>Services\LogService\LogService\LogService.csproj</string>
+    <string>Desktop\Analysis\ProjInterface\ProjInterface.csproj</string>
+    <string>Services\WcfService1\WcfService1\WcfService1.csproj</string>
+    <string>Desktop\WpfApp\WpfApp.csproj</string>
+    <string>Desktop\WpfApp2\WpfApp2.csproj</string>
+  </DeployedProjects>
+  <DirectoryMappings>
+    <Item Key="" Value="INSTALLFOLDER" />
+    <Item Key="bin" Value="BIN" />
+  </DirectoryMappings>
+  <FileMappings />
+  <DeploySymbols>false</DeploySymbols>
+  <DeployLocalizations>true</DeployLocalizations>
+  <DeployExternalLocalizations>false</DeployExternalLocalizations>
+</Configuration>

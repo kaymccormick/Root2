@@ -22,3 +22,17 @@ TestResult.xml
 /Output-Build.txt
 /Docs/Help
 /msbuild.log.old
+/src/KayMcCormick.Dev/Debug
+/src/KayMcCormick.Dev/Desktop/StaticLib1/Debug
+/src/KayMcCormick.Dev/Desktop/StaticLib1/Release
+/src/KayMcCormick.Dev/Desktop/StaticLib1/x64/Debug/StaticLib1.tlog
+/src/KayMcCormick.Dev/Desktop/StaticLib1/x64/Debug
+/src/KayMcCormick.Dev/Desktop/StaticLib1/x64/Release
+/src/KayMcCormick.Dev/Docs/Help/LastBuild.log
+/src/KayMcCormick.Dev/MigrationBackup/64c14354/Services/LogService
+/src/KayMcCormick.Dev/Services/WcfService1/WcfService1/Web.Debug.config
+/src/KayMcCormick.Dev/Services/WcfService1/WcfService1/Web.Release.config
+/src/KayMcCormick.Dev/Services/WcfService1/msbuild.log
+/src/KayMcCormick.Dev/x64/Debug
+/src/KayMcCormick.Dev/x64/Release
+/src/KayMcCormick.Dev/Desktop/WpfApp/html/M-Tests.Lib.Fixtures.FixtureLogger.LogFixtureLifecycleEvent.htm

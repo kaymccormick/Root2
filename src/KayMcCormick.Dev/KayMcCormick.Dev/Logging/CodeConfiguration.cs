@@ -1,7 +1,7 @@
 ﻿using NLog ;
 using NLog.Config ;
 
-namespace KayMcCormick.Logging.Common
+namespace KayMcCormick.Dev.Logging
 {
     /// <summary></summary>
     /// <seealso cref="NLog.Config.LoggingConfiguration" />

@@ -100,14 +100,6 @@
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
-    <ProjectReference Include="..\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common.csproj">
-      <Project>{122608B7-60D4-4182-A670-E8BE067C4F88}</Project>
-      <Name>KayMcCormick.Logging.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NLog\src\NLog\NLog.csproj">
-      <Project>{a0bff0db-ed9a-4639-ae86-8e709a1efc66}</Project>
-      <Name>NLog</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

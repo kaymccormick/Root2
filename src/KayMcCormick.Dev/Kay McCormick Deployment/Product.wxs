@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define CodeAnalysisApp1_TargetDir=$(var.CodeAnalysisApp1.TargetDir)?>
+  <?define App1_TargetDir=$(var.App1.TargetDir)?>
+  <?define KayMcCormick.Dev_TargetDir=$(var.KayMcCormick.Dev.TargetDir)?>
+  <?define LogService_TargetDir=$(var.LogService.TargetDir)?>
+  <?define ProjInterface_TargetDir=$(var.ProjInterface.TargetDir)?>
+  <?define ProjLib_TargetDir=$(var.ProjLib.TargetDir)?>
+  <?define WcfService1_TargetDir=$(var.WcfService1.TargetDir)?>
+  <?define WpfApp_TargetDir=$(var.WpfApp.TargetDir)?>
+  <?define WpfApp2_TargetDir=$(var.WpfApp2.TargetDir)?>
+  <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
+  <Product Id="*" Name="Kay_McCormick_Deployment"
+           Language="1033" Version="1.0.0.0"
+           Manufacturer="Kay McCormick"
+           UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
+    <Package InstallerVersion="200" Compressed="yes"
+             InstallScope="perMachine" />
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+
+    <Feature Id="ProductFeature"
+             Title="Kay_McCormick_Deployment" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="_files" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER"
+                   Name="Kay_McCormick_Deployment">
+          <Directory Id="BIN" Name="bin" />
+                    <Directory Id="WCFINSTALLFOLDER" Name="WcfLogReceiver"/>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents"
+                    Directory="INSTALLFOLDER">
+      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+      <!-- <Component Id="ProductComponent"> -->
+      <!-- TODO: Insert files, registry keys, and other resources here. -->
+      <!-- </Component> -->
+      <Component Id="CodeAnalysisApp1.exe"
+                 Guid="489b1964-7e65-4d54-ab8b-70e289e159b6">
+        <File Id="CodeAnalysisApp1.exe"
+              Name="CodeAnalysisApp1.exe"
+              Source="$(var.CodeAnalysisApp1_TargetDir)CodeAnalysisApp1.exe" />
+      </Component>
+      <Component Id="App1.exe"
+                 Guid="adad69bc-35ff-45ff-971e-e7f70f8902c4">
+        <File Id="App1.exe" Name="App1.exe"
+              Source="$(var.App1_TargetDir)App1.exe" />
+      </Component>
+      <Component Id="App1.exe.config"
+                 Guid="394fd195-dd54-43f7-abac-632af2c9003e">
+        <File Id="App1.exe.config" Name="App1.exe.config"
+              Source="$(var.App1_TargetDir)App1.exe.config" />
+      </Component>
+      <Component Id="CodeAnalysisApp1.exe.config"
+                 Guid="19420009-c5e2-450b-937b-bfe71d4bd072">
+        <File Id="CodeAnalysisApp1.exe.config"
+              Name="CodeAnalysisApp1.exe.config"
+              Source="$(var.CodeAnalysisApp1_TargetDir)CodeAnalysisApp1.exe.config" />
+      </Component>
+      <Component Id="KayMcCormick.Dev.dll"
+                 Guid="a1193935-56c2-42b1-ba5a-31250517b99c">
+        <File Id="KayMcCormick.Dev.dll"
+              Name="KayMcCormick.Dev.dll"
+              Source="$(var.KayMcCormick.Dev_TargetDir)KayMcCormick.Dev.dll" />
+      </Component>
+      <Component Id="LogService.exe"
+                 Guid="5b6d6e61-7fd9-4b1e-ae4e-9e98de85d6c2">
+        <File Id="LogService.exe" Name="LogService.exe"
+              Source="$(var.LogService_TargetDir)LogService.exe" />
+      </Component>
+      <Component Id="LogService.exe.config"
+                 Guid="5cb9819f-a099-41fc-a61a-0e77ba274080">
+        <File Id="LogService.exe.config"
+              Name="LogService.exe.config"
+              Source="$(var.LogService_TargetDir)LogService.exe.config" />
+      </Component>
+      <Component Id="Ninject.dll"
+                 Guid="e2861f10-5575-4cf8-8262-dcb09ee81b42">
+        <File Id="Ninject.dll" Name="Ninject.dll"
+              Source="$(var.LogService_TargetDir)Ninject.dll" />
+      </Component>
+      <Component Id="Common.Logging.Core.dll"
+                 Guid="2115fd2c-0da4-46ad-80da-b99c5f26efc6">
+        <File Id="Common.Logging.Core.dll"
+              Name="Common.Logging.Core.dll"
+              Source="$(var.LogService_TargetDir)Common.Logging.Core.dll" />
+      </Component>
+      <Component Id="Topshelf.dll"
+                 Guid="d468556a-2871-4c5f-90ac-3674e1be767e">
+        <File Id="Topshelf.dll" Name="Topshelf.dll"
+              Source="$(var.LogService_TargetDir)Topshelf.dll" />
+      </Component>
+      <Component Id="NLog.dll"
+                 Guid="57b7c170-5bf7-438c-801b-95a7cd7e684b">
+        <File Id="NLog.dll" Name="NLog.dll"
+              Source="$(var.LogService_TargetDir)NLog.dll" />
+      </Component>
+      <Component Id="Common.Logging.dll"
+                 Guid="c3988b77-457c-4c55-a34e-2bf654671bf6">
+        <File Id="Common.Logging.dll"
+              Name="Common.Logging.dll"
+              Source="$(var.LogService_TargetDir)Common.Logging.dll" />
+      </Component>
+      <Component Id="Topshelf.Common.Logging.dll"
+                 Guid="23a240a1-af94-465e-af06-e5c07ab906f6">
+        <File Id="Topshelf.Common.Logging.dll"
+              Name="Topshelf.Common.Logging.dll"
+              Source="$(var.LogService_TargetDir)Topshelf.Common.Logging.dll" />
+      </Component>
+      <Component Id="Topshelf.Ninject.dll"
+                 Guid="7116add2-23ff-4656-8543-d98fff81babc">
+        <File Id="Topshelf.Ninject.dll"
+              Name="Topshelf.Ninject.dll"
+              Source="$(var.LogService_TargetDir)Topshelf.Ninject.dll" />
+      </Component>
+      <Component Id="ProjInterface.exe"
+                 Guid="45ef7127-21a1-4bab-8d1b-1c92543e67ba">
+        <File Id="ProjInterface.exe"
+              Name="ProjInterface.exe"
+              Source="$(var.ProjInterface_TargetDir)ProjInterface.exe" />
+      </Component>
+      <Component Id="ProjInterface.exe.config"
+                 Guid="f63b16d2-d9a7-4e55-8d06-d92da516b779">
+        <File Id="ProjInterface.exe.config"
+              Name="ProjInterface.exe.config"
+              Source="$(var.ProjInterface_TargetDir)ProjInterface.exe.config" />
+      </Component>
+      <Component Id="ProjLib.dll"
+                 Guid="4bb3307e-d03b-4fa2-b053-8465d5e36aa3">
+        <File Id="ProjLib.dll" Name="ProjLib.dll"
+              Source="$(var.ProjLib_TargetDir)ProjLib.dll" />
+      </Component>
+      <Component Id="Global.asax"
+                 Guid="edc006b6-b4f3-4793-bc1c-5af8099e255a">
+        <File Id="Global.asax" Name="Global.asax"
+              Source="$(var.WcfService1_TargetDir)Global.asax" />
+      </Component>
+      <Component Id="ReceiveLogs.svc"
+                 Guid="b348b6e7-b0a6-4e37-8db1-a8cee66c2728">
+        <File Id="ReceiveLogs.svc" Name="ReceiveLogs.svc"
+              Source="$(var.WcfService1_TargetDir)ReceiveLogs.svc" />
+      </Component>
+      <Component Id="Service1.svc"
+                 Guid="62a94f48-3b93-460b-abf2-d5622211f578">
+        <File Id="Service1.svc" Name="Service1.svc"
+              Source="$(var.WcfService1_TargetDir)Service1.svc" />
+      </Component>
+      <Component Id="Web.config"
+                 Guid="45912b54-d816-453e-9b51-8530a52e6b35">
+        <File Id="Web.config" Name="Web.config"
+              Source="$(var.WcfService1_TargetDir)Web.config" />
+      </Component>
+      <Component Id="WpfApp.exe"
+                 Guid="a8b84463-a0e5-40b1-befa-1ae32f963ebe">
+        <File Id="WpfApp.exe" Name="WpfApp.exe"
+              Source="$(var.WpfApp_TargetDir)WpfApp.exe" />
+      </Component>
+      <Component Id="WpfApp.exe.config"
+                 Guid="2be12bb0-b1f3-4cab-bbc0-ebfefa749587">
+        <File Id="WpfApp.exe.config"
+              Name="WpfApp.exe.config"
+              Source="$(var.WpfApp_TargetDir)WpfApp.exe.config" />
+      </Component>
+      <Component Id="WpfApp2.exe"
+                 Guid="2dda6bbd-9daa-4527-ae21-72254a5dbf89">
+        <File Id="WpfApp2.exe" Name="WpfApp2.exe"
+              Source="$(var.WpfApp2_TargetDir)WpfApp2.exe" />
+      </Component>
+      <Component Id="WpfApp2.exe.config"
+                 Guid="04b2f9ea-a9a9-401b-a36e-71bd079deaf5">
+        <File Id="WpfApp2.exe.config"
+              Name="WpfApp2.exe.config"
+              Source="$(var.WpfApp2_TargetDir)WpfApp2.exe.config" />
+      </Component>
+      <Component Id="KayMcCormick.Lib.Wpf.dll"
+                 Guid="f78ec651-f4bd-4078-a1d4-c00bdd04a452">
+        <File Id="KayMcCormick.Lib.Wpf.dll"
+              Name="KayMcCormick.Lib.Wpf.dll"
+              Source="$(var.KayMcCormick.Lib.Wpf_TargetDir)KayMcCormick.Lib.Wpf.dll" />
+      </Component>
+      <Component Id="NJection.LambdaConverter.dll"
+                 Guid="e8a45bb7-bd79-4662-a0e3-b8939bb4affd">
+        <File Id="NJection.LambdaConverter.dll"
+              Name="NJection.LambdaConverter.dll"
+              Source="$(var.WpfApp_TargetDir)NJection.LambdaConverter.dll" />
+      </Component>
+      <Component Id="Autofac.Extras.DynamicProxy.dll"
+                 Guid="6673fd03-c6da-48c2-9253-f01d079d6bdc">
+        <File Id="Autofac.Extras.DynamicProxy.dll"
+              Name="Autofac.Extras.DynamicProxy.dll"
+              Source="$(var.WpfApp_TargetDir)Autofac.Extras.DynamicProxy.dll" />
+      </Component>
+      <Component Id="Autofac.Extras.AttributeMetadata.dll"
+                 Guid="a4c4f92b-f025-4b07-bae5-4e23ed0a2583">
+        <File Id="Autofac.Extras.AttributeMetadata.dll"
+              Name="Autofac.Extras.AttributeMetadata.dll"
+              Source="$(var.WpfApp_TargetDir)Autofac.Extras.AttributeMetadata.dll" />
+      </Component>
+      <Component Id="Vanara.Core.dll"
+                 Guid="d5397fef-cdd9-4085-85ef-e466f0928dd5">
+        <File Id="Vanara.Core.dll" Name="Vanara.Core.dll"
+              Source="$(var.WpfApp_TargetDir)Vanara.Core.dll" />
+      </Component>
+      <Component Id="Mono.Cecil.dll"
+                 Guid="1928973e-f948-4d12-853a-d0bea63d2c70">
+        <File Id="Mono.Cecil.dll" Name="Mono.Cecil.dll"
+              Source="$(var.WpfApp_TargetDir)Mono.Cecil.dll" />
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.CSharp.dll"
+                 Guid="9f2384ef-18cf-45d0-8b4f-6f02f77e9d9e">
+        <File Id="ICSharpCode.NRefactory.CSharp.dll"
+              Name="ICSharpCode.NRefactory.CSharp.dll"
+              Source="$(var.WpfApp_TargetDir)ICSharpCode.NRefactory.CSharp.dll" />
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.dll"
+                 Guid="6fc9d2a7-462e-4b76-8b80-1cdfde6a45ea">
+        <File Id="ICSharpCode.NRefactory.dll"
+              Name="ICSharpCode.NRefactory.dll"
+              Source="$(var.WpfApp_TargetDir)ICSharpCode.NRefactory.dll" />
+      </Component>
+      <Component Id="ICSharpCode.Decompiler.dll"
+                 Guid="ecac51d5-c9c5-46e6-aa16-12294afd7928">
+        <File Id="ICSharpCode.Decompiler.dll"
+              Name="ICSharpCode.Decompiler.dll"
+              Source="$(var.WpfApp_TargetDir)ICSharpCode.Decompiler.dll" />
+      </Component>
+      <Component Id="Autofac.Integration.Mef.dll"
+                 Guid="da2bbedf-e45d-4280-b3aa-eb831f598be4">
+        <File Id="Autofac.Integration.Mef.dll"
+              Name="Autofac.Integration.Mef.dll"
+              Source="$(var.WpfApp_TargetDir)Autofac.Integration.Mef.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.Toolkit.dll"
+                 Guid="3cb2a706-7c69-4301-ac47-50baf985a8be">
+        <File Id="Xceed.Wpf.Toolkit.dll"
+              Name="Xceed.Wpf.Toolkit.dll"
+              Source="$(var.WpfApp_TargetDir)Xceed.Wpf.Toolkit.dll" />
+      </Component>
+      <Component Id="System.Reactive.dll"
+                 Guid="467559de-4193-42d6-bb1b-f5d52b00cdcc">
+        <File Id="System.Reactive.dll"
+              Name="System.Reactive.dll"
+              Source="$(var.WpfApp_TargetDir)System.Reactive.dll" />
+      </Component>
+      <Component Id="System.ValueTuple.dll"
+                 Guid="99453ab5-da80-43cd-b8d5-cba7036b6e51">
+        <File Id="System.ValueTuple.dll"
+              Name="System.ValueTuple.dll"
+              Source="$(var.ProjInterface_TargetDir)System.ValueTuple.dll" />
+      </Component>
+      <Component Id="Autofac.dll"
+                 Guid="b89a8901-d045-4aba-91b8-f8c4b68d4bf2">
+        <File Id="Autofac.dll" Name="Autofac.dll"
+              Source="$(var.ProjInterface_TargetDir)Autofac.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Shell.15.0.dll"
+                 Guid="2423f6db-cd36-423d-b156-f4161c1fa72e">
+        <File Id="Microsoft.VisualStudio.Shell.15.0.dll"
+              Name="Microsoft.VisualStudio.Shell.15.0.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Shell.15.0.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Imaging.dll"
+                 Guid="ccc2f2db-e5d7-4ea2-89d4-94a34ff81a05">
+        <File Id="Microsoft.VisualStudio.Imaging.dll"
+              Name="Microsoft.VisualStudio.Imaging.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Imaging.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Threading.dll"
+                 Guid="a1467c78-f12b-4a6b-9d91-2842e5ec59c0">
+        <File Id="Microsoft.VisualStudio.Threading.dll"
+              Name="Microsoft.VisualStudio.Threading.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Threading.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Validation.dll"
+                 Guid="65a53c41-424f-4631-9ef2-561a887e3d50">
+        <File Id="Microsoft.VisualStudio.Validation.dll"
+              Name="Microsoft.VisualStudio.Validation.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Validation.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Utilities.dll"
+                 Guid="c479b31f-3c9f-4150-921d-adbd97cb997f">
+        <File Id="Microsoft.VisualStudio.Utilities.dll"
+              Name="Microsoft.VisualStudio.Utilities.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Utilities.dll" />
+      </Component>
+      <Component Id="StreamJsonRpc.dll"
+                 Guid="ca9c3914-8c72-4a9a-82ef-02586fc2d492">
+        <File Id="StreamJsonRpc.dll"
+              Name="StreamJsonRpc.dll"
+              Source="$(var.ProjInterface_TargetDir)StreamJsonRpc.dll" />
+      </Component>
+      <Component Id="Nerdbank.Streams.dll"
+                 Guid="c0848383-bc44-4a9f-ac5c-33be3ad25652">
+        <File Id="Nerdbank.Streams.dll"
+              Name="Nerdbank.Streams.dll"
+              Source="$(var.ProjInterface_TargetDir)Nerdbank.Streams.dll" />
+      </Component>
+      <Component Id="System.IO.Pipelines.dll"
+                 Guid="391e9106-f484-4890-863e-695c4eec1f57">
+        <File Id="System.IO.Pipelines.dll"
+              Name="System.IO.Pipelines.dll"
+              Source="$(var.ProjInterface_TargetDir)System.IO.Pipelines.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.Dataflow.dll"
+                 Guid="51d5d76a-b07f-46f3-ba7d-eaec78809f65">
+        <File Id="System.Threading.Tasks.Dataflow.dll"
+              Name="System.Threading.Tasks.Dataflow.dll"
+              Source="$(var.ProjInterface_TargetDir)System.Threading.Tasks.Dataflow.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.ImageCatalog.dll"
+        Guid="7586dd2c-b6b4-4191-9a8d-6d236802fff7">
+        <File Id="Microsoft.VisualStudio.ImageCatalog.dll"
+              Name="Microsoft.VisualStudio.ImageCatalog.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.ImageCatalog.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.Shell.Framework.dll"
+        Guid="7aac3ec8-7eca-492f-b8a7-9294bf1e7732">
+        <File
+          Id="Microsoft.VisualStudio.Shell.Framework.dll"
+          Name="Microsoft.VisualStudio.Shell.Framework.dll"
+          Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Shell.Framework.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.Shell.Interop.dll"
+        Guid="2a13a18c-cd35-41bf-97c4-61d1579e515d">
+        <File Id="Microsoft.VisualStudio.Shell.Interop.dll"
+              Name="Microsoft.VisualStudio.Shell.Interop.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Shell.Interop.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.OLE.Interop.dll"
+        Guid="1531e87c-d645-4293-84a9-cf826a03fe72">
+        <File Id="Microsoft.VisualStudio.OLE.Interop.dll"
+              Name="Microsoft.VisualStudio.OLE.Interop.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.OLE.Interop.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.TextManager.Interop.dll"
+        Guid="59eff70c-1410-4a8a-be22-9b0f4ce36625">
+        <File
+          Id="Microsoft.VisualStudio.TextManager.Interop.dll"
+          Name="Microsoft.VisualStudio.TextManager.Interop.dll"
+          Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.TextManager.Interop.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.Shell.Interop.9.0.dll"
+        Guid="001bf496-2cd0-4aef-80eb-ab807ebf9c11">
+        <File
+          Id="Microsoft.VisualStudio.Shell.Interop.9.0.dll"
+          Name="Microsoft.VisualStudio.Shell.Interop.9.0.dll"
+          Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Shell.Interop.9.0.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.Shell.Interop.8.0.dll"
+        Guid="da4555cb-7495-4287-b112-c48f0bbb007f">
+        <File
+          Id="Microsoft.VisualStudio.Shell.Interop.8.0.dll"
+          Name="Microsoft.VisualStudio.Shell.Interop.8.0.dll"
+          Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Shell.Interop.8.0.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.TextManager.Interop.8.0.dll"
+        Guid="452b64f5-6177-4afc-98ed-ba45c766a162">
+        <File
+          Id="Microsoft.VisualStudio.TextManager.Interop.8.0.dll"
+          Name="Microsoft.VisualStudio.TextManager.Interop.8.0.dll"
+          Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.TextManager.Interop.8.0.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Text.Data.dll"
+                 Guid="79511256-0bff-4f76-926e-ae10544c8193">
+        <File Id="Microsoft.VisualStudio.Text.Data.dll"
+              Name="Microsoft.VisualStudio.Text.Data.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Text.Data.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.CoreUtility.dll"
+        Guid="9c76501d-8d1d-4d14-8785-a68f4cc7bf0b">
+        <File Id="Microsoft.VisualStudio.CoreUtility.dll"
+              Name="Microsoft.VisualStudio.CoreUtility.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.CoreUtility.dll" />
+      </Component>
+      <Component Id="Microsoft.ServiceHub.Framework.dll"
+                 Guid="8fe03b04-98f9-47b5-971a-5c2d5add2f7a">
+        <File Id="Microsoft.ServiceHub.Framework.dll"
+              Name="Microsoft.ServiceHub.Framework.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.ServiceHub.Framework.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.VisualStudio.Settings.15.0.dll"
+        Guid="af98e9ae-698c-4693-b03f-5cfacc1eeae8">
+        <File Id="Microsoft.VisualStudio.Settings.15.0.dll"
+              Name="Microsoft.VisualStudio.Settings.15.0.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.Settings.15.0.dll" />
+      </Component>
+      <Component Id="Microsoft.VisualStudio.RegDetour.dll"
+                 Guid="b22289ae-7517-4e7f-a950-5b2a3343f77b">
+        <File Id="Microsoft.VisualStudio.RegDetour.dll"
+              Name="Microsoft.VisualStudio.RegDetour.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.VisualStudio.RegDetour.dll" />
+      </Component>
+      <Component Id="Microsoft.Bcl.AsyncInterfaces.dll"
+                 Guid="5613cd62-b9b4-48eb-830e-9ecec48586fb">
+        <File Id="Microsoft.Bcl.AsyncInterfaces.dll"
+              Name="Microsoft.Bcl.AsyncInterfaces.dll"
+              Source="$(var.ProjInterface_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+      </Component>
+      <Component Id="System.Reactive.Linq.dll"
+                 Guid="c6547f79-9860-42f0-bdb1-35bc60fcce93">
+        <File Id="System.Reactive.Linq.dll"
+              Name="System.Reactive.Linq.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Reactive.Linq.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll"
+                 Guid="0dac295d-b509-49b6-8378-8bdce9a1b9bc">
+        <File Id="Newtonsoft.Json.dll"
+              Name="Newtonsoft.Json.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="System.Reflection.Metadata.dll"
+                 Guid="993fc17e-cf7b-4168-b301-f79c0023a8aa">
+        <File Id="System.Reflection.Metadata.dll"
+              Name="System.Reflection.Metadata.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Reflection.Metadata.dll" />
+      </Component>
+      <Component Id="System.Memory.dll"
+                 Guid="361c2419-c3ed-42ee-938e-14be852af0a1">
+        <File Id="System.Memory.dll"
+              Name="System.Memory.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Memory.dll" />
+      </Component>
+      <Component Id="System.Numerics.Vectors.dll"
+                 Guid="eabb74bd-51c8-454c-93ca-9944182fabbd">
+        <File Id="System.Numerics.Vectors.dll"
+              Name="System.Numerics.Vectors.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Numerics.Vectors.dll" />
+      </Component>
+      <Component
+        Id="System.Runtime.CompilerServices.Unsafe.dll"
+        Guid="adc4ce2b-79d4-4e33-9b18-4f3af8dab716">
+        <File
+          Id="System.Runtime.CompilerServices.Unsafe.dll"
+          Name="System.Runtime.CompilerServices.Unsafe.dll"
+          Source="$(var.CodeAnalysisApp1_TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+      </Component>
+      <Component Id="System.Buffers.dll"
+                 Guid="0c5a4855-2b95-49e1-a7ed-17920983d8e9">
+        <File Id="System.Buffers.dll"
+              Name="System.Buffers.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Buffers.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.Extensions.dll"
+                 Guid="093067e3-2e08-4491-b40a-79bb7be677c4">
+        <File Id="System.Threading.Tasks.Extensions.dll"
+              Name="System.Threading.Tasks.Extensions.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Threading.Tasks.Extensions.dll" />
+      </Component>
+      <Component Id="System.Text.Encoding.CodePages.dll"
+                 Guid="22c6a0ec-c66b-4603-a96e-3bc86583c310">
+        <File Id="System.Text.Encoding.CodePages.dll"
+              Name="System.Text.Encoding.CodePages.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Text.Encoding.CodePages.dll" />
+      </Component>
+      <Component
+        Id="System.Composition.AttributedModel.dll"
+        Guid="4f83d282-08b8-43b4-80df-5d4809e13ec8">
+        <File Id="System.Composition.AttributedModel.dll"
+              Name="System.Composition.AttributedModel.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Composition.AttributedModel.dll" />
+      </Component>
+      <Component Id="System.Composition.Runtime.dll"
+                 Guid="502ebc38-a053-4c83-85f8-4e163a4d9a32">
+        <File Id="System.Composition.Runtime.dll"
+              Name="System.Composition.Runtime.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Composition.Runtime.dll" />
+      </Component>
+      <Component Id="System.Composition.TypedParts.dll"
+                 Guid="1177f26f-bf27-4cb1-962f-b50ca438988e">
+        <File Id="System.Composition.TypedParts.dll"
+              Name="System.Composition.TypedParts.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Composition.TypedParts.dll" />
+      </Component>
+      <Component Id="System.Composition.Hosting.dll"
+                 Guid="622ecbd8-693d-4da7-820b-47315d0350df">
+        <File Id="System.Composition.Hosting.dll"
+              Name="System.Composition.Hosting.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Composition.Hosting.dll" />
+      </Component>
+      <Component Id="xunit.core.dll"
+                 Guid="7e93acd6-dbca-49b9-ad9f-9ad3f3698192">
+        <File Id="xunit.core.dll" Name="xunit.core.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)xunit.core.dll" />
+      </Component>
+      <Component Id="xunit.abstractions.dll"
+                 Guid="0de87df2-af40-4d72-b9cc-ba6803d97232">
+        <File Id="xunit.abstractions.dll"
+              Name="xunit.abstractions.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)xunit.abstractions.dll" />
+      </Component>
+      <Component Id="xunit.execution.desktop.dll"
+                 Guid="a781ad6f-e9af-42ab-9781-49675bcf3406">
+        <File Id="xunit.execution.desktop.dll"
+              Name="xunit.execution.desktop.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)xunit.execution.desktop.dll" />
+      </Component>
+      <Component Id="DynamicData.dll"
+                 Guid="842ef8b7-11b4-4d20-8396-6a204b549613">
+        <File Id="DynamicData.dll" Name="DynamicData.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)DynamicData.dll" />
+      </Component>
+      <Component Id="System.Reactive.Interfaces.dll"
+                 Guid="0a33d07a-63e3-417b-9912-0fe42777849e">
+        <File Id="System.Reactive.Interfaces.dll"
+              Name="System.Reactive.Interfaces.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Reactive.Interfaces.dll" />
+      </Component>
+      <Component Id="System.Reactive.Core.dll"
+                 Guid="54a6f03b-f9d0-49bf-8bf4-c94a3224edfc">
+        <File Id="System.Reactive.Core.dll"
+              Name="System.Reactive.Core.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Reactive.Core.dll" />
+      </Component>
+      <Component Id="System.Collections.Immutable.dll"
+                 Guid="1689d7d3-3d15-4840-8d12-b0928ef10c44">
+        <File Id="System.Collections.Immutable.dll"
+              Name="System.Collections.Immutable.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)System.Collections.Immutable.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.CSharp.dll"
+                 Guid="7c2e1705-d583-40b2-ae79-f55f5b334e64">
+        <File Id="Microsoft.CodeAnalysis.CSharp.dll"
+              Name="Microsoft.CodeAnalysis.CSharp.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)Microsoft.CodeAnalysis.CSharp.dll" />
+      </Component>
+      <Component Id="Castle.Core.dll"
+                 Guid="a1b6b4d3-a217-4482-9d26-1823a3fac607">
+        <File Id="Castle.Core.dll" Name="Castle.Core.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)Castle.Core.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.Workspaces.dll"
+                 Guid="c7c7f712-e0ee-4fda-8cb5-78fe6de3833c">
+        <File Id="Microsoft.CodeAnalysis.Workspaces.dll"
+              Name="Microsoft.CodeAnalysis.Workspaces.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)Microsoft.CodeAnalysis.Workspaces.dll" />
+      </Component>
+      <Component
+        Id="Microsoft.CodeAnalysis.Workspaces.MSBuild.dll"
+        Guid="6da65248-7b99-416b-8949-19d479065e82">
+        <File
+          Id="Microsoft.CodeAnalysis.Workspaces.MSBuild.dll"
+          Name="Microsoft.CodeAnalysis.Workspaces.MSBuild.dll"
+          Source="$(var.CodeAnalysisApp1_TargetDir)Microsoft.CodeAnalysis.Workspaces.MSBuild.dll" />
+      </Component>
+      <Component Id="Microsoft.Build.Locator.dll"
+                 Guid="6f3bba7b-38fb-41d4-ab37-da01100aa0f3">
+        <File Id="Microsoft.Build.Locator.dll"
+              Name="Microsoft.Build.Locator.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)Microsoft.Build.Locator.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.dll"
+                 Guid="08041e82-e53e-4ad6-8768-3723cb09e033">
+        <File Id="Microsoft.CodeAnalysis.dll"
+              Name="Microsoft.CodeAnalysis.dll"
+              Source="$(var.CodeAnalysisApp1_TargetDir)Microsoft.CodeAnalysis.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="_files"
+                    Directory="WCFINSTALLFOLDER">
+      <Component Id="bin_WcfService1.dll"
+                 Guid="acbe9251-30a5-43a4-a695-7d585469ebab">
+        <File Id="bin_WcfService1.dll"
+              Name="WcfService1.dll"
+              Source="$(var.WcfService1_TargetDir)WcfService1.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

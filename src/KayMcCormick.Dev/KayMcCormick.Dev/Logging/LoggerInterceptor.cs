@@ -1,9 +1,10 @@
 ﻿using System ;
 using System.Linq ;
 using Castle.DynamicProxy ;
+using KayMcCormick.Logging.Common ;
 using NLog ;
 
-namespace KayMcCormick.Logging.Common
+namespace KayMcCormick.Dev.Logging
 {
     /// <summary></summary>
     /// <seealso cref="Castle.DynamicProxy.IInterceptor" />

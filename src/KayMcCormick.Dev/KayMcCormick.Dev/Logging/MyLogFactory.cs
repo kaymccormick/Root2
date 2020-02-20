@@ -1,6 +1,7 @@
-﻿using NLog ;
+﻿using KayMcCormick.Logging.Common ;
+using NLog ;
 
-namespace KayMcCormick.Logging.Common
+namespace KayMcCormick.Dev.Logging
 {
     /// <summary></summary>
     /// <seealso cref="NLog.LogFactory" />
