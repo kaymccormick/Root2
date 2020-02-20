@@ -1,0 +1,123 @@
+﻿<Window Name="mainWindow" x:Class="WpfApp.Controls.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:nLog="clr-namespace:NLog;assembly=NLog"
+        xmlns:wpfApp="clr-namespace:WpfApp"
+        xmlns:controls1="clr-namespace:WpfApp.Controls"
+        mc:Ignorable="d"
+        DataContext="{Binding ElementName=mainWindow}"
+        Title="Main Window" Height="450" Width="1000"
+        FontFamily="Deja Vu Sans"
+        FontSize="20" MinHeight="800" MinWidth="1202">
+    <Window.CommandBindings>
+        <CommandBinding Command="wpfApp:WpfAppCommands.LoadAssemblyList" />
+        <CommandBinding Command="ApplicationCommands.Open"
+                        Executed="CommandBinding_OnExecuted" />
+        <CommandBinding Command="wpfApp:WpfAppCommands.Restart" Executed="Restart" />
+    </Window.CommandBindings>
+    <Window.Resources>
+        <CollectionViewSource x:Key="LogItems" Source="{Binding LogEvents}" />
+    </Window.Resources>
+    <TabControl Margin="10">
+        <TabItem Header="Objects">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Autofac" Padding="15" DataContext="{Binding Path=Container}">
+            <controls1:Container>
+                <wpfApp:Props.LifetimeScope>
+                    <Binding ElementName="mainWindow" Path="(wpfApp:Props.LifetimeScope)" />
+                </wpfApp:Props.LifetimeScope>
+            </controls1:Container>
+        </TabItem>
+        <TabItem Header="Home">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="41" />
+                    <ColumnDefinition Width="8*" />
+                    <ColumnDefinition Width="1127*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <WrapPanel Grid.Row="0" Grid.Column="0" DataContext="{Binding Path=Configuration}" Grid.ColumnSpan="3">
+                    <WrapPanel.Resources>
+                        <CollectionViewSource x:Key="Targets" Source="{Binding Path=AllTargets}" />
+
+                    </WrapPanel.Resources>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Margin="5,5,5,20"><Run Text="{Binding Mode=OneWay,Path=AllTargets.Count}" /> Targets</TextBlock>
+                        <ListView MinWidth="200"
+                                  ItemsSource="{Binding Source={StaticResource Targets}}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Type"
+                                                    DisplayMemberBinding="{Binding Converter={StaticResource TargetConverter}, ConverterParameter=GetType}" />
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" />
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Converter={StaticResource TargetConverter}}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <WrapPanel Margin="5,10,0,0">
+                            <Button Margin="25,0,25,0" Padding="25,0,25,0" Content="Refresh"
+                                    Click="Refresh_OnClick" />
+                        </WrapPanel>
+                    </StackPanel>
+                </WrapPanel>
+                <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                    <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <TabItem Header="Default">
+                            <ListView VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding Source={StaticResource LogItems}}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding LoggerName}" />
+                                        <GridViewColumn DisplayMemberBinding="{Binding FormattedMessage}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate DataType="{x:Type nLog:LogEventInfo}">
+                                                    <TextBlock>
+                                                        <Run Text="{Binding CallerClassName,Mode=OneWay}" />:
+                                                        <Run Text="{Binding CallerLineNumber,Mode=OneWay}" />
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </TabItem>
+                    </TabControl>
+                </WrapPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Menus">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TreeView ItemsSource="{Binding Path=(wpfApp:Props.MenuItemListCollectionView)}"
+                          Grid.Row="0" Grid.Column="0" DataContext="{Binding ElementName=mainWindow, Mode=OneWay}">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
+                            <TextBlock Text="{Binding Path=Header}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Assemblies">
+            <controls1:AssemblyBrowser />
+        </TabItem>
+    </TabControl>
+
+</Window>

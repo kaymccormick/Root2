@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:converters="clr-namespace:WpfApp.Core.Converters">
+    <!-- Conversion for "InstanceRegistration" -->
+    <converters:InstanceRegistrationConverter 
+        x:Key="InstanceRegistrationConverter" />
+    <converters:AssemblyConverter x:Key="AssemblyConverter" />
+    <converters:ComponentLifetimeConverter x:Key="ComponentLifetimeConverter" />
+    <converters:RegistrationConverter2 x:Key="RegistrationConverter2"/>
+    <converters:RegistrationSourceConverter x:Key="RegistrationSourceConverter"/>
+    <converters:ResolveServiceConverter x:Key="MyConverter"/>
+    <converters:TargetConverter x:Key="TargetConverter"/>
+    <converters:GetTypeConverter x:Key="GetTypeConverter"/>
+</ResourceDictionary>

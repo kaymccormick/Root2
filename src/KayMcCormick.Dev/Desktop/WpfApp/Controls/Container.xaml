@@ -1,0 +1,163 @@
+﻿<UserControl Name="userControl" x:Class="WpfApp.Controls.Container"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             MinWidth="300" MinHeight="200"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpfApp="clr-namespace:WpfApp"
+             DataContext="{Binding (wpfApp:Props.LifetimeScope)}"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <CollectionViewSource
+            x:Key="Registrations" Source="{Binding Path=ComponentRegistry.Registrations}"
+            IsLiveGroupingRequested="True" />
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel
+            LastChildFill="True">
+
+            <DockPanel.CommandBindings>
+                <CommandBinding Command="wpfApp:WpfAppCommands.Load" Executed="LoadInstance" />
+                <CommandBinding Command="wpfApp:WpfAppCommands.Metadata" Executed="Metadata" />
+            </DockPanel.CommandBindings>
+
+            <StackPanel>
+                <TextBlock Text="{Binding Tag}" />
+                <CheckBox Checked="InstancesOnly_OnChecked"
+                          Content="Only with Instances"
+                          Unchecked="InstancesOnly_OnUnchecked" />
+            </StackPanel>
+            <Grid VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <ListView BorderBrush="Violet " BorderThickness="6"
+                          ItemsSource="{Binding Mode=OneWay, Source={StaticResource Registrations}}">
+
+                    <ListView.View>
+                        <GridView>
+
+                            <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
+                            <GridViewColumn Header="Limit Type"
+                                            CellTemplate="{StaticResource CellTemplateType}"
+                                            DisplayMemberBinding="{Binding Path=Activator.LimitType}" />
+                            <GridViewColumn Header="Sharing" DisplayMemberBinding="{Binding Path=Sharing}" />
+
+                            <GridViewColumn
+                                CellTemplate="{StaticResource  ServicesCellTemplate}" Header="Services" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <StackPanel Grid.Row="2">
+                    <ListView ItemsSource="{Binding Path=CurrentItem,Source={StaticResource Registrations}}">
+                        <ListView.View>
+                            <GridView>
+                                <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=ObjectId}" />
+                                <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
+                                <GridViewColumn Header="Actions">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ToolBarTray>
+                                                <ToolBar
+                                                    ItemsSource="{Binding Converter={StaticResource InstanceRegistrationConverter},ConverterParameter=ToolBar}" />
+                                            </ToolBarTray>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+        <TabControl>
+            <TabItem Header="Registrations">
+                <DockPanel
+                    LastChildFill="True"
+                    DataContext="{Binding ComponentRegistry.Registrations}">
+                    <DockPanel.CommandBindings>
+                        <CommandBinding Command="wpfApp:WpfAppCommands.Load" Executed="LoadInstance" />
+                        <CommandBinding Command="wpfApp:WpfAppCommands.Metadata" Executed="Metadata" />
+                    </DockPanel.CommandBindings>
+                    <DockPanel.Resources>
+                        <CollectionViewSource
+                            x:Key="Registrations" Source="{Binding}" IsLiveGroupingRequested="True" />
+                    </DockPanel.Resources>
+                    <StackPanel>
+                        <TextBlock Text="{Binding}" />
+                        <CheckBox Checked="InstancesOnly_OnChecked"
+                                  Content="Only with Instances"
+                                  Unchecked="InstancesOnly_OnUnchecked" />
+                    </StackPanel>
+                    <Grid DataContext="{Binding Source={StaticResource Registrations}}" VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <ListView BorderBrush="Violet " BorderThickness="6">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Id}" />
+                                    <GridViewColumn Header="Limit Type"
+                                                    DisplayMemberBinding="{Binding Path=Activator.LimitType}" />
+                                    <GridViewColumn Header="Sharing" DisplayMemberBinding="{Binding Path=Sharing}" />
+
+                                    <GridViewColumn
+                                        CellTemplate="{StaticResource  ServicesCellTemplate}" Header="Services" />
+                                </GridView>
+                            </ListView.View>
+                            <system:Object />
+                        </ListView>
+                        <StackPanel Grid.Row="1">
+                            <ListView ItemsSource="{Binding ElementName=userControl, Path=DataContext}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=ObjectId}" />
+                                        <GridViewColumn Header="Actions">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ToolBarTray>
+                                                        <ToolBar
+                                                            ItemsSource="{Binding Converter={StaticResource InstanceRegistrationConverter},ConverterParameter=ToolBar}" />
+                                                    </ToolBarTray>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Lifetime Scopes" Padding="15">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Tag}" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Form">
+                <Grid DataContext="{Binding }">
+                    <Grid.Resources>
+                        <CollectionViewSource x:Key="LocalCollectionView" Source="{Binding}" />
+                    </Grid.Resources>
+                    <TextBlock Text="{Binding}" />
+                    <ListView ItemsSource="{Binding Source={StaticResource LocalCollectionView}}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding}" />
+                                <GridViewColumn DisplayMemberBinding="{Binding}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

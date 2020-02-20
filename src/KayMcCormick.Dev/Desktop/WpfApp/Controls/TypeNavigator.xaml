@@ -1,0 +1,21 @@
+﻿<UserControl Name="userControl" x:Class="WpfApp.Controls.TypeNavigator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpfApp="clr-namespace:WpfApp"
+             xmlns:controls="clr-namespace:WpfApp.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="180" d:DesignWidth="300">
+    <DockPanel>
+        <controls:TypeControl Detailed="False" Target="{Binding ElementName=TypeNavigationFrame}"
+                                        DockPanel.Dock="Top">
+            <wpfApp:Props.RenderedType>
+                <Binding ElementName="userControl" Path="(wpfApp:Props.RenderedType)"
+                         FallbackValue="{x:Type system:String}" />
+            </wpfApp:Props.RenderedType>
+        </controls:TypeControl>
+        <Frame Name="TypeNavigationFrame" Source="../Controls/DefaultPage.xaml" />
+    </DockPanel>
+</UserControl>

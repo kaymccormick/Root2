@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define WpfApp_TargetDir=$(var.WpfApp.TargetDir)?>
+  <?define NLog_TargetDir=$(var.WpfApp.TargetDir)?>
+  <?define KayMcCormick.Logging.Common_TargetDir=$(var.WpfApp.TargetDir)?>
+  <Product Id="*" Name="SetupProject1" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="aa79bde2-ea70-4a4a-9e7e-58e16358a2dd">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="Kay McCormick Mega App" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ProgramFilesFolder_files" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="SetupProject1" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+      <!-- <Component Id="ProductComponent"> -->
+      <!-- <?include include1.wxi ?> -->
+      <!-- <RegistryKey Root="HKCU" -->
+      <!--              Key="Software\Kay McCormick\Logging" -->
+      <!--              Action="createAndRemoveOnUninstall"> -->
+      <!--   <RegistryValue Type="integer" Name="SomeIntegerValue" Value="1" KeyPath="yes"/> -->
+      <!--   <RegistryValue Type="string" Value="Default Value"/> -->
+      <!-- </RegistryKey> -->
+      <!-- TODO: Insert files, registry keys, and other resources here. -->
+      <!-- </Component> -->
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="ProgramFilesFolder_files" Directory="ProgramFilesFolder">
+      <Component Id="WpfApp.exe" Guid="b792e61b-04ee-4c81-97d5-972bbf698111">
+        <File Id="WpfApp.exe" Name="WpfApp.exe" Source="$(var.WpfApp_TargetDir)WpfApp.exe" />
+      </Component>
+      <Component Id="Autofac.dll" Guid="8bb381d3-ffad-41b2-80b9-a50b2b7b76c4">
+        <File Id="Autofac.dll" Name="Autofac.dll" Source="$(var.WpfApp_TargetDir)Autofac.dll" />
+      </Component>
+      <Component Id="NLog.dll" Guid="96c124a1-ccca-492c-a5d7-3c7fccabee7d">
+        <File Id="NLog.dll" Name="NLog.dll" Source="$(var.NLog_TargetDir)NLog.dll" />
+      </Component>
+      <Component Id="Castle.Core.dll" Guid="0c7bb70a-44e8-4555-bcb6-a4c627876689">
+        <File Id="Castle.Core.dll" Name="Castle.Core.dll" Source="$(var.WpfApp_TargetDir)Castle.Core.dll" />
+      </Component>
+      <Component Id="System.Reactive.dll" Guid="06fdb24f-d11d-4beb-b994-8039b17ffd9e">
+        <File Id="System.Reactive.dll" Name="System.Reactive.dll" Source="$(var.WpfApp_TargetDir)System.Reactive.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="7aada157-4035-48ec-a4f0-0607345238bf">
+        <File Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.WpfApp_TargetDir)Xceed.Wpf.Toolkit.dll" />
+      </Component>
+      
+      <Component Id="NJection.LambdaConverter.dll" Guid="52a36b92-8867-4e7d-8a49-f3ad2e6d82bd">
+        <File Id="NJection.LambdaConverter.dll" Name="NJection.LambdaConverter.dll" Source="$(var.WpfApp_TargetDir)NJection.LambdaConverter.dll" />
+      </Component>
+      <Component Id="DynamicData.dll" Guid="4b9ae8f5-302c-406b-b826-27abde09d030">
+        <File Id="DynamicData.dll" Name="DynamicData.dll" Source="$(var.WpfApp_TargetDir)DynamicData.dll" />
+      </Component>
+      <Component Id="Autofac.Extras.DynamicProxy.dll" Guid="eaea3863-da9d-4b74-9c87-2b6482fd7ba7">
+        <File Id="Autofac.Extras.DynamicProxy.dll" Name="Autofac.Extras.DynamicProxy.dll" Source="$(var.WpfApp_TargetDir)Autofac.Extras.DynamicProxy.dll" />
+      </Component>
+      <Component Id="Autofac.Extras.AttributeMetadata.dll" Guid="02db4394-41a8-43c7-86a0-d4461e2d946b">
+        <File Id="Autofac.Extras.AttributeMetadata.dll" Name="Autofac.Extras.AttributeMetadata.dll" Source="$(var.WpfApp_TargetDir)Autofac.Extras.AttributeMetadata.dll" />
+      </Component>
+      <Component Id="Vanara.Core.dll" Guid="aac70a94-d16a-453a-8ad2-e48608de027a">
+        <File Id="Vanara.Core.dll" Name="Vanara.Core.dll" Source="$(var.WpfApp_TargetDir)Vanara.Core.dll" />
+      </Component>
+      <Component Id="System.ValueTuple.dll" Guid="8858e285-ab98-47d4-90e4-b631b6101413">
+        <File Id="System.ValueTuple.dll" Name="System.ValueTuple.dll" Source="$(var.WpfApp_TargetDir)System.ValueTuple.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.Extensions.dll" Guid="1e1b8a19-734e-4939-9429-70efb99f77b0">
+        <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="$(var.WpfApp_TargetDir)System.Threading.Tasks.Extensions.dll" />
+      </Component>
+      <Component Id="System.Runtime.CompilerServices.Unsafe.dll" Guid="3d872e69-c1f0-4292-86ef-52f12bc1b092">
+        <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.WpfApp_TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+      </Component>
+      <Component Id="Mono.Cecil.dll" Guid="784f6b21-e8a3-4aba-a5b9-0ac0e45ecf46">
+        <File Id="Mono.Cecil.dll" Name="Mono.Cecil.dll" Source="$(var.WpfApp_TargetDir)Mono.Cecil.dll" />
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.CSharp.dll" Guid="47cc63e7-c7a4-49e8-bf18-bb339b7c85c3">
+        <File Id="ICSharpCode.NRefactory.CSharp.dll" Name="ICSharpCode.NRefactory.CSharp.dll" Source="$(var.WpfApp_TargetDir)ICSharpCode.NRefactory.CSharp.dll" />
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.dll" Guid="650144c1-cca4-4519-96b2-3bc0bd5a2816">
+        <File Id="ICSharpCode.NRefactory.dll" Name="ICSharpCode.NRefactory.dll" Source="$(var.WpfApp_TargetDir)ICSharpCode.NRefactory.dll" />
+      </Component>
+      <Component Id="ICSharpCode.Decompiler.dll" Guid="87c201f7-12bd-448a-9cca-88eb380f4500">
+        <File Id="ICSharpCode.Decompiler.dll" Name="ICSharpCode.Decompiler.dll" Source="$(var.WpfApp_TargetDir)ICSharpCode.Decompiler.dll" />
+      </Component>
+      <Component Id="Autofac.Integration.Mef.dll" Guid="e953b590-901b-4903-bb87-a382999e0116">
+        <File Id="Autofac.Integration.Mef.dll" Name="Autofac.Integration.Mef.dll" Source="$(var.WpfApp_TargetDir)Autofac.Integration.Mef.dll" />
+      </Component>
+      <Component Id="WpfApp.exe.config" Guid="69371532-b557-4c90-9c6d-146b5c441fc7">
+        <File Id="WpfApp.exe.config" Name="WpfApp.exe.config" Source="$(var.WpfApp_TargetDir)WpfApp.exe.config" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

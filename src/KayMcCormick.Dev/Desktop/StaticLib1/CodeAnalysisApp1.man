@@ -1,0 +1,27 @@
+<instrumentationManifest
+    xmlns="http://schemas.microsoft.com/win/2004/08/events"
+    xmlns:win="https://manifests.microsoft.com/win/2004/08/windows/events"
+    xmlns:xs="https://www.w3.org/2001/XMLSchema"
+    >
+
+    <instrumentation>
+        <events>
+            <provider name="KayMcCormick-Roslyn-Analyzer-Provider"
+                guid="{4572dcf8-26a3-4eb0-bb9e-6773aec7c4e4}"
+                symbol="PROVIDER_GUID"
+                resourceFileName="CodeAnalysisApp1.exe"
+                messageFileName="CodeAnalysisApp1.exe"
+                message="$(string.Provider.Name)">
+            </provider>
+        </events>
+    </instrumentation>
+
+    <localization>
+        <resources culture="en-US">
+            <stringTable>
+                <string id="Provider.Name" value="KayMcCormick-Roslyn-Analyzer-Provider"/>
+            </stringTable>
+        </resources>
+    </localization>
+
+</instrumentationManifest>
