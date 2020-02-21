@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
     <Compile Include="Logging\GlobalSuppressions.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="TestLib\LogHelper.cs" />
     <Compile Include="TestLib\LogTestMethodAttribute.cs" />
     <Compile Include="TestLib\TestMethodLifecycle.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core">

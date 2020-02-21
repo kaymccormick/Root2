@@ -226,18 +226,24 @@ namespace WpfApp.Core.Model
         ///     Can be used to provide Autofac with additional parameters, used during
         ///     activation.
         /// </summary>
+#pragma warning disable CS0067 // The event 'ComponentRegistration.Preparing' is never used
         public event EventHandler < PreparingEventArgs > Preparing ;
+#pragma warning restore CS0067 // The event 'ComponentRegistration.Preparing' is never used
 
         /// <summary>
         ///     Fired when a new instance is being activated. The instance can be
         ///     wrapped or switched at this time by setting the Instance property in
         ///     the provided event arguments.
         /// </summary>
+#pragma warning disable CS0067 // The event 'ComponentRegistration.Activating' is never used
         public event EventHandler < ActivatingEventArgs < object > > Activating ;
+#pragma warning restore CS0067 // The event 'ComponentRegistration.Activating' is never used
 
         /// <summary>
         ///     Fired when the activation process for a new instance is complete.
         /// </summary>
+#pragma warning disable CS0067 // The event 'ComponentRegistration.Activated' is never used
         public event EventHandler < ActivatedEventArgs < object > > Activated ;
+#pragma warning restore CS0067 // The event 'ComponentRegistration.Activated' is never used
     }
 }

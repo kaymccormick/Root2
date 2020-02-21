@@ -24,13 +24,14 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ProjMainWindow : Window
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public IWorkspacesViewModel ViewModel { get; set; }
 
-        public MainWindow()
+        public ProjMainWindow(IWorkspacesViewModel viewModel)
         {
+            ViewModel = viewModel ;
             InitializeComponent();
             // XamlXmlReader x = new XamlXmlReader();
         }
@@ -41,11 +42,17 @@ namespace ProjInterface
         {
             base.OnInitialized(e);
             Logger.Info("{methodName} {typeEvent}", nameof(OnInitialized), e.GetType());
-            Scope = Container.GetContainer();
-            ViewModel = Scope.Resolve<IWorkspacesViewModel>();
-            ViewModel.BeginInit();
+            // Scope = Container.GetContainer();
+            // ViewModel = Scope.Resolve<IWorkspacesViewModel>();
+            // ViewModel.BeginInit();
         }
 
         public ILifetimeScope Scope { get; set; }
+
+        private void ButtonBase_OnClick ( object sender , RoutedEventArgs e )
+        {
+            GridView v = ( GridView ) vs.View ;
+            new CollectionView(ViewModel.VsCollection).Refresh (  );
+        }
     }
 }

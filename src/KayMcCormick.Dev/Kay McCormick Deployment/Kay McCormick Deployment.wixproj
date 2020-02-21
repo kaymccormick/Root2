@@ -17,7 +17,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
@@ -34,6 +35,14 @@
     <ProjectReference Include="..\Desktop\Analysis\ProjInterface\ProjInterface.csproj">
       <Name>ProjInterface</Name>
       <Project>{4451ad21-ad52-49f1-874b-0bbab2d4df95}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Desktop\Analysis\ProjLib\ProjLib.csproj">
+      <Name>ProjLib</Name>
+      <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
@@ -63,12 +72,21 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
+      <Name>KayMcCormick.Lib.Wpf</Name>
+      <Project>{3434e74c-d7b5-4315-a8e1-51dbce878199}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\Docs\Docs.shfbproj">
       <Name>Docs</Name>
       <Project>{fa438012-e41b-4bdd-8391-8616d20fdcf8}</Project>
       <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <DoNotHarvest>
+      </DoNotHarvest>
+      <RefProjectOutputGroups>Documents</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
     <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
@@ -97,6 +115,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixIIsExtension">
+      <HintPath>$(WixExtDir)\WixIIsExtension.dll</HintPath>
+      <Name>WixIIsExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixFirewallExtension">
       <HintPath>$(WixExtDir)\WixFirewallExtension.dll</HintPath>
       <Name>WixFirewallExtension</Name>

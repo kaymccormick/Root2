@@ -9,7 +9,10 @@
 // 
 // ---
 #endregion
+using System.Collections.Generic ;
 using System.Diagnostics;
+using System.Linq ;
+using System.Windows.Documents ;
 using Autofac;
 using ProjLib;
 
@@ -28,10 +31,23 @@ namespace ProjInterface
             var stackTrace = new System.Diagnostics.StackTrace();
             Debug.WriteLine(stackTrace.ToString());
             ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterType<MainWindow>().AsSelf();
+            builder.RegisterType<ProjMainWindow>().AsSelf();
             builder.RegisterType<WorkspacesViewModel>().As<IWorkspacesViewModel>();
             builder.RegisterType<VsInstanceCollector>().As<IVsInstanceCollector>();
+            builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
+            #if adapter
+            builder.RegisterAdapter < IVsInstance , IMruItems > (
+                                                                 ( context , instance )
+                                                                     => new
+                                                                         MostRecentlyUsedAdapater (
+                                                                                                   instance
+                                                                                                  , context.Resolve<IMruItemProvider>())
+                                                                ) ;
+#endif
+            builder.RegisterType < VsInstance > ( ).As < IVsInstance > ( ) ;
             Scope = builder.Build().BeginLifetimeScope();
+            var mruItemses = Scope.Resolve < IEnumerable < IMruItems > > ( ) ;
+            // Debug.Assert ( mruItemses.Any ( ) ) ;
             return Scope;
         }
     }

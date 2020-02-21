@@ -392,24 +392,29 @@ namespace WpfApp.Application
           , FirstChanceExceptionEventArgs e
         )
         {
+            HandleInnerExceptions ( e ) ;
+        }
+
+        private void HandleInnerExceptions ( FirstChanceExceptionEventArgs e )
+        {
             try
             {
-                var msg = $"{e.Exception.Message}";
-                DebugLog(msg);
-                System.Diagnostics.Debug.WriteLine("Exception: " + e.Exception);
-                var inner = e.Exception.InnerException;
-                var seen = new HashSet<object>();
-                while (inner != null
-                        && !seen.Contains(inner))
+                var msg = $"{e.Exception.Message}" ;
+                DebugLog ( msg ) ;
+                System.Diagnostics.Debug.WriteLine ( "Exception: " + e.Exception ) ;
+                var inner = e.Exception.InnerException ;
+                var seen = new HashSet < object > ( ) ;
+                while ( inner != null
+                        && ! seen.Contains ( inner ) )
                 {
-                    DebugLog(inner.Message);
-                    seen.Add(inner);
-                    inner = inner.InnerException;
+                    DebugLog ( inner.Message ) ;
+                    seen.Add ( inner ) ;
+                    inner = inner.InnerException ;
                 }
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                System.Diagnostics.Debug.WriteLine("Exception: " + ex);
+                System.Diagnostics.Debug.WriteLine ( "Exception: " + ex ) ;
             }
         }
 
@@ -725,7 +730,9 @@ namespace WpfApp.Application
         }
     }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MyLogger'
     public class MyLogger : Logger
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MyLogger'
     {
         /// <summary>Raises the event when the logger is reconfigured.</summary>
         /// <param name="e">Event arguments</param>
@@ -736,7 +743,9 @@ namespace WpfApp.Application
             "Cheese", "Food");
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MyLogger.MyLogger()'
         public MyLogger()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MyLogger.MyLogger()'
         {
             SetProperty(
                         "Cheese", "Food");

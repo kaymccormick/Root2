@@ -13,7 +13,7 @@ using System.ComponentModel;
 
 namespace ProjLib
 {
-    public interface IWorkspacesViewModel : INotifyPropertyChanged, ISupportInitialize
+    public interface IWorkspacesViewModel : INotifyPropertyChanged//, ISupportInitialize
     {
         VisualStudioInstancesCollection
             VsCollection

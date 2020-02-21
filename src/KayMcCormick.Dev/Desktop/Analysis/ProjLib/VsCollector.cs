@@ -5,10 +5,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics ;
 using System.Linq;
+using System.Reflection ;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.VisualStudio.Setup.Configuration;
+using Xunit ;
 
 namespace ProjLib
 {
@@ -38,6 +41,8 @@ namespace ProjLib
     /// </summary>
     public class VsCollector : IVsInstanceCollector
     {
+        private readonly Func < IVsInstance > _insFunc ;
+        public VsCollector ( Func < IVsInstance > insFunc ) { _insFunc = insFunc ; }
         private const int REGDB_E_CLASSNOTREG = unchecked((int)0x80040154);
 
         /// <summary>
@@ -74,7 +79,9 @@ namespace ProjLib
 //                Console.WriteLine("The query API is not registered. Assuming no instances are installed.");
                 return 0;
             }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
 //                Console.Error.WriteLine($"Error 0x{ex.HResult:x8}: {ex.Message}");
                 throw;
@@ -91,19 +98,70 @@ namespace ProjLib
             // Copy the time into a quadword.
             qwResult = (((long)ft.dwHighDateTime) << 32) + (long)ft.dwLowDateTime;
 
+          
+            
             var fromFileTime = DateTime.FromFileTime(qwResult);
-            var dataObj = new VsInstance(
-                                         instance.GetInstanceId()
-                                       , instance.GetInstallationName()
-                                       , instance.GetInstallationPath()
-                                       , instance.GetInstallationVersion()
-                                       , instance.GetDisplayName()
-                                       , instance.GetDescription()
-                                       , fromFileTime
-                                       , new List<SetupPackage>()
-                                       , new SetupPackage()
-                                       , instance2.GetProductPath()
-                                        );
+             //IVsInstance  dataObj= new VsInstance();//);
+             //( ) ;
+             IVsInstance dataObj = _insFunc ( ) ;
+            dataObj.Description = instance.GetDescription ( ) ;
+            // dataObj.InstallDate = instance.GetInstallDate ( ) ;
+            dataObj.ProductPath = instance2.GetProductPath ( ) ;
+            dataObj.DisplayName = instance.GetDisplayName ( ) ;
+            dataObj.InstallationName = instance.GetInstallationName ( ) ;
+            dataObj.InstallationVersion = instance.GetInstallationVersion ( ) ;
+            dataObj.InstanceId = instance.GetInstanceId ( ) ;
+            dataObj.Product = instance2.GetProduct ( ) ;
+            //
+            // var fieldInfos = typeof(IVsInstance).GetProperties(BindingFlags.Public | BindingFlags.Instance) ;
+            // var methodInfos = typeof(ISetupInstance).GetMethods().Concat(typeof(ISetupInstance).GetMethods()) ;
+            // var x = from method in 
+            // methodInfos join
+            // field_ in fieldInfos
+            // on method.Name.Substring(4) equals field_.Name select Tuple.Create(method, field_);
+            //
+            // foreach ( var propertyInfo in fieldInfos )
+            // {
+            //     var m = instance.GetType ( ).GetMethod ( "Get" + propertyInfo.Name ) ;
+            //     Debug.WriteLine ( m ) ;
+            //     foreach ( var methodInfo in instance
+            //                                .GetType ( )
+            //                                .GetInterfaces ( )
+            //                                .Select (
+            //                                         t => instance.GetType ( ).GetInterfaceMap ( t )
+            //                                        )
+            //                                .SelectMany ( mapping => mapping.TargetMethods ) )
+            //     {
+            //         var tt = methodInfo.Name ;
+            //
+            //     }
+            // }
+            // foreach ( var y in x )
+            // {
+            //     y.Item2.SetValue (
+            //                       dataObj
+            //                     , y.Item1.Invoke ( instance , Array.Empty < object > ( ) )
+            //                      ) ;
+            // }
+            //
+            //
+            //
+            // // }( instance )).Select()
+            // // dataObj.InstallDate = instance.GetInstallDate();
+            // // dataObj.Description = instance.GetDescription();
+            // dataObj.ProductPath = 
+// /            var dataObj = new VsInstance(
+            // instance.GetInstanceId()
+            // , instance.GetInstallationName()
+            // , instance.GetInstallationPath()
+            // , instance.GetInstallationVersion()
+            // , instance.GetDisplayName()
+            // , instance.GetDescription()
+            // , fromFileTime
+            // , new List<SetupPackage>()
+            // , new SetupPackage()
+            // , instance2.GetProductPath()
+            
             Instances.Add(dataObj);
 
 //            Console.WriteLine($"InstanceId: {instance2.GetInstanceId()} ({(state == InstanceState.Complete ? "Complete" : "Incomplete")})");
@@ -176,7 +234,7 @@ namespace ProjLib
             }
         }
 
-        public IList<IVsInstance> CollectVsInstances()
+        public IList < IVsInstance > CollectVsInstances ( )
         {
             PerformTask(null);
             return Instances;

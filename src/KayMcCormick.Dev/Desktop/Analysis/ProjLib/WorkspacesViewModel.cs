@@ -23,11 +23,13 @@ namespace ProjLib
     public class WorkspacesViewModel : IWorkspacesViewModel, ISupportInitialize
     {
         // private IList<IVsInstance> vsInstances;
-        private IVsInstanceCollector vsInstanceCollector;
+        private readonly IVsInstanceCollector vsInstanceCollector;
+        private readonly VisualStudioInstancesCollection _vsCollection = new VisualStudioInstancesCollection() ;
 
         public WorkspacesViewModel(IVsInstanceCollector collector)
         {
             vsInstanceCollector = collector;
+            BeginInit();
         }
 
         /// <summary>Signals the object that initialization is starting.</summary>
@@ -49,7 +51,13 @@ namespace ProjLib
 
         }
 
-        public VisualStudioInstancesCollection VsCollection { get; } = new VisualStudioInstancesCollection();
+        public VisualStudioInstancesCollection VsCollection
+        {
+            get
+            {
+                return _vsCollection;
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

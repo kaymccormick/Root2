@@ -74,7 +74,9 @@ namespace WpfApp.Core.Logging
         }
 
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NLogTargetConverter.GetCreateInstanceSupported(ITypeDescriptorContext)'
         public override bool GetCreateInstanceSupported ( ITypeDescriptorContext context )
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NLogTargetConverter.GetCreateInstanceSupported(ITypeDescriptorContext)'
         {
             return base.GetCreateInstanceSupported ( context ) ;
         }
@@ -131,7 +133,9 @@ namespace WpfApp.Core.Logging
         }
 
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NLogTargetConverter.GetStandardValuesExclusive(ITypeDescriptorContext)'
         public override bool GetStandardValuesExclusive ( ITypeDescriptorContext context )
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NLogTargetConverter.GetStandardValuesExclusive(ITypeDescriptorContext)'
         {
             return base.GetStandardValuesExclusive ( context ) ;
         }

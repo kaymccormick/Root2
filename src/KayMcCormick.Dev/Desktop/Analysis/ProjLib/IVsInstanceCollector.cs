@@ -8,6 +8,6 @@ namespace ProjLib
 {
     public interface IVsInstanceCollector
     {
-        IList<IVsInstance> CollectVsInstances();
+        IList < IVsInstance > CollectVsInstances ( );
     }
 }

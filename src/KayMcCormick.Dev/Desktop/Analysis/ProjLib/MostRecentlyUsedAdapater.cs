@@ -1,30 +1,30 @@
 using System;
+using System.Collections.Generic ;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.Settings;
 
 namespace ProjLib
 {
-    public class MostRecentlyUsedAdapater
+    public class MostRecentlyUsedAdapater : IMruItems
     {
-        public void VsMrus(IVsInstance vsInstance)
+        private readonly IVsInstance _vsInstance ;
+        private readonly IMruItemProvider _provider ;
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public MostRecentlyUsedAdapater (IVsInstance vsInstance, IMruItemProvider provider )
         {
-            var path = Path.Combine(vsInstance.InstallationPath, vsInstance.ProductPath);
-            try
-            {
-                var ext = ExternalSettingsManager.CreateForApplication(path);
-                var store = ext.GetReadOnlySettingsStore(SettingsScope.UserSettings);
-                var mru = @"MRUItems\{a9c4a31f-f9cb-47a9-abc0-49ce82d0b3ac}\Items";
-                foreach (var name in store.GetPropertyNames(mru))
-                {
-                    var value = store.GetString(mru, name);
-                    Debug.WriteLine("Property name: {0}, value: {1}", name, value);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
+            _vsInstance = vsInstance ;
+            Debug.Assert ( _vsInstance.InstanceId != null ) ;
+            _provider = provider ;
         }
+
+        public List < IMruItem > GetMruItemList ( )
+        {
+            var yy = _vsInstance ;
+            return _provider.GetMruItemListFor ( _vsInstance ) ;
+        }
+
+
     }
 }

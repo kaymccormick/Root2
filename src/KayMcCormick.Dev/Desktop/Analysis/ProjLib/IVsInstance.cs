@@ -11,31 +11,32 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using Microsoft.VisualStudio.Setup.Configuration ;
 
 namespace ProjLib
 {
     public interface IVsInstance
     {
-        string InstanceId { get ; }
+        string InstanceId { get ; set ; }
 
-        string InstallationName { get ; }
+        string InstallationName { get ; set ; }
 
         string InstallationPath { get ; }
 
-        string InstallationVersion { get ; }
+        string InstallationVersion { get ; set ; }
 
-        string DisplayName { get ; }
+        string DisplayName { get ; set ; }
 
-        string Description { get ; }
+        string Description { get ; set ; }
 
-        DateTime InstallDate { get ; }
+        DateTime InstallDate { get ; set ; }
 
         VsInstanceState State { get ; }
 
         IList < SetupPackage > PackageCollection { get ; }
 
-        SetupPackage Product { get ; }
+        ISetupPackageReference Product { get ; set ; }
 
-        string ProductPath { get ; }
+        string ProductPath { get ; set ; }
     }
 }

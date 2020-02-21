@@ -21,7 +21,9 @@ namespace CodeAnalysisApp1
             var ns = namespaceMembers
                     .Select ( symbol => symbol.MetadataName == "NLog" )
                     .FirstOrDefault ( ) ;
+#pragma warning disable CS0472 // The result of the expression is always 'false' since a value of type 'bool' is never equal to 'null' of type 'bool?'
             if ( ns == null )
+#pragma warning restore CS0472 // The result of the expression is always 'false' since a value of type 'bool' is never equal to 'null' of type 'bool?'
             {
                 Logger.Info("{0}", string.Join(", ", namespaceMembers.Select(symbol => symbol.Name)));
                 throw new InvalidOperationException("no nlog namespace");

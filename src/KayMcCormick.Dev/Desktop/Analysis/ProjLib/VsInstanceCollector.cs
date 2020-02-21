@@ -9,13 +9,24 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections.Generic;
 
 namespace ProjLib
 {
     public class VsInstanceCollector : IVsInstanceCollector
     {
-        private IVsInstanceCollector vsInstanceCollectorImplementation = new VsCollector();
+        private readonly Func < IVsInstance > _insFunc ;
+
+        private IVsInstanceCollector vsInstanceCollectorImplementation ;
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public VsInstanceCollector ( Func < IVsInstance > insFunc )
+        {
+            _insFunc = insFunc ;
+                vsInstanceCollectorImplementation = new VsCollector(insFunc);
+        }
+
         public IList<IVsInstance> CollectVsInstances() { return vsInstanceCollectorImplementation.CollectVsInstances(); }
     }
 }

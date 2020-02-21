@@ -17,19 +17,20 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class ProjInterfaceApp : Application
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger();
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Application" /> class.</summary>
         /// <exception cref="T:System.InvalidOperationException">More than one instance of the <see cref="T:System.Windows.Application" /> class is created per <see cref="T:System.AppDomain" />.</exception>
-        public App()
+        public ProjInterfaceApp()
         {
             AppLoggingConfigHelper.EnsureLoggingConfigured(message => Debug.WriteLine(message));
-            Logger.Warn("{}", nameof(App));
+            Logger.Warn("{}", nameof(ProjInterfaceApp));
             PresentationTraceSources.Refresh();
             var bs = PresentationTraceSources.DataBindingSource;
             bs.Switch.Level = SourceLevels.Error;
             bs.Listeners.Add(new BreakTraceListener());
+            bs.Listeners.Add ( new NLogTraceListener ( ) ) ;
         }
 
         /// <summary>Raises the <see cref="E:System.Windows.Application.Startup" /> event.</summary>
@@ -39,10 +40,20 @@ namespace ProjInterface
             base.OnStartup(e);
             Logger.Info("{}", nameof(OnStartup));
             var lifetimeScope = Container.GetContainer();
+            try
+            {
+                var mainWindow = lifetimeScope.Resolve < ProjMainWindow > ( ) ;
+                mainWindow.Show ( ) ;
+            }
+            catch ( Exception ex )
 
-            var mainWindow = lifetimeScope.Resolve<MainWindow>();
-            mainWindow.Show();
+            {
+                Logger.Error ( ex , ex.ToString) ;
+                KayMcCormick.Dev.Utils.HandleInnerExceptions(ex);
+                MessageBox.Show ( ex.Message , "Error" ) ;
+            }
         }
+        
 
         /// <summary>Raises the <see cref="E:System.Windows.Application.Exit" /> event.</summary>
         /// <param name="e">An <see cref="T:System.Windows.ExitEventArgs" /> that contains the event data.</param>
@@ -51,10 +62,13 @@ namespace ProjInterface
 
     public class BreakTraceListener : TraceListener
     {
+        private bool _doBreak ;
+
         /// <summary>When overridden in a derived class, writes the specified message to the listener you create in the derived class.</summary>
         /// <param name="message">A message to write. </param>
         public override void Write(string message)
         {
+            if(DoBreak)
             Debugger.Break();
         }
 
@@ -62,7 +76,9 @@ namespace ProjInterface
         /// <param name="message">A message to write. </param>
         public override void WriteLine(string message)
         {
-            Debugger.Break();
+            if(DoBreak) { Debugger.Break();}
         }
+
+        public bool DoBreak { get => _doBreak ; set => _doBreak = value ; }
     }
 }
