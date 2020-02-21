@@ -47,7 +47,7 @@ namespace ProjLib
 
         public string InstallationName { get; set ; }
 
-        public string InstallationPath    { get; }
+        public string InstallationPath    { get; set ; }
         public string InstallationVersion { get; set ; }
 
         public string DisplayName { get; set ; }
@@ -61,5 +61,10 @@ namespace ProjLib
         public ISetupPackageReference        Product { get; set ; }
 
         public string              ProductPath { get; set ; }
+
+        IList < IMruItem > IVsInstance.MruItems
+        {
+            get { return _provider.GetMruItemListFor ( this ) ; }
+        } 
     }
 }

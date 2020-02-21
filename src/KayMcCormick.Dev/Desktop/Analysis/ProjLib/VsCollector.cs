@@ -11,6 +11,7 @@ using System.Reflection ;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.VisualStudio.Setup.Configuration;
+using NLog ;
 using Xunit ;
 
 namespace ProjLib
@@ -41,6 +42,7 @@ namespace ProjLib
     /// </summary>
     public class VsCollector : IVsInstanceCollector
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly Func < IVsInstance > _insFunc ;
         public VsCollector ( Func < IVsInstance > insFunc ) { _insFunc = insFunc ; }
         private const int REGDB_E_CLASSNOTREG = unchecked((int)0x80040154);
@@ -89,8 +91,10 @@ namespace ProjLib
         }
 
         private void CollectInstance(ISetupInstance instance, ISetupHelper helper)
-        {
+        {   
+            
             var instance2 = (ISetupInstance2)instance;
+            Logger.Debug("collecting vs instance {instance}", instance.GetDisplayName());
             var state = instance2.GetState();
             var ft = instance2.GetInstallDate();
             long qwResult;
@@ -113,6 +117,8 @@ namespace ProjLib
             dataObj.InstanceId = instance.GetInstanceId ( ) ;
             dataObj.Product = instance2.GetProduct ( ) ;
             //
+            dataObj.InstallationPath = instance.GetInstallationPath ( ) ;
+            
             // var fieldInfos = typeof(IVsInstance).GetProperties(BindingFlags.Public | BindingFlags.Instance) ;
             // var methodInfos = typeof(ISetupInstance).GetMethods().Concat(typeof(ISetupInstance).GetMethods()) ;
             // var x = from method in 

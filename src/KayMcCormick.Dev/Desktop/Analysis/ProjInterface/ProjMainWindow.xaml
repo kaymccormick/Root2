@@ -13,8 +13,8 @@
 	DataContext="{Binding ElementName=mainWindow, Path=ViewModel}"
 	mc:Ignorable="d">
 	<Window.Resources>
-    <CollectionViewSource x:Key="VsSource" Source="{Binding ElementName=mainWindow, Path=ViewModel.VsCollection}" />
-    <CollectionViewSource x:Key="MruItems" Source="{Binding ElementName=vs,Path=SelectedItem.MruItems}" />
+    <CollectionViewSource x:Key="VsSource" Source="{Binding Path=VsCollection}" />
+    <!-- <CollectionViewSource x:Key="MruItems" Source="{Binding ElementName=vs,Path=SelectedItem.MruItems}" /> -->
 		<DataTemplate x:Key="VsCell" DataType="projLib:IVsInstance">
 			<TextBlock Text="{Binding DisplayName}" />
 		</DataTemplate>
@@ -33,17 +33,19 @@
     <ListView Name="vs" Grid.Row="1" ItemsSource="{Binding Source={StaticResource VsSource}}">
       <ListView.View>
         <GridView>
-          <GridViewColumn DisplayMemberBinding="{Binding FilePath}"/>
+          <GridViewColumn DisplayMemberBinding="{Binding DisplayName}"/>
         </GridView>
       </ListView.View>
     </ListView>
 
-    <!-- <ListView Grid.Row="1" ItemsSource="{Binding ElementName=vs,Path=SelectedItem}"> -->
-    <!--   <ListView.View> -->
-    <!--     <GridView> -->
-    <!--       <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
-    <!--     </GridView> -->
-    <!--   </ListView.View> -->
+    <!-- <ListView Grid.Row="1" ItemsSource="{Binding Source={StaticResource MruItems}}"> -->
+    <!-- <ListView.View> -->
+    <!-- <GridView> -->
+    
+		<!-- <GridViewColumn DisplayMemberBinding="{Binding FilePath}"></GridViewColumn> -->
+    <!-- </GridView> -->
+    <!-- </ListView.View> -->
     <!-- </ListView> -->
+    <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>
 </Window>

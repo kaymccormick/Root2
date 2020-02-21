@@ -1,27 +1,29 @@
 ﻿using System ;
 using System.Collections.Immutable ;
 using System.Linq ;
-using KayMcCormick.Test.Common ;
-using KayMcCormick.Test.Common.Fixtures ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax ;
 using NLog ;
+using static CodeAnalysisApp1.Transforms;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 using Microsoft.CodeAnalysis.MSBuild ;
-using static CodeAnalysisApp1.Transforms;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Dev.TestLib ;
+using KayMcCormick.Dev.TestLib.Fixtures ;
 using Xunit ;
 using Xunit.Abstractions ;
 // ReSharper disable AssignNullToNotNullAttribute
+
 
 namespace CodeAnalysisApp1Tests
 {
     [Collection("General Purpose")]
     [BeforeAfterLogger]
-    [LogTestMethod]
+    [LogTestMethod()]
     public class TransformsTests : IClassFixture <LoggingFixture>, IDisposable
     {
         private readonly LoggingFixture _logging ;

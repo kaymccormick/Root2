@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
-using KayMcCormick.Test.Common.Fixtures ;
+using KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog;
 using NLog.Layouts;
 using Tests.Lib;

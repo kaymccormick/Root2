@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations ;
-using KayMcCormick.Test.Common.Fixtures ;
+using  KayMcCormick.Dev.TestLib.Fixtures ;
 using Tests.Lib.Fixtures ;
 using Xunit ;
 
@@ -14,6 +14,10 @@ namespace Tests.CollectionDefinitions
     public class WpfApplication : //ICollectionFixture < WpfApplicationFixture >
       // , ICollectionFixture < UtilsContainerFixture >
       ICollectionFixture < AppContainerFixture >, ICollectionFixture <GlobalLoggingFixture>
+    {
+    }
+
+    public class GlobalLoggingFixture
     {
     }
 }

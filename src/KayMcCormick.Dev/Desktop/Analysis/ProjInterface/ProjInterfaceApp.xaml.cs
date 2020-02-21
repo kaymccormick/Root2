@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -28,7 +29,7 @@ namespace ProjInterface
             Logger.Warn("{}", nameof(ProjInterfaceApp));
             PresentationTraceSources.Refresh();
             var bs = PresentationTraceSources.DataBindingSource;
-            bs.Switch.Level = SourceLevels.Error;
+            bs.Switch.Level = SourceLevels.Verbose ;
             bs.Listeners.Add(new BreakTraceListener());
             bs.Listeners.Add ( new NLogTraceListener ( ) ) ;
         }

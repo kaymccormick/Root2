@@ -21,7 +21,7 @@ namespace ProjLib
 
         string InstallationName { get ; set ; }
 
-        string InstallationPath { get ; }
+        string InstallationPath { get ; set ; }
 
         string InstallationVersion { get ; set ; }
 
@@ -38,5 +38,7 @@ namespace ProjLib
         ISetupPackageReference Product { get ; set ; }
 
         string ProductPath { get ; set ; }
+
+        IList<IMruItem> MruItems { get ; }
     }
 }

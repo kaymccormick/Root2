@@ -1,8 +1,11 @@
 ﻿using System ;
 using System.Linq ;
+using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.TestLib ;
+using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Logging.Common ;
-using KayMcCormick.Test.Common ;
-using KayMcCormick.Test.Common.Fixtures ;
+using  KayMcCormick.Dev.TestLib ;
+using  KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog ;
 using NLog.Config ;
 using NLog.Targets ;

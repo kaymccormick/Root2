@@ -25,10 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeAnalysisApp1\CodeAnalysisApp1.csproj" />
-    <ProjectReference Include="..\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common\KayMcCormick.Logging.Common.csproj" />
-    <ProjectReference Include="..\KayMcCormick.Test.Common\KayMcCormick.Test.Common\KayMcCormick.Test.Common.csproj" />
-    <ProjectReference Include="..\NLog\src\NLog\NLog.csproj" />
+    <ProjectReference Include="..\..\Desktop\Analysis\CodeAnalysisApp1\CodeAnalysisApp1.csproj" />
   </ItemGroup>
 
 </Project>

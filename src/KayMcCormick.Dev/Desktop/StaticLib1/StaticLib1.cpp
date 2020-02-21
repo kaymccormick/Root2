@@ -8,3 +8,5 @@
 void fnStaticLib1()
 {
 }
+
+

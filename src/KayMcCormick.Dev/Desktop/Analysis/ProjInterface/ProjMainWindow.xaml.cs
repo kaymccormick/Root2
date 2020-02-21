@@ -18,6 +18,7 @@ using Autofac;
 using Autofac.Core.Lifetime;
 using NLog;
 using ProjLib;
+using Xunit ;
 
 namespace ProjInterface
 {
@@ -32,6 +33,10 @@ namespace ProjInterface
         public ProjMainWindow(IWorkspacesViewModel viewModel)
         {
             ViewModel = viewModel ;
+            if (! viewModel.VsCollection.Any ( ) )
+            {
+                throw new Exception("no data");
+            }
             InitializeComponent();
             // XamlXmlReader x = new XamlXmlReader();
         }

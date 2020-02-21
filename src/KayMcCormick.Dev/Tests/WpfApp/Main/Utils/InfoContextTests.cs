@@ -1,5 +1,6 @@
 ﻿using System.Linq ;
-using KayMcCormick.Test.Common ;
+using KayMcCormick.Dev.TestLib ;
+
 using WpfApp.Core.Infos ;
 using Xunit ;
 

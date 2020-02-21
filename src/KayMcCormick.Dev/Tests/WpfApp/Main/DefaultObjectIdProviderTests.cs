@@ -2,8 +2,8 @@
 using System.Runtime.Serialization ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
-using KayMcCormick.Test.Common ;
-using KayMcCormick.Test.Common.Fixtures ;
+using KayMcCormick.Dev.TestLib ;
+using KayMcCormick.Dev.TestLib.Fixtures ;
 using Moq ;
 using WpfApp.Core ;
 using WpfApp.Core.Interfaces ;

@@ -18,7 +18,7 @@ using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using Autofac.Core.Resolving ;
 using JetBrains.Annotations ;
-using KayMcCormick.Test.Common ;
+using  KayMcCormick.Dev.TestLib ;
 using NLog ;
 using WpfApp.Core.Container ;
 using Xunit ;

@@ -12,7 +12,7 @@
 using System ;
 using System.Globalization ;
 using Autofac ;
-using KayMcCormick.Test.Common ;
+using  KayMcCormick.Dev.TestLib ;
 using Tests.Lib.Fixtures ;
 using Tests.Lib.Misc ;
 using WpfApp.Core.Converters ;

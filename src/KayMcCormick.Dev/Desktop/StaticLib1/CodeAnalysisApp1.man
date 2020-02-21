@@ -12,6 +12,19 @@
                 resourceFileName="CodeAnalysisApp1.exe"
                 messageFileName="CodeAnalysisApp1.exe"
                 message="$(string.Provider.Name)">
+              <channels>
+                <channel chid="c2"
+                         name="KayMcCormick-Provider-Operational"
+                         type="Operational"
+                         enabled="true"
+                />
+                <channel chid="c3"
+
+                         name="KayMcCormick-Provider-Debug"
+                         type="Debug"
+                         enabled="true"
+                />
+              </channels>
             </provider>
         </events>
     </instrumentation>
