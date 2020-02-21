@@ -74,6 +74,7 @@
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
+    <Compile Include="MruItemProvider.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />

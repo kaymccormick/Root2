@@ -12,9 +12,8 @@
 using System.Collections ;
 using System.Collections.Generic ;
 using Autofac.Core ;
-using WpfApp.Core.Infos ;
 
-namespace WpfApp.Core.Interfaces
+namespace KayMcCormick.Dev
 {
     // [ InterfaceMetadata ( typeof ( ObjectIdControl ) ) ]
     /// <summary></summary>

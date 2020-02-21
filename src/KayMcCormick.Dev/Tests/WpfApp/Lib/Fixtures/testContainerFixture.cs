@@ -1,8 +1,9 @@
 ﻿using Autofac ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Logging.Common ;
 using Tests.Lib.Misc ;
-using WpfApp.Modules ;
 
 namespace Tests.Lib.Fixtures
 {

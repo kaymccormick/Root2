@@ -2,6 +2,7 @@
 using System.Runtime.Serialization ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Moq ;

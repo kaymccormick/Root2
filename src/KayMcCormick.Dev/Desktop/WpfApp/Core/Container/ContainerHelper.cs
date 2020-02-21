@@ -8,6 +8,7 @@ using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using Autofac.Core.Resolving ;
 using Autofac.Extras.AttributeMetadata ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Logging.Common ;
 #if ENABLE_BUILDERPROXY
@@ -16,7 +17,6 @@ using Castle.DynamicProxy ;
 using NLog ;
 using WpfApp.Core.Interfaces ;
 using WpfApp.Core.Logging ;
-using WpfApp.Modules ;
 using WpfApp.Proxy ;
 
 namespace WpfApp.Core.Container

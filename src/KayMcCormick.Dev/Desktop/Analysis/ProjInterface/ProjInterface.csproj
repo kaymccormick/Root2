@@ -81,6 +81,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Container.cs" />
+    <Compile Include="MruBackground.cs" />
     <Compile Include="MruConverter.cs" />
     <Compile Include="VsInstancePanel.xaml.cs">
       <DependentUpon>VsInstancePanel.xaml</DependentUpon>
@@ -129,9 +130,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac">
-      <Version>5.1.2</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Settings.15.0">
       <Version>16.4.29519.181</Version>
     </PackageReference>

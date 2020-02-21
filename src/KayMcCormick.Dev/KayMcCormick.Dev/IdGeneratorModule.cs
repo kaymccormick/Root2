@@ -4,11 +4,8 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
 using NLog ;
-using WpfApp.Core ;
-using WpfApp.Core.Interfaces ;
-using WpfApp.Core.Util ;
 
-namespace WpfApp.Modules
+namespace KayMcCormick.Dev
 {
     /// <summary></summary>
     /// <seealso cref="Autofac.Module" />

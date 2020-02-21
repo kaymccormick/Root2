@@ -1,9 +1,10 @@
 ﻿using System ;
+using System.Collections.Generic ;
 using System.Linq ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
 
-namespace WpfApp.Core.Util
+namespace KayMcCormick.Dev
 {
     /// <summary>Extension methods for debug output.</summary>
     public static class DebugUtils
@@ -21,9 +22,9 @@ namespace WpfApp.Core.Util
             }
 
             return string.Join (
-                                ", "
-                              , reg.Services.Where ( ( service , i ) => service != null )
-                                   .Select ( ( service ,         i ) => service.DebugFormat ( ) )
+                                ( string ) ", "
+                              , ( IEnumerable < string > ) reg.Services.Where ( ( service , i ) => service != null )
+                                                              .Select ( ( service ,         i ) => service.DebugFormat ( ) )
                                ) ;
         }
 

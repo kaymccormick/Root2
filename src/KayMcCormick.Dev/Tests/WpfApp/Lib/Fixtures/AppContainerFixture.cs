@@ -30,7 +30,7 @@ namespace Tests.Lib.Fixtures
     /// <seealso cref="Xunit.IAsyncLifetime" />
     /// <seealso cref="ContainerHelper"/>
     [UsedImplicitly]
-    public class AppContainerFixture : IAsyncLifetime, ILifetimeScope
+    public class AppContainerFixture : IAsyncLifetime
     {
         private readonly IMessageSink _sink ;
 
@@ -172,6 +172,5 @@ namespace Tests.Lib.Fixtures
             remove => LifetimeScope.ResolveOperationBeginning -= value ;
         }
 
-        ValueTask IAsyncDisposable.DisposeAsync ( ) { return _container.DisposeAsync ( ) ; }
-    }
+}
 }

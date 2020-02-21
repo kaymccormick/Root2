@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic ;
 using Autofac ;
+using KayMcCormick.Dev ;
 using WpfApp.Core.Infos ;
 using WpfApp.Core.Menus ;
 

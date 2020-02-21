@@ -70,7 +70,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentInfo.cs" />
+    <Compile Include="DataBindingTraceFilter\MyTraceFilter.cs" />
+    <Compile Include="DebugUtils.cs" />
+    <Compile Include="DefaultObjectIdProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IdGeneratorModule.cs" />
+    <Compile Include="IHaveObjectId.cs" />
+    <Compile Include="InstanceInfo.cs" />
+    <Compile Include="IObjectIdProvider.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
     <Compile Include="Logging\GlobalSuppressions.cs" />
@@ -93,6 +101,7 @@
     <Compile Include="TestLib\LogHelper.cs" />
     <Compile Include="TestLib\LogTestMethodAttribute.cs" />
     <Compile Include="TestLib\TestMethodLifecycle.cs" />
+    <Compile Include="UnableToRegisterObjectIdException.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -120,5 +129,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Logging\Properties\Resource.resx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

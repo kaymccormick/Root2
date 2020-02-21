@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Autofac;
+using KayMcCormick.Dev.DataBindingTraceFilter ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Logging.Common;
 using NLog;
@@ -31,7 +31,9 @@ namespace ProjInterface
             var bs = PresentationTraceSources.DataBindingSource;
             bs.Switch.Level = SourceLevels.Verbose ;
             bs.Listeners.Add(new BreakTraceListener());
-            bs.Listeners.Add ( new NLogTraceListener ( ) ) ;
+            var nLogTraceListener = new NLogTraceListener ( ) ;
+            nLogTraceListener.Filter = new MyTraceFilter ( ) ;
+            bs.Listeners.Add ( nLogTraceListener ) ;
         }
 
         /// <summary>Raises the <see cref="E:System.Windows.Application.Startup" /> event.</summary>

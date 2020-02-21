@@ -3,6 +3,7 @@ using System.Globalization ;
 using System.Windows.Data ;
 using Autofac ;
 using Autofac.Core ;
+using KayMcCormick.Dev ;
 using WpfApp.Core.Interfaces ;
 
 namespace WpfApp.Core.Converters
