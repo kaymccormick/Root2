@@ -39,7 +39,6 @@ namespace ProjLib
             foreach (var vsInstance in vsInstances)
             {
                 VsCollection.Add(vsInstance);
-                //MostRecentlyUsedAdapater.VsMrus(vsInstance);
             }
             OnPropertyChanged(nameof(VsCollection));
 

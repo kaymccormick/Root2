@@ -12,7 +12,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;CodeAnalysisApp1.TargetDir=CodeAnalysisApp1;App1.TargetDir=App1;KayMcCormick.Dev.TargetDir=..\KayMcCormick.Dev;ProjInterface.TargetDir=ProjInterface;ProjLib.TargetDir=ProjLib;WcfService1.TargetDir=WcfService1;WpfApp.TargetDir=WpfApp;WpfApp2.TargetDir=WpfApp2;KayMcCormick.Lib.Wpf.TargetDir=KayMcCormick.Lib.Wpf</DefineConstants>
+    <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>

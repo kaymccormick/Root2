@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.MSBuild ;
  
 namespace CodeAnalysisApp1
 {
-    internal static partial class Program
+    public static partial class Program
     {
         private class ConsoleProgressReporter : IProgress < ProjectLoadProgress >
         {

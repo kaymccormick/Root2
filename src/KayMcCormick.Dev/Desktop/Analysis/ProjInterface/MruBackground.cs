@@ -7,6 +7,7 @@ using ProjLib ;
 
 namespace ProjInterface
 {
+    [ValueConversion( typeof(IMruItem), typeof(Brush))]
     public class MruBackground : IValueConverter
     {
         /// <summary>Converts a value. </summary>
@@ -23,7 +24,7 @@ namespace ProjInterface
         )
         {
             IMruItem item = ( IMruItem ) value ;
-            if ( item.FileInf.Exists )
+            if ( item.Exists )
             {
                 return Brushes.Aquamarine ;
             }

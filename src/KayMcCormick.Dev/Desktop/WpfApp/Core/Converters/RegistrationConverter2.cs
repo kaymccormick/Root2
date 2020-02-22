@@ -17,6 +17,7 @@ using System.Linq ;
 using System.Windows.Data ;
 using Autofac.Core ;
 using Castle.DynamicProxy.Internal ;
+using KayMcCormick.Dev ;
 using NLog ;
 using WpfApp.Core.Infos ;
 using WpfApp.Core.Model ;

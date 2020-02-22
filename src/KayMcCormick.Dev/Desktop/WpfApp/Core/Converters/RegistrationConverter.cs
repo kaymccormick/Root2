@@ -5,6 +5,7 @@ using System.Windows.Data ;
 using Autofac ;
 using Autofac.Core ;
 using DynamicData.Kernel ;
+using KayMcCormick.Dev ;
 using WpfApp.Core.Interfaces ;
 using WpfApp.Core.Model ;
 

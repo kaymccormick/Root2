@@ -2,19 +2,37 @@
 using System.IO ;
 using System.Xml ;
 using CodeAnalysisApp1 ;
-
+using Microsoft.Build.Locator ;
+using Microsoft.CodeAnalysis.MSBuild ;
+using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
 
 namespace Tests
 {
-    public class Class2
+    public class Class2 
     {
         private readonly ITestOutputHelper _helper ;
+        // private VisualStudioInstance VSInstance ;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public Class2 (ITestOutputHelper helper ) { _helper = helper ; }
+        public Class2 ( ITestOutputHelper helper )
+        {
+            _helper = helper ;
+            // VSInstance = fixture.I ;
+        }
 
+
+
+        public void a ( )
+        {
+            // Assert.NotNull(VSInstance);
+            // var root = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos" ;
+            // var p = Path.Combine ( root , @"V2\LogTest\LogTest.sln" ) ;
+            // Assert.True ( File.Exists ( p ) ) ;
+            // ProjLib.ProjectHandler v =
+                // new ProjectHandler ( p, VSInstance ) ;
+        }
         [Fact]
         public void TestMethodxml ( )
         {

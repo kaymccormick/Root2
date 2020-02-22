@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Desktop\Analysis\CodeAnalysisApp1\CodeAnalysisApp1.csproj" />
+    <ProjectReference Include="..\..\Desktop\Analysis\ProjLib\ProjLib.csproj" />
   </ItemGroup>
 
 </Project>

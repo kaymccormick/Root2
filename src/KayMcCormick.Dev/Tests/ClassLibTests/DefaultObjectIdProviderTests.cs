@@ -6,12 +6,10 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Moq ;
-using WpfApp.Core ;
-using WpfApp.Core.Interfaces ;
 using Xunit ;
 using Xunit.Abstractions ;
 
-namespace Tests.Main
+namespace ClassLibTests
 {
     /// <summary>Test for the default configured service for the <seealso cref="IObjectIdProvider"/> service.</summary>
     /// <seealso cref="LoggingFixture" />

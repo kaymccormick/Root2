@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using NLog ;
 using NLog.Config;
 using NLog.Targets;
 
@@ -15,8 +16,14 @@ namespace WcfService1
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            #if false
             try
             {
+                var q = LogManager.Configuration ;
+                if ( LogManager.IsLoggingEnabled ( ) )
+                {
+                    return ;
+                }
                 var conf = new LoggingConfiguration();
                 var t0 = new EventLogTarget("elog")
                 {
@@ -44,6 +51,7 @@ namespace WcfService1
                 Debug.WriteLine(x);
 
             }
+#endif
         }
 
         protected void Session_Start(object sender, EventArgs e)

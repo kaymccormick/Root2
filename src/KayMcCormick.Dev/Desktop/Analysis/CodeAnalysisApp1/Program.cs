@@ -19,7 +19,7 @@ using Formatting = System.Xml.Formatting ;
 
 namespace CodeAnalysisApp1
 {
-    internal static partial class Program
+    public static partial class Program
     {
         // ReSharper disable once UnusedMember.Local
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members", Justification = "<Pending>")]
@@ -45,46 +45,46 @@ namespace CodeAnalysisApp1
             // NOTE: Be sure to register an instance with the MSBuildLocator 
             //       before calling MSBuildWorkspace.Create()
             //       otherwise, MSBuildWorkspace won't MEF compose.
-            MSBuildLocator.RegisterInstance ( instance ) ;
+            await NewMethod ( args[0] , instance ) ;
 
-            using ( var workspace = MSBuildWorkspace.Create ( ) )
-            {
+            // TODO: Do analysis on the projects in the loaded solution
+        }
+
+        public static async Task<MSBuildWorkspace> NewMethod (
+            string               solutionPath
+                                , VisualStudioInstance instance
+        )
+        {
+            MSBuildLocator.RegisterInstance ( instance ) ;
+            var workspace = MSBuildWorkspace.Create ( ) ;
+            
                 // Print message for WorkspaceFailed event to help diagnosing project load failures.
                 workspace.WorkspaceFailed +=
                     ( o , e ) => Console.WriteLine ( e.Diagnostic.Message ) ;
 
-                Debug.Assert ( args != null , nameof ( args ) + " != null" ) ;
-                var solutionPath = args?[ 0 ] ;
                 // ReSharper disable once LocalizableElement
                 Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
-                Console.WriteLine ( $"Loading solution '{solutionPath}'" ) ;
+                Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 
                 // Attach progress reporter so we print projects as they are loaded.
                 await workspace.OpenSolutionAsync (
                                                    solutionPath
                                                  , new ConsoleProgressReporter ( )
                                                   ) ;
-                // ReSharper disable once LocalizableElement
-                Console.WriteLine ( $"Finished loading solution '{solutionPath}'" ) ;
+                Console.WriteLine($"Finished loading solution '{solutionPath}'");
+                return workspace ;
+        }
+        
 
-                var xmlDocument = new XmlDocument ( ) ;
-                var root = xmlDocument.CreateElement ( "root" ) ;
-                xmlDocument.AppendChild ( root ) ;
-                var bigDictionary =
-                    new Dictionary < string , Dictionary < string , Dictionary < object , object > >
-                    > ( ) ;
+        public static async Task P(Workspace workspace){
+        // ReSharper disable once LocalizableElement
                 foreach ( var project in workspace.CurrentSolution.Projects.Where (
                                                                                    project
-                                                                                       => project
-                                                                                             .Name
+                                                                                       => project.Name
                                                                                           != "NLog"
                                                                                   ) )
                 {
                     var projDict = new Dictionary < string , Dictionary < object , object > > ( ) ;
-                    bigDictionary[ project.Name ] = projDict ;
-                    var projectElem = xmlDocument.CreateElement ( "project" ) ;
-                    projectElem.SetAttribute ( "name" , project.Name ) ;
-                    root.AppendChild ( projectElem ) ;
                     foreach ( var document1 in project.Documents.Where (
                                                                         document => document
                                                                            .SupportsSyntaxTree /*&& document.Name == "AppContainerFixture.cs"*/
@@ -98,23 +98,11 @@ namespace CodeAnalysisApp1
                                                           , document1.FilePath
 #pragma warning restore CS8604 // Possible null reference argument.
                                                            ) ;
-                        projDict[ relativePath ] = docDict ;
-                        await ProcessDocumentAsync ( args , document1 , projectElem , docDict ) ;
+                        await ProcessDocumentAsync ( document1 );
                     }
                 }
-
-                File.WriteAllText (
-                                   "out.json"
-                                 , JsonConvert.SerializeObject (
-                                                                bigDictionary
-                                                              , Newtonsoft.Json.Formatting.Indented
-                                                               )
-                                  ) ;
-                xmlDocument.Save ( "out.xml" ) ;
             }
-
-            // TODO: Do analysis on the projects in the loaded solution
-        }
+        
 
         public static string GetRelativePath ( string relativeTo , string path )
         {
@@ -133,10 +121,7 @@ namespace CodeAnalysisApp1
         private static async Task ProcessDocumentAsync (
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             // ReSharper disable once UnusedParameter.Local
-            IEnumerable < string >          args
-          , [ NotNull ] Document                        document1
-          , XmlNode                         xmlNode
-          , IDictionary < object , object > dict
+            [ NotNull ] Document                        document1
         )
         {
             if ( document1 == null )
@@ -144,40 +129,8 @@ namespace CodeAnalysisApp1
                 throw new ArgumentNullException ( nameof ( document1 ) ) ;
             }
 
-            var doc = xmlNode.OwnerDocument ?? throw new ArgumentNullException ( nameof ( args ) ) ;
-            var docElem = doc.CreateElement ( "document" ) ;
-
-            docElem.SetAttribute (
-                                  "filePath"
-                                , GetRelativePath (
-#pragma warning disable CS8604 // Possible null reference argument.
-                                                   document1.Project.FilePath
-                                                 , document1.FilePath
-#pragma warning restore CS8604 // Possible null reference argument.
-                                                  )
-                                 ) ;
-
-            using ( var @out = new StreamWriter ( document1.Name + ".txt" ) )
-            {
-                var tree = await document1.GetSyntaxTreeAsync ( ) ;
+              var tree = await document1.GetSyntaxTreeAsync ( ) ;
                 var model = await document1.GetSemanticModelAsync ( ) ;
-
-                // var xmlDocument = tree.Dump ( @out ) ;
-                var outputFileName = document1.Name + ".xml" ;
-                using ( var xmlWriter = XmlWriter.Create (
-                                                          outputFileName
-                                                        , new XmlWriterSettings
-                                                          {
-                                                              Indent              = true
-                                                            , NewLineOnAttributes = true
-                                                          }
-                                                         ) )
-                {
-
-                    // xmlDocument.WriteTo ( xmlWriter ) ;
-
-                    xmlWriter.Close ( ) ;
-                }
 
                 var root = tree.GetCompilationUnitRoot ( ) ;
                 if ( model != null )
@@ -230,7 +183,7 @@ namespace CodeAnalysisApp1
                     }
 #endif
                 }
-            }
+            
         }
     }
 }

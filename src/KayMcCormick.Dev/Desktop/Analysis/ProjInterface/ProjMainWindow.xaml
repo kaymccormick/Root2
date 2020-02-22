@@ -22,11 +22,14 @@
                   DataType="projLib:IVsInstance">
       <TextBlock Text="{Binding DisplayName}" />
     </DataTemplate>
-    <DataTemplate x:Key="MruNameTemplate" DataType="projLib:IMruItem">
-      <TextBlock Background="{Binding Converter={StaticResource MruBackground}}" Text="{Binding Name}"></TextBlock>
+    <DataTemplate x:Key="MruNameTemplate" DataType="projLib:IMruItem"
+                  >
+      <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TextBlock Text="{Binding Name}"></TextBlock></DockPanel>
     </DataTemplate>
-    <DataTemplate x:Key="MruLocationTemplate" DataType="projLib:IMruItem">
-      <TextBlock Background="White" Text="{Binding Name}"></TextBlock>
+    <DataTemplate
+      x:Key="MruLocationTemplate" DataType="projLib:IMruItem">
+      <TextBlock Text="{Binding Location}"></TextBlock>
     </DataTemplate>
   </Window.Resources>
   <Grid>
@@ -42,7 +45,7 @@
     <StackPanel Orientation="Horizontal">
       <Button Click="ButtonBase_OnClick" Content="Refresh" />
     </StackPanel>
-    <ListView Name="vs" Grid.Row="1"
+    <ListView Grid.Column="0" Name="vs" Grid.Row="1"
               ItemsSource="{Binding Source={StaticResource VsSource}}">
       <ListView.View>
         <GridView>
@@ -52,12 +55,20 @@
       </ListView.View>
     </ListView>
 
-    <ListView Grid.Row="1" Grid.Column="1"
+    <ListView Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
               ItemsSource="{Binding Source={StaticResource MruItems}}">
+      <ListView.InputBindings>
+        <KeyBinding Gesture="Enter" Command=""></KeyBinding>
+      </ListView.InputBindings>
+      <ListView.Resources>
+        <Style TargetType="{x:Type ListViewItem}">
+          <Setter Property="Background" Value="{Binding Converter={StaticResource MruBackground}}"></Setter>
+        </Style>
+      </ListView.Resources>
       <ListView.View>
         <GridView>
-          <GridViewColumn DisplayMemberBinding="{Binding Path=Location}"></GridViewColumn>
-          <GridViewColumn DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+          <GridViewColumn CellTemplate="{StaticResource MruLocationTemplate}"/>
+            <GridViewColumn CellTemplate="{StaticResource MruNameTemplate}"></GridViewColumn>
         </GridView>
       </ListView.View>
     </ListView>

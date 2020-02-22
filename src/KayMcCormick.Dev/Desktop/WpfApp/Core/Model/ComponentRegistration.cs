@@ -16,6 +16,7 @@ using System.Linq ;
 using System.Windows.Markup ;
 using Autofac ;
 using Autofac.Core ;
+using KayMcCormick.Dev ;
 using WpfApp.Core.Infos ;
 
 namespace WpfApp.Core.Model

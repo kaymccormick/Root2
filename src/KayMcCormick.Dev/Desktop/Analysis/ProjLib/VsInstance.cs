@@ -18,6 +18,7 @@ namespace ProjLib
     public class VsInstance : IVsInstance
     {
         private readonly IMruItemProvider _provider ;
+        private List < IMruItem > _mruItems ;
 
 #if false
         public VsInstance(string instanceId, string installationName, string installationPath, string installationVersion, string displayName, string description, DateTime installDate, IList<SetupPackage> packageCollection, SetupPackage product, string productPath)
@@ -41,7 +42,18 @@ namespace ProjLib
             _provider = provider ;
         }
 
-        public List <IMruItem> MruItems => _provider.GetMruItemListFor(this);
+        public List < IMruItem > MruItems
+        {
+            get
+            {
+                if ( _mruItems == null )
+                {
+                    _mruItems = _provider.GetMruItemListFor(this);
+                }
+
+                return _mruItems ;
+            }
+        }
 
         public string InstanceId { get; set ; }
 

@@ -40,8 +40,6 @@ namespace LogService.Service
             Log.Info ( $"{nameof ( WinService )} Start command received." ) ;
 
             var conf = new LoggingConfiguration() ;
-
-            
             var  target = new LogReceiverWebServiceTarget("wcf") ;
 
             target.EndpointAddress = "http://serenity/LogService/ReceiveLogs.svc" ;//"http://localhost:27809/ReceiveLogs.svc";

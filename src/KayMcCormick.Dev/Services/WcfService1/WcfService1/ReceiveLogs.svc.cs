@@ -18,7 +18,12 @@ namespace WcfService1
     {
         public void ProcessLogMessages(NLogEvents nevents)
         {
-
+            LogManager.GetCurrentClassLogger ( )
+                      .Trace (
+                              "{name}: {count}"
+                            , nameof ( ProcessLogMessages )
+                            , nevents.Events.Length
+                             ) ;
             OperationContext context = OperationContext.Current;
             MessageProperties properties = context.IncomingMessageProperties;
             RemoteEndpointMessageProperty endpoint = properties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
@@ -35,7 +40,7 @@ namespace WcfService1
                 address = endpoint.Address;
             }
 
-            var events = nevents.ToEventInfo("Client." + address?.ToString());
+            var events = nevents.ToEventInfo("Client." + address?.ToString() + ".");
             Debug.WriteLine("in: {0} {1}", nevents.Events.Length, events.Count);
 
             foreach (var ev in events)
