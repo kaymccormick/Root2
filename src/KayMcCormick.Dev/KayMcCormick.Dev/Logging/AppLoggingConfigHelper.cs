@@ -137,8 +137,13 @@ namespace KayMcCormick.Dev.Logging
             var x = new EventLogTarget("eventLog") { Source = "Application Error" };
             errorTargets.Add(x);
 
-            var webServiceTarget = new LogReceiverWebServiceTarget("log");
-            webServiceTarget.EndpointAddress = "http://xx1.mynetgear.com/LogService/ReceiveLogs.svc" ;// "http://localhost:27809/ReceiveLogs.svc";
+            // TODO make this address configurable
+            var webServiceTarget = new LogReceiverWebServiceTarget ( "log" )
+                                   {
+                                       // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
+EndpointAddress                                           = "http://xx1.mynetgear.com/LogService/ReceiveLogs.svc"
+            } ;
+            // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             dict[LogLevel.Debug].Add(webServiceTarget);
 

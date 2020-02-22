@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using NLog ;
-using Workspace = System.ServiceModel.Syndication.Workspace ;
 
 namespace ProjLib
 {
@@ -28,8 +27,6 @@ namespace ProjLib
 
         public ProcessDocumentDelegate ProcessDocument ;
         public ProcessProjectDelegate  ProcessProject ;
-
-        private Workspace workspace ;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:System.Object" />
@@ -54,12 +51,23 @@ namespace ProjLib
         /// <summary>Signals the object that initialization is complete.</summary>
         public void EndInit ( ) { throw new NotImplementedException ( ) ; }
 
-        public static async Task < MSBuildWorkspace > NewMethod (
+        public async Task < MSBuildWorkspace > NewMethod (
             string               solutionPath
           , VisualStudioInstance instance
         )
+        
         {
-            MSBuildLocator.RegisterInstance ( instance ) ;
+            if ( MSBuildLocator.IsRegistered )
+            {
+                MSBuildLocator.Unregister();
+            }
+
+            if ( ! MSBuildLocator.CanRegister )
+            {
+                MSBuildLocator.RegisterInstance ( instance ) ;
+
+            }
+
             var workspace = MSBuildWorkspace.Create ( ) ;
 
             // Print message for WorkspaceFailed event to help diagnosing project load failures.
@@ -70,12 +78,14 @@ namespace ProjLib
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 
             // Attach progress reporter so we print projects as they are loaded.
-            await workspace.OpenSolutionAsync ( solutionPath ) ;
+            await workspace.OpenSolutionAsync ( solutionPath, progressReporter ) ;
             // , new Program.ConsoleProgressReporter()
             // );
             Console.WriteLine ( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
         }
+
+        public IProgress < ProjectLoadProgress > progressReporter { get ; set ; }
 
         public async Task < bool > LoadAsync ( )
         {

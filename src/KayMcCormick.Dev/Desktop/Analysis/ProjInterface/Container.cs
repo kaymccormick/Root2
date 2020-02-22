@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Linq ;
 using System.Windows.Documents ;
 using Autofac;
+using KayMcCormick.Dev ;
 using ProjLib;
 
 namespace ProjInterface
@@ -31,10 +32,15 @@ namespace ProjInterface
             var stackTrace = new System.Diagnostics.StackTrace();
             Debug.WriteLine(stackTrace.ToString());
             ContainerBuilder builder = new ContainerBuilder();
+            
+            builder.RegisterModule<IdGeneratorModule>();
+
             builder.RegisterType<ProjMainWindow>().AsSelf();
             builder.RegisterType<WorkspacesViewModel>().As<IWorkspacesViewModel>();
             builder.RegisterType<VsInstanceCollector>().As<IVsInstanceCollector>();
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
+
+            
             #if adapter
             builder.RegisterAdapter < IVsInstance , IMruItems > (
                                                                  ( context , instance )

@@ -59,5 +59,29 @@ namespace ProjInterface
             GridView v = ( GridView ) vs.View ;
             new CollectionView(ViewModel.VsCollection).Refresh (  );
         }
+
+        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        {
+            
+            var sender2SelectedItem = (IMruItem)mru.SelectedItem ;
+            var vsSelectedItem = ( VsInstance ) vs.SelectedItem ;
+            var workspacesViewModel = ViewModel ;
+            Cursor = Cursors.Wait ;
+            Task.Run (
+                      ( ) => {
+                          workspacesViewModel
+                             .LoadSolutionAsync ( vsSelectedItem , sender2SelectedItem )
+                             .ContinueWith (
+                                            task => {
+                                                Dispatcher.Invoke (
+                                                                   ( ) => Cursor = Cursors.Arrow
+                                                                  ) ;
+                                            }
+                                           ) ;
+                      }
+                     ) ;
+
+        }
+
     }
 }

@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentInfo.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Container\ContainerAdjunct.cs" />
     <Compile Include="DataBindingTraceFilter\MyTraceFilter.cs" />
     <Compile Include="DebugUtils.cs" />

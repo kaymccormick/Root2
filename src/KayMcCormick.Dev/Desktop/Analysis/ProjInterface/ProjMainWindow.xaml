@@ -32,6 +32,9 @@
       <TextBlock Text="{Binding Location}"></TextBlock>
     </DataTemplate>
   </Window.Resources>
+  <Window.CommandBindings>
+    <CommandBinding Command="local:ProjCommands.LoadSolution" Executed="CommandBinding_OnExecuted"></CommandBinding>
+  </Window.CommandBindings>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
@@ -42,8 +45,11 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
       <Button Click="ButtonBase_OnClick" Content="Refresh" />
+      <TextBlock Margin="10" Text="{Binding CurrentProgress.FileName}"></TextBlock>
+      <TextBlock Margin="10" Text="{Binding CurrentProgress.Operation}"></TextBlock>
+      <TextBlock Margin="10" Text="{Binding CurrentProgress.ElapsedTime}"></TextBlock>
     </StackPanel>
     <ListView Grid.Column="0" Name="vs" Grid.Row="1"
               ItemsSource="{Binding Source={StaticResource VsSource}}">
@@ -55,10 +61,10 @@
       </ListView.View>
     </ListView>
 
-    <ListView Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+    <ListView Name="mru" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
               ItemsSource="{Binding Source={StaticResource MruItems}}">
       <ListView.InputBindings>
-        <KeyBinding Gesture="Enter" Command=""></KeyBinding>
+        <KeyBinding Gesture="Enter" Command="local:ProjCommands.LoadSolution"></KeyBinding>
       </ListView.InputBindings>
       <ListView.Resources>
         <Style TargetType="{x:Type ListViewItem}">

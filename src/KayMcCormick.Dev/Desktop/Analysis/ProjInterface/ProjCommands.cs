@@ -7,8 +7,8 @@ using System.Windows.Input ;
 
 namespace ProjInterface
 {
-    public class ProjCommands
+    public static class ProjCommands
     {
-        
+     public static RoutedUICommand LoadSolution = new RoutedUICommand("Load Solution", nameof(LoadSolution), typeof ( ProjCommands ));   
     }
 }

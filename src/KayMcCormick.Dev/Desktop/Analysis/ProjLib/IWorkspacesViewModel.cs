@@ -10,6 +10,8 @@
 // ---
 #endregion
 using System.ComponentModel;
+using System.Threading.Tasks ;
+using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace ProjLib
 {
@@ -18,5 +20,8 @@ namespace ProjLib
         VisualStudioInstancesCollection
             VsCollection
         { get; } //ObservableCollection<VsInstance> ;
+
+        MyProjectLoadProgress CurrentProgress { get ; }
+        Task LoadSolutionAsync ( VsInstance vsSelectedItem , IMruItem sender2SelectedItem ) ;
     }
 }
