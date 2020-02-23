@@ -83,6 +83,12 @@
       <Version>4.6.8</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+      <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
+      <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

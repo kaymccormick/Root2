@@ -42,7 +42,7 @@ namespace ProjLib
 
         public VisualStudioInstance Instance { get ; }
 
-        public MSBuildWorkspace Workspac { get ; set ; }
+        public MSBuildWorkspace Workspace { get ; set ; }
 
 
         /// <summary>Signals the object that initialization is starting.</summary>
@@ -55,20 +55,31 @@ namespace ProjLib
             string               solutionPath
           , VisualStudioInstance instance
         )
-        
+
         {
             if ( MSBuildLocator.IsRegistered )
             {
-                MSBuildLocator.Unregister();
+                MSBuildLocator.Unregister ( ) ;
             }
 
-            if ( ! MSBuildLocator.CanRegister )
+            if ( MSBuildLocator.CanRegister )
             {
                 MSBuildLocator.RegisterInstance ( instance ) ;
-
+            }
+            else
+            {
+                throw new Exception ( "Unable to register msbuildlocator" ) ;
             }
 
-            var workspace = MSBuildWorkspace.Create ( ) ;
+            MSBuildWorkspace workspace ;
+            try
+            {
+                workspace = MSBuildWorkspace.Create ( ) ;
+            }
+            catch ( Exception ex )
+            {
+                throw ;
+            }
 
             // Print message for WorkspaceFailed event to help diagnosing project load failures.
             workspace.WorkspaceFailed += ( o , e ) => Console.WriteLine ( e.Diagnostic.Message ) ;
@@ -78,7 +89,7 @@ namespace ProjLib
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 
             // Attach progress reporter so we print projects as they are loaded.
-            await workspace.OpenSolutionAsync ( solutionPath, progressReporter ) ;
+            await workspace.OpenSolutionAsync ( solutionPath , progressReporter ) ;
             // , new Program.ConsoleProgressReporter()
             // );
             Console.WriteLine ( $"Finished loading solution '{solutionPath}'" ) ;
@@ -89,15 +100,15 @@ namespace ProjLib
 
         public async Task < bool > LoadAsync ( )
         {
-            Workspac = await NewMethod ( SolutionPath , Instance ) ;
+            Workspace = await NewMethod ( SolutionPath , Instance ) ;
             return true ;
         }
 
         public async Task ProcessAsync ( )
         {
-            foreach ( var pr in Workspac.CurrentSolution.Projects )
+            foreach ( var pr in Workspace.CurrentSolution.Projects )
             {
-                ProcessProject ( Workspac , pr ) ;
+                ProcessProject ( Workspace , pr ) ;
                 foreach ( var prDocument in pr.Documents )
                 {
                     ProcessDocument ( prDocument ) ;
@@ -123,7 +134,12 @@ namespace ProjLib
         /// <inheritdoc />
         public override async Task OnProcessDocumentAsync ( Document document1 )
         {
-            Logger.Debug ( nameof ( OnProcessDocumentAsync ) ) ;
+            if ( document1.Project.Name == "NLog" )
+            {
+                return ;
+            }
+
+            Logger.Trace( nameof ( OnProcessDocumentAsync ) ) ;
             if ( document1 == null )
             {
                 throw new ArgumentNullException ( nameof ( document1 ) ) ;
@@ -139,12 +155,12 @@ namespace ProjLib
             {
                 query = Query1 ( document1 , root , model ) ;
                 foreach ( var expr in query.SelectMany (
-                                                                    tuple => tuple.Item3.Select (
-                                                                                                 tuple1
-                                                                                                     => tuple1
-                                                                                                        .Item1
-                                                                                                )
-                                                                   ) )
+                                                        tuple => tuple.Item3.Select (
+                                                                                     tuple1
+                                                                                         => tuple1
+                                                                                            .Item1
+                                                                                    )
+                                                       ) )
                 {
                 }
             }
@@ -171,7 +187,7 @@ namespace ProjLib
             var namespaceMembers = comp.GlobalNamespace.GetNamespaceMembers ( ) ;
             foreach ( var namespaceMember in namespaceMembers )
             {
-                Logger.Debug ( "{ns}" , namespaceMember.Name ) ;
+                // Logger.Debug ( "{ns}" , namespaceMember.Name ) ;
             }
 
             var ns = namespaceMembers.Select ( symbol => symbol.MetadataName == NLogNamespace )
@@ -213,6 +229,12 @@ namespace ProjLib
             //                 ) ;
             // }
 
+            var qq1 =
+                from node in root.DescendantNodesAndSelf ( )
+                let symbol = model.GetTypeInfo ( node )
+                where symbol.Type?.ContainingAssembly?.Identity?.Name == NLogNamespace
+                select new { node , symbol } ;
+
             var query1 = root.DescendantNodesAndSelf ( )
                              .Select ( node => new { node , symbol = model.GetTypeInfo ( node ) } )
                              .Where (
@@ -220,11 +242,11 @@ namespace ProjLib
                                             == NLogNamespace
                                     ) ;
 
-            var tempq = query1.Select (
+            var tempq = qq1.Select (
                                        ( arg , i )
                                            => new
                                               {
-                                                  symbol = arg.symbol
+                                                  arg.symbol
                                                 , statement =
                                                       arg.node.AncestorsAndSelf ( )
                                                          .OfType < StatementSyntax > ( )
@@ -242,8 +264,9 @@ namespace ProjLib
                 if ( arg3 != null )
                 {
                     Logger.Debug (
-                                  "st: {document} {line} {statementSyntax}"
+                                  "st: {symbol} {document} {line} {statementSyntax}"
                                 , document1?.FilePath
+                                , arg3.symbol.ConvertedType.ToDisplayString ( )
                                 , arg3.statement.GetLocation ( )
                                       .GetMappedLineSpan ( )
                                       .StartLinePosition.Line
@@ -282,8 +305,8 @@ namespace ProjLib
                                                                         }.Contains (
                                                                                     tuple
                                                                                        .Item2.Symbol
-                                                                                       ?.ContainingType
-                                                                                       ?.Name
+                                                                                      ?.ContainingType
+                                                                                      ?.Name
                                                                                    )
                                                                      && tuple.Item2.Symbol.Kind
                                                                      == SymbolKind.Method
@@ -308,14 +331,14 @@ namespace ProjLib
             var result =
                 new List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > >
                 > ( ) ;
-            foreach ( var x1 in qq )
+            foreach ( var (invocation , methodSymbol) in qq )
             {
-                if ( x1.Item1 != null )
+                if ( invocation != null )
                 {
-                    Logger.Debug ( x1.Item1.ToString ( ) ) ;
-                    Logger.Debug ( x1.Item2 ) ;
+                    Logger.Debug ( invocation.ToString ( ) ) ;
+                    Logger.Debug ( methodSymbol ) ;
 
-                    foreach ( var enumerable in x1.Item1.ArgumentList.Arguments )
+                    foreach ( var enumerable in invocation.ArgumentList.Arguments )
                     {
                         Logger.Debug ( enumerable ) ;
                     }
@@ -325,21 +348,44 @@ namespace ProjLib
 
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > d2 ;
 
-            Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > expr1 ( Tuple < InvocationExpressionSyntax , IMethodSymbol > syntax , int i )
+            Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > expr1 (
+                Tuple < InvocationExpressionSyntax , IMethodSymbol > syntax
+              , int                                                  i
+            )
             {
-                if ( syntax.Item1 != null ) {
-                    var line = syntax.Item1.GetLocation ( ).GetMappedLineSpan ( ).StartLinePosition.Line + 1 ;
+                if ( syntax.Item1 != null )
+                {
+                    var line = syntax.Item1.GetLocation ( )
+                                     .GetMappedLineSpan ( )
+                                     .StartLinePosition.Line
+                               + 1 ;
                     var l = syntax.Item1.ArgumentList.Arguments ;
-                    var xxx = l.Select ( argumentSyntax => Tuple.Create ( argumentSyntax.Expression , Transforms.TransformExpr ( argumentSyntax.Expression ) ) ) ;
-                    return Tuple.Create ( line , syntax.Item1.Expression.ToString ( ) , xxx.ToList ( ) ) ;
+                    var xxx = l.Select (
+                                        argumentSyntax => Tuple.Create (
+                                                                        argumentSyntax.Expression
+                                                                      , Transforms.TransformExpr (
+                                                                                                  argumentSyntax
+                                                                                                     .Expression
+                                                                                                 )
+                                                                       )
+                                       ) ;
+                    return Tuple.Create (
+                                         line
+                                       , syntax.Item1.Expression.ToString ( )
+                                       , xxx.ToList ( )
+                                        ) ;
                 }
-                return new Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > (0, null, null);
+
+                return new Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > (
+                                                                                                  0
+                                                                                                , null
+                                                                                                , null
+                                                                                                 ) ;
             }
 
-            d2 = qq.Distinct ( ).Where(tuple => tuple.Item1 != null)
-                   .Select (
-                            expr1
-                           )
+            d2 = qq.Distinct ( )
+                   .Where ( tuple => tuple.Item1 != null )
+                   .Select ( expr1 )
                    .ToList ( ) ;
             foreach ( var (item1 , item2 , item3) in d2 )
             {

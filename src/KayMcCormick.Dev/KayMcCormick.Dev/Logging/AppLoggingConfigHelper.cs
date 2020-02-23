@@ -5,6 +5,7 @@ using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
+using System.Security ;
 using System.Text ;
 using System.Text.RegularExpressions ;
 using Castle.DynamicProxy ;
@@ -134,20 +135,36 @@ namespace KayMcCormick.Dev.Logging
                                                               );
             var errorTargets = dict[LogLevel.Error];
             var t = dict[LogLevel.Trace];
+
+
+            string disabledLogTargets =
+                Environment.GetEnvironmentVariable("DISABLE_LOG_TARGETS");
+            HashSet<string> disabled;
+            if (disabledLogTargets != null)
+            {
+                var targets = disabledLogTargets.Split(';');
+                disabled = new HashSet<string>(targets);
+                logMethod ( string.Join ( ", " , disabled ) ) ;
+            }
+            else
+            {
+                disabled = new HashSet<string>();
+            }
+
             var x = new EventLogTarget("eventLog") { Source = "Application Error" };
             errorTargets.Add(x);
 
             // TODO make this address configurable
+            var endpointAddress =
+                Environment.GetEnvironmentVariable ( "LOGGING_WEBSERVICE_ENDPOINT" )
+                ?? "http://xx1.mynetgear.com/LogService/ReceiveLogs.svc" ;
             var webServiceTarget = new LogReceiverWebServiceTarget ( "log" )
                                    {
                                        // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
-EndpointAddress                                           = "http://xx1.mynetgear.com/LogService/ReceiveLogs.svc"
-            } ;
+                                       EndpointAddress                                           =       endpointAddress   } ;
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             dict[LogLevel.Debug].Add(webServiceTarget);
-
-
 
             #region Cache Target
 #if false
@@ -177,6 +194,14 @@ EndpointAddress                                           = "http://xx1.mynetgea
             var jsonFileTarget = JsonFileTarget();
             t.Add(jsonFileTarget);
             var byType = new Dictionary<Type, int>();
+            var keys = dict.Keys.ToList() ;
+            foreach ( var k in keys)
+            {
+                var v = dict[ k ] ;
+                dict[k] =
+                    v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
+                     .ToList ( ) ;
+            }
 
             foreach (var target in dict.SelectMany(pair => pair.Value))
             {
@@ -409,18 +434,44 @@ EndpointAddress                                           = "http://xx1.mynetgea
             DumpPossibleConfig(LogManager.Configuration);
         }
 
-        private static void DoDumpConfig(Action<string> collect)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collect"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static Dictionary < string , object > DoDumpConfig(Action<string> collect)
         {
             var config = LogManager.Configuration;
             if (config == null)
             {
-                return;
+                return null;
             }
 
+            Dictionary<string, object> configInfo = new Dictionary < string , object > ();
+            var targets = new Dictionary < string , object > ( ) ;
+            configInfo[ "Targets" ] = targets ;
             foreach (var aTarget in config.AllTargets)
             {
+                var target = new Dictionary < string , object > ( ) ;
+                targets[ aTarget.Name ] = target ;
                 collect(aTarget.Name);
-                collect(aTarget.GetType().ToString());
+                var targetType = aTarget.GetType().ToString() ;
+                target[ "Type" ] = targetType ;
+                collect(targetType);
+                target[ "Rules" ] = config.LoggingRules
+                                          .Where ( rule => rule.Targets.Contains ( aTarget ) )
+                                          .Select ( ( rule , i ) => new { rule , i } )
+                                          .ToDictionary ( arg => arg.i , arg => arg.rule ) ;
+
+                foreach ( var propertyInfo in aTarget.GetType ( ).GetProperties ( ) )
+                {
+                    var p = propertyInfo.GetValue ( aTarget ) ;
+                    target[ propertyInfo.Name ] = p ;
+                }
+                if ( aTarget is FileTarget f )
+                {
+                    target[ "FileName" ] = f.FileName ;
+                }
                 if (aTarget is TargetWithLayout a)
                 {
                     if (a.Layout is JsonLayout jl)
@@ -458,6 +509,8 @@ EndpointAddress                                           = "http://xx1.mynetgea
                     collect(gt.FileName.ToString());
                 }
             }
+
+            return configInfo ;
         }
 
         private static void DumpPossibleConfig(LoggingConfiguration configuration)

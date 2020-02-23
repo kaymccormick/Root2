@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 using NLog.Config;
 using NLog.Targets;
@@ -16,6 +17,7 @@ namespace WcfService1
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            AppLoggingConfigHelper.EnsureLoggingConfigured();
             #if false
             try
             {

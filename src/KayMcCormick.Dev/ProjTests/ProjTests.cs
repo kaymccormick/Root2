@@ -91,7 +91,7 @@ namespace Tests.Main
                 Logger.Debug("project is {project}", project.Name);
             };
             projectHandlerImpl.ProcessDocument += document => {
-                Logger.Debug(
+                Logger.Trace(
                              "Document: {doc} {sourcecode}"
                            , document.Name
                            , document.SourceCodeKind

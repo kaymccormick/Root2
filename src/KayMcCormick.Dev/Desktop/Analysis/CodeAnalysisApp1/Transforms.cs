@@ -26,6 +26,21 @@ namespace CodeAnalysisApp1
             {
                 switch ( expressionSyntaxNode )
                 {
+                    case ThisExpressionSyntax thise: return new { This = true } ;
+                        case ArrayCreationExpressionSyntax ac:
+                            return new
+                                   {
+                                       InitExpr =
+                                           ac.Initializer.Expressions.Select ( TransformExpr )
+                                     , ac.Type.ElementType
+                                     , RankSpec = ac.Type.RankSpecifiers.Select (
+                                                                      syntax => new
+                                                                                {
+                                                                                    syntax.Rank
+                                                                                  , Sizes = syntax.Sizes.Select (TransformExpr)
+                                                                                }
+                                                                     )
+                                   } ;
                     case MemberBindingExpressionSyntax binding :
                         return new
                                {
