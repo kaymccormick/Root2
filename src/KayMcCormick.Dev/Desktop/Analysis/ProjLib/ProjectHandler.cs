@@ -128,7 +128,7 @@ namespace ProjLib
         private const           string LoggerClassName     = "Logger" ;
         private static readonly Logger Logger              = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName ;
-        private static readonly string _iloggerFullName    = NLogNamespace + "." + ILoggerClassName ;
+        private static readonly string ILoggerClassFullName    = NLogNamespace + "." + ILoggerClassName ;
         public ProjectHandlerImpl ( string s , VisualStudioInstance vsi ) : base ( s , vsi ) { }
 
         private const string NLogNamespace = "NLog" ;
@@ -203,14 +203,20 @@ namespace ProjLib
         public CompilationUnitSyntax CurrentRoot { get ; set ; }
 
 
-        public static List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
+        public List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
             Query1 ( Document document1 , SyntaxNode root , SemanticModel model )
         {
             var comp = model.Compilation ;
-            var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
-            if ( t1 == null )
+            var t1 = comp.GetTypeByMetadataName(LoggerClassFullName);
+            if (t1 == null)
             {
-                throw new InvalidOperationException ( "No " + LoggerClassFullName ) ;
+                throw new InvalidOperationException("No " + LoggerClassFullName);
+            }
+
+            var t2 = comp.GetTypeByMetadataName(ILoggerClassFullName);
+            if (t1 == null)
+            {
+                throw new InvalidOperationException("No " + LoggerClassFullName);
             }
 
             var namespaceMembers = comp.GlobalNamespace.GetNamespaceMembers ( ) ;
@@ -257,6 +263,39 @@ namespace ProjLib
             //                , f, extRef.Display
             //                 ) ;
             // }
+
+            var qq0 =
+                from node in root.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
+                // where node.GetLeadingTrivia ( )
+                //           .Any (
+                //                 trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
+                //                           && trivia.ToString ( ).Contains ( "doprocess" )
+                //                )
+                select node ;
+
+            // foreach(var q in qq0)
+            // {
+                // Logger.Info ( q.ToString ) ;
+            // }
+
+            var qxy =
+                from statement in qq0
+                let invocations =
+                    statement.DescendantNodesAndSelf ( ).OfType < InvocationExpressionSyntax > ( )
+                from invocation in invocations
+                let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
+                let symbol = symbolInfo.Symbol
+                 where symbol != null
+                       && symbol is IMethodSymbol methSym
+                       && CheckSymbol ( methSym , t1 , t2 )
+                      //.MetadataName    == LoggerClassFullName
+                            //|| methSym.ContainingType.MetadataName == ILoggerClassFullName )
+                select new { invocation , methodSymbol = ( IMethodSymbol ) symbol } ;
+            foreach(var qqq in qxy)
+            {
+                ProcessInvocation ( qqq.invocation , qqq.methodSymbol ) ;
+            }
+
 
             var qq1 =
                 from node in root.DescendantNodesAndSelf ( )
@@ -429,10 +468,38 @@ namespace ProjLib
             return d2 ;
         }
 
+        private static bool CheckSymbol ( IMethodSymbol methSym , INamedTypeSymbol t1 , INamedTypeSymbol t2 )
+        {
+            
+            var cType = methSym.ContainingType ;
+                       
+            var r = ( cType == t1 || cType == t2) ;
+            Logger.Error("{name} {ns} {r}", cType.MetadataName, cType.ContainingNamespace.MetadataName, r);
+            return cType.MetadataName == LoggerClassName || cType.MetadataName == ILoggerClassName  || methSym.Name == "Debug";
+            return r ;
+        }
+
+        private void ProcessInvocation (
+            InvocationExpressionSyntax invocation
+          , IMethodSymbol              methodSymbol
+        )
+        {
+            var arg = invocation.ArgumentList.Arguments.First ( ) ;
+            var constant = CurrentModel.GetConstantValue ( arg.Expression ) ;
+            if ( constant.HasValue )
+            {
+                Logger.Warn ( "Constant {constant}" , constant.Value ) ;
+            }
+            else
+            {
+                Logger.Warn("{}", arg.Expression);
+            }
+        }
+
 
         private static void NewMethod1 ( Compilation comp , INamedTypeSymbol t1 )
         {
-            var t2 = comp.GetTypeByMetadataName ( _iloggerFullName ) ;
+            var t2 = comp.GetTypeByMetadataName ( ILoggerClassFullName ) ;
             var methodSymbols = t1.GetMembers ( )
                                   .Concat ( t2.GetMembers ( ) )
                                   .Where ( symbol => symbol.Kind == SymbolKind.Method )
