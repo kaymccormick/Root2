@@ -151,8 +151,8 @@ namespace KayMcCormick.Dev.Logging
                 disabled = new HashSet<string>();
             }
 
-            var x = new EventLogTarget("eventLog") { Source = "Application Error" };
-            errorTargets.Add(x);
+            // var x = new EventLogTarget("eventLog") { Source = "Application Error" };
+            // errorTargets.Add(x);
 
             // TODO make this address configurable
             var endpointAddress =

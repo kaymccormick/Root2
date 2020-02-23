@@ -19,6 +19,7 @@ namespace ConfigTest
             var doDumpConfig = AppLoggingConfigHelper.DoDumpConfig( s => { } ) ;
             IndentedTextWriter writer = new IndentedTextWriter(Console.Out);
             DoDump ( writer, doDumpConfig ) ;
+            NLog.LogManager.GetCurrentClassLogger ( ).Info ( "Test log message" ) ;
 
         }
 

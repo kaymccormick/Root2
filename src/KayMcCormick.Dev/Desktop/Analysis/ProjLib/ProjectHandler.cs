@@ -112,21 +112,23 @@ namespace ProjLib
                 foreach ( var prDocument in pr.Documents )
                 {
                     ProcessDocument ( prDocument ) ;
+                    await OnPrepareProcessDocumentAsync ( prDocument ) ;
                     await OnProcessDocumentAsync ( prDocument ) ;
                 }
             }
         }
 
-        public virtual async Task OnProcessDocumentAsync ( Document document ) { return ; }
+        public virtual async Task OnProcessDocumentAsync(Document document) { return; }
+        public virtual async Task OnPrepareProcessDocumentAsync(Document doc) { return; }
     }
 
     public class ProjectHandlerImpl : ProjectHandler
     {
-        private const           string ILoggerName         = "ILogger" ;
+        private const           string ILoggerClassName         = "ILogger" ;
         private const           string LoggerClassName     = "Logger" ;
         private static readonly Logger Logger              = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName ;
-        private static readonly string _iloggerFullName    = NLogNamespace + "." + ILoggerName ;
+        private static readonly string _iloggerFullName    = NLogNamespace + "." + ILoggerClassName ;
         public ProjectHandlerImpl ( string s , VisualStudioInstance vsi ) : base ( s , vsi ) { }
 
         private const string NLogNamespace = "NLog" ;
@@ -139,21 +141,11 @@ namespace ProjLib
                 return ;
             }
 
-            Logger.Trace( nameof ( OnProcessDocumentAsync ) ) ;
-            if ( document1 == null )
-            {
-                throw new ArgumentNullException ( nameof ( document1 ) ) ;
-            }
-
-            var tree = await document1.GetSyntaxTreeAsync ( ) ;
-            var model = await document1.GetSemanticModelAsync ( ) ;
-
-            var root = tree.GetCompilationUnitRoot ( ) ;
-
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query ;
             try
             {
-                query = Query1 ( document1 , root , model ) ;
+                query = Query1 ( document1 , CurrentRoot , CurrentModel).ToList() ;
+                Collect ( query ) ;
                 foreach ( var expr in query.SelectMany (
                                                         tuple => tuple.Item3.Select (
                                                                                      tuple1
@@ -162,6 +154,7 @@ namespace ProjLib
                                                                                     )
                                                        ) )
                 {
+                    
                 }
             }
             catch ( Exception ex )
@@ -172,6 +165,42 @@ namespace ProjLib
 
             Debug.Assert ( query != null , nameof ( query ) + " != null" ) ;
         }
+
+        public List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
+            OutputList { get ; } = new List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > ();
+        private void Collect (
+            List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query
+        )
+        {
+            OutputList.AddRange ( query ) ;
+        }
+
+        public override async Task OnPrepareProcessDocumentAsync ( Document doc )
+        {
+            if (doc.Project.Name == "NLog")
+            {
+                return;
+            }
+
+            Logger.Trace(nameof(OnProcessDocumentAsync));
+            if (doc == null)
+            {
+                throw new ArgumentNullException(nameof(doc));
+            }
+
+            var tree = await doc.GetSyntaxTreeAsync();
+            var model = await doc.GetSemanticModelAsync();
+            var root = tree.GetCompilationUnitRoot();
+            CurrentTree = tree ;
+            CurrentModel = model;
+            CurrentRoot = root ;
+        }
+
+        public SyntaxTree CurrentTree { get ; set ; }
+
+        public SemanticModel CurrentModel { get ; set ; }
+
+        public CompilationUnitSyntax CurrentRoot { get ; set ; }
 
 
         public static List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
@@ -265,7 +294,7 @@ namespace ProjLib
                 {
                     Logger.Debug (
                                   "st: {symbol} {document} {line} {statementSyntax}"
-                                , document1?.FilePath
+                                , document1?.RelativePath()
                                 , arg3.symbol.ConvertedType.ToDisplayString ( )
                                 , arg3.statement.GetLocation ( )
                                       .GetMappedLineSpan ( )
@@ -300,7 +329,7 @@ namespace ProjLib
                                                             tuple => tuple.Item2.Symbol != null
                                                                      && new[]
                                                                         {
-                                                                            ILoggerName
+                                                                            ILoggerClassName
                                                                           , LoggerClassName
                                                                         }.Contains (
                                                                                     tuple

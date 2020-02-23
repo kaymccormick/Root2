@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ext.cs" />
     <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
     <Compile Include="IVsInstance.cs" />

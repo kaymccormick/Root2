@@ -17,8 +17,14 @@ namespace WcfService1
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            // Environment.SetEnvironmentVariable("DISABLE_LOG_TARGETS", (Environment.GetEnvironmentVariable("DISABLE_LOG_TARGETS") ?? "") + ";log");
+            Environment.SetEnvironmentVariable (
+                                                "LOGGING_WEBSERVICE_ENDPOINT"
+                                              , "http://localhost:27809/ReceiveLogs.svc"
+                                               ) ;
             AppLoggingConfigHelper.EnsureLoggingConfigured();
-            #if false
+            AppLoggingConfigHelper.DoDumpConfig ( msg => Debug.WriteLine ( msg ) ) ;
+#if false
             try
             {
                 var q = LogManager.Configuration ;
@@ -40,8 +46,8 @@ namespace WcfService1
                 var t2 = new NLogViewerTarget ( "viewer" )
                          {
                              IncludeAllProperties = true
-                           , IncludeCallSite      = true
-                           , IncludeSourceInfo    = true
+                       , IncludeCallSite = true
+                       , IncludeSourceInfo = true
                          } ;
                 t2.Address = "udp://10.25.0.102:9999" ;
                 conf.AddTarget ( t2 ) ;
