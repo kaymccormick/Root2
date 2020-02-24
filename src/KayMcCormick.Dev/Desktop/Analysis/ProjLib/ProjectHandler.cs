@@ -145,25 +145,27 @@ namespace ProjLib
             try
             {
                 query = Query1 ( document1 , CurrentRoot , CurrentModel).ToList() ;
-                Collect ( query ) ;
-                foreach ( var expr in query.SelectMany (
-                                                        tuple => tuple.Item3.Select (
-                                                                                     tuple1
-                                                                                         => tuple1
-                                                                                            .Item1
-                                                                                    )
-                                                       ) )
+                if ( query != null )
                 {
-                    
+                    Collect ( query ) ;
+                    foreach ( var expr in query.SelectMany (
+                                                            tuple => tuple.Item3.Select (
+                                                                                         tuple1
+                                                                                             => tuple1
+                                                                                                .Item1
+                                                                                        )
+                                                           ) )
+                    {
+
+                    }
                 }
             }
             catch ( Exception ex )
             {
                 Logger.Info ( ex , ex.ToString ( ) ) ;
-                throw ;
             }
 
-            Debug.Assert ( query != null , nameof ( query ) + " != null" ) ;
+            //Debug.Assert ( query != null , nameof ( query ) + " != null" ) ;
         }
 
         public List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
@@ -210,13 +212,13 @@ namespace ProjLib
             var t1 = comp.GetTypeByMetadataName(LoggerClassFullName);
             if (t1 == null)
             {
-                throw new InvalidOperationException("No " + LoggerClassFullName);
+                return null ;
             }
 
             var t2 = comp.GetTypeByMetadataName(ILoggerClassFullName);
-            if (t1 == null)
+            if (t2 == null)
             {
-                throw new InvalidOperationException("No " + LoggerClassFullName);
+                return null ;
             }
 
             var namespaceMembers = comp.GlobalNamespace.GetNamespaceMembers ( ) ;
@@ -283,17 +285,15 @@ namespace ProjLib
                 let invocations =
                     statement.DescendantNodesAndSelf ( ).OfType < InvocationExpressionSyntax > ( )
                 from invocation in invocations
-                let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
-                let symbol = symbolInfo.Symbol
-                 where symbol != null
-                       && symbol is IMethodSymbol methSym
-                       && CheckSymbol ( methSym , t1 , t2 )
-                      //.MetadataName    == LoggerClassFullName
-                            //|| methSym.ContainingType.MetadataName == ILoggerClassFullName )
-                select new { invocation , methodSymbol = ( IMethodSymbol ) symbol } ;
+                // let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
+                // let symbol = symbolInfo.Symbol
+                 // where symbol != null
+                       // && symbol is IMethodSymbol methSym
+                       // && CheckSymbol ( methSym , t1 , t2 )
+                select invocation ;//, methodSymbol = ( IMethodSymbol ) symbol } ;
             foreach(var qqq in qxy)
             {
-                ProcessInvocation ( qqq.invocation , qqq.methodSymbol ) ;
+                Logger.Warn ( "{}" , qqq ) ;
             }
 
 
