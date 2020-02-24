@@ -5,6 +5,8 @@ using System.Diagnostics ;
 using System.Linq ;
 using System.Threading.Tasks ;
 using CodeAnalysisApp1 ;
+using MessageTemplates ;
+using MessageTemplates.Parsing ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -144,21 +146,23 @@ namespace ProjLib
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query ;
             try
             {
-                query = Query1 ( document1 , CurrentRoot , CurrentModel).ToList() ;
-                if ( query != null )
-                {
-                    Collect ( query ) ;
-                    foreach ( var expr in query.SelectMany (
-                                                            tuple => tuple.Item3.Select (
-                                                                                         tuple1
-                                                                                             => tuple1
-                                                                                                .Item1
-                                                                                        )
-                                                           ) )
-                    {
-
-                    }
-                }
+                Query1 ( document1 , CurrentRoot , CurrentModel);
+                //
+                // if ( query != null )
+                // {
+                //     var qresult = query.ToList ( ) ;
+                //     Collect ( qresult) ;
+                //     foreach ( var expr in qresult.SelectMany (
+                //                                             tuple => tuple.Item3.Select (
+                //                                                                          tuple1
+                //                                                                              => tuple1
+                //                                                                                 .Item1
+                //                                                                         )
+                //                                            ) )
+                //     {
+                //
+                //     }
+                // }
             }
             catch ( Exception ex )
             {
@@ -205,20 +209,30 @@ namespace ProjLib
         public CompilationUnitSyntax CurrentRoot { get ; set ; }
 
 
-        public List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
+        public void
             Query1 ( Document document1 , SyntaxNode root , SemanticModel model )
         {
             var comp = model.Compilation ;
+            var ExceptionType = comp.GetTypeByMetadataName ( "System.Exception" ) ;
+            if ( ExceptionType == null )
+            {
+                throw new Exception ( "No exception type" ) ;
+            }
             var t1 = comp.GetTypeByMetadataName(LoggerClassFullName);
             if (t1 == null)
             {
-                return null ;
+                Logger.Warn (
+                             "No {clas} in {document}"
+                           , LoggerClassFullName
+                           , document1.RelativePath ( )
+                            ) ;
+                return ;
             }
 
             var t2 = comp.GetTypeByMetadataName(ILoggerClassFullName);
             if (t2 == null)
             {
-                return null ;
+                return ;
             }
 
             var namespaceMembers = comp.GlobalNamespace.GetNamespaceMembers ( ) ;
@@ -268,35 +282,36 @@ namespace ProjLib
 
             var qq0 =
                 from node in root.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
-                // where node.GetLeadingTrivia ( )
-                //           .Any (
-                //                 trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
-                //                           && trivia.ToString ( ).Contains ( "doprocess" )
-                //                )
+                where node.GetLeadingTrivia ( )
+                .Any (
+                trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
+                && trivia.ToString ( ).Contains ( "doprocess" )
+                )
                 select node ;
 
-            // foreach(var q in qq0)
-            // {
-                // Logger.Info ( q.ToString ) ;
-            // }
+            foreach(var q in qq0)
+            {
+                Logger.Info ( q.ToString ) ;
+            }
 
             var qxy =
                 from statement in qq0
                 let invocations =
                     statement.DescendantNodesAndSelf ( ).OfType < InvocationExpressionSyntax > ( )
                 from invocation in invocations
-                // let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
-                // let symbol = symbolInfo.Symbol
-                 // where symbol != null
-                       // && symbol is IMethodSymbol methSym
-                       // && CheckSymbol ( methSym , t1 , t2 )
-                select invocation ;//, methodSymbol = ( IMethodSymbol ) symbol } ;
+                let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
+                let symbol = symbolInfo.Symbol
+                 where symbol != null
+                       && symbol is IMethodSymbol methSym
+                       && CheckSymbol ( methSym , t1 , t2 )
+                select new { invocation, methodSymbol = ( IMethodSymbol ) symbol } ;
             foreach(var qqq in qxy)
             {
-                Logger.Warn ( "{}" , qqq ) ;
+                ProcessInvocation(qqq.invocation, qqq.methodSymbol, ExceptionType);
             }
 
-
+            return ;
+            #if false
             var qq1 =
                 from node in root.DescendantNodesAndSelf ( )
                 let symbol = model.GetTypeInfo ( node )
@@ -466,6 +481,7 @@ namespace ProjLib
             }
 
             return d2 ;
+#endif
         }
 
         private static bool CheckSymbol ( IMethodSymbol methSym , INamedTypeSymbol t1 , INamedTypeSymbol t2 )
@@ -482,18 +498,86 @@ namespace ProjLib
         private void ProcessInvocation (
             InvocationExpressionSyntax invocation
           , IMethodSymbol              methodSymbol
+          , INamedTypeSymbol          exceptionType
         )
         {
-            var arg = invocation.ArgumentList.Arguments.First ( ) ;
-            var constant = CurrentModel.GetConstantValue ( arg.Expression ) ;
+            bool exceptionArg = IsException (
+                                             exceptionType
+                                           , methodSymbol.Parameters.First ( ).Type
+                                            ) ;
+            var msgParam = methodSymbol.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
+                        .Where( arg1 => arg1.symbol.Name == "message" );
+            if ( ! msgParam.Any ( ) )
+            {
+                throw new Exception ( "No message parameter" ) ;
+            }
+
+            var msgI = msgParam.First ( ).i ;
+            Logger.Error (
+                          "params = {params}"
+                        , string.Join (
+                                       ", "
+                                     , methodSymbol.Parameters.Select ( symbol => symbol.Name )
+                                      )
+                         ) ;
+            
+            var msgarg = invocation.ArgumentList.Arguments[msgI];
+            var msgArgExpr = msgarg.Expression;
+            var msgArgTypeInfo = CurrentModel.GetTypeInfo(msgArgExpr);
+            ITypeSymbol baseType = msgArgTypeInfo.Type;
+            var symbolInfo = CurrentModel.GetSymbolInfo ( msgArgExpr ) ;
+            var arg1sym = symbolInfo.Symbol ;
+            if ( arg1sym != null )
+            {
+                Logger.Error ( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
+            }
+
+            var constant = CurrentModel.GetConstantValue ( msgArgExpr ) ;
             if ( constant.HasValue )
             {
                 Logger.Warn ( "Constant {constant}" , constant.Value ) ;
+                MessageTemplate m = MessageTemplate.Parse(( string ) constant.Value);
+                List <object> o = new List < object > ();
+                foreach ( var messageTemplateToken in m.Tokens )
+                {
+                    if ( messageTemplateToken is PropertyToken p )
+                    {
+                        var t = Tuple.Create ( p.IsPositional , p.PropertyName ) ;
+                        o.Add ( t ) ;
+
+                    } else if ( messageTemplateToken is TextToken t )
+                    {
+                        var xt = Tuple.Create ( t.Text ) ;
+                        o.Add ( xt ) ;
+                    }
+                }
+
+                Logger.Warn ( "{}" , string.Join( ", " , o  )) ;
+
             }
             else
             {
-                Logger.Warn("{}", arg.Expression);
+                Logger.Warn("{}", msgArgExpr);
             }
+        }
+
+        private static bool IsException (
+            INamedTypeSymbol exceptionType
+          , ITypeSymbol      baseType
+        )
+        {
+            var isException = false ;
+            while ( baseType != null )
+            {
+                if (SymbolEqualityComparer.Default.Equals(baseType, exceptionType))
+                {
+                    isException = true ;
+                }
+
+                baseType = baseType.BaseType ;
+            }
+
+            return isException ;
         }
 
 

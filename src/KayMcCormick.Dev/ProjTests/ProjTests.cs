@@ -76,7 +76,7 @@ namespace Tests.Main
 #endif
         [Theory]
         //[InlineData( @"V2\WpfApp\WpfApp.sln")]
-        [InlineData( @"V3\root\src\KayMcCormick.Dev\KayMcCormick.dev.sln")]
+        [InlineData( @"V3\copy\src\KayMcCormick.Dev\KayMcCormick.dev.sln")]
         [InlineData( @"V2\LogTest\LogTest.sln")]
         public async Task TestProject2(string p1)
         {
