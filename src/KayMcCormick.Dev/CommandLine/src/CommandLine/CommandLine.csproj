@@ -52,6 +52,14 @@
 		<None Include="..\..\art\CommandLine20.png" Pack="true" PackagePath="$(PackageIcon)" />
 	</ItemGroup>
 	<ItemGroup>
+	  <PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="System.Reactive.Linq" Version="4.3.2" />
 	</ItemGroup>
 </Project>

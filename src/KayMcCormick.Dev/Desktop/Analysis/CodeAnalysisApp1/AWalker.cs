@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Xml ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -56,8 +57,13 @@ namespace CodeAnalysisApp1
         ///     children of this node to be visited.
         /// </summary>
         /// <param name="node">The current node that the walker is visiting.</param>
-        public override void Visit ( SyntaxNode node )
+        public override void Visit ( [ NotNull ] SyntaxNode node )
         {
+            if ( node == null )
+            {
+                throw new ArgumentNullException ( nameof ( node ) ) ;
+            }
+
             try
             {
                 switch ( node.Kind ( ) )

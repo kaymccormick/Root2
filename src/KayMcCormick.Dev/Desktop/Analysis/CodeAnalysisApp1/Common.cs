@@ -1,11 +1,8 @@
 using System ;
 using System.Collections.Generic ;
-using System.IO ;
 using System.Linq ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using NLog ;
-using NLog.Fluent ;
 
 namespace CodeAnalysisApp1
 {
@@ -25,8 +22,8 @@ namespace CodeAnalysisApp1
             if ( ns == null )
 #pragma warning restore CS0472 // The result of the expression is always 'false' since a value of type 'bool' is never equal to 'null' of type 'bool?'
             {
-                Logger.Info("{0}", string.Join(", ", namespaceMembers.Select(symbol => symbol.Name)));
-                throw new InvalidOperationException("no nlog namespace");
+                Logger.Info("{nsMembers}", string.Join(", ", namespaceMembers.Select(symbol => symbol.Name)));
+                throw new InvalidOperationException("no NLOG namespace");
             }
             if ( t1 == null )
             {

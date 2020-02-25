@@ -56,7 +56,7 @@ namespace WpfApp.Core.Xaml
                         // ) ;
             if ( service?.TargetObject != null )
             {
-                Logger.Debug ( "TargetOvject " + service.TargetObject ) ;
+                Logger.Debug ( "TargetObject " + service.TargetObject ) ;
             }
 
             if ( service?.TargetProperty != null )

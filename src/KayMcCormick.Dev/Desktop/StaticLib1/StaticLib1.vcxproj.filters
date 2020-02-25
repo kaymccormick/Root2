@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CodeAnalysisApp1.man" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CodeAnalysisApp1.rc">

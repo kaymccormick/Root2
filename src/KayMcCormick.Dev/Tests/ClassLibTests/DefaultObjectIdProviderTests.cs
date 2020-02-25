@@ -14,7 +14,7 @@ namespace ClassLibTests
     /// <summary>Test for the default configured service for the <seealso cref="IObjectIdProvider"/> service.</summary>
     /// <seealso cref="LoggingFixture" />
     [BeforeAfterLogger, LogTestMethod] [UsedImplicitly] [Collection("GeneralPurpose")]
-    public class DefaultObjectIdProviderTests : IClassFixture <LoggingFixture>, IDisposable
+    public sealed class DefaultObjectIdProviderTests : IClassFixture <LoggingFixture>, IDisposable
     {
         private readonly LoggingFixture _loggingFixture ;
 
@@ -22,8 +22,7 @@ namespace ClassLibTests
         public DefaultObjectIdProviderTests (LoggingFixture loggingFixture, ITestOutputHelper helper )
         {
             _loggingFixture = loggingFixture ;
-            loggingFixture.SetOutputHelper(helper);
-
+            loggingFixture?.SetOutputHelper ( helper ) ;
         }
 
         /// <summary>Gets the instance by component registration test.</summary>

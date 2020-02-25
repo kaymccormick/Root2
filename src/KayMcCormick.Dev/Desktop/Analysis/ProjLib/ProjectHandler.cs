@@ -3,8 +3,10 @@ using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
 using CodeAnalysisApp1 ;
+using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.Build.Locator ;
@@ -12,6 +14,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
+using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 
 namespace ProjLib
@@ -282,32 +285,48 @@ namespace ProjLib
 
             var qq0 =
                 from node in root.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
-                where node.GetLeadingTrivia ( )
+                where LimitToMarkedStatements == false || 
+                node.GetLeadingTrivia ( )
                 .Any (
                 trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
                 && trivia.ToString ( ).Contains ( "doprocess" )
                 )
                 select node ;
 
-            foreach(var q in qq0)
+            if ( LogVisitedStatements )
             {
-                Logger.Info ( q.ToString ) ;
+                foreach ( var q in qq0 )
+                {
+                    Logger.Info ( q.ToString ) ;
+                }
             }
 
             var qxy =
                 from statement in qq0
                 let invocations =
-                    statement.DescendantNodesAndSelf ( ).OfType < InvocationExpressionSyntax > ( )
+                    statement.DescendantNodes (node => node == statement || !(node is StatementSyntax) ).OfType < InvocationExpressionSyntax > ( )
                 from invocation in invocations
                 let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
                 let symbol = symbolInfo.Symbol
                  where symbol != null
                        && symbol is IMethodSymbol methSym
                        && CheckSymbol ( methSym , t1 , t2 )
-                select new { invocation, methodSymbol = ( IMethodSymbol ) symbol } ;
+                select new { statement, invocation, methodSymbol = ( IMethodSymbol ) symbol } ;
             foreach(var qqq in qxy)
             {
-                ProcessInvocation(qqq.invocation, qqq.methodSymbol, ExceptionType);
+                try
+                {
+                    ProcessInvocation (
+                                       document1
+                                     , qqq.statement
+                                     , qqq.invocation
+                                     , qqq.methodSymbol
+                                     , ExceptionType
+                                      ) ;
+                } catch(Exception ex)
+                {
+                    Logger.Warn ( ex , "unable to process invocation: {message}" , ex.Message ) ;
+                }
             }
 
             return ;
@@ -484,21 +503,28 @@ namespace ProjLib
 #endif
         }
 
+        public bool LogVisitedStatements { get ; set ; }
+
+        public bool LimitToMarkedStatements { get ; set ; }
+
         private static bool CheckSymbol ( IMethodSymbol methSym , INamedTypeSymbol t1 , INamedTypeSymbol t2 )
         {
             
             var cType = methSym.ContainingType ;
                        
             var r = ( cType == t1 || cType == t2) ;
-            Logger.Error("{name} {ns} {r}", cType.MetadataName, cType.ContainingNamespace.MetadataName, r);
-            return cType.MetadataName == LoggerClassName || cType.MetadataName == ILoggerClassName  || methSym.Name == "Debug";
+            Logger.Trace("{name} {ns} {r}", cType.MetadataName, cType.ContainingNamespace.MetadataName, r);
+            return r ;
+            return cType.MetadataName == LoggerClassName || cType.MetadataName == ILoggerClassName;//  || methSym.Name == "Debug";
             return r ;
         }
 
         private void ProcessInvocation (
-            InvocationExpressionSyntax invocation
+            Document                   document1
+          , StatementSyntax            statement
+          , InvocationExpressionSyntax invocation
           , IMethodSymbol              methodSymbol
-          , INamedTypeSymbol          exceptionType
+          , INamedTypeSymbol           exceptionType
         )
         {
             bool exceptionArg = IsException (
@@ -509,7 +535,7 @@ namespace ProjLib
                         .Where( arg1 => arg1.symbol.Name == "message" );
             if ( ! msgParam.Any ( ) )
             {
-                throw new Exception ( "No message parameter" ) ;
+                throw new NoMessageParameterException();
             }
 
             var msgI = msgParam.First ( ).i ;
@@ -529,7 +555,7 @@ namespace ProjLib
             var arg1sym = symbolInfo.Symbol ;
             if ( arg1sym != null )
             {
-                Logger.Error ( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
+                Logger.Debug( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
             }
 
             var constant = CurrentModel.GetConstantValue ( msgArgExpr ) ;
@@ -559,7 +585,18 @@ namespace ProjLib
             {
                 Logger.Warn("{}", msgArgExpr);
             }
+
+            var transformed = invocation.ArgumentList.Arguments.Select (
+                                                      syntax => Transforms.TransformExpr (
+                                                                                          syntax
+                                                                                             .Expression
+                                                                                         )
+                                                     ).ToList() ;
+            Logger.Error ( "{t}" , transformed);
+            Invocations.Add ( Tuple.Create (document1.RelativePath(), statement.GetLocation().GetMappedLineSpan().StartLinePosition.Line + 1, methodSymbol , transformed ) ) ;
         }
+
+        public List < Tuple < string , int , IMethodSymbol , List < object > > > Invocations { get ; set ; } = new List < Tuple < string , int , IMethodSymbol , List < object > > > ();
 
         private static bool IsException (
             INamedTypeSymbol exceptionType
@@ -594,6 +631,35 @@ namespace ProjLib
             {
                 Logger.Debug ( methodSymbol.ToString ( ) ) ;
             }
+        }
+    }
+
+    internal class NoMessageParameterException : Exception
+    {
+        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
+        public NoMessageParameterException ( ) {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
+        /// <param name="message">The message that describes the error. </param>
+        public NoMessageParameterException ( string message ) : base ( message )
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
+        /// <param name="message">The error message that explains the reason for the exception. </param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified. </param>
+        public NoMessageParameterException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with serialized data.</summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown. </param>
+        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
+        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
+        protected NoMessageParameterException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 }

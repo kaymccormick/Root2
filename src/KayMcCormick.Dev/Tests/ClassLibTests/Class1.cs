@@ -15,7 +15,6 @@ namespace ClassLibTests
     {
         private readonly ITestOutputHelper _helper ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public Class1 (ITestOutputHelper helper ) { _helper = helper ; }
 
         [Fact]

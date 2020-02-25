@@ -594,7 +594,7 @@ namespace KayMcCormick.Dev.Logging
                       ,
                 IncludeMdlc = true
                       ,
-                IncludeAllProperties = true
+                       IncludeAllProperties = true
                       ,
                 MaxRecursionLimit = 3
             };
