@@ -58,8 +58,12 @@
       <HintPath>E:\packages\microsoft.visualstudio.setup.configuration.interop\1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,10 +78,13 @@
     <Compile Include="IVsInstance.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
+    <Compile Include="LogInvocation.cs" />
+    <Compile Include="LogInvocationArgument.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Visitor.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

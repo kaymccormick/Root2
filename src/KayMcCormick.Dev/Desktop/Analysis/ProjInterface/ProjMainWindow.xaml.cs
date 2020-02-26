@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +15,11 @@ using System.Windows.Shapes;
 using System.Xaml;
 using Autofac;
 using Autofac.Core.Lifetime;
+using Microsoft.VisualStudio.Shell ;
 using NLog;
 using ProjLib;
 using Xunit ;
+using Task = System.Threading.Tasks.Task ;
 
 namespace ProjInterface
 {
@@ -62,7 +63,9 @@ namespace ProjInterface
 
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            
+            AnalyzeResults results = new AnalyzeResults(ViewModel);
+            results.ShowActivated = true ;
+            results.Show ( ) ;
             var sender2SelectedItem = (IMruItem)mru.SelectedItem ;
             var vsSelectedItem = ( VsInstance ) vs.SelectedItem ;
             var workspacesViewModel = ViewModel ;
@@ -72,16 +75,17 @@ namespace ProjInterface
                           workspacesViewModel
                              .LoadSolutionAsync ( vsSelectedItem , sender2SelectedItem )
                              .ContinueWith (
-                                            task => {
-                                                Dispatcher.Invoke (
-                                                                   ( ) => Cursor = Cursors.Arrow
-                                                                  ) ;
-                                            }
+                                            ContinuationFunction
                                            ) ;
                       }
                      ) ;
 
         }
 
+        private async Task ContinuationFunction ( Task task )
+        {
+            await ViewModel.ProcessSolutionAsync(Dispatcher);
+
+        }
     }
 }

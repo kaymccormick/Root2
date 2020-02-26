@@ -2,6 +2,7 @@
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
+using System.IO ;
 using System.Linq ;
 using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
@@ -109,25 +110,28 @@ namespace ProjLib
             return true ;
         }
 
-        public async Task ProcessAsync ( )
+        public async Task ProcessAsync (Action<LogInvocation> consumeLogInvocation)
         {
             foreach ( var pr in Workspace.CurrentSolution.Projects )
             {
-                ProcessProject ( Workspace , pr ) ;
+                ProcessProject?.Invoke(Workspace , pr ) ;
                 foreach ( var prDocument in pr.Documents )
                 {
-                    ProcessDocument ( prDocument ) ;
+                    ProcessDocument?.Invoke( prDocument ) ;
                     await OnPrepareProcessDocumentAsync ( prDocument ) ;
-                    await OnProcessDocumentAsync ( prDocument ) ;
+                    await OnProcessDocumentAsync ( prDocument, consumeLogInvocation ) ;
                 }
             }
         }
 
-        public virtual async Task OnProcessDocumentAsync ( Document        document ) { return ; }
+        public virtual async Task OnProcessDocumentAsync (
+            Document                                    document
+          , Action < LogInvocation > consumeLogInvocation
+        ) { return ; }
         public virtual async Task OnPrepareProcessDocumentAsync ( Document doc )      { return ; }
     }
 
-    public class ProjectHandlerImpl : ProjectHandler
+    public partial class ProjectHandlerImpl : ProjectHandler
     {
         private const           string ILoggerClassName    = "ILogger" ;
         private const           string LoggerClassName     = "Logger" ;
@@ -142,7 +146,10 @@ namespace ProjLib
         private const string NLogNamespace = "NLog" ;
 
         /// <inheritdoc />
-        public override async Task OnProcessDocumentAsync ( Document document1 )
+        public override async Task OnProcessDocumentAsync (
+            Document                 document1
+          , Action < LogInvocation > consumeLogInvocation
+        )
         {
             if ( document1.Project.Name == "NLog" )
             {
@@ -152,7 +159,7 @@ namespace ProjLib
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query ;
             try
             {
-                Query1 ( document1 , CurrentRoot , CurrentModel ) ;
+                Query1 ( document1 , CurrentRoot , CurrentModel, consumeLogInvocation ) ;
                 //
                 // if ( query != null )
                 // {
@@ -217,13 +224,18 @@ namespace ProjLib
         public CompilationUnitSyntax CurrentRoot { get ; set ; }
 
 
-        public void Query1 ( Document document1 , SyntaxNode root , SemanticModel model )
+        public void Query1 (
+            Document                 document1
+          , SyntaxNode               root
+          , SemanticModel            model
+          , Action < LogInvocation > consumeLogInvocation
+        )
         {
             var comp = model.Compilation ;
             var ExceptionType = comp.GetTypeByMetadataName ( "System.Exception" ) ;
             if ( ExceptionType == null )
             {
-                throw new Exception ( "No exception type" ) ;
+                Logger.Warn( "No exception type" ) ;
             }
 
             var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
@@ -330,7 +342,8 @@ namespace ProjLib
                                      , qqq.statement
                                      , qqq.invocation
                                      , qqq.methodSymbol
-                                     , ExceptionType
+                                     , ExceptionType, consumeLogInvocation
+
                                       ) ;
                 }
                 catch ( Exception ex )
@@ -544,6 +557,7 @@ namespace ProjLib
           , InvocationExpressionSyntax invocation
           , IMethodSymbol              methodSymbol
           , INamedTypeSymbol           exceptionType
+          , Action < LogInvocation >   consumeLogInvocation
         )
         {
             var exceptionArg = IsException (
@@ -566,7 +580,6 @@ namespace ProjLib
                                       )
                          ) ;
             var fargs = invocation.ArgumentList.Arguments.Skip ( msgI ) ;
-            fargs = fargs.TakeWhile ( ( syntax , i ) => i < msgI ) ;
             var rest = fargs.Skip ( 1 ) ;
             var msgarg = fargs.First ( ) ;
             var msgArgExpr = msgarg.Expression ;
@@ -580,16 +593,20 @@ namespace ProjLib
             }
 
             var constant = CurrentModel.GetConstantValue ( msgArgExpr ) ;
+            
+var             msgval = new LogMessageRepr ( ) ;
             if ( constant.HasValue )
             {
+                msgval.IsMessageTemplate = true ;
                 Logger.Warn ( "Constant {constant}" , constant.Value ) ;
                 var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
                 var o = new List < object > ( ) ;
+                msgval.MessageTemplate = m ;
                 foreach ( var messageTemplateToken in m.Tokens )
                 {
-                    if ( messageTemplateToken is PropertyToken p )
+                    if ( messageTemplateToken is PropertyToken prop )
                     {
-                        var t = Tuple.Create ( p.IsPositional , p.PropertyName ) ;
+                        var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
                         o.Add ( t ) ;
                     }
                     else if ( messageTemplateToken is TextToken t )
@@ -599,65 +616,62 @@ namespace ProjLib
                     }
                 }
 
+
                 Logger.Warn ( "{}" , string.Join ( ", " , o ) ) ;
             }
             else
             {
                 Logger.Warn ( "{}" , msgArgExpr ) ;
+                msgval.MessageExprPojo = Transforms.TransformExpr ( msgArgExpr ) ;
             }
 
-            var transformed = invocation.ArgumentList.Arguments.Select (
-                                                                        syntax => Transforms
-                                                                           .TransformExpr (
-                                                                                           syntax
-                                                                                              .Expression
-                                                                                          )
-                                                                       )
-                                        .ToList ( ) ;
-            Logger.Error ( "{t}" , transformed ) ;
+
             var sourceLocation = document1.RelativePath ( )
                                  + ":"
-                                 + statement
-                                  .GetLocation ( )
-                                  .GetMappedLineSpan ( )
-                                  .StartLinePosition.Line
-                                 + 1 ;
-            var debugInvo = new LogInvocation ( sourceLocation , methodSymbol , transformed ) ;
+                                 + ( statement.GetLocation ( )
+                                              .GetMappedLineSpan ( )
+                                              .StartLinePosition.Line
+                                     + 1 ) ;
+            
+            var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, statement, CurrentModel, CurrentRoot);
+            
+            var sourceContext = statement.Parent.ChildNodes ( ).ToList ( ) ;
+            var i2 = sourceContext.IndexOf( statement ) ;
+            string code = "" ;
+            string p = statement.GetLocation ( ).GetMappedLineSpan ( ).Path ;
+            string[] lines = File.ReadAllLines ( p ) ;
+                debugInvo.PrecedingCode = 
+                       lines[ statement.GetLocation ( )
+                                         .GetMappedLineSpan ( )
+                                         .StartLinePosition.Line - 1 ] ;
+
+            debugInvo.Code = statement.ToFullString ( ) ;
+            debugInvo.FollowingCode = lines[statement.GetLocation()
+                                         .GetMappedLineSpan()
+                                         .EndLinePosition.Line + 1];
+            
+            
+
+            debugInvo.SourceContext = code ;
+
+            var transformed = rest.Select ( syntax => new LogInvocationArgument ( debugInvo, syntax ) ) ;
+            debugInvo.Arguments = transformed.ToList ( ) ;
+            Logger.Error ( "{t}" , transformed ) ;
             Invocations.Add ( debugInvo ) ;
+            consumeLogInvocation ( debugInvo ) ;
         }
 
-        public class LogInvocation
-        {
-            private string          sourceLocation ;
-            private IMethodSymbol   methodSymbol ;
-            private List < object > transformed ;
+        public string PreviousCode { get ; set ; }
 
-            public LogInvocation (
-                string          sourceLocation
-              , IMethodSymbol   methodSymbol
-              , List < object > transformed
-            )
-            {
-                SourceLocation = sourceLocation ;
-                MethodSymbol   = methodSymbol ;
-                Transformed    = transformed ;
-            }
+        public string FollowingCode { get ; set ; }
 
-            public string SourceLocation { get => sourceLocation ; set => sourceLocation = value ; }
-
-            public IMethodSymbol MethodSymbol
-            {
-                get => methodSymbol ;
-                set => methodSymbol = value ;
-            }
-
-            public List < object > Transformed { get => transformed ; set => transformed = value ; }
-        }
+        public string InvocationCode { get ; set ; }
 
         public List < LogInvocation > Invocations { get ; set ; } = new List < LogInvocation > ( ) ;
 
         private static bool IsException ( INamedTypeSymbol exceptionType , ITypeSymbol baseType )
         {
+            if ( exceptionType == null ) return false ;
             var isException = false ;
             while ( baseType != null )
             {

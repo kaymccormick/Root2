@@ -1,12 +1,50 @@
-﻿<Window x:Class="ProjInterface.AnalyzeResults"
+﻿<Window Name="results"  x:Class="ProjInterface.AnalyzeResults"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjInterface"
+        xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
         mc:Ignorable="d"
+        DataContext="{Binding ElementName=results, Path=ViewModel}"
         Title="AnalyzeResults" Height="450" Width="800">
-    <Grid>
-        
+<Window.Resources>
+  <CollectionViewSource x:Key="logs"
+                        Source="{Binding Path=LogInvocations}" />
+  <DataTemplate x:Key="CodeTemplate" DataType="projLib:LogInvocation" >
+    <StackPanel>
+      <TextBlock Text="{Binding PrecedingCode}"/>
+        <TextBlock Background="Yellow" Foreground="Black" Text="{Binding Code}"/>
+      <TextBlock Text="{Binding FollowingCode}"/>
+</StackPanel>
+    </DataTemplate>
+  <DataTemplate x:Key="FCodeTemplate" DataType="projLib:LogInvocation" >
+      <local:FormattedCode Tag="{Binding .}">
+        </local:FormattedCode>
+    </DataTemplate>
+
+
+<local:CodeConverter x:Key="CodeConverter" />
+</Window.Resources>
+  <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"></ColumnDefinition></Grid.ColumnDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"></RowDefinition><RowDefinition Height="*"></RowDefinition></Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal">
+      <TextBlock Text="{Binding CurrentProject}"></TextBlock>
+      <TextBlock Text="{Binding CurrentDocumentPath}"></TextBlock>
+    </StackPanel>
+    <ListView Grid.Row="1" ItemsSource="{Binding Source={StaticResource logs}}">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Source Location" DisplayMemberBinding="{Binding Path=SourceLocation}"></GridViewColumn>
+          <GridViewColumn Header="Method" DisplayMemberBinding="{Binding Path=MethodSymbol}"></GridViewColumn>
+          <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Msgval.PrimaryMessage}"></GridViewColumn>
+          <GridViewColumn Header="Argument 1" DisplayMemberBinding="{Binding Path=Arguments[0].JSON}"></GridViewColumn>
+          <GridViewColumn Header="Argument 2" DisplayMemberBinding="{Binding Path=Arguments[1].JSON}"></GridViewColumn>
+          <GridViewColumn Header="Argument 3" DisplayMemberBinding="{Binding Path=Arguments[2].JSON}"></GridViewColumn>
+          <GridViewColumn CellTemplate="{StaticResource CodeTemplate}"></GridViewColumn>
+          <GridViewColumn CellTemplate="{StaticResource FCodeTemplate}"></GridViewColumn>
+        </GridView>
+      </ListView.View>
+    </ListView>
     </Grid>
 </Window>

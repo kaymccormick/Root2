@@ -6,11 +6,17 @@ using System.Data;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input ;
+using System.Windows.Markup ;
+using System.Windows.Media ;
 using Autofac;
 using KayMcCormick.Dev.DataBindingTraceFilter ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Logging.Common;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
 using NLog;
+using ProjLib ;
 using Application = System.Windows.Application;
 
 namespace ProjInterface
@@ -20,6 +26,7 @@ namespace ProjInterface
     /// </summary>
     public partial class ProjInterfaceApp : Application
     {
+        public IWorkspacesViewModel ViewModel { get ;  }
         private static Logger Logger = LogManager.GetCurrentClassLogger();
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Application" /> class.</summary>
         /// <exception cref="T:System.InvalidOperationException">More than one instance of the <see cref="T:System.Windows.Application" /> class is created per <see cref="T:System.AppDomain" />.</exception>
@@ -36,6 +43,7 @@ namespace ProjInterface
             bs.Listeners.Add ( nLogTraceListener ) ;
         }
 
+      
         /// <summary>Raises the <see cref="E:System.Windows.Application.Startup" /> event.</summary>
         /// <param name="e">A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.</param>
         protected override void OnStartup(StartupEventArgs e)

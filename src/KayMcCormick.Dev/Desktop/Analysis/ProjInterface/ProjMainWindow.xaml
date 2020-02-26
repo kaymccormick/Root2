@@ -50,6 +50,7 @@
       <TextBlock Margin="10" Text="{Binding CurrentProgress.FileName}"></TextBlock>
       <TextBlock Margin="10" Text="{Binding CurrentProgress.Operation}"></TextBlock>
       <TextBlock Margin="10" Text="{Binding CurrentProgress.ElapsedTime}"></TextBlock>
+      <TextBlock Text="{Binding Processing}"/>
     </StackPanel>
     <ListView Grid.Column="0" Name="vs" Grid.Row="1"
               ItemsSource="{Binding Source={StaticResource VsSource}}">

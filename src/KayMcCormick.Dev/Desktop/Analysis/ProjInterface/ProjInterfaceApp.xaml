@@ -1,10 +1,29 @@
 ﻿<Application
-	x:Class="ProjInterface.ProjInterfaceApp"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="clr-namespace:ProjInterface">
-	<!--  StartupUri="MainWindow.xaml"  -->
-	<Application.Resources>
-    
+  x:Class="ProjInterface.ProjInterfaceApp"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:ProjInterface">
+  <!--  StartupUri="MainWindow.xaml"  -->
+  <Application.Resources>
+    <Style x:Key="StyleToken" TargetType="Run">
+      <Setter Property="Foreground" Value="Green" />
+    </Style>
+    <Style x:Key="SymbolPartMethodName" TargetType="Run">
+      <Setter Property="Foreground" Value="LightBlue" />
+    </Style>
+    <Style x:Key="SymbolPartPunctuation" TargetType="Run">
+      <Setter Property="Foreground" Value="DarkMagenta" />
+    </Style>
+    <Style x:Key="SymbolPartNamespaceName" TargetType="Run">
+      <Setter Property="Foreground" Value="Crimson" />
+    </Style>
+    <Style x:Key="SymbolPartKeyword" TargetType="Run">
+      <Setter Property="Foreground"
+              Value="LightSteelBlue" />
+    </Style>
+    <Style x:Key="SymbolPartClassName" TargetType="Run">
+      <Setter Property="Foreground"
+              Value="Blue" />
+    </Style>
   </Application.Resources>
 </Application>

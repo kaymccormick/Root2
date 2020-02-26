@@ -11,12 +11,14 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel ;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq ;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks ;
+using System.Windows.Threading ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.VisualStudio.Settings;
@@ -30,6 +32,10 @@ namespace ProjLib
         private readonly IVsInstanceCollector vsInstanceCollector;
         private readonly VisualStudioInstancesCollection _vsCollection = new VisualStudioInstancesCollection() ;
         private MyProjectLoadProgress _currentProgress ;
+        private ProjectHandlerImpl _handler ;
+        private bool _processing ;
+        private string _currentProject ;
+        private string _currentDocumentPath ;
 
         public MyProjectLoadProgress CurrentProgress
         {
@@ -81,11 +87,58 @@ namespace ProjLib
                        instance => instance.VisualStudioRootPath
                                    == vsSelectedItem.InstallationPath
                       ) ;
-            ProjectHandler handler = new ProjectHandlerImpl(sender2SelectedItem.FilePath, i);
-            handler.progressReporter = new MyProgress ( this ) ;
-            await handler.LoadAsync ( ) ;
+            _handler = new ProjectHandlerImpl(sender2SelectedItem.FilePath, i) ;
+            _handler.ProcessProject += ( workspace , project ) => CurrentProject = project.Name ;
+            _handler.ProcessDocument +=
+                document => CurrentDocumentPath = document.RelativePath ( ) ;
+            _handler.progressReporter = new MyProgress ( this ) ;
+            await _handler.LoadAsync ( ) ;
 
         }
+
+        public async Task ProcessSolutionAsync (Dispatcher dispatcher )
+        {
+            Processing = true ;
+            await _handler.ProcessAsync (
+                                         invocation
+                                             => dispatcher.Invoke (
+                                                                   ( ) => LogInvocations.Add (
+                                                                                              invocation
+                                                                                             )
+                                                                  )
+                                        ) ;
+            Processing = false ;
+        }
+
+        public bool Processing { get { return _processing ; }
+            set
+            {
+                _processing = value ;
+                OnPropertyChanged ( "Processing" ) ;
+            }
+        }
+
+        public string CurrentProject
+        {
+            get => _currentProject ;
+            set
+            {
+                _currentProject = value ;
+                OnPropertyChanged("CurrentProject");
+            }
+        }
+
+        public string CurrentDocumentPath
+        {
+            get => _currentDocumentPath ;
+            set
+            {
+                _currentDocumentPath = value ;
+                OnPropertyChanged ( "CurrentDocumentPath" ) ;
+            }
+        }
+
+        public ObservableCollection<LogInvocation> LogInvocations{ get ; } = new ObservableCollection < LogInvocation > ();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

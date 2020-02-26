@@ -84,6 +84,9 @@
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="Container.cs" />
+    <Compile Include="FormattedCode.xaml.cs">
+      <DependentUpon>FormattedCode.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MruBackground.cs" />
     <Compile Include="MruConverter.cs" />
     <Compile Include="ProjCommands.cs" />
@@ -91,6 +94,10 @@
       <DependentUpon>VsInstancePanel.xaml</DependentUpon>
     </Compile>
     <Page Include="AnalyzeResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FormattedCode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -106,6 +113,10 @@
       <DependentUpon>ProjMainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="VsInstancePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
