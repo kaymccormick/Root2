@@ -13,6 +13,7 @@ using System.Collections.ObjectModel ;
 using System.ComponentModel;
 using System.Threading.Tasks ;
 using System.Windows.Threading ;
+using CodeAnalysisApp1 ;
 using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace ProjLib

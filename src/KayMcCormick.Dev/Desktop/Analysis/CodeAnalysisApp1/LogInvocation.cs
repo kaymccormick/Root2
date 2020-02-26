@@ -10,30 +10,30 @@
 // ---
 #endregion
 using System.Collections.Generic ;
-using System.Linq ;
-using System.Windows ;
-using System.Windows.Controls ;
 using MessageTemplates ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Control = System.Windows.Forms.Control ;
+using Newtonsoft.Json ;
+using ProjLib ;
 
-namespace ProjLib
+namespace CodeAnalysisApp1
 {
-    public class LogInvocationBase
+    public class CodeAnalyseContext
     {
+        [JsonProperty(PropertyName = null)]
         protected SemanticModel _currentModel ;
         protected CompilationUnitSyntax _currentRoot ;
         protected StatementSyntax _statement ;
         protected SyntaxNode node;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public LogInvocationBase ( SemanticModel currentModel , CompilationUnitSyntax currentRoot , StatementSyntax statement, SyntaxNode node )
+        public CodeAnalyseContext ( SemanticModel currentModel , CompilationUnitSyntax currentRoot , StatementSyntax statement, SyntaxNode node , ICodeSource document )
         {
             _currentModel = currentModel ;
             _currentRoot = currentRoot ;
             _statement = statement ;
             this.Node = node;
+            Document = document ;
         }
 
         public StatementSyntax Statement { get => _statement ; set => _statement = value ; }
@@ -46,14 +46,16 @@ namespace ProjLib
         }
 
         public  SyntaxNode Node { get => node ; set => node = value ; }
+
+        public ICodeSource Document { get ; }
     }
 
-    public class LogInvocation : LogInvocationBase
+    public class LogInvocation : CodeAnalyseContext
     {
         private LogMessageRepr          _msgval ;
         private string          sourceLocation ;
         private IMethodSymbol   methodSymbol ;
-        private TextBlock  _formattedCode ;
+        
 
         public LogInvocation (
             string                sourceLocation
@@ -62,7 +64,8 @@ namespace ProjLib
           , StatementSyntax       statement
           , SemanticModel         currentModel
           , CompilationUnitSyntax currentRoot
-        ) : base(currentModel, currentRoot, statement, statement)
+            , ICodeSource document
+        ) : base(currentModel, currentRoot, statement, statement, document)
         {
             CurrentModel = currentModel ;
             CurrentRoot = currentRoot ;

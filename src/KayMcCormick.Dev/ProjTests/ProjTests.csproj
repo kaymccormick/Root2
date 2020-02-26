@@ -128,6 +128,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Desktop\Analysis\CodeAnalysisApp1\CodeAnalysisApp1.csproj">
+      <Project>{8290C68F-59DF-4283-8961-22B47DD198BD}</Project>
+      <Name>CodeAnalysisApp1</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Desktop\Analysis\ProjInterface\ProjInterface.csproj">
       <Project>{4451ad21-ad52-49f1-874b-0bbab2d4df95}</Project>
       <Name>ProjInterface</Name>

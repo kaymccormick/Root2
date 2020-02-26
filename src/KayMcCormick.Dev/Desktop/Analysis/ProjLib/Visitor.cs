@@ -1,14 +1,17 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.Linq ;
 using System.Text.RegularExpressions ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
+using CodeAnalysisApp1 ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
+using Newtonsoft.Json ;
 using NLog ;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharpExtensions ;
 
@@ -17,13 +20,21 @@ namespace ProjLib
     public class Visitor : CSharpSyntaxWalker
     {
         private readonly Func < object , object > _findResource ;
-        private readonly LogInvocationBase        _b ;
+        private readonly CodeAnalyseContext        _b ;
         private          int                      _i ;
         private          Brush[]                  _colors = new[] { Brushes.Red , Brushes.Yellow } ;
 
         public override void DefaultVisit ( SyntaxNode node )
         {
             var obj = new SyntaxNodeSpanObject ( node.Span, node ) ;
+            var logInvAnno = node.GetAnnotations ( "LogInvocation" ).First ( ) ;
+            if ( logInvAnno != null)
+            {
+                var inv
+                    = JsonConvert.DeserializeObject < LogInvocation > ( logInvAnno.Data ) ;
+                ActiveSpans[logInvAnno] = new SpanObject<SyntaxNode>(node.Span, node, o => new TextBlock() { Text = inv.ToString() });
+            }
+
             SetSyntaxNodeSpan ( node.FullSpan , node , obj ) ;
 #pragma warning disable CA1305 // Specify IFormatProvider
             LogManager.GetCurrentClassLogger ( )
@@ -57,6 +68,10 @@ namespace ProjLib
 
             // CurBlock.Inlines.Add ( run );
             ActiveSpans.Remove ( node ) ;
+            if ( logInvAnno != null )
+            {
+                ActiveSpans.Remove ( logInvAnno ) ;
+            }
         }
 
         private void SetSyntaxNodeSpan (
@@ -79,7 +94,7 @@ namespace ProjLib
         public Visitor (
             TextBlock                block
           , Func < object , object > findResource
-          , LogInvocationBase        b
+          , CodeAnalyseContext        b
           , SyntaxWalkerDepth        depth = SyntaxWalkerDepth.Trivia
         ) : base ( depth )
         {
@@ -265,15 +280,21 @@ namespace ProjLib
         }
     }
 
-    public abstract class SpanObject < T > : ISpanObject
+    public class SpanObject < T > : ISpanObject
     {
-        public T _instance ;
+        public  T                                     _instance ;
+        private Func < SpanObject < T > , UIElement > _getTooltipContent ;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public SpanObject ( TextSpan span , T instance )
+        public SpanObject (
+            TextSpan                              span
+          , T                                     instance
+          , Func < SpanObject < T > , UIElement > getTooltipContent = null
+        )
         {
-            Span      = span ;
-            _instance = instance ;
+            Span               = span ;
+            _instance          = instance ;
+            _getTooltipContent = getTooltipContent ;
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
@@ -284,14 +305,13 @@ namespace ProjLib
 
         public TextSpan Span { get ; set ; }
 
-        public abstract UIElement GetToolTipContent();
+        public virtual UIElement GetToolTipContent ( ) { return _getTooltipContent?.Invoke( this ) ; }
     }
-
     public interface ISpanObject
     {
-        object getInstance ( ) ;
+        object getInstance();
 
-        TextSpan Span { get ; }
+        TextSpan Span { get; }
 
         UIElement GetToolTipContent();
     }

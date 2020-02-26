@@ -19,6 +19,7 @@ using System.Linq ;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks ;
 using System.Windows.Threading ;
+using CodeAnalysisApp1 ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.VisualStudio.Settings;

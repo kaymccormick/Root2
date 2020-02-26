@@ -1,10 +1,14 @@
+using System ;
+using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Media ;
+using CodeAnalysisApp1 ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Microsoft.CodeAnalysis.Diagnostics ;
 using NLog ;
 using ProjInterface ;
 
@@ -54,7 +58,6 @@ namespace ProjLib
         {
             w = new Window();
             return ContainFormattedCode ( w , compilation , syntaxTree , compilationUnitSyntax
-                    ,                         ref scale
                                         ) ;
         }
 
@@ -63,18 +66,18 @@ namespace ProjLib
           , CSharpCompilation     compilation
           , SyntaxTree            syntaxTree
           , CompilationUnitSyntax compilationUnitSyntax
-          , ref double            scale
+          
         )
         {
+            double scale = 1 ;
             var f = new FormattedCode ( )
                     {
-                        Tag = new LogInvocationBase (
+                        Tag = new CodeAnalyseContext (
                                                      compilation.GetSemanticModel ( syntaxTree )
                                                    , compilationUnitSyntax
                                                    , null
-                                                   , syntaxTree.GetRoot ( )
-                                                    )
-                    } ;
+                                                   , syntaxTree.GetRoot ( ),
+                                                     null) } ;
 
             var stackPanel = new StackPanel ( ) ;
             stackPanel.Children.Add ( f ) ;

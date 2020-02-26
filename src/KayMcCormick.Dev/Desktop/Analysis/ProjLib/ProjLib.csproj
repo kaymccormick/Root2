@@ -78,8 +78,6 @@
     <Compile Include="IVsInstance.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
-    <Compile Include="LogInvocation.cs" />
-    <Compile Include="LogInvocationArgument.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
     <Compile Include="ProjectHandler.cs" />
