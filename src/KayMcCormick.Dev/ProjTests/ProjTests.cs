@@ -112,7 +112,12 @@ namespace Tests.Main
 
             foreach ( var inv in projectHandlerImpl.Invocations )
             {
-                Logger.Error ( "{path} {line} {list}" , inv.Item1, inv.Item2, inv.Item4) ;
+                Logger.Error (
+                              "{path} {line} {list}"
+                            , inv.SourceLocation
+                            , inv.MethodSymbol.Name
+                            , inv.Transformed
+                             ) ;
             }
 
         }

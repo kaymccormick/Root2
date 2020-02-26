@@ -80,6 +80,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AnalyzeResults.xaml.cs">
+      <DependentUpon>AnalyzeResults.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Container.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="MruConverter.cs" />
@@ -87,6 +90,10 @@
     <Compile Include="VsInstancePanel.xaml.cs">
       <DependentUpon>VsInstancePanel.xaml</DependentUpon>
     </Compile>
+    <Page Include="AnalyzeResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ProjMainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

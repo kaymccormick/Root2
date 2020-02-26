@@ -123,17 +123,20 @@ namespace ProjLib
             }
         }
 
-        public virtual async Task OnProcessDocumentAsync(Document document) { return; }
-        public virtual async Task OnPrepareProcessDocumentAsync(Document doc) { return; }
+        public virtual async Task OnProcessDocumentAsync ( Document        document ) { return ; }
+        public virtual async Task OnPrepareProcessDocumentAsync ( Document doc )      { return ; }
     }
 
     public class ProjectHandlerImpl : ProjectHandler
     {
-        private const           string ILoggerClassName         = "ILogger" ;
+        private const           string ILoggerClassName    = "ILogger" ;
         private const           string LoggerClassName     = "Logger" ;
         private static readonly Logger Logger              = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName ;
-        private static readonly string ILoggerClassFullName    = NLogNamespace + "." + ILoggerClassName ;
+
+        private static readonly string
+            ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
+
         public ProjectHandlerImpl ( string s , VisualStudioInstance vsi ) : base ( s , vsi ) { }
 
         private const string NLogNamespace = "NLog" ;
@@ -149,7 +152,7 @@ namespace ProjLib
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query ;
             try
             {
-                Query1 ( document1 , CurrentRoot , CurrentModel);
+                Query1 ( document1 , CurrentRoot , CurrentModel ) ;
                 //
                 // if ( query != null )
                 // {
@@ -176,7 +179,9 @@ namespace ProjLib
         }
 
         public List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > >
-            OutputList { get ; } = new List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > ();
+            OutputList { get ; } =
+            new List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > ( ) ;
+
         private void Collect (
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query
         )
@@ -186,23 +191,23 @@ namespace ProjLib
 
         public override async Task OnPrepareProcessDocumentAsync ( Document doc )
         {
-            if (doc.Project.Name == "NLog")
+            if ( doc.Project.Name == "NLog" )
             {
-                return;
+                return ;
             }
 
-            Logger.Trace(nameof(OnProcessDocumentAsync));
-            if (doc == null)
+            Logger.Trace ( nameof ( OnProcessDocumentAsync ) ) ;
+            if ( doc == null )
             {
-                throw new ArgumentNullException(nameof(doc));
+                throw new ArgumentNullException ( nameof ( doc ) ) ;
             }
 
-            var tree = await doc.GetSyntaxTreeAsync();
-            var model = await doc.GetSemanticModelAsync();
-            var root = tree.GetCompilationUnitRoot();
-            CurrentTree = tree ;
-            CurrentModel = model;
-            CurrentRoot = root ;
+            var tree = await doc.GetSyntaxTreeAsync ( ) ;
+            var model = await doc.GetSemanticModelAsync ( ) ;
+            var root = tree.GetCompilationUnitRoot ( ) ;
+            CurrentTree  = tree ;
+            CurrentModel = model ;
+            CurrentRoot  = root ;
         }
 
         public SyntaxTree CurrentTree { get ; set ; }
@@ -212,8 +217,7 @@ namespace ProjLib
         public CompilationUnitSyntax CurrentRoot { get ; set ; }
 
 
-        public void
-            Query1 ( Document document1 , SyntaxNode root , SemanticModel model )
+        public void Query1 ( Document document1 , SyntaxNode root , SemanticModel model )
         {
             var comp = model.Compilation ;
             var ExceptionType = comp.GetTypeByMetadataName ( "System.Exception" ) ;
@@ -221,8 +225,9 @@ namespace ProjLib
             {
                 throw new Exception ( "No exception type" ) ;
             }
-            var t1 = comp.GetTypeByMetadataName(LoggerClassFullName);
-            if (t1 == null)
+
+            var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
+            if ( t1 == null )
             {
                 Logger.Warn (
                              "No {clas} in {document}"
@@ -232,8 +237,8 @@ namespace ProjLib
                 return ;
             }
 
-            var t2 = comp.GetTypeByMetadataName(ILoggerClassFullName);
-            if (t2 == null)
+            var t2 = comp.GetTypeByMetadataName ( ILoggerClassFullName ) ;
+            if ( t2 == null )
             {
                 return ;
             }
@@ -285,12 +290,12 @@ namespace ProjLib
 
             var qq0 =
                 from node in root.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
-                where LimitToMarkedStatements == false || 
-                node.GetLeadingTrivia ( )
-                .Any (
-                trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
-                && trivia.ToString ( ).Contains ( "doprocess" )
-                )
+                where LimitToMarkedStatements == false
+                      || node.GetLeadingTrivia ( )
+                             .Any (
+                                   trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
+                                             && trivia.ToString ( ).Contains ( "doprocess" )
+                                  )
                 select node ;
 
             if ( LogVisitedStatements )
@@ -304,15 +309,19 @@ namespace ProjLib
             var qxy =
                 from statement in qq0
                 let invocations =
-                    statement.DescendantNodes (node => node == statement || !(node is StatementSyntax) ).OfType < InvocationExpressionSyntax > ( )
+                    statement.DescendantNodes (
+                                               node => node == statement
+                                                       || ! ( node is StatementSyntax )
+                                              )
+                             .OfType < InvocationExpressionSyntax > ( )
                 from invocation in invocations
                 let symbolInfo = model.GetSymbolInfo ( invocation.Expression )
                 let symbol = symbolInfo.Symbol
-                 where symbol != null
-                       && symbol is IMethodSymbol methSym
-                       && CheckSymbol ( methSym , t1 , t2 )
-                select new { statement, invocation, methodSymbol = ( IMethodSymbol ) symbol } ;
-            foreach(var qqq in qxy)
+                where symbol != null
+                      && symbol is IMethodSymbol methSym
+                      && CheckSymbol ( methSym , t1 , t2 )
+                select new { statement , invocation , methodSymbol = ( IMethodSymbol ) symbol } ;
+            foreach ( var qqq in qxy )
             {
                 try
                 {
@@ -323,14 +332,15 @@ namespace ProjLib
                                      , qqq.methodSymbol
                                      , ExceptionType
                                       ) ;
-                } catch(Exception ex)
+                }
+                catch ( Exception ex )
                 {
                     Logger.Warn ( ex , "unable to process invocation: {message}" , ex.Message ) ;
                 }
             }
 
             return ;
-            #if false
+#if false
             var qq1 =
                 from node in root.DescendantNodesAndSelf ( )
                 let symbol = model.GetTypeInfo ( node )
@@ -349,7 +359,7 @@ namespace ProjLib
                                            => new
                                               {
                                                   arg.symbol
-                                                , statement =
+                                        , statement =
                                                       arg.node.AncestorsAndSelf ( )
                                                          .OfType < StatementSyntax > ( )
                                                          .FirstOrDefault ( )
@@ -367,13 +377,13 @@ namespace ProjLib
                 {
                     Logger.Debug (
                                   "st: {symbol} {document} {line} {statementSyntax}"
-                                , document1?.RelativePath()
-                                , arg3.symbol.ConvertedType.ToDisplayString ( )
-                                , arg3.statement.GetLocation ( )
+                        , document1?.RelativePath()
+                        , arg3.symbol.ConvertedType.ToDisplayString ( )
+                        , arg3.statement.GetLocation ( )
                                       .GetMappedLineSpan ( )
                                       .StartLinePosition.Line
                                   + 1
-                                , arg3
+                        , arg3
                                  ) ;
                 }
             }
@@ -386,7 +396,7 @@ namespace ProjLib
                                             .Select (
                                                      node => Tuple.Create (
                                                                            node
-                                                                         , model.GetSymbolInfo (
+                                                                 , model.GetSymbolInfo (
                                                                                                 node
                                                                                                )
                                                                           )
@@ -403,7 +413,7 @@ namespace ProjLib
                                                                      && new[]
                                                                         {
                                                                             ILoggerClassName
-                                                                          , LoggerClassName
+                                                                  , LoggerClassName
                                                                         }.Contains (
                                                                                     tuple
                                                                                        .Item2.Symbol
@@ -422,7 +432,7 @@ namespace ProjLib
                                                                                             InvocationExpressionSyntax
                                                                                         > ( )
                                                                                        .FirstOrDefault ( )
-                                                                                  , ( IMethodSymbol
+                                                                          , ( IMethodSymbol
                                                                                     ) tuple
                                                                                      .Item2.Symbol
                                                                                    )
@@ -452,7 +462,7 @@ namespace ProjLib
 
             Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > expr1 (
                 Tuple < InvocationExpressionSyntax , IMethodSymbol > syntax
-              , int                                                  i
+      , int                                                  i
             )
             {
                 if ( syntax.Item1 != null )
@@ -465,7 +475,7 @@ namespace ProjLib
                     var xxx = l.Select (
                                         argumentSyntax => Tuple.Create (
                                                                         argumentSyntax.Expression
-                                                                      , Transforms.TransformExpr (
+                                                              , Transforms.TransformExpr (
                                                                                                   argumentSyntax
                                                                                                      .Expression
                                                                                                  )
@@ -473,15 +483,15 @@ namespace ProjLib
                                        ) ;
                     return Tuple.Create (
                                          line
-                                       , syntax.Item1.Expression.ToString ( )
-                                       , xxx.ToList ( )
+                               , syntax.Item1.Expression.ToString ( )
+                               , xxx.ToList ( )
                                         ) ;
                 }
 
                 return new Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > (
                                                                                                   0
-                                                                                                , null
-                                                                                                , null
+                                                                                        , null
+                                                                                        , null
                                                                                                  ) ;
             }
 
@@ -507,15 +517,24 @@ namespace ProjLib
 
         public bool LimitToMarkedStatements { get ; set ; }
 
-        private static bool CheckSymbol ( IMethodSymbol methSym , INamedTypeSymbol t1 , INamedTypeSymbol t2 )
+        private static bool CheckSymbol (
+            IMethodSymbol    methSym
+          , INamedTypeSymbol t1
+          , INamedTypeSymbol t2
+        )
         {
-            
             var cType = methSym.ContainingType ;
-                       
-            var r = ( cType == t1 || cType == t2) ;
-            Logger.Trace("{name} {ns} {r}", cType.MetadataName, cType.ContainingNamespace.MetadataName, r);
+
+            var r = cType == t1 || cType == t2 ;
+            Logger.Trace (
+                          "{name} {ns} {r}"
+                        , cType.MetadataName
+                        , cType.ContainingNamespace.MetadataName
+                        , r
+                         ) ;
             return r ;
-            return cType.MetadataName == LoggerClassName || cType.MetadataName == ILoggerClassName;//  || methSym.Name == "Debug";
+            return cType.MetadataName    == LoggerClassName
+                   || cType.MetadataName == ILoggerClassName ; //  || methSym.Name == "Debug";
             return r ;
         }
 
@@ -527,15 +546,15 @@ namespace ProjLib
           , INamedTypeSymbol           exceptionType
         )
         {
-            bool exceptionArg = IsException (
-                                             exceptionType
-                                           , methodSymbol.Parameters.First ( ).Type
-                                            ) ;
+            var exceptionArg = IsException (
+                                            exceptionType
+                                          , methodSymbol.Parameters.First ( ).Type
+                                           ) ;
             var msgParam = methodSymbol.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
-                        .Where( arg1 => arg1.symbol.Name == "message" );
+                                       .Where ( arg1 => arg1.symbol.Name == "message" ) ;
             if ( ! msgParam.Any ( ) )
             {
-                throw new NoMessageParameterException();
+                throw new NoMessageParameterException ( ) ;
             }
 
             var msgI = msgParam.First ( ).i ;
@@ -546,67 +565,103 @@ namespace ProjLib
                                      , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                       )
                          ) ;
-            
-            var msgarg = invocation.ArgumentList.Arguments[msgI];
-            var msgArgExpr = msgarg.Expression;
-            var msgArgTypeInfo = CurrentModel.GetTypeInfo(msgArgExpr);
-            ITypeSymbol baseType = msgArgTypeInfo.Type;
+            var fargs = invocation.ArgumentList.Arguments.Skip ( msgI ) ;
+            fargs = fargs.TakeWhile ( ( syntax , i ) => i < msgI ) ;
+            var rest = fargs.Skip ( 1 ) ;
+            var msgarg = fargs.First ( ) ;
+            var msgArgExpr = msgarg.Expression ;
+            var msgArgTypeInfo = CurrentModel.GetTypeInfo ( msgArgExpr ) ;
+            var baseType = msgArgTypeInfo.Type ;
             var symbolInfo = CurrentModel.GetSymbolInfo ( msgArgExpr ) ;
             var arg1sym = symbolInfo.Symbol ;
             if ( arg1sym != null )
             {
-                Logger.Debug( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
+                Logger.Debug ( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
             }
 
             var constant = CurrentModel.GetConstantValue ( msgArgExpr ) ;
             if ( constant.HasValue )
             {
                 Logger.Warn ( "Constant {constant}" , constant.Value ) ;
-                MessageTemplate m = MessageTemplate.Parse(( string ) constant.Value);
-                List <object> o = new List < object > ();
+                var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
+                var o = new List < object > ( ) ;
                 foreach ( var messageTemplateToken in m.Tokens )
                 {
                     if ( messageTemplateToken is PropertyToken p )
                     {
                         var t = Tuple.Create ( p.IsPositional , p.PropertyName ) ;
                         o.Add ( t ) ;
-
-                    } else if ( messageTemplateToken is TextToken t )
+                    }
+                    else if ( messageTemplateToken is TextToken t )
                     {
                         var xt = Tuple.Create ( t.Text ) ;
                         o.Add ( xt ) ;
                     }
                 }
 
-                Logger.Warn ( "{}" , string.Join( ", " , o  )) ;
-
+                Logger.Warn ( "{}" , string.Join ( ", " , o ) ) ;
             }
             else
             {
-                Logger.Warn("{}", msgArgExpr);
+                Logger.Warn ( "{}" , msgArgExpr ) ;
             }
 
             var transformed = invocation.ArgumentList.Arguments.Select (
-                                                      syntax => Transforms.TransformExpr (
-                                                                                          syntax
-                                                                                             .Expression
-                                                                                         )
-                                                     ).ToList() ;
-            Logger.Error ( "{t}" , transformed);
-            Invocations.Add ( Tuple.Create (document1.RelativePath(), statement.GetLocation().GetMappedLineSpan().StartLinePosition.Line + 1, methodSymbol , transformed ) ) ;
+                                                                        syntax => Transforms
+                                                                           .TransformExpr (
+                                                                                           syntax
+                                                                                              .Expression
+                                                                                          )
+                                                                       )
+                                        .ToList ( ) ;
+            Logger.Error ( "{t}" , transformed ) ;
+            var sourceLocation = document1.RelativePath ( )
+                                 + ":"
+                                 + statement
+                                  .GetLocation ( )
+                                  .GetMappedLineSpan ( )
+                                  .StartLinePosition.Line
+                                 + 1 ;
+            var debugInvo = new LogInvocation ( sourceLocation , methodSymbol , transformed ) ;
+            Invocations.Add ( debugInvo ) ;
         }
 
-        public List < Tuple < string , int , IMethodSymbol , List < object > > > Invocations { get ; set ; } = new List < Tuple < string , int , IMethodSymbol , List < object > > > ();
+        public class LogInvocation
+        {
+            private string          sourceLocation ;
+            private IMethodSymbol   methodSymbol ;
+            private List < object > transformed ;
 
-        private static bool IsException (
-            INamedTypeSymbol exceptionType
-          , ITypeSymbol      baseType
-        )
+            public LogInvocation (
+                string          sourceLocation
+              , IMethodSymbol   methodSymbol
+              , List < object > transformed
+            )
+            {
+                SourceLocation = sourceLocation ;
+                MethodSymbol   = methodSymbol ;
+                Transformed    = transformed ;
+            }
+
+            public string SourceLocation { get => sourceLocation ; set => sourceLocation = value ; }
+
+            public IMethodSymbol MethodSymbol
+            {
+                get => methodSymbol ;
+                set => methodSymbol = value ;
+            }
+
+            public List < object > Transformed { get => transformed ; set => transformed = value ; }
+        }
+
+        public List < LogInvocation > Invocations { get ; set ; } = new List < LogInvocation > ( ) ;
+
+        private static bool IsException ( INamedTypeSymbol exceptionType , ITypeSymbol baseType )
         {
             var isException = false ;
             while ( baseType != null )
             {
-                if (SymbolEqualityComparer.Default.Equals(baseType, exceptionType))
+                if ( SymbolEqualityComparer.Default.Equals ( baseType , exceptionType ) )
                 {
                     isException = true ;
                 }
@@ -637,19 +692,19 @@ namespace ProjLib
     internal class NoMessageParameterException : Exception
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
-        public NoMessageParameterException ( ) {
-        }
+        public NoMessageParameterException ( ) { }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
         /// <param name="message">The message that describes the error. </param>
-        public NoMessageParameterException ( string message ) : base ( message )
-        {
-        }
+        public NoMessageParameterException ( string message ) : base ( message ) { }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
         /// <param name="message">The error message that explains the reason for the exception. </param>
         /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified. </param>
-        public NoMessageParameterException ( string message , Exception innerException ) : base ( message , innerException )
+        public NoMessageParameterException ( string message , Exception innerException ) : base (
+                                                                                                 message
+                                                                                               , innerException
+                                                                                                )
         {
         }
 
@@ -658,7 +713,10 @@ namespace ProjLib
         /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
         /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
-        protected NoMessageParameterException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected NoMessageParameterException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
         }
     }
