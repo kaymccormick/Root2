@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
+using CSharpExtensions = Microsoft.CodeAnalysis.CSharpExtensions ;
 
 namespace ProjLib
 {
@@ -89,12 +90,7 @@ namespace ProjLib
 
         public override void VisitToken ( SyntaxToken token )
         {
-            SetTokenSpan (
-                          token.Span
-                        , token.GetLocation ( )
-                        , token
-                        , new TokenSpanObject (token.Span,  token )
-                         ) ;
+          
             Brush bg = Brushes.Transparent , fg = null ;
             var x = token.Kind ( ).ToString ( ) ;
             var m = Regex.Match ( x , "[a-z]+([A-Z][a-z]*)$" ) ;
@@ -142,6 +138,12 @@ namespace ProjLib
                 AddRun ( RenderTrivia ( syntaxTrivia ) , syntaxTrivia.Span ) ;
             }
 
+            SetTokenSpan(
+                         token.Span
+                       , token.GetLocation()
+                       , token
+                       , new TokenSpanObject(token.Span, token)
+                        );
             LogManager.GetCurrentClassLogger ( ).Warn ( "{s}" , token ) ;
             var run = creATErUN ( token.ToString ( ) ) ;
             run.Style = ( Style ) _findResource ( style ) ;
@@ -155,7 +157,7 @@ namespace ProjLib
             }
 
             AddRun ( run , token.Span ) ;
-
+            ActiveSpans.Remove ( token ) ;
             foreach ( var syntaxTrivia in token.TrailingTrivia )
             {
                 AddRun ( RenderTrivia ( syntaxTrivia ) , syntaxTrivia.Span ) ;
@@ -166,7 +168,7 @@ namespace ProjLib
         {
             if ( StartOfLine )
             {
-                renderTrivia.Background = Brushes.Gray ;
+                //renderTrivia.Background = Brushes.Gray ;
                 StartOfLine             = false ;
             }
 
@@ -189,10 +191,10 @@ namespace ProjLib
                     var val = activeSpan.Value ;
                     if ( val.Span.OverlapsWith ( span ) )
                     {
-                        var valToolTipContent = val.ToolTipContent ;
+                        var valToolTipContent = val.GetToolTipContent();
                         if ( valToolTipContent != null )
                         {
-                            tt.Content.Add ( valToolTipContent ) ;
+                            tt.CustomToolTip.Add ( valToolTipContent ) ;
                         }
                     }
                 }
@@ -263,7 +265,7 @@ namespace ProjLib
         }
     }
 
-    public class SpanObject < T > : ISpanObject
+    public abstract class SpanObject < T > : ISpanObject
     {
         public T _instance ;
 
@@ -282,7 +284,7 @@ namespace ProjLib
 
         public TextSpan Span { get ; set ; }
 
-        public UIElement ToolTipContent => new TextBlock ( ) { Text = Instance.ToString ( ) } ;
+        public abstract UIElement GetToolTipContent();
     }
 
     public interface ISpanObject
@@ -291,7 +293,7 @@ namespace ProjLib
 
         TextSpan Span { get ; }
 
-        UIElement ToolTipContent { get ; }
+        UIElement GetToolTipContent();
     }
 
     public class TriviaSpanObject : SpanObject < SyntaxTrivia >
@@ -299,6 +301,12 @@ namespace ProjLib
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public TriviaSpanObject ( TextSpan span , SyntaxTrivia instance ) : base ( span , instance )
         {
+        }
+
+        public override UIElement GetToolTipContent ( )
+        {
+            var kind = Instance.Kind ().ToString() ;
+            return new TextBlock ( ) { Text = kind  } ;
         }
     }
 
@@ -312,6 +320,12 @@ namespace ProjLib
                                                                                    )
         {
         }
+
+        public override UIElement GetToolTipContent ( )
+        {
+            var kind = Instance.Kind ( ).ToString ( ) ;
+            return new TextBlock() { Text = kind };
+        }
     }
 
     public class TokenSpanObject : SpanObject < SyntaxToken >
@@ -319,6 +333,21 @@ namespace ProjLib
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public TokenSpanObject ( TextSpan span , SyntaxToken instance ) : base ( span , instance )
         {
+        }
+
+        public override UIElement GetToolTipContent ( )
+        {
+            var panel = new StackPanel() { Orientation = Orientation.Horizontal};
+            var toolTipContent = new TextBlock ( )
+                                 {
+                                     Text = Instance.Kind ( ) + " (" + Instance.RawKind + ")"
+                                 } ;
+            panel.Children.Add ( toolTipContent ) ;
+            if(Instance.Value != null) {
+                panel.Children.Add ( new Label() { Content = "Value" });
+                panel.Children.Add ( new TextBlock ( ) { Text = Instance.ValueText } ) ;
+            }
+            return panel ;
         }
     }
 
@@ -373,27 +402,27 @@ namespace ProjLib
     internal class SpanTT : ToolTip
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.ToolTip" /> class. </summary>
-        public SpanTT ( SpanToolTip content ) { Content = content ; }
+        public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }
 
-        public new SpanToolTip Content { get ; set ; }
+        public SpanToolTip CustomToolTip { get ; set ; }
     }
 
     internal class SpanToolTip : UserControl
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
         ///
-        public new StackPanel Content { get ; set ; }
+        public StackPanel Panel { get ; set ; }
 
         public SpanToolTip ( )
         {
-            Content = new StackPanel ( ) { Orientation = Orientation.Vertical } ;
+            Content = Panel = new StackPanel ( ) { Orientation = Orientation.Vertical } ;
         }
 
         public void Add ( UIElement o )
         {
             if ( o != null )
             {
-                Content.Children.Add ( o ) ;
+                Panel.Children.Add ( o ) ;
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Windows.Input ;
 using System.Windows.Media ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using ProjInterface ;
 
@@ -37,6 +38,34 @@ namespace ProjLib
                                                               )
                                                .AddSyntaxTrees ( syntaxTree ) ;
 
+            var f = SetupFormattedCode ( out w , compilation , syntaxTree , compilationUnitSyntax
+,                                                ref scale
+                                       ) ;
+            return f ;
+        }
+
+        private static FormattedCode SetupFormattedCode (
+            out Window            w
+          , CSharpCompilation     compilation
+          , SyntaxTree            syntaxTree
+          , CompilationUnitSyntax compilationUnitSyntax
+          , ref double            scale
+        )
+        {
+            w = new Window();
+            return ContainFormattedCode ( w , compilation , syntaxTree , compilationUnitSyntax
+                    ,                         ref scale
+                                        ) ;
+        }
+
+        private static FormattedCode ContainFormattedCode (
+           ContentControl  w
+          , CSharpCompilation     compilation
+          , SyntaxTree            syntaxTree
+          , CompilationUnitSyntax compilationUnitSyntax
+          , ref double            scale
+        )
+        {
             var f = new FormattedCode ( )
                     {
                         Tag = new LogInvocationBase (
@@ -46,10 +75,10 @@ namespace ProjLib
                                                    , syntaxTree.GetRoot ( )
                                                     )
                     } ;
-            w = new Window ( ) ;
+
             var stackPanel = new StackPanel ( ) ;
             stackPanel.Children.Add ( f ) ;
-            w.Content = new ScrollViewer ( ) { Content = stackPanel } ;
+            w.Content = new ScrollViewer ( ) {  Content = stackPanel } ;
             w.KeyDown += ( sender , args ) => {
                 LogManager.GetCurrentClassLogger ( ).Info ( args.Key ) ;
                 if ( args.Key                         == Key.OemPlus
