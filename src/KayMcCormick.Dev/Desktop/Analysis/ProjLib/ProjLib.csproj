@@ -72,18 +72,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveSpans.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
     <Compile Include="ISpanObject.cs" />
     <Compile Include="ISpanToolTip.cs" />
     <Compile Include="ISpanToolTipViewModel.cs" />
+    <Compile Include="IVisitor.cs" />
     <Compile Include="IVsInstance.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
     <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
+    <Compile Include="NodePanel.cs" />
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SpanObject.cs" />
@@ -92,8 +95,11 @@
     <Compile Include="SpanTT.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />
     <Compile Include="TokenSpanObject.cs" />
+    <Compile Include="ToolTips.cs" />
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="Visitor.cs" />
+    <Compile Include="Visitor2Impl.cs" />
+    <Compile Include="VisitorStub.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -170,6 +176,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="NodePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SpanToolTip.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

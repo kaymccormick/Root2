@@ -29,6 +29,7 @@ namespace ProjLib
             _instanceValueText = Instance.ValueText ;
         }
 
+#if false
         public override UIElement GetToolTipContent ( )
         {
             var panel = new StackPanel ( ) { Orientation = Orientation.Horizontal } ;
@@ -45,5 +46,6 @@ namespace ProjLib
 
             return panel ;
         }
+#endif
     }
 }

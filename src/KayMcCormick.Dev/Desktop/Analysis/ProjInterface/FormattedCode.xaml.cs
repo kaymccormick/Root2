@@ -131,7 +131,7 @@ namespace ProjInterface
                     if ( true)
                     {
                         panel.Dispatcher.Invoke ( ( ) => panel.Children.Clear ( ) ) ;
-                        Visitor x = new Visitor (  panel, t.Item3.TryFindResource, newContext , exx.CurrentModel) ;
+                        Visitor x = new Visitor ( ) ;
                         x.Visit ( statementSyntax ) ;
                         Logger.Info ( "done" ) ;
                     }

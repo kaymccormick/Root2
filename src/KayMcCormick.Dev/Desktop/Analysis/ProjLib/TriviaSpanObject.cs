@@ -24,10 +24,5 @@ namespace ProjLib
         {
         }
 
-        public override UIElement GetToolTipContent ( )
-        {
-            var kind = Instance.Kind ( ).ToString ( ) ;
-            return new TextBlock ( ) { Text = kind } ;
-        }
     }
 }

@@ -22,15 +22,13 @@ namespace ProjLib
 {
     public class LogInvocationSpan : SpanObject < LogInvocation >
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static Logger Logger = Logger ;
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogInvocationSpan (
             TextSpan                 span
           , LogInvocation            instance
-          , Func < object , object > getResource
         ) : base ( span , instance )
         {
-            _getResource = getResource ;
             _displayString = Instance.MethodDisplayName
                              + " "
                              + string.Join (
@@ -40,52 +38,10 @@ namespace ProjLib
                                                                            => argument.JSON
                                                                       )
                                            ) ;
-            LogManager.GetCurrentClassLogger ( ).Info ( "{disp}" , _displayString ) ;
+            Logger.Info ( "{disp}" , _displayString ) ;
         }
 
         private Func < object , object > _getResource ;
         private string                   _displayString ;
-
-        public Func < object , object > GetResource
-        {
-            get => _getResource ;
-            set => _getResource = value ;
-        }
-
-        public override UIElement GetToolTipContent ( )
-        {
-            try
-            {
-                LogManager.GetCurrentClassLogger ( ).Info ( "tooltip {instance}" , Instance ) ;
-                if ( Instance != null )
-                {
-                    var textBlock = new TextBlock ( ) { Text = _displayString } ;
-                    
-                    var contentPresenter = new ContentControl ( ) { } ;
-                    contentPresenter.Content = this.Instance ;
-                    var resource = GetResource ( typeof ( LogInvocation ) ) ;
-                    LogManager.GetCurrentClassLogger().Info ( "Resource is {Resource}{t}" , resource ?? "null", resource?.GetType().FullName ?? "null" ) ;
-                    contentPresenter.ContentTemplate =
-                        resource as DataTemplate ;
-                    LogManager.GetCurrentClassLogger().Info("{t}", contentPresenter.ContentTemplate?.DataType?.ToString() ?? "null");
-                    // toolTipContent.Children.Add ( contentPresenter ) ;
-                    // toolTipContent.Children.Add ( textBlock ) ;
-                    try
-                    {
-                        Logger.Info ( "xaml = {xaml}" , XamlWriter.Save ( contentPresenter ) ) ;
-                    } catch(Exception ex) {
-                        }
-
-                    return contentPresenter;
-                }
-
-                LogManager.GetCurrentClassLogger ( ).Error ( "no instance value" ) ;
-                return base.GetToolTipContent ( ) ;
-            } catch(Exception ex)
-            {
-                Logger.Error ( ex , "ui: " + ex.ToString()) ;
-                return new TextBlock ( ) { Text = ex.ToString ( ) } ;
-            }
-        }
     }
 }

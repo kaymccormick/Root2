@@ -31,11 +31,5 @@ namespace ProjLib
         }
 
         public SyntaxKind Kind { get => _kind ; set => _kind = value ; }
-
-        public override UIElement GetToolTipContent ( )
-        {
-            var kind = Kind.ToString ( ) ;
-            return new TextBlock ( ) { Text = kind } ;
-        }
     }
 }

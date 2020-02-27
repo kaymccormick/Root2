@@ -14,12 +14,10 @@ using Microsoft.CodeAnalysis.Text ;
 
 namespace ProjLib
 {
-    public interface ISpanObject
+    public interface ISpanViewModel
     {
-        object getInstance ( ) ;
+        object getInstance();
+        TextSpan Span { get; }
 
-        TextSpan Span { get ; }
-
-        UIElement GetToolTipContent ( ) ;
     }
 }
