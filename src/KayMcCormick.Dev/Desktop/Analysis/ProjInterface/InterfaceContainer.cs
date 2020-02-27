@@ -19,7 +19,7 @@ using ProjLib;
 
 namespace ProjInterface
 {
-    public static class Container
+    public static class InterfaceContainer
     {
         public static ILifetimeScope Scope = null;
         public static ILifetimeScope GetContainer()

@@ -17,28 +17,10 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using ProjInterface.Properties ;
+using ProjLib ;
 
 namespace ProjInterface
 {
-    public class MakeInfo
-    {
-        public MakeInfo ( ContentControl w , FormattedCode control , string sourceText = null, IAddChild addChild = null )
-        {
-            W = w ;
-            Control = control ;
-            SourceText = sourceText ;
-            AddChild = addChild ;
-        }
-
-        public ContentControl W { get ; private set ; }
-
-        public FormattedCode Control { get ; private set ; }
-
-        public string SourceText { get ; private set ; }
-
-        public IAddChild AddChild { get ; private set ; }
-    }
-
     public static class ProjUtils
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -50,7 +32,9 @@ namespace ProjInterface
             MakeInfo makeInfo = o as MakeInfo ;
             double scale = 1 ;
             var text = makeInfo.SourceText ;
-            CodeAnalyseContext ctx = CodeAnalyseContext.Parse ( text , "lala" ) ;
+            Logger.Trace("{SourceText}", text);
+
+            CodeAnalyseContext ctx = makeInfo.Context ;
 
             SetujpFormattedCode1 (
                                   makeInfo.W
@@ -66,7 +50,7 @@ namespace ProjInterface
              ContentControl    w
           , string                sourceText, CodeAnalyseContext ctx
           , IAddChild             addChild
-          , FormattedCode         control
+          , ProjLib.FormattedCode         control
         )
         {
             double scale = 1 ;
@@ -87,7 +71,7 @@ namespace ProjInterface
           , CompilationUnitSyntax compilationUnitSyntax
           , double            scale
           , IAddChild             addChild
-          , FormattedCode         control
+          , ProjLib.FormattedCode         control
         )
         {
             control.Dispatcher.Invoke(
@@ -108,7 +92,7 @@ namespace ProjInterface
           , string                SouceText
             , CodeAnalyseContext ctx
           , IAddChild             addChild
-          , FormattedCode         Control
+          , ProjLib.FormattedCode         Control
         )
         {
             LogManager.GetCurrentClassLogger ( ).Info ( nameof ( _ContainFormattedCode ) ) ;
@@ -172,7 +156,7 @@ namespace ProjInterface
           , string                SouceText
           , CodeAnalyseContext ctx
           , IAddChild             addChild
-          , FormattedCode         Control
+          , ProjLib.FormattedCode         Control
         ) ;
         
         private static void ContainFormattedCode (
@@ -180,7 +164,7 @@ namespace ProjInterface
           , string                SouceText
           , CodeAnalyseContext ctx
           , IAddChild             addChild
-          , FormattedCode                Control
+          , ProjLib.FormattedCode                Control
         )
         {
             Logger.Info ( "contain" ) ;

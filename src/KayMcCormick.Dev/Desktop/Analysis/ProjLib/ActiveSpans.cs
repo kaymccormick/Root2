@@ -11,14 +11,18 @@
 #endregion
 using System.Collections ;
 using System.Collections.Generic ;
+using System.Linq ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.Text ;
 
 namespace ProjLib
 {
     public class ActiveSpans : IDictionary < object , IDictionary < object , ISpanViewModel > >
     {
+        private IDictionary<TextSpan, IDictionary<object, ISpanViewModel>> _dict2 = new Dictionary <TextSpan, IDictionary <object, ISpanViewModel>>(
+            ) ;
         private IDictionary < object , IDictionary < object , ISpanViewModel > >
             _dictionaryImplementation =
                 new Dictionary < object , IDictionary < object , ISpanViewModel > > ( ) ;
@@ -100,14 +104,27 @@ namespace ProjLib
             => _dictionaryImplementation.Values ;
         #endregion
 
-        public void AddSpan ( object node , object key , ISpanViewModel spanObject )
+        public void AddSpan ( object node , TextSpan key , ISpanViewModel spanObject )
         {
             if ( ! TryGetValue ( node , out var x ) )
             {
                 this[ node ] = x ;
             }
 
-            x[ key ] = spanObject];
+            x[ key ] = spanObject ;
+            if(!_dict2.TryGetValue(key, out var xx))
+            {
+                _dict2[ key ] = xx = new Dictionary < object , ISpanViewModel > ();
+            }
+
+            xx[ node ] = spanObject ;
+
+        }
+
+        public IEnumerable < object > OverlapsWith ( TextSpan span )
+        {
+            return _dict2.Where ( ( pair , i ) => pair.Key.OverlapsWith ( span ) )
+                  .SelectMany ( pair => pair.Value.Values ) ;
         }
     }
 }

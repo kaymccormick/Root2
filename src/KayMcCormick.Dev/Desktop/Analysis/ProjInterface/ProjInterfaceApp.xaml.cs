@@ -50,7 +50,7 @@ namespace ProjInterface
         {
             base.OnStartup(e);
             Logger.Info("{}", nameof(OnStartup));
-            var lifetimeScope = Container.GetContainer();
+            var lifetimeScope = InterfaceContainer.GetContainer();
             try
             {
                 var mainWindow = lifetimeScope.Resolve < ProjMainWindow > ( ) ;

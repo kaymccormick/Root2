@@ -1,111 +1,97 @@
-﻿using System;
+﻿using System ;
 using System.Collections.Concurrent ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
 using System.Threading ;
 using System.Threading.Tasks ;
-using System.Windows;
-using System.Windows.Controls;
+using System.Windows ;
+using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Media ;
 using CodeAnalysisApp1 ;
-using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
 using Newtonsoft.Json ;
 using NLog ;
-using ProjLib ;
+using NLog.Fluent ;
 
-namespace ProjInterface
+namespace ProjLib
 {
     /// <summary>
     /// Interaction logic for FormattedCode.xaml
     /// </summary>
     public partial class FormattedCode : UserControl
     {
-        public TaskFactory _taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning | TaskCreationOptions.HideScheduler, TaskContinuationOptions.AttachedToParent, TaskScheduler.Default);
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public FormattedCode (String code ) : this()
+        public FormattedCode (Visitor2 visitor2 = null, TransformArgs args = null )
         {
-            main.Text = code ;
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
-        public FormattedCode ( ) {
+            _visitor2 = visitor2 ;
+            _args = args ;
+            _args.FormattedCode = this ;
+            _args.RootPanel = rootPanel ;
             InitializeComponent();
-            
         }
 
-        /// <summary>Invoked whenever the effective value of any dependency property on this <see cref="T:System.Windows.FrameworkElement" /> has been updated. The specific dependency property that changed is reported in the arguments parameter. Overrides <see cref="M:System.Windows.DependencyObject.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)" />.</summary>
-        /// <param name="e">The event data that describes the property that changed, as well as old and new values.</param>
+        private readonly Visitor2 _visitor2 ;
+        private TaskFactory _taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning | TaskCreationOptions.HideScheduler, TaskContinuationOptions.AttachedToParent, TaskScheduler.Default);
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private string _sourceCode ;
+
+        public TransformArgs _args ;
         protected override void OnPropertyChanged ( DependencyPropertyChangedEventArgs e )
         {
-            LogManager.GetCurrentClassLogger().Info("{m} {p}", nameof(OnPropertyChanged), e.Property);
+            LogManager.GetCurrentClassLogger ( )
+                      .Info ( "{m} {p}" , nameof ( OnPropertyChanged ) , e.Property ) ;
             base.OnPropertyChanged ( e ) ;
 
             var eNewValue = e.NewValue ;
-            if (  e.Property.Name == "Tag" )
+            if ( e.Property.Name == "Tag" )
             {
-                LogManager.GetCurrentClassLogger().Info(nameof(OnPropertyChanged));
+                LogManager.GetCurrentClassLogger ( ).Info ( nameof ( OnPropertyChanged ) ) ;
                 Logger.Info ( "Starting transform" ) ;
                 //tasks.Add ( _taskFactory.StartNew ( ( ) =>
                 PerformTransform ( eNewValue ) ;
             }
-
-        //               ( ) => {
-            //                   if ( e.Property.Name == "Tag" )
-            //                   {
-            //                       try
-            //                       {
-            //                           return TransformCodeAsync ( ) ;
-            //                       }`
-            //                       catch ( Exception ex )
-            //                       {
-            //                           LogManager
-            //                              .GetCurrentClassLogger ( )
-            //                              .Error ( ex , ex.ToString ( ) ) ;
-            //                           if ( UiError ) MessageBox.Show ( ex.ToString ( ) , "Error" ) ;
-            //                       }
-            //                   }
-            //               }
-            //              ) ;
         }
 
         public ConcurrentBag<Task> tasks { get ; set ; } = new ConcurrentBag < Task > ();
 
         private void PerformTransform ( object value  )
         {
+            var transformArgs = _args ;
+            // new TransformArgs(rootPanel
+            //                                                     
+            //                                            , ( CodeAnalyseContext )
+            //                                              value
+            //                                            , this, this._visitor2
+            //                                             ) ;
             tasks.Add(
                       _taskFactory.StartNew (
                                              TransformCodeAsync
-                                           , ( object ) Tuple.Create (apanel
-                                                                
-                                                                    , ( CodeAnalyseContext )
-                                                                      value
-                                                                    , this
-                                                                     )
+                                           , ( object ) transformArgs
                                             )
                      ) ;
         }
 
         public bool UiError { get ; set ; }
 
-        private static async Task TransformCodeAsync (object o )
+        private static async Task TransformCodeAsync (object o)
         {
-            Tuple < StackPanel , CodeAnalyseContext, FormattedCode > t = ( Tuple < StackPanel , CodeAnalyseContext, FormattedCode > ) o ;
-            StackPanel panel = t.Item1 ;
-            LogManager.GetCurrentClassLogger ( ).Info ( nameof ( TransformCodeAsync ) ) ;
-            CodeAnalyseContext exx = t.Item2 ;
+            var (stackPanel , context , formattedCode , visitor2) = (TransformArgs)o ;
+            StackPanel panel = stackPanel ;
+            new LogBuilder ( Logger ).Level ( LogLevel.Info )
+                                     .Message ( "{method}" , nameof ( TransformCodeAsync ) )
+                                     .Write ( ) ;
+            CodeAnalyseContext exx = context ;
 
             if ( exx != null ) {
-                if ( t.Item3 != null ) {
+                if ( formattedCode!= null ) {
                     CSharpSyntaxRewriter rewriter = new LogUsagesRewriter (
                                                                            exx.SyntaxTree
                                                                          , exx.CurrentModel
                                                                          , new CodeSource ( "input" )
-                                                                         , exx.CurrentRoot, t.Item3.Progress
+                                                                         , exx.CurrentRoot, formattedCode.Progress
                                                                           ) ;
                     var newNode = rewriter.Visit ( exx.Node ) ;
                     CodeAnalyseContext newContext =  CodeAnalyseContext.FromSyntaxNode(newNode, "rewritten");
@@ -120,7 +106,6 @@ namespace ProjInterface
                                       ) ;
             
 
-                    // LogUsages.FindLogUsages(exx.Document, exx.CurrentRoot, exx.CurrentModel, ConsumeLogInvocation, false, false, ProcessInvocation);
                     exx = newContext ;
                     var statementSyntax = exx.Node ;
                     if ( statementSyntax == null )
@@ -131,9 +116,19 @@ namespace ProjInterface
                     if ( true)
                     {
                         panel.Dispatcher.Invoke ( ( ) => panel.Children.Clear ( ) ) ;
-                        Visitor x = new Visitor ( ) ;
-                        x.Visit ( statementSyntax ) ;
-                        Logger.Info ( "done" ) ;
+                        // Visitor x = new Visitor ( ) ;
+
+                        if ( visitor2 != null )
+                        {
+                            visitor2.Visit ( statementSyntax ) ;
+                            Logger.Info("done");
+                        } else
+                        {
+                            Logger.Error ( "visitor is nuk" ) ;
+
+                        }
+
+
                     }
                 }
             }
@@ -196,6 +191,10 @@ namespace ProjInterface
 
         public bool DoVisit { get ; set ; } = true ;
 
-     
+        public TaskFactory TaskFactory { get { return _taskFactory ; } }
+
+        public string SourceCode { get { return _sourceCode ; } set { _sourceCode = value ; } }
+
+        public TransformArgs Args { get => _args ; set => _args = value ; }
     }
 }

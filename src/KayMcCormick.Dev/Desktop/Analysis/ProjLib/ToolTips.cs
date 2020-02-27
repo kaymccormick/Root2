@@ -9,27 +9,29 @@ namespace ProjLib
 {
     static internal class ToolTips
     {
-        public static UIElement MakeToolTipContent ( out object resource )
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        public static UIElement MakeToolTipContent ( object resource )
         {
-            var displayString = """ ;
+            var displayString = "" ;
             var textBlock = new TextBlock ( ) { Text = displayString } ;
 
             var contentPresenter = new ContentControl ( ) { } ;
             contentPresenter.Content = resource ;
-            LogManager.GetCurrentClassLogger ( )
+            logger
                       .Info (
                              "Resource is {Resource}{t}"
                            , resource                       ?? "null"
                            , resource?.GetType ( ).FullName ?? "null"
                             ) ;
             contentPresenter.ContentTemplate = resource as DataTemplate ;
-            LogManager.GetCurrentClassLogger ( )
+            logger
                       .Info ( "{t}" , contentPresenter.ContentTemplate?.DataType?.ToString ( ) ?? "null" ) ;
             // toolTipContent.Children.Add ( contentPresenter ) ;
             // toolTipContent.Children.Add ( textBlock ) ;
             try
             {
-                LogInvocationSpan.Logger.Info ( "xaml = {xaml}" , XamlWriter.Save ( contentPresenter ) ) ;
+                //Logger.Info ( "xaml = {xaml}" , XamlWriter.Save ( contentPresenter ) ) ;
             }
             catch ( Exception ex )
             {

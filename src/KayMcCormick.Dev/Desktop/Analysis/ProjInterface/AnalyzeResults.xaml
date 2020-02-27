@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjInterface"
-        xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
         xmlns:codeAnalysisApp1="clr-namespace:CodeAnalysisApp1;assembly=CodeAnalysisApp1"
+        xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
         mc:Ignorable="d"
         DataContext="{Binding ElementName=results, Path=ViewModel}"
         Title="AnalyzeResults" Height="450" Width="800">
@@ -20,9 +20,8 @@
 </StackPanel>
     </DataTemplate>
   <DataTemplate x:Key="FCodeTemplate" DataType="codeAnalysisApp1:LogInvocation" >
-      <local:FormattedCode Tag="{Binding .}">
-        </local:FormattedCode>
-    </DataTemplate>
+    <TextBlock/>
+  </DataTemplate>
 
 
 <local:CodeConverter x:Key="CodeConverter" />

@@ -43,8 +43,13 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+    <Menu Header="Fie">
+<MenuItem Header="Open" Command="{StaticResource OpenCommand}"/>
+<MenuItem Header="Exit" Command="{StaticResource ExitCommand}"/>
+    </Menu>
     <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
       <Button Click="ButtonBase_OnClick" Content="Refresh" />
       <TextBlock Margin="10" Text="{Binding CurrentProgress.FileName}"></TextBlock>

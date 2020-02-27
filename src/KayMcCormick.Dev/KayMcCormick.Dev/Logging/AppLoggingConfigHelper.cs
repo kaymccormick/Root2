@@ -1,22 +1,22 @@
-using System ;
-using System.Collections.Generic ;
-using System.Diagnostics ;
-using System.IO ;
-using System.Linq ;
-using System.Reflection ;
-using System.Runtime.CompilerServices ;
-using System.Security ;
-using System.Text ;
-using System.Text.RegularExpressions ;
-using Castle.DynamicProxy ;
-using DynamicData ;
-using JetBrains.Annotations ;
-using KayMcCormick.Logging.Common ;
-using NLog ;
-using NLog.Common ;
-using NLog.Config ;
-using NLog.Layouts ;
-using NLog.Targets ;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Security;
+using System.Text;
+using System.Text.RegularExpressions;
+using Castle.DynamicProxy;
+using DynamicData;
+using JetBrains.Annotations;
+using KayMcCormick.Logging.Common;
+using NLog;
+using NLog.Common;
+using NLog.Config;
+using NLog.Layouts;
+using NLog.Targets;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -75,8 +75,8 @@ namespace KayMcCormick.Dev.Logging
         private static void DoLogMessage(string message)
         {
             System.Diagnostics.Debug.WriteLine(
-                                                nameof(AppLoggingConfigHelper) + ":" + message
-                                               );
+                                               nameof(AppLoggingConfigHelper) + ":" + message
+                                              );
             // System.Diagnostics.Debug.WriteLine ( nameof(AppLoggingConfigHelper) + ":" + message ) ;
         }
 
@@ -91,9 +91,9 @@ namespace KayMcCormick.Dev.Logging
         )
         {
             // logMethod(
-                       // source
-                          // .AppLoggingConfigHelper_ConfigureLogging_____Starting_logger_configuration_
-                      // );
+            // source
+            // .AppLoggingConfigHelper_ConfigureLogging_____Starting_logger_configuration_
+            // );
             InternalLogging();
 
             LogFactory proxiedFactory = null;
@@ -144,7 +144,7 @@ namespace KayMcCormick.Dev.Logging
             {
                 var targets = disabledLogTargets.Split(';');
                 disabled = new HashSet<string>(targets);
-                logMethod ( string.Join ( ", " , disabled ) ) ;
+                logMethod(string.Join(", ", disabled));
             }
             else
             {
@@ -156,12 +156,13 @@ namespace KayMcCormick.Dev.Logging
 
             // TODO make this address configurable
             var endpointAddress =
-                Environment.GetEnvironmentVariable ( "LOGGING_WEBSERVICE_ENDPOINT" )
-                ?? "http://xx1.mynetgear.com/LogService/ReceiveLogs.svc" ;
-            var webServiceTarget = new LogReceiverWebServiceTarget ( "log" )
-                                   {
-                                       // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
-                                       EndpointAddress                                           =       endpointAddress   } ;
+                Environment.GetEnvironmentVariable("LOGGING_WEBSERVICE_ENDPOINT")
+                ?? "http://xx1.mynetgear.com/LogService/ReceiveLogs.svc";
+            var webServiceTarget = new LogReceiverWebServiceTarget("log")
+            {
+                // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
+                EndpointAddress = endpointAddress
+            };
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             dict[LogLevel.Debug].Add(webServiceTarget);
@@ -194,13 +195,13 @@ namespace KayMcCormick.Dev.Logging
             var jsonFileTarget = JsonFileTarget();
             t.Add(jsonFileTarget);
             var byType = new Dictionary<Type, int>();
-            var keys = dict.Keys.ToList() ;
-            foreach ( var k in keys)
+            var keys = dict.Keys.ToList();
+            foreach (var k in keys)
             {
-                var v = dict[ k ] ;
+                var v = dict[k];
                 dict[k] =
-                    v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
-                     .ToList ( ) ;
+                    v.Where((target, i) => !disabled.Contains(target.Name))
+                     .ToList();
             }
 
             foreach (var target in dict.SelectMany(pair => pair.Value))
@@ -439,7 +440,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         /// <param name="collect"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static Dictionary < string , object > DoDumpConfig(Action<string> collect)
+        public static Dictionary<string, object> DoDumpConfig(Action<string> collect)
         {
             var config = LogManager.Configuration;
             if (config == null)
@@ -447,30 +448,30 @@ namespace KayMcCormick.Dev.Logging
                 return null;
             }
 
-            Dictionary<string, object> configInfo = new Dictionary < string , object > ();
-            var targets = new Dictionary < string , object > ( ) ;
-            configInfo[ "Targets" ] = targets ;
+            Dictionary<string, object> configInfo = new Dictionary<string, object>();
+            var targets = new Dictionary<string, object>();
+            configInfo["Targets"] = targets;
             foreach (var aTarget in config.AllTargets)
             {
-                var target = new Dictionary < string , object > ( ) ;
-                targets[ aTarget.Name ] = target ;
+                var target = new Dictionary<string, object>();
+                targets[aTarget.Name] = target;
                 collect(aTarget.Name);
-                var targetType = aTarget.GetType().ToString() ;
-                target[ "Type" ] = targetType ;
+                var targetType = aTarget.GetType().ToString();
+                target["Type"] = targetType;
                 collect(targetType);
-                target[ "Rules" ] = config.LoggingRules
-                                          .Where ( rule => rule.Targets.Contains ( aTarget ) )
-                                          .Select ( ( rule , i ) => new { rule , i } )
-                                          .ToDictionary ( arg => arg.i , arg => arg.rule ) ;
+                target["Rules"] = config.LoggingRules
+                                          .Where(rule => rule.Targets.Contains(aTarget))
+                                          .Select((rule, i) => new { rule, i })
+                                          .ToDictionary(arg => arg.i, arg => arg.rule);
 
-                foreach ( var propertyInfo in aTarget.GetType ( ).GetProperties ( ) )
+                foreach (var propertyInfo in aTarget.GetType().GetProperties())
                 {
-                    var p = propertyInfo.GetValue ( aTarget ) ;
-                    target[ propertyInfo.Name ] = p ;
+                    var p = propertyInfo.GetValue(aTarget);
+                    target[propertyInfo.Name] = p;
                 }
-                if ( aTarget is FileTarget f )
+                if (aTarget is FileTarget f)
                 {
-                    target[ "FileName" ] = f.FileName ;
+                    target["FileName"] = f.FileName;
                 }
                 if (aTarget is TargetWithLayout a)
                 {
@@ -510,7 +511,7 @@ namespace KayMcCormick.Dev.Logging
                 }
             }
 
-            return configInfo ;
+            return configInfo;
         }
 
         private static void DumpPossibleConfig(LoggingConfiguration configuration)
@@ -594,7 +595,7 @@ namespace KayMcCormick.Dev.Logging
                       ,
                 IncludeMdlc = true
                       ,
-                       IncludeAllProperties = true
+                IncludeAllProperties = true
                       ,
                 MaxRecursionLimit = 3
             };

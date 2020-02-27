@@ -5,19 +5,14 @@
 // ProjLib
 // ISpanObject.cs
 // 
-// 2020-02-26-10:01 PM
+// 2020-02-27-5:22 AM
 // 
 // ---
 #endregion
-using System.Windows ;
-using Microsoft.CodeAnalysis.Text ;
-
 namespace ProjLib
 {
-    public interface ISpanViewModel
+    public interface ISpanObject < T >
     {
-        object getInstance();
-        TextSpan Span { get; }
-
+        T Instance { get ; set ; }
     }
 }

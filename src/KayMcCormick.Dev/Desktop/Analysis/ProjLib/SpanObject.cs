@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis.Text ;
 
 namespace ProjLib
 {
-    public class SpanObject < T > : ISpanViewModel
+    public class SpanObject < T > : ISpanViewModel, ISpanObject <T>
     {
         public  T                                     _instance ;
         public SpanObject (

@@ -37,7 +37,7 @@ namespace Tests.Main
         [Fact]
         void TestContanier ( )
         {
-            var x = ProjInterface.Container.GetContainer ( ) ;
+            var x = ProjInterface.InterfaceContainer.GetContainer ( ) ;
             var y = x.Resolve < IWorkspacesViewModel > ( ) ;
             Logger.Debug("{viewModel}", y);
 

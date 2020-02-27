@@ -21,6 +21,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
+using Autofac ;
 using CodeAnalysisApp1 ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.Build.Locator ;
@@ -32,6 +33,7 @@ using ProjInterface ;
 using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
+using FormattedCode = ProjLib.FormattedCode ;
 
 namespace ProjTests
 {
@@ -195,15 +197,21 @@ namespace ProjTests
         [ InlineData ( @"V2\LogTest\LogTest.sln" , "LogTest" , "Program.cs" ) ]
         public void TestProject3 ( string p1 , string proj , string doc )
         {
-            Task.WaitAll ( Command_ ( p1 , proj , doc ) ) ;
+            Task.WaitAll ( Command_ ( p1 , proj , doc, Container.GetScope() ) ) ;
         }
 
-        private async Task Command_ ( string p1 , string proj , string doc )
+        private async Task Command_ (
+            string         p1
+          , string         proj
+          , string         doc
+          , ILifetimeScope scope
+        )
         {
             Assert.NotNull ( VSI ) ;
             var root = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos" ;
             var p = Path.Combine ( root , p1 ) ;
             Assert.True ( File.Exists ( p ) ) ;
+            // getScope.Resolve < ProjectHandlerImpl > ( ) ;
             var projectHandlerImpl = new ProjectHandlerImpl ( p , VSI ) ;
             await projectHandlerImpl.LoadAsync ( ) ;
             projectHandlerImpl.ProcessProject += ( workspace , project ) => {
@@ -219,7 +227,7 @@ namespace ProjTests
             Action < LogInvocation > consumeLogInvocation = invocation => {
                 var container = new StackPanel ( ) { Orientation = Orientation.Vertical } ;
 
-                var visitor = new Visitor ( ) ;
+                var visitor = scope.Resolve < Visitor2 > ( ) ;
                 visitor.Visit ( invocation.Statement ) ;
             } ;
             await projectHandlerImpl.OnProcessDocumentAsync ( theDocument , consumeLogInvocation )
@@ -286,7 +294,7 @@ namespace ProjTests
                 while (inner != null
                        && !seen.Contains(inner))
                 {
-                    Logger.Error(inner, inner.Message);
+                    Logger.Error(inner, inner.ToString);
                     seen.Add(inner);
                     inner = inner.InnerException;
                 }
@@ -297,33 +305,53 @@ namespace ProjTests
             }
         }
 
+        [ WpfFact ]
+        public void TestContainer ( )
+        {
+            var scope = Container.GetScope();
+            // var q1= scope.Resolve<IEnumerable<ISourceCode>>();
+            // foreach ( var sourceCode in q1 )
+            // {
+                // Logger.Trace ( "SourceCode is {sourceCode}" , sourceCode.SourceCode ) ;
+            // }
+            
+
+            var fmt = scope.Resolve < IEnumerable <IHasLogInvocations> > ( ) ;
+            foreach ( var q in fmt )
+            {
+                Logger.Info (
+                             "tre is {x}"
+                           , q.LogInvocationList
+                            ) ;
+            }
+            Assert.NotNull(fmt);
+
+            
+        }
 
         [WpfFact ]
         public void TestCommand ( )
         {
-
             AppDomain.CurrentDomain.FirstChanceException += ( sender , args ) => {
                 HandleInnerExceptions ( args) ;
 
             } ;
+            var scope = Container.GetScope ( ) ;
+            var transform = scope.Resolve < TransformScope > ( ) ;
             var w = new Window ( ) { } ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
-            var defaultSourceCode = ProjInterface.Resources.DefaultSourceCode ;
-            FormattedCode fmt = new FormattedCode ( defaultSourceCode ) ;
+            var fmt = transform.FormattedCodeControl ;
+            fmt.SourceCode = transform.SourceCode ;
             w.Content = fmt ;
-            var mi = new MakeInfo (
-                                                  null
-                                                , fmt
-                                                , defaultSourceCode
-                                                , null
-                                                 ) ;
-            var task = fmt._taskFactory.StartNew(ProjUtils.MakeFormattedCode, mi
-                                                 , CancellationToken.None, 
-                                                   TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning
+            var mi = new MakeInfo(fmt, transform.SourceCode);                                  
+            Assert.NotNull ( mi ) ;
+            var task = fmt.TaskFactory.StartNew(ProjUtils.MakeFormattedCode, mi
+                                              , CancellationToken.None, 
+                                                TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning
 
-                                                  ,
-                                                   TaskScheduler.Default
-                                                  ) ;
+                                               ,
+                                                TaskScheduler.Default
+                                               ) ;
             fmt.tasks.Add(task);
             w.ShowDialog();
             Task.WaitAll ( fmt.tasks.ToArray()) ;

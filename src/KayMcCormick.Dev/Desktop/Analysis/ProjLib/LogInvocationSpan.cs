@@ -20,7 +20,7 @@ using NLog ;
 
 namespace ProjLib
 {
-    public class LogInvocationSpan : SpanObject < LogInvocation >
+    public class LogInvocationSpan : SpanObject < LogInvocation >, ISpanObject <LogInvocation>
     {
         private static Logger Logger = Logger ;
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>

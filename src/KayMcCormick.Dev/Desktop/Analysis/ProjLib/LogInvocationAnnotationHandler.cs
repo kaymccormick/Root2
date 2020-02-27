@@ -17,14 +17,10 @@ using NLog ;
 
 namespace ProjLib
 {
-    public class Visitor2Impl : Visitor2
-    {
-        #region Overrides of Visitor2
-        public override void VisitToken ( SyntaxToken token )
-        {
-            base.VisitToken ( token ) ;
 
-        }
+#if false
+    public class LogInvocationAnnotationHandler : Visitor2
+    {
 
         public override void DefaultVisit ( SyntaxNode node )
         {
@@ -69,11 +65,15 @@ namespace ProjLib
             }
 
         }
-        #endregion
 
-        public Visitor2Impl ( ) : base ( null )
+
+        public LogInvocationAnnotationHandler ( ) : base ( null )
 {
 
 }
+
+        public object logInvAnno { get { return _logInvAnno ; } set { _logInvAnno = value ; } }
+
     }
+#endif
 }
