@@ -53,7 +53,7 @@ namespace ProjLib
                     var strings = value.Split ( '|' ) ;
                     try
                     {
-                        var mruitem = MruItem.CreateInstance ( strings[ 0 ] , strings.Length >= 4 ? strings[ 3 ] : null) ;
+                        var mruitem = new MruItem( strings[ 0 ] , strings.Length >= 4 ? strings[ 3 ] : null) ;
                         Logger.Debug ( "Mru Item is {mruitem}" , mruitem ) ;
                         mruItemListFor.Add ( mruitem ) ;
                     }

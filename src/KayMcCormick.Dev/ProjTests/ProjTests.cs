@@ -336,8 +336,10 @@ namespace ProjTests
                 HandleInnerExceptions ( args) ;
 
             } ;
-            var scope = Container.GetScope ( ) ;
-            var transform = scope.Resolve < TransformScope > ( ) ;
+            
+
+
+            Logger.Info ( "Transform is {transform}" , transform ) ;
             var w = new Window ( ) { } ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
             var fmt = transform.FormattedCodeControl ;

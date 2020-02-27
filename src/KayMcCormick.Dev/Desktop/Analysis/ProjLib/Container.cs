@@ -45,12 +45,10 @@ namespace ProjLib
              .As < ISpanObject < SyntaxTrivia > > ( ) ;
             b.RegisterType < Visitor2 > ( ).AsSelf ( ).As < CSharpSyntaxWalker > ( ) ;
             b.RegisterType < FormattedCode > ( ).AsSelf ( ) ;
-            b.RegisterType<HasSourceCode>()
-             .As<ISourceCode>()
-             .WithParameter(new PositionalParameter(0, Resources.Program_Parse));
-            b.RegisterType<HasSourceCode>()
-             .As<ISourceCode>()
-             .WithParameter(new PositionalParameter(0, Resources.Program_Parse));
+            // b.RegisterType<HasSourceCode>()
+            //  .As<ISourceCode>()
+            //  .WithParameter(new PositionalParameter(0, Resources.Program_Parse));
+
             b.RegisterType < TransformScope > ( )
              .WithParameter ( new NamedParameter ( "sourceCode" , Resources.Program_Parse ) )
              .AsSelf ( )

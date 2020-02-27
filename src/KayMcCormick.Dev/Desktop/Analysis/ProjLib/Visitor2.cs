@@ -31,7 +31,7 @@ namespace ProjLib
         private static Logger                                logger = LogManager.GetCurrentClassLogger ( ) ;
         private        Func < string , object , LogBuilder > _message ;
 
-        public Visitor2 ( IHassModel model)
+        public Visitor2 ( IHasTreeAndModel model)
         {
             _model = model.Model ;
             _message = new LogBuilder(LogManager.GetCurrentClassLogger()).Message ;

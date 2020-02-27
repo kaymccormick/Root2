@@ -23,6 +23,7 @@ using CodeAnalysisApp1 ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.VisualStudio.Settings;
+using NLog ;
 using ProjLib.Properties ;
 
 namespace ProjLib
@@ -94,6 +95,29 @@ namespace ProjLib
                 document => CurrentDocumentPath = document.RelativePath ( ) ;
             _handler.progressReporter = new MyProgress ( this ) ;
             await _handler.LoadAsync ( ) ;
+            foreach ( var currentSolutionProject in _handler.Workspace.CurrentSolution.Projects )
+            {
+                LogManager.GetCurrentClassLogger ( )
+                          .Info ( "Current {project}" , currentSolutionProject.Name ) ;
+                Dispatcher.CurrentDispatcher.Invoke (
+                                                     ( ) => {
+                                                         sender2SelectedItem.ProjectCollection.Add (
+                                                                                                    new
+                                                                                                        AppProjectInfo (
+                                                                                                                        currentSolutionProject
+                                                                                                                           .Name
+                                                                                                                      , currentSolutionProject
+                                                                                                                           .FilePath
+                                                                                                                      , currentSolutionProject
+                                                                                                                       .Documents
+                                                                                                                       .Count ( )
+                                                                                                                       )
+                                                                                                   ) ;
+                                                         
+                                                     }
+                                                   , DispatcherPriority.Send
+                                                    ) ;
+            }
 
         }
 

@@ -87,5 +87,21 @@ namespace ProjInterface
             await ViewModel.ProcessSolutionAsync(Dispatcher);
 
         }
+
+        private void Mru_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
+        {
+            var sender2SelectedItem = (IMruItem)mru.SelectedItem;
+            var vsSelectedItem = (VsInstance)vs.SelectedItem;
+            var workspacesViewModel = ViewModel;
+            Task.Run (
+                      ( ) => {
+                          workspacesViewModel.LoadSolutionAsync (
+                                                                 vsSelectedItem
+                                                               , sender2SelectedItem
+                                                                ) ;
+                      }
+                     ) ;
+
+        }
     }
 }

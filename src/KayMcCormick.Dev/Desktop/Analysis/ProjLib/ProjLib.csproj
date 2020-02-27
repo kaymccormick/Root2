@@ -71,17 +71,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="XamlBuildTask" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveSpans.cs" />
+    <Compile Include="AppProjectInfo.cs" />
+    <Compile Include="AppStatus.cs" />
     <Compile Include="Container.cs" />
+    <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
+    <Compile Include="IRuntimestatus.cs" />
     <Compile Include="ISpanObject.cs" />
     <Compile Include="ISpanToolTip.cs" />
     <Compile Include="ISpanToolTipViewModel.cs" />
@@ -91,6 +96,9 @@
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
     <Compile Include="LogInvocationSpan.cs" />
+    <Compile Include="MainStatusBar.xaml.cs">
+      <DependentUpon>MainStatusBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MakeInfo.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
@@ -105,10 +113,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Resources\AttachedProps.cs" />
     <Compile Include="SpanObject.cs" />
     <Compile Include="SpanToolTip.cs" />
     <Compile Include="SpanToolTipViewModel.cs" />
     <Compile Include="SpanTT.cs" />
+    <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />
     <Compile Include="TokenSpanObject.cs" />
     <Compile Include="ToolTips.cs" />
@@ -206,6 +216,10 @@
     <Page Include="FormattedCode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainStatusBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NodePanel.xaml">
       <Generator>MSBuild:Compile</Generator>

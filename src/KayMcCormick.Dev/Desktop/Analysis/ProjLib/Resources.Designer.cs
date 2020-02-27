@@ -61,6 +61,26 @@ namespace ProjLib {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to using System.Windows ;
+        ///using System.Windows.Data ;
+        ///
+        ///namespace WpfApp2
+        ///{
+        ///    public static class AttachedProps
+        ///    {
+        ///        [System.Diagnostics.CodeAnalysis.SuppressMessage(&quot;WpfAnalyzers.DependencyProperty&quot;, &quot;WPF0023:The callback is trivial, convert to lambda.&quot;, Justification = &quot;&lt;Pending&gt;&quot;)]
+        ///        public static readonly DependencyProperty PropertiesCollectionProperty =
+        ///            DependencyProperty.RegisterAttached (
+        ///                                                 &quot;PropertiesCollection&quot;
+        ///      [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AttachedProps {
+            get {
+                return ResourceManager.GetString("AttachedProps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to using System;
         ///using System.Collections.Generic;
         ///using System.Linq;

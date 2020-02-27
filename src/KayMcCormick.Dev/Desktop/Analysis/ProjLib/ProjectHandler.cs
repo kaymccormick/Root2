@@ -57,7 +57,7 @@ namespace ProjLib
         /// <summary>Signals the object that initialization is complete.</summary>
         public void EndInit ( ) { throw new NotImplementedException ( ) ; }
 
-        public async Task < MSBuildWorkspace > NewMethod (
+        public async Task < MSBuildWorkspace > LoadSolutionInstanceAsync(
             string               solutionPath
           , VisualStudioInstance instance
         )
@@ -65,7 +65,7 @@ namespace ProjLib
         {
             if ( MSBuildLocator.IsRegistered )
             {
-                MSBuildLocator.Unregister ( ) ;
+                // MSBuildLocator.Unregister ( ) ;
             }
 
             if ( MSBuildLocator.CanRegister )
@@ -74,7 +74,7 @@ namespace ProjLib
             }
             else
             {
-                throw new Exception ( "Unable to register msbuildlocator" ) ;
+                // throw new Exception ( "Unable to register msbuildlocator" ) ;
             }
 
             MSBuildWorkspace workspace ;
@@ -98,7 +98,7 @@ namespace ProjLib
             await workspace.OpenSolutionAsync ( solutionPath , progressReporter ) ;
             // , new Program.ConsoleProgressReporter()
             // );
-            Console.WriteLine ( $"Finished loading solution '{solutionPath}'" ) ;
+            Logger.Debug( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
         }
 
@@ -106,7 +106,7 @@ namespace ProjLib
 
         public async Task < bool > LoadAsync ( )
         {
-            Workspace = await NewMethod ( SolutionPath , Instance ) ;
+            Workspace = await LoadSolutionInstanceAsync( SolutionPath , Instance ) ;
             return true ;
         }
 
@@ -147,7 +147,7 @@ namespace ProjLib
             {
                 return ;
             }
-
+            
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query ;
             try
             {
@@ -155,22 +155,7 @@ namespace ProjLib
                                   new CodeSource(document1.FilePath), CurrentRoot , CurrentModel, consumeLogInvocation
                                 , this.LimitToMarkedStatements
                                 , this.LogVisitedStatements, (parms) => LogUsages.ProcessInvocation( parms ), CurrentTree);
-                        //
-                        // if ( query != null )
-                        // {
-                        //     var qresult = query.ToList ( ) ;
-                        //     Collect ( qresult) ;
-                        //     foreach ( var expr in qresult.SelectMany (
-                        //                                             tuple => tuple.Item3.Select (
-                        //                                                                          tuple1
-                        //                                                                              => tuple1
-                        //                                                                                 .Item1
-                        //                                                                         )
-                        //                                            ) )
-                        //     {
-                        //
-                        //     }
-                        // }
+
             }
             catch ( Exception ex )
             {

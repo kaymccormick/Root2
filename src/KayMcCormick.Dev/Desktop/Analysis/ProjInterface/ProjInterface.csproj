@@ -85,7 +85,6 @@
     </Compile>
     <Compile Include="InterfaceContainer.cs" />
     <Compile Include="MruBackground.cs" />
-    <Compile Include="MruConverter.cs" />
     <EmbeddedResource Include="Program-Parse.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

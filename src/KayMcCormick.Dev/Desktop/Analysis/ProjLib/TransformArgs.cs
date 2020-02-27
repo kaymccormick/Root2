@@ -19,12 +19,16 @@ namespace ProjLib
         public string SourceCode { get ; }
         public FormattedCode FormattedCodeControl { get ; }
         public Visitor2 Visitor2 { get ; }
-
         public TransformScope ( string sourceCode , FormattedCode formattedCodeControl , Visitor2 visitor2 )
         {
             SourceCode = sourceCode ;
             FormattedCodeControl = formattedCodeControl ;
             Visitor2 = visitor2 ;
+        }
+
+        public override string ToString ( )
+        {
+            return $"{nameof ( SourceCode )}: {SourceCode}, {nameof ( FormattedCodeControl )}: {FormattedCodeControl}, {nameof ( Visitor2 )}: {Visitor2}" ;
         }
     }
     public class TransformArgs
