@@ -7,9 +7,13 @@
              xmlns:projLib="clr-namespace:ProjLib"
              mc:Ignorable="d"
              FontSize="24"
+             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=projLib:SpanTT},Path=ViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
   </UserControl.Resources>
-  <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=projLib:SpanTT}, Path=Spans}"></ItemsControl>
+  <DockPanel LastChildFill="True">
+    <StatusBar DockPanel.Dock="Bottom"><StatusBarItem Content="{Binding Path=Location}"></StatusBarItem></StatusBar>
+    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=projLib:SpanTT}, Path=Spans}"></ItemsControl>
+  </DockPanel>
 </UserControl>
   

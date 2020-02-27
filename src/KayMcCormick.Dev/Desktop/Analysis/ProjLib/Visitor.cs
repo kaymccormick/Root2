@@ -273,18 +273,20 @@ namespace ProjLib
                                 ) ;
             }
 
+            var tokenLocation = token.GetLocation ( ) ;
             SetTokenSpan (
                           token.Span
-                        , token.GetLocation ( )
+                        , tokenLocation
                         , token
                         , new TokenSpanObject ( token.Span , token )
                          ) ;
             LogManager.GetCurrentClassLogger ( ).Warn ( "{s}" , token ) ;
             var text = token.ToString ( ) ;
             var tokenSpan = token.Span ;
+            
             Dispatch.Invoke (
                              ( ) => {
-                                 _CreateTokenItem ( style , text , tokenSpan ) ;
+                                 _CreateTokenItem ( style , text , tokenSpan, tokenLocation ) ;
                              }
                            , DispatcherPriority.Send
                             ) ;
@@ -306,12 +308,21 @@ namespace ProjLib
             LogManager.GetCurrentClassLogger ( ).Debug ( "hello" ) ;
         }
 
-        private void _CreateTokenItem ( object style , string Text , TextSpan textSpan )
+        private void _CreateTokenItem (
+            object   style
+          , string   Text
+          , TextSpan textSpan
+          , Location tokenLocation
+        )
         {
             var run = creATErUN ( Text ) ;
             run.Style = ( Style ) _findResource ( style ) ;
+            
             var spanToolTip = new SpanToolTip ( ) ;
             var tt = new SpanTT ( spanToolTip ) ;
+            ISpanToolTipViewModel model = new SpanToolTipViewModel ( ) ;
+            tt.ViewModel = model ;
+            tt.ViewModel.Location = tokenLocation ;
             run.ToolTip = tt ;
             if ( run.Style == null )
             {
@@ -363,7 +374,7 @@ namespace ProjLib
                            .Select ( o => ( object ) o )
                            .ToList ( ) ;
 
-                tt.Spans = spans ;
+                tt.ViewModel.Spans = spans ;
                 // foreach ( var activeSpan in ActiveSpans )
                 // {
                 //     var key = activeSpan.Key ;

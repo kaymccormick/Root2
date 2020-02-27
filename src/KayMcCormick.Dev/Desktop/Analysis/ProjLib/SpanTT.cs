@@ -11,6 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 using System.Windows.Controls ;
+using Microsoft.CodeAnalysis ;
 
 namespace ProjLib
 {
@@ -21,6 +22,7 @@ namespace ProjLib
 
         public SpanToolTip CustomToolTip { get ; set ; }
 
-        public List < object > Spans { get ; set ; }
+        public ISpanToolTipViewModel ViewModel { get ; set ; }
+
     }
 }
