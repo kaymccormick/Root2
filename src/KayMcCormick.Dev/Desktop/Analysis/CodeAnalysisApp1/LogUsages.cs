@@ -24,7 +24,8 @@ namespace CodeAnalysisApp1
           , Action < LogInvocation > consumeLogInvocation
           , bool                  limitToMarkedStatements
           , bool                  logVisitedStatements
-          , Action < InvocationParms  > processInvocation
+          , Action < InvocationParms  > processInvocation,
+            SyntaxTree syntaxTree
         )
         {
             var comp = currentModel.Compilation ;
@@ -139,6 +140,7 @@ namespace CodeAnalysisApp1
                                      , qqq.invocation
                                      , qqq.methodSymbol
                                      , ExceptionType, consumeLogInvocation
+                    , syntaxTree
                                      )
                                       ) ;
                 }
@@ -183,7 +185,7 @@ namespace CodeAnalysisApp1
             return r ;
         }
 
-        public static void ProcessInvocation ( InvocationParms ivp )
+        public static LogInvocation ProcessInvocation ( InvocationParms ivp )
         {
             var exceptionArg = IsException (
                                             ivp.Arg8
@@ -227,6 +229,7 @@ namespace CodeAnalysisApp1
             {
                 msgval.IsMessageTemplate = true ;
                 Logger.Warn ( "Constant {constant}" , constant.Value ) ;
+                msgval.ConstantMessage = constant.Value ;
                 var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
                 var o = new List < object > ( ) ;
                 msgval.MessageTemplate = m ;
@@ -263,24 +266,32 @@ namespace CodeAnalysisApp1
                                                     .StartLinePosition.Line
                                      + 1 ) ;
             
-            var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, statementSyntax, semanticModel, ivp.Arg2, document1);
+            var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, statementSyntax, semanticModel, ivp.Arg2,   document1, ivp.SyntaxTree);
             
             var sourceContext = statementSyntax.Parent.ChildNodes ( ).ToList ( ) ;
             var i2 = sourceContext.IndexOf( statementSyntax ) ;
             string code = "" ;
             string p = statementSyntax.GetLocation ( ).GetMappedLineSpan ( ).Path ;
-            string[] lines = File.ReadAllLines ( p ) ;
-            debugInvo.PrecedingCode = 
-                lines[ statementSyntax.GetLocation ( )
-                                      .GetMappedLineSpan ( )
-                                      .StartLinePosition.Line - 1 ] ;
+            try
+            {
+                string[] lines = File.ReadAllLines ( p ) ;
+                debugInvo.PrecedingCode =
+                    lines[ statementSyntax.GetLocation ( )
+                                          .GetMappedLineSpan ( )
+                                          .StartLinePosition.Line
+                           - 1 ] ;
 
-            debugInvo.Code = statementSyntax.ToFullString ( ) ;
-            debugInvo.FollowingCode = lines[statementSyntax.GetLocation()
-                                                           .GetMappedLineSpan()
-                                                           .EndLinePosition.Line + 1];
-            
-            
+                debugInvo.Code = statementSyntax.ToFullString ( ) ;
+                debugInvo.FollowingCode = lines[ statementSyntax.GetLocation ( )
+                                                                .GetMappedLineSpan ( )
+                                                                .EndLinePosition.Line
+                                                 + 1 ] ;
+
+            }
+            catch ( Exception ex )
+            {
+                Logger.Warn(ex, ex.ToString());
+            }
 
             debugInvo.SourceContext = code ;
 
@@ -288,7 +299,8 @@ namespace CodeAnalysisApp1
             debugInvo.Arguments = transformed.ToList ( ) ;
             Logger.Error ( "{t}" , transformed ) ;
             ivp.Arg1?.Add ( debugInvo ) ;
-            ivp.Arg9( debugInvo ) ;
+            ivp.Arg9?.Invoke( debugInvo ) ;
+            return debugInvo ;
         }
 
         private static bool IsException ( INamedTypeSymbol exceptionType , ITypeSymbol baseType )

@@ -64,8 +64,6 @@ namespace ProjInterface
             }
             
             TextBlock  block = new TextBlock();
-            Visitor v = new Visitor(block, o => null,null,  SyntaxWalkerDepth.Trivia);
-            v.Visit ( st ) ;
             return block ;
         }
 

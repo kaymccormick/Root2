@@ -53,6 +53,7 @@ namespace ProjInterface
             builder.RegisterType < VsInstance > ( ).As < IVsInstance > ( ) ;
             Scope = builder.Build().BeginLifetimeScope();
             var mruItemses = Scope.Resolve < IEnumerable < IMruItems > > ( ) ;
+            var viewModel = Scope.Resolve < IWorkspacesViewModel > ( ) ;
             // Debug.Assert ( mruItemses.Any ( ) ) ;
             return Scope;
         }

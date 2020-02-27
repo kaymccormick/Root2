@@ -75,13 +75,19 @@
     <Compile Include="Ext.cs" />
     <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
+    <Compile Include="ISpanObject.cs" />
     <Compile Include="IVsInstance.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
+    <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="SpanObject.cs" />
+    <Compile Include="SpanToolTip.cs" />
+    <Compile Include="SyntaxNodeSpanObject.cs" />
+    <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="Visitor.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />
@@ -124,6 +130,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461">
+      <Version>1.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Autofac">
       <Version>5.1.2</Version>
@@ -152,6 +163,12 @@
       <Project>{8290c68f-59df-4283-8961-22b47dd198bd}</Project>
       <Name>CodeAnalysisApp1</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="SpanToolTip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

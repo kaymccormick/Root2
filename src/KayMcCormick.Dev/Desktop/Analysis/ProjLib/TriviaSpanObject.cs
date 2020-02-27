@@ -1,0 +1,33 @@
+﻿#region header
+// Kay McCormick (mccor)
+// 
+// KayMcCormick.Dev
+// ProjLib
+// TriviaSpanObject.cs
+// 
+// 2020-02-26-10:01 PM
+// 
+// ---
+#endregion
+using System.Windows ;
+using System.Windows.Controls ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.Text ;
+
+namespace ProjLib
+{
+    public class TriviaSpanObject : SpanObject < SyntaxTrivia >
+    {
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        public TriviaSpanObject ( TextSpan span , SyntaxTrivia instance ) : base ( span , instance )
+        {
+        }
+
+        public override UIElement GetToolTipContent ( )
+        {
+            var kind = Instance.Kind ( ).ToString ( ) ;
+            return new TextBlock ( ) { Text = kind } ;
+        }
+    }
+}

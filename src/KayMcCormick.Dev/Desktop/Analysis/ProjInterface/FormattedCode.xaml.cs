@@ -1,21 +1,19 @@
 ﻿using System;
+using System.Collections.Concurrent ;
 using System.Collections.Generic ;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO ;
+using System.Linq ;
+using System.Threading ;
+using System.Threading.Tasks ;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Documents ;
+using System.Windows.Media ;
 using CodeAnalysisApp1 ;
+using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Microsoft.CodeAnalysis.Text ;
 using Newtonsoft.Json ;
 using NLog ;
 using ProjLib ;
@@ -27,67 +25,155 @@ namespace ProjInterface
     /// </summary>
     public partial class FormattedCode : UserControl
     {
-        public FormattedCode ( )
+        public TaskFactory _taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning | TaskCreationOptions.HideScheduler, TaskContinuationOptions.AttachedToParent, TaskScheduler.Default);
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        public FormattedCode (String code ) : this()
         {
-            InitializeComponent ( ) ;
+            main.Text = code ;
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
+        public FormattedCode ( ) {
+            InitializeComponent();
+            
         }
 
         /// <summary>Invoked whenever the effective value of any dependency property on this <see cref="T:System.Windows.FrameworkElement" /> has been updated. The specific dependency property that changed is reported in the arguments parameter. Overrides <see cref="M:System.Windows.DependencyObject.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)" />.</summary>
         /// <param name="e">The event data that describes the property that changed, as well as old and new values.</param>
         protected override void OnPropertyChanged ( DependencyPropertyChangedEventArgs e )
         {
+            LogManager.GetCurrentClassLogger().Info("{m} {p}", nameof(OnPropertyChanged), e.Property);
             base.OnPropertyChanged ( e ) ;
-            if ( e.Property.Name == "Tag" )
+
+            var eNewValue = e.NewValue ;
+            if (  e.Property.Name == "Tag" )
             {
-                try
-                {
+                LogManager.GetCurrentClassLogger().Info(nameof(OnPropertyChanged));
+                Logger.Info ( "Starting transform" ) ;
+                //tasks.Add ( _taskFactory.StartNew ( ( ) =>
+                PerformTransform ( eNewValue ) ;
+            }
 
-                    TextBlock block = ( TextBlock ) this.Content ;
-                    block.Text = "" ;
-                    CodeAnalyseContext exx = ( CodeAnalyseContext ) this.Tag ;
+        //               ( ) => {
+            //                   if ( e.Property.Name == "Tag" )
+            //                   {
+            //                       try
+            //                       {
+            //                           return TransformCodeAsync ( ) ;
+            //                       }`
+            //                       catch ( Exception ex )
+            //                       {
+            //                           LogManager
+            //                              .GetCurrentClassLogger ( )
+            //                              .Error ( ex , ex.ToString ( ) ) ;
+            //                           if ( UiError ) MessageBox.Show ( ex.ToString ( ) , "Error" ) ;
+            //                       }
+            //                   }
+            //               }
+            //              ) ;
+        }
 
-                    CSharpSyntaxRewriter rewriter = new MyRewriter(exx.CurrentModel,  new CodeSource("input"), exx.CurrentRoot);
+        public ConcurrentBag<Task> tasks { get ; set ; } = new ConcurrentBag < Task > ();
+
+        private void PerformTransform ( object value  )
+        {
+            tasks.Add(
+                      _taskFactory.StartNew (
+                                             TransformCodeAsync
+                                           , ( object ) Tuple.Create (apanel
+                                                                
+                                                                    , ( CodeAnalyseContext )
+                                                                      value
+                                                                    , this
+                                                                     )
+                                            )
+                     ) ;
+        }
+
+        public bool UiError { get ; set ; }
+
+        private static async Task TransformCodeAsync (object o )
+        {
+            Tuple < StackPanel , CodeAnalyseContext, FormattedCode > t = ( Tuple < StackPanel , CodeAnalyseContext, FormattedCode > ) o ;
+            StackPanel panel = t.Item1 ;
+            LogManager.GetCurrentClassLogger ( ).Info ( nameof ( TransformCodeAsync ) ) ;
+            CodeAnalyseContext exx = t.Item2 ;
+
+            if ( exx != null ) {
+                if ( t.Item3 != null ) {
+                    CSharpSyntaxRewriter rewriter = new LogUsagesRewriter (
+                                                                           exx.SyntaxTree
+                                                                         , exx.CurrentModel
+                                                                         , new CodeSource ( "input" )
+                                                                         , exx.CurrentRoot, t.Item3.Progress
+                                                                          ) ;
                     var newNode = rewriter.Visit ( exx.Node ) ;
+                    CodeAnalyseContext newContext =  CodeAnalyseContext.FromSyntaxNode(newNode, "rewritten");
 
-                    CodeAnalyseContext newContext = new CodeAnalyseContext (
-                                                                            exx.CurrentModel
-                                                                          , exx.CurrentRoot
-                                                                          , exx.Statement
-                                                                          , newNode
-                                                                          , exx.Document
-                                                                           ) ;
+                    var annotations =  newNode.DescendantNodesAndTokensAndSelf ( )
+                                              .Where ( token => token.HasAnnotations ( "LogInvocation" ) )
+                                              .SelectMany ( token => token.GetAnnotations ( "LogInvocation" ) )
+                                              .ToList ( ) ; // var root = exx.SyntaxTree.WithRootAndOptions (newNode , new CSharpParseOptions ( ) ) ;
+
+                    File.WriteAllText ("annotations.json",
+                                       JsonConvert.SerializeObject ( annotations , Formatting.Indented )
+                                      ) ;
+            
+
                     // LogUsages.FindLogUsages(exx.Document, exx.CurrentRoot, exx.CurrentModel, ConsumeLogInvocation, false, false, ProcessInvocation);
+                    exx = newContext ;
                     var statementSyntax = exx.Node ;
                     if ( statementSyntax == null )
                     {
                         throw new Exception ( "no st" ) ;
                     }
 
-                    if ( DoSym )
+                    if ( true)
                     {
-                        Z z = new Z ( block , statementSyntax.FullSpan , TryFindResource ) ;
-                        var enclosingSymbol =
-                            exx.CurrentModel.GetEnclosingSymbol ( statementSyntax.SpanStart ) ;
-                        z.Visit ( enclosingSymbol ) ;
-                    }
-
-                    if ( DoVisit )
-                    {
-                        Visitor x = new Visitor (
-                                                 block
-                                               , TryFindResource
-                                               , newContext
-                                               , SyntaxWalkerDepth.Trivia
-                                                ) ;
+                        panel.Dispatcher.Invoke ( ( ) => panel.Children.Clear ( ) ) ;
+                        Visitor x = new Visitor (  panel, t.Item3.TryFindResource, newContext , exx.CurrentModel) ;
                         x.Visit ( statementSyntax ) ;
+                        Logger.Info ( "done" ) ;
                     }
-                }
-                catch ( Exception ex )
-                {
-                    MessageBox.Show ( ex.ToString ( ) , "Error" ) ;
-                    LogManager.GetCurrentClassLogger().Error ( ex , ex.ToString ( ) ) ;
                 }
             }
+        }
+
+        private void Progress ( SyntaxNode obj, TextSpan span)
+        {
+            LogManager.GetCurrentClassLogger ( ).Debug ( "{proc}" , nameof ( Progress ) ) ;
+            var elementName = obj.Kind ( )
+                              + "."
+                              + obj.Span ;
+            Dispatcher.Invoke (
+                               ( ) => {
+                                   Logger.Warn("looking for {x}", elementName);
+                                   var node = LogicalTreeHelper.FindLogicalNode (
+                                                                                 this
+                                                                               , elementName
+                                                                                ) ;
+                                   if ( node == null )
+                                   {
+                                       Logger.Info ( "cant find it" ) ;
+                                       var t = main.Text ;              
+                main.Inlines.Clear();
+                main.Inlines.Add(new Run(t.Substring(0, span.Start)) { Background = Brushes.Green });
+                main.Inlines.Add (
+                                  new Run ( t.Substring ( span.Start , span.Length ) )
+                                  {
+                                      Background = Brushes.Red
+                                  }
+                                 ) ;
+                        main.Inlines.Add(new Run(t.Substring(span.End)));
+                                   }
+                                   else
+                                   {
+                                       ( node as Run ).Background = Brushes.Gray ;
+                                   }
+
+                                   ;
+                               }
+                              ) ;
         }
 
         private void ProcessInvocation (
@@ -109,61 +195,7 @@ namespace ProjInterface
         public bool DoSym { get ; set ; }
 
         public bool DoVisit { get ; set ; } = true ;
-    }
 
-    public class MyRewriter : CSharpSyntaxRewriter
-    {
-        private SemanticModel model ;
-        private ICodeSource document ;
-        private CompilationUnitSyntax currentRoot ;
-        private INamedTypeSymbol exceptionType ;
-
-        public MyRewriter ( SemanticModel model , ICodeSource document , CompilationUnitSyntax currentRoot , bool visitIntoStructuredTrivia = false ) : base ( visitIntoStructuredTrivia )
-        {
-            this.model = model ;
-            this.document = document ;
-            this.currentRoot = currentRoot ;
-            this.exceptionType = this.model.Compilation.GetTypeByMetadataName("System.Exception");
-        }
-
-
-        /// <summary>Called when the visitor visits a InvocationExpressionSyntax node.</summary>
-        public override SyntaxNode VisitInvocationExpression ( InvocationExpressionSyntax node )
-        {
-            if ( LogUsages.CheckInvocationExpression ( node, out var methodSymbol, model ) )
-            {
-                LogInvocation logInvocation = null ;
-                LogUsages.ProcessInvocation (
-                                             new InvocationParms (
-                                                                  null
-                                                                , currentRoot
-                                                                , model
-                                                                , document
-                                                                , node.AncestorsAndSelf ( )
-                                                                      .OfType < StatementSyntax
-                                                                       > ( )
-                                                                      .First ( )
-                                                                , node
-                                                                , methodSymbol
-                                                                , exceptionType
-                                                                , invocation => {
-                                                                      logInvocation = invocation ;
-                                                                  }
-                                                                 )
-                                            ) ;
-                                 
-                return node.WithAdditionalAnnotations (
-                                                       new[]
-                                                       {
-                                                           new SyntaxAnnotation (
-                                                                                 "LogInvocation"
-                                                                               , JsonConvert.SerializeObject(logInvocation))
-                                                           
-                                                       }
-                                                      ) ;
-            }
-
-            return node ;
-        }
+     
     }
 }

@@ -7,8 +7,11 @@ namespace CodeAnalysisApp1
 {
     public class InvocationParms
     {
-        public InvocationParms ( List < LogInvocation > arg1 , CompilationUnitSyntax arg2 , SemanticModel arg3 , ICodeSource  document , StatementSyntax arg5 , InvocationExpressionSyntax arg6 , IMethodSymbol arg7 , INamedTypeSymbol arg8 , Action < LogInvocation > arg9 )
+        public readonly SyntaxTree SyntaxTree ;
+
+        public InvocationParms ( List < LogInvocation > arg1 , CompilationUnitSyntax arg2 , SemanticModel arg3 , ICodeSource  document , StatementSyntax arg5 , InvocationExpressionSyntax arg6 , IMethodSymbol arg7 , INamedTypeSymbol arg8 , Action < LogInvocation > arg9, SyntaxTree syntaxTree )
         {
+            SyntaxTree = syntaxTree ;
             Arg1 = arg1 ;
             Arg2 = arg2 ;
             Arg3 = arg3 ;

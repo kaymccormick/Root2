@@ -89,7 +89,12 @@
     </Compile>
     <Compile Include="MruBackground.cs" />
     <Compile Include="MruConverter.cs" />
+    <EmbeddedResource Include="Program-Parse.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Compile Include="ProjCommands.cs" />
+    <Compile Include="ProjUtils.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="VsInstancePanel.xaml.cs">
       <DependentUpon>VsInstancePanel.xaml</DependentUpon>
     </Compile>
@@ -116,6 +121,10 @@
     <Page Include="Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VsInstancePanel.xaml">
       <SubType>Designer</SubType>

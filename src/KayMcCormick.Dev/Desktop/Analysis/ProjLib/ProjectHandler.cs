@@ -154,7 +154,7 @@ namespace ProjLib
                 LogUsages.FindLogUsages (
                                   new CodeSource(document1.FilePath), CurrentRoot , CurrentModel, consumeLogInvocation
                                 , this.LimitToMarkedStatements
-                                , this.LogVisitedStatements, (parms) => LogUsages.ProcessInvocation( parms ));
+                                , this.LogVisitedStatements, (parms) => LogUsages.ProcessInvocation( parms ), CurrentTree);
                         //
                         // if ( query != null )
                         // {
