@@ -16,7 +16,7 @@ using System.Windows.Media ;
 
 namespace ProjLib
 {
-    public partial class SpanToolTip : UserControl
+    public partial class SpanToolTip : UserControl , ISpanToolTip
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
         ///

@@ -23,7 +23,7 @@ namespace ProjLib
     public class Visitor : CSharpSyntaxWalker
     {
         private readonly Func < object , object > _findResource ;
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static   Logger                   Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly CodeAnalyseContext       _b ;
         private          int                      _i ;
         private          Brush[]                  _colors = new[] { Brushes.Red , Brushes.Yellow } ;
@@ -59,13 +59,12 @@ namespace ProjLib
             {
                 var xx = Dispatch.Invoke ( new createPanel ( Target ) ) ;
 
-                WrapPanel wrapPanel = ( WrapPanel ) xx ;
+                var wrapPanel = ( WrapPanel ) xx ;
                 Debug.Assert ( wrapPanel != null , nameof ( wrapPanel ) + " != null" ) ;
                 Nodes.Peek ( ) ( wrapPanel ) ;
 
                 Nodes.Push (
                             o => {
-
                                 try
                                 {
                                     wrapPanel.Dispatcher.Invoke (
@@ -136,10 +135,11 @@ namespace ProjLib
             }
         }
 
-        private Panel Target() => new WrapPanel ( ) ;
+        private Panel Target ( ) { return new WrapPanel ( ) ; }
 
-        delegate Panel createPanel();
-        public Stack < Action < object >> Nodes { get ; } = new Stack < Action < object > > ( ) ;
+        private delegate Panel createPanel ( ) ;
+
+        public Stack < Action < object > > Nodes { get ; } = new Stack < Action < object > > ( ) ;
 
         public SemanticModel Model { get => _model ; set => _model = value ; }
 
@@ -160,12 +160,10 @@ namespace ProjLib
 
         public bool DoSym { get ; set ; }
 
-        public Visitor ( SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node ) : base ( depth )
-        {
-        }
+        public Visitor ( SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node ) : base ( depth ) { }
 
         public Visitor (
-            [ NotNull ] Panel container
+            [ NotNull ] Panel        container
           , Func < object , object > findResource
           , CodeAnalyseContext       b
           , SemanticModel            model
@@ -185,9 +183,9 @@ namespace ProjLib
             {
                 Logger.Error ( ex , ex.ToString ( ) ) ;
             }
-            
-            _b            = b ;
-            _model        = model ;
+
+            _b     = b ;
+            _model = model ;
             // CurBlock      = block ;
             Dispatch = container.Dispatcher ;
 
@@ -195,11 +193,11 @@ namespace ProjLib
                         o => {
                             if ( o == null )
                             {
-                                Logger.Error("here1");
+                                Logger.Error ( "here1" ) ;
                                 throw new ArgumentNullException ( nameof ( o ) ) ;
                             }
 
-                            Logger.Error("here");
+                            Logger.Error ( "here" ) ;
                             container.Dispatcher.Invoke (
                                                          ( ) => {
                                                              if ( o != null )
@@ -213,14 +211,14 @@ namespace ProjLib
                                                        , DispatcherPriority.Send
                                                         ) ;
                         }
-                       ) ; ;
+                       ) ;
+            ;
         }
 
         public Dispatcher Dispatch { get ; set ; }
 
         public override void VisitToken ( SyntaxToken token )
         {
-            
             var x = token.Kind ( ).ToString ( ) ;
             var m = Regex.Match ( x , "[a-z]+([A-Z][a-z]*)$" ) ;
             var style = m.Groups[ 1 ].Captures[ 0 ].Value ;
@@ -282,27 +280,30 @@ namespace ProjLib
                         , new TokenSpanObject ( token.Span , token )
                          ) ;
             LogManager.GetCurrentClassLogger ( ).Warn ( "{s}" , token ) ;
-            var text = token.ToString() ;
+            var text = token.ToString ( ) ;
             var tokenSpan = token.Span ;
-            Dispatch.Invoke ( ( ) => {
-                                  _CreateTokenItem ( style , text , tokenSpan ) ;
-                              }
-                            , DispatcherPriority.Send ) ;
-            LogManager.GetCurrentClassLogger().Debug("hello");
+            Dispatch.Invoke (
+                             ( ) => {
+                                 _CreateTokenItem ( style , text , tokenSpan ) ;
+                             }
+                           , DispatcherPriority.Send
+                            ) ;
+            LogManager.GetCurrentClassLogger ( ).Debug ( "hello" ) ;
             ActiveSpans.Remove ( token ) ;
             foreach ( var syntaxTrivia in token.TrailingTrivia )
             {
-                var s = syntaxTrivia.ToString();
-                var syntaxKind = syntaxTrivia.Kind();
-                var syntaxTriviaSpan = syntaxTrivia.Span;
-                Dispatch.Invoke(
-                                () => AddRun(
-                                             RenderTrivia(s, syntaxKind)
-                                           , syntaxTriviaSpan
-                                            )
-                               );
+                var s = syntaxTrivia.ToString ( ) ;
+                var syntaxKind = syntaxTrivia.Kind ( ) ;
+                var syntaxTriviaSpan = syntaxTrivia.Span ;
+                Dispatch.Invoke (
+                                 ( ) => AddRun (
+                                                RenderTrivia ( s , syntaxKind )
+                                              , syntaxTriviaSpan
+                                               )
+                                ) ;
             }
-            LogManager.GetCurrentClassLogger().Debug("hello");
+
+            LogManager.GetCurrentClassLogger ( ).Debug ( "hello" ) ;
         }
 
         private void _CreateTokenItem ( object style , string Text , TextSpan textSpan )
@@ -328,42 +329,58 @@ namespace ProjLib
                 //renderTrivia.Background = Brushes.Gray ;
                 StartOfLine = false ;
                 Nodes.Pop ( ) ;
-                var wrapPanel = new WrapPanel() ;
-                Nodes.Peek()(wrapPanel);
-                Nodes.Push ( o => wrapPanel.Dispatcher.Invoke ( () => wrapPanel.Children.Add ( ( UIElement ) o ), DispatcherPriority.Send ) ) ;
+                var wrapPanel = new WrapPanel ( ) ;
+                Nodes.Peek ( ) ( wrapPanel ) ;
+                Nodes.Push (
+                            o => wrapPanel.Dispatcher.Invoke (
+                                                              ( ) => wrapPanel.Children.Add (
+                                                                                             ( UIElement
+                                                                                             ) o
+                                                                                            )
+                                                            , DispatcherPriority.Send
+                                                             )
+                           ) ;
             }
 
             SpanTT tt = null ;
             if ( run.ToolTip == null )
             {
-                tt                   = new SpanTT ( new SpanToolTip ( ) ) ;
+                tt          = new SpanTT ( new SpanToolTip ( ) ) ;
                 run.ToolTip = tt ;
             }
             else
             {
                 tt = run.ToolTip as SpanTT ;
             }
-            LogManager.GetCurrentClassLogger().Info("hello1");
+
+            LogManager.GetCurrentClassLogger ( ).Info ( "hello1" ) ;
 
             if ( tt != null )
             {
-                foreach ( var activeSpan in ActiveSpans )
-                {
-                    var key = activeSpan.Key ;
-                    var val = activeSpan.Value ;
-                    if ( val.Span.OverlapsWith ( span ) )
-                    {
-                        var valToolTipContent = val.GetToolTipContent ( ) ;
-                        if ( valToolTipContent != null )
-                        {
-                            tt.CustomToolTip.Add ( valToolTipContent ) ;
-                        }
-                    }
-                }
+                var spans = ActiveSpans
+                           .Where ( ( pair , i ) => pair.Value.Span.OverlapsWith ( span ) )
+                           .Select ( pair => pair.Value )
+                           .Select ( o => ( object ) o )
+                           .ToList ( ) ;
+
+                tt.Spans = spans ;
+                // foreach ( var activeSpan in ActiveSpans )
+                // {
+                //     var key = activeSpan.Key ;
+                //     var val = activeSpan.Value ;
+                //     if ( val.Span.OverlapsWith ( span ) )
+                //     {
+                //         var valToolTipContent = val.GetToolTipContent ( ) ;
+                //         if ( valToolTipContent != null )
+                //         {
+                //             tt.CustomToolTip.Add ( valToolTipContent ) ;
+                //         }
+                //     }
+                // }
             }
 
             //LogManager.GetCurrentClassLogger().Info("hello");
-            Nodes.Peek ( ) ( new TextBlock(run ) ) ;
+            Nodes.Peek ( ) ( new TextBlock ( run ) ) ;
             //CurBlock.Isnlines.Add ( renderTrivia ) ;
         }
 
@@ -396,18 +413,26 @@ namespace ProjLib
         }
 
 
-        private Run creATErUN(string toString, Func<object, object> _findResource = null, object key = null)
+        private Run creATErUN (
+            string                   toString
+          , Func < object , object > _findResource = null
+          , object                   key           = null
+        )
         {
-            return Dispatch.Invoke ( ( ) => {
-                                         var r = _creATErUN ( toString ) ;
-                                         if ( _findResource != null )
-                                         {
-                                             r.Style = _findResource ( key ) as Style ;
-                                         }
-                                         return r;
-                                     }
-                                   , DispatcherPriority.Send ) ;
+            return Dispatch.Invoke (
+                                    ( ) => {
+                                        var r = _creATErUN ( toString ) ;
+                                        if ( _findResource != null )
+                                        {
+                                            r.Style = _findResource ( key ) as Style ;
+                                        }
+
+                                        return r ;
+                                    }
+                                  , DispatcherPriority.Send
+                                   ) ;
         }
+
         private Run _creATErUN ( string toString )
         {
             _i = _i + 1 ;
@@ -441,36 +466,6 @@ namespace ProjLib
         }
     }
 
-
-    public class TokenSpanObject : SpanObject < SyntaxToken >
-    {
-        private readonly string _instanceRawKind ;
-        private string _instanceValueText ;
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TokenSpanObject ( TextSpan span , SyntaxToken instance ) : base ( span , instance )
-        {
-            _instanceRawKind = Instance.Kind ( ) + " (" + Instance.RawKind + ")" ;
-            _instanceValueText = Instance.ValueText ;
-        }
-
-        public override UIElement GetToolTipContent ( )
-        {
-            var panel = new StackPanel ( ) { Orientation = Orientation.Horizontal } ;
-            var toolTipContent = new TextBlock ( )
-                                 {
-                                     Text = _instanceRawKind
-                                 } ;
-            panel.Children.Add ( toolTipContent ) ;
-            if ( Instance.Value != null )
-            {
-                panel.Children.Add ( new Label ( ) { Content  = "Value" } ) ;
-                panel.Children.Add ( new TextBlock ( ) { Text = _instanceValueText } ) ;
-            }
-
-            return panel ;
-        }
-    }
 
     public class Z : SymbolVisitor
     {
@@ -518,13 +513,5 @@ namespace ProjLib
 
 
         public override void DefaultVisit ( ISymbol symbol ) { base.DefaultVisit ( symbol ) ; }
-    }
-
-    internal class SpanTT : ToolTip
-    {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.ToolTip" /> class. </summary>
-        public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }
-
-        public SpanToolTip CustomToolTip { get ; set ; }
     }
 }

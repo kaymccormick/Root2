@@ -7,11 +7,11 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition  Width="Auto"/>
         <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition  Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Margin="5" Grid.Column="0"  Text="{Binding Path=MethodDisplayName}"/>
-      <TextBlock Margin="5" Grid.Column="1" Text="{Binding Path=Document.FilePath}"/>
-      <TextBlock Margin="5" Grid.Column="2" Text="{Binding Path=SourceLocation}"/>
+        <TextBlock Grid.Row="0" Margin="5" Grid.Column="0"  Text="{Binding Path=MethodDisplayName}"/>
+      <TextBlock Margin="5" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Document.FilePath}"/>
+      <TextBlock Margin="5" Grid.Row="0" Grid.Column="2" Text="{Binding Path=SourceLocation}"/>
 	</Grid>
   </DataTemplate>
 </ResourceDictionary>

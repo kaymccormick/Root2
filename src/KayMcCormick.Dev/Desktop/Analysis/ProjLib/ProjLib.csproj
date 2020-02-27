@@ -76,6 +76,7 @@
     <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
     <Compile Include="ISpanObject.cs" />
+    <Compile Include="ISpanToolTip.cs" />
     <Compile Include="IVsInstance.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
@@ -86,7 +87,9 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SpanObject.cs" />
     <Compile Include="SpanToolTip.cs" />
+    <Compile Include="SpanTT.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />
+    <Compile Include="TokenSpanObject.cs" />
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="Visitor.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
