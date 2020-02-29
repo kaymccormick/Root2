@@ -38,7 +38,7 @@ namespace ProjLib
       , ISupportInitialize
       , INotifyPropertyChanged
     {
-        public TransformBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
+        public IPropagatorBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
 
         public delegate FormattedCode CreateFormattedCodeDelegate (
             Tuple < SyntaxTree , SemanticModel , CompilationUnitSyntax > tuple
@@ -55,9 +55,8 @@ namespace ProjLib
         private          ProjectHandlerImpl    _handler ;
         private          bool                  _processing ;
 
-        public WorkspacesViewModel ( IVsInstanceCollector collector, TransformBlock <string, Workspace> toWorkspaceTransformBlock)
+        public WorkspacesViewModel ( IVsInstanceCollector collector)
         {
-            ToWorkspaceTransformBlock = toWorkspaceTransformBlock ;
             vsInstanceCollector = collector ;
             BeginInit ( ) ;
         }

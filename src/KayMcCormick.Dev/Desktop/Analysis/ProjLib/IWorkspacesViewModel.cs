@@ -35,7 +35,7 @@ namespace ProjLib
 
         ITargetBlock < string > DataflowHead { get ; set ; }
 
-        TransformBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
+        IPropagatorBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
 
         Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem

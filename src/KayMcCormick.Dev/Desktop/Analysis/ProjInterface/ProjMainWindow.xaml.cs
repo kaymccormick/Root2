@@ -1,31 +1,20 @@
 ﻿using System;
 using System.Collections.Concurrent ;
-using System.Collections.Generic;
+using System.Collections.ObjectModel ;
 using System.Linq;
-using System.Text;
-using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon ;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading ;
-using System.Xaml;
 using Autofac;
-using Autofac.Core.Lifetime;
-using Microsoft.CodeAnalysis; 
-using Microsoft.VisualStudio.Shell ;
+using CodeAnalysisApp1 ;
+using Microsoft.CodeAnalysis;
 using NLog;
 using ProjLib;
-using Xunit ;
 using Task = System.Threading.Tasks.Task ;
 
 namespace ProjInterface
@@ -46,6 +35,16 @@ namespace ProjInterface
         {
             ViewModel = viewModel ;
             _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext()) ;
+            var actionBlock = new ActionBlock < LogInvocation > (
+                                                                 invocation
+                                                                     => {
+                                                                     ViewModel
+                                                                        .LogInvocations
+                                                                        .Add (
+                                                                              invocation
+                                                                             ) ;
+                                                                 }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
+            pipeline = BuildPipeline(actionBlock ) ;
             if (! viewModel.VsCollection.Any ( ) )
             {
                 throw new Exception("no data");
@@ -78,8 +77,8 @@ namespace ProjInterface
             new CollectionView(ViewModel.VsCollection).Refresh (  );
         }
 
-        private ConcurrentQueue <IBoundCommandOperation> opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
-        private List<Task<bool>> waitingTasks = new List < Task < bool > > ();
+        private ConcurrentQueue < IBoundCommandOperation > opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
+        private ObservableCollection < Task < bool > > waitingTasks = new ObservableCollection < Task < bool > > ();
 
         public event RoutedEventHandler TaskCompleted
         {
@@ -94,28 +93,39 @@ namespace ProjInterface
                                             , typeof ( ProjMainWindow )
                                              ) ;
 
-        public ITargetBlock < string > DataflowHead => ViewModel.ToWorkspaceTransformBlock ;
+        private readonly ITargetBlock < string > pipeline ;
+        private TransformBlock < string , Workspace > _workspaceTransformBlock ;
+        private FindLogUsagesBlock _findLogUsagesBlock ;
+
+        public ActionBlock < Workspace > WorkspaceActionBlock { get ; private set ; }
+
+        public ITargetBlock < string > DataflowHead => pipeline ;
 
         private void PerformAnalysis ( object sender , ExecutedRoutedEventArgs e )
         {
 
             AnalyzeResults results = new AnalyzeResults ( ViewModel ) { ShowActivated = true } ;
             results.Show ( ) ;
+            this.results.Visibility = Visibility.Visible ;
             var sender2SelectedItem = (IMruItem)mru.SelectedItem ;
-            Task < bool > result = DataflowHead.SendAsync ( sender2SelectedItem.FilePath ) ;
-            waitingTasks.Add ( result ) ;
-            result.ContinueWith (
-                                 task => {
-                                     waitingTasks.Remove ( task ) ;
-                                     Logger.Info ( "task complete" ) ;
-                                     ( ( FrameworkElement ) sender ).RaiseEvent (
-                                                                                 new
-                                                                                     RoutedEventArgs (
-                                                                                                      TaskCompleteEvent
-                                                                                                     )
-                                                                                ) ;
-                                 }
-                                ) ;
+            var  b = pipeline.Post( sender2SelectedItem.FilePath ) ;
+            pipeline.Completion.ContinueWith (
+                                              ( task ) => {
+                                                  Logger.Info ( "completipn" ) ;
+                                              }
+                                             ) ;
+            // result.ContinueWith (
+            //                      task => {
+            //                          waitingTasks.Remove ( task ) ;
+            //                          Logger.Info ( "task complete" ) ;
+            //                          ( ( FrameworkElement ) sender ).RaiseEvent (
+            //                                                                      new
+            //                                                                          RoutedEventArgs (
+            //                                                                                           TaskCompleteEvent
+            //                                                                                          )
+            //                                                                     ) ;
+            //                      }, TaskScheduler.Current
+            //                     ) ;
 
 
             // var vsSelectedItem = ( VsInstance ) vs.SelectedItem ;
@@ -136,7 +146,7 @@ namespace ProjInterface
 
         }
 
-        private async Task<object> ContinuationFunction ( Task task )
+        private async Task < object > ContinuationFunction ( Task task )
         {
             return ViewModel.ProcessSolutionAsync (
                                                   Dispatcher
@@ -173,6 +183,53 @@ namespace ProjInterface
         private void ProjMainWindow_OnDrop ( object sender , DragEventArgs e )
         {
             e.Data.GetData ( DataFormats.FileDrop ) ;
+        }
+
+        public IPropagatorBlock < string , LogInvocation > BuildPipeline (
+            ITargetBlock < LogInvocation > act
+        )
+        {
+            _workspaceTransformBlock = WorkspaceTransformBlock ( ) ;
+            DataflowLinkOptions opt = new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
+            _findLogUsagesBlock = new FindLogUsagesBlock (act ) ;
+            ITargetBlock < Document > takeDocument = _findLogUsagesBlock.Target ;
+
+            WorkspaceActionBlock = SolutionDocumentsBlock ( takeDocument ) ;
+            _workspaceTransformBlock.LinkTo (
+                       WorkspaceActionBlock, opt
+                      ) ;
+            var pipeline = DataflowBlock.Encapsulate ( _workspaceTransformBlock , _findLogUsagesBlock.Source ) ;
+            return pipeline ;
+        }
+
+        private static ActionBlock < Workspace > SolutionDocumentsBlock ( ITargetBlock < Document > takeDocument )
+        {
+            return new ActionBlock < Workspace > (
+                                                  workspace => {
+                                                      foreach ( var proj in workspace
+                                                                           .CurrentSolution.Projects )
+                                                      {
+                                                          foreach ( var projDocument in proj.Documents )
+                                                          {
+                                                              takeDocument.SendAsync ( projDocument ) ;
+                                                          }
+                                                      }
+                                                      takeDocument.Complete();
+                                                  }
+                                                 ) ;
+        }
+
+        private static TransformBlock < string , Workspace > WorkspaceTransformBlock ( )
+        {
+            var t0 = new TransformBlock < string , Workspace > (
+                                                                s => ProjLibUtils
+                                                                   .LoadSolutionInstanceAsync (
+                                                                                               null
+                                                                                             , s
+                                                                                             , null
+                                                                                              )
+                                                               ) ;
+            return t0 ;
         }
     }
 
