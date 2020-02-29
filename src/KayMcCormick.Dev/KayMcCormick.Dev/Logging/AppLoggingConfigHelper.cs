@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 using Castle.DynamicProxy;
 using DynamicData;
 using JetBrains.Annotations;
-using KayMcCormick.Logging.Common;
 using NLog;
 using NLog.Common;
 using NLog.Config;

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent ;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading ;
 using System.Threading.Tasks ;
+using System.Threading.Tasks.Dataflow ;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon ;
@@ -51,6 +53,8 @@ namespace ProjInterface
 
             ((WorkspacesViewModel)viewModel)._d = Dispatcher;
 
+
+
             InitializeComponent();
             // XamlXmlReader x = new XamlXmlReader();
         }
@@ -74,27 +78,61 @@ namespace ProjInterface
             new CollectionView(ViewModel.VsCollection).Refresh (  );
         }
 
-        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        private ConcurrentQueue <IBoundCommandOperation> opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
+        private List<Task<bool>> waitingTasks = new List < Task < bool > > ();
+
+        public event RoutedEventHandler TaskCompleted
         {
-            AnalyzeResults results = new AnalyzeResults(ViewModel);
-            results.ShowActivated = true ;
+            add { AddHandler(TaskCompleteEvent, value) ;}
+            remove { RemoveHandler(TaskCompleteEvent, value);}
+        }
+        public static RoutedEvent TaskCompleteEvent =
+            EventManager.RegisterRoutedEvent (
+                                              "task completed",
+                                              RoutingStrategy.Direct
+                                            , typeof ( RoutedEventHandler )
+                                            , typeof ( ProjMainWindow )
+                                             ) ;
+
+        public ITargetBlock < string > DataflowHead => ViewModel.ToWorkspaceTransformBlock ;
+
+        private void PerformAnalysis ( object sender , ExecutedRoutedEventArgs e )
+        {
+
+            AnalyzeResults results = new AnalyzeResults ( ViewModel ) { ShowActivated = true } ;
             results.Show ( ) ;
             var sender2SelectedItem = (IMruItem)mru.SelectedItem ;
-            var vsSelectedItem = ( VsInstance ) vs.SelectedItem ;
-            var workspacesViewModel = ViewModel ;
-            Cursor = Cursors.Wait ;
-            codeWindow  = new CodeWindow();
-            codeWindow.Show ( ) ;
-            
-                Task.Run (
-                      ( ) => {
-                          workspacesViewModel
-                             .LoadSolutionAsync ( vsSelectedItem , sender2SelectedItem,  _factory, new DispatcherSynchronizationContext())
-                             .ContinueWith (
-                                            ContinuationFunction
-                                           ) ;
-                      }
-                     ) ;
+            Task < bool > result = DataflowHead.SendAsync ( sender2SelectedItem.FilePath ) ;
+            waitingTasks.Add ( result ) ;
+            result.ContinueWith (
+                                 task => {
+                                     waitingTasks.Remove ( task ) ;
+                                     Logger.Info ( "task complete" ) ;
+                                     ( ( FrameworkElement ) sender ).RaiseEvent (
+                                                                                 new
+                                                                                     RoutedEventArgs (
+                                                                                                      TaskCompleteEvent
+                                                                                                     )
+                                                                                ) ;
+                                 }
+                                ) ;
+
+
+            // var vsSelectedItem = ( VsInstance ) vs.SelectedItem ;
+            // var workspacesViewModel = ViewModel ;
+            // Cursor = Cursors.Wait ;
+            // codeWindow  = new CodeWindow();
+            // codeWindow.Show ( ) ;
+            //
+            //     Task.Run (
+            //           ( ) => {
+            //               workspacesViewModel
+            //                  .LoadSolutionAsync ( vsSelectedItem , sender2SelectedItem,  _factory, new DispatcherSynchronizationContext())
+            //                  .ContinueWith (
+            //                                 ContinuationFunction
+            //                                ) ;
+            //           }
+            //          ) ;
 
         }
 
@@ -131,6 +169,17 @@ namespace ProjInterface
             WorkspaceTable table = new WorkspaceTable ( ) ;
             table.Show ( ) ;
         }
+
+        private void ProjMainWindow_OnDrop ( object sender , DragEventArgs e )
+        {
+            e.Data.GetData ( DataFormats.FileDrop ) ;
+        }
+    }
+
+    internal interface ICodeReference
+    {
+        Workspace Workspace { get ; }
+        Triple Trifecta  { get ; }
     }
 
     public class WorkspaceTable : RibbonWindow

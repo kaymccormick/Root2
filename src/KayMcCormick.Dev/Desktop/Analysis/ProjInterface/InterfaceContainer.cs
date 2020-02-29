@@ -12,9 +12,12 @@
 using System.Collections.Generic ;
 using System.Diagnostics;
 using System.Linq ;
+using System.Threading.Tasks.Dataflow ;
 using System.Windows.Documents ;
 using Autofac;
 using KayMcCormick.Dev ;
+using Microsoft.Build.Locator ;
+using Microsoft.CodeAnalysis ;
 using ProjLib;
 
 namespace ProjInterface
@@ -36,7 +39,22 @@ namespace ProjInterface
             builder.RegisterModule<IdGeneratorModule>();
 
             builder.RegisterType<ProjMainWindow>().AsSelf();
-            builder.RegisterType<WorkspacesViewModel>().As<IWorkspacesViewModel>();
+            builder.RegisterType < WorkspacesViewModel > ( )
+                   .As < IWorkspacesViewModel > ( )
+                   .InstancePerLifetimeScope ( ) ;
+            builder.Register(
+                             ( context , parameters ) => {
+                                 // var inst = context.Resolve < VisualStudioInstance > ( ) ;
+                                 return new TransformBlock < string , Workspace > (
+                                                                                   s => ProjLibUtils
+                                                                                      .LoadSolutionInstanceAsync (
+                                                                                                                  null
+                                                                                                                , s
+                                                                                                                , null
+                                                                                                                 )
+                                                                                  ) ;
+                             });
+
             builder.RegisterType<VsInstanceCollector>().As<IVsInstanceCollector>();
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
 

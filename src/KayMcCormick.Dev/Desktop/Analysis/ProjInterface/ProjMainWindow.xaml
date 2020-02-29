@@ -7,6 +7,8 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   Name="mainWindow"
+  AllowDrop="True"
+  Drop="ProjMainWindow_OnDrop"
   Title="MainWindow"
   Width="800"
   Height="450"
@@ -46,7 +48,7 @@
   <Window.CommandBindings>
     <CommandBinding
       Command="local:ProjCommands.LoadSolution"
-      Executed="CommandBinding_OnExecuted" />
+      Executed="PerformAnalysis" />
     <CommandBinding Command="local:ProjCommands.NewAdHocWorkspace" Executed="CommandBinding_OnExecuted2"/>
   </Window.CommandBindings>
   

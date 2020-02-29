@@ -14,13 +14,16 @@ using System.Collections.ObjectModel ;
 using System.ComponentModel;
 using System.Threading ;
 using System.Threading.Tasks ;
+using System.Threading.Tasks.Dataflow ;
 using System.Windows.Threading ;
 using CodeAnalysisApp1 ;
+using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace ProjLib
 {
-    public interface IWorkspacesViewModel : INotifyPropertyChanged//, ISupportInitialize
+    public interface IWorkspacesViewModel : INotifyPropertyChanged , IAppState
+        //, ISupportInitialize
     {
         VisualStudioInstancesCollection
             VsCollection
@@ -30,11 +33,9 @@ namespace ProjLib
 
         ObservableCollection < LogInvocation > LogInvocations { get ; }
 
-        bool Processing { get ; set ; }
+        ITargetBlock < string > DataflowHead { get ; set ; }
 
-        string CurrentProject { get ; set ; }
-
-        string CurrentDocumentPath { get ; set ; }
+        TransformBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
 
         Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem
