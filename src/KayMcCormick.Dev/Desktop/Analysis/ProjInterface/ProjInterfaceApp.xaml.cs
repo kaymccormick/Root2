@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.IO ;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using Autofac;
+using CodeAnalysisApp1 ;
 using KayMcCormick.Dev.DataBindingTraceFilter ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Logging.Common;
@@ -28,10 +30,10 @@ namespace ProjInterface
     {
         public IWorkspacesViewModel ViewModel { get ;  }
         private static Logger Logger = LogManager.GetCurrentClassLogger();
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Application" /> class.</summary>
-        /// <exception cref="T:System.InvalidOperationException">More than one instance of the <see cref="T:System.Windows.Application" /> class is created per <see cref="T:System.AppDomain" />.</exception>
+        
         public ProjInterfaceApp()
         {
+#if DEBUG
             AppLoggingConfigHelper.EnsureLoggingConfigured(message => Debug.WriteLine(message));
             Logger.Warn("{}", nameof(ProjInterfaceApp));
             PresentationTraceSources.Refresh();
@@ -41,6 +43,7 @@ namespace ProjInterface
             var nLogTraceListener = new NLogTraceListener ( ) ;
             nLogTraceListener.Filter = new MyTraceFilter ( ) ;
             bs.Listeners.Add ( nLogTraceListener ) ;
+#endif
         }
 
       
@@ -48,6 +51,34 @@ namespace ProjInterface
         /// <param name="e">A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.</param>
         protected override void OnStartup(StartupEventArgs e)
         {
+
+
+             void TestFormattedCodeControl()
+            {
+                FormattedCode codeControl = new FormattedCode();
+                var sourceText = ProjLib.LibResources.Program_Parse;
+                codeControl.SourceCode = sourceText;
+                Window w = new Window();
+                w.Content = codeControl;
+
+                CodeAnalyseContext context = CodeAnalyseContext.Parse(sourceText, "test1");
+                var (syntaxTree, model, compilationUnitSyntax) = context;
+                Logger.Info("Context is {Context}", context);
+                codeControl.SyntaxTree            = syntaxTree;
+                codeControl.Model                 = model;
+                codeControl.CompilationUnitSyntax = compilationUnitSyntax;
+                codeControl.Refresh();
+
+                var argument1 = XamlWriter.Save(codeControl.FlowViewerDocument);
+                File.WriteAllText(@"c:\data\out.xaml", argument1);
+                Logger.Info("xaml = {xaml}", argument1);
+                var tree = Transforms.TransformTree(context.SyntaxTree);
+                Logger.Info("Tree is {tree}", tree);
+                w.ShowDialog();
+
+            }
+             
+            var start = DateTime.Now ;
             base.OnStartup(e);
             Logger.Info("{}", nameof(OnStartup));
             var lifetimeScope = InterfaceContainer.GetContainer();
@@ -63,6 +94,10 @@ namespace ProjInterface
                 KayMcCormick.Dev.Utils.HandleInnerExceptions(ex);
                 MessageBox.Show ( ex.Message , "Error" ) ;
             }
+
+            var elapsed = DateTime.Now - start ;
+            Console.WriteLine ( elapsed.ToString ( ) ) ;
+            Logger.Info ( "Initialization took {elapsed} time." , elapsed ) ;
         }
         
 

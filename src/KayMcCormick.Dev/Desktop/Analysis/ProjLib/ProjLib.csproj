@@ -64,6 +64,7 @@
     <Reference Include="System.Activities" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -108,10 +109,10 @@
     </EmbeddedResource>
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="LibResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>LibResources.resx</DependentUpon>
     </Compile>
     <None Include="Resources\AttachedProps.cs" />
     <Compile Include="SpanObject.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="LogInvocationAnnotationHandler.cs" />
     <Compile Include="Visitor2.cs" />
+    <Compile Include="Visitor3.cs" />
     <Compile Include="VisitorStub.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />
@@ -133,9 +135,9 @@
     <Compile Include="VsInstance.cs" />
     <Compile Include="VsInstanceCollector.cs" />
     <Compile Include="WorkspacesViewModel.cs" />
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="LibResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LibResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +202,9 @@
       <Version>2.3.2262-g94fae01e</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks">
+      <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

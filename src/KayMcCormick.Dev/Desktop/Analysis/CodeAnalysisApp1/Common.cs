@@ -54,7 +54,7 @@ namespace CodeAnalysisApp1
             //     Logger.Info ( "{count} {path}" , s.Length , s.FilePath ) ;
             // }
             // foreach ( var extRef in comp.ExternalReferences )
-            // {
+            // {`
             //     var f = Path.GetFileName ( extRef.Display ) ;
             //     Logger.Info (
             //                  "{f} {compilationExternalReference_Display}"

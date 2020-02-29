@@ -9,8 +9,10 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel;
+using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Threading ;
 using CodeAnalysisApp1 ;
@@ -34,7 +36,12 @@ namespace ProjLib
 
         string CurrentDocumentPath { get ; set ; }
 
-        Task LoadSolutionAsync ( VsInstance vsSelectedItem , IMruItem sender2SelectedItem ) ;
-        Task ProcessSolutionAsync (Dispatcher dispatcher ) ;
+        Task < object > LoadSolutionAsync (
+            VsInstance             vsSelectedItem
+          , IMruItem               sender2SelectedItem
+          , TaskFactory            factory
+          , SynchronizationContext current
+        ) ;
+        Task < object > ProcessSolutionAsync ( Dispatcher dispatcher , TaskFactory taskFactory,  Func <object, FormattedCode> getFormattedCode ) ;
     }
 }

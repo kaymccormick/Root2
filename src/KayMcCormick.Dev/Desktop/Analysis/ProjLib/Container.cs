@@ -50,7 +50,7 @@ namespace ProjLib
             //  .WithParameter(new PositionalParameter(0, Resources.Program_Parse));
 
             b.RegisterType < TransformScope > ( )
-             .WithParameter ( new NamedParameter ( "sourceCode" , Resources.Program_Parse ) )
+             .WithParameter ( new NamedParameter ( "sourceCode" , LibResources.Program_Parse ) )
              .AsSelf ( )
              .InstancePerLifetimeScope ( ) ;
             b.RegisterAdapter < IHasCompilation , IEnumerable < IHasTreeAndCompilation > > (

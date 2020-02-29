@@ -44,6 +44,10 @@ namespace ProjLib
             try
             {
                 var ext = ExternalSettingsManager.CreateForApplication ( path ) ;
+
+                var store1 = ext.GetReadOnlySettingsStore(SettingsScope.Configuration);
+
+
                 var store = ext.GetReadOnlySettingsStore ( SettingsScope.UserSettings ) ;
                 var mru = @"MRUItems\{a9c4a31f-f9cb-47a9-abc0-49ce82d0b3ac}\Items" ;
                 foreach ( var name in store.GetPropertyNames ( mru ) )

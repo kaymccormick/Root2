@@ -9,7 +9,10 @@
 // 
 // ---
 #endregion
+using System ;
 using System.ComponentModel ;
+using System.Linq ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -20,6 +23,23 @@ namespace CodeAnalysisApp1
 {
     public class CodeAnalyseContext
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        public void Deconstruct (
+            out SyntaxTree            syntaxTree
+          , out SemanticModel         model
+          , out CompilationUnitSyntax compilationUnitSyntax
+        )
+        {
+            syntaxTree = this.SyntaxTree ;
+            model = CurrentModel;
+            compilationUnitSyntax = CurrentRoot ;
+        }
+        public override string ToString ( )
+        {
+            return $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( _currentRoot )}: {_currentRoot.DescendantNodes().Count()} nodes" ;
+        }
+
         private readonly string _code ;
         private readonly string _assemblyName ;
 
@@ -66,12 +86,26 @@ namespace CodeAnalysisApp1
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public CodeAnalyseContext ( ICodeSource document ) { Document = document ; }
 
-        public static CodeAnalyseContext Parse ( string code , string assemblyName )
+        public static CodeAnalyseContext Parse ( [ NotNull ] string code , [ NotNull ] string assemblyName )
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
-            ;
-            var compilation = CreateCompilation ( assemblyName , syntaxTree ) ;
+            if ( code == null)
+            {
+                throw new ArgumentNullException ( nameof ( code ) ) ;
+            }
 
+            if ( string.IsNullOrWhiteSpace ( code ) )
+            {
+                throw new ArgumentOutOfRangeException ( nameof ( code ) , "Empty code supplied" ) ;
+            }
+
+            if ( assemblyName == null )
+            {
+                throw new ArgumentNullException ( nameof ( assemblyName ) ) ;
+            }
+
+            Logger.Debug ( "code length is " + code.Length ) ;
+            var syntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
+            var compilation = CreateCompilation ( assemblyName , syntaxTree ) ;
             return CreateFromCompilation ( syntaxTree , compilation ) ;
         }
 

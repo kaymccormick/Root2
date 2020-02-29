@@ -4,8 +4,13 @@ using System.ComponentModel ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
+using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
+using System.Threading ;
 using System.Threading.Tasks ;
+using System.Windows ;
+using System.Windows.Markup ;
+using System.Windows.Threading ;
 using CodeAnalysisApp1 ;
 using JetBrains.Annotations ;
 using MessageTemplates ;
@@ -16,12 +21,32 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
+using Microsoft.VisualStudio.Shell ;
 using NLog ;
+using Task = System.Threading.Tasks.Task ;
 
 namespace ProjLib
 {
-    public class ProjectHandler : ISupportInitialize
+    public struct SynchronizationContextAwaiter : INotifyCompletion
     {
+        private static readonly SendOrPostCallback _postCallback = state => ((Action)state)();
+
+        private readonly SynchronizationContext _context;
+        public SynchronizationContextAwaiter(SynchronizationContext context)
+        {
+            _context = context;
+        }
+
+        public bool IsCompleted => _context == SynchronizationContext.Current;
+
+        public void OnCompleted(Action continuation) => _context.Post(_postCallback, continuation);
+
+        public void GetResult() { }
+    }
+    public abstract class ProjectHandler : ISupportInitialize
+    {
+        protected readonly Dispatcher _d ;
+
         public delegate void ProcessDocumentDelegate ( Document document ) ;
 
         public delegate void ProcessProjectDelegate (
@@ -34,11 +59,15 @@ namespace ProjLib
         public ProcessDocumentDelegate ProcessDocument ;
         public ProcessProjectDelegate  ProcessProject ;
 
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:System.Object" />
         ///     class.
         /// </summary>
-        public ProjectHandler ( string solutionPath , VisualStudioInstance instance )
+        public ProjectHandler (
+            string                 solutionPath
+          , VisualStudioInstance   instance
+        )
         {
             SolutionPath = solutionPath ;
             Instance     = instance ;
@@ -95,7 +124,8 @@ namespace ProjLib
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 
             // Attach progress reporter so we print projects as they are loaded.
-            await workspace.OpenSolutionAsync ( solutionPath , progressReporter ) ;
+            await workspace.OpenSolutionAsync ( solutionPath , progressReporter )
+                           .ConfigureAwait ( true ) ;
             // , new Program.ConsoleProgressReporter()
             // );
             Logger.Debug( $"Finished loading solution '{solutionPath}'" ) ;
@@ -110,7 +140,11 @@ namespace ProjLib
             return true ;
         }
 
-        public async Task ProcessAsync (Action<LogInvocation> consumeLogInvocation)
+        public async Task<object> ProcessAsync (
+            Action < LogInvocation > consumeLogInvocation
+          , SynchronizationContext   current
+            ,Func<object, FormattedCode> func
+        )
         {
             foreach ( var pr in Workspace.CurrentSolution.Projects )
             {
@@ -118,34 +152,81 @@ namespace ProjLib
                 foreach ( var prDocument in pr.Documents )
                 {
                     ProcessDocument?.Invoke( prDocument ) ;
-                    await OnPrepareProcessDocumentAsync ( prDocument ) ;
-                    await OnProcessDocumentAsync ( prDocument, consumeLogInvocation ) ;
+                    Triple triple = await OnPrepareProcessDocumentAsync ( prDocument ) ;
+                    await OnProcessDocumentAsync ( prDocument, triple, consumeLogInvocation, func ) ;
                 }
             }
+
+            return new object ( ) ;
         }
 
-        public virtual async Task OnProcessDocumentAsync (
-            Document                                    document
-          , Action < LogInvocation > consumeLogInvocation
-        ) { return ; }
-        public virtual async Task OnPrepareProcessDocumentAsync ( Document doc )      { return ; }
+        public abstract  Task < object > OnProcessDocumentAsync (
+            Document                        document
+          , Triple                          triple
+          , Action < LogInvocation >        consumeLogInvocation
+          , Func < object , FormattedCode > func
+        ) ;
+
+        public abstract  Task < Triple > OnPrepareProcessDocumentAsync ( Document doc ) ;
+
     }
 
     public partial class ProjectHandlerImpl : ProjectHandler
     {
+        [ NotNull ] private readonly SynchronizationContext _context ;
         private static readonly Logger Logger              = LogManager.GetCurrentClassLogger ( ) ;
 
-        public ProjectHandlerImpl ( string s , VisualStudioInstance vsi ) : base ( s , vsi ) { }
+        public ProjectHandlerImpl ( string s , VisualStudioInstance vsi, [ NotNull ]
+                                    SynchronizationContext context) : base ( s , vsi )
+        {
+            if ( context == null )
+            {
+                throw new ArgumentNullException ( nameof ( context ) ) ;
+            }
+
+            _context = context ;
+        }
 
         /// <inheritdoc />
-        public override async Task OnProcessDocumentAsync (
-            Document                 document1
-          , Action < LogInvocation > consumeLogInvocation
+        public override async Task < object > OnProcessDocumentAsync (
+            Document                        document1
+          , Triple                          triple
+          , Action < LogInvocation >        consumeLogInvocation
+          , Func < object , FormattedCode > func
         )
         {
+            _context.Post (
+                                ( t2 ) => {
+                                    var (tree , model , root) = ( Triple ) t2 ;
+                                    if ( tree     == null
+                                         || model == null
+                                         || root  == null )
+                                    {
+                                        return ;
+                                    }
+
+                                    FormattedCode codeControl = func ( t2 ) ;
+                                    // var sourceText = ProjLib.LibResources.Program_Parse ;
+                                    // codeControl.SourceCode = sourceText ;
+
+                                    codeControl.SyntaxTree            = tree ;
+                                    codeControl.Model                 = model;
+                                    codeControl.CompilationUnitSyntax = root ;
+
+
+                                    // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument ) ;
+                                    // File.WriteAllText ( @"c:\data\out.xaml" , argument1 ) ;
+                                    // Logger.Info ( "xaml = {xaml}" , argument1 ) ;
+                                    // var tree = Transforms.TransformTree ( context.SyntaxTree ) ;
+                                    // Logger.Info ( "Tree is {tree}" , tree ) ;
+                                    codeControl.Refresh();
+                                }, triple
+                               ) ;
+
+
             if ( document1.Project.Name == "NLog" )
             {
-                return ;
+                return new object ( ) ;
             }
             
             List < Tuple < int , string , List < Tuple < ExpressionSyntax , object > > > > query ;
@@ -162,6 +243,7 @@ namespace ProjLib
                 Logger.Info ( ex , ex.ToString ( ) ) ;
             }
 
+            return new object ( ) ;
             //Debug.Assert ( query != null , nameof ( query ) + " != null" ) ;
         }
 
@@ -176,13 +258,9 @@ namespace ProjLib
             OutputList.AddRange ( query ) ;
         }
 
-        public override async Task OnPrepareProcessDocumentAsync ( Document doc )
+        public override async Task<Triple> OnPrepareProcessDocumentAsync ( Document doc )
         {
-            if ( doc.Project.Name == "NLog" )
-            {
-                return ;
-            }
-
+            
             Logger.Trace ( nameof ( OnProcessDocumentAsync ) ) ;
             if ( doc == null )
             {
@@ -192,9 +270,11 @@ namespace ProjLib
             var tree = await doc.GetSyntaxTreeAsync ( ) ;
             var model = await doc.GetSemanticModelAsync ( ) ;
             var root = tree.GetCompilationUnitRoot ( ) ;
-            CurrentTree  = tree ;
-            CurrentModel = model ;
-            CurrentRoot  = root ;
+            CurrentTree  = tree;
+            CurrentModel = model;
+            CurrentRoot  = root;
+
+            return new Triple ( tree , model , root ) ;
         }
 
         public SyntaxTree CurrentTree { get ; set ; }
@@ -230,6 +310,29 @@ namespace ProjLib
             {
                 Logger.Debug ( methodSymbol.ToString ( ) ) ;
             }
+        }
+    }
+
+    public class Triple
+    {
+        public SyntaxTree Tree { get ; }
+
+        public SemanticModel Model { get ; }
+
+        public CompilationUnitSyntax Root { get ; }
+
+        public void Deconstruct(out SyntaxTree tree, out SemanticModel model, out CompilationUnitSyntax root)
+        {
+            tree = Tree ;
+            model = Model ;
+            root = Root ;
+        }
+
+        public Triple ( SyntaxTree tree , SemanticModel model , CompilationUnitSyntax root )
+        {
+            Tree = tree ;
+            Model = model ;
+            Root = root ;
         }
     }
 

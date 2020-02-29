@@ -24,29 +24,9 @@ namespace ProjInterface
     public static class ProjUtils
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public static void MakeFormattedCode (
-            object o
-        )
-        {
-            Logger.Info ( nameof ( MakeFormattedCode ) ) ;
-            MakeInfo makeInfo = o as MakeInfo ;
-            double scale = 1 ;
-            var text = makeInfo.SourceText ;
-            Logger.Trace("{SourceText}", text);
+    
 
-            CodeAnalyseContext ctx = makeInfo.Context ;
-
-            SetujpFormattedCode1 (
-                                  makeInfo.W
-                                , makeInfo.SourceText,
-                                  ctx
-                   ,              makeInfo.AddChild
-                   ,              makeInfo.Control
-                                 ) ;
-
-        }
-
-        public static void SetujpFormattedCode1 (
+        public static void SetupFormattedCode1 (
              ContentControl    w
           , string                sourceText, CodeAnalyseContext ctx
           , IAddChild             addChild

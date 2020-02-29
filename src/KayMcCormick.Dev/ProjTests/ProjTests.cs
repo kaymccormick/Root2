@@ -21,12 +21,14 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
+using System.Windows.Threading ;
 using Autofac ;
 using CodeAnalysisApp1 ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using NLog.Layouts ;
 using ProjInterface ;
@@ -146,12 +148,11 @@ namespace ProjTests
             await v.ProcessAsync ( ) ;
 
         }
-#endif
         [ Theory ]
         //[InlineData( @"V2\WpfApp\WpfApp.sln")]
         [ InlineData ( @"V3\copy\src\KayMcCormick.Dev\KayMcCormick.dev.sln" ) ]
         [ InlineData ( @"V2\LogTest\LogTest.sln" ) ]
-        public async Task TestProject2 ( string p1 )
+        public async Task<object> TestProject2 ( string p1 )
         {
             Assert.NotNull ( VSI ) ;
             var root = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos" ;
@@ -159,10 +160,10 @@ namespace ProjTests
             solution = @"V2\LogTest\LogTest.sln" ;
             var p = Path.Combine ( root , p1 ) ;
             Assert.True ( File.Exists ( p ) ) ;
-            var projectHandlerImpl = new ProjectHandlerImpl ( p , VSI ) ;
+            var projectHandlerImpl = new ProjectHandlerImpl ( p , VSI, SynchronizationContext.Current) ;
             await projectHandlerImpl.LoadAsync ( ) ;
             projectHandlerImpl.ProcessProject += ( workspace , project ) => {
-                Logger.Debug ( "project is {project}" , project.Name ) ;
+                Logger.Debug ( "project is {project}" , project.Name, Dispatcher.CurrentDispatcher) ;
             } ;
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
@@ -171,7 +172,11 @@ namespace ProjTests
                             , document.SourceCodeKind
                              ) ;
             } ;
-            await projectHandlerImpl.ProcessAsync ( invocation => { } ) ;
+            Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
+                WorkspacesViewModel.CreateFormattedCodeDelegate2> d = t
+                => new WorkspacesViewModel.CreateFormattedCodeDelegate2(() => new FormattedCode());
+
+            await projectHandlerImpl.ProcessAsync ( invocation => { }, SynchronizationContext.Current, d ) ;
             foreach ( var yy in projectHandlerImpl.OutputList )
             {
                 Logger.Info (
@@ -212,7 +217,7 @@ namespace ProjTests
             var p = Path.Combine ( root , p1 ) ;
             Assert.True ( File.Exists ( p ) ) ;
             // getScope.Resolve < ProjectHandlerImpl > ( ) ;
-            var projectHandlerImpl = new ProjectHandlerImpl ( p , VSI ) ;
+            var projectHandlerImpl = new ProjectHandlerImpl ( p , VSI, SynchronizationContext.Current) ;
             await projectHandlerImpl.LoadAsync ( ) ;
             projectHandlerImpl.ProcessProject += ( workspace , project ) => {
                 Logger.Debug ( "project is {project}" , project.Name ) ;
@@ -304,8 +309,9 @@ namespace ProjTests
                 System.Diagnostics.Debug.WriteLine("Exception: " + ex);
             }
         }
+#endif
 
-        [ WpfFact ]
+        [WpfFact ]
         public void TestContainer ( )
         {
             var scope = Container.GetScope();
@@ -319,7 +325,7 @@ namespace ProjTests
             var fmt = scope.Resolve < IEnumerable <IHasLogInvocations> > ( ) ;
             foreach ( var q in fmt )
             {
-                Logger.Info (
+                Logger.Info (   
                              "tre is {x}"
                            , q.LogInvocationList
                             ) ;
@@ -329,16 +335,42 @@ namespace ProjTests
             
         }
 
+        [WpfFact]
+        public void TestFormattedCodeControl()
+        {
+            FormattedCode codeControl = new FormattedCode ( ) ;
+            //FormattdCode1.SetValue(ComboBox.Edit.Editable)
+
+            var sourceText = ProjLib.LibResources.Program_Parse ;
+            codeControl.SourceCode = sourceText ;
+            Window w = new Window ( ) ;
+            w.Content = codeControl ;
+
+            CodeAnalyseContext context = CodeAnalyseContext.Parse ( sourceText , "test1" ) ;
+            var (syntaxTree , model , compilationUnitSyntax) = context ;
+            Logger.Info ( "Context is {Context}" , context) ;
+            codeControl.SyntaxTree = syntaxTree ;
+            codeControl.Model = model ;
+            codeControl.CompilationUnitSyntax = compilationUnitSyntax ;
+            codeControl.Refresh ( ) ;
+
+            // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
+            // File.WriteAllText ( @"c:\data\out.xaml", argument1 ) ;
+            // Logger.Info ( "xaml = {xaml}" , argument1 ) ;
+            // var tree = Transforms.TransformTree ( context.SyntaxTree ) ;
+            // Logger.Info ( "Tree is {tree}" , tree ) ;
+            w.ShowDialog ( ) ;
+
+        }
         [WpfFact ]
         public void TestCommand ( )
         {
-            AppDomain.CurrentDomain.FirstChanceException += ( sender , args ) => {
-                HandleInnerExceptions ( args) ;
+            // AppDomain.CurrentDomain.FirstChanceException += ( sender , args ) => {
+                // HandleInnerExceptions ( args) ;
 
-            } ;
+            // } ;
             
-
-
+            TransformScope transform = new TransformScope(code, new FormattedCode(), new Visitor2());
             Logger.Info ( "Transform is {transform}" , transform ) ;
             var w = new Window ( ) { } ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
@@ -347,16 +379,16 @@ namespace ProjTests
             w.Content = fmt ;
             var mi = new MakeInfo(fmt, transform.SourceCode);                                  
             Assert.NotNull ( mi ) ;
-            var task = fmt.TaskFactory.StartNew(ProjUtils.MakeFormattedCode, mi
-                                              , CancellationToken.None, 
-                                                TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning
+            // var task = fmt.TaskFactory.StartNew(ProjUtils.MakeFormattedCode, mi
+                                              // , CancellationToken.None, 
+                                                // TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning
 
-                                               ,
-                                                TaskScheduler.Default
-                                               ) ;
-            fmt.tasks.Add(task);
-            w.ShowDialog();
-            Task.WaitAll ( fmt.tasks.ToArray()) ;
+                                               // ,
+                                                // TaskScheduler.Default
+                                               // ) ;
+            // fmt.tasks.Add(task);
+            // w.ShowDialog();
+            // Task.WaitAll ( fmt.tasks.ToArray()) ;
             // TaskCompletionSource <bool> tcs = new TaskCompletionSource < bool > ();
             // w.Closed += ( sender , args ) => tcs.TrySetResult ( true ) ;
             // Logger.Info ( "{xaml}" , XamlWriter.Save ( f.Content ) ) ;

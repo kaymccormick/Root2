@@ -1,10 +1,12 @@
 using System ;
+using System.Collections.Generic ;
 using System.Linq ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Newtonsoft.Json ;
 
 namespace CodeAnalysisApp1
 {
@@ -32,7 +34,7 @@ namespace CodeAnalysisApp1
                         return new
                                {
                                    ac.RawKind
-                                   , Kind = ac.Kind()
+                                 , Kind     = ac.Kind ( )
                                  , InitExpr = ac.Initializer.Expressions.Select ( TransformExpr )
                                  , ac.Type.ElementType
                                  , RankSpec = ac.Type.RankSpecifiers.Select (
@@ -63,7 +65,7 @@ namespace CodeAnalysisApp1
                         return new
                                {
                                    cond.RawKind
-                                   , Kind = cond.Kind()
+                                 , Kind        = cond.Kind ( )
                                  , Op          = TransformOperatorToken ( cond.OperatorToken )
                                  , Expression  = TransformExpr ( cond.Expression )
                                  , WhenNotNull = TransformExpr ( cond.WhenNotNull )
@@ -72,7 +74,7 @@ namespace CodeAnalysisApp1
                         return new
                                {
                                    l.RawKind
-                                   , Kind = l.Kind()
+                                 , Kind = l.Kind ( )
                                  , Parameters =
                                        ( l as ParenthesizedLambdaExpressionSyntax )
                                      ?.ParameterList.Parameters.Select ( TransformParameter )
@@ -84,13 +86,15 @@ namespace CodeAnalysisApp1
                     case PredefinedTypeSyntax preDef :
                         return new
                                {
-                                   preDef.RawKind, Kind = preDef.Kind()
+                                   preDef.RawKind
+                                 , Kind                 = preDef.Kind ( )
                                  , PredefinedTypeSyntax = TransformKeyword ( preDef.Keyword )
                                } ;
                     case InvocationExpressionSyntax invoc :
                         return new
                                {
-                                   invoc.RawKind, Kind = invoc.Kind()
+                                   invoc.RawKind
+                                 , Kind       = invoc.Kind ( )
                                  , Expression = TransformExpr ( invoc.Expression )
                                  , Args = invoc.ArgumentList.Arguments
                                                .Select (
@@ -103,7 +107,8 @@ namespace CodeAnalysisApp1
                     case BinaryExpressionSyntax bin :
                         return new
                                {
-                                   bin.RawKind, Kind = bin.Kind()
+                                   bin.RawKind
+                                 , Kind  = bin.Kind ( )
                                  , Left  = TransformExpr ( bin.Left )
                                  , Op    = bin.OperatorToken.ValueText
                                  , Right = TransformExpr ( bin.Right )
@@ -111,25 +116,36 @@ namespace CodeAnalysisApp1
                     case MemberAccessExpressionSyntax macc :
                         return new
                                {
-                                   macc.RawKind, Kind = macc.Kind()
+                                   macc.RawKind
+                                 , Kind       = macc.Kind ( )
                                  , Expression = TransformExpr ( macc.Expression )
                                  , Operator   = macc.OperatorToken.ValueText
                                  , Name       = TransformExpr ( macc.Name )
                                } ;
                     case IdentifierNameSyntax ident :
-                        return new { ident.RawKind, Kind = ident.Kind() , Identifier = ident.Identifier.ValueText } ;
+                        return new
+                               {
+                                   ident.RawKind
+                                 , Kind       = ident.Kind ( )
+                                 , Identifier = ident.Identifier.ValueText
+                               } ;
                     case LiteralExpressionSyntax lit :
-                        return new { lit.RawKind, Kind = lit.Kind() ,Literal = lit.Token.Value } ;
+                        return new
+                               {
+                                   lit.RawKind , Kind = lit.Kind ( ) , Literal = lit.Token.Value
+                               } ;
                     case InterpolatedStringExpressionSyntax i :
                         return new
                                {
-                                   i.RawKind, Kind = i.Kind()
+                                   i.RawKind
+                                 , Kind     = i.Kind ( )
                                  , Contents = i.Contents.Select ( TransformInterpolated ).ToList ( )
                                } ;
                     case ConditionalExpressionSyntax cx :
                         return new
                                {
-                                   cx.RawKind, Kind = cx.Kind()
+                                   cx.RawKind
+                                 , Kind      = cx.Kind ( )
                                  , Condition = TransformExpr ( cx.Condition )
                                  , WhenTrue  = TransformExpr ( cx.WhenTrue )
                                  , WhenFalse = TransformExpr ( cx.WhenFalse )
@@ -137,7 +153,8 @@ namespace CodeAnalysisApp1
                     case IsPatternExpressionSyntax isPattern :
                         return new
                                {
-                                   isPattern.RawKind, Kind = isPattern.Kind()
+                                   isPattern.RawKind
+                                 , Kind       = isPattern.Kind ( )
                                  , Expression = TransformExpr ( isPattern.Expression )
                                  , Pattern    = TransformPatternSyntax ( isPattern.Pattern )
                                } ;
@@ -162,12 +179,15 @@ namespace CodeAnalysisApp1
                 case ConstantPatternSyntax constant :
                     return new
                            {
-                               constant.RawKind, Kind = constant.Kind() , Expression = TransformExpr ( constant.Expression )
+                               constant.RawKind
+                             , Kind       = constant.Kind ( )
+                             , Expression = TransformExpr ( constant.Expression )
                            } ;
                 case DeclarationPatternSyntax declarationPatternSyntax :
                     return new
                            {
-                               declarationPatternSyntax.RawKind, Kind = declarationPatternSyntax.Kind()
+                               declarationPatternSyntax.RawKind
+                             , Kind = declarationPatternSyntax.Kind ( )
                              , Type = TransformTypeSyntax ( declarationPatternSyntax.Type )
                              , Designation =
                                    TransformVariableDesignation (
@@ -176,11 +196,15 @@ namespace CodeAnalysisApp1
                                                                 )
                            } ;
                 case DiscardPatternSyntax discardPatternSyntax :
-                    return new { discardPatternSyntax.RawKind, Kind = discardPatternSyntax.Kind() , } ;
+                    return new
+                           {
+                               discardPatternSyntax.RawKind , Kind = discardPatternSyntax.Kind ( ) ,
+                           } ;
                 case RecursivePatternSyntax recursivePatternSyntax :
                     return new
                            {
-                               recursivePatternSyntax.RawKind, Kind = recursivePatternSyntax.Kind()
+                               recursivePatternSyntax.RawKind
+                             , Kind = recursivePatternSyntax.Kind ( )
                              , Designation =
                                    TransformVariableDesignation (
                                                                  recursivePatternSyntax.Designation
@@ -200,7 +224,8 @@ namespace CodeAnalysisApp1
                 case VarPatternSyntax varPatternSyntax :
                     return new
                            {
-                               varPatternSyntax.RawKind, Kind = varPatternSyntax.Kind()
+                               varPatternSyntax.RawKind
+                             , Kind = varPatternSyntax.Kind ( )
                              , Designation =
                                    TransformVariableDesignation ( varPatternSyntax.Designation )
                            } ;
@@ -215,7 +240,8 @@ namespace CodeAnalysisApp1
         {
             return new
                    {
-                       positionalPatternClause.RawKind, Kind = positionalPatternClause.Kind()
+                       positionalPatternClause.RawKind
+                     , Kind = positionalPatternClause.Kind ( )
                      , Subpatterns =
                            positionalPatternClause.Subpatterns.Select ( TransformSubpatternSyntax )
                    } ;
@@ -227,7 +253,8 @@ namespace CodeAnalysisApp1
         {
             return new
                    {
-                       propertyPatternClause.RawKind, Kind = propertyPatternClause.Kind()
+                       propertyPatternClause.RawKind
+                     , Kind = propertyPatternClause.Kind ( )
                      , Subpatterns =
                            propertyPatternClause.Subpatterns.Select ( TransformSubpatternSyntax )
                    } ;
@@ -235,18 +262,25 @@ namespace CodeAnalysisApp1
 
         private static object TransformSubpatternSyntax ( SubpatternSyntax arg )
         {
-            return new { arg.RawKind, Kind = arg.Kind() , Pattern = TransformPatternSyntax ( arg.Pattern ) } ;
+            return new
+                   {
+                       arg.RawKind
+                     , Kind    = arg.Kind ( )
+                     , Pattern = TransformPatternSyntax ( arg.Pattern )
+                   } ;
         }
 
         private static object TransformVariableDesignation ( VariableDesignationSyntax designation )
         {
             switch ( designation )
             {
-                case DiscardDesignationSyntax discard : return new { discard.RawKind, Kind = discard.Kind() } ;
+                case DiscardDesignationSyntax discard :
+                    return new { discard.RawKind , Kind = discard.Kind ( ) } ;
                 case ParenthesizedVariableDesignationSyntax parenthesizedVariableDesignationSyntax :
                     return new
                            {
-                               parenthesizedVariableDesignationSyntax.RawKind, Kind = parenthesizedVariableDesignationSyntax.Kind()
+                               parenthesizedVariableDesignationSyntax.RawKind
+                             , Kind = parenthesizedVariableDesignationSyntax.Kind ( )
                              , Variables =
                                    parenthesizedVariableDesignationSyntax.Variables.Select (
                                                                                             TransformVariableDesignation
@@ -255,7 +289,8 @@ namespace CodeAnalysisApp1
                 case SingleVariableDesignationSyntax singleVariableDesignationSyntax :
                     return new
                            {
-                               singleVariableDesignationSyntax.RawKind, Kind = singleVariableDesignationSyntax.Kind()
+                               singleVariableDesignationSyntax.RawKind
+                             , Kind = singleVariableDesignationSyntax.Kind ( )
                              , Identifier =
                                    TransformIdentifier (
                                                         singleVariableDesignationSyntax.Identifier
@@ -290,7 +325,8 @@ namespace CodeAnalysisApp1
 
             return new
                    {
-                       arg.RawKind, Kind = arg.Kind()
+                       arg.RawKind
+                     , Kind       = arg.Kind ( )
                      , Type       = TransformTypeSyntax ( arg.Type )
                      , Identifier = TransformIdentifier ( arg.Identifier )
                    } ;
@@ -303,7 +339,10 @@ namespace CodeAnalysisApp1
         /// <returns></returns>
         public static object TransformIdentifier ( in SyntaxToken argIdentifier )
         {
-            return new { argIdentifier.RawKind, Kind = argIdentifier.Kind() , argIdentifier.Value } ;
+            return new
+                   {
+                       argIdentifier.RawKind , Kind = argIdentifier.Kind ( ) , argIdentifier.Value
+                   } ;
         }
 
         /// <summary>
@@ -312,18 +351,45 @@ namespace CodeAnalysisApp1
         /// <param name="argType"></param>
         /// <param name="dispatch"></param>
         /// <returns></returns>
-        public static object TransformTypeSyntax ( TypeSyntax argType , bool dispatch = true )
+        public static object TransformTypeSyntax (
+            [ NotNull ] TypeSyntax argType
+          , bool                   dispatch = true
+        )
         {
             if ( argType == null )
             {
-                return null ;
+                throw new ArgumentNullException ( nameof ( argType ) ) ;
             }
 
             switch ( argType )
             {
-                case NameSyntax name : return TransformNameSyntax ( name ) ;
-                default :              return dispatch ? argType.ToString ( ) : null ;
+                case ArrayTypeSyntax arrayTypeSyntax :                   break ;
+                case AliasQualifiedNameSyntax aliasQualifiedNameSyntax : break ;
+                case QualifiedNameSyntax qualifiedNameSyntax :
+                    return new
+                           {
+                               qualifiedNameSyntax.RawKind
+                             , Kind  = qualifiedNameSyntax.Kind ( )
+                             , Left  = TransformNameSyntax ( qualifiedNameSyntax.Left )
+                             , Right = TransformSimpleNameSyntax ( qualifiedNameSyntax.Right )
+                           } ;
+                case SimpleNameSyntax simpleNameSyntax :
+                    return TransformSimpleNameSyntax ( simpleNameSyntax ) ;
+                case NameSyntax name :
+                    return TransformNameSyntax ( name ) ;
+                case NullableTypeSyntax nullableTypeSyntax :               break ;
+                case OmittedTypeArgumentSyntax omittedTypeArgumentSyntax : break ;
+                case PointerTypeSyntax pointerTypeSyntax :                 break ;
+                case PredefinedTypeSyntax predefinedTypeSyntax :           break ;
+                case RefTypeSyntax refTypeSyntax :                         break ;
+                case TupleTypeSyntax tupleTypeSyntax :                     break ;
+                default :                                                  break ;
             }
+
+            throw new UnsupportedExpressionTypeSyntax (
+                                                   "Unsupported type "
+                                                   + argType.GetType ( ).FullName
+                                                  ) ;
         }
 
         /// <summary>
@@ -375,7 +441,8 @@ namespace CodeAnalysisApp1
         {
             return new
                    {
-                       gen.RawKind, Kind = gen.Kind()
+                       gen.RawKind
+                     , Kind       = gen.Kind ( )
                      , Identifier = TransformIdentifier ( gen.Identifier )
                      , gen.IsUnboundGenericName
                      , TypeArgumentList = gen.TypeArgumentList.Arguments
@@ -459,39 +526,219 @@ namespace CodeAnalysisApp1
                    } ;
         }
 
-        private static object TransformTypeSymbol ( ITypeSymbol arg1Type )
+        private static object TransformTypeSymbol( ITypeSymbol arg1Type )
         {
             return new { arg1Type.Name } ;
         }
-    }
 
-    public class UnsupportedExpressionTypeSyntax : Exception
-    {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
-        public UnsupportedExpressionTypeSyntax ( ) { }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
-        /// <param name="message">The message that describes the error. </param>
-        public UnsupportedExpressionTypeSyntax ( string message ) : base ( message ) { }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
-        /// <param name="message">The error message that explains the reason for the exception. </param>
-        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified. </param>
-        public UnsupportedExpressionTypeSyntax ( string message , Exception innerException ) :
-            base ( message , innerException )
+        public static object TransformTree ( SyntaxTree contextSyntaxTree )
         {
+            var syntaxNode = contextSyntaxTree.GetRoot ( ) ;
+            switch ( syntaxNode )
+            {
+                case CompilationUnitSyntax comp :
+                    return new PojoCompilationUnit (
+                                                    comp.Usings.Select (
+                                                                        TransformUsingDirectiveSyntax
+                                                                       )
+                                                        .ToList ( )
+                                                  , comp.Externs.Select (
+                                                                         TransformExternAliasDirectiveSyntax
+                                                                        )
+                                                        .ToList ( )
+                                                  , comp.AttributeLists.Select (
+                                                                                TransformAttributeListSybtax
+                                                                               ).ToList()
+                                                  , comp.Members.Select (
+                                                                         TransformMemberDeclarationSyntax
+                                                                        ).ToList()
+                                                   ) ;
+            }
+            throw new UnsupportedExpressionTypeSyntax(syntaxNode.Kind().ToString()); ;
+
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with serialized data.</summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown. </param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
-        protected UnsupportedExpressionTypeSyntax (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
+        private static object TransformMemberDeclarationSyntax ( MemberDeclarationSyntax arg )
         {
+            switch ( arg )
+            {
+                case EventFieldDeclarationSyntax eventFieldDeclarationSyntax :   break ;
+                case FieldDeclarationSyntax fieldDeclarationSyntax :             break ;
+                case BaseFieldDeclarationSyntax baseFieldDeclarationSyntax :     break ;
+                case ConstructorDeclarationSyntax constructorDeclarationSyntax : break ;
+                case ConversionOperatorDeclarationSyntax conversionOperatorDeclarationSyntax :
+                    break ;
+                case DestructorDeclarationSyntax destructorDeclarationSyntax :     break ;
+                case MethodDeclarationSyntax methodDeclarationSyntax :             break ;
+                case OperatorDeclarationSyntax operatorDeclarationSyntax :         break ;
+                case BaseMethodDeclarationSyntax baseMethodDeclarationSyntax :     break ;
+                case EventDeclarationSyntax eventDeclarationSyntax :               break ;
+                case IndexerDeclarationSyntax indexerDeclarationSyntax :           break ;
+                case PropertyDeclarationSyntax propertyDeclarationSyntax :         break ;
+                case BasePropertyDeclarationSyntax basePropertyDeclarationSyntax : break ;
+                case ClassDeclarationSyntax classDeclarationSyntax :
+                    return TransformClassDeclarationSyntax ( classDeclarationSyntax ) ;
+                case EnumDeclarationSyntax enumDeclarationSyntax :             break ;
+                case InterfaceDeclarationSyntax interfaceDeclarationSyntax :   break ;
+                case StructDeclarationSyntax structDeclarationSyntax :         break ;
+                case TypeDeclarationSyntax typeDeclarationSyntax :             break ;
+                case BaseTypeDeclarationSyntax baseTypeDeclarationSyntax :     break ;
+                case DelegateDeclarationSyntax delegateDeclarationSyntax :     break ;
+                case EnumMemberDeclarationSyntax enumMemberDeclarationSyntax : break ;
+                case GlobalStatementSyntax globalStatementSyntax :             break ;
+                case IncompleteMemberSyntax incompleteMemberSyntax :           break ;
+                case NamespaceDeclarationSyntax namespaceDeclarationSyntax :  return new { namespaceDeclarationSyntax.RawKind, Kind = namespaceDeclarationSyntax.Kind (  ), Members = namespaceDeclarationSyntax.Members.Select(TransformMemberDeclarationSyntax).ToList() } ;
+                default :                                                      break ;
+            }
+
+                                    throw new UnsupportedExpressionTypeSyntax (arg.Kind ().ToString()); ;
+        }
+
+        private static object TransformClassDeclarationSyntax ( ClassDeclarationSyntax classDecl )
+        {
+            return new PojoClassDeclarationSyntax ( classDecl.Identifier ) ;
+        }
+
+        private static object TransformAttributeListSybtax ( AttributeListSyntax arg )
+        {
+            return new
+                   {
+                       arg.RawKind
+                     , Kind       = arg.Kind ( )
+                     , Attributes = arg.Attributes.Select ( TransformAttributeSyntax )
+                     , Target     = TransformAttributeTargetSpecifierSyntax ( arg.Target )
+                   } ;
+        }
+
+        private static object TransformAttributeTargetSpecifierSyntax (
+            AttributeTargetSpecifierSyntax argTarget
+        )
+        {
+            return new
+                   {
+                       argTarget.RawKind
+                     , Kind       = argTarget.Kind ( )
+                     , Identifier = TransformIdentifier ( argTarget.Identifier )
+                   } ;
+        }
+
+        private static object TransformAttributeSyntax ( AttributeSyntax arg )
+        {
+            return new
+                   {
+                       arg.RawKind
+                     , Kind = arg.Kind ( )
+                     , Name = TransformNameSyntax ( arg.Name )
+                     , ArgumentList =
+                           arg.ArgumentList.Arguments.Select ( TransformAttributeArgumentSyntax )
+                   } ;
+        }
+
+
+        private static object  TransformExternAliasDirectiveSyntax  (
+            ExternAliasDirectiveSyntax arg
+        )
+        {
+            return new { arg.RawKind , Kind = arg.Kind ( ) } ;
+        }
+
+
+        private static object TransformUsingDirectiveSyntax ( UsingDirectiveSyntax arg )
+        {
+            return new
+                   {
+                       arg.RawKind
+                     , Kind  = arg.Kind ( )
+                     , Alias = arg.Alias != null ? TransformNameEqualsSyntax ( arg.Alias ) : null
+                     , Name  = TransformNameSyntax ( arg.Name )
+                      ,
+                   } ;
+        }
+
+        private static object TransformNameEqualsSyntax ( [ NotNull ] NameEqualsSyntax argAlias )
+        {
+            if ( argAlias == null )
+            {
+                throw new ArgumentNullException ( nameof ( argAlias ) ) ;
+            }
+
+            return new
+                   {
+                       argAlias.RawKind
+                     , Kind = argAlias.Kind ( )
+                     , Name = TransformIdentifierNameSyntax ( argAlias.Name )
+                   } ;
+        }
+
+
+        private static object TransformAttributeArgumentSyntax ( AttributeArgumentSyntax arg )
+        {
+            return new
+                   {
+                       arg.RawKind
+                     , Kind       = arg.Kind ( )
+                     , Expression = TransformExpr ( arg.Expression )
+                   } ;
+        }
+
+        public class UnsupportedExpressionTypeSyntax : Exception
+        {
+            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
+            public UnsupportedExpressionTypeSyntax ( ) { }
+
+            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
+            /// <param name="message">The message that describes the error. </param>
+            public UnsupportedExpressionTypeSyntax ( string message ) : base ( message ) { }
+
+            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
+            /// <param name="message">The error message that explains the reason for the exception. </param>
+            /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified. </param>
+            public UnsupportedExpressionTypeSyntax ( string message , Exception innerException ) :
+                base ( message , innerException )
+            {
+            }
+
+            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with serialized data.</summary>
+            /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown. </param>
+            /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
+            /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
+            /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
+            protected UnsupportedExpressionTypeSyntax (
+                [ NotNull ] SerializationInfo info
+              , StreamingContext              context
+            ) : base ( info , context )
+            {
+            }
+        }
+
+
+        public class PojoClassDeclarationSyntax
+        {
+            public PojoClassDeclarationSyntax ( in SyntaxToken classDeclIdentifier ) { }
+        }
+    }
+
+    public class PojoCompilationUnit
+    {
+        public List < object > Usings { get ; }
+
+        public List < object > ExternAliases { get ; }
+
+        public List < object > AttributeLists { get ; }
+
+        public List < object > Members { get ; }
+
+        public PojoCompilationUnit (
+            List < object > Usings
+          , List < object > ExternAliases
+          , List < object > AttributeLists
+          , List< object >  members
+        )
+        {
+            this.Usings         = Usings ;
+            this.ExternAliases  = ExternAliases ;
+            this.AttributeLists = AttributeLists ;
+            Members             = members ;
         }
     }
 }

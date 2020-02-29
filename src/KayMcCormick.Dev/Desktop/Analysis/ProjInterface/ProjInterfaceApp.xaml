@@ -5,6 +5,10 @@
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   xmlns:system="clr-namespace:System;assembly=mscorlib">
   <Application.Resources>
+    <Style TargetType="Menu">
+      <Setter Property="FontFamily" Value="Leelawadee"/>
+      <Setter Property="FontSize" Value="24.0"/>
+    </Style>
     <projLib:StatusBarItemContentTemplateSelector x:Key="StatusBarItemContentTemplateSelector" />
     <Style TargetType="StatusBarItem">
     <Setter Property="ContentTemplateSelector" Value="{StaticResource StatusBarItemContentTemplateSelector}"></Setter>

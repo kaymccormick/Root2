@@ -10,8 +10,10 @@ using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Media ;
 using CodeAnalysisApp1 ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.Text ;
 using Newtonsoft.Json ;
 using NLog ;
@@ -24,177 +26,169 @@ namespace ProjLib
     /// </summary>
     public partial class FormattedCode : UserControl
     {
-        public FormattedCode (Visitor2 visitor2 = null, TransformArgs args = null )
-        {
-            _visitor2 = visitor2 ;
-            _args = args ;
-            _args.FormattedCode = this ;
-            _args.RootPanel = rootPanel ;
-            InitializeComponent();
-        }
-
-        private readonly Visitor2 _visitor2 ;
-        private TaskFactory _taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning | TaskCreationOptions.HideScheduler, TaskContinuationOptions.AttachedToParent, TaskScheduler.Default);
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private string _sourceCode ;
+        public FormattedCode ( ) { InitializeComponent ( ) ; }
 
-        public TransformArgs _args ;
-        protected override void OnPropertyChanged ( DependencyPropertyChangedEventArgs e )
+        private string                _sourceCode ;
+        private SyntaxTree            _syntaxTree ;
+        private SemanticModel         _model ;
+        private CompilationUnitSyntax _compilationUnitSyntax ;
+
+        public FlowDocument FlowViewerDocument { get ; private set ; }
+
+        public MyFlowDocumentScrollViewer FlowViewer { get ; private set ; }
+
+        public string SourceCode { get => _sourceCode ; set => _sourceCode = value ; }
+
+        public SyntaxTree SyntaxTree { get => _syntaxTree ; set => _syntaxTree = value ; }
+
+        public SemanticModel Model { get => _model ; set => _model = value ; }
+
+        public CompilationUnitSyntax CompilationUnitSyntax
         {
-            LogManager.GetCurrentClassLogger ( )
-                      .Info ( "{m} {p}" , nameof ( OnPropertyChanged ) , e.Property ) ;
-            base.OnPropertyChanged ( e ) ;
-
-            var eNewValue = e.NewValue ;
-            if ( e.Property.Name == "Tag" )
-            {
-                LogManager.GetCurrentClassLogger ( ).Info ( nameof ( OnPropertyChanged ) ) ;
-                Logger.Info ( "Starting transform" ) ;
-                //tasks.Add ( _taskFactory.StartNew ( ( ) =>
-                PerformTransform ( eNewValue ) ;
-            }
+            get => _compilationUnitSyntax ;
+            set => _compilationUnitSyntax = value ;
         }
 
-        public ConcurrentBag<Task> tasks { get ; set ; } = new ConcurrentBag < Task > ();
-
-        private void PerformTransform ( object value  )
+        public async Task<object>  Refresh ( )
         {
-            var transformArgs = _args ;
-            // new TransformArgs(rootPanel
-            //                                                     
-            //                                            , ( CodeAnalyseContext )
-            //                                              value
-            //                                            , this, this._visitor2
-            //                                             ) ;
-            tasks.Add(
-                      _taskFactory.StartNew (
-                                             TransformCodeAsync
-                                           , ( object ) transformArgs
-                                            )
-                     ) ;
+            FlowViewer = new MyFlowDocumentScrollViewer ( ) ;
+            // flowViewer.LayoutUpdated += ( sender , args ) => )
+            // )
+            // Content                       = FlowViewer ;
+            // FlowViewerDocument            = new FlowDocument ( ) ;
+            RichTextBox richTextBox = new RichTextBox ( ) ;// { FlowViewer.Document = FlowViewerDocument } ;
+            Content = richTextBox ;
+            //FlowViewer.Document  ;         = FlowViewerDocument ;
+            FlowViewerDocument.FontSize   = 24 ;
+            FlowViewerDocument.FontFamily = new FontFamily ( "Lucida Console" ) ;
+
+            return await VisitAsync ( ) ;
         }
 
-        public bool UiError { get ; set ; }
-
-        private static async Task TransformCodeAsync (object o)
+        private async Task<object> VisitAsync ( )
         {
-            var (stackPanel , context , formattedCode , visitor2) = (TransformArgs)o ;
-            StackPanel panel = stackPanel ;
-            new LogBuilder ( Logger ).Level ( LogLevel.Info )
-                                     .Message ( "{method}" , nameof ( TransformCodeAsync ) )
-                                     .Write ( ) ;
-            CodeAnalyseContext exx = context ;
+            var visitor3 = new Visitor3 ( FlowViewerDocument , FlowViewer ) ;
+            visitor3.DefaultVisit ( SyntaxTree.GetRoot ( ) ) ;
+            return new object();
+            // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
+            // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
+            // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;
+        }
+    }
 
-            if ( exx != null ) {
-                if ( formattedCode!= null ) {
-                    CSharpSyntaxRewriter rewriter = new LogUsagesRewriter (
-                                                                           exx.SyntaxTree
-                                                                         , exx.CurrentModel
-                                                                         , new CodeSource ( "input" )
-                                                                         , exx.CurrentRoot, formattedCode.Progress
-                                                                          ) ;
-                    var newNode = rewriter.Visit ( exx.Node ) ;
-                    CodeAnalyseContext newContext =  CodeAnalyseContext.FromSyntaxNode(newNode, "rewritten");
+    internal class LineNumberAdorner : Adorner
+    {
+        [ NotNull ] private readonly UIElement _adornedElement ;
 
-                    var annotations =  newNode.DescendantNodesAndTokensAndSelf ( )
-                                              .Where ( token => token.HasAnnotations ( "LogInvocation" ) )
-                                              .SelectMany ( token => token.GetAnnotations ( "LogInvocation" ) )
-                                              .ToList ( ) ; // var root = exx.SyntaxTree.WithRootAndOptions (newNode , new CSharpParseOptions ( ) ) ;
+        public LineNumberAdorner ( [ NotNull ] UIElement adornedElement ) : base ( adornedElement )
+        {
+            _adornedElement = adornedElement ;
+        }
 
-                    File.WriteAllText ("annotations.json",
-                                       JsonConvert.SerializeObject ( annotations , Formatting.Indented )
-                                      ) ;
+        #region Overrides of UIElement
+        protected override void OnRender ( DrawingContext drawingContext )
+        {
+            var adornedRect = new Rect ( _adornedElement.DesiredSize ) ;
+            LogManager.GetCurrentClassLogger ( ).Info ( "r: {r}" , adornedRect ) ;
             
-
-                    exx = newContext ;
-                    var statementSyntax = exx.Node ;
-                    if ( statementSyntax == null )
-                    {
-                        throw new Exception ( "no st" ) ;
-                    }
-
-                    if ( true)
-                    {
-                        panel.Dispatcher.Invoke ( ( ) => panel.Children.Clear ( ) ) ;
-                        // Visitor x = new Visitor ( ) ;
-
-                        if ( visitor2 != null )
-                        {
-                            visitor2.Visit ( statementSyntax ) ;
-                            Logger.Info("done");
-                        } else
-                        {
-                            Logger.Error ( "visitor is nuk" ) ;
-
-                        }
-
-
-                    }
-                }
-            }
+            FlowDocumentScrollViewer s = new MyFlowDocumentScrollViewer ( ) ;
         }
+        #endregion
+    }
 
-        private void Progress ( SyntaxNode obj, TextSpan span)
-        {
-            LogManager.GetCurrentClassLogger ( ).Debug ( "{proc}" , nameof ( Progress ) ) ;
-            var elementName = obj.Kind ( )
-                              + "."
-                              + obj.Span ;
-            Dispatcher.Invoke (
-                               ( ) => {
-                                   Logger.Warn("looking for {x}", elementName);
-                                   var node = LogicalTreeHelper.FindLogicalNode (
-                                                                                 this
-                                                                               , elementName
-                                                                                ) ;
-                                   if ( node == null )
-                                   {
-                                       Logger.Info ( "cant find it" ) ;
-                                       var t = main.Text ;              
-                main.Inlines.Clear();
-                main.Inlines.Add(new Run(t.Substring(0, span.Start)) { Background = Brushes.Green });
-                main.Inlines.Add (
-                                  new Run ( t.Substring ( span.Start , span.Length ) )
-                                  {
-                                      Background = Brushes.Red
-                                  }
-                                 ) ;
-                        main.Inlines.Add(new Run(t.Substring(span.End)));
-                                   }
-                                   else
-                                   {
-                                       ( node as Run ).Background = Brushes.Gray ;
-                                   }
-
-                                   ;
-                               }
-                              ) ;
-        }
-
-        private void ProcessInvocation (
-            InvocationParms invocationParms
+    public class MyFlowDocumentScrollViewer : FlowDocumentScrollViewer
+    {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        #region Overrides of Visual
+        protected override void OnVisualChildrenChanged (
+            DependencyObject visualAdded
+          , DependencyObject visualRemoved
         )
         {
-            LogUsages.ProcessInvocation ( invocationParms ) ;
-        }
+            Logger.Debug ( "{added}" , visualAdded ) ;
+            if ( visualAdded is Visual v )
+            {
+                var pp = v.PointToScreen ( new Point ( 0 , 0 ) ) ;
+                Logger.Debug ( "point is {pp}", pp ) ;
+            }
 
-        private void ConsumeLogInvocation ( LogInvocation obj )
+            base.OnVisualChildrenChanged ( visualAdded , visualRemoved ) ;
+        }
+        #endregion
+        #region Overrides of UIElement
+        protected override void OnRender ( DrawingContext drawingContext )
         {
-            ByNode[ obj.Node ] = obj ;
-            ByStatement[ obj.Statement ] = obj ;
+            base.OnRender ( drawingContext ) ;
+            
+        }
+        #endregion
+
+        /// <summary>
+        /// Backing store for the <see cref="ScrollViewer"/> property.
+        /// </summary>
+        private ScrollViewer scrollViewer ;
+
+        public bool doOverrideMeasure { get ; set ; }
+
+        /// <summary>
+        /// Gets the scroll viewer contained within the FlowDocumentScrollViewer control
+        /// </summary>
+        public ScrollViewer ScrollViewer
+        {
+            get
+            {
+                if ( scrollViewer == null )
+                {
+                    DependencyObject obj = this ;
+
+                    do
+                    {
+                        if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
+                        {
+                            obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
+                        }
+                        else
+                        {
+                            return null ;
+                        }
+                    }
+                    while ( ! ( obj is ScrollViewer ) ) ;
+
+                    scrollViewer = obj as ScrollViewer ;
+                }
+
+                return scrollViewer ;
+            }
         }
 
-        public Dictionary<object, LogInvocation> ByNode { get; } = new Dictionary<object, LogInvocation>();
-        public Dictionary<object, LogInvocation> ByStatement{ get; } = new Dictionary<object, LogInvocation>();
+        protected override Size MeasureOverride ( Size availableSize )
+        {
+            if ( ! doOverrideMeasure )
+            {
+                return base.MeasureOverride ( availableSize ) ;
+            }
 
-        public bool DoSym { get ; set ; }
+            var panelDesiredSize = new Size ( ) ;
+            if ( double.IsInfinity ( availableSize.Height ) )
+            {
+                panelDesiredSize.Height = 924 ;
+            }
+            else
+            {
+                panelDesiredSize.Height = availableSize.Height - 100 ;
+            }
 
-        public bool DoVisit { get ; set ; } = true ;
+            if ( double.IsInfinity ( panelDesiredSize.Width ) )
+            {
+                panelDesiredSize.Width = 1000 ;
+            }
+            else
+            {
+                panelDesiredSize.Width = availableSize.Width ;
+            }
 
-        public TaskFactory TaskFactory { get { return _taskFactory ; } }
-
-        public string SourceCode { get { return _sourceCode ; } set { _sourceCode = value ; } }
-
-        public TransformArgs Args { get => _args ; set => _args = value ; }
+            return panelDesiredSize ;
+        }
     }
 }

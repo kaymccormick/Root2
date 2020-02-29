@@ -1574,12 +1574,12 @@
     </Style.Resources>
     <Setter Property="TextElement.Foreground">
       <Setter.Value>
-        <SolidColorBrush>#FF000000</SolidColorBrush>
+        <SolidColorBrush>Green</SolidColorBrush>
       </Setter.Value>
     </Setter>
     <Setter Property="Panel.Background">
       <Setter.Value>
-        <SolidColorBrush>#FFFFFFFF</SolidColorBrush>
+        <SolidColorBrush>LightSkyBlue</SolidColorBrush>
       </Setter.Value>
     </Setter>
   </Style>
