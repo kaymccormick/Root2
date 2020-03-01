@@ -145,7 +145,8 @@
         </StackPanel>
       </TabItem>
     </TabControl>
-    <projLib:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3" />
+    <projLib:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3"
+                           Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>
 </Window>
