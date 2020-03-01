@@ -18,7 +18,6 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Threading ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Markup ;
@@ -38,8 +37,6 @@ namespace ProjLib
       , ISupportInitialize
       , INotifyPropertyChanged
     {
-        public IPropagatorBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
-
         public delegate FormattedCode CreateFormattedCodeDelegate (
             Tuple < SyntaxTree , SemanticModel , CompilationUnitSyntax > tuple
         ) ;
@@ -48,16 +45,31 @@ namespace ProjLib
 
         // private IList<IVsInstance> vsInstances;
         private readonly IVsInstanceCollector  vsInstanceCollector ;
+
+        public IPipelineViewModel PipelineViewModel { get ; }
+
+        public Visibility BrowserVisibility
+        {
+            get => _browserVisibility ;
+            set
+            {
+                _browserVisibility = value ;
+                OnPropertyChanged(nameof(BrowserVisibility));
+            }
+        }
+
         private          string                _currentDocumentPath ;
         private          MyProjectLoadProgress _currentProgress ;
         private          string                _currentProject ;
         public           Dispatcher            _d ;
         private          ProjectHandlerImpl    _handler ;
         private          bool                  _processing ;
+        private Visibility _browserVisibility = Visibility.Visible ;
 
-        public WorkspacesViewModel ( IVsInstanceCollector collector)
+        public WorkspacesViewModel ( IVsInstanceCollector collector, IPipelineViewModel pipelineViewModel)
         {
             vsInstanceCollector = collector ;
+            PipelineViewModel = pipelineViewModel ;
             BeginInit ( ) ;
         }
 
@@ -199,8 +211,6 @@ namespace ProjLib
 
         public ObservableCollection < LogInvocation > LogInvocations { get ; } =
             new ObservableCollection < LogInvocation > ( ) ;
-
-        public ITargetBlock < string > DataflowHead { get ; set ; }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

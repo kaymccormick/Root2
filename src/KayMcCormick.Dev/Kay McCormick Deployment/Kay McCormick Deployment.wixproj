@@ -50,14 +50,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\App1\App1.csproj">
-      <Name>App1</Name>
-      <Project>{d9a8d6ef-7632-4b7e-a70b-a0496274c201}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\Desktop\WpfApp2\WpfApp2.csproj">
       <Name>WpfApp2</Name>
       <Project>{fc03e7ad-f794-49ee-9803-61a7423bcef7}</Project>

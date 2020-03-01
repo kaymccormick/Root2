@@ -94,6 +94,7 @@
       <TextBlock Text="{Binding Processing}" />
     </StackPanel>
     <ListView Grid.Column="0" Name="vs" Grid.Row="2"
+              Visibility="{Binding Path=BrowserVisibility}"
               ItemsSource="{Binding Source={StaticResource VsSource}}">
       <ListView.View>
         <GridView>
@@ -102,7 +103,7 @@
         </GridView>
       </ListView.View>
     </ListView>
-    <ListView Name="mru" Grid.Row="2" Grid.Column="1"
+    <ListView Visibility="{Binding Path=BrowserVisibility}" Name="mru" Grid.Row="2" Grid.Column="1"
               
               ItemsSource="{Binding Source={StaticResource MruItems}}"
               SelectionChanged="Mru_OnSelectionChanged">
@@ -125,7 +126,7 @@
         </GridView>
       </ListView.View>
     </ListView>
-    <ListView Grid.Row="2" Grid.Column="2"
+    <ListView Visibility="{Binding Path=BrowserVisibility}" Grid.Row="2" Grid.Column="2"
               ItemsSource="{Binding Source={StaticResource SolutionInfo}}">
       <ListView.View>
         <GridView>
@@ -134,8 +135,8 @@
         </GridView>
       </ListView.View>
     </ListView>
-    <TabControl Name="results" Visibility="Visible" Grid.ColumnSpan="3" Grid.Row="2">
-      <TabItem Header="results">
+    <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
+      <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=mainWindow}">
             <CheckBox IsChecked="{Binding Mode= OneWay,Path=WorkspaceActionBlock.Completion.IsCompleted}"></CheckBox>

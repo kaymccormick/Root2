@@ -13,15 +13,12 @@ using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
-using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows.Documents ;
 using Autofac ;
-using CodeAnalysisApp1 ;
 using KayMcCormick.Dev ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
 using ProjLib ;
 
 namespace ProjInterface
@@ -41,6 +38,13 @@ namespace ProjInterface
             Debug.WriteLine ( stackTrace.ToString ( ) ) ;
             var builder = new ContainerBuilder ( ) ;
 
+            var a = new[]
+                    {
+                        typeof ( InterfaceContainer ).Assembly , typeof ( IViewModel ).Assembly
+                    } ;
+            builder.RegisterAssemblyTypes ( a )
+                   .Where ( type => typeof ( IViewModel ).IsAssignableFrom ( type ) )
+                   .AsImplementedInterfaces( ) ;
             builder.RegisterModule < IdGeneratorModule > ( ) ;
 
             builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ) ;
@@ -64,6 +68,7 @@ namespace ProjInterface
 
 
             builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
+            builder.RegisterType<Pipeline>().AsSelf();
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
 
 
@@ -84,43 +89,4 @@ namespace ProjInterface
             return Scope ;
         }
     }
-
-    public class FindLogUsagesBlock
-    {
-        private ITargetBlock < LogInvocation > _target ;
-
-        public IReceivableSourceBlock < LogInvocation > Source => _source ;
-
-        private readonly ActionBlock < Document > actionBlock ;
-        private readonly IReceivableSourceBlock < LogInvocation > _source = new BufferBlock < LogInvocation > ( ) ;
-
-        public FindLogUsagesBlock ( ITargetBlock < LogInvocation > target )
-        {
-            this._target = target ;
-            actionBlock = new ActionBlock < Document > (
-                                                        Action
-                                                       ) ;
-        }
-
-        private async Task Action ( Document d )
-        {
-            var tree = await d.GetSyntaxTreeAsync ( ) ;
-            var model = await d.GetSemanticModelAsync ( ) ;
-            LogUsages.FindLogUsages (
-                                     new CodeSource ( d.FilePath )
-                                   , tree.GetCompilationUnitRoot ( )
-                                   , model
-                                   , invocation => _target.Post ( invocation )
-                                   , false
-                                   , false
-                                   , ( p ) => LogUsages.ProcessInvocation ( p )
-                                   , tree
-                                    ) ;
-            _target.Complete();
-        }
-
-        public ITargetBlock < Document > Target { get { return actionBlock ; } }
-    }
-
-
 }

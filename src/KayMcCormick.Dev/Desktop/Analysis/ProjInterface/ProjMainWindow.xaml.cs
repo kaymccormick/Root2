@@ -44,15 +44,13 @@ namespace ProjInterface
                                                                               invocation
                                                                              ) ;
                                                                  }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
-            pipeline = BuildPipeline(actionBlock ) ;
+            // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
             if (! viewModel.VsCollection.Any ( ) )
             {
                 throw new Exception("no data");
             }
 
             ((WorkspacesViewModel)viewModel)._d = Dispatcher;
-
-
 
             InitializeComponent();
             // XamlXmlReader x = new XamlXmlReader();
@@ -93,27 +91,24 @@ namespace ProjInterface
                                             , typeof ( ProjMainWindow )
                                              ) ;
 
-        private readonly ITargetBlock < string > pipeline ;
-        private TransformBlock < string , Workspace > _workspaceTransformBlock ;
-        private FindLogUsagesBlock _findLogUsagesBlock ;
-
         public ActionBlock < Workspace > WorkspaceActionBlock { get ; private set ; }
 
-        public ITargetBlock < string > DataflowHead => pipeline ;
+        private ITargetBlock<string> DataflowHead { get; }
 
         private void PerformAnalysis ( object sender , ExecutedRoutedEventArgs e )
         {
-
             AnalyzeResults results = new AnalyzeResults ( ViewModel ) { ShowActivated = true } ;
             results.Show ( ) ;
+            ViewModel.BrowserVisibility = Visibility.Hidden ;
             this.results.Visibility = Visibility.Visible ;
             var sender2SelectedItem = (IMruItem)mru.SelectedItem ;
-            var  b = pipeline.Post( sender2SelectedItem.FilePath ) ;
-            pipeline.Completion.ContinueWith (
-                                              ( task ) => {
-                                                  Logger.Info ( "completipn" ) ;
-                                              }
-                                             ) ;
+            var filePath = sender2SelectedItem.FilePath ;
+            PostPath ( filePath ) ;
+            // DataflowHead.Completion.ContinueWith (
+                                              // ( task ) => {
+                                                  // Logger.Info ( "completipn" ) ;
+                                              // }
+                                             // ) ;
             // result.ContinueWith (
             //                      task => {
             //                          waitingTasks.Remove ( task ) ;
@@ -145,6 +140,8 @@ namespace ProjInterface
             //          ) ;
 
         }
+
+        private void PostPath ( string filePath ) { _ = ViewModel.PipelineViewModel.Pipeline.PipelineInstance.Post ( filePath ) ; }
 
         private async Task < object > ContinuationFunction ( Task task )
         {
@@ -183,53 +180,6 @@ namespace ProjInterface
         private void ProjMainWindow_OnDrop ( object sender , DragEventArgs e )
         {
             e.Data.GetData ( DataFormats.FileDrop ) ;
-        }
-
-        public IPropagatorBlock < string , LogInvocation > BuildPipeline (
-            ITargetBlock < LogInvocation > act
-        )
-        {
-            _workspaceTransformBlock = WorkspaceTransformBlock ( ) ;
-            DataflowLinkOptions opt = new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
-            _findLogUsagesBlock = new FindLogUsagesBlock (act ) ;
-            ITargetBlock < Document > takeDocument = _findLogUsagesBlock.Target ;
-
-            WorkspaceActionBlock = SolutionDocumentsBlock ( takeDocument ) ;
-            _workspaceTransformBlock.LinkTo (
-                       WorkspaceActionBlock, opt
-                      ) ;
-            var pipeline = DataflowBlock.Encapsulate ( _workspaceTransformBlock , _findLogUsagesBlock.Source ) ;
-            return pipeline ;
-        }
-
-        private static ActionBlock < Workspace > SolutionDocumentsBlock ( ITargetBlock < Document > takeDocument )
-        {
-            return new ActionBlock < Workspace > (
-                                                  workspace => {
-                                                      foreach ( var proj in workspace
-                                                                           .CurrentSolution.Projects )
-                                                      {
-                                                          foreach ( var projDocument in proj.Documents )
-                                                          {
-                                                              takeDocument.SendAsync ( projDocument ) ;
-                                                          }
-                                                      }
-                                                      takeDocument.Complete();
-                                                  }
-                                                 ) ;
-        }
-
-        private static TransformBlock < string , Workspace > WorkspaceTransformBlock ( )
-        {
-            var t0 = new TransformBlock < string , Workspace > (
-                                                                s => ProjLibUtils
-                                                                   .LoadSolutionInstanceAsync (
-                                                                                               null
-                                                                                             , s
-                                                                                             , null
-                                                                                              )
-                                                               ) ;
-            return t0 ;
         }
     }
 

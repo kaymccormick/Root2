@@ -11,31 +11,27 @@
 #endregion
 using System ;
 using System.Collections.ObjectModel ;
-using System.ComponentModel;
+using System.ComponentModel ;
 using System.Threading ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
+using System.Windows ;
 using System.Windows.Threading ;
 using CodeAnalysisApp1 ;
-using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace ProjLib
 {
     public interface IWorkspacesViewModel : INotifyPropertyChanged , IAppState
-        //, ISupportInitialize
     {
-        VisualStudioInstancesCollection
-            VsCollection
-        { get; } //ObservableCollection<VsInstance> ;
+        VisualStudioInstancesCollection VsCollection { get ; } //ObservableCollection<VsInstance> ;
 
         MyProjectLoadProgress CurrentProgress { get ; }
 
         ObservableCollection < LogInvocation > LogInvocations { get ; }
 
-        ITargetBlock < string > DataflowHead { get ; set ; }
+        IPipelineViewModel PipelineViewModel { get ; }
 
-        IPropagatorBlock < string , Workspace > ToWorkspaceTransformBlock { get ; }
+        Visibility BrowserVisibility { get ; set ; }
 
         Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem
@@ -43,6 +39,11 @@ namespace ProjLib
           , TaskFactory            factory
           , SynchronizationContext current
         ) ;
-        Task < object > ProcessSolutionAsync ( Dispatcher dispatcher , TaskFactory taskFactory,  Func <object, FormattedCode> getFormattedCode ) ;
+
+        Task < object > ProcessSolutionAsync (
+            Dispatcher                      dispatcher
+          , TaskFactory                     taskFactory
+          , Func < object , FormattedCode > getFormattedCode
+        ) ;
     }
 }

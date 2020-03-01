@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev.TestLib
         /// TODO Edit XML Comment Template for LogFixtureLifecycleEvent
         public static void LogFixtureLifecycleEvent ( Type fixtureType , Lifecycle lifecycle )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured();
+            LogHelper.EnsureLoggingConfigured ( ) ;
             new LogBuilder ( Logger ).Level(LogLevel.Trace).Message("Fixture lifecycle event for {fixtureType}: {lifecycle}", fixtureType, lifecycle).Write();
         }
 

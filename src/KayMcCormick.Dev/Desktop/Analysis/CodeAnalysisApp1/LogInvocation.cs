@@ -102,5 +102,10 @@ namespace CodeAnalysisApp1
         public string MethodName { get => _methodName ; set => _methodName = value ; }
 
         public string MethodDisplayName => LoggerType + "." + MethodName ;
+
+        public override string ToString ( )
+        {
+            return $"{nameof ( SourceLocation )}: {SourceLocation}, {nameof ( Msgval )}: {Msgval}, {nameof ( MethodDisplayName )}: {MethodDisplayName}" ;
+        }
     }
 }

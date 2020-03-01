@@ -58,7 +58,7 @@ namespace ProjLib
                     try
                     {
                         var mruitem = new MruItem( strings[ 0 ] , strings.Length >= 4 ? strings[ 3 ] : null) ;
-                        Logger.Debug ( "Mru Item is {mruitem}" , mruitem ) ;
+                        Logger.Trace ( "Mru Item is {mruitem}" , mruitem ) ;
                         mruItemListFor.Add ( mruitem ) ;
                     }
                     catch ( Exception ex )

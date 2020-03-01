@@ -613,5 +613,10 @@ namespace KayMcCormick.Dev.Logging
 
             return l;
         }
+
+        public static void AddRule ( LoggingRule rule2 )
+        {
+            LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;
+        }
     }
 }

@@ -81,6 +81,7 @@
     <Compile Include="IHaveObjectId.cs" />
     <Compile Include="InstanceInfo.cs" />
     <Compile Include="IObjectIdProvider.cs" />
+    <Compile Include="LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
     <Compile Include="Logging\GlobalSuppressions.cs" />

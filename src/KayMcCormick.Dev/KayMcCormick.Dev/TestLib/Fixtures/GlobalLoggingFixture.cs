@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
@@ -34,7 +35,8 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         /// </summary>
         public GlobalLoggingFixture ( IMessageSink sink )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured (
+            
+            LogHelper.EnsureLoggingConfigured (
                                                             message => sink.OnMessage (
                                                                                        new DiagnosticMessage (
                                                                                                               message

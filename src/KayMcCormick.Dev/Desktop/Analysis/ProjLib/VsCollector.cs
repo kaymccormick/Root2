@@ -94,7 +94,7 @@ namespace ProjLib
         {   
             
             var instance2 = (ISetupInstance2)instance;
-            Logger.Debug("collecting vs instance {instance}", instance.GetDisplayName());
+            Logger.Trace("collecting vs instance {instance}", instance.GetDisplayName());
             var state = instance2.GetState();
             var ft = instance2.GetInstallDate();
             long qwResult;
