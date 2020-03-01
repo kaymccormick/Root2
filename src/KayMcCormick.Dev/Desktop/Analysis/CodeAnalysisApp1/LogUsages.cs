@@ -38,12 +38,11 @@ namespace CodeAnalysisApp1
             var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
             if ( t1 == null )
             {
-                Logger.Warn (
-                             "No {clas} in {document}"
-                           , LoggerClassFullName
-                           , document1
-                            ) ;
-                return ;
+                // Logger.Trace(       
+                             // "No {clas} in {document}"
+                           // , LoggerClassFullName
+                           // , document1
+                            // ) ;
             }
 
             var t2 = comp.GetTypeByMetadataName ( ILoggerClassFullName ) ;

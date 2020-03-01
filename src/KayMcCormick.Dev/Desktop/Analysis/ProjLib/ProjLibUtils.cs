@@ -91,9 +91,9 @@ files = File.ReadAllLines(projFilesList).ToList();
             BuildManager.DefaultBuildManager.ResetCaches();
             foreach ( string f in files)
             {
-                Logger.Info ( f ) ;
+                string realF = Path.Combine ( dir , f ) ;
                 var buildRequest = new BuildRequestData (
-                                                         f
+                                                         realF
                                                        , props2
                                                        , null
                                                        , new[] { "Restore" }
@@ -278,7 +278,6 @@ files = File.ReadAllLines(projFilesList).ToList();
         {
             var lb = LB ( e ) ;
             lb.Write();
-            lb.Write();
         }
 
         private void EventSourceOnMessageRaised ( object sender , BuildMessageEventArgs e )
@@ -296,16 +295,15 @@ files = File.ReadAllLines(projFilesList).ToList();
                     break ;
                 case TargetSkippedEventArgs targetSkippedEventArgs : break ;
                 case TaskCommandLineEventArgs taskCommandLineEventArgs : break ;
-                default : throw new ArgumentOutOfRangeException ( nameof ( e ) ) ;
             }
             lb.Write();
         }
 
-        private static LogBuilder LB ( BuildEventArgs e )
+        private static LogBuilder LB ( EventArgs e )
         {
             return new LogBuilder ( Logger )
                   .Property ( "EventArgs" , e )
-                  .Message ( "{message}" , e.Message ) ;
+                  .Message ( "{message}" , (e is BuildMessageEventArgs be) ? (be.Message ?? "null message") : "no message") ;
         }
 
         private void EventSourceOnBuildStarted ( object sender , BuildStartedEventArgs e )
@@ -357,9 +355,10 @@ files = File.ReadAllLines(projFilesList).ToList();
             Logger.Error ( "{projectFile} {Message} {e}", e.ProjectFile , e.Message , e ) ;
         }
 
-        private void EventSourceOnAnyEventRaised ( object sender , BuildEventArgs e )
+        private void EventSourceOnAnyEventRaised ( object sender , EventArgs e)
         {
-            Logger.Trace( e.Message , e ) ;
+            var lb = LB ( e ).Level(LogLevel.Debug).LoggerName(string.Join(".", nameof(EventSourceOnAnyEventRaised), e.GetType().Name));
+            lb.Write();
         }
 
         public void Shutdown ( ) { }

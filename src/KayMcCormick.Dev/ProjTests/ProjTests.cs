@@ -143,7 +143,7 @@ namespace ProjTests
         {
             Logger.Debug ( "heelo" ) ;
 
-            var utempDir = Path.Combine ( Environment.CurrentDirectory , "temp" ) ;
+            var utempDir = Path.Combine ( Environment.CurrentDirectory, @"..\..\..\WorkDir\Temp");
             var x = Path.GetRandomFileName ( ) ;
             var tempDir = Path.Combine ( utempDir , x ) ;
             var cloneDir = Path.Combine ( tempDir , "clone" ) ;
@@ -246,6 +246,7 @@ namespace ProjTests
             MSBuildLocator.RegisterInstance ( i ) ;
 
             var spath = Path.Combine ( root , solution ) ;
+            Logger.Debug("posting {file}", f[0]);
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Post (f[0]) ;
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.Wait ( 10000 ) ;
             if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
