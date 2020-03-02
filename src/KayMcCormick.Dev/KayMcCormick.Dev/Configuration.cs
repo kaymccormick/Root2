@@ -1,9 +1,4 @@
-﻿using System ;
-using System.Collections.Generic ;
-using System.Linq ;
-using System.Text ;
-using System.Threading.Tasks ;
-using Microsoft.Win32 ;
+﻿using Microsoft.Win32 ;
 using NLog ;
 
 namespace KayMcCormick.Dev
@@ -13,16 +8,43 @@ namespace KayMcCormick.Dev
     /// </summary>
     public enum ConfigurationSource
     {
-        AppConfig , EnvironmentVariable , Win32Registry , Compilation ,
+        /// <summary>
+        /// 
+        /// </summary>
+        AppConfig , 
+        /// <summary>
+        /// 
+        /// </summary>
+        EnvironmentVariable , 
+        /// <summary>
+        /// 
+        /// </summary>
+        Win32Registry , 
+        /// <summary>
+        /// 
+        /// </summary>
+        Compilation ,
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum ConfigurationSetting { LogsRootDirectory , }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IConfiguration
     {
+        /// <summary>
+        /// 
+        /// </summary>
         void LoadConfiguration ( ) ;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Win32RegistryConfiguration : IConfiguration
     {
         private Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -50,6 +72,9 @@ namespace KayMcCormick.Dev
         /// </summary>
         public const string LOGGING_WEBSERVICE_ENDPOINT = "LOGGING_WEBSERVICE_ENDPOINT" ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Configuration ( ) { GetConfigurationSources ( ) ; }
 
         private static void GetConfigurationSources ( ) { }

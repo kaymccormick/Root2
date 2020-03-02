@@ -31,8 +31,7 @@ namespace WcfService1
             //http://www.simosh.com/article/ddbggghj-get-client-ip-address-using-wcf-4-5-remoteendpointmessageproperty-in-load-balanc.html
             if (properties.Keys.Contains(HttpRequestMessageProperty.Name))
             {
-                HttpRequestMessageProperty endpointLoadBalancer = properties[HttpRequestMessageProperty.Name] as HttpRequestMessageProperty;
-                if (endpointLoadBalancer != null && endpointLoadBalancer.Headers["X-Forwarded-For"] != null)
+                if (properties[HttpRequestMessageProperty.Name] is HttpRequestMessageProperty endpointLoadBalancer && endpointLoadBalancer.Headers["X-Forwarded-For"] != null)
                     address = endpointLoadBalancer.Headers["X-Forwarded-For"];
             }
             if (string.IsNullOrEmpty(address))

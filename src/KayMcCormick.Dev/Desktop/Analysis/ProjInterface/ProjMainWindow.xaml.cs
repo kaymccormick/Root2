@@ -33,6 +33,7 @@ namespace ProjInterface
 
         public ProjMainWindow(IWorkspacesViewModel viewModel)
         {
+            InitializeComponent();
             ViewModel = viewModel ;
             _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext()) ;
             var actionBlock = new ActionBlock < LogInvocation > (
@@ -52,7 +53,7 @@ namespace ProjInterface
 
             ((WorkspacesViewModel)viewModel)._d = Dispatcher;
 
-            InitializeComponent();
+            
             // XamlXmlReader x = new XamlXmlReader();
         }
 
