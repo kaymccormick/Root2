@@ -42,11 +42,7 @@ steps:
     configuration: '$(buildConfiguration)'
     createLogFile: true
     logFileVerbosity: 'diagnostic'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    
 
 - task: PublishPipelineArtifact@1
   inputs:
