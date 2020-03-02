@@ -81,8 +81,7 @@ namespace ConsoleApp1
                 return ;
             }
 
-            Parser.Default.ParseArguments < Options > ( args )
-                  .WithParsed ( options => MainCommand ( options , context ) )
+            var parsed = Parser.Default.ParseArguments < Options > ( args )
                   .WithNotParsed (
                                   errors => {
                                       Logger.Error (
@@ -96,13 +95,10 @@ namespace ConsoleApp1
                                   }
                                  ) ;
 
-
-            Instances ( Logger ) ;
-
-            var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
-            ( viewModel as ISupportInitialize )?.BeginInit ( ) ;
-            ( viewModel as ISupportInitialize )?.EndInit ( ) ;
-
+            if (parsed.Tag == ParserResultType.Parsed)
+            {
+                await MainCommand((parsed as Parsed<Options>).Value, context);
+            }
 
             return ;
             Logger.Debug ( "heelo" ) ;
@@ -136,7 +132,7 @@ namespace ConsoleApp1
             }
         }
 
-        private static void MainCommand ( Options options , AppContext context )
+        private static async Task MainCommand ( Options options , AppContext context )
         {
             if ( options.FirstChance )
             {
@@ -208,13 +204,13 @@ namespace ConsoleApp1
 
             var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
             Logger.Info ( "waiting " + timeSpan ) ;
-            var targetBlock = context.Scope.Resolve < ActionBlock < LogInvocation > > ( ) ;
-            for ( ; ; )
-            {
-                Thread.Sleep ( 3000 ) ;
-                Console.WriteLine(targetBlock.InputCount);
-            }
-            pipe.Completion.Wait ( timeSpan ) ;
+            // var targetBlock = context.Scope.Resolve < ActionBlock < LogInvocation > > ( ) ;
+            // for ( ; ; )
+            // {
+            //     Thread.Sleep ( 3000 ) ;
+            //     Console.WriteLine(targetBlock.InputCount);
+            // }
+            await pipe.Completion ;
             if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
                           .TryReceiveAll ( out var list ) )
             {

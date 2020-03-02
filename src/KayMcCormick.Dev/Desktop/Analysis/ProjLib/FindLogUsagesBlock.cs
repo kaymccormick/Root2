@@ -24,7 +24,7 @@ namespace ProjLib
         {
             this._target = target;
             actionBlock = new ActionBlock<Document>(
-                                                        Action
+                                                        Action, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 4 }
                                                        );
             documentTarget = actionBlock;
         }

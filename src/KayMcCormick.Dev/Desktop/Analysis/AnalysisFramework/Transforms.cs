@@ -359,7 +359,7 @@ namespace AnalysisFramework
         {
             if ( argType == null )
             {
-                throw new ArgumentNullException ( nameof ( argType ) ) ;
+                return null ;
             }
 
             switch ( argType )
