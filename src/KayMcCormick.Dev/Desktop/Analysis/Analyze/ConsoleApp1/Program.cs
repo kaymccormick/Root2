@@ -48,6 +48,8 @@ namespace ConsoleApp1
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
+            Pipeline pipeline = new Pipeline(new ActionBlock<LogInvocation>(Program.Action));
+            builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
         }
         #endregion
@@ -62,6 +64,9 @@ namespace ConsoleApp1
         {
             Init ( ) ;
             var scope = InterfaceContainer.GetContainer ( new AppModule ( ) ) ;
+
+            
+            
             AppContext context ;
             try
             {
@@ -98,6 +103,13 @@ namespace ConsoleApp1
 
             return ;
             Logger.Debug ( "heelo" ) ;
+        }
+
+        public static void Action ( LogInvocation invocation )
+        {
+            Console.WriteLine (
+                               $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
+                              ) ;
         }
 
         private static void Instances ( Logger Logger )
@@ -179,19 +191,19 @@ namespace ConsoleApp1
                                      ) ;
             var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
 
-            pipe.LinkTo (
-                         new ActionBlock < LogInvocation > (
-                                                            invocation => {
-                                                                Console.WriteLine (
-                                                                                   $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
-                                                                                  ) ;
-                                                            }
-                                                           )
-                       , new DataflowLinkOptions ( ) { PropagateCompletion = true }
-                        ) ;
+            // pipe.LinkTo (
+                         // new ActionBlock < LogInvocation > (
+                                                            // invocation => {
+                                                                // Console.WriteLine (
+                                                                                   // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
+                                                                                  // ) ;
+                                                            // }
+                                                           // )
+                       // , new DataflowLinkOptions ( ) { PropagateCompletion = true }
+                        // ) ;
 
 
-            var timeSpan = new TimeSpan ( 0 , 3 , 0 ) ;
+            var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
             Logger.Info ( "waiting " + timeSpan ) ;
             pipe.Completion.Wait ( timeSpan ) ;
             if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock

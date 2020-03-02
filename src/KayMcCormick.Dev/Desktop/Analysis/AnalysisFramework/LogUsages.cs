@@ -169,12 +169,12 @@ namespace AnalysisFramework
             var cType = methSym.ContainingType ;
 
             var r = cType == t1 || cType == t2 ;
-            Logger.Trace (
-                          "{name} {ns} {r}"
-                        , cType.MetadataName
-                        , cType.ContainingNamespace.MetadataName
-                        , r
-                         ) ;
+            // Logger.Trace (
+                          // "{name} {ns} {r}"
+                        // , cType.MetadataName
+                        // , cType.ContainingNamespace.MetadataName
+                        // , r
+                         // ) ;
             return r ;
             return cType.MetadataName    == LogUsages.LoggerClassName
                    || cType.MetadataName == LogUsages.ILoggerClassName ; //  || methSym.Name == "Debug";

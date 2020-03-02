@@ -264,7 +264,7 @@ namespace ProjLib
                 var buildParameters = new BuildParameters ( projectCollection ) ;
                 buildParameters.ProjectLoadSettings = ProjectLoadSettings.Default ;
                 buildParameters.Interactive         = false ;
-                buildParameters.Loggers             = new[] { new MyLogger ( ) } ;
+                // buildParameters.Loggers             = new[] {new MyLogger ( ) } ;
 
                 var buildResults = new BuildResults ( )
                                    {
@@ -272,7 +272,7 @@ namespace ProjLib
                                    } ;
 
 
-                var buildFiles = files ; // new[] { solList.First ( ) } ;
+                var buildFiles = new[] { solList.First ( ) } ;
                 BuildManager.DefaultBuildManager.ResetCaches ( ) ;
                 foreach ( var f in buildFiles )
                 {
@@ -482,23 +482,26 @@ namespace ProjLib
         {
             try
             {
+                eventSource.MessageRaised += EventSourceOnMessageRaised;
+                eventSource.ErrorRaised += EventSourceOnErrorRaised;
+                eventSource.WarningRaised += EventSourceOnWarningRaised;
+
+                eventSource.BuildStarted += EventSourceOnBuildStarted;
+                eventSource.BuildFinished += EventSourceOnBuildFinished;
+                eventSource.ProjectStarted  += EventSourceOnProjectStarted;
+                eventSource.ProjectFinished += EventSourceOnProjectFinished;
+
                 if ( EnableAnyEvent )
                 {
                     eventSource.AnyEventRaised += EventSourceOnAnyEventRaised ;
                 }
-                eventSource.ProjectFinished += EventSourceOnProjectFinished;
-                eventSource.ProjectStarted += EventSourceOnProjectStarted;
-                eventSource.ErrorRaised   += EventSourceOnErrorRaised ;
-                eventSource.WarningRaised += EventSourceOnWarningRaised ;
-                eventSource.BuildFinished += EventSourceOnBuildFinished ;
+
 
                 eventSource.CustomEventRaised += EventSourceOnCustomEventRaised ;
                 eventSource.StatusEventRaised += EventSourceOnStatusEventRaised ;
                 eventSource.TaskStarted       += EventSourceOnTaskStarted ;
 
-                eventSource.BuildStarted += EventSourceOnBuildStarted ;
 
-                eventSource.MessageRaised  += EventSourceOnMessageRaised ;
                 eventSource.TargetStarted  += EventSourceOnTargetStarted ;
                 eventSource.TargetFinished += EventSourceOnTargetFinished ;
             }

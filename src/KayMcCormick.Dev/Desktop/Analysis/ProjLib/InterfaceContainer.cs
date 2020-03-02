@@ -33,11 +33,7 @@ namespace ProjLib
             var stackTrace = new StackTrace ( ) ;
             Debug.WriteLine ( stackTrace.ToString ( ) ) ;
             var builder = new ContainerBuilder ( ) ;
-            foreach ( var module in modules )
-            {
-                builder.RegisterModule(module);
-
-            }
+          
 
             var a = new[]
                     {
@@ -56,7 +52,7 @@ namespace ProjLib
 
 
             builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
-            builder.RegisterType<Pipeline>().AsSelf();
+            // builder.RegisterType<Pipeline>().AsSelf();
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
 
 
@@ -70,9 +66,15 @@ namespace ProjLib
                                                                 ) ;
 #endif
             builder.RegisterType < VsInstance > ( ).As < IVsInstance > ( ) ;
-            Scope = builder.Build ( ).BeginLifetimeScope ( ) ;
-            var mruItemses = Scope.Resolve < IEnumerable < IMruItems > > ( ) ;
-            var viewModel = Scope.Resolve < IWorkspacesViewModel > ( ) ;
+            
+            // var mruItemses = Scope.Resolve < IEnumerable < IMruItems > > ( ) ;
+            // var viewModel = Scope.Resolve < IWorkspacesViewModel > ( ) ;
+
+            foreach (var module in modules)
+            {
+                builder.RegisterModule(module);
+            }
+            Scope = builder.Build().BeginLifetimeScope();
             // Debug.Assert ( mruItemses.Any ( ) ) ;
             return Scope ;
         }
