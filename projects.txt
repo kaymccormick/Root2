@@ -7,8 +7,5 @@ src\KayMcCormick.Dev\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj
 src\KayMcCormick.Dev\Desktop\WpfApp\WpfApp.csproj
 src\KayMcCormick.Dev\Desktop\WpfApp2\WpfApp2.csproj
 src\KayMcCormick.Dev\KayMcCormick.Dev\KayMcCormick.Dev.csproj
-src\KayMcCormick.Dev\ProjTests\ProjTests.csproj
 src\KayMcCormick.Dev\Services\LogService\LogService\LogService.csproj
 src\KayMcCormick.Dev\Services\WcfService1\WcfService1\WcfService1.csproj
-src\KayMcCormick.Dev\Tests\CodeAnalysisApp1Tests\CodeAnalysisApp1Tests.csproj
-src\KayMcCormick.Dev\Tests\WpfApp\Tests.csproj
