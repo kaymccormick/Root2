@@ -48,6 +48,30 @@ namespace ProjInterface
 
             ((WorkspacesViewModel)viewModel)._d = Dispatcher;
 
+            {
+                var codeControl = new FormattedCode2();
+                var w = new Window();
+                w.Content = codeControl;
+
+                Task t = new Task(() => { });
+                w.Closed += (sender, args) => {
+                    t.Start();
+                };
+                //FormattdCode1.SetValue(ComboBox.Edit.Editable)
+
+                var sourceText = LibResources.Program_Parse;
+                codeControl.SourceCode = sourceText;
+
+                var context = CodeAnalyseContext.Parse(sourceText, "test1");
+                var (syntaxTree, model, compilationUnitSyntax) = context;
+                Logger.Info("Context is {Context}", context);
+                codeControl.SyntaxTree            = syntaxTree;
+                codeControl.Model                 = model;
+                codeControl.CompilationUnitSyntax = compilationUnitSyntax;
+                Task.Run(() => codeControl.Refresh());
+                w.Show ( ) ;
+            }
+
             
             // XamlXmlReader x = new XamlXmlReader();
         }

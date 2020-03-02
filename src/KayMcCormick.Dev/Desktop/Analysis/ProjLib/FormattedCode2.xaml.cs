@@ -40,7 +40,9 @@ namespace ProjLib
             ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
                 new StyleInfo ( ) { bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
             //_container = rootPanel ;
-            _container = rootPanel ;
+            var wrapPanel = new WrapPanel ( ) ;
+            Content = wrapPanel ;
+            _container = wrapPanel ;
             _visitor3 = new Visitor4 (null, new DispatcherSynchronizationContext ( ), this ) ;
         }
 
@@ -54,6 +56,13 @@ namespace ProjLib
         private Stack <IAddChild> _stack = new Stack < IAddChild > ();
         private StyleInfo curSi  = new StyleInfo();
 
+        private Color[] colors = new[]
+                                 {
+                                     Colors.Red , Colors.Green , Colors.Aqua , Colors.BlueViolet
+                                   , Colors.Chocolate
+                                 } ;
+
+        private int colorI = 0 ;
         public string SourceCode { get => _sourceCode ; set => _sourceCode = value ; }
 
         public SyntaxTree SyntaxTree { get => _syntaxTree ; set => _syntaxTree = value ; }
@@ -111,23 +120,30 @@ namespace ProjLib
 
         public void NewLine ( )
         {
-            var p = new WrapPanel ( ) ;
-            _stack.Peek ( )?.AddChild ( p ) ;
-            _container = p ;
+            // var p = new WrapPanel ( ) ;
+            // _stack.Peek ( )?.AddChild ( p ) ;
+            // _container = p ;
         }
 
         public void StartNode ( SyntaxNode node )
         {
             SolidColorBrush x = null ;
-            var c = new WrapPanel ( ) { Tag = node, Margin = new Thickness(3) } ;
-            c.SetValue ( BorderBrushProperty , new SolidColorBrush ( Colors.Green ) ) ;
-            c.SetValue ( BorderThicknessProperty , new Thickness ( 1 ) ) ;
-            var c2 = new StackPanel ( ) ;
-            c.Children.Add ( c2 ) ;
-            _container?.AddChild(c);
+            var bdr = new Border ( ) ;
+            
+            var c = new WrapPanel ( ) { Tag = node, Margin = new Thickness(2) } ;
+            bdr.Child = c;
+            bdr.BorderBrush = new SolidColorBrush ( colors[colorI % colors.Length]) ;
+            colorI += 1 ;
+            bdr.BorderThickness = new Thickness (1 ) ;
+            bdr.Margin = new Thickness ( 2 ) ;
+            bdr.ToolTip = new ToolTip ( ) { Content = node.Kind ( ) } ;
+            //var c2 = new StackPanel ( ) ;
+            //c.Children.Add ( c2 ) ;
+            _container?.AddChild(bdr);
             _stack.Push(_container);
-            _stack.Push ( c ) ;
-            _container = c2 ;
+            _stack.Push ( bdr ) ;
+            _container = c;
+            
             if ( ss.TryGetValue ( ( ushort ) node.RawKind , out var si ) )
             {
                 if(si.bg.HasValue){
@@ -152,16 +168,14 @@ namespace ProjLib
         public void EndNode ( SyntaxNode node )
         {
             IAddChild c1 = _container ;
-            if(_container is WrapPanel)
-            {
-                c1 = _stack.Pop ( ) ;
-            }
+            _container = _stack.Pop();
+            _container = _stack.Pop();
 
             var n = c1 ;
             SyntaxNode n2 = ( SyntaxNode ) (n as Panel ).Tag ;
             Logger.Info ( "{x} {y}" , n2?.Kind ( ) , node?.Kind ( ) ) ;
 //            Debug.Assert ( object.ReferenceEquals(n , node ) );
-            _container = _stack.Pop ( ) ;
+
         }
         #endregion
     }

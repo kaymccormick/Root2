@@ -35,7 +35,7 @@ namespace ProjLib
                                               , _typeface
                                               , 20
                                               , solidColorBrush ?? Brushes.Black) ;
-            _desiredSize = new Size(_newLine ? 65535  : _formattedText.Width, _formattedText.Height);
+            _desiredSize = new Size(_formattedText.Width, _formattedText.Height);
         }
 
 

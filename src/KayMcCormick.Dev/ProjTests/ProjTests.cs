@@ -533,7 +533,7 @@ Logger.Error(inner, inner.ToString);
             w.ShowDialog();
         }
 
-        [StaFact]
+        [WpfFact]
         public void TestFormattedCodeControl2()
         {
             var codeControl = new FormattedCode2();
