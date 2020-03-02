@@ -67,55 +67,60 @@ namespace ProjLib
                 // throw new Exception ( "Unable to register msbuildlocator" ) ;
             }
 
-            var b = ImmutableDictionary.CreateBuilder<string, string>();
-            b["Platform"] = "x86";
+            var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
+            b[ "Platform" ] = "x86" ;
 
-            IDictionary<string, string> props = b.ToImmutable();
-            IDictionary<string, string> props2 = b.ToImmutable();
+            IDictionary < string , string > props = b.ToImmutable ( ) ;
+            IDictionary < string , string > props2 = b.ToImmutable ( ) ;
 
             MSBuildWorkspace workspace ;
             try
             {
-                workspace           = MSBuildWorkspace.Create ( props ) ;
+                workspace = MSBuildWorkspace.Create ( props ) ;
             }
             catch ( Exception ex )
             {
                 throw ;
             }
 
-            
+
             var projectCollection = new ProjectCollection ( ) ;
             var dir = Path.GetDirectoryName ( solutionPath ) ;
-List<string> files;
-var projFilesList = Path.Combine(dir, "projects.txt");
- if(File.Exists(projFilesList)) {
-files = File.ReadAllLines(projFilesList).ToList();
-} else {
-            files = Directory.EnumerateFiles ( dir , "*.csproj" , SearchOption.AllDirectories ).ToList();
-}
+            List < string > files ;
+            var projFilesList = Path.Combine ( dir , "projects.txt" ) ;
+            if ( File.Exists ( projFilesList ) )
+            {
+                files = File.ReadAllLines ( projFilesList ).ToList ( ) ;
+            }
+            else
+            {
+                files = Directory.EnumerateFiles ( dir , "*.csproj" , SearchOption.AllDirectories )
+                                 .ToList ( ) ;
+            }
+
             Logger.Debug ( "{projects}" , projectCollection.LoadedProjects ) ;
 
-            var buildParameters = new BuildParameters(projectCollection);
-            buildParameters.ProjectLoadSettings = ProjectLoadSettings.Default;
-            buildParameters.Interactive         = false;
-            buildParameters.Loggers = new[] { new MyLogger ( ) } ;
+            var buildParameters = new BuildParameters ( projectCollection ) ;
+            buildParameters.ProjectLoadSettings = ProjectLoadSettings.Default ;
+            buildParameters.Interactive         = false ;
+            buildParameters.Loggers             = new[] { new MyLogger ( ) } ;
 
-            BuildManager.DefaultBuildManager.ResetCaches();
-            foreach ( string f in files)
+            BuildManager.DefaultBuildManager.ResetCaches ( ) ;
+            foreach ( var f in files )
             {
-                string realF = Path.Combine ( dir , f ) ;
+                var realF = Path.Combine ( dir , f ) ;
                 var buildRequest = new BuildRequestData (
                                                          realF
                                                        , props2
                                                        , null
-                                                       , new[] { "Restore", "Build" }
+                                                       , new[] { "Restore" , "Build" }
                                                        , new HostServices ( )
                                                        , BuildRequestDataFlags
                                                             .ProvideProjectStateAfterBuild
                                                         ) ;
-                
+
                 var buildResult =
-                    BuildManager.DefaultBuildManager.Build ( buildParameters, buildRequest ) ;
+                    BuildManager.DefaultBuildManager.Build ( buildParameters , buildRequest ) ;
                 if ( buildResult.OverallResult == BuildResultCode.Failure )
                 {
                     // catch result ..
@@ -136,7 +141,7 @@ files = File.ReadAllLines(projFilesList).ToList();
                                , nameof ( workspace.DocumentOpened )
                                , args.Document
                                 ) ;
-            
+
             // Print message for WorkspaceFailed event to help diagnosing project load failures.
 
             workspace.WorkspaceFailed += ( o , e ) => {
@@ -179,14 +184,19 @@ files = File.ReadAllLines(projFilesList).ToList();
         public static ProjectContext MakeProjectContextForSolutionPath ( string arg )
         {
             var dir = Path.GetDirectoryName ( arg ) ;
-            var r = LibGit2Sharp.Repository.Discover ( dir ) ;
-            var listRemoteReferences = LibGit2Sharp.Repository.ListRemoteReferences ( r ) ;
+            var r = Repository.Discover ( dir ) ;
+            var listRemoteReferences = Repository.ListRemoteReferences ( r ) ;
             foreach ( var listRemoteReference in listRemoteReferences )
             {
-                Logger.Info ( "{x} {y} {z}" , listRemoteReference.CanonicalName, listRemoteReference.IsRemoteTrackingBranch, listRemoteReference.TargetIdentifier ) ;
+                Logger.Info (
+                             "{x} {y} {z}"
+                           , listRemoteReference.CanonicalName
+                           , listRemoteReference.IsRemoteTrackingBranch
+                           , listRemoteReference.TargetIdentifier
+                            ) ;
             }
 
-            var repos = new LibGit2Sharp.Repository ( r ) ;
+            var repos = new Repository ( r ) ;
 
             foreach ( var networkRemote in repos.Network.Remotes )
             {
@@ -195,7 +205,6 @@ files = File.ReadAllLines(projFilesList).ToList();
 
             foreach ( var reposRef in repos.Refs )
             {
-
             }
 
             return new ProjectContext ( arg ) ;
@@ -203,19 +212,18 @@ files = File.ReadAllLines(projFilesList).ToList();
 
         public static async Task < string > CloneProjectAsync ( string arg )
         {
-            
-            Logger.Info("Clone {arg}", arg);
-            string workdirPath = Path.Combine ( ProjectRootDir,  
-                                               Path.GetRandomFileName());
+            Logger.Info ( "Clone {arg}" , arg ) ;
+            var workdirPath = Path.Combine ( ProjectRootDir , Path.GetRandomFileName ( ) ) ;
 
             var r = await Task.Run ( ( ) => Repository.Clone ( arg , workdirPath ) ) ;
             return workdirPath ;
         }
 
-        public static string ProjectRootDir { get { return _projectRootDir ; } }
-        public static  BuildResults BuildRepository ( string arg )
+        public static string ProjectRootDir => _projectRootDir ;
+
+        public static BuildResults BuildRepository ( string arg )
         {
-            Logger.Info("BuildRepository {arg}", arg);
+            Logger.Info ( "BuildRepository {arg}" , arg ) ;
             try
             {
                 var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
@@ -225,32 +233,32 @@ files = File.ReadAllLines(projFilesList).ToList();
 
                 var projectCollection = new ProjectCollection ( ) ;
 
-                List<string> files;
-                var projFilesList = Path.Combine(arg, "projects.txt");
-                Logger.Debug("Checking for existince of poject file {file}", projFilesList);
-                if (File.Exists(projFilesList))
+                List < string > files ;
+                var projFilesList = Path.Combine ( arg , "projects.txt" ) ;
+                Logger.Debug ( "Checking for existince of poject file {file}" , projFilesList ) ;
+                if ( File.Exists ( projFilesList ) )
                 {
-                    files = File.ReadAllLines(projFilesList).ToList();
+                    files = File.ReadAllLines ( projFilesList ).ToList ( ) ;
                 }
                 else
                 {
                     files = Directory
-                           .EnumerateFiles(arg, "*.csproj", SearchOption.AllDirectories)
-                           .ToList();
+                           .EnumerateFiles ( arg , "*.csproj" , SearchOption.AllDirectories )
+                           .ToList ( ) ;
                 }
 
-                List<string> solList;
-                var sol= Path.Combine(arg, "solutions.txt");
-                Logger.Debug("Checking for existince of poject file [file}", projFilesList);
-                if (File.Exists(sol))
+                List < string > solList ;
+                var sol = Path.Combine ( arg , "solutions.txt" ) ;
+                Logger.Debug ( "Checking for existince of poject file [file}" , projFilesList ) ;
+                if ( File.Exists ( sol ) )
                 {
-                    solList = File.ReadAllLines(sol).ToList();
+                    solList = File.ReadAllLines ( sol ).ToList ( ) ;
                 }
                 else
                 {
                     solList = Directory
-                           .EnumerateFiles(arg, "*.sln", SearchOption.AllDirectories)
-                           .ToList();
+                             .EnumerateFiles ( arg , "*.sln" , SearchOption.AllDirectories )
+                             .ToList ( ) ;
                 }
 
                 var buildParameters = new BuildParameters ( projectCollection ) ;
@@ -258,18 +266,17 @@ files = File.ReadAllLines(projFilesList).ToList();
                 buildParameters.Interactive         = false ;
                 buildParameters.Loggers             = new[] { new MyLogger ( ) } ;
 
-                BuildResults buildResults = new BuildResults()
-                                            {
-                                                SourceDir = arg,
-                                                SolutionsFilesList = solList
-                                            };
+                var buildResults = new BuildResults ( )
+                                   {
+                                       SourceDir = arg , SolutionsFilesList = solList
+                                   } ;
 
 
-                var buildFiles = new[] { solList.First ( ) } ;
+                var buildFiles = files;// new[] { solList.First ( ) } ;
                 BuildManager.DefaultBuildManager.ResetCaches ( ) ;
-                foreach ( string f in buildFiles)
+                foreach ( var f in buildFiles )
                 {
-                    string realF = Path.Combine ( arg , f ) ;
+                    var realF = Path.Combine ( arg , f ) ;
                     var buildRequest = new BuildRequestData (
                                                              realF
                                                            , props
@@ -280,19 +287,15 @@ files = File.ReadAllLines(projFilesList).ToList();
                                                                 .ProvideProjectStateAfterBuild
                                                             ) ;
 
-                    var result = BuildManager
-                                                            .DefaultBuildManager.Build (
-                                                                                        buildParameters
-                                                                                      , buildRequest
-                                                                                       );
-                    
+                    var result =
+                        BuildManager.DefaultBuildManager.Build ( buildParameters , buildRequest ) ;
+
                     if ( result.OverallResult == BuildResultCode.Failure )
                     {
                         // catch result ..
                     }
 
                     Logger.Info ( "Result: {buildResult}" , result.OverallResult ) ;
-
                 }
 
 
@@ -309,7 +312,6 @@ files = File.ReadAllLines(projFilesList).ToList();
 
         public static async Task < Workspace > MakeWorkspaceAsync ( BuildResults results )
         {
-
             var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
             b[ "Platform" ] = "x86" ;
 
@@ -364,10 +366,10 @@ files = File.ReadAllLines(projFilesList).ToList();
             } ;
 
             // ReSharper disable once LocalizableElement
-            string solutionPath = Path.Combine (
-                                                results.SourceDir
-                                              , results.SolutionsFilesList.First ( )
-                                               ) ;
+            var solutionPath = Path.Combine (
+                                             results.SourceDir
+                                           , results.SolutionsFilesList.First ( )
+                                            ) ;
             Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 
@@ -385,11 +387,12 @@ files = File.ReadAllLines(projFilesList).ToList();
 
     public class MyLogger2 : ILogger
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private LoggerVerbosity _verbosity = LoggerVerbosity.Diagnostic ;
-        private string _parameters ;
+        private static Logger          Logger     = LogManager.GetCurrentClassLogger ( ) ;
+        private        LoggerVerbosity _verbosity = LoggerVerbosity.Diagnostic ;
+        private        string          _parameters ;
         #region Implementation of ILogger
         public delegate void Handler ( object sender , BuildEventArgs e ) ;
+
         public void Initialize ( IEventSource eventSource )
         {
             var eventInfos = eventSource.GetType ( ).GetEvents ( ) ;
@@ -400,25 +403,29 @@ files = File.ReadAllLines(projFilesList).ToList();
                 try
                 {
                     var cdata = eventInfo.EventHandlerType.GetConstructors ( )
-                                        .Select (
-                                                 ( info , i )
-                                                     => info.GetParameters ( )
-                                                            .Select (
-                                                                     ( parameterInfo , i1 )
-                                                                         => Tuple.Create (
-                                                                                          parameterInfo.Name
-                                                                                        , parameterInfo
-                                                                                             .ParameterType
-                                                                                         )
-                                                                    )
-                                                )
-                                        .ToList ( ) ;
-                    Logger.Info ( "cdata: {cdata}" , cdata ) ;
-                    eventInfo.AddEventHandler ( this , new EventHandler < BuildEventArgs > ( Handle ) ) ;//new Handler ( Handle ))) ;
+                                         .Select (
+                                                  ( info , i )
+                                                      => info.GetParameters ( )
+                                                             .Select (
+                                                                      ( parameterInfo , i1 )
+                                                                          => Tuple.Create (
+                                                                                           parameterInfo
+                                                                                              .Name
+                                                                                         , parameterInfo
+                                                                                              .ParameterType
+                                                                                          )
+                                                                     )
+                                                 )
+                                         .ToList ( ) ;
+                    Logger.Debug( "cdata: {cdata}" , cdata ) ;
+                    eventInfo.AddEventHandler (
+                                               this
+                                             , new EventHandler < BuildEventArgs > ( Handle )
+                                              ) ; //new Handler ( Handle ))) ;
                 }
-                catch (Exception ex)
+                catch ( Exception ex )
                 {
-                    Logger.Error(ex, ex.ToString());
+                    Logger.Error ( ex , ex.ToString ( ) ) ;
                 }
             }
         }
@@ -428,12 +435,11 @@ files = File.ReadAllLines(projFilesList).ToList();
             Logger.Info ( e.Message ) ;
             try
             {
-                List < Tuple < string , object > > l = new List < Tuple < string , object > > ( ) ;
+                var l = new List < Tuple < string , object > > ( ) ;
                 foreach ( var fieldInfo in e.GetType ( ).GetFields ( BindingFlags.Default ) )
                 {
                     var val = fieldInfo.GetValue ( e ) ;
                     l.Add ( Tuple.Create ( fieldInfo.Name , val ) ) ;
-
                 }
 
                 var msgTemplate = string.Join (
@@ -447,17 +453,14 @@ files = File.ReadAllLines(projFilesList).ToList();
                    .Message ( msgTemplate , l.Select ( tuple => tuple.Item2 ).ToArray ( ) )
                    .Property ( "BuildEventArgs" , e )
                    .Write ( ) ;
-            } catch(Exception ex)
+            }
+            catch ( Exception ex )
             {
                 Logger.Error ( ex , ex.ToString ( ) ) ;
             }
         }
 
-        public void Shutdown ( )
-        {
-            Logger.Warn ( "Shutting down" ) ;
-
-        }
+        public void Shutdown ( ) { Logger.Warn ( "Shutting down" ) ; }
 
         public LoggerVerbosity Verbosity { get => _verbosity ; set => _verbosity = value ; }
 
@@ -468,25 +471,27 @@ files = File.ReadAllLines(projFilesList).ToList();
     public class MyLogger : ILogger
     {
         private LoggerVerbosity _verbosity ;
-        private string _parameters ;
+        private string          _parameters ;
         #region Implementation of ILogger
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         public void Initialize ( IEventSource eventSource )
         {
             try
             {
                 // eventSource.AnyEventRaised    += EventSourceOnAnyEventRaised ;
-                eventSource.ErrorRaised       += EventSourceOnErrorRaised ;
-                eventSource.WarningRaised     += EventSourceOnWarningRaised ;
-                eventSource.BuildFinished     += EventSourceOnBuildFinished ;
+                eventSource.ErrorRaised   += EventSourceOnErrorRaised ;
+                eventSource.WarningRaised += EventSourceOnWarningRaised ;
+                eventSource.BuildFinished += EventSourceOnBuildFinished ;
                 // eventSource.CustomEventRaised += EventSourceOnCustomEventRaised ;
                 // eventSource.StatusEventRaised += EventSourceOnStatusEventRaised ;
                 // eventSource.TaskStarted       += EventSourceOnTaskStarted ;
-                eventSource.BuildStarted      += EventSourceOnBuildStarted ;
+                eventSource.BuildStarted += EventSourceOnBuildStarted ;
                 // eventSource.MessageRaised     += EventSourceOnMessageRaised ;
                 // eventSource.TargetStarted     += EventSourceOnTargetStarted ;
                 // eventSource.TargetFinished += EventSourceOnTargetFinished;
-            }catch(Exception ex)
+            }
+            catch ( Exception ex )
             {
                 Logger.Error ( ex , ex.ToString ( ) ) ;
             }
@@ -500,7 +505,7 @@ files = File.ReadAllLines(projFilesList).ToList();
         private void EventSourceOnTargetStarted ( object sender , TargetStartedEventArgs e )
         {
             var lb = LB ( e ) ;
-            lb.Write();
+            lb.Write ( ) ;
         }
 
         private void EventSourceOnMessageRaised ( object sender , BuildMessageEventArgs e )
@@ -509,48 +514,54 @@ files = File.ReadAllLines(projFilesList).ToList();
             switch ( e )
             {
                 case CriticalBuildMessageEventArgs criticalBuildMessageEventArgs :
-                    lb = lb.Message ( 
-                        criticalBuildMessageEventArgs.Message ) ;
+                    lb = lb.Message ( criticalBuildMessageEventArgs.Message ) ;
                     break ;
-                case MetaprojectGeneratedEventArgs metaprojectGeneratedEventArgs :
-                    break ;
-                case ProjectImportedEventArgs projectImportedEventArgs :
-                    break ;
-                case TargetSkippedEventArgs targetSkippedEventArgs : break ;
-                case TaskCommandLineEventArgs taskCommandLineEventArgs : break ;
+                case MetaprojectGeneratedEventArgs metaprojectGeneratedEventArgs : break ;
+                case ProjectImportedEventArgs projectImportedEventArgs :           break ;
+                case TargetSkippedEventArgs targetSkippedEventArgs :               break ;
+                case TaskCommandLineEventArgs taskCommandLineEventArgs :           break ;
             }
-            lb.Write();
+
+            lb.Write ( ) ;
         }
 
-        private static LogBuilder LB ( EventArgs e, [CallerMemberName] string callerMemberName= "" )
+        private static LogBuilder LB (
+            EventArgs                   e
+          , [ CallerMemberName ] string callerMemberName = ""
+        )
         {
             var propertyInfo = e.GetType ( ).GetProperty ( "Message" ) ;
-            var message = propertyInfo?.GetValue ( e );
-            var logBuilder = new LogBuilder ( Logger ).Level(LogLevel.Debug).LoggerName($"{callerMemberName}.{e.GetType (  ).Name}")
-                                                      .Property ( "EventArgs" , e ) ;
+            var message = propertyInfo?.GetValue ( e ) ;
+            var logBuilder = new LogBuilder ( Logger )
+                            .Level ( LogLevel.Debug )
+                            .LoggerName ( $"{callerMemberName}.{e.GetType ( ).Name}" )
+                            .Property ( "EventArgs" , e ) ;
             if ( message != null )
             {
-                logBuilder.Message ( message.ToString() ) ;
+                logBuilder.Message ( message.ToString ( ) ) ;
             }
-            return logBuilder;
+
+            return logBuilder ;
         }
 
         private void EventSourceOnBuildStarted ( object sender , BuildStartedEventArgs e )
         {
-            LB (e ).Level ( LogLevel.Warn ).Write();
+            LB ( e ).Level ( LogLevel.Warn ).Write ( ) ;
         }
 
         private void EventSourceOnTaskStarted ( object sender , TaskStartedEventArgs e )
         {
-            LB ( e ).Message("{Message} {TaskName} {TaskFile}", e.Message , e.TaskName , e.TaskFile ).Write();
+            LB ( e )
+               .Message ( "{Message} {TaskName} {TaskFile}" , e.Message , e.TaskName , e.TaskFile )
+               .Write ( ) ;
         }
 
         private void EventSourceOnStatusEventRaised ( object sender , BuildStatusEventArgs e )
         {
             // new LogBuilder ( Logger ).Level ( LogLevel.Warn )
-                                     // .Message ( e.Message )
-                                     // .Property ( "BuildEventContext" , e.BuildEventContext )
-                                     // .Write ( ) ;
+            // .Message ( e.Message )
+            // .Property ( "BuildEventContext" , e.BuildEventContext )
+            // .Write ( ) ;
         }
 
 
@@ -561,10 +572,9 @@ files = File.ReadAllLines(projFilesList).ToList();
 
         private void EventSourceOnBuildFinished ( object sender , BuildFinishedEventArgs e )
         {
-            LB(e).Level(LogLevel.Warn).Write();
+            LB ( e ).Level ( LogLevel.Warn ).Write ( ) ;
             if ( e.Succeeded )
             {
-
                 Logger.Info ( "Build finished sucessfully." ) ;
             }
             else
@@ -572,23 +582,25 @@ files = File.ReadAllLines(projFilesList).ToList();
                 Logger.Fatal ( "Build failed: {Message}" , e.Message ) ;
             }
         }
-    
+
 
         private void EventSourceOnWarningRaised ( object sender , BuildWarningEventArgs e )
         {
             Logger.Warn ( "{projectFile} {message} {e}" , e.ProjectFile , e.Message , e ) ;
-
         }
 
         private void EventSourceOnErrorRaised ( object sender , BuildErrorEventArgs e )
         {
-            LB ( e ).Level (LogLevel.Error ).Message ("{projectFile} {Message} {e}", e.ProjectFile , e.Message , e ).Write();
+            LB ( e )
+               .Level ( LogLevel.Error )
+               .Message ( "{projectFile} {Message} {e}" , e.ProjectFile , e.Message , e )
+               .Write ( ) ;
         }
 
-        private void EventSourceOnAnyEventRaised ( object sender , EventArgs e)
+        private void EventSourceOnAnyEventRaised ( object sender , EventArgs e )
         {
             var lb = LB ( e ).Level ( LogLevel.Trace ) ;
-            lb.Write();
+            lb.Write ( ) ;
         }
 
         public void Shutdown ( ) { }

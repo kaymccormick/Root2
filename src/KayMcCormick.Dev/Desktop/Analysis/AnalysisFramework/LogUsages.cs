@@ -191,6 +191,7 @@ namespace AnalysisFramework
                               .Where ( arg1 => arg1.symbol.Name == "message" ) ;
             if ( ! msgParam.Any ( ) )
             {
+                Logger.Info ( "{params}", string.Join(", ", ivp.Arg7.Parameters.Select ( symbol => symbol.Name )) ) ;
                 throw new NoMessageParameterException ( ) ;
             }
 
