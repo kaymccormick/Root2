@@ -192,7 +192,6 @@ namespace AnalysisFramework
             if ( ! msgParam.Any ( ) )
             {
                 Logger.Info ( "{params}", string.Join(", ", ivp.Arg7.Parameters.Select ( symbol => symbol.Name )) ) ;
-                throw new NoMessageParameterException ( ) ;
             }
 
             int ? msgI = msgParam.Any ( ) ? (int?) msgParam.First ( ).i : null ;

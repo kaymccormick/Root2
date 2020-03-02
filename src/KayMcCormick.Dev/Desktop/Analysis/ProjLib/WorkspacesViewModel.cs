@@ -111,6 +111,7 @@ namespace ProjLib
         public VisualStudioInstancesCollection VsCollection { get ; } =
             new VisualStudioInstancesCollection ( ) ;
 
+        #if false
         public async Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem
           , IMruItem               sender2SelectedItem
@@ -163,7 +164,7 @@ namespace ProjLib
             return new object ( ) ;
         }
 
-
+        #endif
         public async Task < object > ProcessSolutionAsync (
             Dispatcher                      dispatcher
           , TaskFactory                     factory

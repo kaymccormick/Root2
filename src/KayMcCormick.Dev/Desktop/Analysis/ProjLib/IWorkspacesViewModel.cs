@@ -36,13 +36,14 @@ namespace ProjLib
         IPipelineViewModel PipelineViewModel { get ; }
 
         Visibility BrowserVisibility { get ; set ; }
-
+        #if false
         Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem
           , IMruItem               sender2SelectedItem
           , TaskFactory            factory
           , SynchronizationContext current
         ) ;
+#endif
 
         Task < object > ProcessSolutionAsync (
             Dispatcher                      dispatcher

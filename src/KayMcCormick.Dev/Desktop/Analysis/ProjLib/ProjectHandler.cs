@@ -88,12 +88,13 @@ namespace ProjLib
         public void EndInit ( ) { throw new NotImplementedException ( ) ; }
 
         public IProgress < ProjectLoadProgress > progressReporter { get ; set ; }
-
+        #if false
         public async Task < bool > LoadAsync ( )
         {
             Workspace = await ProjLibUtils.LoadSolutionInstanceAsync( progressReporter , SolutionPath , Instance ) ;
             return true ;
         }
+#endif
 
         public async Task<object> ProcessAsync (
             Action < LogInvocation > consumeLogInvocation

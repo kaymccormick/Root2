@@ -40,7 +40,7 @@ namespace ProjLib
                                                             , "ProjectLib"
                                                              ) ;
 
-
+        #if false
         public static async Task < Workspace > LoadSolutionInstanceAsync (
             IProgress < ProjectLoadProgress > progress
           , string                            solutionPath
@@ -180,7 +180,7 @@ namespace ProjLib
             Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
         }
-
+        #endif
         public static ProjectContext MakeProjectContextForSolutionPath ( string arg )
         {
             var dir = Path.GetDirectoryName ( arg ) ;

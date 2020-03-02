@@ -52,20 +52,7 @@ namespace ProjLib
                    .As < IWorkspacesViewModel > ( )
                    .InstancePerLifetimeScope ( ) ;
             
-            builder.Register (
-                              ( context , parameters ) => {
-                                  // var inst = context.Resolve < VisualStudioInstance > ( ) ;
-                                  return new TransformBlock < string , Workspace > (
-                                                                                    s => ProjLibUtils
-                                                                                       .LoadSolutionInstanceAsync (
-                                                                                                                   null
-                                                                                                                 , s
-                                                                                                                 , null
-                                                                                                                  )
-                                                                                   ) ;
-                              }
-                             ) ;
-                             
+
 
 
             builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
