@@ -28,6 +28,13 @@ namespace ProjLib
             _ = BuildPipeline ( act ) ;
         }
 
+        private static IPropagatorBlock <string, ProjectContext> ProjectContextBlock()
+        {
+            return new TransformBlock < string , ProjectContext > (
+                                                                   ProjLibUtils
+                                                                      .MakeProjectContextForSolutionPath
+                                                                  ) ;
+        }
         private static TransformBlock < string , Workspace > WorkspaceTransformBlock ( )
         {
             var t0 = new TransformBlock < string , Workspace > (
@@ -76,5 +83,10 @@ namespace ProjLib
             PipelineInstance = DataflowBlock.Encapsulate < string , LogInvocation > ( workspaceTransformBlock , findLogUsagesBlock.Source ) ;
             return PipelineInstance ;
         }
+    }
+
+    public class ProjectContext
+    {
+        public ProjectContext ( string s ) { }
     }
 }

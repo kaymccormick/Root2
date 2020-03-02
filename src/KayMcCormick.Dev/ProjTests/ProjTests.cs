@@ -138,12 +138,17 @@ namespace ProjTests
             _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
         }
 
+        [Fact]
+        public void remote1 ( )
+        {
+            var makeProjectContextForSolutionPath = ProjLibUtils.MakeProjectContextForSolutionPath (@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev") ;
+        }
         [ WpfFact ]
         public void TestViewModel1 ( )
         {
             Logger.Debug ( "heelo" ) ;
 
-            var utempDir = Path.Combine ( Environment.CurrentDirectory, @"..\..\..\WorkDir\Temp");
+            var utempDir = Path.Combine ( @"e:\scratch\projtests" , "temp" ) ;
             var x = Path.GetRandomFileName ( ) ;
             var tempDir = Path.Combine ( utempDir , x ) ;
             var cloneDir = Path.Combine ( tempDir , "clone" ) ;

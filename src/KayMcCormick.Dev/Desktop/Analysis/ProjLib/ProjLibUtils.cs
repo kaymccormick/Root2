@@ -5,6 +5,7 @@ using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Reflection ;
+using System.Runtime.CompilerServices ;
 using System.ServiceModel.Channels ;
 using System.Text.RegularExpressions ;
 using System.Threading ;
@@ -163,6 +164,31 @@ files = File.ReadAllLines(projFilesList).ToList();
             Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
         }
+
+        public static ProjectContext MakeProjectContextForSolutionPath ( string arg )
+        {
+            var dir = Path.GetDirectoryName ( arg ) ;
+            var r = LibGit2Sharp.Repository.Discover ( dir ) ;
+            var listRemoteReferences = LibGit2Sharp.Repository.ListRemoteReferences ( r ) ;
+            foreach ( var listRemoteReference in listRemoteReferences )
+            {
+                Logger.Info ( "{x} {y} {z}" , listRemoteReference.CanonicalName, listRemoteReference.IsRemoteTrackingBranch, listRemoteReference.TargetIdentifier ) ;
+            }
+
+            var repos = new LibGit2Sharp.Repository ( r ) ;
+
+            foreach ( var networkRemote in repos.Network.Remotes )
+            {
+                Logger.Info ( "{y} {x}" , networkRemote.Url , networkRemote.Name ) ;
+            }
+
+            foreach ( var reposRef in repos.Refs )
+            {
+
+            }
+
+            return new ProjectContext ( arg ) ;
+        }
     }
 
 
@@ -299,9 +325,9 @@ files = File.ReadAllLines(projFilesList).ToList();
             lb.Write();
         }
 
-        private static LogBuilder LB ( EventArgs e )
+        private static LogBuilder LB ( EventArgs e, [CallerMemberName] string callerMemberName= "" )
         {
-            return new LogBuilder ( Logger )
+            return new LogBuilder ( Logger ).LoggerName($"{callerMemberName}.{e.GetType (  ).Name}")
                   .Property ( "EventArgs" , e )
                   .Message ( "{message}" , (e is BuildMessageEventArgs be) ? (be.Message ?? "null message") : "no message") ;
         }
