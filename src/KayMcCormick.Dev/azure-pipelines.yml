@@ -26,7 +26,7 @@ variables:
 
 steps:
 - checkout: self
-  submodules: recursive
+  submodules: false
   persistCredentials: true
 
 - task: NuGetToolInstaller@1
