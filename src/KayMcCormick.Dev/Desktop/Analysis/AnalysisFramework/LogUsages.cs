@@ -129,6 +129,7 @@ namespace AnalysisFramework
             {
                 try
                 {
+
                     processInvocation (
                                        new InvocationParms( minvocations,currentRoot,currentModel,
                                                             document1
@@ -184,18 +185,18 @@ namespace AnalysisFramework
         public static LogInvocation ProcessInvocation ( InvocationParms ivp )
         {
             var exceptionArg = IsException (
-                                            ivp.Arg8
-                                          , ivp.Arg7.Parameters.First ( ).Type
+                                            ivp.NamedTypeSymbol
+                                          , ivp.MethodSymbol.Parameters.First ( ).Type
                                            ) ;
-            var msgParam = ivp.Arg7.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
+            var msgParam = ivp.MethodSymbol.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
                               .Where ( arg1 => arg1.symbol.Name == "message" ) ;
             if ( ! msgParam.Any ( ) )
             {
-                Logger.Info ( "{params}", string.Join(", ", ivp.Arg7.Parameters.Select ( symbol => symbol.Name )) ) ;
+                Logger.Info ( "{params}", string.Join(", ", ivp.MethodSymbol.Parameters.Select ( symbol => symbol.Name )) ) ;
             }
 
             int ? msgI = msgParam.Any ( ) ? (int?) msgParam.First ( ).i : null ;
-            var methodSymbol = ivp.Arg7 ;
+            var methodSymbol = ivp.MethodSymbol ;
             Logger.Debug (
                           "params = {params}"
                         , String.Join (
@@ -203,9 +204,9 @@ namespace AnalysisFramework
                                      , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                       )
                          ) ;
-            var invocation = ivp.Arg6 ;
+            var invocation = ivp.InvocationExpression ;
             IEnumerable < ArgumentSyntax > rest ;
-            var semanticModel = ivp.Arg3;
+            var semanticModel = ivp.Model;
             LogMessageRepr msgval = null ;
             if ( msgI != null )
             {
@@ -265,7 +266,7 @@ namespace AnalysisFramework
             
 
             var document1 = ivp.Document ;
-            var statementSyntax = ivp.Arg5 ;
+            var statementSyntax = ivp.Statement ;
             var sourceLocation = document1.FilePath
                                  + ":"
                                  + ( statementSyntax.GetLocation ( )
@@ -306,7 +307,7 @@ namespace AnalysisFramework
             debugInvo.Arguments = transformed.ToList ( ) ;
             Logger.Debug ( "{t}" , transformed ) ;
             ivp.Arg1?.Add ( debugInvo ) ;
-            ivp.Arg9?.Invoke( debugInvo ) ;
+            ivp.ConsumeAction?.Invoke( debugInvo ) ;
             return debugInvo ;
         }
 

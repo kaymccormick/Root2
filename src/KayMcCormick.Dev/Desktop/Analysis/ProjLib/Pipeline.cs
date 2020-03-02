@@ -74,7 +74,6 @@ namespace ProjLib
             DataflowLinkOptions opt = new DataflowLinkOptions() { PropagateCompletion = true };
 
             var transformBlock = Pipeline.repositoryTransformBlock( ) ;
-            _dataflowBlocks.Add(transformBlock);
             var buildTransformBlock =
                 new TransformBlock < string , BuildResults > (
                                                               s => ProjLibUtils

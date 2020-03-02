@@ -71,6 +71,7 @@
     <Compile Include="ICodeSource.cs" />
     <Compile Include="InvocationParms.cs" />
     <Compile Include="LogInvocation.cs" />
+    <Compile Include="LogInvocation2.cs" />
     <Compile Include="LogInvocationArgument.cs" />
     <Compile Include="LogMessageRepr.cs" />
     <Compile Include="LogUsages.cs" />

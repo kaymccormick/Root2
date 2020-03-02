@@ -9,36 +9,36 @@ namespace AnalysisFramework
     {
         public readonly SyntaxTree SyntaxTree ;
 
-        public InvocationParms ( List < LogInvocation > arg1 , CompilationUnitSyntax arg2 , SemanticModel arg3 , ICodeSource  document , StatementSyntax arg5 , InvocationExpressionSyntax arg6 , IMethodSymbol arg7 , INamedTypeSymbol arg8 , Action < LogInvocation > arg9, SyntaxTree syntaxTree )
+        public InvocationParms ( List < LogInvocation > arg1 , CompilationUnitSyntax arg2 , SemanticModel model , ICodeSource  document , StatementSyntax statement , InvocationExpressionSyntax invocationExpression , IMethodSymbol methodSymbol , INamedTypeSymbol namedTypeSymbol , Action < LogInvocation > consumeAction, SyntaxTree syntaxTree )
         {
             SyntaxTree = syntaxTree ;
             Arg1 = arg1 ;
             Arg2 = arg2 ;
-            Arg3 = arg3 ;
+            Model = model ;
             Document = document ;
-            Arg5 = arg5 ;
-            Arg6 = arg6 ;
-            Arg7 = arg7 ;
-            Arg8 = arg8 ;
-            Arg9 = arg9 ;
+            Statement = statement ;
+            InvocationExpression = invocationExpression ;
+            MethodSymbol = methodSymbol ;
+            NamedTypeSymbol = namedTypeSymbol ;
+            ConsumeAction = consumeAction ;
         }
 
         public List < LogInvocation > Arg1 { get ; private set ; }
 
         public CompilationUnitSyntax Arg2 { get ; private set ; }
 
-        public SemanticModel Arg3 { get ; private set ; }
+        public SemanticModel Model { get ; private set ; }
 
         public ICodeSource Document { get ; private set ; }
 
-        public StatementSyntax Arg5 { get ; private set ; }
+        public StatementSyntax Statement { get ; private set ; }
 
-        public InvocationExpressionSyntax Arg6 { get ; private set ; }
+        public InvocationExpressionSyntax InvocationExpression { get ; private set ; }
 
-        public IMethodSymbol Arg7 { get ; private set ; }
+        public IMethodSymbol MethodSymbol { get ; private set ; }
 
-        public INamedTypeSymbol Arg8 { get ; private set ; }
+        public INamedTypeSymbol NamedTypeSymbol { get ; private set ; }
 
-        public Action < LogInvocation > Arg9 { get ; private set ; }
+        public Action < LogInvocation > ConsumeAction { get ; private set ; }
     }
 }

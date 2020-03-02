@@ -46,7 +46,6 @@ namespace AnalysisFramework
                  )
         {
             CurrentModel   = currentModel ;
-            CurrentRoot    = currentRoot ;
             Statement      = statement ;
             Msgval         = msgval ;
             SourceLocation = sourceLocation ;

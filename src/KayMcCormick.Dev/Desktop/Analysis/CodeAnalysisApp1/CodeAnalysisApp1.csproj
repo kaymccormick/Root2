@@ -75,6 +75,7 @@
     <Compile Include="event.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LogUsagesRewriter.cs" />
+    <Compile Include="LogUsagesWalker.cs" />
     <Compile Include="MyInterceptor.cs" />
     <Compile Include="PojoExpression.cs">
       <SubType>UserControl</SubType>

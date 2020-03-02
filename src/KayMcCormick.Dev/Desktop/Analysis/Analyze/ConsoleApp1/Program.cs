@@ -11,6 +11,7 @@ using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Text ;
+using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
@@ -48,7 +49,9 @@ namespace ConsoleApp1
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
-            Pipeline pipeline = new Pipeline(new ActionBlock<LogInvocation>(Program.Action));
+            var actionBlock = new ActionBlock<LogInvocation>(Program.Action) ;
+            builder.RegisterInstance(actionBlock).As<ActionBlock <LogInvocation>>().SingleInstance();
+            Pipeline pipeline = new Pipeline(actionBlock);
             builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
         }
@@ -205,6 +208,12 @@ namespace ConsoleApp1
 
             var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
             Logger.Info ( "waiting " + timeSpan ) ;
+            var targetBlock = context.Scope.Resolve < ActionBlock < LogInvocation > > ( ) ;
+            for ( ; ; )
+            {
+                Thread.Sleep ( 3000 ) ;
+                Console.WriteLine(targetBlock.InputCount);
+            }
             pipe.Completion.Wait ( timeSpan ) ;
             if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
                           .TryReceiveAll ( out var list ) )
