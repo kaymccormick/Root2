@@ -9,7 +9,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Media ;
-using CodeAnalysisApp1 ;
+
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

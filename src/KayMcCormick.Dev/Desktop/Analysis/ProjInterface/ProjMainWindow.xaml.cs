@@ -10,8 +10,9 @@ using System.Windows.Controls.Ribbon ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
+using AnalysisFramework ;
 using Autofac;
-using CodeAnalysisApp1 ;
+
 using Microsoft.CodeAnalysis;
 using NLog;
 using ProjLib;
@@ -23,7 +24,7 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ProjMainWindow : Window
+    public partial class ProjMainWindow : Window, IView<IWorkspacesViewModel>, IView1, IWorkspacesView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private TaskFactory _factory ;
@@ -69,13 +70,13 @@ namespace ProjInterface
         }
 
         public ILifetimeScope Scope { get; set; }
-
+        #if false
         private void ButtonBase_OnClick ( object sender , RoutedEventArgs e )
         {
             GridView v = ( GridView ) vs.View ;
             new CollectionView(ViewModel.VsCollection).Refresh (  );
         }
-
+        #endif
         private ConcurrentQueue < IBoundCommandOperation > opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
         private ObservableCollection < Task < bool > > waitingTasks = new ObservableCollection < Task < bool > > ();
 
@@ -95,7 +96,7 @@ namespace ProjInterface
         public ActionBlock < Workspace > WorkspaceActionBlock { get ; private set ; }
 
         private ITargetBlock<string> DataflowHead { get; }
-
+        #if false
         private void PerformAnalysis ( object sender , ExecutedRoutedEventArgs e )
         {
             AnalyzeResults results = new AnalyzeResults ( ViewModel ) { ShowActivated = true } ;
@@ -141,7 +142,7 @@ namespace ProjInterface
             //          ) ;
 
         }
-
+        #endif
         private void PostPath ( string filePath ) { _ = ViewModel.PipelineViewModel.Pipeline.PipelineInstance.Post ( filePath ) ; }
 
         private async Task < object > ContinuationFunction ( Task task )
@@ -152,7 +153,7 @@ namespace ProjInterface
                                                 , codeWindow.GetFormattedCode
                                                  ) ;
         }
-
+        #if false
         private void Mru_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
         {
             var sender2SelectedItem = (IMruItem)mru.SelectedItem;
@@ -170,7 +171,7 @@ namespace ProjInterface
                      ) ;
 
         }
-
+        #endif
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
             AdhocWorkspace workspace = new AdhocWorkspace();
@@ -181,6 +182,12 @@ namespace ProjInterface
         private void ProjMainWindow_OnDrop ( object sender , DragEventArgs e )
         {
             e.Data.GetData ( DataFormats.FileDrop ) ;
+        }
+
+        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        {
+            var v = ProjectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
+            ViewModel.AnalyzeCommand (  v.View.CurrentItem) ;
         }
     }
 

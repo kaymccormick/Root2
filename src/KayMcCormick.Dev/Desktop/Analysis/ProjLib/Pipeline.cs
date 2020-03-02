@@ -1,8 +1,9 @@
 using System.Collections.Generic ;
-using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows.Documents ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+using LibGit2Sharp ;
+using Microsoft.Build.Execution ;
 using Microsoft.CodeAnalysis ;
 
 namespace ProjLib
@@ -35,16 +36,17 @@ namespace ProjLib
                                                                       .MakeProjectContextForSolutionPath
                                                                   ) ;
         }
-        private static TransformBlock < string , Workspace > WorkspaceTransformBlock ( )
+        private static TransformBlock < string , string> repositoryTransformBlock( )
         {
-            var t0 = new TransformBlock < string , Workspace > (
-                                                                s => ProjLibUtils
-                                                                   .LoadSolutionInstanceAsync (
-                                                                                               null
-                                                                                             , s
-                                                                                             , null
-                                                                                              )
-                                                               ) ;
+            var t0 = new TransformBlock < string , string > ( ProjLibUtils.CloneProjectAsync) ;
+                                                               //
+                                                               //  s => ProjLibUtils
+                                                               //     .LoadSolutionInstanceAsync (
+                                                               //                                 null
+                                                               //                               , s
+                                                               //                               , null
+                                                               //                                )
+                                                               // ) ;
             return t0 ;
         }
 
@@ -69,20 +71,45 @@ namespace ProjLib
             ITargetBlock < LogInvocation > act
         )
         {
-            var workspaceTransformBlock = Pipeline.WorkspaceTransformBlock ( ) ;
-            _dataflowBlocks.Add(workspaceTransformBlock);
-            DataflowLinkOptions opt = new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
+            DataflowLinkOptions opt = new DataflowLinkOptions() { PropagateCompletion = true };
+
+            var transformBlock = Pipeline.repositoryTransformBlock( ) ;
+            _dataflowBlocks.Add(transformBlock);
+            var buildTransformBlock =
+                new TransformBlock < string , BuildResults > (
+                                                              s => ProjLibUtils
+                                                                 .BuildRepository ( s )
+                                                             ) ;
+transformBlock.LinkTo (
+                                   buildTransformBlock
+                                  ) ;
             var findLogUsagesBlock = new FindLogUsagesBlock (act ) ;
             _dataflowBlocks.Add(findLogUsagesBlock);
             ITargetBlock < Document > takeDocument = findLogUsagesBlock.Target ;
 
+            var makeWs = new TransformBlock < BuildResults , Workspace > (
+                                                                               results
+                                                                                   => ProjLibUtils.MakeWorkspaceAsync(results)
+                                                                              ) ;
+            buildTransformBlock.LinkTo (
+                                        makeWs
+                                      , opt ) ;
+            
             _solutionDocumentsBlock = Pipeline.SolutionDocumentsBlock ( takeDocument ) ;
-            workspaceTransformBlock.LinkTo (
-                                            _solutionDocumentsBlock, opt
-                                           ) ;
-            PipelineInstance = DataflowBlock.Encapsulate < string , LogInvocation > ( workspaceTransformBlock , findLogUsagesBlock.Source ) ;
+            makeWs.LinkTo ( _solutionDocumentsBlock, opt ) ;
+            //var workspace = new TransformBlock<BuildResults, Workspace> (Transform);
+            //build.LinkTo ( workspace, opt);
+            //workspace.LinkTo ( _solutionDocumentsBlock , opt ) ;
+PipelineInstance = DataflowBlock.Encapsulate < string , LogInvocation > ( transformBlock, findLogUsagesBlock.Source ) ;
             return PipelineInstance ;
         }
+
+        private Workspace Transform ( BuildResults arg ) { return null ; }
+    }
+
+    public class BuildResults
+    {
+        public List < string > SolutionsFilesList { get ; set ; } = new List < string > ( ) ;
     }
 
     public class ProjectContext

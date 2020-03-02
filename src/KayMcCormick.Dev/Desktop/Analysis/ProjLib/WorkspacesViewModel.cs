@@ -18,11 +18,14 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Threading ;
 using System.Threading.Tasks ;
+using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Input ;
 using System.Windows.Markup ;
 using System.Windows.Threading ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -37,6 +40,8 @@ namespace ProjLib
       , ISupportInitialize
       , INotifyPropertyChanged
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         public delegate FormattedCode CreateFormattedCodeDelegate (
             Tuple < SyntaxTree , SemanticModel , CompilationUnitSyntax > tuple
         ) ;
@@ -44,7 +49,7 @@ namespace ProjLib
         public delegate FormattedCode CreateFormattedCodeDelegate2 ( ) ;
 
         // private IList<IVsInstance> vsInstances;
-        private readonly IVsInstanceCollector  vsInstanceCollector ;
+        private readonly IVsInstanceCollector vsInstanceCollector ;
 
         public IPipelineViewModel PipelineViewModel { get ; }
 
@@ -54,23 +59,28 @@ namespace ProjLib
             set
             {
                 _browserVisibility = value ;
-                OnPropertyChanged(nameof(BrowserVisibility));
+                OnPropertyChanged ( nameof ( BrowserVisibility ) ) ;
             }
         }
 
-        private          string                _currentDocumentPath ;
-        private          MyProjectLoadProgress _currentProgress ;
-        private          string                _currentProject ;
-        public           Dispatcher            _d ;
-        private          ProjectHandlerImpl    _handler ;
-        private          bool                  _processing ;
-        private Visibility _browserVisibility = Visibility.Visible ;
+        private string                    _currentDocumentPath ;
+        private MyProjectLoadProgress     _currentProgress ;
+        private string                    _currentProject ;
+        public  Dispatcher                _d ;
+        private ProjectHandlerImpl        _handler ;
+        private bool                      _processing ;
+        private Visibility                _browserVisibility = Visibility.Visible ;
+        private IProjectBrowserViewModoel _projectBrowserViewModel ;
 
-        public WorkspacesViewModel ( IVsInstanceCollector collector, IPipelineViewModel pipelineViewModel)
+        public WorkspacesViewModel (
+            IVsInstanceCollector      collector
+          , IPipelineViewModel        pipelineViewModel
+          , IProjectBrowserViewModoel projectBrowserViewModel
+        )
         {
-            vsInstanceCollector = collector ;
-            PipelineViewModel = pipelineViewModel ;
-            BeginInit ( ) ;
+            vsInstanceCollector      = collector ;
+            _projectBrowserViewModel = projectBrowserViewModel ;
+            PipelineViewModel        = pipelineViewModel ;
         }
 
         /// <summary>Signals the object that initialization is starting.</summary>
@@ -177,6 +187,42 @@ namespace ProjLib
                           .ConfigureAwait ( true ) ;
             Processing = false ;
             return new object ( ) ;
+        }
+
+        public IProjectBrowserViewModoel ProjectBrowserViewModel
+        {
+            get => _projectBrowserViewModel ;
+            set => _projectBrowserViewModel = value ;
+        }
+
+        public void AnalyzeCommand (
+         object                  viewCurrentItem
+        )
+        {
+            if ( MSBuildLocator.CanRegister )
+            {
+                MSBuildLocator.RegisterInstance (
+                                                 MSBuildLocator
+                                                    .QueryVisualStudioInstances (
+                                                                                 new
+                                                                                 VisualStudioInstanceQueryOptions ( )
+                                                                                 {
+                                                                                     DiscoveryTypes
+                                                                                         = DiscoveryType
+                                                                                            .VisualStudioSetup
+                                                                                 }
+                                                                                )
+                                                    .First (
+                                                            instance => instance.Version.Major == 16
+                                                                        && instance.Version.Minor
+                                                                        == 4
+                                                           )
+                                                ) ;
+            }
+
+            Logger.Info ( "{x}" , viewCurrentItem ) ;
+            var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
+            PipelineViewModel.Pipeline.PipelineInstance.Post ( projectBrowserNode.RepositoryUrl ) ;
         }
 
         public bool Processing

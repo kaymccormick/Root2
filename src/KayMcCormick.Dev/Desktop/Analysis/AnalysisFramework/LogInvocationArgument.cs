@@ -11,12 +11,11 @@
 #endregion
 using System ;
 using System.ComponentModel ;
-using CodeAnalysisApp1 ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Newtonsoft.Json ;
 
-namespace ProjLib
+namespace AnalysisFramework
 {
     public class LogInvocationArgument
     {

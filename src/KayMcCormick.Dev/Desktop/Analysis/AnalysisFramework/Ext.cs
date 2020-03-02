@@ -15,7 +15,7 @@ using System.IO ;
 using System.Linq ;
 using Microsoft.CodeAnalysis ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     /// <summary>Extension class</summary>
     public static class Ext

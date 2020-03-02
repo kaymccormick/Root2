@@ -46,9 +46,7 @@
   </Window.Resources>
 
   <Window.CommandBindings>
-    <CommandBinding
-      Command="local:ProjCommands.LoadSolution"
-      Executed="PerformAnalysis" />
+    <CommandBinding Command="ApplicationCommands.Open" Executed="CommandBinding_OnExecuted"/>
     <CommandBinding Command="local:ProjCommands.NewAdHocWorkspace" Executed="CommandBinding_OnExecuted2"/>
   </Window.CommandBindings>
   
@@ -84,7 +82,6 @@
     </Menu>
     <StackPanel Grid.Row="1" Orientation="Horizontal"
                 Grid.ColumnSpan="2">
-      <Button Click="ButtonBase_OnClick" Content="Refresh" />
       <TextBlock Margin="10"
                  Text="{Binding CurrentProgress.FileName}" />
       <TextBlock Margin="10"
@@ -93,48 +90,9 @@
                  Text="{Binding CurrentProgress.ElapsedTime}" />
       <TextBlock Text="{Binding Processing}" />
     </StackPanel>
-    <ListView Grid.Column="0" Name="vs" Grid.Row="2"
-              Visibility="{Binding Path=BrowserVisibility}"
-              ItemsSource="{Binding Source={StaticResource VsSource}}">
-      <ListView.View>
-        <GridView>
-          <GridViewColumn
-            CellTemplate="{StaticResource VsCell}" />
-        </GridView>
-      </ListView.View>
-    </ListView>
-    <ListView Visibility="{Binding Path=BrowserVisibility}" Name="mru" Grid.Row="2" Grid.Column="1"
-              
-              ItemsSource="{Binding Source={StaticResource MruItems}}"
-              SelectionChanged="Mru_OnSelectionChanged">
-      <ListView.InputBindings>
-        <KeyBinding Gesture="Enter"
-                    Command="local:ProjCommands.LoadSolution" />
-      </ListView.InputBindings>
-      <ListView.Resources>
-        <Style TargetType="{x:Type ListViewItem}">
-          <Setter Property="Background"
-                  Value="{Binding Converter={StaticResource MruBackground}}" />
-        </Style>
-      </ListView.Resources>
-      <ListView.View>
-        <GridView>
-          <GridViewColumn
-            CellTemplate="{StaticResource MruLocationTemplate}" />
-          <GridViewColumn
-            CellTemplate="{StaticResource MruNameTemplate}" />
-        </GridView>
-      </ListView.View>
-    </ListView>
-    <ListView Visibility="{Binding Path=BrowserVisibility}" Grid.Row="2" Grid.Column="2"
-              ItemsSource="{Binding Source={StaticResource SolutionInfo}}">
-      <ListView.View>
-        <GridView>
-          <GridViewColumn
-            DisplayMemberBinding="{Binding Path=Name}" />
-        </GridView>
-      </ListView.View>
-    </ListView>
+    <projLib:ProjectBrowser Name="ProjectBrowser" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0">
+    
+    </projLib:ProjectBrowser>
     <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
       <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
         <StackPanel Orientation="Vertical">

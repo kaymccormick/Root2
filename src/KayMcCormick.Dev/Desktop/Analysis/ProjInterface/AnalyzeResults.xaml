@@ -4,15 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjInterface"
-        xmlns:codeAnalysisApp1="clr-namespace:CodeAnalysisApp1;assembly=CodeAnalysisApp1"
         xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
+        xmlns:analysisFramework="clr-namespace:AnalysisFramework;assembly=AnalysisFramework"
         mc:Ignorable="d"
         DataContext="{Binding ElementName=results, Path=ViewModel}"
         Title="AnalyzeResults" Height="450" Width="800">
 <Window.Resources>
   <CollectionViewSource x:Key="logs"
                         Source="{Binding Path=LogInvocations}" />
-  <DataTemplate x:Key="CodeTemplate" DataType="codeAnalysisApp1:LogInvocation" >
+  <DataTemplate x:Key="CodeTemplate" DataType="analysisFramework:LogInvocation" >
     <StackPanel>
       <TextBlock Text="{Binding PrecedingCode}"/>
         <TextBlock Background="Yellow" Foreground="Black" Text="{Binding Code}"/>

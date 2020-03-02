@@ -13,6 +13,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.IO ;
+using System.Runtime.InteropServices ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 using Microsoft.VisualStudio.Settings ;
@@ -67,6 +68,9 @@ namespace ProjLib
                     }
                 }
             }
+            catch(COMException ex1)
+            {
+                }
             catch ( PropagateException ex1 )
             {
                 throw ex1.InnerException ?? ex1 ;

@@ -12,7 +12,8 @@
 using System ;
 using System.Windows.Controls ;
 using System.Windows.Markup ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 
 namespace ProjLib
 {

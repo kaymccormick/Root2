@@ -18,6 +18,7 @@ using System.Linq.Expressions ;
 using System.Runtime.ExceptionServices ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
+using AnalysisFramework ;
 using Autofac ;
 using CodeAnalysisApp1 ;
 using JetBrains.Annotations ;
@@ -28,6 +29,7 @@ using LibGit2Sharp ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.TeamFoundation.Build.Client ;
 using NLog ;
 using NLog.Layouts ;
 using ProjInterface ;
@@ -148,6 +150,7 @@ namespace ProjTests
         {
             Logger.Debug ( "heelo" ) ;
 
+#if false
             var utempDir = Path.Combine ( @"e:\scratch\projtests" , "temp" ) ;
             var x = Path.GetRandomFileName ( ) ;
             var tempDir = Path.Combine ( utempDir , x ) ;
@@ -224,9 +227,11 @@ namespace ProjTests
             {
                 Logger.Info ( s ) ;
             }
-
+#endif
             var scope = InterfaceContainer.GetContainer ( ) ;
             var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
+            viewModel.AnalyzeCommand(viewModel.ProjectBrowserViewModel.RootCollection.OfType<IProjectBrowserNode>().First());
+#if false
             var vsInstance = viewModel.VsCollection.First (instance => instance.InstallationVersion.StartsWith("16.4.")) ;
             var mruItem = vsInstance.MruItems.Skip ( 1 ).First ( item => item.Exists ) ;
             Assert.NotNull ( viewModel.PipelineViewModel.Pipeline ) ;
@@ -253,6 +258,7 @@ namespace ProjTests
             var spath = Path.Combine ( root , solution ) ;
             Logger.Debug("posting {file}", f[0]);
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Post (f[0]) ;
+#endif
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.Wait ( 10000 ) ;
             if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
                           .TryReceiveAll ( out var list ) )
@@ -263,6 +269,7 @@ namespace ProjTests
                     Logger.Info ( "{logInvocation}" , logInvocation ) ;
                 }
             }
+
         }
 
         public List<Action> Finalizers { get { return _finalizers ; } set { _finalizers = value ; } }
@@ -480,11 +487,11 @@ Logger.Error(inner, inner.ToString);
         [ WpfFact ]
         public void TestContainer ( )
         {
-            var scope = Container.GetScope ( ) ;
+            var scope = ProjLibContainer.GetScope ( ) ;
             // var q1= scope.Resolve<IEnumerable<ISourceCode>>();
             // foreach ( var sourceCode in q1 )
             // {
-            // Logger.Trace ( "SourceCode is {sourceCode}" , sourceCode.SourceCode ) ;
+            // Logger.Trace ( "SourceCode is {sourceCode}" , sourceCode.SourceiviCode ) ;
             // }
 
 

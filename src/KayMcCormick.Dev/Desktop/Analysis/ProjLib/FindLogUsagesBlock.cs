@@ -1,7 +1,8 @@
 ﻿using System ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 

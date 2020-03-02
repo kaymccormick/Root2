@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     public class CodeSource : ICodeSource
     {

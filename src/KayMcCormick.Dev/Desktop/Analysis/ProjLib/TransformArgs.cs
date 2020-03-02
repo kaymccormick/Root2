@@ -10,7 +10,8 @@
 // ---
 #endregion
 using System.Windows.Controls ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 
 namespace ProjLib
 {

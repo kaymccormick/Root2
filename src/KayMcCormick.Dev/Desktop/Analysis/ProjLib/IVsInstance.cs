@@ -11,10 +11,12 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using Microsoft.VisualStudio.Setup.Configuration ;
 
 namespace ProjLib
 {
+    [TypeConverter(typeof(VsInstanceConverter))]
     public interface IVsInstance
     {
         string InstanceId { get ; set ; }
@@ -40,5 +42,24 @@ namespace ProjLib
         string ProductPath { get ; set ; }
 
         IList<IMruItem> MruItems { get ; }
+
+        ulong Version { get ; set ; }
+
+        IDictionary < string , object > Properties { get ; set ; }
+
+        bool IsPrerelease { get ; set ; }
+
+        ICollection < Workload > Workloads { get ; }
+
+        void AddWorkload (
+            string id
+          , string branch
+          , string chip
+          , string version
+          , bool   isExtension
+          , string language
+          , string type
+          , string uniqueId
+        ) ;
     }
 }

@@ -2,30 +2,27 @@ using System ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
-using System.Runtime.Serialization ;
-using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-using ProjLib ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     public static class LogUsages
     {
-        private static  Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public static void FindLogUsages(
-            ICodeSource              document1
-          , CompilationUnitSyntax currentRoot
-          , SemanticModel         currentModel
-          , Action < LogInvocation > consumeLogInvocation
-          , bool                  limitToMarkedStatements
-          , bool                  logVisitedStatements
+            ICodeSource                 document1
+          , CompilationUnitSyntax       currentRoot
+          , SemanticModel               currentModel
+          , Action < LogInvocation >    consumeLogInvocation
+          , bool                        limitToMarkedStatements
+          , bool                        logVisitedStatements
           , Action < InvocationParms  > processInvocation,
-            SyntaxTree syntaxTree
+            SyntaxTree                  syntaxTree
         )
         {
             var comp = currentModel.Compilation ;
@@ -39,10 +36,10 @@ namespace CodeAnalysisApp1
             if ( t1 == null )
             {
                 // Logger.Trace(       
-                             // "No {clas} in {document}"
-                           // , LoggerClassFullName
-                           // , document1
-                            // ) ;
+                // "No {clas} in {document}"
+                // , LoggerClassFullName
+                // , document1
+                // ) ;
             }
 
             var t2 = comp.GetTypeByMetadataName ( ILoggerClassFullName ) ;
@@ -134,13 +131,13 @@ namespace CodeAnalysisApp1
                 {
                     processInvocation (
                                        new InvocationParms( minvocations,currentRoot,currentModel,
-                                       document1
-                                     , qqq.statement
-                                     , qqq.invocation
-                                     , qqq.methodSymbol
-                                     , ExceptionType, consumeLogInvocation
-                    , syntaxTree
-                                     )
+                                                            document1
+                                                          , qqq.statement
+                                                          , qqq.invocation
+                                                          , qqq.methodSymbol
+                                                          , ExceptionType, consumeLogInvocation
+                                                          , syntaxTree
+                                                          )
                                       ) ;
                 }
                 catch ( Exception ex )
@@ -153,8 +150,8 @@ namespace CodeAnalysisApp1
 
         }
 
-        public const string ILoggerClassName = "ILogger" ;
-        public const string LoggerClassName = "Logger" ;
+        public const            string ILoggerClassName    = "ILogger" ;
+        public const            string LoggerClassName     = "Logger" ;
         private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName ;
 
         public static readonly string
@@ -191,7 +188,7 @@ namespace CodeAnalysisApp1
                                           , ivp.Arg7.Parameters.First ( ).Type
                                            ) ;
             var msgParam = ivp.Arg7.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
-                                       .Where ( arg1 => arg1.symbol.Name == "message" ) ;
+                              .Where ( arg1 => arg1.symbol.Name == "message" ) ;
             if ( ! msgParam.Any ( ) )
             {
                 throw new NoMessageParameterException ( ) ;
@@ -199,7 +196,7 @@ namespace CodeAnalysisApp1
 
             var msgI = msgParam.First ( ).i ;
             var methodSymbol = ivp.Arg7 ;
-            Logger.Error (
+            Logger.Debug (
                           "params = {params}"
                         , String.Join (
                                        ", "
@@ -227,7 +224,7 @@ namespace CodeAnalysisApp1
             if ( constant.HasValue )
             {
                 msgval.IsMessageTemplate = true ;
-                Logger.Warn ( "Constant {constant}" , constant.Value ) ;
+                Logger.Debug ( "Constant {constant}" , constant.Value ) ;
                 msgval.ConstantMessage = constant.Value ;
                 var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
                 var o = new List < object > ( ) ;
@@ -247,11 +244,11 @@ namespace CodeAnalysisApp1
                 }
 
 
-                Logger.Warn ( "{}" , String.Join ( ", " , o ) ) ;
+                Logger.Debug ( "{}" , String.Join ( ", " , o ) ) ;
             }
             else
             {
-                Logger.Warn ( "{}" , msgArgExpr ) ;
+                Logger.Debug ( "{}" , msgArgExpr ) ;
                 msgval.MessageExprPojo = Transforms.TransformExpr ( msgArgExpr ) ;
             }
 
@@ -265,7 +262,7 @@ namespace CodeAnalysisApp1
                                                     .StartLinePosition.Line
                                      + 1 ) ;
             
-            var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, statementSyntax, semanticModel, ivp.Arg2,   document1, ivp.SyntaxTree);
+            var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, statementSyntax, semanticModel, ivp.Arg2, document1, ivp.SyntaxTree);
             
             var sourceContext = statementSyntax.Parent.ChildNodes ( ).ToList ( ) ;
             var i2 = sourceContext.IndexOf( statementSyntax ) ;
@@ -296,7 +293,7 @@ namespace CodeAnalysisApp1
 
             var transformed = rest.Select ( syntax => new LogInvocationArgument ( debugInvo, syntax ) ) ;
             debugInvo.Arguments = transformed.ToList ( ) ;
-            Logger.Error ( "{t}" , transformed ) ;
+            Logger.Debug ( "{t}" , transformed ) ;
             ivp.Arg1?.Add ( debugInvo ) ;
             ivp.Arg9?.Invoke( debugInvo ) ;
             return debugInvo ;
@@ -346,35 +343,6 @@ namespace CodeAnalysisApp1
         {
             return model.Compilation.GetTypeByMetadataName(LoggerClassFullName);
 
-        }
-    }
-
-    public class NoMessageParameterException : Exception
-    {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
-        public NoMessageParameterException ( ) {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
-        /// <param name="message">The message that describes the error. </param>
-        public NoMessageParameterException ( string message ) : base ( message )
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
-        /// <param name="message">The error message that explains the reason for the exception. </param>
-        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified. </param>
-        public NoMessageParameterException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with serialized data.</summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown. </param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
-        protected NoMessageParameterException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
-        {
         }
     }
 }

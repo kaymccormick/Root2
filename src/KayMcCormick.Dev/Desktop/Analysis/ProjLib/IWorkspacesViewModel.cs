@@ -10,13 +10,17 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
+using System.Collections.Specialized ;
 using System.ComponentModel ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows ;
+using System.Windows.Input ;
 using System.Windows.Threading ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace ProjLib
@@ -45,5 +49,42 @@ namespace ProjLib
           , TaskFactory                     taskFactory
           , Func < object , FormattedCode > getFormattedCode
         ) ;
+
+        IProjectBrowserViewModoel ProjectBrowserViewModel { get ; }
+
+        void AnalyzeCommand (
+           object                  viewCurrentItem
+        ) ;
+    }
+
+    public interface IBrowserNodeCollection : ICollection<IBrowserNode>, INotifyCollectionChanged, INotifyPropertyChanged
+    {
+    }
+
+    class BrowserNodeCollection : ObservableCollection<IBrowserNode>, IBrowserNodeCollection
+    {
+    }
+
+    public interface IBrowserNode
+    {
+        string Name { get ; }
+    }
+
+    public class BrowserNode : IBrowserNode
+    {
+        private string _name ;
+        #region Implementation of IBrowserNode
+        public string Name { get => _name ; set => _name = value ; }
+        #endregion
+    }
+
+    public class ProjectBrowserNode : BrowserNode, IProjectBrowserNode, IBrowserNode
+    {
+        public string RepositoryUrl { get ; set ; }
+    }
+
+    public interface IProjectBrowserNode : IBrowserNode
+    {
+        string RepositoryUrl { get ; }
     }
 }

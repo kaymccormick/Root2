@@ -19,7 +19,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Newtonsoft.Json ;
 using NLog ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     public class CodeAnalyseContext
     {

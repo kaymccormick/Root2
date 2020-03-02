@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax ;
 using NLog ;
-using static CodeAnalysisApp1.Transforms;
+using static AnalysisFramework.Transforms;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 using Microsoft.CodeAnalysis.MSBuild ;

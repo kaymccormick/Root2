@@ -12,11 +12,12 @@
 using System ;
 using System.Collections.Generic ;
 using System.Linq ;
+using AnalysisFramework ;
 using Autofac ;
+using Autofac.Core ;
 using Autofac.Core.Activators.Reflection ;
 using Autofac.Core.Lifetime ;
 using Autofac.Integration.Mef ;
-using CodeAnalysisApp1 ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -24,16 +25,19 @@ using NLog.Fluent ;
 
 namespace ProjLib
 {
-    public static class Container
+    public static class ProjLibContainer
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public static ILifetimeScope GetScope ( )
+        public static ILifetimeScope GetScope (params IModule[] modules )
         {
             var b = new ContainerBuilder ( ) ;
             b.RegisterMetadataRegistrationSources ( ) ;
             // b.RegisterGeneric ( typeof ( SpanObject <> ) ).As ( typeof ( ISpanObject <> ) ) ;
-
+            foreach ( var module in modules )
+            {
+                b.RegisterModule ( module ) ;
+            }
             b.RegisterType < LogInvocationSpan > ( )
              .As < ISpanViewModel > ( )
              .As < ISpanObject < LogInvocation > > ( ) ;

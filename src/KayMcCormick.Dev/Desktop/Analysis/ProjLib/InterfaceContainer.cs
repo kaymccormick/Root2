@@ -9,25 +9,21 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
-using System.Linq ;
 using System.Threading.Tasks.Dataflow ;
-using System.Windows.Documents ;
 using Autofac ;
+using Autofac.Core ;
 using KayMcCormick.Dev ;
-using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
-using ProjLib ;
 
-namespace ProjInterface
+namespace ProjLib
 {
     public static class InterfaceContainer
     {
         public static ILifetimeScope Scope = null ;
 
-        public static ILifetimeScope GetContainer ( )
+        public static ILifetimeScope GetContainer (params IModule[] modules)
         {
             if ( Scope != null )
             {
@@ -37,6 +33,11 @@ namespace ProjInterface
             var stackTrace = new StackTrace ( ) ;
             Debug.WriteLine ( stackTrace.ToString ( ) ) ;
             var builder = new ContainerBuilder ( ) ;
+            foreach ( var module in modules )
+            {
+                builder.RegisterModule(module);
+
+            }
 
             var a = new[]
                     {
@@ -47,10 +48,10 @@ namespace ProjInterface
                    .AsImplementedInterfaces( ) ;
             builder.RegisterModule < IdGeneratorModule > ( ) ;
 
-            builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ) ;
             builder.RegisterType < WorkspacesViewModel > ( )
                    .As < IWorkspacesViewModel > ( )
                    .InstancePerLifetimeScope ( ) ;
+            
             builder.Register (
                               ( context , parameters ) => {
                                   // var inst = context.Resolve < VisualStudioInstance > ( ) ;

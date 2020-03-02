@@ -14,7 +14,8 @@ using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Markup ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 

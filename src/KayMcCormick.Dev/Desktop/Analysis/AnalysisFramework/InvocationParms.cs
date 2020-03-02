@@ -3,7 +3,7 @@ using System.Collections.Generic ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     public class InvocationParms
     {

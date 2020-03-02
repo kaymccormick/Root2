@@ -6,9 +6,8 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Newtonsoft.Json ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     /// <summary>
     /// Transforms for Code Analysis nodes.

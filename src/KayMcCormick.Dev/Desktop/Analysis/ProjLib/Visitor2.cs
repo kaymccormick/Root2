@@ -13,7 +13,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Windows.Markup ;
-using CodeAnalysisApp1 ;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;

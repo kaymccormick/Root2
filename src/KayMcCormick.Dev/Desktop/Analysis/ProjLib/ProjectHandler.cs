@@ -11,7 +11,8 @@ using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Markup ;
 using System.Windows.Threading ;
-using CodeAnalysisApp1 ;
+using AnalysisFramework ;
+
 using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;

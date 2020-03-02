@@ -2,8 +2,10 @@
 using System.Diagnostics ;
 using System.Windows ;
 using Autofac ;
+using Autofac.Core ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
+using ProjLib ;
 using Application = System.Windows.Application ;
 
 namespace ProjInterface
@@ -42,7 +44,7 @@ namespace ProjInterface
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
-            var lifetimeScope = InterfaceContainer.GetContainer ( ) ;
+            var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule() ) ;
             try
             {
                 var mainWindow = lifetimeScope.Resolve < ProjMainWindow > ( ) ;
@@ -60,6 +62,18 @@ namespace ProjInterface
             Console.WriteLine ( elapsed.ToString ( ) ) ;
             Logger.Info ( "Initialization took {elapsed} time." , elapsed ) ;
         }
+    }
+
+    public class ProjInterfaceModule : Module
+    {
+        #region Overrides of Module
+        protected override void Load ( ContainerBuilder builder )
+        {
+            base.Load ( builder ) ;
+            builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ) ;
+
+        }
+        #endregion
     }
 
     public class BreakTraceListener : TraceListener

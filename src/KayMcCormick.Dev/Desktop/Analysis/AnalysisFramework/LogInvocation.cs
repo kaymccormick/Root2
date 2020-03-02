@@ -9,15 +9,13 @@
 // 
 // ---
 #endregion
+using System.Collections.Generic ;
+using System.ComponentModel ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Newtonsoft.Json ;
-using ProjLib ;
-using System.Collections.Generic ;
-using System.ComponentModel ;
-using System.Threading.Tasks ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     public class LogInvocation : CodeAnalyseContext
     {

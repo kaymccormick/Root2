@@ -174,6 +174,7 @@ namespace ProjLib
 
             var installationVersion = instance.GetInstallationVersion();
             var version = helper.ParseVersion(installationVersion);
+            dataObj.Version = version ;
 
 //            Console.WriteLine($"InstallationVersion: {installationVersion} ({version})");
 
@@ -185,7 +186,8 @@ namespace ProjLib
             var catalog = instance as ISetupInstanceCatalog;
             if (catalog != null)
             {
-//                Console.WriteLine($"IsPrerelease: {catalog.IsPrerelease()}");
+                   Logger.Info($"IsPrerelease: {catalog.IsPrerelease()}");
+                   dataObj.IsPrerelease = catalog.IsPrerelease ( ) ;
             }
 
             if ((state & InstanceState.Registered) == InstanceState.Registered)
@@ -193,21 +195,22 @@ namespace ProjLib
 //                Console.WriteLine($"Product: {instance2.GetProduct().GetId()}");
 //                Console.WriteLine("Workloads:");
 
-                PrintWorkloads(instance2.GetPackages());
+                PrintWorkloads(instance2.GetPackages(), dataObj);
             }
 
             var properties = instance2.GetProperties();
             if (properties != null)
             {
 //                Console.WriteLine("Custom properties:");
-                PrintProperties(properties);
+                var props1 = PrintProperties(properties);
+                dataObj.Properties = props1 ;
             }
 
             properties = catalog?.GetCatalogInfo();
             if (properties != null)
             {
 //                Console.WriteLine("Catalog properties:");
-                PrintProperties(properties);
+                var props = PrintProperties(properties);
             }
 
 //            Console.WriteLine();
@@ -215,19 +218,27 @@ namespace ProjLib
 
         public List<IVsInstance> Instances { get; set; } = new List<IVsInstance>();
 
-        private static void PrintProperties(ISetupPropertyStore store)
+        private static IDictionary < string , dynamic > PrintProperties(ISetupPropertyStore store)
         {
             var properties = from name in store.GetNames()
                              orderby name
                              select new { Name = name, Value = store.GetValue(name) };
 
+            IDictionary<string, dynamic> props=new Dictionary < string , dynamic > ();
             foreach (var prop in properties)
             {
+                props[ prop.Name ] = prop.Value ;
+                
 //                Console.WriteLine($"    {prop.Name}: {prop.Value}");
             }
+
+            return props ;
         }
 
-        private static void PrintWorkloads(ISetupPackageReference[] packages)
+        private static void PrintWorkloads (
+            ISetupPackageReference[] packages
+          , IVsInstance              dataObj
+        )
         {
             var workloads = from package in packages
                             where string.Equals(package.GetType(), "Workload", StringComparison.OrdinalIgnoreCase)
@@ -236,6 +247,17 @@ namespace ProjLib
 
             foreach (var workload in workloads)
             {
+                Logger.Info ( "workload {x}" , workload.GetId ( ) ) ;
+                dataObj.AddWorkload (
+                                     workload.GetId ( )
+                                   , workload.GetBranch ( )
+                                   , workload.GetChip ( )
+                                   , workload.GetVersion ( )
+                                   , workload.GetIsExtension ( )
+                                   , workload.GetLanguage ( )
+                                   , workload.GetType ( )
+                                   , workload.GetUniqueId ( )
+                                    ) ;
 //                Console.WriteLine($"    {workload.GetId()}");
             }
         }

@@ -13,7 +13,7 @@ using System.ComponentModel ;
 using MessageTemplates ;
 using Newtonsoft.Json ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     public class LogMessageRepr
     {

@@ -133,7 +133,7 @@ namespace KayMcCormick.Dev.Logging
                                                              , level => new List<Target>()
                                                               );
             var errorTargets = dict[LogLevel.Error];
-            var t = dict[LogLevel.Trace];
+            var t = dict[LogLevel.Debug];
 
 
             string disabledLogTargets =
@@ -165,6 +165,12 @@ namespace KayMcCormick.Dev.Logging
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             dict[LogLevel.Debug].Add(webServiceTarget);
+
+            var consoleTarget = new ConsoleTarget ( "console" )
+                                {
+                                    Layout = SimpleLayout.FromString( "${level} ${message} ${logger}" )
+                                } ;
+            dict[LogLevel.Warn].Add ( consoleTarget ) ;
 
             #region Cache Target
 #if false
@@ -344,7 +350,8 @@ namespace KayMcCormick.Dev.Logging
                                                             , MessageId = "EnsureLoggingConfigured"
                                                           )]
         public static void EnsureLoggingConfigured(
-            LogDelegates.LogMethod logMethod = null
+            LogDelegates.LogMethod logMethod = null,
+            ILoggingConfiguration config1 = null
           , [CallerFilePath] string callerFilePath = null
         )
         {
@@ -618,5 +625,19 @@ namespace KayMcCormick.Dev.Logging
         {
             LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;
         }
+    }
+
+    public interface ILoggingConfiguration
+    {
+        bool IsEnabledConsoleTarget { get ; }
+    }
+
+    public class AppLoggingConfiguration : ILoggingConfiguration
+    {
+
+        private bool _isEnabledConsoleTarget ;
+        #region Implementation of ILoggingConfiguration
+        public bool IsEnabledConsoleTarget { get => _isEnabledConsoleTarget ; set => _isEnabledConsoleTarget = value ; }
+        #endregion
     }
 }
