@@ -195,7 +195,7 @@ namespace AnalysisFramework
                 throw new NoMessageParameterException ( ) ;
             }
 
-            var msgI = msgParam.First ( ).i ;
+            int ? msgI = msgParam.Any ( ) ? (int?) msgParam.First ( ).i : null ;
             var methodSymbol = ivp.Arg7 ;
             Logger.Debug (
                           "params = {params}"
@@ -205,54 +205,65 @@ namespace AnalysisFramework
                                       )
                          ) ;
             var invocation = ivp.Arg6 ;
-            var fargs = invocation.ArgumentList.Arguments.Skip ( msgI ) ;
-            var rest = fargs.Skip ( 1 ) ;
-            var msgarg = fargs.First ( ) ;
-            var msgArgExpr = msgarg.Expression ;
-            var semanticModel = ivp.Arg3 ;
-            var msgArgTypeInfo = semanticModel.GetTypeInfo ( msgArgExpr ) ;
-            var baseType = msgArgTypeInfo.Type ;
-            var symbolInfo = semanticModel.GetSymbolInfo ( msgArgExpr ) ;
-            var arg1sym = symbolInfo.Symbol ;
-            if ( arg1sym != null )
+            IEnumerable < ArgumentSyntax > rest ;
+            var semanticModel = ivp.Arg3;
+            LogMessageRepr msgval = null ;
+            if ( msgI != null )
             {
-                Logger.Debug ( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
-            }
-
-            var constant = semanticModel.GetConstantValue ( msgArgExpr ) ;
-            
-            var             msgval = new LogMessageRepr ( ) ;
-            if ( constant.HasValue )
-            {
-                msgval.IsMessageTemplate = true ;
-                Logger.Debug ( "Constant {constant}" , constant.Value ) ;
-                msgval.ConstantMessage = constant.Value ;
-                var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
-                var o = new List < object > ( ) ;
-                msgval.MessageTemplate = m ;
-                foreach ( var messageTemplateToken in m.Tokens )
+                var fargs = invocation.ArgumentList.Arguments.Skip ( msgI.Value ) ;
+                rest = fargs.Skip ( 1 ) ;
+                var msgarg = fargs.First();
+                var msgArgExpr = msgarg.Expression;
+                var msgArgTypeInfo = semanticModel.GetTypeInfo(msgArgExpr);
+                var baseType = msgArgTypeInfo.Type;
+                var symbolInfo = semanticModel.GetSymbolInfo(msgArgExpr);
+                var arg1sym = symbolInfo.Symbol;
+                if (arg1sym != null)
                 {
-                    if ( messageTemplateToken is PropertyToken prop )
+                    Logger.Debug("{type} {symb}", arg1sym.GetType(), arg1sym);
+                }
+
+                var constant = semanticModel.GetConstantValue(msgArgExpr);
+
+                msgval = new LogMessageRepr() ;
+                if ( constant.HasValue )
+                {
+                    msgval.IsMessageTemplate = true ;
+                    Logger.Debug ( "Constant {constant}" , constant.Value ) ;
+                    msgval.ConstantMessage = constant.Value ;
+                    var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
+                    var o = new List < object > ( ) ;
+                    msgval.MessageTemplate = m ;
+                    foreach ( var messageTemplateToken in m.Tokens )
                     {
-                        var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
-                        o.Add ( t ) ;
+                        if ( messageTemplateToken is PropertyToken prop )
+                        {
+                            var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
+                            o.Add ( t ) ;
+                        }
+                        else if ( messageTemplateToken is TextToken t )
+                        {
+                            var xt = Tuple.Create ( t.Text ) ;
+                            o.Add ( xt ) ;
+                        }
                     }
-                    else if ( messageTemplateToken is TextToken t )
-                    {
-                        var xt = Tuple.Create ( t.Text ) ;
-                        o.Add ( xt ) ;
-                    }
+                    Logger.Debug("{}", String.Join(", ", o));
                 }
 
 
-                Logger.Debug ( "{}" , String.Join ( ", " , o ) ) ;
+                else
+                    {
+                        Logger.Debug("{}", msgArgExpr);
+                        msgval.MessageExprPojo = Transforms.TransformExpr(msgArgExpr);
+                    }
+
             }
             else
             {
-                Logger.Debug ( "{}" , msgArgExpr ) ;
-                msgval.MessageExprPojo = Transforms.TransformExpr ( msgArgExpr ) ;
+                rest = invocation.ArgumentList.Arguments ;
             }
 
+            
 
             var document1 = ivp.Document ;
             var statementSyntax = ivp.Arg5 ;

@@ -277,6 +277,7 @@ namespace ProjLib
                 foreach ( var f in buildFiles )
                 {
                     var realF = Path.Combine ( arg , f ) ;
+                    Logger.Warn ( "Building {file}" , f ) ;
                     var buildRequest = new BuildRequestData (
                                                              realF
                                                            , props

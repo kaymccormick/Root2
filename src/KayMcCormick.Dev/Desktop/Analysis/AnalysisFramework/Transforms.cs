@@ -1,5 +1,6 @@
 using System ;
 using System.Collections.Generic ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
@@ -183,6 +184,7 @@ namespace AnalysisFramework
                              , Expression = TransformExpr ( constant.Expression )
                            } ;
                 case DeclarationPatternSyntax declarationPatternSyntax :
+                    Debug.Assert(declarationPatternSyntax.Type != null);
                     return new
                            {
                                declarationPatternSyntax.RawKind
