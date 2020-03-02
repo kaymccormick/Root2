@@ -29,6 +29,7 @@ namespace KayMcCormick.Dev.Logging
         public static StringWriter Writer { get; set; }
 
         private const string JsonTargetName = "json_out";
+        private const string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS";
 
         // ReSharper disable once InconsistentNaming
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -137,7 +138,7 @@ namespace KayMcCormick.Dev.Logging
 
 
             string disabledLogTargets =
-                Environment.GetEnvironmentVariable("DISABLE_LOG_TARGETS");
+                Environment.GetEnvironmentVariable(DisableLogTargetsEnvVarName);
             HashSet<string> disabled;
             if (disabledLogTargets != null)
             {
@@ -198,7 +199,7 @@ namespace KayMcCormick.Dev.Logging
             #endregion
             t.Add(MyFileTarget());
             var jsonFileTarget = JsonFileTarget();
-            t.Add(jsonFileTarget);
+            dict[LogLevel.Debug].Add(jsonFileTarget);
             var byType = new Dictionary<Type, int>();
             var keys = dict.Keys.ToList();
             foreach (var k in keys)

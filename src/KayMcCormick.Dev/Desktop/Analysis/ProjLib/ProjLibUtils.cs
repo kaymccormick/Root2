@@ -40,18 +40,18 @@ namespace ProjLib
                                                             , "ProjectLib"
                                                              ) ;
 
-        #if false
+#if false
         public static async Task < Workspace > LoadSolutionInstanceAsync (
             IProgress < ProjectLoadProgress > progress
-          , string                            solutionPath
-          , VisualStudioInstance              instance
+      , string                            solutionPath
+      , VisualStudioInstance              instance
         )
 
         {
             Logger.Info (
                          "Load solution {threadid} {solution}"
-                       , Thread.CurrentThread.ManagedThreadId
-                       , solutionPath
+                   , Thread.CurrentThread.ManagedThreadId
+                   , solutionPath
                         ) ;
             if ( MSBuildLocator.IsRegistered )
             {
@@ -102,8 +102,8 @@ namespace ProjLib
 
             var buildParameters = new BuildParameters ( projectCollection ) ;
             buildParameters.ProjectLoadSettings = ProjectLoadSettings.Default ;
-            buildParameters.Interactive         = false ;
-            buildParameters.Loggers             = new[] { new MyLogger ( ) } ;
+            buildParameters.Interactive = false ;
+            buildParameters.Loggers = new[] { new MyLogger ( ) } ;
 
             BuildManager.DefaultBuildManager.ResetCaches ( ) ;
             foreach ( var f in files )
@@ -111,11 +111,11 @@ namespace ProjLib
                 var realF = Path.Combine ( dir , f ) ;
                 var buildRequest = new BuildRequestData (
                                                          realF
-                                                       , props2
-                                                       , null
-                                                       , new[] { "Restore" , "Build" }
-                                                       , new HostServices ( )
-                                                       , BuildRequestDataFlags
+                                                   , props2
+                                                   , null
+                                                   , new[] { "Restore" , "Build" }
+                                                   , new HostServices ( )
+                                                   , BuildRequestDataFlags
                                                             .ProvideProjectStateAfterBuild
                                                         ) ;
 
@@ -132,14 +132,14 @@ namespace ProjLib
 
             Logger.Info (
                          "SkipUnrecognizedProjects is {SkipUnrecognizedProjects}"
-                       , workspace.SkipUnrecognizedProjects
+                   , workspace.SkipUnrecognizedProjects
                         ) ;
             workspace.SkipUnrecognizedProjects = true ;
             workspace.DocumentOpened += ( sender , args )
                 => Logger.Debug (
                                  "{eventName}: {document}"
-                               , nameof ( workspace.DocumentOpened )
-                               , args.Document
+                           , nameof ( workspace.DocumentOpened )
+                           , args.Document
                                 ) ;
 
             // Print message for WorkspaceFailed event to help diagnosing project load failures.
@@ -149,7 +149,7 @@ namespace ProjLib
                 {
                     var m = Regex.Match (
                                          e.Diagnostic.Message
-                                       , "Msbuild failed when processing the file '(.*)' with message:(.*)"
+                                   , "Msbuild failed when processing the file '(.*)' with message:(.*)"
                                         ) ;
                     if ( m.Success )
                     {
@@ -180,7 +180,7 @@ namespace ProjLib
             Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
         }
-        #endif
+#endif
         public static ProjectContext MakeProjectContextForSolutionPath ( string arg )
         {
             var dir = Path.GetDirectoryName ( arg ) ;
@@ -272,7 +272,7 @@ namespace ProjLib
                                    } ;
 
 
-                var buildFiles = files;// new[] { solList.First ( ) } ;
+                var buildFiles = files ; // new[] { solList.First ( ) } ;
                 BuildManager.DefaultBuildManager.ResetCaches ( ) ;
                 foreach ( var f in buildFiles )
                 {
@@ -282,7 +282,7 @@ namespace ProjLib
                                                              realF
                                                            , props
                                                            , null
-                                                           , new[] { "Restore", "Build" }
+                                                           , new[] { "Restore" }
                                                            , new HostServices ( )
                                                            , BuildRequestDataFlags
                                                                 .ProvideProjectStateAfterBuild
@@ -418,7 +418,7 @@ namespace ProjLib
                                                                      )
                                                  )
                                          .ToList ( ) ;
-                    Logger.Debug( "cdata: {cdata}" , cdata ) ;
+                    Logger.Debug ( "cdata: {cdata}" , cdata ) ;
                     eventInfo.AddEventHandler (
                                                this
                                              , new EventHandler < BuildEventArgs > ( Handle )
@@ -471,6 +471,8 @@ namespace ProjLib
 
     public class MyLogger : ILogger
     {
+        public bool EnableAnyEvent { get ; set ; }
+
         private LoggerVerbosity _verbosity ;
         private string          _parameters ;
         #region Implementation of ILogger
@@ -480,8 +482,12 @@ namespace ProjLib
         {
             try
             {
-                eventSource.AnyEventRaised    += EventSourceOnAnyEventRaised ;
-
+                if ( EnableAnyEvent )
+                {
+                    eventSource.AnyEventRaised += EventSourceOnAnyEventRaised ;
+                }
+                eventSource.ProjectFinished += EventSourceOnProjectFinished;
+                eventSource.ProjectStarted += EventSourceOnProjectStarted;
                 eventSource.ErrorRaised   += EventSourceOnErrorRaised ;
                 eventSource.WarningRaised += EventSourceOnWarningRaised ;
                 eventSource.BuildFinished += EventSourceOnBuildFinished ;
@@ -492,14 +498,21 @@ namespace ProjLib
 
                 eventSource.BuildStarted += EventSourceOnBuildStarted ;
 
-                eventSource.MessageRaised     += EventSourceOnMessageRaised ;
-                eventSource.TargetStarted     += EventSourceOnTargetStarted ;
-                eventSource.TargetFinished += EventSourceOnTargetFinished;
+                eventSource.MessageRaised  += EventSourceOnMessageRaised ;
+                eventSource.TargetStarted  += EventSourceOnTargetStarted ;
+                eventSource.TargetFinished += EventSourceOnTargetFinished ;
             }
             catch ( Exception ex )
             {
                 Logger.Error ( ex , ex.ToString ( ) ) ;
             }
+        }
+
+        private void EventSourceOnProjectStarted ( object sender , ProjectStartedEventArgs e ) { LB(e).Write(); }
+
+        private void EventSourceOnProjectFinished ( object sender , ProjectFinishedEventArgs e )
+        {
+            LB(e).Write();
         }
 
         private void EventSourceOnTargetFinished ( object sender , TargetFinishedEventArgs e )
@@ -537,10 +550,14 @@ namespace ProjLib
         {
             var propertyInfo = e.GetType ( ).GetProperty ( "Message" ) ;
             var message = propertyInfo?.GetValue ( e ) ;
+            var memberName = callerMemberName ;
+            memberName = memberName.Replace ( "EventSourceOn" , "" ) ; 
+            var name = e.GetType ( ).Name ;
+            name = name.Replace ( "EventArgs" , "" ) ;
             var logBuilder = new LogBuilder ( Logger )
-                            .Level ( LogLevel.Trace)
-                            .LoggerName ( $"{callerMemberName}.{e.GetType ( ).Name}" )
-                            .Property ( "EventArgs" , e ) ;
+                            .Level ( LogLevel.Debug )
+                            .LoggerName ( $"Build.{memberName}.{name}" ) ;
+                            // .Property ( "EventArgs" , e ) ;
             if ( message != null )
             {
                 logBuilder.Message ( message.ToString ( ) ) ;
@@ -591,7 +608,7 @@ namespace ProjLib
 
         private void EventSourceOnWarningRaised ( object sender , BuildWarningEventArgs e )
         {
-            LB ( e ).Write();
+            LB ( e ).Write ( ) ;
             //Logger.Warn ( "{projectFile} {message} {e}" , e.ProjectFile , e.Message , e ) ;
         }
 
