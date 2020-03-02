@@ -1,0 +1,89 @@
+﻿using System.Threading.Tasks ;
+using System.Windows ;
+using System.Windows.Controls ;
+using System.Windows.Documents ;
+using System.Windows.Media ;
+using JetBrains.Annotations ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using NLog ;
+using ProjLib ;
+
+namespace AnalysisControls
+{
+    /// <summary>
+    /// Interaction logic for FormattedCode.xaml
+    /// </summary>
+    public partial class FormattedCode : UserControl , IFormattedCode
+    {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        public FormattedCode ( ) { InitializeComponent ( ) ; }
+
+        private string                _sourceCode ;
+        private SyntaxTree            _syntaxTree ;
+        private SemanticModel         _model ;
+        private CompilationUnitSyntax _compilationUnitSyntax ;
+
+        public FlowDocument FlowViewerDocument { get ; private set ; }
+
+        public MyFlowDocumentScrollViewer FlowViewer { get ; private set ; }
+
+        public string SourceCode { get => _sourceCode ; set => _sourceCode = value ; }
+
+        public SyntaxTree SyntaxTree { get => _syntaxTree ; set => _syntaxTree = value ; }
+
+        public SemanticModel Model { get => _model ; set => _model = value ; }
+
+        public CompilationUnitSyntax CompilationUnitSyntax
+        {
+            get => _compilationUnitSyntax ;
+            set => _compilationUnitSyntax = value ;
+        }
+
+        public async Task<object>  Refresh ( )
+        {
+            FlowViewer = new MyFlowDocumentScrollViewer ( ) ;
+            
+            Content                       = FlowViewer ;
+            FlowViewerDocument = new FlowDocument ( ) ;
+            
+            // RichTextBox richTextBox = new RichTextBox ( ) ;// 
+            // Content = richTextBox ;
+            FlowViewer.Document           = FlowViewerDocument ;
+            FlowViewerDocument.FontSize   = 24 ;
+            FlowViewerDocument.FontFamily = new FontFamily ( "Lucida Console" ) ;
+
+            return await VisitAsync ( ) ;
+        }
+
+        public async Task<object> VisitAsync ( )
+        {
+            var visitor3 = new Visitor3 ( FlowViewerDocument , FlowViewer ) ;
+            visitor3.DefaultVisit ( SyntaxTree.GetRoot ( ) ) ;
+            return new object();
+            // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
+            // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
+            // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;
+        }
+    }
+
+    internal class LineNumberAdorner : Adorner
+    {
+        [ NotNull ] private readonly UIElement _adornedElement ;
+
+        public LineNumberAdorner ( [ NotNull ] UIElement adornedElement ) : base ( adornedElement )
+        {
+            _adornedElement = adornedElement ;
+        }
+
+        #region Overrides of UIElement
+        protected override void OnRender ( DrawingContext drawingContext )
+        {
+            var adornedRect = new Rect ( _adornedElement.DesiredSize ) ;
+            LogManager.GetCurrentClassLogger ( ).Info ( "r: {r}" , adornedRect ) ;
+            
+            FlowDocumentScrollViewer s = new MyFlowDocumentScrollViewer ( ) ;
+        }
+        #endregion
+    }
+}

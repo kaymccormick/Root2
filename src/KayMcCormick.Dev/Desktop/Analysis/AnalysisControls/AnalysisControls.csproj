@@ -48,7 +48,59 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeWindow.cs" />
+    <Compile Include="FormattedCode.xaml.cs">
+      <DependentUpon>FormattedCode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FormattedCode2.xaml.cs">
+      <DependentUpon>FormattedCode2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="INodePanel.cs" />
+    <Compile Include="MainStatusBar.xaml.cs">
+      <DependentUpon>MainStatusBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MyFlowDocumentScrollViewer.cs" />
+    <Compile Include="ProjectBrowser.xaml.cs">
+      <DependentUpon>ProjectBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpanToolTip.cs" />
+    <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SymbolControl.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="ToolTips.cs" />
+    <Compile Include="Visitor3.cs" />
+    <Page Include="FormattedCode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FormattedCode2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainStatusBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NodePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ProjectBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SpanToolTip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Templates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

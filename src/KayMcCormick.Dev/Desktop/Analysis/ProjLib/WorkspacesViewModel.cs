@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.IO ;
@@ -19,8 +18,6 @@ using System.Runtime.CompilerServices ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using System.Windows ;
-using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Markup ;
 using System.Windows.Threading ;
@@ -42,34 +39,23 @@ namespace ProjLib
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public delegate FormattedCode CreateFormattedCodeDelegate (
+        public delegate IFormattedCode CreateFormattedCodeDelegate (
             Tuple < SyntaxTree , SemanticModel , CompilationUnitSyntax > tuple
         ) ;
 
-        public delegate FormattedCode CreateFormattedCodeDelegate2 ( ) ;
+        public delegate IFormattedCode CreateFormattedCodeDelegate2 ( ) ;
 
         // private IList<IVsInstance> vsInstances;
         private readonly IVsInstanceCollector vsInstanceCollector ;
 
         public IPipelineViewModel PipelineViewModel { get ; }
 
-        public Visibility BrowserVisibility
-        {
-            get => _browserVisibility ;
-            set
-            {
-                _browserVisibility = value ;
-                OnPropertyChanged ( nameof ( BrowserVisibility ) ) ;
-            }
-        }
-
         private string                    _currentDocumentPath ;
         private MyProjectLoadProgress     _currentProgress ;
         private string                    _currentProject ;
-        public  Dispatcher                _d ;
+        
         private ProjectHandlerImpl        _handler ;
         private bool                      _processing ;
-        private Visibility                _browserVisibility = Visibility.Visible ;
         private IProjectBrowserViewModoel _projectBrowserViewModel ;
 
         public WorkspacesViewModel (
@@ -165,30 +151,6 @@ namespace ProjLib
         }
 
         #endif
-        public async Task < object > ProcessSolutionAsync (
-            Dispatcher                      dispatcher
-          , TaskFactory                     factory
-          , Func < object , FormattedCode > func
-        )
-        {
-            Processing = true ;
-            Func < Tuple < SyntaxTree , SemanticModel , CompilationUnitSyntax > ,
-                CreateFormattedCodeDelegate2 > d = t => ( ) => new FormattedCode ( ) ;
-
-            await _handler.ProcessAsync (
-                                         invocation
-                                             => dispatcher.Invoke (
-                                                                   ( ) => LogInvocations.Add (
-                                                                                              invocation
-                                                                                             )
-                                                                  )
-                                       , new DispatcherSynchronizationContext ( dispatcher )
-                                       , func
-                                        )
-                          .ConfigureAwait ( true ) ;
-            Processing = false ;
-            return new object ( ) ;
-        }
 
         public IProjectBrowserViewModoel ProjectBrowserViewModel
         {
@@ -249,49 +211,6 @@ namespace ProjLib
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
-    }
-
-    public class CodeWindow : Window
-    {
-        public delegate FormattedCode GetFormattedCodeDelegate ( object o ) ;
-
-        private readonly TabControl control = new TabControl ( ) ;
-
-        private readonly Dictionary < object , FormattedCode > dict =
-            new Dictionary < object , FormattedCode > ( ) ;
-
-        public CodeWindow ( ) { Content = control ; }
-
-        public Task < FormattedCode > GetFormattedCodeAsync ( object o )
-        {
-            return Task.FromResult (
-                                    ( FormattedCode ) Dispatcher.Invoke (
-                                                                         DispatcherPriority.Send
-                                                                       , new
-                                                                             GetFormattedCodeDelegate (
-                                                                                                       o1
-                                                                                                           => new
-                                                                                                               FormattedCode ( )
-                                                                                                      )
-                                                                       , o
-                                                                        )
-                                   ) ;
-        }
-
-
-        public FormattedCode GetFormattedCode ( object o )
-        {
-            var taskFactory = new TaskFactory < FormattedCode > ( ) ;
-            if ( dict.TryGetValue ( o , out var item ) )
-            {
-                return item ;
-            }
-
-            dict[ o ] = new FormattedCode ( ) ;
-            var item2 = new TabItem { Header = "123" , Content = dict[ o ] } ;
-            ( ( IAddChild ) control ).AddChild ( item2 ) ;
-            return dict[ o ] ;
         }
     }
 

@@ -46,7 +46,6 @@ namespace ProjLib
     }
     public abstract class ProjectHandler : ISupportInitialize
     {
-        protected readonly Dispatcher _d ;
 
         public delegate void ProcessDocumentDelegate ( Document document ) ;
 
@@ -99,7 +98,7 @@ namespace ProjLib
         public async Task<object> ProcessAsync (
             Action < LogInvocation > consumeLogInvocation
           , SynchronizationContext   current
-            ,Func<object, FormattedCode> func
+            ,Func<object, IFormattedCode> func
         )
         {
             foreach ( var pr in Workspace.CurrentSolution.Projects )
@@ -120,7 +119,7 @@ namespace ProjLib
             Document                        document
           , Triple                          triple
           , Action < LogInvocation >        consumeLogInvocation
-          , Func < object , FormattedCode > func
+          , Func < object , IFormattedCode > func
         ) ;
 
         public abstract  Task < Triple > OnPrepareProcessDocumentAsync ( Document doc ) ;
@@ -148,7 +147,7 @@ namespace ProjLib
             Document                        document1
           , Triple                          triple
           , Action < LogInvocation >        consumeLogInvocation
-          , Func < object , FormattedCode > func
+          , Func < object , IFormattedCode > func
         )
         {
             _context.Post (
@@ -161,7 +160,7 @@ namespace ProjLib
                                         return ;
                                     }
 
-                                    FormattedCode codeControl = func ( t2 ) ;
+                                    IFormattedCode codeControl = func ( t2 ) ;
                                     // var sourceText = ProjLib.LibResources.Program_Parse ;
                                     // codeControl.SourceCode = sourceText ;
 

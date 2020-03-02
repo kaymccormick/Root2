@@ -20,6 +20,7 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
+using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
 using CodeAnalysisApp1 ;
@@ -38,7 +39,7 @@ using ProjInterface ;
 using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
-using FormattedCode = ProjLib.FormattedCode ;
+using FormattedCode = AnalysisControls.FormattedCode ;
 using LogLevel = NLog.LogLevel ;
 
 namespace ProjTests
@@ -577,7 +578,7 @@ Logger.Error(inner, inner.ToString);
             Logger.Info ( "Transform is {transform}" , transform ) ;
             var w = new Window ( ) { } ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
-            var fmt = transform.FormattedCodeControl ;
+            var fmt = transform.FormattedCodeControl as IFormattedCode;
             fmt.SourceCode = transform.SourceCode ;
             w.Content      = fmt ;
             var mi = new MakeInfo ( fmt , transform.SourceCode ) ;

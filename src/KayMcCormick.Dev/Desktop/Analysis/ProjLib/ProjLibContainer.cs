@@ -31,8 +31,10 @@ namespace ProjLib
 
         public static ILifetimeScope GetScope (params IModule[] modules )
         {
+            
             var b = new ContainerBuilder ( ) ;
             b.RegisterMetadataRegistrationSources ( ) ;
+#if false
             // b.RegisterGeneric ( typeof ( SpanObject <> ) ).As ( typeof ( ISpanObject <> ) ) ;
             foreach ( var module in modules )
             {
@@ -225,7 +227,7 @@ namespace ProjLib
                                                   )
                        )
              .AsSelf ( ) ;
-
+            #endif
             return b.Build ( ).BeginLifetimeScope ( ) ;
         }
     }
@@ -239,7 +241,7 @@ namespace ProjLib
         private IHasCompilation _hasCompilationImplementation ;
         private IHasTree        _hasTreeImplementation ;
 
-        #region Implementation of IHasCompilation
+#region Implementation of IHasCompilation
         public HasTreeAndCompilation (
             IHasCompilation hasCompilationImplementation
           , IHasTree        hasTreeImplementation
@@ -250,11 +252,11 @@ namespace ProjLib
         }
 
         public CSharpCompilation Compilation => _hasCompilationImplementation.Compilation ;
-        #endregion
+#endregion
 
-        #region Implementation of IHasTree
+#region Implementation of IHasTree
         public SyntaxTree Tree => _hasTreeImplementation.Tree ;
-        #endregion
+#endregion
     }
 
     public interface IHasLogInvocations
@@ -265,21 +267,21 @@ namespace ProjLib
     internal class HasLogInvocations : IHasLogInvocations
     {
         private IList < LogInvocation > _logInvocationList = new List < LogInvocation > ( ) ;
-        #region Implementation of IHasLogInvocations
+#region Implementation of IHasLogInvocations
         public IList < LogInvocation > LogInvocationList
         {
             get => _logInvocationList ;
             set => _logInvocationList = value ;
         }
-        #endregion
+#endregion
     }
 
     public class HasSourceCode : ISourceCode
     {
         private string _sourceCode ;
-        #region Implementation of ISourceCode
+#region Implementation of ISourceCode
         public string SourceCode { get => _sourceCode ; set => _sourceCode = value ; }
-        #endregion
+#endregion
 
         public HasSourceCode ( string sourceCode ) { _sourceCode = sourceCode ; }
     }
@@ -292,9 +294,9 @@ namespace ProjLib
     internal class HasCompilation : IHasCompilation
     {
         private CSharpCompilation _compilation ;
-        #region Implementation of IHasCompilation
+#region Implementation of IHasCompilation
         public CSharpCompilation Compilation { get => _compilation ; set => _compilation = value ; }
-        #endregion
+#endregion
 
         public HasCompilation ( CSharpCompilation compilation ) { _compilation = compilation ; }
     }
@@ -305,9 +307,9 @@ namespace ProjLib
 
         public HasTree ( SyntaxTree parseText ) { _tree = parseText ; }
 
-        #region Implementation of IHasTree
+#region Implementation of IHasTree
         public SyntaxTree Tree { get => _tree ; set => _tree = value ; }
-        #endregion
+#endregion
     }
 
     public interface IIntermediateContext
@@ -327,13 +329,13 @@ namespace ProjLib
         private IHassModel _hassModelImplementation ;
         private IHasTree   _hasTreeImplementation ;
 
-        #region Implementation of IHassModel
+#region Implementation of IHassModel
         public SemanticModel Model => _hassModelImplementation.Model ;
-        #endregion
+#endregion
 
-        #region Implementation of IHasTree
+#region Implementation of IHasTree
         public SyntaxTree Tree => _hasTreeImplementation.Tree ;
-        #endregion
+#endregion
 
         public HasTreeAndModel (
             IHassModel hassModelImplementation
@@ -358,9 +360,9 @@ namespace ProjLib
     internal class HassModel : IHassModel
     {
         private SemanticModel _model ;
-        #region Implementation of IHassModel
+#region Implementation of IHassModel
         public SemanticModel Model { get => _model ; set => _model = value ; }
-        #endregion
+#endregion
 
         public HassModel ( SemanticModel model ) { _model = model ; }
     }

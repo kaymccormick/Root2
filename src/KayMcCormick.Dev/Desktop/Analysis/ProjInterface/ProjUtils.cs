@@ -11,6 +11,7 @@ using System.Windows.Input ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Threading ;
+using AnalysisControls ;
 using AnalysisFramework ;
 
 using Microsoft.CodeAnalysis ;
@@ -31,7 +32,7 @@ namespace ProjInterface
              ContentControl    w
           , string                sourceText, CodeAnalyseContext ctx
           , IAddChild             addChild
-          , ProjLib.FormattedCode         control
+          , FormattedCode         control
         )
         {
             double scale = 1 ;
@@ -52,7 +53,7 @@ namespace ProjInterface
           , CompilationUnitSyntax compilationUnitSyntax
           , double            scale
           , IAddChild             addChild
-          , ProjLib.FormattedCode         control
+          , FormattedCode         control
         )
         {
             control.Dispatcher.Invoke(
@@ -73,7 +74,7 @@ namespace ProjInterface
           , string                SouceText
             , CodeAnalyseContext ctx
           , IAddChild             addChild
-          , ProjLib.FormattedCode         Control
+          , FormattedCode         Control
         )
         {
             LogManager.GetCurrentClassLogger ( ).Info ( nameof ( _ContainFormattedCode ) ) ;
@@ -137,7 +138,7 @@ namespace ProjInterface
           , string                SouceText
           , CodeAnalyseContext ctx
           , IAddChild             addChild
-          , ProjLib.FormattedCode         Control
+          , FormattedCode         Control
         ) ;
         
         private static void ContainFormattedCode (
@@ -145,7 +146,7 @@ namespace ProjInterface
           , string                SouceText
           , CodeAnalyseContext ctx
           , IAddChild             addChild
-          , ProjLib.FormattedCode                Control
+          , FormattedCode                Control
         )
         {
             Logger.Info ( "contain" ) ;

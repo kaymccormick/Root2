@@ -1,12 +1,10 @@
 using System ;
 using System.Collections ;
-using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
 using NLog ;
-using NLog.Fluent ;
 
-namespace ProjLib
+namespace AnalysisControls
 {
     public class StatusBarItemContentTemplateSelector : DataTemplateSelector
     {

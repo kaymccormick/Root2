@@ -9,16 +9,12 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
 using System.Threading ;
-using System.Threading.Tasks ;
-using System.Windows ;
 using System.Windows.Input ;
-using System.Windows.Threading ;
 using AnalysisFramework ;
 
 using Microsoft.CodeAnalysis.MSBuild ;
@@ -35,8 +31,7 @@ namespace ProjLib
 
         IPipelineViewModel PipelineViewModel { get ; }
 
-        Visibility BrowserVisibility { get ; set ; }
-        #if false
+#if false
         Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem
           , IMruItem               sender2SelectedItem
@@ -44,12 +39,6 @@ namespace ProjLib
           , SynchronizationContext current
         ) ;
 #endif
-
-        Task < object > ProcessSolutionAsync (
-            Dispatcher                      dispatcher
-          , TaskFactory                     taskFactory
-          , Func < object , FormattedCode > getFormattedCode
-        ) ;
 
         IProjectBrowserViewModoel ProjectBrowserViewModel { get ; }
 

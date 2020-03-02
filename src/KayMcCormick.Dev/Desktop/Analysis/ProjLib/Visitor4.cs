@@ -13,9 +13,6 @@ using System ;
 using System.Collections.Generic ;
 using System.Threading ;
 using System.Threading.Tasks ;
-using System.Windows ;
-using System.Windows.Controls ;
-using System.Windows.Documents ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -28,14 +25,8 @@ namespace ProjLib
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer _ctl ;
 
-        public MyFlowDocumentScrollViewer FlowViewer { get ; }
-
-        private readonly FlowDocument    _document ;
-        private          int             _curLine         = - 1 ;
+          private          int             _curLine         = - 1 ;
         private          bool            _isAtStartOfLine = true ;
-        private          Paragraph       _curBlock ;
-        private          Style           _curStyle ;
-        private          Stack < Style > _styles    = new Stack < Style > ();
 #if DEBUG
         private static   Logger          Logger     = LogManager.GetCurrentClassLogger( ) ;
 
@@ -77,15 +68,6 @@ namespace ProjLib
 
         }
 
-        public Stack <Style> Styles { get { return _styles ; } } 
-
-        private Style FindStyle ( SyntaxNode node )
-        {
-         //   var r = _document.TryFindResource ( node.Kind ( ) ) ;
-          //  return r as Style ;
-          return null ;
-        }
-
         public override void DefaultVisit ( SyntaxNode node ) { base.DefaultVisit ( node ) ; }
 
         private void RecordLocation(Location getLocation, out bool newLine)
@@ -110,16 +92,6 @@ namespace ProjLib
                 #if DEBUG
                 Logger.Trace("New line {line}", line);
                 #endif
-                if ( _curBlock != null )
-                {
-                    
-                    // var rr = _curBlock.Inlines.FirstInline.ContentStart.GetCharacterRect (
-                    // LogicalDirection
-                    // .Forward
-                    // ) ;
-                    // Logger.Warn ( "{line} {}" , line, rr ) ;
-                    // _oldLineStart += _curBlock.LineHeight ;
-                }
                 #if DEBUG
                 Logger.Trace($"create new paragraph");
 #endif
@@ -134,11 +106,6 @@ namespace ProjLib
                 _isAtStartOfLine = true;
                 LineStart.Add ( _oldLineStart) ;
             }
-        }
-
-        private void ScrollViewerOnScrollChanged ( object sender , ScrollChangedEventArgs e )
-        {
-            Logger.Info ( "offset {}" , e.HorizontalOffset ) ;
         }
 
         public List < double> LineStart { get { return _lineStart ; } }

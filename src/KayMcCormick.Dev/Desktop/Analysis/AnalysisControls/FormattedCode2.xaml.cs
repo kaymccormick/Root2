@@ -1,29 +1,17 @@
-﻿using System ;
-using System.Collections.Concurrent ;
-using System.Collections.Generic ;
-using System.Diagnostics ;
-using System.Drawing ;
-using System.IO ;
-using System.Linq ;
-using System.Threading ;
-using System.Threading.Tasks ;
+﻿using System.Collections.Generic ;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Documents ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Threading ;
-using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.CodeAnalysis.Text ;
-using Newtonsoft.Json ;
 using NLog ;
-using NLog.Fluent ;
+using ProjLib ;
 using Color = System.Windows.Media.Color ;
 
-namespace ProjLib
+namespace AnalysisControls
 {
     /// <summary>
     /// Interaction logic for FormattedCode.xaml
@@ -206,14 +194,5 @@ namespace ProjLib
             B = i2 ;
             A = i3 ;
         }
-    }
-
-    public interface ICodeRenderer
-    {
-        void addToken ( ushort rawKind , string text , bool newLine ) ;
-        void addTrivia ( int rawKind , string text , bool newLine ) ;
-        void NewLine ( ) ;
-        void StartNode ( SyntaxNode node ) ;
-        void EndNode ( SyntaxNode node ) ;
     }
 }

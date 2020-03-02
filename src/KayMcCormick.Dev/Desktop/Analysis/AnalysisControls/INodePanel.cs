@@ -11,7 +11,7 @@
 #endregion
 using System.Windows.Controls ;
 
-namespace ProjLib
+namespace AnalysisControls
 {
     public partial class NodePanel : UserControl, INodePanel
     {

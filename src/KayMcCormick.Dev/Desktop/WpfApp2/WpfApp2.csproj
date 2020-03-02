@@ -83,9 +83,6 @@
     <Compile Include="AttachedProps.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="DictInterceptor.cs" />
-    <Compile Include="ExplorerPage.xaml.cs">
-      <DependentUpon>ExplorerPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogProperty.cs" />
     <Compile Include="ObservablePropertyCollection.cs" />
@@ -98,10 +95,6 @@
     <Compile Include="XmlViewer.xaml.cs">
       <DependentUpon>XmlViewer.xaml</DependentUpon>
     </Compile>
-    <Page Include="ExplorerPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

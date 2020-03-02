@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
+using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac;
 
@@ -163,15 +164,7 @@ namespace ProjInterface
         #endif
         private void PostPath ( string filePath ) { _ = ViewModel.PipelineViewModel.Pipeline.PipelineInstance.Post ( filePath ) ; }
 
-        private async Task < object > ContinuationFunction ( Task task )
-        {
-            return ViewModel.ProcessSolutionAsync (
-                                                  Dispatcher
-                                                , _factory
-                                                , codeWindow.GetFormattedCode
-                                                 ) ;
-        }
-        #if false
+#if false
         private void Mru_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
         {
             var sender2SelectedItem = (IMruItem)mru.SelectedItem;

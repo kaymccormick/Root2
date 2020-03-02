@@ -6,6 +6,7 @@
   xmlns:local="clr-namespace:ProjInterface"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
+  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
   Name="mainWindow"
   AllowDrop="True"
   Drop="ProjMainWindow_OnDrop"
@@ -90,9 +91,9 @@
                  Text="{Binding CurrentProgress.ElapsedTime}" />
       <TextBlock Text="{Binding Processing}" />
     </StackPanel>
-    <projLib:ProjectBrowser Name="ProjectBrowser" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0">
+    <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0">
     
-    </projLib:ProjectBrowser>
+    </analysisControls:ProjectBrowser>
     <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
       <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
         <StackPanel Orientation="Vertical">
@@ -103,7 +104,7 @@
         </StackPanel>
       </TabItem>
     </TabControl>
-    <projLib:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3"
+    <analysisControls:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3"
                            Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>

@@ -11,11 +11,21 @@
 #endregion
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Documents ;
 using System.Windows.Media ;
+using ProjLib ;
 
-namespace ProjLib
+namespace AnalysisControls
 {
+    internal class SpanTT : ToolTip
+    {
+        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.ToolTip" /> class. </summary>
+        public SpanTT(SpanToolTip content) { Content = CustomToolTip = content; }
+
+        public SpanToolTip CustomToolTip { get; set; }
+
+        public ISpanToolTipViewModel ViewModel { get; set; }
+
+    }
     public partial class SpanToolTip : UserControl , ISpanToolTip
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>

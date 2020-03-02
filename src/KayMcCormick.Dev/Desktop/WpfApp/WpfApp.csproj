@@ -135,7 +135,6 @@
     <Compile Include="Controls\Container.xaml.cs" />
     <Compile Include="Controls\SystemParametersControl.xaml.cs" />
     <Compile Include="Controls\TypedService.cs" />
-    <Compile Include="Controls\UserControl1.xaml.cs" />
     <Compile Include="DesignData.cs" />
     <Compile Include="Core\Events\AttachedEvents.cs" />
     <Compile Include="Core\Logging\AppLoggerContainer.cs" />
@@ -321,10 +320,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\SystemParametersControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\UserControl1.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

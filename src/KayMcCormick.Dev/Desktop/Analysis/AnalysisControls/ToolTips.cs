@@ -1,11 +1,9 @@
 using System ;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Markup ;
-
 using NLog ;
 
-namespace ProjLib
+namespace AnalysisControls
 {
     static internal class ToolTips
     {

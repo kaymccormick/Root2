@@ -10,10 +10,7 @@
 // ---
 #endregion
 using System ;
-using System.Collections.Generic ;
 using System.Linq ;
-using System.Windows.Markup ;
-
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -26,7 +23,6 @@ namespace ProjLib
         private          SemanticModel                 _model ;
         private readonly Func <object, ISpanViewModel> _mFunc ;
 
-        private        Stack < IAddChild >                   _nodes = new Stack < IAddChild > ( ) ;
         protected      object                                _logInvAnno ;
         private static Logger                                logger = LogManager.GetCurrentClassLogger ( ) ;
         private        Func < string , object , LogBuilder > _message ;
@@ -97,8 +93,6 @@ namespace ProjLib
                 ActiveSpans.RemoveAll(node);
             }
         }
-
-        public Stack < IAddChild > Nodes { get { return _nodes ; } }
 
         public SemanticModel Model { get { return _model ; } }
 

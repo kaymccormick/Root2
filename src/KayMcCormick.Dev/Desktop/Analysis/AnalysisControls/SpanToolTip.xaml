@@ -1,4 +1,4 @@
-<UserControl x:Class="ProjLib.NodePanel"
+<UserControl x:Class="AnalysisControls.SpanToolTip"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,10 +11,8 @@
   <UserControl.Resources>
   </UserControl.Resources>
   <DockPanel LastChildFill="True">
-    <StatusBar DockPanel.Dock="Bottom">
-      <StatusBarItem Content=""/>
-      </StatusBar>
-    <ItemsControl
-      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=projLib:SpanTT}, Path=Spans}" />
+    <StatusBar DockPanel.Dock="Bottom"><StatusBarItem Content="{Binding Path=Location}"></StatusBarItem></StatusBar>
+    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=projLib:SpanTT}, Path=Spans}"></ItemsControl>
   </DockPanel>
 </UserControl>
+  

@@ -13,7 +13,7 @@ using System.Globalization ;
 using System.Windows ;
 using System.Windows.Media ;
 
-namespace ProjLib
+namespace AnalysisControls
 {
     public class Token : UIElement
     {

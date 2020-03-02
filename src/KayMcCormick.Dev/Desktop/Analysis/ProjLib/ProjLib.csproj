@@ -58,8 +58,6 @@
       <HintPath>E:\packages\microsoft.visualstudio.setup.configuration.interop\1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Activities" />
     <Reference Include="System.Core" />
@@ -73,23 +71,17 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="XamlBuildTask" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveSpans.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
-    <Compile Include="FormattedCode2.xaml.cs">
-      <DependentUpon>FormattedCode2.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ICodeRenderer.cs" />
+    <Compile Include="IFormattedCode.cs" />
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="FindLogUsagesBlock.cs" />
-    <Compile Include="FormattedCode.xaml.cs">
-      <DependentUpon>FormattedCode.xaml</DependentUpon>
-    </Compile>
     <Compile Include="IAppState.cs" />
     <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
@@ -110,20 +102,13 @@
     <Compile Include="IWorkspacesView.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
     <Compile Include="LogInvocationSpan.cs" />
-    <Compile Include="MainStatusBar.xaml.cs">
-      <DependentUpon>MainStatusBar.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MakeInfo.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
-    <Compile Include="NodePanel.cs" />
     <EmbeddedResource Include="Program-Parse.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Compile Include="Pipeline.cs" />
-    <Compile Include="ProjectBrowser.xaml.cs">
-      <DependentUpon>ProjectBrowser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ProjectBrowserViewModoel.cs" />
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="ProjLibUtils.cs" />
@@ -135,19 +120,13 @@
     </Compile>
     <None Include="Resources\AttachedProps.cs" />
     <Compile Include="SpanObject.cs" />
-    <Compile Include="SpanToolTip.cs" />
     <Compile Include="SpanToolTipViewModel.cs" />
-    <Compile Include="SpanTT.cs" />
-    <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />
-    <Compile Include="Token.cs" />
     <Compile Include="TokenSpanObject.cs" />
-    <Compile Include="ToolTips.cs" />
     <Compile Include="TransformArgs.cs" />
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="LogInvocationAnnotationHandler.cs" />
     <Compile Include="Visitor2.cs" />
-    <Compile Include="Visitor3.cs" />
     <Compile Include="Visitor4.cs" />
     <Compile Include="VisitorStub.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
@@ -263,40 +242,6 @@
       <Project>{4B41601C-F950-4E9D-9B9F-FF0920B96AAB}</Project>
       <Name>AnalysisFramework</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="FormattedCode2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="FormattedCode.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MainStatusBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NodePanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ProjectBrowser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SpanToolTip.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Templates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
