@@ -108,7 +108,7 @@ files = File.ReadAllLines(projFilesList).ToList();
                                                          realF
                                                        , props2
                                                        , null
-                                                       , new[] { "Restore" }
+                                                       , new[] { "Restore", "Build" }
                                                        , new HostServices ( )
                                                        , BuildRequestDataFlags
                                                             .ProvideProjectStateAfterBuild
@@ -227,7 +227,7 @@ files = File.ReadAllLines(projFilesList).ToList();
 
                 List<string> files;
                 var projFilesList = Path.Combine(arg, "projects.txt");
-                Logger.Debug("Checking for existince of poject file [file}", projFilesList);
+                Logger.Debug("Checking for existince of poject file {file}", projFilesList);
                 if (File.Exists(projFilesList))
                 {
                     files = File.ReadAllLines(projFilesList).ToList();
@@ -260,6 +260,7 @@ files = File.ReadAllLines(projFilesList).ToList();
 
                 BuildResults buildResults = new BuildResults()
                                             {
+                                                SourceDir = arg,
                                                 SolutionsFilesList = solList
                                             };
 
@@ -363,7 +364,10 @@ files = File.ReadAllLines(projFilesList).ToList();
             } ;
 
             // ReSharper disable once LocalizableElement
-            string solutionPath = results.SolutionsFilesList.First ( ) ;
+            string solutionPath = Path.Combine (
+                                                results.SourceDir
+                                              , results.SolutionsFilesList.First ( )
+                                               ) ;
             Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 

@@ -109,7 +109,11 @@ PipelineInstance = DataflowBlock.Encapsulate < string , LogInvocation > ( transf
 
     public class BuildResults
     {
+        private string sourceDir ;
+
         public List < string > SolutionsFilesList { get ; set ; } = new List < string > ( ) ;
+
+        public string SourceDir { get { return sourceDir ; } set { sourceDir = value ; } }
     }
 
     public class ProjectContext

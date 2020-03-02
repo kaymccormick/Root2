@@ -1,2 +1,2 @@
-src\KayMcCormick.Dev\ManagedProd.sln
+.\src\KayMcCormick.Dev\ManagedProd.sln
 src\KayMcCormick.Dev\KayMcCormick.Dev.sln

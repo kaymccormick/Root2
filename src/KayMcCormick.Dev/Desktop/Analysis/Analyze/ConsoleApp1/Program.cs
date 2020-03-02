@@ -123,6 +123,12 @@ namespace ConsoleApp1
 
         private static void MainCommand ( Options options , AppContext context )
         {
+            if ( options.FirstChance )
+            {
+                AppDomain.CurrentDomain.FirstChanceException +=
+                    CurrentDomainOnFirstChanceException ;
+            }
+
             var viewModel = context.ViewModel ;
             var x = ( ISupportInitialize ) viewModel ;
             x.BeginInit ( ) ;
@@ -181,8 +187,8 @@ namespace ConsoleApp1
                                                             }
                                                            )
                        , new DataflowLinkOptions ( ) { PropagateCompletion = true }
-                        );
-                
+                        ) ;
+
 
             var timeSpan = new TimeSpan ( 0 , 3 , 0 ) ;
             Logger.Info ( "waiting " + timeSpan ) ;
@@ -205,8 +211,6 @@ namespace ConsoleApp1
 
         private static void Init ( )
         {
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
-
             AppLoggingConfigHelper.EnsureLoggingConfigured (
                                                             null
                                                           , new AppLoggingConfiguration ( )
@@ -222,7 +226,6 @@ namespace ConsoleApp1
           , FirstChanceExceptionEventArgs e
         )
         {
-            return ;
             if ( e.Exception is ReflectionTypeLoadException r )
             {
                 return ;
@@ -248,5 +251,8 @@ namespace ConsoleApp1
 
         [ Option ( 'l' , "list-vs-instances" ) ]
         public bool ListVsInstances { get => _listVsInstances ; set => _listVsInstances = value ; }
+
+        [ Option ( 'f' ) ]
+        public bool FirstChance { get ; set ; }
     }
 }
