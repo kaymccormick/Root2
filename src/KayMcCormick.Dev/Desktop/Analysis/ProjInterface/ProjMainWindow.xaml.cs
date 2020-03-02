@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
@@ -47,10 +45,6 @@ namespace ProjInterface
                                                                              ) ;
                                                                  }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
-            if (! viewModel.VsCollection.Any ( ) )
-            {
-                throw new Exception("no data");
-            }
 
             ((WorkspacesViewModel)viewModel)._d = Dispatcher;
 
@@ -195,40 +189,5 @@ namespace ProjInterface
     {
         Workspace Workspace { get ; }
         Triple Trifecta  { get ; }
-    }
-
-    public class WorkspaceTable : RibbonWindow
-    {
-        public WorkspaceTable ( )
-        {
-            Ribbon ribbon = new Ribbon ( ) ;
-            RibbonQuickAccessToolBar qat = new RibbonQuickAccessToolBar ( ) ;
-            qat.Items.Add(new RibbonButton());
-            qat.Items.Add(new RibbonButton());
-            ribbon.QuickAccessToolBar = qat ;
-            RibbonApplicationMenu appMenu = new RibbonApplicationMenu();
-            ribbon.ApplicationMenu = appMenu;
-                appMenu.Items.Add (
-                                              new RibbonApplicationMenuItem { Header = "Fun Times" }
-                                             ) ;
-            var filesTab = new RibbonTab { Header = "Files" } ;
-            ribbon.Items.Add ( filesTab );
-            RibbonGroup group = new RibbonGroup ( ) { Header = "Create" } ;
-            group.Items.Add(new RibbonButton { Content = "CSharp" });
-            group.Items.Add(new RibbonButton { Content = "XAML" });
-            var content = new Grid ( ) ;
-            content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            content.RowDefinitions.Add (
-                                        new RowDefinition
-                                        {
-                                            Height = new GridLength ( 1 , GridUnitType.Star )
-                                        }
-                                       ) ;
-            ribbon.SetValue(Grid.RowProperty, 0);
-            ribbon.SetValue ( Grid.ColumnProperty , 0 ) ;
-            // ribbon.SetValue ( Grid.ColumnSpanProperty , content.ColumnDefinitions.Count ) ;
-            content.Children.Add ( ribbon ) ;
-            Content = content ;
-        }
     }
 }

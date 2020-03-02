@@ -40,147 +40,6 @@ namespace ProjLib
                                                             , "ProjectLib"
                                                              ) ;
 
-#if false
-        public static async Task < Workspace > LoadSolutionInstanceAsync (
-            IProgress < ProjectLoadProgress > progress
-      , string                            solutionPath
-      , VisualStudioInstance              instance
-        )
-
-        {
-            Logger.Info (
-                         "Load solution {threadid} {solution}"
-                   , Thread.CurrentThread.ManagedThreadId
-                   , solutionPath
-                        ) ;
-            if ( MSBuildLocator.IsRegistered )
-            {
-                // MSBuildLocator.Unregister ( ) ;
-            }
-
-            if ( MSBuildLocator.CanRegister )
-            {
-                MSBuildLocator.RegisterInstance ( instance ) ;
-            }
-            else
-            {
-                // throw new Exception ( "Unable to register msbuildlocator" ) ;
-            }
-
-            var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
-            b[ "Platform" ] = "x86" ;
-
-            IDictionary < string , string > props = b.ToImmutable ( ) ;
-            IDictionary < string , string > props2 = b.ToImmutable ( ) ;
-
-            MSBuildWorkspace workspace ;
-            try
-            {
-                workspace = MSBuildWorkspace.Create ( props ) ;
-            }
-            catch ( Exception ex )
-            {
-                throw ;
-            }
-
-
-            var projectCollection = new ProjectCollection ( ) ;
-            var dir = Path.GetDirectoryName ( solutionPath ) ;
-            List < string > files ;
-            var projFilesList = Path.Combine ( dir , "projects.txt" ) ;
-            if ( File.Exists ( projFilesList ) )
-            {
-                files = File.ReadAllLines ( projFilesList ).ToList ( ) ;
-            }
-            else
-            {
-                files = Directory.EnumerateFiles ( dir , "*.csproj" , SearchOption.AllDirectories )
-                                 .ToList ( ) ;
-            }
-
-            Logger.Debug ( "{projects}" , projectCollection.LoadedProjects ) ;
-
-            var buildParameters = new BuildParameters ( projectCollection ) ;
-            buildParameters.ProjectLoadSettings = ProjectLoadSettings.Default ;
-            buildParameters.Interactive = false ;
-            buildParameters.Loggers = new[] { new MyLogger ( ) } ;
-
-            BuildManager.DefaultBuildManager.ResetCaches ( ) ;
-            foreach ( var f in files )
-            {
-                var realF = Path.Combine ( dir , f ) ;
-                var buildRequest = new BuildRequestData (
-                                                         realF
-                                                   , props2
-                                                   , null
-                                                   , new[] { "Restore" , "Build" }
-                                                   , new HostServices ( )
-                                                   , BuildRequestDataFlags
-                                                            .ProvideProjectStateAfterBuild
-                                                        ) ;
-
-                var buildResult =
-                    BuildManager.DefaultBuildManager.Build ( buildParameters , buildRequest ) ;
-                if ( buildResult.OverallResult == BuildResultCode.Failure )
-                {
-                    // catch result ..
-                }
-
-                Logger.Info ( "Result: {buildResult}" , buildResult.OverallResult ) ;
-            }
-
-
-            Logger.Info (
-                         "SkipUnrecognizedProjects is {SkipUnrecognizedProjects}"
-                   , workspace.SkipUnrecognizedProjects
-                        ) ;
-            workspace.SkipUnrecognizedProjects = true ;
-            workspace.DocumentOpened += ( sender , args )
-                => Logger.Debug (
-                                 "{eventName}: {document}"
-                           , nameof ( workspace.DocumentOpened )
-                           , args.Document
-                                ) ;
-
-            // Print message for WorkspaceFailed event to help diagnosing project load failures.
-
-            workspace.WorkspaceFailed += ( o , e ) => {
-                try
-                {
-                    var m = Regex.Match (
-                                         e.Diagnostic.Message
-                                   , "Msbuild failed when processing the file '(.*)' with message:(.*)"
-                                        ) ;
-                    if ( m.Success )
-                    {
-                        var file1 = m.Groups[ 1 ].Captures[ 0 ] ;
-                        var message = m.Groups[ 2 ].Captures[ 0 ] ;
-                        Logger.Warn ( "Workspace Error: {file}, {msg}" , file1 , message ) ;
-                    }
-                }
-                catch ( Exception ex )
-                {
-                    Logger.Warn ( ex , ex.ToString ( ) ) ;
-                }
-
-                // "Msbuild failed when processing the file 'C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\V3\\Root\\src\\KayMcCormick.Dev\\Desktop\\App1\\App1.csproj' with message: C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319\\Microsoft.WinFx.targets: (268, 9): Unknown build error, 'Object reference not set to an instance of an object.' "
-                Logger.Fatal ( "Load workspac failed: {}" , e.Diagnostic.Message ) ;
-            } ;
-
-            // ReSharper disable once LocalizableElement
-            Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
-            Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
-
-            // Attach progress reporter so we print projects as they are loaded.
-            //workspace.Services.GetService < IOptionService > ( ) ;
-            //workspace.Options.WithChangedOption(new OptionKey(), ))
-            await workspace.OpenSolutionAsync ( solutionPath , progress ).ConfigureAwait ( false ) ;
-            // , new Program.ConsoleProgressReporter()
-            // );
-            Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
-            return workspace ;
-        }
-#endif
         public static ProjectContext MakeProjectContextForSolutionPath ( string arg )
         {
             var dir = Path.GetDirectoryName ( arg ) ;
@@ -226,6 +85,28 @@ namespace ProjLib
             Logger.Info ( "BuildRepository {arg}" , arg ) ;
             try
             {
+                if ( MSBuildLocator.CanRegister )
+                {
+                    MSBuildLocator.RegisterInstance (
+                                                     MSBuildLocator
+                                                        .QueryVisualStudioInstances (
+                                                                                     new
+                                                                                     VisualStudioInstanceQueryOptions ( )
+                                                                                     {
+                                                                                         DiscoveryTypes
+                                                                                             = DiscoveryType
+                                                                                                .VisualStudioSetup
+                                                                                     }
+                                                                                    )
+                                                        .First (
+                                                                instance
+                                                                    => instance.Version.Major == 16
+                                                                       && instance.Version.Minor
+                                                                       == 4
+                                                               )
+                                                    ) ;
+                }
+
                 var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
                 b[ "Platform" ] = "x86" ;
 
@@ -264,7 +145,7 @@ namespace ProjLib
                 var buildParameters = new BuildParameters ( projectCollection ) ;
                 buildParameters.ProjectLoadSettings = ProjectLoadSettings.Default ;
                 buildParameters.Interactive         = false ;
-                // buildParameters.Loggers             = new[] {new MyLogger ( ) } ;
+                buildParameters.Loggers             = new[] {new MyLogger ( ) } ;
 
                 var buildResults = new BuildResults ( )
                                    {

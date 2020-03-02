@@ -52,7 +52,7 @@ namespace ProjLib
 
 
             builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
-            // builder.RegisterType<Pipeline>().AsSelf();
+            builder.RegisterType<Pipeline>().AsSelf();
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
 
 

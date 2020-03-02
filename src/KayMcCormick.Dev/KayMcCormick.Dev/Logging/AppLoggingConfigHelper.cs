@@ -16,6 +16,7 @@ using NLog.Common;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+using NLog.Targets.Wrappers ;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -163,9 +164,10 @@ namespace KayMcCormick.Dev.Logging
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
                 EndpointAddress = endpointAddress
             };
+            AsyncTargetWrapper wrap=new AsyncTargetWrapper("wrap1", webServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
-            dict[LogLevel.Debug].Add(webServiceTarget);
+            dict[LogLevel.Debug].Add(wrap);
 
             var consoleTarget = new ConsoleTarget ( "console" )
                                 {
@@ -173,6 +175,7 @@ namespace KayMcCormick.Dev.Logging
                                 } ;
             dict[LogLevel.Warn].Add ( consoleTarget ) ;
 
+            
             #region Cache Target
 #if false
             var cacheTarget = new  MyCacheTarget ( ) ;

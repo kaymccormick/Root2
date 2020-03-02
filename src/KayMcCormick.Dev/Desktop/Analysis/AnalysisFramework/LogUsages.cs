@@ -2,6 +2,7 @@ using System ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
+using System.Text ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
@@ -249,10 +250,27 @@ namespace AnalysisFramework
                     }
                     Logger.Debug("{}", String.Join(", ", o));
                 }
-
-
                 else
                     {
+                        StringBuilder t = new StringBuilder();
+                        //invocation.WithArgumentList(invocation.ArgumentList.)
+                        if ( msgArgExpr is InterpolatedStringExpressionSyntax interp )
+                        {
+                            int n = 1 ;
+                            foreach ( var s in interp.Contents )
+                            {
+                                if ( s is InterpolationSyntax expr )
+                                {
+                                    string varName = "arg" + n.ToString();
+                                  if(expr.Expression is IdentifierNameSyntax nn)
+                                  {
+                                      varName = nn.Identifier.ValueText ;
+                                  }
+                                  
+                                  //expr.Expression.
+                                }
+                            }
+                        }
                         Logger.Debug("{}", msgArgExpr);
                         msgval.MessageExprPojo = Transforms.TransformExpr(msgArgExpr);
                     }

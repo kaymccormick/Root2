@@ -200,26 +200,8 @@ namespace ProjLib
          object                  viewCurrentItem
         )
         {
-            if ( MSBuildLocator.CanRegister )
-            {
-                MSBuildLocator.RegisterInstance (
-                                                 MSBuildLocator
-                                                    .QueryVisualStudioInstances (
-                                                                                 new
-                                                                                 VisualStudioInstanceQueryOptions ( )
-                                                                                 {
-                                                                                     DiscoveryTypes
-                                                                                         = DiscoveryType
-                                                                                            .VisualStudioSetup
-                                                                                 }
-                                                                                )
-                                                    .First (
-                                                            instance => instance.Version.Major == 16
-                                                                        && instance.Version.Minor
-                                                                        == 4
-                                                           )
-                                                ) ;
-            }
+            
+            
 
             Logger.Info ( "{x}" , viewCurrentItem ) ;
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;

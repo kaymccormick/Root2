@@ -53,13 +53,13 @@ namespace ProjLib
         public async Task<object>  Refresh ( )
         {
             FlowViewer = new MyFlowDocumentScrollViewer ( ) ;
-            // flowViewer.LayoutUpdated += ( sender , args ) => )
-            // )
-            // Content                       = FlowViewer ;
-            // FlowViewerDocument            = new FlowDocument ( ) ;
-            RichTextBox richTextBox = new RichTextBox ( ) ;// { FlowViewer.Document = FlowViewerDocument } ;
-            Content = richTextBox ;
-            //FlowViewer.Document  ;         = FlowViewerDocument ;
+            
+            Content                       = FlowViewer ;
+            FlowViewerDocument = new FlowDocument ( ) ;
+            
+            // RichTextBox richTextBox = new RichTextBox ( ) ;// 
+            // Content = richTextBox ;
+            FlowViewer.Document           = FlowViewerDocument ;
             FlowViewerDocument.FontSize   = 24 ;
             FlowViewerDocument.FontFamily = new FontFamily ( "Lucida Console" ) ;
 

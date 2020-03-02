@@ -1,9 +1,11 @@
 ﻿using System ;
 using System.Diagnostics ;
+using System.Linq ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev.Logging ;
+using Microsoft.Build.Locator ;
 using NLog ;
 using ProjLib ;
 using Application = System.Windows.Application ;
@@ -57,6 +59,14 @@ namespace ProjInterface
                 KayMcCormick.Dev.Utils.HandleInnerExceptions ( ex ) ;
                 MessageBox.Show ( ex.Message , "Error" ) ;
             }
+
+            var instances = MSBuildLocator.QueryVisualStudioInstances()
+                                          .Where(
+                                                 (instance, i)
+                                                     => instance.Version.Major    == 16
+                                                        && instance.Version.Minor == 4
+                                                );
+            MSBuildLocator.RegisterInstance(instances.First());
 
             var elapsed = DateTime.Now - start ;
             Console.WriteLine ( elapsed.ToString ( ) ) ;

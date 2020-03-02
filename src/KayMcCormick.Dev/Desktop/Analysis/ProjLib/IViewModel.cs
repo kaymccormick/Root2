@@ -9,9 +9,20 @@
 // 
 // ---
 #endregion
+using Microsoft.CodeAnalysis ;
+
 namespace ProjLib
 {
     public interface IViewModel
     {
+    }
+
+    class WorkspaceViewModel : IViewModel
+    {
+        private AdhocWorkspace workspace ;
+
+        public WorkspaceViewModel ( ) {
+            
+        }
     }
 }
