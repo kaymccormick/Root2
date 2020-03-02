@@ -195,7 +195,7 @@ namespace ProjLib
 //                Console.WriteLine($"Product: {instance2.GetProduct().GetId()}");
 //                Console.WriteLine("Workloads:");
 
-                PrintWorkloads(instance2.GetPackages(), dataObj);
+                //PrintWorkloads(instance2.GetPackages(), dataObj);
             }
 
             var properties = instance2.GetProperties();

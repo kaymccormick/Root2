@@ -163,11 +163,12 @@ namespace ConsoleApp1
                 }
             }
 
+
             var instances = MSBuildLocator.QueryVisualStudioInstances ( )
                                           .Where (
                                                   ( instance , i )
                                                       => instance.Version.Major    == 16
-                                                         && instance.Version.Minor == 5
+                                                         && instance.Version.Minor == 4
                                                  ) ;
             MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
 

@@ -249,7 +249,7 @@ namespace ProjLib
 
                 List < string > solList ;
                 var sol = Path.Combine ( arg , "solutions.txt" ) ;
-                Logger.Debug ( "Checking for existince of poject file [file}" , projFilesList ) ;
+                Logger.Debug ( "Checking for existince of poject file {file}" , projFilesList ) ;
                 if ( File.Exists ( sol ) )
                 {
                     solList = File.ReadAllLines ( sol ).ToList ( ) ;
@@ -282,7 +282,7 @@ namespace ProjLib
                                                              realF
                                                            , props
                                                            , null
-                                                           , new[] { "Restore" }
+                                                           , new[] { "Restore", "Build" }
                                                            , new HostServices ( )
                                                            , BuildRequestDataFlags
                                                                 .ProvideProjectStateAfterBuild
@@ -480,17 +480,21 @@ namespace ProjLib
         {
             try
             {
-                // eventSource.AnyEventRaised    += EventSourceOnAnyEventRaised ;
+                eventSource.AnyEventRaised    += EventSourceOnAnyEventRaised ;
+
                 eventSource.ErrorRaised   += EventSourceOnErrorRaised ;
                 eventSource.WarningRaised += EventSourceOnWarningRaised ;
                 eventSource.BuildFinished += EventSourceOnBuildFinished ;
-                // eventSource.CustomEventRaised += EventSourceOnCustomEventRaised ;
-                // eventSource.StatusEventRaised += EventSourceOnStatusEventRaised ;
-                // eventSource.TaskStarted       += EventSourceOnTaskStarted ;
+
+                eventSource.CustomEventRaised += EventSourceOnCustomEventRaised ;
+                eventSource.StatusEventRaised += EventSourceOnStatusEventRaised ;
+                eventSource.TaskStarted       += EventSourceOnTaskStarted ;
+
                 eventSource.BuildStarted += EventSourceOnBuildStarted ;
-                // eventSource.MessageRaised     += EventSourceOnMessageRaised ;
-                // eventSource.TargetStarted     += EventSourceOnTargetStarted ;
-                // eventSource.TargetFinished += EventSourceOnTargetFinished;
+
+                eventSource.MessageRaised     += EventSourceOnMessageRaised ;
+                eventSource.TargetStarted     += EventSourceOnTargetStarted ;
+                eventSource.TargetFinished += EventSourceOnTargetFinished;
             }
             catch ( Exception ex )
             {
@@ -534,7 +538,7 @@ namespace ProjLib
             var propertyInfo = e.GetType ( ).GetProperty ( "Message" ) ;
             var message = propertyInfo?.GetValue ( e ) ;
             var logBuilder = new LogBuilder ( Logger )
-                            .Level ( LogLevel.Debug )
+                            .Level ( LogLevel.Trace)
                             .LoggerName ( $"{callerMemberName}.{e.GetType ( ).Name}" )
                             .Property ( "EventArgs" , e ) ;
             if ( message != null )
@@ -587,7 +591,8 @@ namespace ProjLib
 
         private void EventSourceOnWarningRaised ( object sender , BuildWarningEventArgs e )
         {
-            Logger.Warn ( "{projectFile} {message} {e}" , e.ProjectFile , e.Message , e ) ;
+            LB ( e ).Write();
+            //Logger.Warn ( "{projectFile} {message} {e}" , e.ProjectFile , e.Message , e ) ;
         }
 
         private void EventSourceOnErrorRaised ( object sender , BuildErrorEventArgs e )

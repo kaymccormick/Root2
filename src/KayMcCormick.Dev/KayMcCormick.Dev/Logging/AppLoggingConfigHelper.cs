@@ -133,7 +133,7 @@ namespace KayMcCormick.Dev.Logging
                                                              , level => new List<Target>()
                                                               );
             var errorTargets = dict[LogLevel.Error];
-            var t = dict[LogLevel.Debug];
+            var t = dict[LogLevel.Trace];
 
 
             string disabledLogTargets =
