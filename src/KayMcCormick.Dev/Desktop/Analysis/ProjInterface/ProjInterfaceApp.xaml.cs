@@ -2,6 +2,7 @@
 using System.Diagnostics ;
 using System.Linq ;
 using System.Windows ;
+using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev.Logging ;
@@ -46,7 +47,8 @@ namespace ProjInterface
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
-            var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule() ) ;
+            var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule(),
+                                                                 new AnalysisControlsModule()) ;
             try
             {
                 var mainWindow = lifetimeScope.Resolve < ProjMainWindow > ( ) ;

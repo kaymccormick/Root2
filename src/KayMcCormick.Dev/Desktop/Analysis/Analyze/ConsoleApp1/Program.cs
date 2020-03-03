@@ -37,10 +37,13 @@ namespace ConsoleApp1
 
         public IWorkspacesViewModel ViewModel { get ; }
 
-        public AppContext ( ILifetimeScope scope , IWorkspacesViewModel workspacesViewModel )
+        public ActionBlock < LogInvocation > actionBlock ;
+
+        public AppContext ( ILifetimeScope scope , IWorkspacesViewModel workspacesViewModel , ActionBlock < LogInvocation > actionBlock )
         {
             Scope     = scope ;
             ViewModel = workspacesViewModel ;
+            this.actionBlock = actionBlock ;
         }
     }
 
@@ -109,7 +112,7 @@ namespace ConsoleApp1
         {
             var json = JsonConvert.SerializeObject ( invocation ) ;
             Logger.Debug ( json ) ;
-            // Console.WriteLine ( json ) ;
+            Console.WriteLine ( json ) ;
                                // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
                               // ) ;
         }
@@ -196,17 +199,17 @@ namespace ConsoleApp1
 
             var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
             Logger.Info ( "waiting " + timeSpan ) ;
-           
-            await pipe.Completion ;
-            if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
-                          .TryReceiveAll ( out var list ) )
-            {
-                Logger.Info ( "Here" ) ;
-                foreach ( var logInvocation in list )
-                {
-                    Logger.Info ( "{logInvocation}" , logInvocation ) ;
-                }
-            }
+
+            await context.actionBlock.Completion ;
+            // if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
+                          // .TryReceiveAll ( out var list ) )
+            // {
+                // Logger.Info ( "Here" ) ;
+                // foreach ( var logInvocation in list )
+                // {
+                    // Logger.Info ( "{logInvocation}" , logInvocation ) ;
+                // }
+            // }
 
             if ( pipe.Completion.IsFaulted )
             {

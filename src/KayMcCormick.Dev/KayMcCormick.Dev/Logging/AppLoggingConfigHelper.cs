@@ -171,6 +171,7 @@ namespace KayMcCormick.Dev.Logging
 
             var consoleTarget = new ConsoleTarget ( "console" )
                                 {
+                                    Error = true,
                                     Layout = SimpleLayout.FromString( "${level} ${message} ${logger}" )
                                 } ;
             dict[LogLevel.Warn].Add ( consoleTarget ) ;

@@ -7,7 +7,7 @@ using NLog ;
 
 namespace LogTest
 {
-    class Program
+    public static class Program
     {
         private static readonly  Logger Logger = LogManager.GetCurrentClassLogger();
         static void Main(string[] args) {

@@ -1,15 +1,20 @@
+using System ;
 using System.Collections.Generic ;
+using System.Linq ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
 namespace ProjLib
 {
     public class Pipeline
     {
-        private static Logger                    Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private        ActionBlock < Workspace > _solutionDocumentsBlock ;
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        private TransformManyBlock < Workspace , Document > _solutionDocumentsBlock ;
 
         public IPropagatorBlock < string , LogInvocation > PipelineInstance { get ; private set ; }
 
@@ -45,26 +50,21 @@ namespace ProjLib
             return new TransformBlock < string , string > ( ProjLibUtils.CloneProjectAsync ) ;
         }
 
-        private static ActionBlock < Workspace > SolutionDocumentsBlock (
-            ITargetBlock < Document > takeDocument
+        private static TransformManyBlock < Workspace , Document > SolutionDocumentsBlock (
+ 
+            //ITargetBlock < Document > takeDocument
         )
         {
-            return new ActionBlock < Workspace > (
-                                                  workspace => {
-                                                      foreach ( var proj in workspace
-                                                                           .CurrentSolution.Projects
-                                                      )
-                                                      {
-                                                          foreach ( var projDocument in proj
-                                                             .Documents )
-                                                          {
-                                                              takeDocument.SendAsync (
-                                                                                      projDocument
-                                                                                     ) ;
-                                                          }
-                                                      }
-                                                  }
-                                                 ) ;
+            return new TransformManyBlock < Workspace , Document > (
+                                                                    workspace => workspace
+                                                                                .CurrentSolution
+                                                                                .Projects
+                                                                                .SelectMany (
+                                                                                             project
+                                                                                                 => project
+                                                                                                    .Documents
+                                                                                            )
+                                                                   ) ;
         }
 
         public IPropagatorBlock < string , LogInvocation > BuildPipeline (
@@ -83,20 +83,154 @@ namespace ProjLib
                                                                  .BuildRepository ( s )
                                                              ) ;
             transformBlock.LinkTo ( buildTransformBlock , opt ) ;
-            var findLogUsagesBlock = new FindLogUsagesBlock ( act ) ;
-            _dataflowBlocks.Add ( findLogUsagesBlock ) ;
-            var takeDocument = findLogUsagesBlock.Target ;
-
             var makeWs = new TransformBlock < BuildResults , Workspace > (
                                                                           results => ProjLibUtils
                                                                              .MakeWorkspaceAsync (
                                                                                                   results
                                                                                                  )
                                                                          ) ;
+
             buildTransformBlock.LinkTo ( makeWs , opt ) ;
 
-            _solutionDocumentsBlock = SolutionDocumentsBlock ( takeDocument ) ;
+
+
+            var findLogUsagesBlock = new TransformManyBlock < Document , LogInvocation > (
+                                                                                          async d
+                                                                                              => {
+                                                                                              try
+                                                                                              {
+                                                                                                  var
+                                                                                                      tree
+                                                                                                          = await
+                                                                                                                d.GetSyntaxTreeAsync ( )
+                                                                                                                 .ConfigureAwait (
+                                                                                                                                  true
+                                                                                                                                 ) ;
+                                                                                                  var
+                                                                                                      root
+                                                                                                          = tree
+                                                                                                             .GetCompilationUnitRoot ( ) ;
+                                                                                                  var
+                                                                                                      model
+                                                                                                          = await
+                                                                                                                d.GetSemanticModelAsync ( ) ;
+                                                                                                  var
+                                                                                                      exceptionType
+                                                                                                          = model
+                                                                                                           .Compilation
+                                                                                                           .GetTypeByMetadataName (
+                                                                                                                                   "System.Exception"
+                                                                                                                                  ) ;
+                                                                                                  var
+                                                                                                      logInvocations
+                                                                                                          = tree
+                                                                                                           .GetRoot ( )
+                                                                                                           .DescendantNodes ( )
+                                                                                                           .OfType
+                                                                                                            < InvocationExpressionSyntax
+                                                                                                            > ( )
+                                                                                                           .AsParallel ( )
+                                                                                                           .Select (
+                                                                                                                    node
+                                                                                                                        => {
+                                                                                                                        var
+                                                                                                                            match
+                                                                                                                                =
+                                                                                                                                LogUsages
+                                                                                                                                   .CheckInvocationExpression (
+                                                                                                                                                               node
+                                                                                                                                                             , out
+                                                                                                                                                               var
+                                                                                                                                                                   methodSymbol
+                                                                                                                                                             , model
+                                                                                                                                                              ) ;
+                                                                                                                        return
+                                                                                                                            Tuple
+                                                                                                                               .Create (
+                                                                                                                                        node
+                                                                                                                                      , match
+                                                                                                                                      , methodSymbol
+                                                                                                                                       ) ;
+                                                                                                                    }
+                                                                                                                   )
+                                                                                                           .Where (
+                                                                                                                   tuple
+                                                                                                                       => tuple
+                                                                                                                          .Item2
+                                                                                                                  )
+                                                                                                           .Select ( tuple
+                                                                                                                         => {
+
+                                                                                                                         try
+                                                                                                                         {
+                                                                                                                             return
+                                                                                                                                 LogUsages
+                                                                                                                                    .ProcessInvocation (
+                                                                                                                                                        new
+                                                                                                                                                            InvocationParms (
+                                                                                                                                                                             null
+                                                                                                                                                                           , root
+                                                                                                                                                                           , model
+                                                                                                                                                                           , new
+                                                                                                                                                                                 CodeSource (
+                                                                                                                                                                                             ""
+                                                                                                                                                                                            )
+                                                                                                                                                                           , tuple
+                                                                                                                                                                            .Item1
+                                                                                                                                                                            .AncestorsAndSelf ( )
+                                                                                                                                                                            .OfType
+                                                                                                                                                                             < StatementSyntax
+                                                                                                                                                                             > ( )
+                                                                                                                                                                            .First ( )
+                                                                                                                                                                           , tuple
+                                                                                                                                                                                .Item1
+                                                                                                                                                                           , tuple
+                                                                                                                                                                                .Item3
+                                                                                                                                                                           , exceptionType
+                                                                                                                                                                           , null
+                                                                                                                                                                           , null
+                                                                                                                                                                            )
+                                                                                                                                                       ) ;
+                                                                                                                         }
+                                                                                                                         catch
+                                                                                                                         ( Exception
+                                                                                                                             ex
+                                                                                                                         )
+                                                                                                                         {
+                                                                                                                             Logger
+                                                                                                                                .Error (
+                                                                                                                                        ex
+                                                                                                                                      , ex
+                                                                                                                                           .ToString ( )
+                                                                                                                                       ) ;
+                                                                                                                             return
+                                                                                                                                 null ;
+                                                                                                                         }
+                                                                                                                     }).Where(invocation => invocation !=null);
+                                                                                                  return
+                                                                                                      logInvocations ;
+                                                                                              }
+                                                                                              catch
+                                                                                              ( Exception
+                                                                                                  ex
+                                                                                              )
+                                                                                              {
+                                                                                                  Logger
+                                                                                                     .Error (
+                                                                                                             ex
+                                                                                                           , ex
+                                                                                                                .ToString ( )
+                                                                                                            ) ;
+                                                                                                  return
+                                                                                                      Array.Empty<LogInvocation> (  );
+                                                                                              }
+                                                                                          }
+                                                                                         ) ;
+
+            _solutionDocumentsBlock = SolutionDocumentsBlock ( ) ;
             makeWs.LinkTo ( _solutionDocumentsBlock , opt ) ;
+            _solutionDocumentsBlock.LinkTo ( findLogUsagesBlock , opt ) ;
+            findLogUsagesBlock.LinkTo ( act , opt ) ;
             //var workspace = new TransformBlock<BuildResults, Workspace> (Transform);
             //build.LinkTo ( workspace, opt);
             //workspace.LinkTo ( _solutionDocumentsBlock , opt ) ;
@@ -117,6 +251,11 @@ namespace ProjLib
                                                                          ) ;
                                                          }
                                                         ) ;
+            makeWs.Completion.ContinueWith (
+                                            task => {
+                                                Logger.Warn ( "make workspace block complete" ) ;
+                                            }
+                                           ) ;
             _solutionDocumentsBlock.Completion.ContinueWith (
                                                              task => {
                                                                  Logger.Warn (
@@ -124,7 +263,14 @@ namespace ProjLib
                                                                              ) ;
                                                              }
                                                             ) ;
-            PipelineInstance = DataflowBlock.Encapsulate ( onceBlock , findLogUsagesBlock.Source ) ;
+            findLogUsagesBlock.Completion.ContinueWith (
+                                                        task => {
+                                                            Logger.Warn (
+                                                                         "find usages block complete"
+                                                                        ) ;
+                                                        }
+                                                       ) ;
+            PipelineInstance = DataflowBlock.Encapsulate ( onceBlock , findLogUsagesBlock ) ;
             return PipelineInstance ;
         }
 

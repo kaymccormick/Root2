@@ -10,6 +10,16 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisFramework
 {
+    class TransformNode
+    {
+        private string type ;
+
+        public int RawKind { get ; set ; }
+        public string Kind { get ; set ; }
+        public IEnumerable<string> Tokens { get ; set ; }
+        public string StringRepr { get ; set ; }
+        public string Type { get { return type ; } set { type = value ; } }
+    }
     /// <summary>
     /// Transforms for Code Analysis nodes.
     /// </summary>
@@ -29,12 +39,21 @@ namespace AnalysisFramework
             {
                 switch ( expressionSyntaxNode )
                 {
-                    case ThisExpressionSyntax thise : return new { thise.RawKind , This = true } ;
+                    case ThisExpressionSyntax thise :
+                        return new TransformNode
+                               {
+                                   RawKind = thise.RawKind
+                                 , Kind    = thise.Kind ( ).ToString ( )
+                                   , Type = thise.GetType ().Name
+                                 , Tokens = thise.ChildTokens ( )
+                                                 .Select ( token => token.ToString ( ) )
+                                                 .ToList ( )
+                               } ;
                     case ArrayCreationExpressionSyntax ac :
                         return new
                                {
                                    ac.RawKind
-                                 , Kind     = ac.Kind ( )
+                                 , Kind     = ac.Kind ( ).ToString()
                                  , InitExpr = ac.Initializer.Expressions.Select ( TransformExpr )
                                  , ac.Type.ElementType
                                  , RankSpec = ac.Type.RankSpecifiers.Select (
@@ -57,7 +76,7 @@ namespace AnalysisFramework
                         return new
                                {
                                    binding.RawKind
-                                 , Kind = binding.Kind ( )
+                                 , Kind = binding.Kind ( ).ToString()
                                  , Name = TransformSimpleNameSyntax ( binding.Name )
                                  , Op   = TransformOperatorToken ( binding.OperatorToken )
                                } ;
@@ -65,7 +84,7 @@ namespace AnalysisFramework
                         return new
                                {
                                    cond.RawKind
-                                 , Kind        = cond.Kind ( )
+                                 , Kind        = cond.Kind ( ).ToString()
                                  , Op          = TransformOperatorToken ( cond.OperatorToken )
                                  , Expression  = TransformExpr ( cond.Expression )
                                  , WhenNotNull = TransformExpr ( cond.WhenNotNull )
@@ -74,7 +93,7 @@ namespace AnalysisFramework
                         return new
                                {
                                    l.RawKind
-                                 , Kind = l.Kind ( )
+                                 , Kind = l.Kind ( ).ToString()
                                  , Parameters =
                                        ( l as ParenthesizedLambdaExpressionSyntax )
                                      ?.ParameterList.Parameters.Select ( TransformParameter )
@@ -87,14 +106,14 @@ namespace AnalysisFramework
                         return new
                                {
                                    preDef.RawKind
-                                 , Kind                 = preDef.Kind ( )
+                                 , Kind                 = preDef.Kind ( ).ToString()
                                  , PredefinedTypeSyntax = TransformKeyword ( preDef.Keyword )
                                } ;
                     case InvocationExpressionSyntax invoc :
                         return new
                                {
                                    invoc.RawKind
-                                 , Kind       = invoc.Kind ( )
+                                 , Kind       = invoc.Kind ( ).ToString()
                                  , Expression = TransformExpr ( invoc.Expression )
                                  , Args = invoc.ArgumentList.Arguments
                                                .Select (
@@ -108,7 +127,7 @@ namespace AnalysisFramework
                         return new
                                {
                                    bin.RawKind
-                                 , Kind  = bin.Kind ( )
+                                 , Kind  = bin.Kind ( ).ToString()
                                  , Left  = TransformExpr ( bin.Left )
                                  , Op    = bin.OperatorToken.ValueText
                                  , Right = TransformExpr ( bin.Right )
@@ -117,36 +136,43 @@ namespace AnalysisFramework
                         return new
                                {
                                    macc.RawKind
-                                 , Kind       = macc.Kind ( )
+                                 , Kind       = macc.Kind ( ).ToString()
+                                   , Type = macc.GetType (  ).Name
                                  , Expression = TransformExpr ( macc.Expression )
                                  , Operator   = macc.OperatorToken.ValueText
                                  , Name       = TransformExpr ( macc.Name )
-                               } ;
+                                   ,
+                                    Tokens = macc.DescendantTokens().Select(token => token.ToString()),
+                                    FullString = macc.ToFullString(),
+                        } ;
                     case IdentifierNameSyntax ident :
                         return new
                                {
                                    ident.RawKind
-                                 , Kind       = ident.Kind ( )
+                                 , Kind       = ident.Kind ( ).ToString()
                                  , Identifier = ident.Identifier.ValueText
-                               } ;
+                                   ,
+                                    Tokens = ident.ChildTokens().Select(token => token.ToString())
+                        } ;
                     case LiteralExpressionSyntax lit :
                         return new
                                {
-                                   lit.RawKind , Kind = lit.Kind ( ) , Literal = lit.Token.Value
+                                   lit.RawKind , Kind = lit.Kind ( ).ToString() , Literal = lit.Token.Value
                                } ;
                     case InterpolatedStringExpressionSyntax i :
                         return new
                                {
                                    i.RawKind
-                                 , Kind     = i.Kind ( )
-                                 , Contents = i.Contents.Select ( TransformInterpolated ).ToList ( )
-                               } ;
+                                 , Kind     = i.Kind ( ).ToString()
+                                 , Contents = i.Contents.Select ( TransformInterpolated ).ToList ( ),
+                                   Tokens = i.ChildTokens().Select(token => token.ToString())
+                        } ;
                     case ConditionalExpressionSyntax cx :
                         return new
                                {
                                    cx.RawKind
-                                 , Kind      = cx.Kind ( )
-                                 , Condition = TransformExpr ( cx.Condition )
+                                 , Kind      = cx.Kind ( ).ToString()
+                                 , Condition = TransformExpr ( cx.Condition)
                                  , WhenTrue  = TransformExpr ( cx.WhenTrue )
                                  , WhenFalse = TransformExpr ( cx.WhenFalse )
                                } ;
@@ -154,7 +180,7 @@ namespace AnalysisFramework
                         return new
                                {
                                    isPattern.RawKind
-                                 , Kind       = isPattern.Kind ( )
+                                 , Kind       = isPattern.Kind ( ).ToString()
                                  , Expression = TransformExpr ( isPattern.Expression )
                                  , Pattern    = TransformPatternSyntax ( isPattern.Pattern )
                                } ;
@@ -180,15 +206,15 @@ namespace AnalysisFramework
                     return new
                            {
                                constant.RawKind
-                             , Kind       = constant.Kind ( )
+                             , Kind       = constant.Kind ( ).ToString()
                              , Expression = TransformExpr ( constant.Expression )
                            } ;
                 case DeclarationPatternSyntax declarationPatternSyntax :
-                    Debug.Assert(declarationPatternSyntax.Type != null);
+                    Debug.Assert ( declarationPatternSyntax.Type != null ) ;
                     return new
                            {
                                declarationPatternSyntax.RawKind
-                             , Kind = declarationPatternSyntax.Kind ( )
+                             , Kind = declarationPatternSyntax.Kind ( ).ToString()
                              , Type = TransformTypeSyntax ( declarationPatternSyntax.Type )
                              , Designation =
                                    TransformVariableDesignation (
@@ -199,13 +225,13 @@ namespace AnalysisFramework
                 case DiscardPatternSyntax discardPatternSyntax :
                     return new
                            {
-                               discardPatternSyntax.RawKind , Kind = discardPatternSyntax.Kind ( ) ,
+                               discardPatternSyntax.RawKind , Kind = discardPatternSyntax.Kind ( ).ToString() ,
                            } ;
                 case RecursivePatternSyntax recursivePatternSyntax :
                     return new
                            {
                                recursivePatternSyntax.RawKind
-                             , Kind = recursivePatternSyntax.Kind ( )
+                             , Kind = recursivePatternSyntax.Kind ( ).ToString()
                              , Designation =
                                    TransformVariableDesignation (
                                                                  recursivePatternSyntax.Designation
@@ -226,13 +252,13 @@ namespace AnalysisFramework
                     return new
                            {
                                varPatternSyntax.RawKind
-                             , Kind = varPatternSyntax.Kind ( )
+                             , Kind = varPatternSyntax.Kind ( ).ToString()
                              , Designation =
                                    TransformVariableDesignation ( varPatternSyntax.Designation )
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntax ( isPatternPattern.Kind ( ).ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntax ( isPatternPattern.Kind ( ).ToString().ToString ( ) ) ;
         }
 
         private static object TransformPositionalPatternClauseSyntax (
@@ -242,7 +268,7 @@ namespace AnalysisFramework
             return new
                    {
                        positionalPatternClause.RawKind
-                     , Kind = positionalPatternClause.Kind ( )
+                     , Kind = positionalPatternClause.Kind ( ).ToString()
                      , Subpatterns =
                            positionalPatternClause.Subpatterns.Select ( TransformSubpatternSyntax )
                    } ;
@@ -255,7 +281,7 @@ namespace AnalysisFramework
             return new
                    {
                        propertyPatternClause.RawKind
-                     , Kind = propertyPatternClause.Kind ( )
+                     , Kind = propertyPatternClause.Kind ( ).ToString()
                      , Subpatterns =
                            propertyPatternClause.Subpatterns.Select ( TransformSubpatternSyntax )
                    } ;
@@ -266,7 +292,7 @@ namespace AnalysisFramework
             return new
                    {
                        arg.RawKind
-                     , Kind    = arg.Kind ( )
+                     , Kind    = arg.Kind ( ).ToString()
                      , Pattern = TransformPatternSyntax ( arg.Pattern )
                    } ;
         }
@@ -276,12 +302,12 @@ namespace AnalysisFramework
             switch ( designation )
             {
                 case DiscardDesignationSyntax discard :
-                    return new { discard.RawKind , Kind = discard.Kind ( ) } ;
+                    return new { discard.RawKind , Kind = discard.Kind ( ).ToString() } ;
                 case ParenthesizedVariableDesignationSyntax parenthesizedVariableDesignationSyntax :
                     return new
                            {
                                parenthesizedVariableDesignationSyntax.RawKind
-                             , Kind = parenthesizedVariableDesignationSyntax.Kind ( )
+                             , Kind = parenthesizedVariableDesignationSyntax.Kind ( ).ToString()
                              , Variables =
                                    parenthesizedVariableDesignationSyntax.Variables.Select (
                                                                                             TransformVariableDesignation
@@ -291,7 +317,7 @@ namespace AnalysisFramework
                     return new
                            {
                                singleVariableDesignationSyntax.RawKind
-                             , Kind = singleVariableDesignationSyntax.Kind ( )
+                             , Kind = singleVariableDesignationSyntax.Kind ( ).ToString()
                              , Identifier =
                                    TransformIdentifier (
                                                         singleVariableDesignationSyntax.Identifier
@@ -299,7 +325,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntax ( designation.Kind ( ).ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntax ( designation.Kind ( ).ToString().ToString ( ) ) ;
         }
 
         /// <summary>
@@ -309,7 +335,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformOperatorToken ( in SyntaxToken condOperatorToken )
         {
-            return condOperatorToken.Kind ( ).ToString ( ) ;
+            return condOperatorToken.Kind ( ).ToString().ToString ( ) ;
         }
 
         /// <summary>
@@ -327,7 +353,7 @@ namespace AnalysisFramework
             return new
                    {
                        arg.RawKind
-                     , Kind       = arg.Kind ( )
+                     , Kind       = arg.Kind ( ).ToString()
                      , Type       = TransformTypeSyntax ( arg.Type )
                      , Identifier = TransformIdentifier ( arg.Identifier )
                    } ;
@@ -342,7 +368,7 @@ namespace AnalysisFramework
         {
             return new
                    {
-                       argIdentifier.RawKind , Kind = argIdentifier.Kind ( ) , argIdentifier.Value
+                       argIdentifier.RawKind , Kind = argIdentifier.Kind ( ).ToString() , argIdentifier.Value
                    } ;
         }
 
@@ -370,7 +396,7 @@ namespace AnalysisFramework
                     return new
                            {
                                qualifiedNameSyntax.RawKind
-                             , Kind  = qualifiedNameSyntax.Kind ( )
+                             , Kind  = qualifiedNameSyntax.Kind ( ).ToString()
                              , Left  = TransformNameSyntax ( qualifiedNameSyntax.Left )
                              , Right = TransformSimpleNameSyntax ( qualifiedNameSyntax.Right )
                            } ;
@@ -381,16 +407,23 @@ namespace AnalysisFramework
                 case NullableTypeSyntax nullableTypeSyntax :               break ;
                 case OmittedTypeArgumentSyntax omittedTypeArgumentSyntax : break ;
                 case PointerTypeSyntax pointerTypeSyntax :                 break ;
-                case PredefinedTypeSyntax predefinedTypeSyntax :           break ;
-                case RefTypeSyntax refTypeSyntax :                         break ;
-                case TupleTypeSyntax tupleTypeSyntax :                     break ;
-                default :                                                  break ;
+                case PredefinedTypeSyntax predefinedTypeSyntax :
+                    return new
+                           {
+                               predefinedTypeSyntax.RawKind
+                             , Kind    = predefinedTypeSyntax.Kind ( ).ToString().ToString ( )
+                             , Keyword = TransformKeyword ( predefinedTypeSyntax.Keyword )
+                           } ;
+                    break ;
+                case RefTypeSyntax refTypeSyntax :     break ;
+                case TupleTypeSyntax tupleTypeSyntax : break ;
+                default :                              break ;
             }
 
             throw new UnsupportedExpressionTypeSyntax (
-                                                   "Unsupported type "
-                                                   + argType.GetType ( ).FullName
-                                                  ) ;
+                                                       "Unsupported type "
+                                                       + argType.GetType ( ).FullName
+                                                      ) ;
         }
 
         /// <summary>
@@ -443,7 +476,7 @@ namespace AnalysisFramework
             return new
                    {
                        gen.RawKind
-                     , Kind       = gen.Kind ( )
+                     , Kind       = gen.Kind ( ).ToString()
                      , Identifier = TransformIdentifier ( gen.Identifier )
                      , gen.IsUnboundGenericName
                      , TypeArgumentList = gen.TypeArgumentList.Arguments
@@ -479,7 +512,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformKeyword ( in SyntaxToken keyword )
         {
-            return keyword.Kind ( ).ToString ( ) ;
+            return keyword.Kind ( ).ToString().ToString ( ) ;
         }
 
         /// <summary>
@@ -527,7 +560,7 @@ namespace AnalysisFramework
                    } ;
         }
 
-        private static object TransformTypeSymbol( ITypeSymbol arg1Type )
+        private static object TransformTypeSymbol ( ITypeSymbol arg1Type )
         {
             return new { arg1Type.Name } ;
         }
@@ -549,14 +582,17 @@ namespace AnalysisFramework
                                                         .ToList ( )
                                                   , comp.AttributeLists.Select (
                                                                                 TransformAttributeListSybtax
-                                                                               ).ToList()
+                                                                               )
+                                                        .ToList ( )
                                                   , comp.Members.Select (
                                                                          TransformMemberDeclarationSyntax
-                                                                        ).ToList()
+                                                                        )
+                                                        .ToList ( )
                                                    ) ;
             }
-            throw new UnsupportedExpressionTypeSyntax(syntaxNode.Kind().ToString()); ;
 
+            throw new UnsupportedExpressionTypeSyntax ( syntaxNode.Kind ( ).ToString().ToString ( ) ) ;
+            ;
         }
 
         private static object TransformMemberDeclarationSyntax ( MemberDeclarationSyntax arg )
@@ -588,11 +624,20 @@ namespace AnalysisFramework
                 case EnumMemberDeclarationSyntax enumMemberDeclarationSyntax : break ;
                 case GlobalStatementSyntax globalStatementSyntax :             break ;
                 case IncompleteMemberSyntax incompleteMemberSyntax :           break ;
-                case NamespaceDeclarationSyntax namespaceDeclarationSyntax :  return new { namespaceDeclarationSyntax.RawKind, Kind = namespaceDeclarationSyntax.Kind (  ), Members = namespaceDeclarationSyntax.Members.Select(TransformMemberDeclarationSyntax).ToList() } ;
-                default :                                                      break ;
+                case NamespaceDeclarationSyntax namespaceDeclarationSyntax :
+                    return new
+                           {
+                               namespaceDeclarationSyntax.RawKind
+                             , Kind = namespaceDeclarationSyntax.Kind ( ).ToString()
+                             , Members = namespaceDeclarationSyntax
+                                        .Members.Select ( TransformMemberDeclarationSyntax )
+                                        .ToList ( )
+                           } ;
+                default : break ;
             }
 
-                                    throw new UnsupportedExpressionTypeSyntax (arg.Kind ().ToString()); ;
+            throw new UnsupportedExpressionTypeSyntax ( arg.Kind ( ).ToString().ToString ( ) ) ;
+            ;
         }
 
         private static object TransformClassDeclarationSyntax ( ClassDeclarationSyntax classDecl )
@@ -605,7 +650,7 @@ namespace AnalysisFramework
             return new
                    {
                        arg.RawKind
-                     , Kind       = arg.Kind ( )
+                     , Kind       = arg.Kind ( ).ToString()
                      , Attributes = arg.Attributes.Select ( TransformAttributeSyntax )
                      , Target     = TransformAttributeTargetSpecifierSyntax ( arg.Target )
                    } ;
@@ -618,7 +663,7 @@ namespace AnalysisFramework
             return new
                    {
                        argTarget.RawKind
-                     , Kind       = argTarget.Kind ( )
+                     , Kind       = argTarget.Kind ( ).ToString()
                      , Identifier = TransformIdentifier ( argTarget.Identifier )
                    } ;
         }
@@ -628,7 +673,7 @@ namespace AnalysisFramework
             return new
                    {
                        arg.RawKind
-                     , Kind = arg.Kind ( )
+                     , Kind = arg.Kind ( ).ToString()
                      , Name = TransformNameSyntax ( arg.Name )
                      , ArgumentList =
                            arg.ArgumentList.Arguments.Select ( TransformAttributeArgumentSyntax )
@@ -636,11 +681,9 @@ namespace AnalysisFramework
         }
 
 
-        private static object  TransformExternAliasDirectiveSyntax  (
-            ExternAliasDirectiveSyntax arg
-        )
+        private static object TransformExternAliasDirectiveSyntax ( ExternAliasDirectiveSyntax arg )
         {
-            return new { arg.RawKind , Kind = arg.Kind ( ) } ;
+            return new { arg.RawKind , Kind = arg.Kind ( ).ToString() } ;
         }
 
 
@@ -649,7 +692,7 @@ namespace AnalysisFramework
             return new
                    {
                        arg.RawKind
-                     , Kind  = arg.Kind ( )
+                     , Kind  = arg.Kind ( ).ToString()
                      , Alias = arg.Alias != null ? TransformNameEqualsSyntax ( arg.Alias ) : null
                      , Name  = TransformNameSyntax ( arg.Name )
                       ,
@@ -666,7 +709,7 @@ namespace AnalysisFramework
             return new
                    {
                        argAlias.RawKind
-                     , Kind = argAlias.Kind ( )
+                     , Kind = argAlias.Kind ( ).ToString()
                      , Name = TransformIdentifierNameSyntax ( argAlias.Name )
                    } ;
         }
@@ -677,7 +720,7 @@ namespace AnalysisFramework
             return new
                    {
                        arg.RawKind
-                     , Kind       = arg.Kind ( )
+                     , Kind       = arg.Kind ( ).ToString()
                      , Expression = TransformExpr ( arg.Expression )
                    } ;
         }
@@ -733,7 +776,7 @@ namespace AnalysisFramework
             List < object > Usings
           , List < object > ExternAliases
           , List < object > AttributeLists
-          , List< object >  members
+          , List < object > members
         )
         {
             this.Usings         = Usings ;

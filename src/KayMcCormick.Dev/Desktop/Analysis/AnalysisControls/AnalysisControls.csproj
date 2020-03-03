@@ -49,6 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeWindow.cs" />
+    <Compile Include="CompilationView.xaml.cs">
+      <DependentUpon>CompilationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converter1.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
     </Compile>
@@ -69,6 +73,10 @@
     <Compile Include="Token.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="Visitor3.cs" />
+    <Page Include="CompilationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FormattedCode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

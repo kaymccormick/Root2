@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent ;
 using System.Collections.ObjectModel ;
+using System.IO ;
 using System.Linq;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows;
+using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
@@ -30,10 +32,11 @@ namespace ProjInterface
 
         public IWorkspacesViewModel ViewModel { get; set; }
 
-        public ProjMainWindow(IWorkspacesViewModel viewModel)
+        public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope)
         {
             InitializeComponent();
             ViewModel = viewModel ;
+            Scope = scope ;
             _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext()) ;
             var actionBlock = new ActionBlock < LogInvocation > (
                                                                  invocation
@@ -46,6 +49,7 @@ namespace ProjInterface
                                                                  }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
 
+            if(false)
             {
                 var codeControl = new FormattedCode2();
                 var w = new Window();
@@ -194,8 +198,21 @@ namespace ProjInterface
 
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            var v = ProjectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
-            ViewModel.AnalyzeCommand (  v.View.CurrentItem) ;
+            if ( e.OriginalSource is ListView )
+            {
+                var v = ProjectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
+                ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
+            }
+            else
+            {
+                CodeAnalyseContext c = CodeAnalyseContext.Parse (
+                                                                 File.ReadAllText (
+                                                                                   @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs"
+                                                                                  ), "test"
+                                                                ) ;
+                var w = Scope.Resolve < CompilationView > ( new TypedParameter(typeof ( CodeAnalyseContext ), c) ) ;
+                w.Show ( ) ;
+            }
         }
     }
 
