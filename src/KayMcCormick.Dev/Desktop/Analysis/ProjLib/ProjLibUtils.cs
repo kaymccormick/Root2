@@ -363,9 +363,12 @@ namespace ProjLib
         {
             try
             {
+                #if DEBUG
                 eventSource.MessageRaised += EventSourceOnMessageRaised;
-                eventSource.ErrorRaised += EventSourceOnErrorRaised;
                 eventSource.WarningRaised += EventSourceOnWarningRaised;
+                eventSource.TaskStarted += EventSourceOnTaskStarted;
+                #endif
+                eventSource.ErrorRaised += EventSourceOnErrorRaised;
 
                 eventSource.BuildStarted += EventSourceOnBuildStarted;
                 eventSource.BuildFinished += EventSourceOnBuildFinished;
@@ -377,12 +380,9 @@ namespace ProjLib
                     eventSource.AnyEventRaised += EventSourceOnAnyEventRaised ;
                 }
 
-
                 eventSource.CustomEventRaised += EventSourceOnCustomEventRaised ;
                 eventSource.StatusEventRaised += EventSourceOnStatusEventRaised ;
-                eventSource.TaskStarted       += EventSourceOnTaskStarted ;
-
-
+                
                 eventSource.TargetStarted  += EventSourceOnTargetStarted ;
                 eventSource.TargetFinished += EventSourceOnTargetFinished ;
             }
@@ -401,11 +401,17 @@ namespace ProjLib
 
         private void EventSourceOnTargetFinished ( object sender , TargetFinishedEventArgs e )
         {
+            #if !DEBUG
+            if ( e.TargetName.StartsWith ( "_" ) ) return ;
+            #endif
             LB ( e ).Write ( ) ;
         }
 
         private void EventSourceOnTargetStarted ( object sender , TargetStartedEventArgs e )
         {
+#if !DEBUG
+            if (e.TargetName.StartsWith("_")) return;
+#endif
             var lb = LB ( e ) ;
             lb.Write ( ) ;
         }

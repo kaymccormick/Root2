@@ -24,6 +24,7 @@ using MessageTemplates.Structure ;
 using Microsoft.Build.Locator ;
 using Microsoft.IdentityModel.Clients.ActiveDirectory ;
 using Microsoft.TeamFoundation.Core.WebApi ;
+using Newtonsoft.Json ;
 using NLog ;
 using ProjLib ;
 using Module = Autofac.Module ;
@@ -106,9 +107,11 @@ namespace ConsoleApp1
 
         public static void Action ( LogInvocation invocation )
         {
-            Console.WriteLine (
-                               $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
-                              ) ;
+            var json = JsonConvert.SerializeObject ( invocation ) ;
+            Logger.Debug ( json ) ;
+            // Console.WriteLine ( json ) ;
+                               // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
+                              // ) ;
         }
 
         private static void Instances ( Logger Logger )
@@ -190,26 +193,10 @@ namespace ConsoleApp1
                                      ) ;
             var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
 
-            // pipe.LinkTo (
-                         // new ActionBlock < LogInvocation > (
-                                                            // invocation => {
-                                                                // Console.WriteLine (
-                                                                                   // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
-                                                                                  // ) ;
-                                                            // }
-                                                           // )
-                       // , new DataflowLinkOptions ( ) { PropagateCompletion = true }
-                        // ) ;
-
 
             var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
             Logger.Info ( "waiting " + timeSpan ) ;
-            // var targetBlock = context.Scope.Resolve < ActionBlock < LogInvocation > > ( ) ;
-            // for ( ; ; )
-            // {
-            //     Thread.Sleep ( 3000 ) ;
-            //     Console.WriteLine(targetBlock.InputCount);
-            // }
+           
             await pipe.Completion ;
             if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
                           .TryReceiveAll ( out var list ) )
@@ -246,7 +233,6 @@ namespace ConsoleApp1
         {
             if ( e.Exception is ReflectionTypeLoadException r )
             {
-                return ;
                 var i = 0 ;
                 foreach ( var rLoaderException in r.LoaderExceptions )
                 {
