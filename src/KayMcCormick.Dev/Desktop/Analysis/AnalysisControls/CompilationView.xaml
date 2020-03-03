@@ -1,5 +1,4 @@
-﻿<Window Name="compilationView"
-        x:Class="AnalysisControls.CompilationView"
+﻿<Window xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,17 +7,19 @@
         xmlns:syntax="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
         xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
         xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
+        xmlns:WindowsPresentationFoundation="clr-namespace:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation;assembly=Microsoft.WindowsAPICodePack.Shell"  x:Name="compilationView"
+        x:Class="AnalysisControls.CompilationView"
         mc:Ignorable="d"
         FontSize="20.0"
         Padding="25"
-        DataContext="{Binding ElementName=compilationView,Path=ViewModel}"
+        DataContext="{Binding ViewModel, ElementName=compilationView}"
         Title="CompilationView" Height="450" Width="800">
   <Window.Resources>
-    <Style TargetType="GroupBox">
+    <Style TargetType="{x:Type GroupBox}">
       <Setter Property="ContentTemplate">
         <Setter.Value>
-          <DataTemplate DataType="{x:Type syntax:ClassDeclarationSyntax}">
-            <TextBlock Text="{Binding Path=Keyword}"></TextBlock>
+          <DataTemplate>
+            <TextBlock Text="{Binding Keyword}"/>
           </DataTemplate>
         </Setter.Value>
       </Setter>
@@ -26,7 +27,7 @@
     <local:Converter1 x:Key="Converter1" />
     <local:Converter2 x:Key="Converter2" />
     <CollectionViewSource
-      Source="{Binding Path=AnalyseContext.CurrentRoot.Members}"
+      Source="{Binding AnalyseContext.CurrentRoot.Members}"
       x:Key="Compilation" />
     <ObjectDataProvider
       ObjectType="{x:Type codeAnalysis:SyntaxNode}"
@@ -38,39 +39,37 @@
                         MethodName="ChildNodesAndTokens" />
     <HierarchicalDataTemplate
       DataType="{x:Type codeAnalysis:SyntaxNode}"
-      ItemsSource="{Binding  Converter={StaticResource Converter1}}">
+      ItemsSource="{Binding Converter={StaticResource Converter1}}">
       <TextBlock FontStyle="Italic"
                  Text="{Binding Converter={StaticResource Converter1}}" />
     </HierarchicalDataTemplate>
     <HierarchicalDataTemplate
       DataType="{x:Type syntax:NamespaceDeclarationSyntax}"
-      ItemsSource="{Binding Path=Members}">
-      <TextBlock>
-        <Run
-          Text="{Binding Path=NamespaceKeyword.Text,Mode=OneWay}" />
-        <Run Text="{Binding Name,Mode=OneWay}" />
-      </TextBlock>
+      ItemsSource="{Binding Members}">
+      <TextBlock><Run
+          Text="{Binding NamespaceKeyword.Text, Mode=OneWay}" /><Run Text=" "/><Run Text="{Binding Name, Mode=OneWay}" /></TextBlock>
     </HierarchicalDataTemplate>
     <HierarchicalDataTemplate
       DataType="{x:Type syntax:StatementSyntax}"
-      ItemsSource="{Binding Converter={StaticResource Converter1}}">
-      <HierarchicalDataTemplate.Resources>
-      </HierarchicalDataTemplate.Resources>
+      >
       <TextBlock
-        Text="{Binding RelativeSource={RelativeSource PreviousData},Converter={StaticResource Converter1}}" />
+        Text="{Binding Converter={StaticResource Converter1}, RelativeSource={RelativeSource PreviousData}}" />
+      <HierarchicalDataTemplate.ItemsSource>
+        <Binding Converter="{StaticResource Converter1}"/>
+      </HierarchicalDataTemplate.ItemsSource>
     </HierarchicalDataTemplate>
     <HierarchicalDataTemplate
       DataType="{x:Type syntax:MethodDeclarationSyntax}"
-      ItemsSource="{Binding Path=Body.Statements}">
-      <TextBlock><Run Text="{Binding ReturnType,Mode=OneWay}"/> <Run Text="{Binding Identifier.Text,Mode=OneWay}" /></TextBlock>
+      ItemsSource="{Binding Body.Statements}">
+      <TextBlock><Run Text="{Binding ReturnType, Mode=OneWay}"/><Run Text=" "/><Run Text="{Binding Identifier.Text, Mode=OneWay}" /></TextBlock>
     </HierarchicalDataTemplate>
     <HierarchicalDataTemplate
       DataType="{x:Type syntax:ClassDeclarationSyntax}"
-      ItemsSource="{Binding Path=Members}">
+      ItemsSource="{Binding Members}">
       <StackPanel Orientation="Horizontal">
         <ItemsControl ItemsSource="{Binding Modifiers}">
           <ItemsControl.Template>
-            <ControlTemplate TargetType="ItemsControl">
+            <ControlTemplate TargetType="{x:Type ItemsControl}">
               <ItemsPresenter />
             </ControlTemplate>
           </ItemsControl.Template>
@@ -81,15 +80,12 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <TextBlock Text="{Binding Text,Mode=OneTime}"
+              <TextBlock Text="{Binding Text, Mode=OneTime}"
                          Margin="0,0,10,0" />
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <TextBlock>
-          <Run Text="{Binding Path=Keyword,Mode=OneWay}" />
-          <Run Text="{Binding Identifier.Text,Mode=OneWay}" />
-        </TextBlock>
+        <TextBlock><Run Text="{Binding Keyword, Mode=OneWay}" /><Run Text=" "/><Run Text="{Binding Identifier.Text, Mode=OneWay}" /></TextBlock>
       </StackPanel>
     </HierarchicalDataTemplate>
   </Window.Resources>
@@ -100,17 +96,20 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
+      <RowDefinition Height="40"/>
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <StackPanel Grid.Column="0" Grid.Row="1"
-                Orientation="Horizontal" />
-    <TreeView Name="tv"  Grid.Column="0" Grid.Row="2"
-              ItemsSource="{Binding Source={StaticResource Compilation}}" SelectedItemChanged="tv_SelectedItemChanged">
-    </TreeView>
+                Orientation="Horizontal">
+      <xctk:ToggleSwitch />
+    </StackPanel>
 
-    <GroupBox Content="{Binding ElementName=tv,Path=SelectedItem}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.Row="2" >
-    </GroupBox>
+    <TreeView x:Name="tv"  Grid.Column="0" Grid.Row="2"
+              ItemsSource="{Binding Source={StaticResource Compilation}}" SelectedItemChanged="tv_SelectedItemChanged"/>
+
+    <GroupBox Content="{Binding SelectedItem, ElementName=tv}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.Row="2" />
+
+    <WindowsPresentationFoundation:ExplorerBrowser Grid.Row="2"/>
 
   </Grid>
 </Window>

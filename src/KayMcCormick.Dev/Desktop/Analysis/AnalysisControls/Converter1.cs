@@ -133,6 +133,21 @@ namespace AnalysisControls
         }
         #endregion
     }
+
+    public enum Converter1Param
+    {
+        Location,
+        ChildNodesAndTokens,
+        ChildNodes,
+        ChildTokens,
+        DescendantNodes,
+        DescendantNodesAndSelf,
+        DescendantNodesAndTokens,
+        DescendantNodesAndTokensAndSelf,
+        DescendantTokens,
+        DescendantTrivia,
+        Diagnostics,
+    }
     public class Converter1 : IValueConverter
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -412,7 +427,7 @@ namespace AnalysisControls
                         case ExpressionSyntax expressionSyntax : break ;
                         case Microsoft.CodeAnalysis.CSharp.Syntax.StructuredTriviaSyntax structuredTriviaSyntax : break ;
                     }
-                    return "* " + value.GetType().Name +
+                    return value.GetType().Name +
                            " (" + cs.Kind()            + ")";
 
                 }
