@@ -136,7 +136,16 @@ namespace AnalysisControls
 
     public enum Converter1Param
     {
-        Location,
+        Ancestors,
+        AncestorsAndSelf,
+        GetFirstToken,
+        GetLocation,
+        GetLastToken,
+        GetReference,
+        GetText,
+        ToFullString,
+        ToString,
+        Kind,
         ChildNodesAndTokens,
         ChildNodes,
         ChildTokens,
@@ -146,8 +155,10 @@ namespace AnalysisControls
         DescendantNodesAndTokensAndSelf,
         DescendantTokens,
         DescendantTrivia,
+        GetLeadingTrivia,
         Diagnostics,
-    }
+
+        }
     public class Converter1 : IValueConverter
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

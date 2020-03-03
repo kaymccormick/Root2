@@ -66,6 +66,7 @@
       <DependentUpon>CompilationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter1.cs" />
+    <Compile Include="Converter3.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
     </Compile>
@@ -83,9 +84,16 @@
     <Compile Include="SpanToolTip.cs" />
     <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SymbolControl.cs" />
+    <Compile Include="SyntaxPanel.xaml.cs">
+      <DependentUpon>SyntaxPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Token.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="Visitor3.cs" />
+    <Page Include="AnalysisControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CompilationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -114,9 +122,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Shared.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SpanToolTip.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SyntaxPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Templates.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -167,6 +187,11 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
       <Version>3.6.0-beta1-20111-10</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\DataDesignersUI_2400.ico" />
+    <Resource Include="Themes\DataDesignersUI_2405.ico" />
+    <Resource Include="Themes\RecordSetDest_201.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

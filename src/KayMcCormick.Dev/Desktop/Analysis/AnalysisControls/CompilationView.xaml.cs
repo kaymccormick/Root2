@@ -38,6 +38,8 @@ namespace AnalysisControls
             this.viewModel = viewModel ;
             viewModel.AnalyseContext = codeAnalyseContext ;
             InitializeComponent();
+
+            this.SyntaxPanel.ViewModel.CompilationUnitSyntax = ViewModel.AnalyseContext.CurrentRoot ;
         }
 
         #region Implementation of IView<ICompilationViewModel>
