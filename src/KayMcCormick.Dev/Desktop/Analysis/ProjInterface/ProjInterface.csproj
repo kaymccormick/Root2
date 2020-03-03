@@ -216,6 +216,9 @@
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.6.0-preview.18571.3</Version>
     </PackageReference>
+    <PackageReference Include="Xceed.Products.Wpf.Toolkit.AvalonDock">
+      <Version>4.0.20076.12200</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
