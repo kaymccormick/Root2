@@ -581,8 +581,8 @@ Logger.Error(inner, inner.ToString);
             var fmt = transform.FormattedCodeControl as IFormattedCode;
             fmt.SourceCode = transform.SourceCode ;
             w.Content      = fmt ;
-            var mi = new MakeInfo ( fmt , transform.SourceCode ) ;
-            Assert.NotNull ( mi ) ;
+            // var mi = new MakeInfo ( fmt , transform.SourceCode ) ;
+            // Assert.NotNull ( mi ) ;
             // var task = fmt.TaskFactory.StartNew(ProjUtils.MakeFormattedCode, mi
             // , CancellationToken.None, 
             // TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning

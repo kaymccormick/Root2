@@ -9,9 +9,6 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Windows ;
-using System.Windows.Controls ;
 using Microsoft.CodeAnalysis.Text ;
 
 namespace ProjLib

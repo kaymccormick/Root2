@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis ;
 
 namespace ProjLib
 {
-    internal interface ISpanToolTipViewModel
+    public interface ISpanToolTipViewModel
     {
         List < object > Spans { get ; set ; }
 

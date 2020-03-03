@@ -9,8 +9,6 @@
 // 
 // ---
 #endregion
-using System.Windows ;
-using System.Windows.Controls ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;

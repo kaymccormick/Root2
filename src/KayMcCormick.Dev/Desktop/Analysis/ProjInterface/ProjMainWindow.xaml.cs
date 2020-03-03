@@ -27,7 +27,6 @@ namespace ProjInterface
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private TaskFactory _factory ;
-        private CodeWindow codeWindow ;
 
         public IWorkspacesViewModel ViewModel { get; set; }
 
@@ -46,8 +45,6 @@ namespace ProjInterface
                                                                              ) ;
                                                                  }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
-
-            ((WorkspacesViewModel)viewModel)._d = Dispatcher;
 
             {
                 var codeControl = new FormattedCode2();

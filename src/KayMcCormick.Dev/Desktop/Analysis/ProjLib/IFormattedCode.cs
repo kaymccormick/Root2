@@ -10,7 +10,7 @@
 // ---
 #endregion
 using System.Threading.Tasks ;
-using System.Windows.Documents ;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 

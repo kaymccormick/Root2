@@ -1,9 +1,6 @@
 using System.Collections.Generic ;
 using System.Threading.Tasks.Dataflow ;
-using System.Windows.Documents ;
 using AnalysisFramework ;
-using LibGit2Sharp ;
-using Microsoft.Build.Execution ;
 using Microsoft.CodeAnalysis ;
 
 namespace ProjLib
