@@ -54,7 +54,7 @@ namespace ConsoleApp1
         {
             base.Load ( builder ) ;
             var actionBlock = new ActionBlock<ILogInvocation>(Program.Action) ;
-            builder.RegisterInstance(actionBlock).As<ActionBlock <LogInvocation>>().SingleInstance();
+            builder.RegisterInstance(actionBlock).As<ActionBlock <ILogInvocation>>().SingleInstance();
             Pipeline pipeline = new Pipeline(actionBlock);
             builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;

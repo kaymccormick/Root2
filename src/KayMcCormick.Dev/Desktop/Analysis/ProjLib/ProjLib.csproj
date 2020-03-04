@@ -76,6 +76,7 @@
     <Compile Include="ActiveSpans.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
+    <Compile Include="DataflowBlocks.cs" />
     <Compile Include="ICodeRenderer.cs" />
     <Compile Include="IFormattedCode.cs" />
     <Compile Include="ProjLibContainer.cs" />
@@ -202,7 +203,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Threading">
       <Version>16.5.132</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Autofac">
       <Version>5.1.2</Version>
     </PackageReference>
@@ -222,6 +222,9 @@
     </PackageReference>
     <PackageReference Include="NuGet.Build">
       <Version>2.12.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>4.7.1</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks">
       <Version>4.3.0</Version>

@@ -13,7 +13,8 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using Newtonsoft.Json ;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace WpfApp2
 {
     /// <summary>Basic LogEntry</summary>

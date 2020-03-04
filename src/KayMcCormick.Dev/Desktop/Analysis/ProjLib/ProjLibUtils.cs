@@ -6,10 +6,12 @@ using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
 using System.ServiceModel.Channels ;
 using System.Text.RegularExpressions ;
 using System.Threading ;
 using System.Threading.Tasks ;
+using JetBrains.Annotations ;
 using LibGit2Sharp ;
 using Microsoft.Build.Evaluation ;
 using Microsoft.Build.Execution ;
@@ -174,7 +176,7 @@ namespace ProjLib
 
                     if ( result.OverallResult == BuildResultCode.Failure )
                     {
-                        // catch result ..
+                        throw new FailedBuildException();
                     }
 
                     Logger.Info ( "Result: {buildResult}" , result.OverallResult ) ;
@@ -192,8 +194,13 @@ namespace ProjLib
             return null ;
         }
 
-        public static async Task < Workspace > MakeWorkspaceAsync ( BuildResults results )
+        public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] BuildResults results )
         {
+            if ( results == null )
+            {
+                throw new ArgumentNullException ( nameof ( results ) ) ;
+            }
+
             var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
             b[ "Platform" ] = "x86" ;
 
@@ -263,6 +270,24 @@ namespace ProjLib
             // );
             Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
+        }
+    }
+
+    public class FailedBuildException : Exception
+    {
+        public FailedBuildException ( ) {
+        }
+
+        public FailedBuildException ( string message ) : base ( message )
+        {
+        }
+
+        public FailedBuildException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected FailedBuildException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 

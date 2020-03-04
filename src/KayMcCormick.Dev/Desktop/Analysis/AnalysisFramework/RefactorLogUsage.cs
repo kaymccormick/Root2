@@ -13,7 +13,7 @@ using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CodeRefactorings ;
 
-namespace CodeAnalysisApp1
+namespace AnalysisFramework
 {
     /// <summary>
     /// Refactoring for logging.
@@ -54,7 +54,8 @@ namespace CodeAnalysisApp1
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 
 
-                var query = Common.Query1 ( root , model ) ;
+                // var query = Common.Query1 ( root 
+                    // , model ) ;
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
             }
         }
