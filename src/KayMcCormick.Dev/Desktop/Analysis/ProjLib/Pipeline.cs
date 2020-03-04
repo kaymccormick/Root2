@@ -16,21 +16,21 @@ namespace ProjLib
 
         private TransformManyBlock < Workspace , Document > _solutionDocumentsBlock ;
 
-        public IPropagatorBlock < string , LogInvocation > PipelineInstance { get ; private set ; }
+        public IPropagatorBlock < string , ILogInvocation > PipelineInstance { get ; private set ; }
 
         private List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
 
         private List < ISourceBlock < object > > sourceBlocks =
             new List < ISourceBlock < object > > ( ) ;
 
-        public BufferBlock < LogInvocation > ResultBufferBlock { get ; }
+        public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
 
-        public Pipeline ( ITargetBlock < LogInvocation > act = null )
+        public Pipeline ( ITargetBlock < ILogInvocation > act = null )
         {
             if ( act == null )
             {
                 ResultBufferBlock =
-                    new BufferBlock < LogInvocation > ( new DataflowBlockOptions ( ) { } ) ;
+                    new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) { } ) ;
                 act = ResultBufferBlock ;
             }
 
@@ -67,8 +67,8 @@ namespace ProjLib
                                                                    ) ;
         }
 
-        public IPropagatorBlock < string , LogInvocation > BuildPipeline (
-            ITargetBlock < LogInvocation > act
+        public IPropagatorBlock < string , ILogInvocation > BuildPipeline (
+            ITargetBlock < ILogInvocation > act
         )
         {
             var opt = new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
@@ -94,7 +94,7 @@ namespace ProjLib
 
 
 
-            var findLogUsagesBlock = new TransformManyBlock < Document , LogInvocation > (
+            var findLogUsagesBlock = new TransformManyBlock < Document , ILogInvocation > (
                                                                                           async d
                                                                                               => {
                                                                                               try
@@ -168,8 +168,7 @@ namespace ProjLib
                                                                                                                                     .ProcessInvocation (
                                                                                                                                                         new
                                                                                                                                                             InvocationParms (
-                                                                                                                                                                             null
-                                                                                                                                                                           , root
+                                                                                                                                                                             root
                                                                                                                                                                            , model
                                                                                                                                                                            , new
                                                                                                                                                                                  CodeSource (

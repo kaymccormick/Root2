@@ -19,7 +19,7 @@ namespace AnalysisFramework
             ICodeSource                 document1
           , CompilationUnitSyntax       currentRoot
           , SemanticModel               currentModel
-          , Action < LogInvocation >    consumeLogInvocation
+          , Action < ILogInvocation >    consumeLogInvocation
           , bool                        limitToMarkedStatements
           , bool                        logVisitedStatements
           , Action < InvocationParms  > processInvocation,
@@ -125,14 +125,14 @@ namespace AnalysisFramework
                 where CheckInvocationExpression(invocation, out methodSymbol1, currentModel)
                 let methodSymbol = methodSymbol1
                 select new { statement , invocation , methodSymbol } ;
-            List < LogInvocation > minvocations = new List < LogInvocation > ();
+            
             foreach ( var qqq in qxy )
             {
                 try
                 {
 
                     processInvocation (
-                                       new InvocationParms( minvocations,currentRoot,currentModel,
+                                       new InvocationParms( currentRoot,currentModel,
                                                             document1
                                                           , qqq.statement
                                                           , qqq.invocation
@@ -183,7 +183,7 @@ namespace AnalysisFramework
             return r ;
         }
 
-        public static LogInvocation ProcessInvocation ( InvocationParms ivp )
+        public static ILogInvocation ProcessInvocation ( InvocationParms ivp )
         {
             var exceptionArg = IsException (
                                             ivp.NamedTypeSymbol
@@ -321,10 +321,9 @@ namespace AnalysisFramework
 
             debugInvo.SourceContext = code ;
 
-            var transformed = rest.Select ( syntax => new LogInvocationArgument ( debugInvo, syntax ) ) ;
+            var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
             debugInvo.Arguments = transformed.ToList ( ) ;
             Logger.Debug ( "{t}" , transformed ) ;
-            ivp.Arg1?.Add ( debugInvo ) ;
             ivp.ConsumeAction?.Invoke( debugInvo ) ;
             return debugInvo ;
         }

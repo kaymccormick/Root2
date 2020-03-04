@@ -225,6 +225,10 @@
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Wpf\KayMcCormick.Lib.Wpf.csproj">
+      <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
+      <Name>KayMcCormick.Lib.Wpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnalysisControls\AnalysisControls.csproj">
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>

@@ -1,4 +1,5 @@
-﻿#region header
+﻿
+#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -10,6 +11,7 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
 using JetBrains.Annotations ;
@@ -202,6 +204,5 @@ namespace AnalysisFramework
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
 
         public SyntaxTree SyntaxTree { get ; }
-
     }
 }

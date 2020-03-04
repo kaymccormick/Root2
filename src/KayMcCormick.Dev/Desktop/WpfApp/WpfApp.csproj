@@ -142,7 +142,6 @@
     <Compile Include="Controls\TypeBrowserPage.xaml.cs" />
     <Compile Include="Core\Menus\MenuHelper.cs" />
     <Compile Include="Controls\Windows\AppSettingsWindow.xaml.cs" />
-    <Compile Include="Controls\Windows\ComponentRegistry.cs" />
     <Compile Include="Controls\Windows\LogEventInfoCollection.cs" />
     <Compile Include="Controls\Windows\MainWindow.xaml.cs" />
     <Compile Include="Controls\Windows\NewWindow.xaml.cs" />
@@ -256,7 +255,6 @@
     <Compile Include="Core\Context\PushContextAttribute.cs" />
     <Compile Include="Core\Converters\AssemblyConverter.cs" />
     <Compile Include="Core\Converters\ComponentLifetimeConverter.cs" />
-    <Compile Include="Core\Converters\GetTypeConverter.cs" />
     <Compile Include="Core\Converters\InstanceRegistrationConverter.cs" />
     <Compile Include="Core\Converters\LoggerInstanceConverter.cs" />
     <Compile Include="Core\Converters\RegistrationConverter.cs" />
@@ -280,9 +278,7 @@
     <Compile Include="Core\Model\InstanceRegistration.cs" />
     <Compile Include="Core\Model\MenuItemCollection.cs" />
     <Compile Include="Core\Model\MethodInvocation.cs" />
-    <Compile Include="Core\Model\ResourceInfo.cs" />
     <Compile Include="Core\Model\ResourcesModel.cs" />
-    <Compile Include="Core\Model\ResourcesUtil.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="LogTextWriter.cs" />
     <Compile Include="Resource1.Designer.cs">
@@ -428,6 +424,10 @@
     <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wpf\KayMcCormick.Lib.Wpf.csproj">
+      <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
+      <Name>KayMcCormick.Lib.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

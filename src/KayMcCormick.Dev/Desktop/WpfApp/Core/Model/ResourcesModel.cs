@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel ;
+using KayMcCormick.Lib.Wpf ;
 
 namespace WpfApp.Core.Model
 {

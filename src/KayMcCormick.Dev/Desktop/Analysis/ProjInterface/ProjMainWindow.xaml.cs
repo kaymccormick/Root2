@@ -38,7 +38,7 @@ namespace ProjInterface
             ViewModel = viewModel ;
             Scope = scope ;
             _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext()) ;
-            var actionBlock = new ActionBlock < LogInvocation > (
+            var actionBlock = new ActionBlock < ILogInvocation > (
                                                                  invocation
                                                                      => {
                                                                      ViewModel

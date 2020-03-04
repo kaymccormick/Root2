@@ -17,7 +17,7 @@ using Newtonsoft.Json ;
 
 namespace AnalysisFramework
 {
-    public class LogInvocation : CodeAnalyseContext
+    public class LogInvocation : CodeAnalyseContext , ILogInvocation
     {
         private LogMessageRepr _msgval ;
         private string         sourceLocation ;
@@ -61,7 +61,7 @@ namespace AnalysisFramework
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>[
         [JsonConstructor]
-        public LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < LogInvocationArgument > arguments , string sourceContext , string followingCode , string precedingCode , string code ) : base ( document )
+        public LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string sourceContext , string followingCode , string precedingCode , string code ) : base ( document )
         {
             _msgval = msgval ;
             this.sourceLocation = sourceLocation ;
@@ -84,8 +84,6 @@ namespace AnalysisFramework
 
         public LogMessageRepr Msgval { get => _msgval ; set => _msgval = value ; }
 
-        public IList < LogInvocationArgument > Arguments { get ; set ; }
-
         public string SourceContext { get ; set ; }
 
         public string FollowingCode { get ; set ; }
@@ -99,6 +97,8 @@ namespace AnalysisFramework
         public string MethodName { get => _methodName ; set => _methodName = value ; }
 
         public string MethodDisplayName => LoggerType + "." + MethodName ;
+
+        public IList < ILogInvocationArgument > Arguments { get ; set ; }
 
         public override string ToString ( )
         {

@@ -61,11 +61,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisCommands.cs" />
     <Compile Include="CodeWindow.cs" />
     <Compile Include="CompilationView.xaml.cs">
       <DependentUpon>CompilationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CompilationViewModel.cs" />
     <Compile Include="Converter1.cs" />
+    <Compile Include="Converter1Param.cs" />
     <Compile Include="Converter3.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
@@ -73,7 +76,10 @@
     <Compile Include="FormattedCode2.xaml.cs">
       <DependentUpon>FormattedCode2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ICompilationViewModel.cs" />
     <Compile Include="INodePanel.cs" />
+    <Compile Include="ISyntaxPanelViewModel.cs" />
+    <Compile Include="LocationConverter.cs" />
     <Compile Include="MainStatusBar.xaml.cs">
       <DependentUpon>MainStatusBar.xaml</DependentUpon>
     </Compile>
@@ -87,8 +93,10 @@
     <Compile Include="SyntaxPanel.xaml.cs">
       <DependentUpon>SyntaxPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SyntaxPanelViewModel.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="ToolTips.cs" />
+    <Compile Include="ValueTemplateItemSelector.cs" />
     <Compile Include="Visitor3.cs" />
     <Page Include="AnalysisControls.xaml">
       <SubType>Designer</SubType>
@@ -186,6 +194,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
       <Version>3.6.0-beta1-20111-10</Version>
+    </PackageReference>
+    <PackageReference Include="PDFsharp-MigraDoc-WPF">
+      <Version>1.51.5186-beta</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

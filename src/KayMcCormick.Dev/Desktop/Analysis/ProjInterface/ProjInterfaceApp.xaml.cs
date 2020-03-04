@@ -6,6 +6,7 @@ using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.Build.Locator ;
 using NLog ;
 using ProjLib ;
@@ -16,7 +17,7 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class ProjInterfaceApp : Application
+    public partial class ProjInterfaceApp : BaseApp
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

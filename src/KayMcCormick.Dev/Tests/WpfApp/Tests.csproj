@@ -163,6 +163,10 @@
       <Project>{74792445-f224-4c75-b204-094ff689d950}</Project>
       <Name>WpfApp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
+      <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
+      <Name>KayMcCormick.Lib.Wpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>

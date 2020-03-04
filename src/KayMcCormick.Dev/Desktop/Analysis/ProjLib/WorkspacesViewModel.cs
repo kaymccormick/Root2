@@ -200,8 +200,8 @@ namespace ProjLib
             }
         }
 
-        public ObservableCollection < LogInvocation > LogInvocations { get ; } =
-            new ObservableCollection < LogInvocation > ( ) ;
+        public ObservableCollection < ILogInvocation > LogInvocations { get ; } =
+            new ObservableCollection < ILogInvocation > ( ) ;
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

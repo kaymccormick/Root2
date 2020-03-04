@@ -54,10 +54,10 @@ namespace CodeRefactoring1
         )
         {
             var syntaxTree = await document.GetSyntaxTreeAsync ( cancellationToken ) ;
-            LogInvocation logInvocation = LogUsages.ProcessInvocation(
+            ILogInvocation logInvocation = LogUsages.ProcessInvocation(
                                                                       new InvocationParms(
-                                                                                          null
-                                                                                        , syntaxTree.GetCompilationUnitRoot(cancellationToken)
+                                                                                          
+                                                                                        syntaxTree.GetCompilationUnitRoot(cancellationToken)
                                                                                           
                                                                                         , model
                                                                                         , new CodeSource(document.FilePath)

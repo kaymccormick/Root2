@@ -13,7 +13,7 @@ using System ;
 using System.Globalization ;
 using System.Windows.Data ;
 
-namespace WpfApp.Core.Converters
+namespace KayMcCormick.Lib.Wpf
 {
     /// <summary></summary>
     /// <seealso cref="System.Windows.Data.IValueConverter" />

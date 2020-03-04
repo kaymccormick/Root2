@@ -17,12 +17,19 @@ using Newtonsoft.Json ;
 
 namespace AnalysisFramework
 {
-    public class LogInvocationArgument
+    public interface ILogInvocationArgument
+    {
+        string JSON { get ; set ; }
+
+        object Pojo { get ; set ; }
+    }
+
+    public class LogInvocationArgument : ILogInvocationArgument
     {
         [JsonIgnore]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
 
-        private readonly LogInvocation  _debugInvo ;
+        private readonly ILogInvocation  _debugInvo ;
         [JsonIgnore]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 
@@ -42,7 +49,7 @@ namespace AnalysisFramework
         public LogInvocationArgument ( ) {
         }
 
-        public LogInvocationArgument ( [ NotNull ] LogInvocation debugInvo , [ NotNull ] ArgumentSyntax syntax ) : this(syntax)
+        public LogInvocationArgument ( [ NotNull ] ILogInvocation debugInvo , [ NotNull ] ArgumentSyntax syntax ) : this(syntax)
         {
             _debugInvo = debugInvo ?? throw new ArgumentNullException ( nameof ( debugInvo ) ) ;
             _syntax    = syntax ?? throw new ArgumentNullException ( nameof ( syntax ) ) ;

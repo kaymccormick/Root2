@@ -27,7 +27,7 @@ namespace ProjLib
 
         MyProjectLoadProgress CurrentProgress { get ; }
 
-        ObservableCollection < LogInvocation > LogInvocations { get ; }
+        ObservableCollection < ILogInvocation > LogInvocations { get ; }
 
         IPipelineViewModel PipelineViewModel { get ; }
 

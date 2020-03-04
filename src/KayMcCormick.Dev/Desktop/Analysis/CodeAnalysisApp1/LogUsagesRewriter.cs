@@ -43,10 +43,9 @@ namespace CodeAnalysisApp1
         {
             if ( LogUsages.CheckInvocationExpression ( node, out var methodSymbol, model ) )
             {
-                LogInvocation logInvocation = LogUsages.ProcessInvocation (
+                ILogInvocation logInvocation = LogUsages.ProcessInvocation (
                                              new InvocationParms (
-                                                                  null
-                                                                , currentRoot
+                                                                  currentRoot
                                                                 , model
                                                                 , document
                                                                 , node.AncestorsAndSelf ( )
@@ -61,7 +60,7 @@ namespace CodeAnalysisApp1
                                                                  )
                                             ) ;
 
-                void Arg9 ( LogInvocation invocation )
+                void Arg9 ( ILogInvocation invocation )
                 {
                     try { logInvocation = invocation ; }
                     catch ( Exception ex ) { Logger.Error ( ex , ex.ToString ( ) ) ; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized ;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using AnalysisFramework ;
 using Autofac ;
+using Microsoft.CodeAnalysis ;
+using MigraDoc.DocumentObjectModel ;
+using NLog ;
 using ProjLib ;
+using Document = MigraDoc.DocumentObjectModel.Document ;
+using Paragraph = MigraDoc.DocumentObjectModel.Paragraph ;
+using Section = MigraDoc.DocumentObjectModel.Section ;
 
 namespace AnalysisControls
 {
@@ -31,6 +38,7 @@ namespace AnalysisControls
     /// </summary>
     public partial class CompilationView : Window, IView <ICompilationViewModel>, IView1
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private ICompilationViewModel viewModel ;
 
         public CompilationView(ICompilationViewModel viewModel, CodeAnalyseContext codeAnalyseContext)
@@ -39,7 +47,31 @@ namespace AnalysisControls
             viewModel.AnalyseContext = codeAnalyseContext ;
             InitializeComponent();
 
+            MigraDoc.DocumentObjectModel.Document doc = new Document();
+            var section = new Section() ;
+            var paragraph = new Paragraph() ;
+            paragraph.AddText ( ViewModel.AnalyseContext.CurrentRoot.ToFullString ( ) ) ;
+            section.Add(paragraph);
+            doc.Add (section );
+            var s = new MigraDoc.RtfRendering.RtfDocumentRenderer ( ).RenderToString ( doc , @"C:\temp" ) ;
+            rtfCode.Text = s ;
+
             this.SyntaxPanel.ViewModel.CompilationUnitSyntax = ViewModel.AnalyseContext.CurrentRoot ;
+            this.SyntaxPanel.ViewModel.PropertyChanged += ( sender , args ) => {
+                Logger.Debug ( "PropertyChanged: {prop}" , args.PropertyName ) ;
+                if ( args.PropertyName == "SelectedItem" )
+                {
+                    var modelSelectedItem = this.SyntaxPanel.ViewModel.SelectedItem ;
+                    Logger.Debug("Selected item is {item}", modelSelectedItem);
+                    var viewModelSelectedItem = modelSelectedItem as SyntaxNode ;
+                    Logger.Debug("node is {item}", viewModelSelectedItem);
+                    Logger.Debug("setting viewModel AnalyseContext Node to {item}", viewModelSelectedItem);
+                    ViewModel.SelectedItem =
+                        viewModelSelectedItem ;
+                }
+            } ;
+
+
         }
 
         #region Implementation of IView<ICompilationViewModel>
@@ -48,26 +80,19 @@ namespace AnalysisControls
 
         private void tv_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var view = ( CollectionViewSource ) TryFindResource ( "Compilation" ) ;
-            view.View.MoveCurrentTo ( e.NewValue ) ;
+            // var view = ( CollectionViewSource ) TryFindResource ( "Compilation" ) ;
+            // view.View.MoveCurrentTo ( e.NewValue ) ;
         }
-    }
 
-    public interface ICompilationViewModel : IViewModel
-    {
-        CodeAnalyseContext AnalyseContext { get ; set ; }
-    }
-
-    class CompilationViewModel : ICompilationViewModel
-    {
-        private CodeAnalyseContext analyseContext ;
-        #region Implementation of ICompilationViewModel
-        public CompilationViewModel (  )
+        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            this.analyseContext = analyseContext ;
+            ViewModel.AnaylzeControlFlow ( ViewModel.SelectedItem ) ;
+            TabControl.SelectedItem = SemanticModelTab ;
         }
 
-        public CodeAnalyseContext AnalyseContext { get => analyseContext ; set => analyseContext = value ; }
-        #endregion
+        private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
+        {
+            ViewModel.GetDeclaredSymbol ( ViewModel.SelectedItem ) ;
+        }
     }
 }

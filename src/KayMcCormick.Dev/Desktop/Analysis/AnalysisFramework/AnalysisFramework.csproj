@@ -69,6 +69,7 @@
     <Compile Include="CodeSource.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="ICodeSource.cs" />
+    <Compile Include="ILogInvocation.cs" />
     <Compile Include="InvocationParms.cs" />
     <Compile Include="LogInvocation.cs" />
     <Compile Include="LogInvocation2.cs" />

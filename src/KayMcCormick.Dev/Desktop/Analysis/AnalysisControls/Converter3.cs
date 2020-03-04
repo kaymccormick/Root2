@@ -13,6 +13,7 @@ using System ;
 using System.Collections ;
 using System.Globalization ;
 using System.Windows.Data ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -26,17 +27,28 @@ namespace AnalysisControls
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
         public object Convert (
-            object      value
+            [ NotNull ] object      value
           , Type        targetType
           , object      parameter
           , CultureInfo culture
         )
         {
+            if ( value == null )
+            {
+                return null ;
+                throw new ArgumentNullException ( nameof ( value ) ) ;
+            }
+
             Logger.Debug (
-                          "{type} {type2}"
+                          "{type} {type2} {parameter}"
                         , value?.GetType ( ).FullName
-                        , targetType.FullName
+                        , targetType.FullName, parameter
                          ) ;
+            if ( value         == null
+                 && targetType == typeof ( String ) )
+            {
+                return "(null)" ;
+            }
             if ( value is SyntaxNode s )
             {
                 if ( parameter is Converter1Param parm )

@@ -76,6 +76,7 @@
     <Compile Include="DataBindingTraceFilter\MyTraceFilter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
+    <Compile Include="ExitCode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IdGeneratorModule.cs" />
     <Compile Include="IHaveObjectId.cs" />

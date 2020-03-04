@@ -12,15 +12,15 @@ namespace ProjLib
     public class FindLogUsagesBlock : ITargetBlock<Document>
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private ITargetBlock<LogInvocation> _target;
+        private ITargetBlock<ILogInvocation> _target;
 
-        public IReceivableSourceBlock<LogInvocation> Source => _source;
+        public IReceivableSourceBlock<ILogInvocation> Source => _source;
 
         private readonly ActionBlock<Document> actionBlock;
         private readonly ITargetBlock<Document> documentTarget;
-        private readonly IReceivableSourceBlock<LogInvocation> _source = new BufferBlock<LogInvocation>();
+        private readonly IReceivableSourceBlock<ILogInvocation> _source = new BufferBlock<ILogInvocation>();
 
-        public FindLogUsagesBlock(ITargetBlock<LogInvocation> target)
+        public FindLogUsagesBlock(ITargetBlock<ILogInvocation> target)
         {
             this._target = target;
             actionBlock = new ActionBlock<Document>(

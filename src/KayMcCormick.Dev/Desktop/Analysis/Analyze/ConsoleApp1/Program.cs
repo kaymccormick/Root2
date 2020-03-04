@@ -37,9 +37,9 @@ namespace ConsoleApp1
 
         public IWorkspacesViewModel ViewModel { get ; }
 
-        public ActionBlock < LogInvocation > actionBlock ;
+        public ActionBlock < ILogInvocation > actionBlock ;
 
-        public AppContext ( ILifetimeScope scope , IWorkspacesViewModel workspacesViewModel , ActionBlock < LogInvocation > actionBlock )
+        public AppContext ( ILifetimeScope scope , IWorkspacesViewModel workspacesViewModel , ActionBlock < ILogInvocation > actionBlock )
         {
             Scope     = scope ;
             ViewModel = workspacesViewModel ;
@@ -53,7 +53,7 @@ namespace ConsoleApp1
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
-            var actionBlock = new ActionBlock<LogInvocation>(Program.Action) ;
+            var actionBlock = new ActionBlock<ILogInvocation>(Program.Action) ;
             builder.RegisterInstance(actionBlock).As<ActionBlock <LogInvocation>>().SingleInstance();
             Pipeline pipeline = new Pipeline(actionBlock);
             builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
@@ -108,7 +108,7 @@ namespace ConsoleApp1
             Logger.Debug ( "heelo" ) ;
         }
 
-        public static void Action ( LogInvocation invocation )
+        public static void Action ( ILogInvocation invocation )
         {
             var json = JsonConvert.SerializeObject ( invocation ) ;
             Logger.Debug ( json ) ;

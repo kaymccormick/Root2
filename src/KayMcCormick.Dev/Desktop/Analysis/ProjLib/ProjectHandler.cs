@@ -96,7 +96,7 @@ namespace ProjLib
 #endif
 
         public async Task<object> ProcessAsync (
-            Action < LogInvocation > consumeLogInvocation
+            Action < ILogInvocation > consumeLogInvocation
           , SynchronizationContext   current
             ,Func<object, IFormattedCode> func
         )
@@ -118,7 +118,7 @@ namespace ProjLib
         public abstract  Task < object > OnProcessDocumentAsync (
             Document                        document
           , Triple                          triple
-          , Action < LogInvocation >        consumeLogInvocation
+          , Action < ILogInvocation >        consumeLogInvocation
           , Func < object , IFormattedCode > func
         ) ;
 
@@ -146,7 +146,7 @@ namespace ProjLib
         public override async Task < object > OnProcessDocumentAsync (
             Document                        document1
           , Triple                          triple
-          , Action < LogInvocation >        consumeLogInvocation
+          , Action < ILogInvocation >        consumeLogInvocation
           , Func < object , IFormattedCode > func
         )
         {
@@ -249,7 +249,7 @@ namespace ProjLib
 
         public string InvocationCode { get ; set ; }
 
-        public List < LogInvocation > Invocations { get ; set ; } = new List < LogInvocation > ( ) ;
+        public List < ILogInvocation > Invocations { get ; set ; } = new List < ILogInvocation > ( ) ;
 
 
         private static void NewMethod1 ( Compilation comp , INamedTypeSymbol t1 )

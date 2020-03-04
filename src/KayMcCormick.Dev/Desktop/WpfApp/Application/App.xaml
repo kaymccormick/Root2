@@ -1,9 +1,10 @@
-﻿<Application x:Class="WpfApp.Application.App"
+﻿<wpf:BaseApp x:Class="WpfApp.Application.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
              Exit="App_OnExit"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
-    <Application.Resources>
+    <wpf:BaseApp.Resources>
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,5 +15,5 @@
 
         </ResourceDictionary>
 
-    </Application.Resources>
-</Application>
+    </wpf:BaseApp.Resources>
+</wpf:BaseApp>

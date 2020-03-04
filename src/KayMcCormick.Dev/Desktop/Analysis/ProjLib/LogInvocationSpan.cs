@@ -21,13 +21,13 @@ using NLog ;
 
 namespace ProjLib
 {
-    public class LogInvocationSpan : SpanObject < LogInvocation >, ISpanObject <LogInvocation>
+    public class LogInvocationSpan : SpanObject < ILogInvocation >, ISpanObject <ILogInvocation>
     {
         private static Logger Logger = Logger ;
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogInvocationSpan (
             TextSpan                 span
-          , LogInvocation            instance
+          , ILogInvocation            instance
         ) : base ( span , instance )
         {
             _displayString = Instance.MethodDisplayName

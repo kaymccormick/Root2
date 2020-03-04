@@ -261,14 +261,14 @@ namespace ProjLib
 
     public interface IHasLogInvocations
     {
-        IList < LogInvocation > LogInvocationList { get ; }
+        IList < ILogInvocation > LogInvocationList { get ; }
     }
 
     internal class HasLogInvocations : IHasLogInvocations
     {
-        private IList < LogInvocation > _logInvocationList = new List < LogInvocation > ( ) ;
+        private IList < ILogInvocation > _logInvocationList = new List < ILogInvocation > ( ) ;
 #region Implementation of IHasLogInvocations
-        public IList < LogInvocation > LogInvocationList
+        public IList < ILogInvocation > LogInvocationList
         {
             get => _logInvocationList ;
             set => _logInvocationList = value ;
