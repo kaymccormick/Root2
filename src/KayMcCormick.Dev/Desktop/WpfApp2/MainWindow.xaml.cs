@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json ;
+﻿
 using NLog ;
 using System ;
 using System.Collections ;
@@ -7,6 +7,7 @@ using System.Collections.ObjectModel ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
+using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -110,7 +111,7 @@ namespace WpfApp2
             while ( ! LogFileReader.EndOfStream )
             {
                 var readLine = LogFileReader.ReadLine ( ) ;
-                var logEntry = JsonConvert.DeserializeObject < LogEntry > ( readLine ) ;
+                var logEntry = JsonSerializer.Deserialize< LogEntry > ( readLine ) ;
                 foreach ( var logEntryKey in logEntry.Keys )
                 {
                     if ( PropertyInfos.TryGetValue ( logEntryKey , out var propInfo ) )
@@ -164,13 +165,13 @@ namespace WpfApp2
 
             AllProps = PropertiesDict.Values.ToList ( ) ;
 
-            var objJson = JsonConvert.SerializeObject ( PropertiesDict.Values ) ;
+            var objJson = JsonSerializer.Serialize( PropertiesDict.Values ) ;
             File.WriteAllText ( "props.json" , objJson ) ;
 
 
             File.WriteAllText (
-                               @"c:\data\logs\parsed.json"
-                             , JsonConvert.SerializeObject ( Entries )
+                               @"c:\data\logs\parsed.json",
+            JsonSerializer.Serialize( Entries )
                               ) ;
         }
 

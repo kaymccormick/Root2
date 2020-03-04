@@ -14,6 +14,7 @@ using System.Collections.ObjectModel ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
 using System.Threading ;
+using System.Threading.Tasks ;
 using System.Windows.Input ;
 using AnalysisFramework ;
 
@@ -42,9 +43,55 @@ namespace ProjLib
 
         IProjectBrowserViewModoel ProjectBrowserViewModel { get ; }
 
-        void AnalyzeCommand (
+        PipelineResult PipelineResult { get ; set ; }
+
+        Task AnalyzeCommand (
            object                  viewCurrentItem
         ) ;
+        string ApplicationMode { get ; }
+    }
+
+    public struct DesignWorkspacesViewModel : IWorkspacesViewModel
+    {
+        private bool _processing ;
+        private string _currentProject ;
+        private string _currentDocumentPath ;
+        private VisualStudioInstancesCollection _vsCollection ;
+        private MyProjectLoadProgress _currentProgress ;
+        private ObservableCollection < ILogInvocation > _logInvocations ;
+        private IPipelineViewModel _pipelineViewModel ;
+        private IProjectBrowserViewModoel _projectBrowserViewModel ;
+        private PipelineResult _pipelineResult ;
+        private string _applicationMode ;
+        #region Implementation of INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged ;
+        #endregion
+
+        #region Implementation of IAppState
+        public bool Processing { get => _processing ; set => _processing = value ; }
+
+        public string CurrentProject { get => _currentProject ; set => _currentProject = value ; }
+
+        public string CurrentDocumentPath { get => _currentDocumentPath ; set => _currentDocumentPath = value ; }
+        #endregion
+
+        #region Implementation of IWorkspacesViewModel
+        public VisualStudioInstancesCollection VsCollection { get => _vsCollection ; set => _vsCollection = value ; }
+
+        public MyProjectLoadProgress CurrentProgress { get => _currentProgress ; set => _currentProgress = value ; }
+
+        public ObservableCollection < ILogInvocation > LogInvocations { get => _logInvocations ; set => _logInvocations = value ; }
+
+        public IPipelineViewModel PipelineViewModel { get => _pipelineViewModel ; set => _pipelineViewModel = value ; }
+
+        public IProjectBrowserViewModoel ProjectBrowserViewModel { get => _projectBrowserViewModel ; set => _projectBrowserViewModel = value ; }
+
+        public PipelineResult PipelineResult { get => _pipelineResult ; set => _pipelineResult = value ; }
+
+        public Task AnalyzeCommand ( object viewCurrentItem ) { return null ; }
+
+        public string ApplicationMode => _applicationMode = "Design Mode" ;
+        #endregion
     }
 
     public interface IBrowserNodeCollection : ICollection<IBrowserNode>, INotifyCollectionChanged, INotifyPropertyChanged

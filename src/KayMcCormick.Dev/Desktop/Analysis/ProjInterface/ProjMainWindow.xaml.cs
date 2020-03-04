@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent ;
 using System.Collections.ObjectModel ;
+using System.ComponentModel ;
 using System.IO ;
 using System.Linq;
+using System.Runtime.CompilerServices ;
+using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows;
@@ -13,7 +16,7 @@ using System.Windows.Threading ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac;
-
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis;
 using NLog;
 using ProjLib;
@@ -25,19 +28,32 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ProjMainWindow : Window, IView<IWorkspacesViewModel>, IView1, IWorkspacesView
+    public partial class ProjMainWindow : Window, IView<IWorkspacesViewModel>, IView1, IWorkspacesView, INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private TaskFactory _factory ;
 
-        public IWorkspacesViewModel ViewModel { get; set; }
-
-        public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope)
+        public IWorkspacesViewModel ViewModel
         {
+            get => _viewModel ;
+            set
+            {
+                _viewModel = value ;
+                OnPropertyChanged();
+            }
+        }
+
+        public ProjMainWindow ( ) {
             InitializeComponent();
+            _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope) : this()
+        {
+            
             ViewModel = viewModel ;
             Scope = scope ;
-            _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext()) ;
+            
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                  invocation
                                                                      => {
@@ -99,6 +115,50 @@ namespace ProjInterface
         #endif
         private ConcurrentQueue < IBoundCommandOperation > opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
         private ObservableCollection < Task < bool > > waitingTasks = new ObservableCollection < Task < bool > > ();
+        private IWorkspacesViewModel _viewModel = new DesignWorkspacesViewModel() ;
+
+        internal struct DesignWorkspacesViewModel : IWorkspacesViewModel
+        {
+            private bool _processing;
+            private string _currentProject;
+            private string _currentDocumentPath;
+            private VisualStudioInstancesCollection _vsCollection;
+            private MyProjectLoadProgress _currentProgress;
+            private ObservableCollection<ILogInvocation> _logInvocations;
+            private IPipelineViewModel _pipelineViewModel;
+            private IProjectBrowserViewModoel _projectBrowserViewModel;
+            private PipelineResult _pipelineResult;
+            private string _applicationMode;
+            #region Implementation of INotifyPropertyChanged
+            public event PropertyChangedEventHandler PropertyChanged;
+            #endregion
+
+            #region Implementation of IAppState
+            public bool Processing { get => _processing; set => _processing = value; }
+
+            public string CurrentProject { get => _currentProject; set => _currentProject = value; }
+
+            public string CurrentDocumentPath { get => _currentDocumentPath; set => _currentDocumentPath = value; }
+            #endregion
+
+            #region Implementation of IWorkspacesViewModel
+            public VisualStudioInstancesCollection VsCollection { get => _vsCollection; set => _vsCollection = value; }
+
+            public MyProjectLoadProgress CurrentProgress { get => _currentProgress; set => _currentProgress = value; }
+
+            public ObservableCollection<ILogInvocation> LogInvocations { get => _logInvocations; set => _logInvocations = value; }
+
+            public IPipelineViewModel PipelineViewModel { get => _pipelineViewModel; set => _pipelineViewModel = value; }
+
+            public IProjectBrowserViewModoel ProjectBrowserViewModel { get => _projectBrowserViewModel; set => _projectBrowserViewModel = value; }
+
+            public PipelineResult PipelineResult { get => _pipelineResult; set => _pipelineResult = value; }
+
+            public Task AnalyzeCommand(object viewCurrentItem) { return null; }
+
+            public string ApplicationMode => _applicationMode = "Design Mode";
+            #endregion
+        }
 
         public event RoutedEventHandler TaskCompleted
         {
@@ -163,7 +223,37 @@ namespace ProjInterface
 
         }
         #endif
-        private void PostPath ( string filePath ) { _ = ViewModel.PipelineViewModel.Pipeline.PipelineInstance.Post ( filePath ) ; }
+        #if false
+        private void PostPath ( string filePath )
+        {
+            var actionBlock = new ActionBlock < ILogInvocation > (
+                                                                  invocation => {
+                                                                      Logger.Debug ( "{invocation}" , invocation ) ;
+                                                                  }
+                                                                 ) ;
+            ViewModel.PipelineViewModel.Pipeline.PipelineInstance.LinkTo ( actionBlock , new DataflowLinkOptions() {PropagateCompletion = true}) ;
+            Task.Run (
+                      async delegate {
+                          await actionBlock.Completion ;
+                      }
+                     ) ;
+            var R = ViewModel.PipelineViewModel.Pipeline.PipelineInstance.Post(filePath);
+        }
+        #endif
+        private static bool Fault ( Task task )
+        {
+            Logger
+               .Error (
+                       task
+                          .Exception
+                     , "faulted: {msg}"
+                     , task
+                      .Exception
+                      .ToString ( )
+                      ) ;
+            return false;
+        }
+    
 
 #if false
         private void Mru_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
@@ -201,6 +291,7 @@ namespace ProjInterface
             if ( e.OriginalSource is ListView )
             {
                 var v = ProjectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
+
                 ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
             }
             else
@@ -213,6 +304,14 @@ namespace ProjInterface
                 var w = Scope.Resolve < CompilationView > ( new TypedParameter(typeof ( CodeAnalyseContext ), c) ) ;
                 w.Show ( ) ;
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
     }
 

@@ -81,8 +81,12 @@
       </MenuItem>
 
     </Menu>
-    <StackPanel Grid.Row="1" Orientation="Horizontal"
-                Grid.ColumnSpan="2">
+    <Border BorderBrush="AntiqueWhite" BorderThickness="10" CornerRadius="4" Grid.Row="1"
+            Grid.ColumnSpan="3">
+    <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <Border VerticalAlignment="Center" Padding="10"  BorderBrush="Red" BorderThickness="3" CornerRadius="15"><TextBlock  VerticalAlignment="Center" Text="{Binding ApplicationMode,FallbackValue=None}"/></Border>
+      <TextBlock Margin="10" VerticalAlignment="Center"
+                 Text="Status" />
       <TextBlock Margin="10"
                  Text="{Binding CurrentProgress.FileName}" />
       <TextBlock Margin="10"
@@ -90,18 +94,15 @@
       <TextBlock Margin="10"
                  Text="{Binding CurrentProgress.ElapsedTime}" />
       <TextBlock Text="{Binding Processing}" />
-    </StackPanel>
+      <TextBlock Text="{Binding PipelineResult.Status}"/>
+      <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
+    </WrapPanel>
+    </Border>
     <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
     <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
       <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
-        <StackPanel Orientation="Vertical">
-          <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=mainWindow}">
-            <CheckBox IsChecked="{Binding Mode= OneWay,Path=WorkspaceActionBlock.Completion.IsCompleted}"></CheckBox>
-          </StackPanel>
-          <ListView></ListView>
-        </StackPanel>
       </TabItem>
     </TabControl>
     <analysisControls:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3"

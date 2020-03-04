@@ -94,6 +94,9 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CommandLineParserMessages.xaml.cs">
+      <DependentUpon>CommandLineParserMessages.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ICommandSpec.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="WorkspaceTable.cs" />
@@ -112,6 +115,10 @@
     <Page Include="AnalyzeResults.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CommandLineParserMessages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MSBuild.xaml">
       <SubType>Designer</SubType>
@@ -221,6 +228,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CommandLine\src\CommandLine\CommandLine.csproj">
+      <Project>{a4547f77-b36d-49d1-9dc3-efe41526d16a}</Project>
+      <Name>CommandLine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>

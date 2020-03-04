@@ -188,7 +188,7 @@ namespace ProjLib
             }
             catch ( Exception ex )
             {
-                Logger.Fatal ( ex , ex.ToString ( ) ) ;
+                Logger.Debug( ex , ex.ToString ( ) ) ;
             }
 
             return null ;
@@ -251,7 +251,7 @@ namespace ProjLib
                 }
 
                 // "Msbuild failed when processing the file 'C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\V3\\Root\\src\\KayMcCormick.Dev\\Desktop\\App1\\App1.csproj' with message: C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319\\Microsoft.WinFx.targets: (268, 9): Unknown build error, 'Object reference not set to an instance of an object.' "
-                Logger.Fatal ( "Load workspac failed: {}" , e.Diagnostic.Message ) ;
+                Logger.Warn ( "Load workspace failed: {}" , e.Diagnostic.Message ) ;
             } ;
 
             // ReSharper disable once LocalizableElement
@@ -332,7 +332,7 @@ namespace ProjLib
                 }
                 catch ( Exception ex )
                 {
-                    Logger.Error ( ex , ex.ToString ( ) ) ;
+                    Logger.Warn( ex , ex.ToString ( ) ) ;
                 }
             }
         }
@@ -363,7 +363,7 @@ namespace ProjLib
             }
             catch ( Exception ex )
             {
-                Logger.Error ( ex , ex.ToString ( ) ) ;
+                Logger.Warn ( ex , ex.ToString ( ) ) ;
             }
         }
 
@@ -415,7 +415,7 @@ namespace ProjLib
             }
             catch ( Exception ex )
             {
-                Logger.Error ( ex , ex.ToString ( ) ) ;
+                Logger.Warn ( ex , ex.ToString ( ) ) ;
             }
         }
 
@@ -431,7 +431,7 @@ namespace ProjLib
 
         private void EventSourceOnProjectFinished ( object sender , ProjectFinishedEventArgs e )
         {
-            LB(e).Level (e.Succeeded ? LogLevel.Debug: LogLevel.Error).Write();
+            LB(e).Level (e.Succeeded ? LogLevel.Debug: LogLevel.Debug).Write();
         }
 
         private void EventSourceOnTargetFinished ( object sender , TargetFinishedEventArgs e )
@@ -450,7 +450,7 @@ namespace ProjLib
             }
             if ( e.Succeeded == false )
             {
-                lb = lb.Level ( LogLevel.Error ) ;
+                lb = lb.Level ( LogLevel.Warn ) ;
             }
         }
 
@@ -474,7 +474,7 @@ namespace ProjLib
             switch ( e )
             {
                 case CriticalBuildMessageEventArgs criticalBuildMessageEventArgs :
-                    lb = lb.Level ( LogLevel.Error ) ;
+                    lb = lb.Level ( LogLevel.Warn ) ;
                     break ;
                 case MetaprojectGeneratedEventArgs metaprojectGeneratedEventArgs :
                     lb = lb.Property (
@@ -554,14 +554,14 @@ namespace ProjLib
 
         private void EventSourceOnBuildFinished ( object sender , BuildFinishedEventArgs e )
         {
-            LB ( e ).Level ( LogLevel.Warn ).Write ( ) ;
+            LB ( e ).Write ( ) ;
             if ( e.Succeeded )
             {
-                Logger.Info ( "Build finished sucessfully." ) ;
+                Logger.Trace( "Build finished sucessfully." ) ;
             }
             else
             {
-                Logger.Fatal ( "Build failed: {Message}" , e.Message ) ;
+                Logger.Trace( "Build failed: {Message}" , e.Message ) ;
             }
         }
 
@@ -575,7 +575,7 @@ namespace ProjLib
         private void EventSourceOnErrorRaised ( object sender , BuildErrorEventArgs e )
         {
             LB ( e )
-               .Level ( LogLevel.Error )
+               .Level ( LogLevel.Debug)
                .Message ( "{projectFile} {Message} {e}" , e.ProjectFile , e.Message , e )
                .Write ( ) ;
         }

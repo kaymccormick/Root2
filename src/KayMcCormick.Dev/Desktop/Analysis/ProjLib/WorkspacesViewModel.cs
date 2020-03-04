@@ -9,27 +9,21 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Collections.ObjectModel ;
-using System.ComponentModel ;
-using System.IO ;
-using System.Linq ;
-using System.Runtime.CompilerServices ;
-using System.Threading ;
-using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
-using System.Windows.Input ;
-using System.Windows.Markup ;
-using System.Windows.Threading ;
 using AnalysisFramework ;
-
-using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using NLog ;
 using ProjLib.Properties ;
-using VSShell = Microsoft.VisualStudio.Shell ;
+using System ;
+using System.Collections.ObjectModel ;
+using System.ComponentModel ;
+using System.IO ;
+using System.Runtime.CompilerServices ;
+using System.Threading ;
+using System.Threading.Tasks ;
+using System.Threading.Tasks.Dataflow ;
+using Microsoft.TeamFoundation.TestManagement.WebApi.Legacy ;
 
 namespace ProjLib
 {
@@ -50,13 +44,15 @@ namespace ProjLib
 
         public IPipelineViewModel PipelineViewModel { get ; }
 
-        private string                    _currentDocumentPath ;
-        private MyProjectLoadProgress     _currentProgress ;
-        private string                    _currentProject ;
-        
+        private string                _currentDocumentPath ;
+        private MyProjectLoadProgress _currentProgress ;
+        private string                _currentProject ;
+
         private ProjectHandlerImpl        _handler ;
         private bool                      _processing ;
         private IProjectBrowserViewModoel _projectBrowserViewModel ;
+        private PipelineResult            _pipelineResult ;
+        private string _applicationMode = "Runtime mode" ;
 
         public WorkspacesViewModel (
             IVsInstanceCollector      collector
@@ -97,12 +93,12 @@ namespace ProjLib
         public VisualStudioInstancesCollection VsCollection { get ; } =
             new VisualStudioInstancesCollection ( ) ;
 
-        #if false
+#if false
         public async Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem
-          , IMruItem               sender2SelectedItem
-          , TaskFactory            factory1
-          , SynchronizationContext current
+      , IMruItem               sender2SelectedItem
+      , TaskFactory            factory1
+      , SynchronizationContext current
         )
         {
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances ( ) ;
@@ -134,9 +130,9 @@ namespace ProjLib
                                                                                                    AppProjectInfo (
                                                                                                                    currentSolutionProject
                                                                                                                       .Name
-                                                                                                                 , currentSolutionProject
+                                                                                                             , currentSolutionProject
                                                                                                                       .FilePath
-                                                                                                                 , currentSolutionProject
+                                                                                                             , currentSolutionProject
                                                                                                                   .Documents
                                                                                                                   .Count ( )
                                                                                                                   )
@@ -150,7 +146,7 @@ namespace ProjLib
             return new object ( ) ;
         }
 
-        #endif
+#endif
 
         public IProjectBrowserViewModoel ProjectBrowserViewModel
         {
@@ -158,16 +154,73 @@ namespace ProjLib
             set => _projectBrowserViewModel = value ;
         }
 
-        public void AnalyzeCommand (
-         object                  viewCurrentItem
-        )
+        public async Task AnalyzeCommand ( object viewCurrentItem )
         {
-            
-            
-
-            Logger.Info ( "{x}" , viewCurrentItem ) ;
+            PipelineResult = new PipelineResult(ResultStatus.Pending);
+            var actionBlock = new ActionBlock < ILogInvocation > (
+                                                                  invocation => {
+                                                                      Logger.Debug (
+                                                                                    "{invocation}"
+                                                                                  , invocation
+                                                                                   ) ;
+                                                                  }
+                                                                 ) ;
+            PipelineViewModel.Pipeline.PipelineInstance.LinkTo (
+                                                                actionBlock
+                                                              , new DataflowLinkOptions ( )
+                                                                {
+                                                                    PropagateCompletion = true
+                                                                }
+                                                               ) ;
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
-            PipelineViewModel.Pipeline.PipelineInstance.Post ( projectBrowserNode.RepositoryUrl ) ;
+            await PipelineViewModel.Pipeline.PipelineInstance
+                                   .SendAsync ( projectBrowserNode.RepositoryUrl )
+                                   .ConfigureAwait ( true ) ;
+            var result = await actionBlock.Completion.ContinueWith (
+                                                                    task => {
+                                                                        Logger.Info (
+                                                                                     "received task {fault}"
+                                                                                   , task.IsFaulted
+                                                                                    ) ;
+                                                                        if ( task.IsFaulted )
+                                                                        {
+                                                                            return new
+                                                                                PipelineResult (
+                                                                                                ResultStatus
+                                                                                                   .Failed
+                                                                                              , task
+                                                                                                   .Exception
+                                                                                               ) ;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            return new
+                                                                                PipelineResult (
+                                                                                                ResultStatus
+                                                                                                   .Success
+                                                                                               ) ;
+                                                                        }
+                                                                    }
+                                                                  , CancellationToken.None
+                                                                  , TaskContinuationOptions.None
+                                                                  , TaskScheduler.Current)
+                                                                  
+                                          .ConfigureAwait ( true ) ;
+            PipelineResult = result ;
+            Logger.Info("{id} {result}", Thread.CurrentThread.ManagedThreadId, result.Status);
+        }
+
+        public string ApplicationMode => _applicationMode ;
+
+
+        public PipelineResult PipelineResult
+        {
+            get => _pipelineResult ;
+            set
+            {
+                _pipelineResult = value ;
+                OnPropertyChanged ( ) ;
+            }
         }
 
         public bool Processing
@@ -214,6 +267,20 @@ namespace ProjLib
         }
     }
 
+    public class PipelineResult
+    {
+        public ResultStatus Status { get ; }
+
+        public Exception TaskException { get ; }
+
+        public PipelineResult ( ResultStatus status , Exception taskException = null )
+        {
+            Status        = status ;
+            TaskException = taskException ;
+        }
+    }
+
+    public enum ResultStatus { Failed , Success, Pending , None }
 
     public class MyProjectLoadProgress
     {

@@ -1,33 +1,206 @@
 ﻿using System ;
+using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Diagnostics ;
+using System.Globalization ;
+using System.IO ;
 using System.Linq ;
+using System.Text ;
 using System.Windows ;
 using AnalysisControls ;
 using Autofac ;
-using Autofac.Core ;
-using KayMcCormick.Dev.Logging ;
+using CommandLine ;
+using CommandLine.Text ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.Build.Locator ;
 using NLog ;
+using ParseLogs ;
 using ProjLib ;
-using Application = System.Windows.Application ;
 
 namespace ProjInterface
 {
+    public class UsagesFreezableCollection : FreezableCollection<Usage>
+    {
+        public UsagesFreezableCollection() : base()
+        {
+        }
+
+        public UsagesFreezableCollection(IEnumerable<UsageInfo> usages) : base(new List<Usage>())
+        {
+            foreach (var u in usages)
+            {
+                Usage instance = new Usage();
+                foreach (var example in u.Examples)
+                {
+                    instance.Examples.Add(new Example()
+                                          {
+                                              HelpText = example.MapResult.HelpText,
+                                          });
+                }
+
+                Add(instance);
+            }
+        }
+
+        public UsagesFreezableCollection(IEnumerable<Usage> usages) : base(usages)
+        {
+        }
+    }
+
+    public class Example : AppDependencyObject
+    {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static readonly DependencyProperty HelpTextProperty = DependencyProperty.Register("HelpText", typeof(string), typeof(Example), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, new PropertyChangedCallback(OnHelpTextChanged)));
+
+        private static void OnHelpTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+        {
+            Example ex = (Example)d;
+            Logger.Debug($"OnHelpTextChanged: old={args.OldValue}; new={args.NewValue}");
+
+            ex.RaiseEvent(new RoutedPropertyChangedEventArgs<string>((string)args.OldValue, (string)args.NewValue)
+            {
+                RoutedEvent = Example.HelpTextChangedEvent,
+            });
+
+
+        }
+
+        public string HelpText
+        {
+            get { return (string)GetValue(HelpTextProperty); }
+            set { SetValue(HelpTextProperty, value); }
+        }
+
+
+        public event RoutedPropertyChangedEventHandler<string> HelpTextChanged
+        {
+            add
+            {
+                Logger.Debug("Add handler to help text changed event");
+                AddHandler(HelpTextChangedEvent, value);
+            }
+            remove
+            {
+                Logger.Debug("remove handler to help text changed event");
+                RemoveHandler(HelpTextChangedEvent, value);
+            }
+        }
+
+        public static readonly RoutedEvent HelpTextChangedEvent = EventManager.RegisterRoutedEvent("HelpTextChanged",
+            RoutingStrategy.Bubble,
+            typeof(RoutedPropertyChangedEventHandler<string>), typeof(Example));
+
+        // protected virtual void OnValueChanged(RoutedPropertyChangedEventArgs<string> args)
+        // {
+        //     RaiseEvent(args);
+        // }
+
+        //  Example e2 = (Example) d; 
+        // RoutedPropertyChangedEventArgs<string> e3 = new RoutedPropertyChangedEventArgs<string>((string) e.OldValue, (string) e.NewValue);
+        //     e2.OnHelpTextChanged(e3);
+        // }
+        //     throw new NotImplementedException();
+        // }
+    }
+
+    public class UsageConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            if (sourceType.IsSubclassOf(typeof(UsageInfo)))
+            {
+                return true;
+            }
+            return base.CanConvertFrom(context, sourceType);
+
+        }
+
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            return base.CanConvertTo(context, destinationType);
+        }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            UsageInfo i = value as UsageInfo;
+            if (i != null)
+            {
+                Usage u = new Usage();
+                TypeConverter c = TypeDescriptor.GetConverter(typeof(Example));
+                u.Examples =
+                    new FreezableCollection<Example>(i.Examples.ToList()
+                                                      .ConvertAll<Example>(input => (Example)c.ConvertFrom(input)));
+                return u;
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
+        {
+            return new PropertyDescriptorCollection(new DependencyPropertyDescriptor[] { DependencyPropertyDescriptor.FromProperty(Usage.ExamplesProperty, value.GetType()) });
+        }
+
+        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
+    [TypeConverter(typeof(UsageConverter))]
+    [DataObject( true)]
+    [DefaultBindingProperty( "Examples")]
+    public class Usage : AppDependencyObject
+    {
+        public static readonly DependencyProperty ExamplesProperty =
+            DependencyProperty.Register("Examples", typeof(FreezableCollection<Example>), typeof(Usage), new FrameworkPropertyMetadata(new FreezableCollection<Example>(), FrameworkPropertyMetadataOptions.None, new PropertyChangedCallback(OnExamplesChanged)));
+
+        private static void OnExamplesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Usage u = (Usage)d;
+            u.RaiseEvent(new RoutedPropertyChangedEventArgs<FreezableCollection<Example>>((FreezableCollection<Example>)e.OldValue, (FreezableCollection<Example>)e.NewValue));
+        }
+
+        [DataObjectField( false, false, false)]
+        public FreezableCollection<Example> Examples
+        {
+            get { return (FreezableCollection<Example>)GetValue(ExamplesProperty); }
+            set { SetValue(ExamplesProperty, value); }
+        }
+
+        public static readonly RoutedEvent ExamplesChangedEvent = EventManager.RegisterRoutedEvent("ExamplesChanged",
+                                                                                                   RoutingStrategy.Bubble,
+                                                                                                   typeof(RoutedPropertyChangedEventHandler<FreezableCollection<Example>>), typeof(Usage));
+
+        public event RoutedPropertyChangedEventHandler<FreezableCollection<Example>> ExamplesChanged
+        {
+            add { AddHandler(ExamplesChangedEvent, value); }
+            remove { RemoveHandler(ExamplesChangedEvent, value); }
+        }
+    }
+
+    public class AppDependencyObject : FrameworkContentElement
+    {
+    }
+
     public partial class ProjInterfaceApp : BaseApp
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private Type[] _optionTypes ;
+        private Options _options ;
 
         public ProjInterfaceApp ( )
         {
-#if DEBUG
-            AppLoggingConfigHelper.EnsureLoggingConfigured (
-                                                            message => Debug.WriteLine ( message )
-                                                           ) ;
-            Logger.Warn ( "{}" , nameof ( ProjInterfaceApp ) ) ;
 #if TRACE
             PresentationTraceSources.Refresh();
             var bs = PresentationTraceSources.DataBindingSource;
@@ -36,7 +209,6 @@ namespace ProjInterface
             var nLogTraceListener = new NLogTraceListener ( ) ;
             nLogTraceListener.Filter = new MyTraceFilter ( ) ;
             bs.Listeners.Add ( nLogTraceListener ) ;
-#endif
 #endif
         }
 
@@ -47,6 +219,7 @@ namespace ProjInterface
         {
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
+            ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
             var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule(),
                                                                  new AnalysisControlsModule()) ;
@@ -56,7 +229,6 @@ namespace ProjInterface
                 mainWindow.Show ( ) ;
             }
             catch ( Exception ex )
-
             {
                 Logger.Error ( ex , ex.ToString ) ;
                 KayMcCormick.Dev.Utils.HandleInnerExceptions ( ex ) ;
@@ -75,6 +247,55 @@ namespace ProjInterface
             Console.WriteLine ( elapsed.ToString ( ) ) ;
             Logger.Info ( "Initialization took {elapsed} time." , elapsed ) ;
         }
+
+        private void TakeOptions ( Options obj ) { _options = obj ; }
+
+        public override Type[] OptionTypes => new [] { typeof(Options) } ;
+
+        protected override void OnArgumentParseError ( IEnumerable < Error > obj )
+        {
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(Usage));
+            var usages1 = CommandLine.Text.HelpText
+                                     .UsageTextAs(ArgParseResult, example => example);
+            Logger.Debug(String.Join(", ", usages1.ToList().ConvertAll<string>(input =>
+                                                                                        TypeDescriptor.GetConverter(typeof(UsageInfo)).ConvertToString(input))));
+
+            IEnumerable<Usage> usages = usages1
+                                       .ToList().ConvertAll<Usage>(input => (Usage)converter.ConvertFrom(input));
+            Window w = new Window();
+            var ctrl = new CommandLineParserMessages
+                       { Usages = new UsagesFreezableCollection(usages) };
+            w.Content = ctrl;
+            w.ShowDialog();
+//            ErrorExit(ExitCode.ArgumentsError);
+            StringBuilder b = new StringBuilder(200);
+
+            var r = new StringReader(b.ToString());
+            try
+            {
+                string s ;
+                while ( ( s = r.ReadLine ( ) ) != null )
+                {
+                    Logger.Error ( s ) ;
+                }
+
+                MessageBox.Show ( b.ToString ( ) , "Help text" ) ;
+                ErrorExit ( ExitCode.ArgumentsError ) ;
+            }
+            catch ( Exception ex )
+            {
+                Logger.Error ( "Exception {exception}" , ex ) ;
+
+                ErrorExit ( ExitCode.ArgumentsError ) ;
+            }
+        }
+    }
+
+    public class Options : BaseOptions
+    {
+        [ Option ( 'b' ) ]
+        public bool BatchMode { get ; set ; }
+
     }
 
     public class ProjInterfaceModule : Module
@@ -83,7 +304,7 @@ namespace ProjInterface
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
-            builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ) ;
+            builder.Register( ( context , parameters ) => new ProjMainWindow(context.Resolve<IWorkspacesViewModel>(), context.Resolve<ILifetimeScope>())).AsSelf ( ) ;
 
         }
         #endregion

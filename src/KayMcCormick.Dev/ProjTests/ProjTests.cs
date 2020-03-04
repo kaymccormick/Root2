@@ -23,7 +23,6 @@ using System.Windows ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
-using CodeAnalysisApp1 ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.TestLib ;
@@ -159,7 +158,7 @@ namespace ProjTests
             var tempDir = Path.Combine ( utempDir , x ) ;
             var cloneDir = Path.Combine ( tempDir , "clone" ) ;
             var info = Directory.CreateDirectory ( tempDir ) ;
-            #if false
+#if false
             this.Finalizers.Add (
                                  ( ) => {
                                      foreach ( var enumerateFileSystemEntry in Directory
@@ -187,7 +186,7 @@ namespace ProjTests
                                      }
                                  }
                                 ) ;
-            #endif
+#endif
                 Logger.Info ( "tempdir is {tempDir}" , tempDir ) ;
             var cloneOptions = new CloneOptions ( ) ;
             cloneOptions.OnCheckoutProgress = ( path , steps , totalSteps )
@@ -231,6 +230,13 @@ namespace ProjTests
                 Logger.Info ( s ) ;
             }
 #endif
+            var instances = MSBuildLocator.QueryVisualStudioInstances()
+                                          .Where(
+                                                 (instance, i)
+                                                     => instance.Version.Major    == 16
+                                                        && instance.Version.Minor == 4
+                                                );
+            MSBuildLocator.RegisterInstance(instances.First());
             var scope = InterfaceContainer.GetContainer ( ) ;
             var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
             viewModel.AnalyzeCommand(viewModel.ProjectBrowserViewModel.RootCollection.OfType<IProjectBrowserNode>().First());
@@ -256,22 +262,30 @@ namespace ProjTests
             var solution = @"V3\TestCopy\src\KayMcCormick.Dev\KayMcCormick.Dev.sln" ;
             //solution = @"V2\LogTest\LogTest.sln";
 
-            MSBuildLocator.RegisterInstance ( i ) ;
-
+            
             var spath = Path.Combine ( root , solution ) ;
             Logger.Debug("posting {file}", f[0]);
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Post (f[0]) ;
 #endif
-            viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.Wait ( 10000 ) ;
-            if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
-                          .TryReceiveAll ( out var list ) )
-            {
-                Logger.Info ( "Here" ) ;
-                foreach ( var logInvocation in list )
-                {
-                    Logger.Info ( "{logInvocation}" , logInvocation ) ;
-                }
-            }
+
+            viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.ContinueWith (
+                                                                                           task => {
+                                                                                               if (
+                                                                                                   task
+                                                                                                      .IsFaulted
+                                                                                               )
+                                                                                               {
+                                                                                                   Logger
+                                                                                                      .Fatal ( task
+                                                                                                                  .Exception
+                                                                                                    , "Faulted with {ex}"
+                                                                                                     , task
+                                                                                                      .Exception
+                                                                                                       ) ;
+                                                                                               }
+                                                                                           }
+                                                                                          )
+                     .Wait ( TimeSpan.FromMinutes ( 5 )) ;
 
         }
 
@@ -618,21 +632,21 @@ Logger.Error(inner, inner.ToString);
                                                            , new CodeSource ( "Test Source" )
                                                            , TestSyntaxTree
                                                             ) ;
-            var logUsagesRewriter = new LogUsagesRewriter (
-                                                           TestSyntaxTree
-                                                         , codeAnalyseContext.CurrentModel
-                                                         , codeAnalyseContext.Document
-                                                         , codeAnalyseContext.CurrentRoot
-                                                         , ( node , span )
-                                                               => Logger.Info ( "{span}" , span )
-                                                          ) ;
-            var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
-            var s = new StringWriter ( ) ;
-            using ( var fileStream = File.OpenWrite ( @"out.cs" ) )
-            {
-                syntaxNode.WriteTo ( new StreamWriter ( fileStream ) ) ;
-                s.Close ( ) ;
-            }
+            // var logUsagesRewriter = new LogUsagesRewriter (
+                                                           // TestSyntaxTree
+                                                         // , codeAnalyseContext.CurrentModel
+                                                         // , codeAnalyseContext.Document
+                                                         // , codeAnalyseContext.CurrentRoot
+                                                         // , ( node , span )
+                                                               // => Logger.Info ( "{span}" , span )
+                                                          // ) ;
+            // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
+            // var s = new StringWriter ( ) ;
+            // using ( var fileStream = File.OpenWrite ( @"out.cs" ) )
+            // {
+                // syntaxNode.WriteTo ( new StreamWriter ( fileStream ) ) ;
+                // s.Close ( ) ;
+            // }
         }
 
 

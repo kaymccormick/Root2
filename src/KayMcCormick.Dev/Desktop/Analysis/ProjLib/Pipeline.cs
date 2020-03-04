@@ -1,12 +1,14 @@
 using System ;
 using System.Collections.Generic ;
 using System.Linq ;
+using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
+using NLog.Fluent ;
 
 namespace ProjLib
 {
@@ -25,16 +27,11 @@ namespace ProjLib
 
         public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
 
-        public Pipeline ( ITargetBlock < ILogInvocation > act = null )
+        public Pipeline ( )
         {
-            if ( act == null )
-            {
-                ResultBufferBlock =
-                    new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) { } ) ;
-                act = ResultBufferBlock ;
-            }
-
-            _ = BuildPipeline ( act ) ;
+            ResultBufferBlock =
+                new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) { } ) ;
+            _ = BuildPipeline ( ) ;
         }
 
         private static IPropagatorBlock < string , ProjectContext > ProjectContextBlock ( )
@@ -50,71 +47,58 @@ namespace ProjLib
             return new TransformBlock < string , string > ( ProjLibUtils.CloneProjectAsync ) ;
         }
 
-        public IPropagatorBlock < string , ILogInvocation > BuildPipeline (
-            ITargetBlock < ILogInvocation > act
-        )
+        public IPropagatorBlock < string , ILogInvocation > BuildPipeline ( )
         {
             var opt = new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
 
-            var onceBlock =
-                new WriteOnceBlock < string > ( s => s , new ExecutionDataflowBlockOptions ( ) ) ;
-            var transformBlock = repositoryTransformBlock ( ) ;
-            onceBlock.LinkTo ( transformBlock , opt ) ;
-            var buildTransformBlock = DataflowBlocks.BuildBlock ( ) ;
-            transformBlock.LinkTo ( buildTransformBlock , opt ) ;
-            var makeWs = DataflowBlocks.WorkspaceBlock ( ) ;
+            var input = new WriteOnceBlock < string > ( s => s ) ;
+            var clone = repositoryTransformBlock ( ) ;
+            input.LinkTo ( clone , opt ) ;
+            var build = DataflowBlocks.BuildBlock ( ) ;
+            clone.LinkTo ( build , opt ) ;
+            var initWorkspace = DataflowBlocks.WorkspaceBlock ( ) ;
+            build.LinkTo ( initWorkspace , opt ) ;
 
-            buildTransformBlock.LinkTo ( makeWs , opt ) ;
+            var findLogUsages = DataflowBlocks.FindLogUsagesBlock ( ) ;
+            
+            var toDocuments = _solutionDocumentsBlock = DataflowBlocks.SolutionDocumentsBlock();
+            initWorkspace.LinkTo ( toDocuments , opt ) ;
+            toDocuments.LinkTo ( findLogUsages , opt ) ;
+            findLogUsages.LinkTo ( ResultBufferBlock , opt ) ;
 
-
-
-            var findLogUsagesBlock = DataflowBlocks.FindLogUsagesBlock ( ) ;
-
-            _solutionDocumentsBlock = DataflowBlocks.SolutionDocumentsBlock ( ) ;
-            makeWs.LinkTo ( _solutionDocumentsBlock , opt ) ;
-            _solutionDocumentsBlock.LinkTo ( findLogUsagesBlock , opt ) ;
-            findLogUsagesBlock.LinkTo ( act , opt ) ;
-            //var workspace = new TransformBlock<BuildResults, Workspace> (Transform);
-            //build.LinkTo ( workspace, opt);
-            //workspace.LinkTo ( _solutionDocumentsBlock , opt ) ;
-            onceBlock.Completion.ContinueWith (
-                                               ( task ) => {
-                                                   Logger.Warn ( "onceblock complete" ) ;
-                                               }
-                                              ) ;
-            transformBlock.Completion.ContinueWith (
-                                                    task => {
-                                                        Logger.Warn ( "clone block complete" ) ;
-                                                    }
-                                                   ) ;
-            buildTransformBlock.Completion.ContinueWith (
-                                                         task => {
-                                                             Logger.Warn (
-                                                                          "build block complete"
-                                                                         ) ;
-                                                         }
-                                                        ) ;
-            makeWs.Completion.ContinueWith (
-                                            task => {
-                                                Logger.Warn ( "make workspace block complete" ) ;
-                                            }
-                                           ) ;
-            _solutionDocumentsBlock.Completion.ContinueWith (
-                                                             task => {
-                                                                 Logger.Warn (
-                                                                              "documents block complete"
-                                                                             ) ;
-                                                             }
-                                                            ) ;
-            findLogUsagesBlock.Completion.ContinueWith (
-                                                        task => {
-                                                            Logger.Warn (
-                                                                         "find usages block complete"
-                                                                        ) ;
-                                                        }
-                                                       ) ;
-            PipelineInstance = DataflowBlock.Encapsulate ( onceBlock , findLogUsagesBlock ) ;
+            Continuation ( input ,                  nameof ( input ) ) ;
+            Continuation ( clone ,                  nameof ( clone ) ) ;
+            Continuation ( build ,                  nameof ( build ) ) ;
+            Continuation ( initWorkspace ,        nameof ( initWorkspace ) ) ;
+            Continuation ( toDocuments , nameof ( toDocuments ) ) ;
+            Continuation ( findLogUsages ,     nameof ( findLogUsages ) ) ;
+            Continuation ( ResultBufferBlock ,      nameof ( ResultBufferBlock ) ) ;
+            PipelineInstance = DataflowBlock.Encapsulate ( input , ResultBufferBlock ) ;
             return PipelineInstance ;
+        }
+
+        private void Continuation ( IDataflowBlock writeOnceBlock , string writeOnceBlockName )
+        {
+            writeOnceBlock.Completion.ContinueWith (
+                                                    task => ContinuationFunction (
+                                                                                  task
+                                                                                , writeOnceBlockName
+                                                                                 )
+                                                   ) ;
+        }
+
+        private void ContinuationFunction ( Task task , string onceBlockName )
+        {
+            if ( task.IsFaulted )
+            {
+                new LogBuilder ( Logger )
+                   .LoggerName ( $"{Logger.Name}.{onceBlockName}" )
+                   .Level ( LogLevel.Debug )
+                   .Exception ( task.Exception )
+                   .Message ( "fault is {ex}" , task.Exception.ToString ( ) )
+                   .Write ( ) ;
+            }
+            else { Logger.Debug ( $"{onceBlockName} complete - not faulted" ) ; }
         }
 
         private Workspace Transform ( BuildResults arg ) { return null ; }

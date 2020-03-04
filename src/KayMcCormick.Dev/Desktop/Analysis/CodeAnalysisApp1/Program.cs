@@ -46,7 +46,7 @@ namespace CodeAnalysisApp1
             //       before calling MSBuildWorkspace.Create()
             //       otherwise, MSBuildWorkspace won't MEF compose.
             await NewMethod ( args[0] , instance ) ;
-
+                
             // TODO: Do analysis on the projects in the loaded solution
         }
 
