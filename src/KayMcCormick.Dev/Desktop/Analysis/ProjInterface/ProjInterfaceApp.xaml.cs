@@ -15,11 +15,12 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.Build.Locator ;
 using NLog ;
-using ParseLogs ;
+
 using ProjLib ;
 
 namespace ProjInterface
 {
+    #if false
     public class UsagesFreezableCollection : FreezableCollection<Usage>
     {
         public UsagesFreezableCollection() : base()
@@ -192,7 +193,7 @@ namespace ProjInterface
     public class AppDependencyObject : FrameworkContentElement
     {
     }
-
+    #endif
     public partial class ProjInterfaceApp : BaseApp
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -201,7 +202,7 @@ namespace ProjInterface
 
         public ProjInterfaceApp ( )
         {
-#if TRACE
+#if false
             PresentationTraceSources.Refresh();
             var bs = PresentationTraceSources.DataBindingSource;
             bs.Switch.Level = SourceLevels.Verbose ;
@@ -248,11 +249,13 @@ namespace ProjInterface
             Logger.Info ( "Initialization took {elapsed} time." , elapsed ) ;
         }
 
+        protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
+
         private void TakeOptions ( Options obj ) { _options = obj ; }
 
         public override Type[] OptionTypes => new [] { typeof(Options) } ;
-
-        protected override void OnArgumentParseError ( IEnumerable < Error > obj )
+#if false
+        protected override void OnArgumentParseError ( IEnumerable < object > obj )
         {
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(Usage));
             var usages1 = CommandLine.Text.HelpText
@@ -288,7 +291,9 @@ namespace ProjInterface
 
                 ErrorExit ( ExitCode.ArgumentsError ) ;
             }
-        }
+    }
+#endif
+
     }
 
     public class Options : BaseOptions

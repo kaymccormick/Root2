@@ -75,10 +75,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\CommandLine\src\CommandLine\CommandLine.csproj">
-      <Project>{fae4461c-088c-431e-9166-bed294ff43a8}</Project>
-      <Name>CommandLine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
@@ -93,6 +89,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommandLineParser">
+      <Version>2.7.82</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime">
       <Version>16.4.0</Version>
     </PackageReference>

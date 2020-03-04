@@ -98,12 +98,12 @@ namespace KayMcCormick.Lib.Wpf
                  || e.Args[ 0 ][ 0 ] == '-' )
             {
                 args = args.Prepend ( "default" ).ToArray ( ) ;
-            }])
-            ArgParseResult = Parser.Default.ParseArguments ( args , optionTypes ) ;
-            ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
+            }
+            // ArgParseResult = Parser.Default.ParseArguments ( args , optionTypes ) ;
+            // ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
         }
 
-        protected abstract void OnArgumentParseError ( IEnumerable < Error > obj ) ;
+        protected abstract void OnArgumentParseError ( IEnumerable < object> obj ) ;
 
         public ParserResult < object > ArgParseResult
         {
@@ -115,3 +115,4 @@ namespace KayMcCormick.Lib.Wpf
         #endregion
     }
 }
+
