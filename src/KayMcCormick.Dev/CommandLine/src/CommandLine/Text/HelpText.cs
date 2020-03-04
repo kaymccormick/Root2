@@ -722,7 +722,7 @@ namespace CommandLine.Text
             var usageTuple = usage.FromJustOrFail();
             var examples = usageTuple.Item2;
             var appAlias = usageTuple.Item1.ApplicationAlias ?? ReflectionHelper.GetAssemblyName();
-
+            
             foreach (var e in examples)
             {
                 var example = mapperFunc(e);
@@ -745,6 +745,51 @@ namespace CommandLine.Text
                     yield return commandLine.ToString();
                 }
             }
+        }
+
+        public static IEnumerable<UsageInfo> UsageTextAs<T>(ParserResult<T> parserResult, Func<Example, Example> mapperFunc)
+        {
+            if (parserResult == null) throw new ArgumentNullException("parserResult");
+
+            var usage = GetUsageFromType(parserResult.TypeInfo.Current);
+            if (usage.MatchNothing())
+                yield break;
+
+            var usageTuple = usage.FromJustOrFail();
+            var examples = usageTuple.Item2;
+            var appAlias = usageTuple.Item1.ApplicationAlias ?? ReflectionHelper.GetAssemblyName();
+
+            UsageInfo info = new UsageInfo();
+            List<ExampleInfo> outExamples = new List<ExampleInfo>();
+            foreach (var e in examples)
+            {
+                var example = mapperFunc(e);
+                ExampleInfo eInfo = new ExampleInfo();
+                eInfo.MapResult = example;
+                var styles = example.GetFormatStylesOrDefault();
+                var outStyles = new List<StyleInfo>();
+                foreach (var s in styles)
+                {
+                    StyleInfo s2 = new StyleInfo();
+                    s2.OptionPrefix = OptionPrefixWidth.Spaces();
+                    s2.AppAlias = appAlias;
+                    var formatCommandLine = Parser.Default.FormatCommandLine(example.Sample,
+                        config =>
+                        {
+                            config.PreferShortName = s.PreferShortName;
+                            config.GroupSwitches = s.GroupSwitches;
+                            config.UseEqualToken = s.UseEqualToken;
+                        });
+                    s2.FormattedCommandLine = formatCommandLine;
+                    outStyles.Add(s2);
+                }
+
+                eInfo.Styles = outStyles;
+            }
+
+            info.Examples = outExamples;
+            yield return info;
+
         }
 
         /// <summary>
@@ -1130,5 +1175,23 @@ namespace CommandLine.Text
 
 
 
+    }
+
+    public class UsageInfo
+    {
+        public IEnumerable<ExampleInfo> Examples { get; set; } = Array.Empty<ExampleInfo>();
+    }
+
+    public class ExampleInfo
+    {
+        public Example MapResult { get; set; }
+        public ICollection<StyleInfo> Styles { get; set; }
+    }
+
+    public class StyleInfo
+    {
+        public string OptionPrefix { get; set; }
+        public string FormattedCommandLine { get; set; }
+        public string AppAlias { get; set; }
     }
 }
