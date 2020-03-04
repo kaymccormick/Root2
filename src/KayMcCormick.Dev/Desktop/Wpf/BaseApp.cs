@@ -98,7 +98,7 @@ namespace KayMcCormick.Lib.Wpf
                  || e.Args[ 0 ][ 0 ] == '-' )
             {
                 args = args.Prepend ( "default" ).ToArray ( ) ;
-            }])
+            }
             ArgParseResult = Parser.Default.ParseArguments ( args , optionTypes ) ;
             ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
         }

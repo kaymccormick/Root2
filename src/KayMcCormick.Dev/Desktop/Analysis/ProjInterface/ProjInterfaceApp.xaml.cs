@@ -291,6 +291,15 @@ namespace ProjInterface
         }
     }
 
+    public class Options0
+    {
+        // [ Verb( "default" ) ]
+        public Options DefaultOptions {
+            get ;
+            set ;
+        }
+    }
+
     public class Options : BaseOptions
     {
         [ Option ( 'b' ) ]
