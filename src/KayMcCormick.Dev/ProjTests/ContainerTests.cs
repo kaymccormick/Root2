@@ -47,8 +47,15 @@ namespace Tests.Main
             
             var x = InterfaceContainer.GetContainer (new AnalysisControlsModule()) ;
             var s = x.BeginLifetimeScope (
-                                  b => b.RegisterInstance ( c.SyntaxTree ).As < SyntaxTree > ( )
-                                 ) ;
+                                          b => {
+
+                                              b.RegisterInstance ( c.SyntaxTree )
+                                               .As < SyntaxTree > ( ) ;
+
+                                              b.RegisterInstance ( c )
+                                               .As < ICompilationUnitRootContext > ( ) ;
+                                          }
+                                         ) ;
             var pages = s.Resolve < IEnumerable < Page > > ( ) ;
             Assert.NotEmpty(pages);
             foreach ( var page in pages )

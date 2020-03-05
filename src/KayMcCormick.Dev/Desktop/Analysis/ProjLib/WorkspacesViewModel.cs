@@ -49,7 +49,6 @@ namespace ProjLib
         private MyProjectLoadProgress _currentProgress ;
         private string                _currentProject ;
 
-        private ProjectHandlerImpl        _handler ;
         private bool                      _processing ;
         private IProjectBrowserViewModoel _projectBrowserViewModel ;
         private readonly SqlConnection _sqlConn ;
@@ -96,62 +95,7 @@ namespace ProjLib
 
         public VisualStudioInstancesCollection VsCollection { get ; } =
             new VisualStudioInstancesCollection ( ) ;
-
-#if false
-        public async Task < object > LoadSolutionAsync (
-            VsInstance             vsSelectedItem
-      , IMruItem               sender2SelectedItem
-      , TaskFactory            factory1
-      , SynchronizationContext current
-        )
-        {
-            var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances ( ) ;
-            var i = visualStudioInstances.Single (
-                                                  instance => instance.VisualStudioRootPath
-                                                              == vsSelectedItem.InstallationPath
-                                                 ) ;
-            if ( sender2SelectedItem != null )
-            {
-                _handler = new ProjectHandlerImpl ( sender2SelectedItem.FilePath , i , current ) ;
-                _handler.ProcessProject +=
-                    ( workspace , project ) => CurrentProject = project.Name ;
-                _handler.ProcessDocument += document => {
-                    CurrentDocumentPath = document.RelativePath ( ) ;
-                } ;
-                _handler.progressReporter = new MyProgress ( this ) ;
-                await _handler.LoadAsync ( ) ;
-
-                foreach ( var currentSolutionProject in _handler.Workspace.CurrentSolution.Projects
-                )
-                {
-                    LogManager.GetCurrentClassLogger ( )
-                              .Info ( "Current {project}" , currentSolutionProject.Name ) ;
-
-#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
-                    await factory1.StartNew (
-                                             ( ) => sender2SelectedItem.ProjectCollection.Add (
-                                                                                               new
-                                                                                                   AppProjectInfo (
-                                                                                                                   currentSolutionProject
-                                                                                                                      .Name
-                                                                                                             , currentSolutionProject
-                                                                                                                      .FilePath
-                                                                                                             , currentSolutionProject
-                                                                                                                  .Documents
-                                                                                                                  .Count ( )
-                                                                                                                  )
-                                                                                              )
-                                            )
-#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
-                                  .ConfigureAwait ( false ) ;
-                }
-            }
-
-            return new object ( ) ;
-        }
-
-#endif
-
+ 
         public IProjectBrowserViewModoel ProjectBrowserViewModel
         {
             get => _projectBrowserViewModel ;

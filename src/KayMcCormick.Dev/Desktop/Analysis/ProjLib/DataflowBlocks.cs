@@ -9,10 +9,10 @@ namespace ProjLib
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public static TransformBlock < BuildResults , Workspace > InitializeWorkspace ( )
+        public static TransformBlock < string, Workspace > InitializeWorkspace ( )
         {
             var makeWs =
-                new TransformBlock < BuildResults , Workspace > ( Workspaces.MakeWorkspaceAsync ) ;
+                new TransformBlock < string, Workspace > ( Workspaces.MakeWorkspaceAsync ) ;
             return makeWs ;
         }
 

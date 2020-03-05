@@ -12,7 +12,7 @@ using KayMcCormick.Dev.Logging ;
 using MessageTemplates ;
 using MessageTemplates.Core ;
 using MessageTemplates.Structure ;
-using Microsoft.Build.Locator ;
+
 using Newtonsoft.Json ;
 using NLog ;
 using ProjLib ;
@@ -109,6 +109,7 @@ namespace ConsoleApp1
 
         private static void Instances ( Logger Logger )
         {
+#if false
             var instances = MSBuildLocator.QueryVisualStudioInstances (
                                                                        new
                                                                        VisualStudioInstanceQueryOptions ( )
@@ -126,6 +127,7 @@ namespace ConsoleApp1
                            , visualStudioInstance.Version
                             ) ;
             }
+#endif
         }
 
         private static async Task MainCommand ( Options options , AppContext context )
@@ -170,7 +172,7 @@ namespace ConsoleApp1
                 }
             }
 
-
+#if false
             var instances = MSBuildLocator.QueryVisualStudioInstances ( )
                                           .Where (
                                                   ( instance , i )
@@ -178,7 +180,7 @@ namespace ConsoleApp1
                                                          && instance.Version.Minor == 4
                                                  ) ;
             MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
-
+            #endif
             viewModel.AnalyzeCommand (
                                       viewModel.ProjectBrowserViewModel.RootCollection
                                                .OfType < IProjectBrowserNode > ( )

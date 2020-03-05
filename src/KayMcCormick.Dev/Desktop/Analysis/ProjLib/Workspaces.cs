@@ -17,11 +17,11 @@ static internal class Workspaces
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-    public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] BuildResults results )
+    public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] string arg)
     {
-        if ( results == null )
+        if ( arg== null )
         {
-            throw new ArgumentNullException ( nameof ( results ) ) ;
+            throw new ArgumentNullException ( nameof ( arg) ) ;
         }
 
         var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
@@ -45,6 +45,7 @@ static internal class Workspaces
                    , workspace.SkipUnrecognizedProjects
                     ) ;
         workspace.SkipUnrecognizedProjects = true ;
+        workspace.WorkspaceChanged += ( sender , args ) => Logger.Warn ( "{kind}" , args.Kind) ;
         workspace.DocumentOpened += ( sender , args )
             => Logger.Debug (
                              "{eventName}: {document}"
@@ -77,10 +78,23 @@ static internal class Workspaces
             Logger.Warn ( "Load workspace failed: {}" , e.Diagnostic.Message ) ;
         } ;
 
+        List<string> solList;
+        var sol = Path.Combine(arg, "solutions.txt");
+        if (File.Exists(sol))
+        {
+            solList = File.ReadAllLines(sol).ToList();
+        }
+        else
+        {
+            solList = Directory
+                     .EnumerateFiles(arg, "*.sln", SearchOption.AllDirectories)
+                     .ToList();
+        }
+
         // ReSharper disable once LocalizableElement
         var solutionPath = Path.Combine (
-                                         results.SourceDir
-                                       , results.SolutionsFilesList.First ( )
+                                         arg
+                                       , solList.First ( )
                                         ) ;
         Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
         Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AnalysisFramework ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using ProjLib ;
@@ -23,24 +24,32 @@ namespace AnalysisControls
     /// </summary>
     public partial class ComponentPage : Page
     {
-        private readonly IComponentViewModel _viewModel ;
+        public IComponentViewModel ViewModel { get ; }
 
         public ComponentPage(IComponentViewModel viewModel)
         {
-            _viewModel = viewModel ;
+            ViewModel = viewModel ;
             InitializeComponent();
         }
     }
 
     public interface IComponentViewModel : IViewModel
     {
+        SyntaxTree Tree { get ; }
 
+        ICompilationUnitRootContext RootContext { get ; }
     }
 
     public class ComponentViewModel : IComponentViewModel
     {
-        private SyntaxTree syntaxTree ;
+        public SyntaxTree Tree { get ; }
 
-        public ComponentViewModel ( [ CanBeNull ] SyntaxTree syntaxTree  = null) { this.syntaxTree = syntaxTree ; }
+        public ICompilationUnitRootContext RootContext { get ; }
+
+        public ComponentViewModel ( ICompilationUnitRootContext rootContext , [ CanBeNull ] SyntaxTree syntaxTree  = null)
+        {
+            this.RootContext = rootContext ;
+            this.Tree = syntaxTree ;
+        }
     }
 }

@@ -14,10 +14,11 @@ using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
+using System.Text.Json.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Newtonsoft.Json ;
+
 using NLog ;
 
 namespace AnalysisFramework
@@ -44,13 +45,10 @@ namespace AnalysisFramework
         private readonly string _code ;
         private readonly string _assemblyName ;
 
-        [ JsonIgnore ]
         protected SemanticModel _currentModel ;
 
-        [ JsonIgnore ]
         protected StatementSyntax _statement ;
 
-        [ JsonIgnore ]
         protected SyntaxNode node ;
 
         private CompilationUnitSyntax _compilationUnit ;

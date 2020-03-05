@@ -5,7 +5,7 @@ using System.IO ;
 using System.Linq ;
 using Microsoft.Build.Evaluation ;
 using Microsoft.Build.Execution ;
-using Microsoft.Build.Locator ;
+
 using NLog ;
 
 namespace ProjLib
@@ -18,28 +18,6 @@ namespace ProjLib
             Logger.Info ( "BuildRepository {arg}" , arg ) ;
             try
             {
-                if ( MSBuildLocator.CanRegister )
-                {
-                    MSBuildLocator.RegisterInstance (
-                                                     MSBuildLocator
-                                                        .QueryVisualStudioInstances (
-                                                                                     new
-                                                                                     VisualStudioInstanceQueryOptions ( )
-                                                                                     {
-                                                                                         DiscoveryTypes
-                                                                                             = DiscoveryType
-                                                                                                .VisualStudioSetup
-                                                                                     }
-                                                                                    )
-                                                        .First (
-                                                                instance
-                                                                    => instance.Version.Major == 16
-                                                                       && instance.Version.Minor
-                                                                       == 4
-                                                               )
-                                                    ) ;
-                }
-
                 var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
                 b[ "Platform" ] = "x86" ;
 

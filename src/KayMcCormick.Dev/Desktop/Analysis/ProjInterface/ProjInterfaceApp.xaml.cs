@@ -9,18 +9,20 @@ using System.Text ;
 using System.Windows ;
 using AnalysisControls ;
 using Autofac ;
+#if COMMANDLINE
 using CommandLine ;
 using CommandLine.Text ;
+#endif
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.Build.Locator ;
+//using Microsoft.Build.Locator ;
 using NLog ;
 
 using ProjLib ;
 
 namespace ProjInterface
 {
-    #if false
+#if false
     public class UsagesFreezableCollection : FreezableCollection<Usage>
     {
         public UsagesFreezableCollection() : base()
@@ -193,13 +195,14 @@ namespace ProjInterface
     public class AppDependencyObject : FrameworkContentElement
     {
     }
-    #endif
+#endif
     public partial class ProjInterfaceApp : BaseApp
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private Type[] _optionTypes ;
+#if COMMANDLINE
         private Options _options ;
-
+        #endif
         public ProjInterfaceApp ( )
         {
 #if false
@@ -220,7 +223,9 @@ namespace ProjInterface
         {
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
+#if COMMANDLINE
             ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
+#endif
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
             var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule(),
                                                                  new AnalysisControlsModule()) ;
@@ -235,7 +240,7 @@ namespace ProjInterface
                 KayMcCormick.Dev.Utils.HandleInnerExceptions ( ex ) ;
                 MessageBox.Show ( ex.Message , "Error" ) ;
             }
-
+            #if MSBUILDLOCATOR
             var instances = MSBuildLocator.QueryVisualStudioInstances()
                                           .Where(
                                                  (instance, i)
@@ -243,6 +248,7 @@ namespace ProjInterface
                                                         && instance.Version.Minor == 4
                                                 );
             MSBuildLocator.RegisterInstance(instances.First());
+#endif
 
             var elapsed = DateTime.Now - start ;
             Console.WriteLine ( elapsed.ToString ( ) ) ;
@@ -251,9 +257,11 @@ namespace ProjInterface
 
         protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
 
+#if COMMANDLINE
         private void TakeOptions ( Options obj ) { _options = obj ; }
 
         public override Type[] OptionTypes => new [] { typeof(Options) } ;
+#endif
 #if false
         protected override void OnArgumentParseError ( IEnumerable < object > obj )
         {
@@ -295,24 +303,25 @@ namespace ProjInterface
 #endif
 
     }
-
+#if COMMANDLINE
     public class Options : BaseOptions
     {
         [ Option ( 'b' ) ]
         public bool BatchMode { get ; set ; }
 
     }
+#endif
 
     public class ProjInterfaceModule : Module
     {
-        #region Overrides of Module
+#region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
             builder.Register( ( context , parameters ) => new ProjMainWindow(context.Resolve<IWorkspacesViewModel>(), context.Resolve<ILifetimeScope>())).AsSelf ( ) ;
 
         }
-        #endregion
+#endregion
     }
 
     public class BreakTraceListener : TraceListener

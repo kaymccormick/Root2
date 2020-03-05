@@ -11,9 +11,10 @@
 #endregion
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.Text.Json.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Newtonsoft.Json ;
+
 
 namespace AnalysisFramework
 {
@@ -59,7 +60,6 @@ namespace AnalysisFramework
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>[
-        [JsonConstructor]
         public LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string sourceContext , string followingCode , string precedingCode , string code ) : base ( document )
         {
             _msgval = msgval ;

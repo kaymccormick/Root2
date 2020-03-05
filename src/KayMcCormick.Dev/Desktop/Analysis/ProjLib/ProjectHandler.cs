@@ -1,4 +1,5 @@
-﻿using System ;
+﻿#if false
+using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
@@ -16,7 +17,7 @@ using AnalysisFramework ;
 using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
-using Microsoft.Build.Locator ;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -66,16 +67,16 @@ namespace ProjLib
         /// </summary>
         public ProjectHandler (
             string                 solutionPath
-          , VisualStudioInstance   instance
+          //, VisualStudioInstance   instance
         )
         {
             SolutionPath = solutionPath ;
-            Instance     = instance ;
+            //Instance     = instance ;
         }
 
         public string SolutionPath { get ; }
 
-        public VisualStudioInstance Instance { get ; }
+        //public VisualStudioInstance Instance { get ; }
 
         public Workspace Workspace { get ; set ; }
 
@@ -322,3 +323,4 @@ namespace ProjLib
         }
     }
 }
+#endif

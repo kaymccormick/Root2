@@ -10,8 +10,8 @@
 // ---
 #endregion
 using System.ComponentModel ;
+using System.Text.Json.Serialization ;
 using MessageTemplates ;
-using Newtonsoft.Json ;
 
 namespace AnalysisFramework
 {
@@ -20,7 +20,6 @@ namespace AnalysisFramework
         private readonly string _message ;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        [JsonConstructor]
         public LogMessageRepr ( bool isMessageTemplate , object constantMessage )
         {
             IsMessageTemplate = isMessageTemplate ;

@@ -288,10 +288,4 @@ namespace ProjInterface
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
     }
-
-    internal interface ICodeReference
-    {
-        Workspace Workspace { get ; }
-        Triple Trifecta  { get ; }
-    }
 }

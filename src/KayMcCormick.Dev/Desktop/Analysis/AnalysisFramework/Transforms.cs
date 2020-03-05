@@ -568,13 +568,17 @@ namespace AnalysisFramework
         public static object TransformTree ( SyntaxTree contextSyntaxTree )
         {
             var syntaxNode = contextSyntaxTree.GetRoot ( ) ;
+            return TransformSyntaxNode ( syntaxNode ) ;
+            ;
+        }
+
+        public static object TransformSyntaxNode ( SyntaxNode syntaxNode )
+        {
             switch ( syntaxNode )
             {
                 case CompilationUnitSyntax comp :
                     return new PojoCompilationUnit (
-                                                    comp.Usings.Select (
-                                                                        TransformUsingDirectiveSyntax
-                                                                       )
+                                                    comp.Usings.Select ( TransformUsingDirectiveSyntax )
                                                         .ToList ( )
                                                   , comp.Externs.Select (
                                                                          TransformExternAliasDirectiveSyntax
@@ -584,15 +588,15 @@ namespace AnalysisFramework
                                                                                 TransformAttributeListSybtax
                                                                                )
                                                         .ToList ( )
-                                                  , comp.Members.Select (
-                                                                         TransformMemberDeclarationSyntax
-                                                                        )
+                                                  , comp.Members.Select ( TransformMemberDeclarationSyntax )
                                                         .ToList ( )
                                                    ) ;
+                case ExpressionSyntax s: return TransformExpr ( s ) ;
+                case UsingDirectiveSyntax u: return TransformUsingDirectiveSyntax ( u ) ;
+                case MemberDeclarationSyntax m: return TransformMemberDeclarationSyntax ( m ) ;
             }
 
-            throw new UnsupportedExpressionTypeSyntax ( syntaxNode.Kind ( ).ToString().ToString ( ) ) ;
-            ;
+            throw new UnsupportedExpressionTypeSyntax ( syntaxNode.Kind ( ).ToString ( ).ToString ( ) ) ;
         }
 
         private static object TransformMemberDeclarationSyntax ( MemberDeclarationSyntax arg )

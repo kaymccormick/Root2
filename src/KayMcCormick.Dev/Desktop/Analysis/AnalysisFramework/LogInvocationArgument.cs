@@ -11,9 +11,11 @@
 #endregion
 using System ;
 using System.ComponentModel ;
+using System.Text.Json ;
+using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Newtonsoft.Json ;
+
 
 namespace AnalysisFramework
 {
@@ -26,11 +28,10 @@ namespace AnalysisFramework
 
     public class LogInvocationArgument : ILogInvocationArgument
     {
-        [JsonIgnore]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
 
         private readonly ILogInvocation  _debugInvo ;
-        [JsonIgnore]
+     
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 
         private readonly ArgumentSyntax _syntax ;
@@ -40,11 +41,10 @@ namespace AnalysisFramework
         {
             _syntax = syntax ;
             var jsonOut = Transforms.TransformExpr(syntax.Expression);
-            JSON = JsonConvert.SerializeObject(jsonOut);
+            JSON = JsonSerializer.Serialize(jsonOut);
             Pojo = jsonOut;
         }
 
-        [JsonConstructor]
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogInvocationArgument ( ) {
         }

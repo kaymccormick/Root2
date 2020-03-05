@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisFramework", "Deskto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KayMcCormick.Lib.Wpf", "Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj", "{3434E74C-D7B5-4315-A8E1-51DBCE878199}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandLine", "CommandLine\src\CommandLine\CommandLine.csproj", "{A4547F77-B36D-49D1-9DC3-EFE41526D16A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Desktop\Analysis\Analyze\ConsoleApp1\ConsoleApp1.csproj", "{FAD293B8-C008-4243-88FC-A3A8A01DB52D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,18 +108,16 @@ Global
 		{3434E74C-D7B5-4315-A8E1-51DBCE878199}.Release|x64.Build.0 = Release|x64
 		{3434E74C-D7B5-4315-A8E1-51DBCE878199}.Release|x86.ActiveCfg = Release|x86
 		{3434E74C-D7B5-4315-A8E1-51DBCE878199}.Release|x86.Build.0 = Release|x86
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Debug|x64.ActiveCfg = Debug|x64
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Debug|x64.Build.0 = Debug|x64
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Debug|x86.ActiveCfg = Debug|x86
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Debug|x86.Build.0 = Debug|x86
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Release|x64.ActiveCfg = Release|x64
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Release|x64.Build.0 = Release|x64
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Release|x86.ActiveCfg = Release|x86
-		{A4547F77-B36D-49D1-9DC3-EFE41526D16A}.Release|x86.Build.0 = Release|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x64.ActiveCfg = Debug|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x64.Build.0 = Debug|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x86.ActiveCfg = Debug|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x86.Build.0 = Debug|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|Any CPU.ActiveCfg = Release|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x64.ActiveCfg = Release|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x64.Build.0 = Release|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x86.ActiveCfg = Release|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

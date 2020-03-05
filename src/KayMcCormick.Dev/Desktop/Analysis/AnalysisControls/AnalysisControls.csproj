@@ -123,6 +123,7 @@
     <Compile Include="Token.cs" />
     <Compile Include="TokenConverter.cs" />
     <Compile Include="ToolTips.cs" />
+    <Compile Include="TransformConverter.cs" />
     <Compile Include="ValueTemplateItemSelector.cs" />
     <Compile Include="Visitor3.cs" />
     <Page Include="AnalysisControls.xaml">
@@ -223,9 +224,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common">
-      <Version>3.6.0-beta1-20111-10</Version>
-    </PackageReference>
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>
     </PackageReference>

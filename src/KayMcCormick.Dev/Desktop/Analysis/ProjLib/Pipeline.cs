@@ -35,12 +35,19 @@ namespace ProjLib
             var input = new WriteOnceBlock < string > ( s => s ) ;
             var clone = DataflowBlocks.ClonseSource ( ) ;
             input.LinkTo ( clone , opt ) ;
+#if BUILD
             var build = DataflowBlocks.PackagesRestore ( ) ;
             clone.LinkTo ( build , opt ) ;
+#endif
             var initWorkspace = DataflowBlocks.InitializeWorkspace ( ) ;
+#if BUILD
             build.LinkTo ( initWorkspace , opt ) ;
+#else
+            clone.LinkTo ( initWorkspace , opt ) ;
+            #endif
 
             var toDocuments = Workspaces.SolutionDocumentsBlock ( ) ;
+            
             initWorkspace.LinkTo ( toDocuments , opt ) ;
             var findLogUsages = DataflowBlocks.FindLogUsages();
             toDocuments.LinkTo ( findLogUsages , opt ) ;
@@ -48,7 +55,9 @@ namespace ProjLib
 
             Continuation ( input ,             nameof ( input ) ) ;
             Continuation ( clone ,             nameof ( clone ) ) ;
+            #if BUILD
             Continuation ( build ,             nameof ( build ) ) ;
+#endif
             Continuation ( initWorkspace ,     nameof ( initWorkspace ) ) ;
             Continuation ( toDocuments ,       nameof ( toDocuments ) ) ;
             Continuation ( findLogUsages ,     nameof ( findLogUsages ) ) ;

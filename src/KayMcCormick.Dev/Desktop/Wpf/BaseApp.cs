@@ -6,14 +6,17 @@ using System.IO ;
 using System.Linq ;
 using System.Windows ;
 using Autofac ;
+#if COMMANDLINE
 using CommandLine ;
 using CommandLine.Text ;
+#endif
 using KayMcCormick.Dev ;
 using NLog ;
 using static KayMcCormick.Dev.Logging.AppLoggingConfigHelper ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+#if COMMANDLINE
     public abstract class BaseOptions
     {
         [ Option ( 'q' ) ]
@@ -22,7 +25,7 @@ namespace KayMcCormick.Lib.Wpf
         [ Option ( 't' ) ]
         public bool EnableTracing { get ; set ; }
     }
-
+    #endif
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -30,7 +33,9 @@ namespace KayMcCormick.Lib.Wpf
     {
         private IComponentContext       scope ;
         private Type[]                  _optionType ;
+#if COMMANDLINE
         private ParserResult < object > _argParseResult ;
+#endif
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Application" /> class.</summary>
         /// <exception cref="System.InvalidOperationException">More than one instance of the <see cref="System.Windows.Application" /> class is created per <see cref="System.AppDomain" />.</exception>
@@ -88,7 +93,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        #region Overrides of Application
+#region Overrides of Application
         protected override void OnStartup ( StartupEventArgs e )
         {
             base.OnStartup ( e ) ;
@@ -105,14 +110,17 @@ namespace KayMcCormick.Lib.Wpf
 
         protected abstract void OnArgumentParseError ( IEnumerable < object> obj ) ;
 
+
+#if COMMANDLINE
         public ParserResult < object > ArgParseResult
         {
             get => _argParseResult ;
             set => _argParseResult = value ;
         }
+        #endif
 
         public virtual Type[] OptionTypes => _optionType ;
-        #endregion
+#endregion
     }
 }
 
