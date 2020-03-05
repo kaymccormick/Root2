@@ -1,0 +1,111 @@
+using System ;
+using System.Collections.Generic ;
+using System.Collections.Immutable ;
+using System.Diagnostics ;
+using System.IO ;
+using System.Linq ;
+using System.Text.RegularExpressions ;
+using System.Threading.Tasks ;
+using System.Threading.Tasks.Dataflow ;
+using JetBrains.Annotations ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.MSBuild ;
+using NLog ;
+using ProjLib ;
+
+static internal class Workspaces
+{
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+    public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] BuildResults results )
+    {
+        if ( results == null )
+        {
+            throw new ArgumentNullException ( nameof ( results ) ) ;
+        }
+
+        var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
+        b[ "Platform" ] = "x86" ;
+
+        IDictionary < string , string > props = b.ToImmutable ( ) ;
+
+        MSBuildWorkspace workspace ;
+        try
+        {
+            workspace = MSBuildWorkspace.Create ( props ) ;
+        }
+        catch ( Exception ex )
+        {
+            throw ;
+        }
+
+
+        Logger.Info (
+                     "SkipUnrecognizedProjects is {SkipUnrecognizedProjects}"
+                   , workspace.SkipUnrecognizedProjects
+                    ) ;
+        workspace.SkipUnrecognizedProjects = true ;
+        workspace.DocumentOpened += ( sender , args )
+            => Logger.Debug (
+                             "{eventName}: {document}"
+                           , nameof ( workspace.DocumentOpened )
+                           , args.Document
+                            ) ;
+
+        // Print message for WorkspaceFailed event to help diagnosing project load failures.
+
+        workspace.WorkspaceFailed += ( o , e ) => {
+            try
+            {
+                var m = Regex.Match (
+                                     e.Diagnostic.Message
+                                   , "Msbuild failed when processing the file '(.*)' with message:(.*)"
+                                    ) ;
+                if ( m.Success )
+                {
+                    var file1 = m.Groups[ 1 ].Captures[ 0 ] ;
+                    var message = m.Groups[ 2 ].Captures[ 0 ] ;
+                    Logger.Warn ( "Workspace Error: {file}, {msg}" , file1 , message ) ;
+                }
+            }
+            catch ( Exception ex )
+            {
+                Logger.Warn ( ex , ex.ToString ( ) ) ;
+            }
+
+            // "Msbuild failed when processing the file 'C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\V3\\Root\\src\\KayMcCormick.Dev\\Desktop\\App1\\App1.csproj' with message: C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319\\Microsoft.WinFx.targets: (268, 9): Unknown build error, 'Object reference not set to an instance of an object.' "
+            Logger.Warn ( "Load workspace failed: {}" , e.Diagnostic.Message ) ;
+        } ;
+
+        // ReSharper disable once LocalizableElement
+        var solutionPath = Path.Combine (
+                                         results.SourceDir
+                                       , results.SolutionsFilesList.First ( )
+                                        ) ;
+        Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
+        Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
+
+        // Attach progress reporter so we print projects as they are loaded.
+        //workspace.Services.GetService < IOptionService > ( ) ;
+        //workspace.Options.WithChangedOption(new OptionKey(), ))
+        await workspace.OpenSolutionAsync ( solutionPath ).ConfigureAwait ( true ) ;
+        // , new Program.ConsoleProgressReporter()
+        // );
+        Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
+        return workspace ;
+    }
+
+    public static TransformManyBlock < Workspace , Document > SolutionDocumentsBlock ( )
+    {
+        return new TransformManyBlock < Workspace , Document > (
+                                                                workspace => workspace
+                                                                            .CurrentSolution
+                                                                            .Projects
+                                                                            .SelectMany (
+                                                                                         project
+                                                                                             => project
+                                                                                                .Documents
+                                                                                        )
+                                                               ) ;
+    }
+}

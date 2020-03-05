@@ -7,7 +7,6 @@ using AnalysisFramework ;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeRefactorings;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Rename;
 
@@ -54,22 +53,19 @@ namespace CodeRefactoring1
         )
         {
             var syntaxTree = await document.GetSyntaxTreeAsync ( cancellationToken ) ;
-            ILogInvocation logInvocation = LogUsages.ProcessInvocation(
+            ILogInvocation logInvocation = InvocationParms.ProcessInvocation(
                                                                       new InvocationParms(
-                                                                                          
-                                                                                        syntaxTree.GetCompilationUnitRoot(cancellationToken)
-                                                                                          
+                                                                                          new CodeSource(document.FilePath)
+                                                                                         ,
+                                                                                          null
                                                                                         , model
-                                                                                        , new CodeSource(document.FilePath)
-                                                                                        , inv.AncestorsAndSelf()
+                                                                                         , inv.AncestorsAndSelf()
                                                                                               .OfType<StatementSyntax
                                                                                                >()
                                                                                               .First()
-                                                                                        , inv
-                                                                                        , methodSymbol
-                                                                                        , null
-                                                                                        , null,
-                                                                                          null
+                                                                                         , inv
+                                                                                         , methodSymbol
+                                                                                         , null
                                                                                          )
                                                                      );
 

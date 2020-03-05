@@ -79,7 +79,6 @@
                   />
         <MenuItem Header="Exit" />
       </MenuItem>
-
     </Menu>
     <Border BorderBrush="AntiqueWhite" BorderThickness="10" CornerRadius="4" Grid.Row="1"
             Grid.ColumnSpan="3">

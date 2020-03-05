@@ -43,20 +43,19 @@ namespace CodeAnalysisApp1
         {
             if ( LogUsages.CheckInvocationExpression ( node, out var methodSymbol, model ) )
             {
-                ILogInvocation logInvocation = LogUsages.ProcessInvocation (
+                ILogInvocation logInvocation = InvocationParms.ProcessInvocation (
                                              new InvocationParms (
-                                                                  currentRoot
-                                                                , model
-                                                                , document
-                                                                , node.AncestorsAndSelf ( )
-                                                                      .OfType < StatementSyntax
-                                                                       > ( )
-                                                                      .First ( )
-                                                                , node
-                                                                , methodSymbol
-                                                                , exceptionType
-                                                                , null, 
+                                                                  document
+                                                                , 
                                                                   null
+                                                                , model
+                                                                 , node.AncestorsAndSelf ( )
+                                                                       .OfType < StatementSyntax
+                                                                        > ( )
+                                                                       .First ( )
+                                                                 , node
+                                                                 , methodSymbol
+                                                                 , exceptionType
                                                                  )
                                             ) ;
 

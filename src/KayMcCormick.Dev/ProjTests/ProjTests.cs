@@ -12,13 +12,9 @@
 using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
-using System.IO ;
 using System.Linq ;
-using System.Linq.Expressions ;
 using System.Runtime.ExceptionServices ;
-using System.Threading ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using AnalysisControls ;
 using AnalysisFramework ;
@@ -27,14 +23,11 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-using LibGit2Sharp ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.TeamFoundation.Build.Client ;
 using NLog ;
 using NLog.Layouts ;
-using ProjInterface ;
 using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
@@ -59,7 +52,6 @@ namespace ProjTests
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
     [ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
     [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
-    [ LoggingRule ( typeof ( ProjLibUtils ) ,            nameof ( LogLevel.Trace ) ) ]
     [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
     [BeforeAfterLogger]
     public class ProjTests : IClassFixture < LoggingFixture >
@@ -145,7 +137,6 @@ namespace ProjTests
         [Fact]
         public void remote1 ( )
         {
-            var makeProjectContextForSolutionPath = ProjLibUtils.MakeProjectContextForSolutionPath (@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev") ;
         }
         [ WpfFact ]
         public void TestViewModel1 ( )

@@ -47,22 +47,20 @@ namespace CodeAnalysisApp1
         {
             if ( LogUsages.CheckInvocationExpression ( node , out var methodSymbol , model ) )
             {
-                ILogInvocation logInvocation = LogUsages.ProcessInvocation (
+                ILogInvocation logInvocation = InvocationParms.ProcessInvocation (
                                                                            new InvocationParms (
-                                                                                                currentRoot
+                                                                                                document
+                                                                                              , null
                                                                                               , model
-                                                                                              , document
-                                                                                              , node
-                                                                                               .AncestorsAndSelf ( )
-                                                                                               .OfType
-                                                                                                < StatementSyntax
-                                                                                                > ( )
-                                                                                               .First ( )
-                                                                                              , node
-                                                                                              , methodSymbol
-                                                                                              , exceptionType
-                                                                                              , null
-                                                                                              , null
+                                                                                               , node
+                                                                                                .AncestorsAndSelf ( )
+                                                                                                .OfType
+                                                                                                 < StatementSyntax
+                                                                                                 > ( )
+                                                                                                .First ( )
+                                                                                               , node
+                                                                                               , methodSymbol
+                                                                                               , exceptionType
                                                                                                )
                                                                           ) ;
 

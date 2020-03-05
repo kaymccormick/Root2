@@ -188,9 +188,8 @@ namespace ProjLib
             try
             {
                 LogUsages.FindLogUsages (
-                                  new CodeSource(document1.FilePath), CurrentRoot , CurrentModel, consumeLogInvocation
-                                , this.LimitToMarkedStatements
-                                , this.LogVisitedStatements, (parms) => LogUsages.ProcessInvocation( parms ), CurrentTree);
+                                  new CodeSource(document1.FilePath), CurrentRoot , CurrentModel
+                                , CurrentTree);
 
             }
             catch ( Exception ex )

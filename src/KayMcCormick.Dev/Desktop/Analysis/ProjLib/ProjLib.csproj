@@ -76,9 +76,17 @@
     <Compile Include="ActiveSpans.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
+    <Compile Include="BuildResults.cs" />
+    <Compile Include="BuildTool.cs" />
     <Compile Include="DataflowBlocks.cs" />
+    <Compile Include="FailedBuildException.cs" />
+    <Compile Include="FilePaths.cs" />
+    <Compile Include="FindLogUsages.cs" />
+    <Compile Include="GlobalSuppressions2.cs" />
     <Compile Include="ICodeRenderer.cs" />
     <Compile Include="IFormattedCode.cs" />
+    <Compile Include="MyLogger.cs" />
+    <Compile Include="MyLogger2.cs" />
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
@@ -112,7 +120,6 @@
     <Compile Include="Pipeline.cs" />
     <Compile Include="ProjectBrowserViewModoel.cs" />
     <Compile Include="ProjectHandler.cs" />
-    <Compile Include="ProjLibUtils.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="LibResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +134,7 @@
     <Compile Include="TransformArgs.cs" />
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="LogInvocationAnnotationHandler.cs" />
+    <Compile Include="VersionControl.cs" />
     <Compile Include="Visitor2.cs" />
     <Compile Include="Visitor4.cs" />
     <Compile Include="VisitorStub.cs" />
@@ -136,6 +144,7 @@
     <Compile Include="VsInstance.cs" />
     <Compile Include="VsInstanceCollector.cs" />
     <Compile Include="VsInstanceConverter.cs" />
+    <Compile Include="Workspaces.cs" />
     <Compile Include="WorkspacesViewModel.cs" />
     <EmbeddedResource Include="LibResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
