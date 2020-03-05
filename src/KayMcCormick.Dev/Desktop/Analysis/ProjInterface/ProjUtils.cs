@@ -30,7 +30,7 @@ namespace ProjInterface
 
         public static void SetupFormattedCode1 (
              ContentControl    w
-          , string                sourceText, CodeAnalyseContext ctx
+          , string                sourceText, ISyntaxTreeContext ctx
           , IAddChild             addChild
           , FormattedCode         control
         )
@@ -72,7 +72,7 @@ namespace ProjInterface
         private static void _ContainFormattedCode (
             ContentControl        w
           , string                SouceText
-            , CodeAnalyseContext ctx
+            , ISyntaxTreeContext ctx
           , IAddChild             addChild
           , FormattedCode         Control
         )
@@ -136,7 +136,7 @@ namespace ProjInterface
     delegate void ContainDelegate (
             ContentControl        w
           , string                SouceText
-          , CodeAnalyseContext ctx
+          , ISyntaxTreeContext ctx
           , IAddChild             addChild
           , FormattedCode         Control
         ) ;
@@ -144,7 +144,7 @@ namespace ProjInterface
         private static void ContainFormattedCode (
             ContentControl        w
           , string                SouceText
-          , CodeAnalyseContext ctx
+          , ISyntaxTreeContext ctx
           , IAddChild             addChild
           , FormattedCode                Control
         )

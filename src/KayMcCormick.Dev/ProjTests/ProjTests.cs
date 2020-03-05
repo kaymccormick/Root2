@@ -523,7 +523,7 @@ Logger.Error(inner, inner.ToString);
             var w = new Window();
             w.Content = codeControl;
 
-            var context = CodeAnalyseContext.Parse(sourceText, "test1");
+            var context = AnalysisService.Parse(sourceText, "test1");
             var (syntaxTree, model, compilationUnitSyntax) = context;
             Logger.Info("Context is {Context}", context);
             codeControl.SyntaxTree            = syntaxTree;
@@ -555,7 +555,7 @@ Logger.Error(inner, inner.ToString);
             var sourceText = LibResources.Program_Parse;
             codeControl.SourceCode = sourceText;
             
-             var context = CodeAnalyseContext.Parse(sourceText, "test1");
+             var context = AnalysisService.Parse(sourceText, "test1");
             var (syntaxTree, model, compilationUnitSyntax) = context;
             Logger.Info("Context is {Context}", context);
             codeControl.SyntaxTree            = syntaxTree;
@@ -617,7 +617,6 @@ Logger.Error(inner, inner.ToString);
             var tree = TestSyntaxTree ;
             var codeAnalyseContext = new CodeAnalyseContext (
                                                              comp.GetSemanticModel ( tree )
-                                                           , tree.GetCompilationUnitRoot ( )
                                                            , null
                                                            , tree.GetRoot ( )
                                                            , new CodeSource ( "Test Source" )

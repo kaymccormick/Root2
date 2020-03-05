@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using AnalysisFramework ;
 using Autofac ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using MigraDoc.DocumentObjectModel ;
 using NLog ;
@@ -30,6 +31,8 @@ namespace AnalysisControls
         {
             builder.RegisterType < CompilationView > ( ).AsSelf ( ) ;
             builder.RegisterType < CompilationViewModel > ( ).As < ICompilationViewModel > ( ) ;
+            builder.RegisterType < ComponentViewModel > ( ).As < IComponentViewModel > ( ) ;
+            builder.RegisterType < ComponentPage > ( ).As < Page > ( ) ;
         }
         #endregion
     }
@@ -41,22 +44,25 @@ namespace AnalysisControls
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private ICompilationViewModel viewModel ;
 
-        public CompilationView(ICompilationViewModel viewModel, CodeAnalyseContext codeAnalyseContext)
+        [UsedImplicitly]
+        public CompilationView(ICompilationViewModel viewModel, ICodeAnalyseContext codeAnalyseContext)
         {
             this.viewModel = viewModel ;
-            viewModel.AnalyseContext = codeAnalyseContext ;
+            viewModel.CompilationUnitRootContext = codeAnalyseContext ;
+            viewModel.SemanticModelContext = codeAnalyseContext ;
             InitializeComponent();
 
-            MigraDoc.DocumentObjectModel.Document doc = new Document();
+            Document doc = new Document();
             var section = new Section() ;
             var paragraph = new Paragraph() ;
-            paragraph.AddText ( ViewModel.AnalyseContext.CurrentRoot.ToFullString ( ) ) ;
+            paragraph.Format.Font = new Font("Fira Code", 14.0);
+            paragraph.AddText ( ViewModel.CompilationUnitRootContext.CompilationUnit.ToFullString ( ) ) ;
             section.Add(paragraph);
             doc.Add (section );
             var s = new MigraDoc.RtfRendering.RtfDocumentRenderer ( ).RenderToString ( doc , @"C:\temp" ) ;
             rtfCode.Text = s ;
 
-            this.SyntaxPanel.ViewModel.CompilationUnitSyntax = ViewModel.AnalyseContext.CurrentRoot ;
+            this.SyntaxPanel.ViewModel.CompilationUnitSyntax = ViewModel.CompilationUnitRootContext.CompilationUnit;
             this.SyntaxPanel.ViewModel.PropertyChanged += ( sender , args ) => {
                 Logger.Debug ( "PropertyChanged: {prop}" , args.PropertyName ) ;
                 if ( args.PropertyName == "SelectedItem" )
@@ -86,13 +92,15 @@ namespace AnalysisControls
 
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            ViewModel.AnaylzeControlFlow ( ViewModel.SelectedItem ) ;
+            ICompilationViewModel tempQualifier = ViewModel ;
+            ViewModel.AnaylzeControlFlow ( ViewModel.SelectedItem , tempQualifier.SemanticModelContext.CurrentModel ) ;
             TabControl.SelectedItem = SemanticModelTab ;
         }
 
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
-            ViewModel.GetDeclaredSymbol ( ViewModel.SelectedItem ) ;
+            ICompilationViewModel tempQualifier = ViewModel ;
+            ViewModel.GetDeclaredSymbol ( ViewModel.SelectedItem , tempQualifier.SemanticModelContext.CurrentModel ) ;
         }
     }
 }

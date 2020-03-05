@@ -18,6 +18,7 @@ using ProjLib.Properties ;
 using System ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Data.SqlClient ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Threading ;
@@ -51,6 +52,7 @@ namespace ProjLib
         private ProjectHandlerImpl        _handler ;
         private bool                      _processing ;
         private IProjectBrowserViewModoel _projectBrowserViewModel ;
+        private readonly SqlConnection _sqlConn ;
         private PipelineResult            _pipelineResult ;
         private string _applicationMode = "Runtime mode" ;
 
@@ -58,10 +60,12 @@ namespace ProjLib
             IVsInstanceCollector      collector
           , IPipelineViewModel        pipelineViewModel
           , IProjectBrowserViewModoel projectBrowserViewModel
+            , SqlConnection sqlConn
         )
         {
             vsInstanceCollector      = collector ;
             _projectBrowserViewModel = projectBrowserViewModel ;
+            _sqlConn = sqlConn ;
             PipelineViewModel        = pipelineViewModel ;
         }
 

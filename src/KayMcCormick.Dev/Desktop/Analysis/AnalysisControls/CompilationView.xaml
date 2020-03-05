@@ -136,7 +136,7 @@
 
 
           <CollectionViewSource
-            Source="{Binding AnalyseContext.CurrentRoot.Members}"
+            Source="{Binding CompilationUnitRootContext.CompilationUnit.Members}"
             x:Key="Compilation" />
 
         </ResourceDictionary>
@@ -179,6 +179,23 @@
     </ToolBarTray>
     <TabControl x:Name="TabControl" Grid.Row="1"
                 Grid.Column="0" Grid.RowSpan="3">
+      <TabItem Header="Token View" FontSize="20"
+               FontFamily="Lucida Console">
+          <ItemsControl ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.DescendantTokens}}">
+            <ItemsControl.Template>
+              <ControlTemplate TargetType="ItemsControl">
+                <ItemsPresenter/>
+              </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel/>
+            </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate><TextBlock Text="{Binding Converter={StaticResource TokenConverter}}"></TextBlock></DataTemplate></ItemsControl.ItemTemplate>
+          </ItemsControl>
+      </TabItem>
       <TabItem Header="Source Code">
         <xctk:RichTextBox FontSize="20"
                           FontFamily="Lucida Console"

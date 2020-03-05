@@ -38,7 +38,6 @@ namespace AnalysisFramework
           , SyntaxTree            syntaxTree
         ) : base (
                   currentModel
-                , currentRoot
                 , statement
                 , statement
                 , document

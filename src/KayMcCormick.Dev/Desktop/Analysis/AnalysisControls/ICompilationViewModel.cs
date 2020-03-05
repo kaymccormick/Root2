@@ -20,7 +20,7 @@ namespace AnalysisControls
 {
     public interface ICompilationViewModel : IViewModel, INotifyPropertyChanged
     {
-        CodeAnalyseContext AnalyseContext { get ; set ; }
+        ISemanticModelContext SemanticModelContext { get ; set ; }
 
         object SelectedItem { get ; set ; }
 
@@ -28,9 +28,12 @@ namespace AnalysisControls
 
         Exception CurrentControlFlowAnalysisException { get ; set ; }
 
-        void AnaylzeControlFlow ( object viewModelSelectedItem ) ;
-        void GetDeclaredSymbol ( object viewModelSelectedItem ) ;
-
+        void AnaylzeControlFlow ( object viewModelSelectedItem , SemanticModel model ) ;
+        void GetDeclaredSymbol ( object viewModelSelectedItem , SemanticModel model ) ;
         ObservableCollection < ISymbol > ValueStack { get ; set ; }
+
+        ISyntaxTreeContext SyntaxTreeContext { get ; }
+
+        ICompilationUnitRootContext CompilationUnitRootContext { get ; set ; }
     }
 }

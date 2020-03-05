@@ -24,7 +24,11 @@ namespace AnalysisControls
     class CompilationViewModel : ICompilationViewModel
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private CodeAnalyseContext  analyseContext ;
+
+        public ICompilationUnitRootContext CompilationUnitRootContext { get ; set ; }
+
+        public ISyntaxTreeContext SyntaxTreeContext => CompilationUnitRootContext ;
+
         private object              selectedItem ;
         private ControlFlowAnalysis currentControlFlowAnalysis ;
         private Exception currentControlFlowAnalysisException ;
@@ -32,18 +36,9 @@ namespace AnalysisControls
         #region Implementation of ICompilationViewModel
         public CompilationViewModel (  )
         {
-            this.analyseContext = analyseContext ;
         }
 
-        public CodeAnalyseContext AnalyseContext
-        {
-            get => analyseContext ;
-            set
-            {
-                analyseContext = value ;
-                OnPropertyChanged();
-            }
-        }
+        public ISemanticModelContext SemanticModelContext { get ; set ; }
 
         public object SelectedItem
         {
@@ -55,16 +50,16 @@ namespace AnalysisControls
             }
         }
 
-        public void AnaylzeControlFlow ( object viewModelSelectedItem )
+        public void AnaylzeControlFlow ( object viewModelSelectedItem , SemanticModel model )
         {
             try
             {
                 CurrentControlFlowAnalysisException = null ;
                 var controlFlowAnalysis =
-                    AnalyseContext.CurrentModel.AnalyzeControlFlow (
-                                                                    viewModelSelectedItem as
-                                                                        SyntaxNode
-                                                                   ) ;
+                    model.AnalyzeControlFlow (
+                                              viewModelSelectedItem as
+                                                  SyntaxNode
+                                             ) ;
                 CurrentControlFlowAnalysis = controlFlowAnalysis ;
 
             }
@@ -76,9 +71,9 @@ namespace AnalysisControls
 
         }
 
-        public void GetDeclaredSymbol ( object viewModelSelectedItem )
+        public void GetDeclaredSymbol ( object viewModelSelectedItem , SemanticModel model )
         {
-            var symbol = AnalyseContext.CurrentModel.GetDeclaredSymbol ( viewModelSelectedItem as SyntaxNode ) ;
+            var symbol = model.GetDeclaredSymbol ( viewModelSelectedItem as SyntaxNode ) ;
             ValueStack.Add ( symbol ) ;
             Logger.Debug ( "result i {symbmol} -{kind} " , symbol, symbol.Kind ) ;
         }

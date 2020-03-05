@@ -3,5 +3,6 @@
                     xmlns:local="clr-namespace:AnalysisControls">
   <local:Converter1 x:Key="Converter1"></local:Converter1>
   <local:Converter3 x:Key="Converter3"></local:Converter3>
+  <local:TokenConverter x:Key="TokenConverter"></local:TokenConverter>
   <local:LocationConverter x:Key="LocationConverter"></local:LocationConverter>
 </ResourceDictionary>

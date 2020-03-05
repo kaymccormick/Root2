@@ -14,7 +14,6 @@ using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
-using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -23,7 +22,7 @@ using NLog ;
 
 namespace AnalysisFramework
 {
-    public class CodeAnalyseContext
+    public class CodeAnalyseContext : ICodeAnalyseContext
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -35,11 +34,11 @@ namespace AnalysisFramework
         {
             syntaxTree = this.SyntaxTree ;
             model = CurrentModel;
-            compilationUnitSyntax = CurrentRoot ;
+            compilationUnitSyntax = CompilationUnit;
         }
         public override string ToString ( )
         {
-            return $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( _currentRoot )}: {_currentRoot.DescendantNodes().Count()} nodes" ;
+            return $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes().Count()} nodes" ;
         }
 
         private readonly string _code ;
@@ -49,120 +48,59 @@ namespace AnalysisFramework
         protected SemanticModel _currentModel ;
 
         [ JsonIgnore ]
-        protected CompilationUnitSyntax _currentRoot ;
-
-        [ JsonIgnore ]
         protected StatementSyntax _statement ;
 
         [ JsonIgnore ]
         protected SyntaxNode node ;
 
-        public delegate CodeAnalyseContext Factory1(string code , string assemblyName) ;
+        private CompilationUnitSyntax _compilationUnit ;
+        private readonly SyntaxTree _syntaxTree ;
+        private Lazy < CompilationUnitSyntax > _lazy ;
 
-        public CodeAnalyseContext (string code, string assemblyName )
-        {
-            _code = code ;
-            _assemblyName = assemblyName ;
-        }
-
-
+        public delegate ISyntaxTreeContext Factory1(string code , string assemblyName) ;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public CodeAnalyseContext (
             SemanticModel         currentModel
-          , CompilationUnitSyntax currentRoot
           , StatementSyntax       statement
           , SyntaxNode            node
           , ICodeSource           document
           , SyntaxTree            syntaxTree
-        )
+        ) : this()
         {
             _currentModel = currentModel ;
-            _currentRoot  = currentRoot ;
             _statement    = statement ;
             Node          = node ;
             Document      = document ;
-            SyntaxTree    = syntaxTree ;
+            _syntaxTree    = syntaxTree ;
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public CodeAnalyseContext ( ICodeSource document ) { Document = document ; }
-
-        public static CodeAnalyseContext Parse ( [ NotNull ] string code , [ NotNull ] string assemblyName )
+        public CodeAnalyseContext ( ICodeSource document ) : this()
         {
-            if ( code == null)
-            {
-                throw new ArgumentNullException ( nameof ( code ) ) ;
-            }
-
-            if ( string.IsNullOrWhiteSpace ( code ) )
-            {
-                throw new ArgumentOutOfRangeException ( nameof ( code ) , "Empty code supplied" ) ;
-            }
-
-            if ( assemblyName == null )
-            {
-                throw new ArgumentNullException ( nameof ( assemblyName ) ) ;
-            }
-
-            Logger.Debug ( "code length is " + code.Length ) ;
-            var syntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
-            var compilation = CreateCompilation ( assemblyName , syntaxTree ) ;
-            return CreateFromCompilation ( syntaxTree , compilation ) ;
+            Document = document ;
         }
 
-        private static CodeAnalyseContext CreateFromCompilation (
-            SyntaxTree        syntaxTree
-          , CSharpCompilation compilation
-        )
+        private CodeAnalyseContext ( )
         {
-            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
-            return new CodeAnalyseContext (
-                                           compilation.GetSemanticModel ( syntaxTree )
-                                         , syntaxTree.GetCompilationUnitRoot ( )
-                                         , null
-                                         , syntaxTree.GetRoot ( )
-                                         , new CodeSource ( "memory" )
-                                         , syntaxTree
-                                          ) ;
+            _lazy = new Lazy<CompilationUnitSyntax>(
+                                                    ValueFactory
+                                                   );
+
         }
 
-        private static CSharpCompilation CreateCompilation (
-            string     assemblyName
-          , SyntaxTree syntaxTree
-        )
-        {
-
-            var compilation = CSharpCompilation.Create ( assemblyName )
-                                               .AddReferences (
-                                                               MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( string
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                             , MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( Logger
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )).AddSyntaxTrees(syntaxTree);
-
-            return compilation ;
-        }
-
-        public static CodeAnalyseContext FromSyntaxTree (
+        public static ISyntaxTreeContext FromSyntaxTree (
             SyntaxTree               tree
           , string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
-            var comp = CreateCompilation ( assemblyName , tree ) ;
-            return CreateFromCompilation ( tree , comp ) ;
+            var comp = AnalysisService.CreateCompilation ( assemblyName , tree ) ;
+            return AnalysisService.CreateFromCompilation ( tree , comp ) ;
             // return new CodeAnalyseContext(comp.GetSemanticModel(tree), tree.GetCompilationUnitRoot(), null, tree.GetRoot(), new CodeSource("memory"), tree);
         }
 
-        public static CodeAnalyseContext FromSyntaxNode (
+        public static ISyntaxTreeContext FromSyntaxNode (
             SyntaxNode               node
           , string                   assemblyName
           , CSharpCompilationOptions opts = null
@@ -184,14 +122,6 @@ namespace AnalysisFramework
 
         [ JsonIgnore ]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        public CompilationUnitSyntax CurrentRoot
-        {
-            get => _currentRoot ;
-            set => _currentRoot = value ;
-        }
-
-        [ JsonIgnore ]
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
 
         public SyntaxNode Node { get => node ; set => node = value ; }
 
@@ -201,8 +131,20 @@ namespace AnalysisFramework
         public ICodeSource Document { get ; }
 
         [ JsonIgnore ]
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
+        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
 
-        public SyntaxTree SyntaxTree { get ; }
+        public SyntaxTree SyntaxTree => _syntaxTree ;
+
+        #region Implementation of ICompilationUnitRootContext
+        public CompilationUnitSyntax CompilationUnit
+        {
+            get
+            {
+                return _lazy.Value ;
+            }
+        }
+
+        private CompilationUnitSyntax ValueFactory ( ) { return _syntaxTree.GetCompilationUnitRoot ( ) ; }
+        #endregion
     }
 }

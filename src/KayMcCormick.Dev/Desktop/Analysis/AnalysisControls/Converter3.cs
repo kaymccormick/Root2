@@ -72,7 +72,8 @@ namespace AnalysisControls
                         case Converter1Param.DescendantNodesAndSelf : return s.DescendantNodesAndSelf() ;
                         case Converter1Param.DescendantNodesAndTokens : return s.DescendantNodesAndTokens() ;
                         case Converter1Param.DescendantNodesAndTokensAndSelf : return s.DescendantNodesAndTokensAndSelf();
-                        case Converter1Param.DescendantTokens : return s.DescendantTrivia ( ) ;
+                        case Converter1Param.DescendantTokens : return s.DescendantTokens (node => true, true
+                                                                                           ) ;
                         case Converter1Param.Diagnostics : return s.GetDiagnostics() ;
                         case Converter1Param.DescendantTrivia :return s.DescendantTrivia();
                         case Converter1Param.GetLeadingTrivia : return s.GetLeadingTrivia() ;

@@ -65,32 +65,6 @@ namespace ProjInterface
                                                                  }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
 
-            if(false)
-            {
-                var codeControl = new FormattedCode2();
-                var w = new Window();
-                w.Content = codeControl;
-
-                Task t = new Task(() => { });
-                w.Closed += (sender, args) => {
-                    t.Start();
-                };
-                //FormattdCode1.SetValue(ComboBox.Edit.Editable)
-
-                var sourceText = LibResources.Program_Parse;
-                codeControl.SourceCode = sourceText;
-
-                var context = CodeAnalyseContext.Parse(sourceText, "test1");
-                var (syntaxTree, model, compilationUnitSyntax) = context;
-                Logger.Info("Context is {Context}", context);
-                codeControl.SyntaxTree            = syntaxTree;
-                codeControl.Model                 = model;
-                codeControl.CompilationUnitSyntax = compilationUnitSyntax;
-                Task.Run(() => codeControl.Refresh());
-                w.Show ( ) ;
-            }
-
-            
             // XamlXmlReader x = new XamlXmlReader();
         }
 
@@ -296,12 +270,12 @@ namespace ProjInterface
             }
             else
             {
-                CodeAnalyseContext c = CodeAnalyseContext.Parse (
+                ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
                                                                                    @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs"
                                                                                   ), "test"
                                                                 ) ;
-                var w = Scope.Resolve < CompilationView > ( new TypedParameter(typeof ( CodeAnalyseContext ), c) ) ;
+                var w = Scope.Resolve < CompilationView > ( new TypedParameter(typeof ( ICodeAnalyseContext ), c) ) ;
                 w.Show ( ) ;
             }
         }

@@ -90,6 +90,9 @@
       <DependentUpon>CompilationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CompilationViewModel.cs" />
+    <Compile Include="ComponentPage.xaml.cs">
+      <DependentUpon>ComponentPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter1.cs" />
     <Compile Include="Converter1Param.cs" />
     <Compile Include="Converter3.cs" />
@@ -118,6 +121,7 @@
     </Compile>
     <Compile Include="SyntaxPanelViewModel.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="TokenConverter.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="ValueTemplateItemSelector.cs" />
     <Compile Include="Visitor3.cs" />
@@ -126,6 +130,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CompilationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComponentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
