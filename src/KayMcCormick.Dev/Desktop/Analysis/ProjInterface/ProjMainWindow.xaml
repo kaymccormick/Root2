@@ -20,7 +20,7 @@
   <Window.Resources>
     <DataTemplate DataType="{x:Type nLog:LogLevel}">
       <Border BorderBrush="DimGray" BorderThickness="3" CornerRadius="10">
-        <TextBlock><Run Typography.Capitals="AllSmallCaps" Text="{Binding Name,Mode=OneTime}" FontSize="14" FontWeight="ExtraBold" FontFamily="Nunito Sans"/>
+        <TextBlock><Run Typography.Capitals="AllSmallCaps" Text="{Binding Name,Mode=OneTime}" FontSize="14" FontFamily="Copperplate Gothic"/>
         </TextBlock>
       </Border>
     </DataTemplate>
