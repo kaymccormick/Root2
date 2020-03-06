@@ -133,6 +133,9 @@
     <PackageReference Include="NJection.LambdaConverter">
       <Version>1.0.1</Version>
     </PackageReference>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
+    </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.4.1</Version>
     </PackageReference>
