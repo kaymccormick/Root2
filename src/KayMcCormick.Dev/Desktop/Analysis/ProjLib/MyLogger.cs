@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if USEMSBUILD
 using System ;
 using System.Runtime.CompilerServices ;
 using JetBrains.Annotations ;
@@ -250,3 +251,4 @@ namespace ProjLib
         #endregion
     }
 }
+#endif

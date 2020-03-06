@@ -35,16 +35,15 @@ namespace ProjLib
             var input = new WriteOnceBlock < string > ( s => s ) ;
             var clone = DataflowBlocks.ClonseSource ( ) ;
             input.LinkTo ( clone , opt ) ;
-#if BUILD
+
             var build = DataflowBlocks.PackagesRestore ( ) ;
             clone.LinkTo ( build , opt ) ;
-#endif
+
             var initWorkspace = DataflowBlocks.InitializeWorkspace ( ) ;
-#if BUILD
+
             build.LinkTo ( initWorkspace , opt ) ;
-#else
-            clone.LinkTo ( initWorkspace , opt ) ;
-            #endif
+
+            //clone.LinkTo ( initWorkspace , opt ) ;
 
             var toDocuments = Workspaces.SolutionDocumentsBlock ( ) ;
             

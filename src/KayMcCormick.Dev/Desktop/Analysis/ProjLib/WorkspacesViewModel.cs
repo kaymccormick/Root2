@@ -54,6 +54,7 @@ namespace ProjLib
         private readonly SqlConnection _sqlConn ;
         private PipelineResult            _pipelineResult ;
         private string _applicationMode = "Runtime mode" ;
+        private AdhocWorkspace _workspace ;
 
         public WorkspacesViewModel (
             IVsInstanceCollector      collector
@@ -107,7 +108,7 @@ namespace ProjLib
             PipelineResult = new PipelineResult(ResultStatus.Pending);
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                   invocation => {
-                                                                      Logger.Debug (
+                                                                      Logger.Warn(
                                                                                     "{invocation}"
                                                                                   , invocation
                                                                                    ) ;
@@ -155,10 +156,20 @@ namespace ProjLib
                                                                   
                                           .ConfigureAwait ( true ) ;
             PipelineResult = result ;
-            Logger.Info("{id} {result}", Thread.CurrentThread.ManagedThreadId, result.Status);
+            if ( result.Status == ResultStatus.Failed )
+            {
+                Logger.Error (
+                              result.TaskException
+                            , "Failed: {}"
+                            , result.TaskException.Message
+                             ) ;
+            }
+            Logger.Debug("{id} {result}", Thread.CurrentThread.ManagedThreadId, result.Status);
         }
 
         public string ApplicationMode => _applicationMode ;
+
+        public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
 
 
         public PipelineResult PipelineResult

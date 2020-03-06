@@ -26,36 +26,32 @@ namespace AnalysisFramework
 
         private string _LoggerType ;
         private string _methodName ;
-
-
-        public LogInvocation (
+        public LogInvocation(
             string                sourceLocation
           , IMethodSymbol         methodSymbol
           , LogMessageRepr        msgval
-          , StatementSyntax       statement
+          , SyntaxNode relevantNode 
           , SemanticModel         currentModel
           , CompilationUnitSyntax currentRoot
           , ICodeSource           document
           , SyntaxTree            syntaxTree
-        ) : base (
-                  currentModel
-                , statement
-                , statement
-                , document
-                , syntaxTree
-                 )
-        {
-            CurrentModel   = currentModel ;
-            Statement      = statement ;
-            Msgval         = msgval ;
-            SourceLocation = sourceLocation ;
-            MethodSymbol   = methodSymbol ;
-            if ( methodSymbol != null )
+        ) : base(
+                 currentModel
+               , relevantNode as  StatementSyntax
+               , relevantNode
+               , document
+               , syntaxTree
+                )
+        { 
+            Msgval         = msgval;
+            SourceLocation = sourceLocation;
+            MethodSymbol   = methodSymbol;
+            if (methodSymbol != null)
             {
-                MethodName = MethodSymbol.Name ;
+                MethodName = MethodSymbol.Name;
                 LoggerType = methodSymbol.ContainingType.ContainingNamespace.MetadataName
                              + "."
-                             + methodSymbol.ContainingType.MetadataName ;
+                             + methodSymbol.ContainingType.MetadataName;
             }
         }
 

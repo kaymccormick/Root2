@@ -4,6 +4,8 @@ using System.Collections.Immutable ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
+using System.Reflection ;
+using System.Runtime.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -34,9 +36,15 @@ static internal class Workspaces
         {
             workspace = MSBuildWorkspace.Create ( props ) ;
         }
-        catch ( Exception ex )
+        catch ( ReflectionTypeLoadException ex )
         {
-            throw ;
+            foreach ( var exLoaderException in ex.LoaderExceptions )
+            {
+                Logger.Info(exLoaderException.Message);
+                Logger.Info(exLoaderException.GetType().FullName);
+            }
+
+            throw new UnableToInitializeWorkspace ("Unable to initialize workspace.",  ex ) ;
         }
 
 
@@ -66,7 +74,7 @@ static internal class Workspaces
                 {
                     var file1 = m.Groups[ 1 ].Captures[ 0 ] ;
                     var message = m.Groups[ 2 ].Captures[ 0 ] ;
-                    Logger.Warn ( "Workspace Error: {file}, {msg}" , file1 , message ) ;
+                    Logger.Debug ( "Workspace Error: {file}, {msg}" , file1 , message ) ;
                 }
             }
             catch ( Exception ex )
@@ -75,7 +83,7 @@ static internal class Workspaces
             }
 
             // "Msbuild failed when processing the file 'C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\V3\\Root\\src\\KayMcCormick.Dev\\Desktop\\App1\\App1.csproj' with message: C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319\\Microsoft.WinFx.targets: (268, 9): Unknown build error, 'Object reference not set to an instance of an object.' "
-            Logger.Warn ( "Load workspace failed: {}" , e.Diagnostic.Message ) ;
+            Logger.Debug ( "Load workspace failed: {} {x}" , e.Diagnostic.Message, e.Diagnostic.Kind ) ;
         } ;
 
         List<string> solList;
@@ -121,5 +129,23 @@ static internal class Workspaces
                                                                                                 .Documents
                                                                                         )
                                                                ) ;
+    }
+}
+
+internal class UnableToInitializeWorkspace : Exception
+{
+    public UnableToInitializeWorkspace ( ) {
+    }
+
+    public UnableToInitializeWorkspace ( string message ) : base ( message )
+    {
+    }
+
+    public UnableToInitializeWorkspace ( string message , Exception innerException ) : base ( message , innerException )
+    {
+    }
+
+    protected UnableToInitializeWorkspace ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+    {
     }
 }

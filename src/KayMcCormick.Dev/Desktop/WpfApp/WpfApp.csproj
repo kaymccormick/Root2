@@ -267,7 +267,6 @@
     <Compile Include="Core\Logging\AppLogger.cs" />
     <Compile Include="Core\Logging\LoggerTracker.cs" />
     <Compile Include="Core\Logging\LoggingEntityMetadataAttribute.cs" />
-    <Compile Include="Core\Logging\MyCacheTarget.cs" />
     <Compile Include="Core\Menus\MenuItemContainerStyleSelector.cs" />
     <Compile Include="Core\Menus\MenuMenuItemTemplateSelector.cs" />
     <Compile Include="Core\Menus\MenuModule.cs" />

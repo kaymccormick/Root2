@@ -4,19 +4,24 @@ using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.IO ;
 using System.Linq;
+using System.Reactive.Concurrency ;
+using System.Reactive.Linq ;
 using System.Runtime.CompilerServices ;
+using System.Text ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows;
 using System.Windows.Controls ;
 using System.Windows.Data;
+using System.Windows.Documents ;
 using System.Windows.Input;
 using System.Windows.Threading ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis;
 using NLog;
 using ProjLib;
@@ -66,6 +71,28 @@ namespace ProjInterface
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
 
             // XamlXmlReader x = new XamlXmlReader();
+
+            var myCacheTarget = MyCacheTarget.GetInstance(1000);
+            myCacheTarget.Cache.SubscribeOn(Scheduler.Default)
+                         .Buffer(TimeSpan.FromMilliseconds(100))
+                         .Where(x => x.Any())
+                         .ObserveOnDispatcher(DispatcherPriority.Background)
+                         .Subscribe(
+                                    infos => {
+                                        // ReSharper disable once UnusedVariable
+                                        foreach (var logEventInfo in infos)
+                                        {
+                                            flow.Document.Blocks.Add (
+                                                                      new Paragraph (
+                                                                                     new Run (
+                                                                                              logEventInfo
+                                                                                                 .FormattedMessage
+                                                                                             )
+                                                                                    )
+                                                                     ) ;
+                                        }
+                                    }
+                                   );
         }
 
         /// <summary>Raises the <see cref="E:System.Windows.FrameworkElement.Initialized" /> event. This method is invoked whenever <see cref="P:System.Windows.FrameworkElement.IsInitialized" /> is set to <see langword="true " />internally. </summary>
@@ -103,6 +130,7 @@ namespace ProjInterface
             private IProjectBrowserViewModoel _projectBrowserViewModel;
             private PipelineResult _pipelineResult;
             private string _applicationMode;
+            private AdhocWorkspace _workspace ;
             #region Implementation of INotifyPropertyChanged
             public event PropertyChangedEventHandler PropertyChanged;
             #endregion
@@ -131,6 +159,8 @@ namespace ProjInterface
             public Task AnalyzeCommand(object viewCurrentItem) { return null; }
 
             public string ApplicationMode => _applicationMode = "Design Mode";
+
+            public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
             #endregion
         }
 
@@ -270,13 +300,39 @@ namespace ProjInterface
             }
             else
             {
+                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
-                                                                                   @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs"
+                                                                                   path
                                                                                   ), "test"
                                                                 ) ;
-                var w = Scope.Resolve < CompilationView > ( new TypedParameter(typeof ( ICodeAnalyseContext ), c) ) ;
-                w.Show ( ) ;
+                ViewModel.Workspace = new AdhocWorkspace();
+                
+                var projectId = ProjectId.CreateNewId("Test") ;
+                ViewModel.Workspace.AddProject(ProjectInfo.Create(projectId, VersionStamp.Create(), "test project", "tesst", LanguageNames.CSharp));
+                  ViewModel.Workspace.AddDocument(DocumentInfo.Create(DocumentId.CreateNewId(projectId, "test"), "test", null, SourceCodeKind.Regular, new FileTextLoader(path, Encoding.UTF8), path));
+                  ViewModel.Workspace.CurrentSolution.Projects.First ( )
+                           .Documents.First ( )
+                           .GetSemanticModelAsync ( )
+                           .ContinueWith (
+                                          ( task  ) => {
+                                              var w = Scope.Resolve < CompilationView > (
+                                                                                         new
+                                                                                             TypedParameter (
+                                                                                                             typeof
+                                                                                                                 ( ICodeAnalyseContext
+                                                                                                             )
+                                                                                                           , new
+                                                                                                                 CodeAnalyseContext2 (
+                                                                                                                                      task
+                                                                                                                                         .Result
+                                                                                                                                     )
+                                                                                                            )
+                                                                                        ) ;
+                                              w.Show ( ) ;
+                                          }, TaskScheduler.FromCurrentSynchronizationContext()
+                                         ) ;
+
             }
         }
 

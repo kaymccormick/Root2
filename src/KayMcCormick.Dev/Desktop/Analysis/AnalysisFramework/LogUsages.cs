@@ -14,7 +14,7 @@ namespace AnalysisFramework
     public static class LogUsages
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public static IEnumerable<LogInvocation> FindLogUsages(
+        public static IEnumerable<ILogInvocation> FindLogUsages(
             ICodeSource                 document1
           , CompilationUnitSyntax       currentRoot
           , SemanticModel               currentModel
@@ -62,7 +62,7 @@ namespace AnalysisFramework
             }
 
             IMethodSymbol methodSymbol1 = null ;
-            var qxy =
+return
                 from statement in qq0
                 let invocations =
                     statement.DescendantNodes (
@@ -71,34 +71,19 @@ namespace AnalysisFramework
                                               )
                              .OfType < InvocationExpressionSyntax > ( )
                 from invocation in invocations
-                let @out = CheckInvocationExpression(invocation, currentModel)
+                let @out = CheckInvocationExpression ( invocation , currentModel )
                 let methodSymbol = methodSymbol1
-                select new { statement , invocation , methodSymbol } ;
-            
-            foreach ( var qqq in qxy )
-            {
-                try
-                {
-
-                    InvocationParms.ProcessInvocation(
-                                       new InvocationParms(
-                                                           document1
-                                                         , syntaxTree
-                                                         , currentModel
-                                                          , qqq.statement
-                                                          , qqq.invocation
-                                                          , qqq.methodSymbol
-                                                          , ExceptionType
-                                                          )
-                                      ) ;
-                }
-                catch ( Exception ex )
-                {
-                    Logger.Warn ( ex , "unable to process invocation: {message}" , ex.Message ) ;
-                }
-            }
-
-            return null ;
+                where @out.Item1
+                select InvocationParms.ProcessInvocation (
+                                                          new InvocationParms (
+                                                                               document1
+                                                                             , syntaxTree
+                                                                             , currentModel
+                                                                             , statement
+                                                                             , @out
+                                                                             , ExceptionType
+                                                                              )
+                                                         ) ;
 
 
         }
@@ -147,19 +132,39 @@ namespace AnalysisFramework
           , SemanticModel              currentModel
         )
         {
-            var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
-            var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
-            return Tuple.Create (
-                                 methodSymbol != null
-                                 // TODO optmize
-                                 && CheckSymbol (
-                                                 methodSymbol
-                                               , GetNLogSymbol ( currentModel )
-                                               , GetILoggerSymbol ( currentModel )
-                                                )
-                               , methodSymbol
-                               , node
-                                ) ;
+            try
+            {
+                Logger.Debug (
+                              "{method} mode is {node}"
+                            , nameof ( CheckInvocationExpression )
+                            , node.GetLocation ( )
+                             ) ;
+                Logger.Debug ( "{exprKind}, {exor}" , node.Expression.Kind ( ) , node.Expression ) ;
+                var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
+                Logger.Info ( "symbolinfo is {node}" , symbolInfo.Symbol?.ToDisplayString() ?? "null" ) ;
+                if(symbolInfo.Symbol == null)
+                {
+                    Logger.Info ( "candidate symbols: {x}" , symbolInfo.CandidateSymbols ) ;
+                }
+                var methodSymbol = symbolInfo.Symbol as IMethodSymbol ;
+                var result = methodSymbol != null
+                                  // TODO optmize
+                                  && CheckSymbol (
+                                                  methodSymbol
+                                                , GetNLogSymbol ( currentModel )
+                                                , GetILoggerSymbol ( currentModel )
+                                                 ) ;
+                Logger.Debug ( "result is {result}" , result ) ;
+                return Tuple.Create (
+                                     result
+                                   , methodSymbol
+                                   , node
+                                    ) ;
+            } catch(Exception ex)
+            {
+                throw ;
+               // return Tuple.Create ( false , null , node  ) ;
+            }
         }
 
         private static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )

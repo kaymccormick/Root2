@@ -49,6 +49,54 @@ namespace AnalysisFramework
                                                  .Select ( token => token.ToString ( ) )
                                                  .ToList ( )
                                } ;
+                    case AliasQualifiedNameSyntax aliasQualifiedNameSyntax : break ;
+                    case AnonymousMethodExpressionSyntax anonymousMethodExpressionSyntax : break ;
+                    case AnonymousObjectCreationExpressionSyntax anonymousObjectCreationExpressionSyntax : break ;
+                    case ArrayTypeSyntax arrayTypeSyntax : break ;
+                    case AssignmentExpressionSyntax assignmentExpressionSyntax : break ;
+                    case AwaitExpressionSyntax awaitExpressionSyntax : break ;
+                    case BaseExpressionSyntax baseExpressionSyntax : break ;
+                    case CastExpressionSyntax castExpressionSyntax : return new { } ;
+                    case CheckedExpressionSyntax checkedExpressionSyntax : break ;
+                    case DeclarationExpressionSyntax declarationExpressionSyntax : break ;
+                    case DefaultExpressionSyntax defaultExpressionSyntax : break ;
+                    case ElementAccessExpressionSyntax elementAccessExpressionSyntax : break ;
+                    case ElementBindingExpressionSyntax elementBindingExpressionSyntax : break ;
+                    case GenericNameSyntax genericNameSyntax : break ;
+                    case ImplicitArrayCreationExpressionSyntax implicitArrayCreationExpressionSyntax : break ;
+                    case ImplicitElementAccessSyntax implicitElementAccessSyntax : break ;
+                    case ImplicitStackAllocArrayCreationExpressionSyntax implicitStackAllocArrayCreationExpressionSyntax : break ;
+                    case InitializerExpressionSyntax initializerExpressionSyntax : break ;
+                    case MakeRefExpressionSyntax makeRefExpressionSyntax : break ;
+                    case NullableTypeSyntax nullableTypeSyntax : break ;
+                    case ObjectCreationExpressionSyntax objectCreationExpressionSyntax:
+                        return new { } ;
+                    case OmittedArraySizeExpressionSyntax omittedArraySizeExpressionSyntax : break ;
+                    case OmittedTypeArgumentSyntax omittedTypeArgumentSyntax : break ;
+                    case ParenthesizedExpressionSyntax parenthesizedExpressionSyntax : break ;
+                    case PointerTypeSyntax pointerTypeSyntax : break ;
+                    case PostfixUnaryExpressionSyntax postfixUnaryExpressionSyntax : break ;
+                    case PrefixUnaryExpressionSyntax prefixUnaryExpressionSyntax : break ;
+                    case QualifiedNameSyntax qualifiedNameSyntax : break ;
+                    case QueryExpressionSyntax queryExpressionSyntax : break ;
+                    case RangeExpressionSyntax rangeExpressionSyntax : break ;
+                    case RefExpressionSyntax refExpressionSyntax : break ;
+                    case RefTypeExpressionSyntax refTypeExpressionSyntax : break ;
+                    case RefTypeSyntax refTypeSyntax : break ;
+                    case RefValueExpressionSyntax refValueExpressionSyntax : break ;
+                    case SimpleLambdaExpressionSyntax simpleLambdaExpressionSyntax : break ;
+                    case SizeOfExpressionSyntax sizeOfExpressionSyntax : break ;
+                    case StackAllocArrayCreationExpressionSyntax stackAllocArrayCreationExpressionSyntax : break ;
+                    case SwitchExpressionSyntax switchExpressionSyntax : break ;
+                    case ThrowExpressionSyntax throwExpressionSyntax : break ;
+                    case TupleExpressionSyntax tupleExpressionSyntax : break ;
+                    case TupleTypeSyntax tupleTypeSyntax : break ;
+                    case TypeOfExpressionSyntax typeOfExpressionSyntax : return new
+                                                                                {
+                                                                                    typeOfExpressionSyntax.RawKind
+                                                                                   ,
+                                                                                    Kind = typeOfExpressionSyntax.Kind().ToString()
+                                                                                } ;
                     case ArrayCreationExpressionSyntax ac :
                         return new
                                {
@@ -102,6 +150,10 @@ namespace AnalysisFramework
                                             .ToList ( )
                                  , ExpressionBody = TransformExpr ( l.ExpressionBody )
                                } ;
+                    case InstanceExpressionSyntax instanceExpressionSyntax : break ;
+                    
+                    case AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax : break ;
+                    
                     case PredefinedTypeSyntax preDef :
                         return new
                                {
@@ -145,15 +197,7 @@ namespace AnalysisFramework
                                     Tokens = macc.DescendantTokens().Select(token => token.ToString()),
                                     FullString = macc.ToFullString(),
                         } ;
-                    case IdentifierNameSyntax ident :
-                        return new
-                               {
-                                   ident.RawKind
-                                 , Kind       = ident.Kind ( ).ToString()
-                                 , Identifier = ident.Identifier.ValueText
-                                   ,
-                                    Tokens = ident.ChildTokens().Select(token => token.ToString())
-                        } ;
+                    
                     case LiteralExpressionSyntax lit :
                         return new
                                {
@@ -184,14 +228,30 @@ namespace AnalysisFramework
                                  , Expression = TransformExpr ( isPattern.Expression )
                                  , Pattern    = TransformPatternSyntax ( isPattern.Pattern )
                                } ;
+                    case IdentifierNameSyntax ident:
+                        return new
+                               {
+                                   ident.RawKind
+                                  ,
+                                   Kind = ident.Kind().ToString()
+                                  ,
+                                   Identifier = ident.Identifier.ValueText
+                                  ,
+                                   Tokens = ident.ChildTokens().Select(token => token.ToString())
+                               };
+                    case SimpleNameSyntax simpleNameSyntax: break;
                     default :
-                        throw new UnsupportedExpressionTypeSyntax (
-                                                                   expressionSyntaxNode
-                                                                     ?.GetType ( )
-                                                                      .FullName
-                                                                  ) ;
+                        break ;
+                    case NameSyntax nameSyntax: break;
+                    case TypeSyntax typeSyntax: break;
+
                 }
+
+                throw new UnsupportedExpressionTypeSyntax (
+                                                           $"Unsupported mode type {expressionSyntaxNode?.GetType ( ).FullName} at line {expressionSyntaxNode.GetLocation().GetMappedLineSpan().StartLinePosition.Line +1} {expressionSyntaxNode.GetLocation().ToString (  )}"
+                                                          ) ;
             }
+            
             catch ( InvalidOperationException invOp )
             {
                 return new { Exception = invOp , Argument = expressionSyntaxNode } ;

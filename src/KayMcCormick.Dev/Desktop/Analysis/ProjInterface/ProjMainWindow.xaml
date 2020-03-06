@@ -82,24 +82,39 @@
     </Menu>
     <Border BorderBrush="AntiqueWhite" BorderThickness="10" CornerRadius="4" Grid.Row="1"
             Grid.ColumnSpan="3">
-    <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
-        <Border VerticalAlignment="Center" Padding="10"  BorderBrush="Red" BorderThickness="3" CornerRadius="15"><TextBlock  VerticalAlignment="Center" Text="{Binding ApplicationMode,FallbackValue=None}"/></Border>
-      <TextBlock Margin="10" VerticalAlignment="Center"
-                 Text="Status" />
-      <TextBlock Margin="10"
-                 Text="{Binding CurrentProgress.FileName}" />
-      <TextBlock Margin="10"
+    <StatusBar FontSize="16">
+      <StatusBarItem>
+          <Border VerticalAlignment="Center" Padding="10"  BorderBrush="Red" BorderThickness="3" CornerRadius="15">
+            <TextBlock  VerticalAlignment="Center" Text="{Binding ApplicationMode,FallbackValue=None}"/>
+          </Border>
+      </StatusBarItem>
+      <StatusBarItem><TextBlock Margin="10" VerticalAlignment="Center"
+                 Text="Status" /></StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
+                 Text="{Binding CurrentProgress.FileName}" /></StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
                  Text="{Binding CurrentProgress.Operation}" />
-      <TextBlock Margin="10"
+        </StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
                  Text="{Binding CurrentProgress.ElapsedTime}" />
-      <TextBlock Text="{Binding Processing}" />
-      <TextBlock Text="{Binding PipelineResult.Status}"/>
-      <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
-    </WrapPanel>
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding Processing}" />
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding PipelineResult.Status}"/>
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
+        </StatusBarItem>
+      </StatusBar>
     </Border>
-    <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0">
+    <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
+    <FlowDocumentScrollViewer x:Name="flow" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2">
+      <FlowDocumentScrollViewer.Document><FlowDocument/></FlowDocumentScrollViewer.Document>
+    </FlowDocumentScrollViewer>
     <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
       <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
       </TabItem>

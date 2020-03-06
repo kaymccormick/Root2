@@ -15,6 +15,7 @@ using System.Windows.Markup ;
 using System.Windows.Threading ;
 using Autofac ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using NLog ;
 using NLog.Config ;
 using Vanara.Extensions.Reflection ;

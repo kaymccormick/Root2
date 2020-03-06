@@ -2,6 +2,8 @@ using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
+using NuGet.Commands ;
+using NuGet.ProjectModel ;
 
 namespace ProjLib
 {
@@ -22,7 +24,7 @@ namespace ProjLib
                 new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc ) ;
             return findLogUsagesBlock ;
         }
-
+#if USEMSBUILD
         public static TransformBlock < string , BuildResults > PackagesRestore ( )
         {
             var buildTransformBlock =
@@ -31,10 +33,25 @@ namespace ProjLib
                                                              ) ;
             return buildTransformBlock ;
         }
+#else
+        public static TransformBlock<string, string> PackagesRestore()
+        {
+            var buildTransformBlock =
+                new TransformBlock<string, string>(
+                                                         s => NugetTool.RestorePackages(s)
+                                                        );
+            return buildTransformBlock;
+        }
+#endif
 
         public static TransformBlock < string , string > ClonseSource ( )
         {
             return new TransformBlock < string , string > ( VersionControl.CloneProjectAsync ) ;
         }
+    }
+
+    internal static class NugetTool
+    {
+        public static string RestorePackages ( string s ) { return s ; }
     }
 }

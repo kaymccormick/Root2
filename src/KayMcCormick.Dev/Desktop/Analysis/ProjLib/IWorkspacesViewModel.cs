@@ -17,7 +17,7 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
 using AnalysisFramework ;
-
+using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace ProjLib
@@ -49,6 +49,8 @@ namespace ProjLib
            object                  viewCurrentItem
         ) ;
         string ApplicationMode { get ; }
+
+        AdhocWorkspace Workspace { get ; set ; }
     }
 
     public struct DesignWorkspacesViewModel : IWorkspacesViewModel
@@ -63,6 +65,7 @@ namespace ProjLib
         private IProjectBrowserViewModoel _projectBrowserViewModel ;
         private PipelineResult _pipelineResult ;
         private string _applicationMode ;
+        private AdhocWorkspace _workspace ;
         #region Implementation of INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged ;
         #endregion
@@ -91,6 +94,8 @@ namespace ProjLib
         public Task AnalyzeCommand ( object viewCurrentItem ) { return null ; }
 
         public string ApplicationMode => _applicationMode = "Design Mode" ;
+
+        public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
         #endregion
     }
 

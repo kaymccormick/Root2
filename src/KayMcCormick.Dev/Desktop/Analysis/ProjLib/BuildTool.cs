@@ -3,6 +3,7 @@ using System.Collections.Generic ;
 using System.Collections.Immutable ;
 using System.IO ;
 using System.Linq ;
+#if USEMSBUILD
 using Microsoft.Build.Evaluation ;
 using Microsoft.Build.Execution ;
 
@@ -104,3 +105,4 @@ namespace ProjLib
         }
     }
 }
+#endif

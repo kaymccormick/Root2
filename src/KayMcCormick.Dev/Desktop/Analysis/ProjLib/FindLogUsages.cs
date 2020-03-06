@@ -18,6 +18,7 @@ namespace ProjLib
         {
             try
             {
+                Logger.Debug ( "Here at FindUsagesfunc" ) ;
                 var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
                 var root = tree.GetCompilationUnitRoot ( ) ;
                 var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
@@ -33,12 +34,13 @@ namespace ProjLib
                                                              ( InvocationExpressionSyntax ) node
                                                            , model
                                                             )
+                        where @out.Item1
                     let statement =
-                        node.AncestorsAndSelf ( ).OfType < StatementSyntax > ( ).First ( )
+                        node.AncestorsAndSelf ( ).Where(Predicate).First ( )
                     select InvocationParms.ProcessInvocation (
                                                               new InvocationParms (
                                                                                    new CodeSource (
-                                                                                                   ""
+                                                                                                   tree.FilePath
                                                                                                   )
                                                                                  , tree
                                                                                  , model
@@ -55,6 +57,18 @@ namespace ProjLib
             }
 
             return null ;
+        }
+
+        private static bool Predicate ( SyntaxNode arg1 , int arg2 )
+        {
+            var b = arg1 is StatementSyntax
+                    || arg1 is MemberDeclarationSyntax ;
+            Logger.Debug("Got {arg1}- {b}", arg1.Kind(), b);
+            if ( b )
+            {
+                return true ;
+            }
+            return false ;
         }
     }
 }

@@ -179,11 +179,9 @@ namespace KayMcCormick.Dev.Logging
 
             
             #region Cache Target
-#if false
             var cacheTarget = new  MyCacheTarget ( ) ;
-            t.Add ( cacheTarget );
+            dict[LogLevel.Warn].Add ( cacheTarget );
 
-#endif
             #endregion
             #region NLogViewer Target
             var viewer = Viewer();

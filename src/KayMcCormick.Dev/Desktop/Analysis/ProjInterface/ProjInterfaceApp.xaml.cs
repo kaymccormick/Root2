@@ -15,7 +15,9 @@ using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-//using Microsoft.Build.Locator ;
+#if MSBUILDLOCATOR
+using Microsoft.Build.Locator ;
+#endif
 using NLog ;
 
 using ProjLib ;
@@ -247,7 +249,9 @@ namespace ProjInterface
                                                      => instance.Version.Major    == 16
                                                         && instance.Version.Minor == 4
                                                 );
-            MSBuildLocator.RegisterInstance(instances.First());
+            var visualStudioInstance = instances.First() ;
+            MSBuildLocator.RegisterInstance(visualStudioInstance);
+            Logger.Debug("REgistering MSBuild  instance {vs}", visualStudioInstance.Name);
 #endif
 
             var elapsed = DateTime.Now - start ;
