@@ -73,7 +73,6 @@ namespace AnalysisFramework
 
         [ JsonIgnore ]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-
         public IMethodSymbol MethodSymbol { get => methodSymbol ; set => methodSymbol = value ; }
 
 

@@ -2,8 +2,10 @@ using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
+#if NUGET
 using NuGet.Commands ;
 using NuGet.ProjectModel ;
+#endif
 
 namespace ProjLib
 {
@@ -34,6 +36,7 @@ namespace ProjLib
             return buildTransformBlock ;
         }
 #else
+        #if NUGET
         public static TransformBlock<string, string> PackagesRestore()
         {
             var buildTransformBlock =
@@ -42,16 +45,18 @@ namespace ProjLib
                                                         );
             return buildTransformBlock;
         }
+        #endif
 #endif
 
-        public static TransformBlock < string , string > ClonseSource ( )
+        public static TransformBlock < string , string > CloneSource ( )
         {
             return new TransformBlock < string , string > ( VersionControl.CloneProjectAsync ) ;
         }
     }
-
+#if NUGET
     internal static class NugetTool
     {
         public static string RestorePackages ( string s ) { return s ; }
     }
+#endif
 }

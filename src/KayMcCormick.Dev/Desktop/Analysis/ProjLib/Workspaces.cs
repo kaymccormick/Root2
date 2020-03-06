@@ -26,6 +26,8 @@ static internal class Workspaces
             throw new ArgumentNullException ( nameof ( arg) ) ;
         }
 
+        Logger.Debug ( "[{action}] arg is {arg}", nameof ( MakeWorkspaceAsync ) , arg ) ;
+
         var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
         b[ "Platform" ] = "x86" ;
 

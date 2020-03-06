@@ -122,8 +122,9 @@ namespace ProjLib
                                                                 }
                                                                ) ;
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
+
             await PipelineViewModel.Pipeline.PipelineInstance
-                                   .SendAsync ( projectBrowserNode.RepositoryUrl )
+                                   .SendAsync ( Path.GetDirectoryName(projectBrowserNode.SolutionPath) )
                                    .ConfigureAwait ( true ) ;
             var result = await actionBlock.Completion.ContinueWith (
                                                                     task => {
@@ -168,6 +169,7 @@ namespace ProjLib
         }
 
         private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
+        private ObservableCollection < string > _events  = new ObservableCollection < string > ();
 
         public string ApplicationMode => _applicationMode ;
 
@@ -222,6 +224,8 @@ namespace ProjLib
             get => eventInfos ;
             set => eventInfos = value ;
         }
+
+        public ObservableCollection < string > Events { get => _events ; set => _events = value ; }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

@@ -3,6 +3,7 @@ using System.ComponentModel ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
+using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
@@ -13,7 +14,7 @@ using MessageTemplates ;
 using MessageTemplates.Core ;
 using MessageTemplates.Structure ;
 using Microsoft.Build.Locator ;
-using Newtonsoft.Json ;
+
 using NLog ;
 using ProjLib ;
 using Module = Autofac.Module ;
@@ -100,7 +101,7 @@ namespace ConsoleApp1
 
         public static void Action ( ILogInvocation invocation )
         {
-            var json = JsonConvert.SerializeObject ( invocation ) ;
+            var json = JsonSerializer.Serialize( invocation ) ;
             Logger.Debug ( json ) ;
             Console.WriteLine ( json ) ;
                                // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"

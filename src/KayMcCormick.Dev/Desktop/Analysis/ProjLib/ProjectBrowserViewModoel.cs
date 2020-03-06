@@ -19,7 +19,8 @@ namespace ProjLib
             var projectBrowserNode = new ProjectBrowserNode ( )
                                      {
                                          Name = "My Project",
-                                         RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
+                                         RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
+                                         SolutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\ManagedProd.sln"
             } ;
             browserNodeCollection.Add ( projectBrowserNode ) ;
         }

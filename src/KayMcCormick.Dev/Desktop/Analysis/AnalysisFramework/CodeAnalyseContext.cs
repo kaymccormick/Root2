@@ -134,6 +134,8 @@ namespace AnalysisFramework
         public SyntaxTree SyntaxTree => _syntaxTree ;
 
         #region Implementation of ICompilationUnitRootContext
+        [JsonIgnore]
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public CompilationUnitSyntax CompilationUnit
         {
             get

@@ -177,10 +177,12 @@ namespace KayMcCormick.Dev.Logging
                                 } ;
             dict[LogLevel.Warn].Add ( consoleTarget ) ;
 
-            
+
             #region Cache Target
-            var cacheTarget = new  MyCacheTarget ( ) ;
-            dict[LogLevel.Debug].Add ( cacheTarget );
+            var cacheTarget = new MyCacheTarget();
+            dict[LogLevel.Debug].Add(cacheTarget);
+            var cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
+            dict[LogLevel.Debug].Add(cacheTarget2);
 
             #endregion
             #region NLogViewer Target
@@ -626,6 +628,10 @@ namespace KayMcCormick.Dev.Logging
             return l;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rule2"></param>
         public static void AddRule ( LoggingRule rule2 )
         {
             LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;

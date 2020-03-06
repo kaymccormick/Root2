@@ -131,6 +131,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
+    </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>
     </PackageReference>

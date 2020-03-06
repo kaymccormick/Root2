@@ -24,7 +24,19 @@ namespace ProjLib
                 var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
 
                 var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
+                var t = LogUsages.GetNLogSymbol(model);
+                if (t == null)
+                {
+                    return Array.Empty < ILogInvocation > ( ) ;
+                    throw new MissingTypeException("nlog");
+                }
+                var t2 = LogUsages.GetILoggerSymbol(model);
+                if (t2 == null)
+                {
 
+                    return Array.Empty<ILogInvocation>();
+                    throw new MissingTypeException("nlog");
+                }
                 var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
                 return
                     from node in root.DescendantNodes ( )
@@ -32,7 +44,7 @@ namespace ProjLib
                     let @out =
                         LogUsages.CheckInvocationExpression (
                                                              ( InvocationExpressionSyntax ) node
-                                                           , model
+                                                           , model, t, t2
                                                             )
                         where @out.Item1
                     let statement =
@@ -52,8 +64,8 @@ namespace ProjLib
             }
             catch ( Exception ex )
             {
-                Logger.Error ( ex , ex.ToString ( ) ) ;
-                return null ;
+                Logger.Debug( ex , ex.ToString ( ) ) ;
+                throw ;
             }
 
             return null ;

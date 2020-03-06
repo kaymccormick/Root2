@@ -95,6 +95,7 @@
     <Compile Include="Logging\Properties\Resource.Designer.cs" />
     <Compile Include="Logging\RegConfigSource.cs" />
     <Compile Include="MyCacheTarget.cs" />
+    <Compile Include="MyCacheTarget2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestLib\BeforeAfterLoggerAttribute.cs" />
     <Compile Include="TestLib\FixtureLogger.cs" />
@@ -137,6 +138,9 @@
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.7.0-rc1</Version>
+    </PackageReference>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
     </PackageReference>
     <PackageReference Include="Xunit">
       <Version>2.4.1</Version>

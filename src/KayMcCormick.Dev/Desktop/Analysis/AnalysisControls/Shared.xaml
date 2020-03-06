@@ -6,4 +6,5 @@
   <local:TokenConverter x:Key="TokenConverter"></local:TokenConverter>
   <local:LocationConverter x:Key="LocationConverter"></local:LocationConverter>
   <local:TransformConverter x:Key="TransformConverter"></local:TransformConverter>
+  <local:JsonConverter x:Key="JsonConverter"/>
 </ResourceDictionary>

@@ -85,6 +85,30 @@ namespace ProjInterface
             //     }
             // }
 
+            var myCacheTarget2 = MyCacheTarget2.GetInstance(1000);
+            myCacheTarget2.Cache.SubscribeOn(Scheduler.Default)
+                         .Buffer(TimeSpan.FromMilliseconds(100))
+                         .Where(x => x.Any())
+                         .ObserveOnDispatcher(DispatcherPriority.Background)
+                         .Subscribe(
+                                    infos => {
+                                        // ReSharper disable once UnusedVariable
+                                        foreach (var logEventInfo in infos)
+                                        {
+                                            ViewModel.Events.Add(logEventInfo);
+                                            // flow.Document.Blocks.Add (
+                                            // new Paragraph (
+                                            // new Run (
+                                            // logEventInfo
+                                            // .FormattedMessage
+                                            // )
+                                            // )
+                                            // ) ;
+                                        }
+                                    }
+                                   );
+
+
             var myCacheTarget = MyCacheTarget.GetInstance(1000);
             myCacheTarget.Cache.SubscribeOn(Scheduler.Default)
                          .Buffer(TimeSpan.FromMilliseconds(100))
@@ -146,6 +170,7 @@ namespace ProjInterface
             private string _applicationMode;
             private AdhocWorkspace _workspace ;
             private ObservableCollection < LogEventInfo > _eventInfos ;
+            private ObservableCollection < string > _events ;
             #region Implementation of INotifyPropertyChanged
             public event PropertyChangedEventHandler PropertyChanged;
             #endregion
@@ -178,6 +203,8 @@ namespace ProjInterface
             public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
 
             public ObservableCollection < LogEventInfo > EventInfos { get => _eventInfos ; set => _eventInfos = value ; }
+
+            public ObservableCollection < string > Events { get => _events ; set => _events = value ; }
             #endregion
         }
 
@@ -359,6 +386,33 @@ namespace ProjInterface
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
+
+        private void DataGrid_OnAutoGeneratingColumn (
+            object                                sender
+          , DataGridAutoGeneratingColumnEventArgs e
+        )
+        {
+            switch ( e.PropertyName )
+            {
+                case "StackTrace" :
+                case "MessageTemplateParameters":
+                case "HasStackTrace":
+                case "UserStackFrame":
+                case "UserStackFrameNumber":
+                case "CallerClassName":
+                case "CallerMemberName":
+                case "CallerFilePath":
+                case "CallerLineNumber":
+                case "LoggerShortName":
+                case "MessageFormatter":
+                case "Message":
+                    case "HasProperties":
+
+                    e.Cancel = true ;
+                    break ;
+                
+            }
         }
     }
 }

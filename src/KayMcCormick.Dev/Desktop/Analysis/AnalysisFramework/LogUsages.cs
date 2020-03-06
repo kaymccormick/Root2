@@ -30,6 +30,7 @@ namespace AnalysisFramework
             }
 
             var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
+
             if ( t1 == null )
             {
                 throw new MissingTypeException ( LoggerClassFullName ) ;
@@ -100,13 +101,12 @@ return
 
         private static bool CheckSymbol (
             IMethodSymbol    methSym
-          , INamedTypeSymbol t1
-          , INamedTypeSymbol t2
+          , params INamedTypeSymbol[] t1
+          
         )
         {
             var cType = methSym.ContainingType ;
-
-            var r = cType == t1 || cType == t2 ;
+            var r = t1.Any ( symbol => SymbolEqualityComparer.Default.Equals ( cType , symbol ) ) ;
             return r ;
         }
 
@@ -130,31 +130,35 @@ return
         public static Tuple<bool, IMethodSymbol, InvocationExpressionSyntax> CheckInvocationExpression (
             InvocationExpressionSyntax node
           , SemanticModel              currentModel
-        )
+,
+params INamedTypeSymbol[] t)
         {
             try
             {
+                var symbolInfo = currentModel.GetSymbolInfo(node.Expression);
+#if DEBUG
                 Logger.Debug (
                               "{method} mode is {node}"
                             , nameof ( CheckInvocationExpression )
                             , node.GetLocation ( )
                              ) ;
                 Logger.Debug ( "{exprKind}, {exor}" , node.Expression.Kind ( ) , node.Expression ) ;
-                var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
+
                 Logger.Info ( "symbolinfo is {node}" , symbolInfo.Symbol?.ToDisplayString() ?? "null" ) ;
                 if(symbolInfo.Symbol == null)
                 {
                     Logger.Info ( "candidate symbols: {x}" , symbolInfo.CandidateSymbols ) ;
                 }
+                #endif
                 var methodSymbol = symbolInfo.Symbol as IMethodSymbol ;
                 var result = methodSymbol != null
                                   // TODO optmize
                                   && CheckSymbol (
-                                                  methodSymbol
-                                                , GetNLogSymbol ( currentModel )
-                                                , GetILoggerSymbol ( currentModel )
-                                                 ) ;
+                                                  methodSymbol, t
+                                                ) ;
+                #if DEBUG
                 Logger.Debug ( "result is {result}" , result ) ;
+                #endif
                 return Tuple.Create (
                                      result
                                    , methodSymbol
@@ -167,12 +171,12 @@ return
             }
         }
 
-        private static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )
+        public static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )
         {
             return model.Compilation.GetTypeByMetadataName(ILoggerClassFullName);
         }
 
-        private static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
+        public static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
         {
             return model.Compilation.GetTypeByMetadataName(LoggerClassFullName);
 

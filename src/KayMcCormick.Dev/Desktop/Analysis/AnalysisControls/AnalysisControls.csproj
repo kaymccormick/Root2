@@ -105,6 +105,7 @@
     <Compile Include="ICompilationViewModel.cs" />
     <Compile Include="INodePanel.cs" />
     <Compile Include="ISyntaxPanelViewModel.cs" />
+    <Compile Include="JsonConverter.cs" />
     <Compile Include="LocationConverter.cs" />
     <Compile Include="MainStatusBar.xaml.cs">
       <DependentUpon>MainStatusBar.xaml</DependentUpon>
@@ -224,6 +225,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
+    </PackageReference>
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>
     </PackageReference>
