@@ -1,11 +1,12 @@
 ﻿using System ;
 using System.Linq ;
+using System.Text.Json ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.Text ;
-using Newtonsoft.Json ;
+
 using NLog ;
 
 namespace CodeAnalysisApp1
@@ -41,20 +42,20 @@ namespace CodeAnalysisApp1
         /// <summary>Called when the visitor visits a InvocationExpressionSyntax node.</summary>
         public override SyntaxNode VisitInvocationExpression ( InvocationExpressionSyntax node )
         {
-            if ( LogUsages.CheckInvocationExpression ( node, out var methodSymbol, model ) )
+            var check = LogUsages.CheckInvocationExpression ( node, model ) ;
+            if ( check.Item1 )
             {
                 ILogInvocation logInvocation = InvocationParms.ProcessInvocation (
                                              new InvocationParms (
                                                                   document
                                                                 , 
-                                                                  null
+                                                                  model.SyntaxTree
                                                                 , model
                                                                  , node.AncestorsAndSelf ( )
                                                                        .OfType < StatementSyntax
                                                                         > ( )
                                                                        .First ( )
-                                                                 , node
-                                                                 , methodSymbol
+                                                                , check
                                                                  , exceptionType
                                                                  )
                                             ) ;
@@ -65,7 +66,7 @@ namespace CodeAnalysisApp1
                     catch ( Exception ex ) { Logger.Error ( ex , ex.ToString ( ) ) ; }
                 }
 
-                var serializeObject = JsonConvert.SerializeObject(logInvocation, Formatting.Indented) ;
+                var serializeObject = JsonSerializer.Serialize ( logInvocation ) ;
                 LogManager.GetCurrentClassLogger().Warn ( "{ser}" , serializeObject ) ;
                 return node.WithAdditionalAnnotations (
                                                        new[]

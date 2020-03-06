@@ -180,7 +180,7 @@ namespace KayMcCormick.Dev.Logging
             
             #region Cache Target
             var cacheTarget = new  MyCacheTarget ( ) ;
-            dict[LogLevel.Warn].Add ( cacheTarget );
+            dict[LogLevel.Debug].Add ( cacheTarget );
 
             #endregion
             #region NLogViewer Target

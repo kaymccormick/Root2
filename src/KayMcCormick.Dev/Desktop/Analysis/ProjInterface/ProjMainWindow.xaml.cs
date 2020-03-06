@@ -16,6 +16,8 @@ using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Documents ;
 using System.Windows.Input;
+using System.Windows.Markup ;
+using System.Windows.Media ;
 using System.Windows.Threading ;
 using AnalysisControls ;
 using AnalysisFramework ;
@@ -71,6 +73,17 @@ namespace ProjInterface
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
 
             // XamlXmlReader x = new XamlXmlReader();
+            //Typography t = Typography.SetCapitals ( FontCapitals.AllSmallCaps ) ;
+            // foreach ( var systemFontFamily in Fonts.SystemFontFamilies )
+            // {
+            //     Logger.Info (
+            //                  "{font}"
+            //                , systemFontFamily.FamilyNames.Select(pair => $"{pair.Key} = {pair.Value}"));
+            //     foreach ( var familyTypeface in systemFontFamily.FamilyTypefaces )
+            //     {
+            //         Logger.Info ( "{name} {style}" ,familyTypeface.DeviceFontName,familyTypeface.Style ) ;
+            //     }
+            // }
 
             var myCacheTarget = MyCacheTarget.GetInstance(1000);
             myCacheTarget.Cache.SubscribeOn(Scheduler.Default)
@@ -82,14 +95,15 @@ namespace ProjInterface
                                         // ReSharper disable once UnusedVariable
                                         foreach (var logEventInfo in infos)
                                         {
-                                            flow.Document.Blocks.Add (
-                                                                      new Paragraph (
-                                                                                     new Run (
-                                                                                              logEventInfo
-                                                                                                 .FormattedMessage
-                                                                                             )
-                                                                                    )
-                                                                     ) ;
+                                            ViewModel.EventInfos.Add ( logEventInfo ) ;
+                                            // flow.Document.Blocks.Add (
+                                                                      // new Paragraph (
+                                                                                     // new Run (
+                                                                                              // logEventInfo
+                                                                                                 // .FormattedMessage
+                                                                                             // )
+                                                                                    // )
+                                                                     // ) ;
                                         }
                                     }
                                    );
@@ -131,6 +145,7 @@ namespace ProjInterface
             private PipelineResult _pipelineResult;
             private string _applicationMode;
             private AdhocWorkspace _workspace ;
+            private ObservableCollection < LogEventInfo > _eventInfos ;
             #region Implementation of INotifyPropertyChanged
             public event PropertyChangedEventHandler PropertyChanged;
             #endregion
@@ -161,6 +176,8 @@ namespace ProjInterface
             public string ApplicationMode => _applicationMode = "Design Mode";
 
             public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
+
+            public ObservableCollection < LogEventInfo > EventInfos { get => _eventInfos ; set => _eventInfos = value ; }
             #endregion
         }
 

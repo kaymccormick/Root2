@@ -167,6 +167,8 @@ namespace ProjLib
             Logger.Debug("{id} {result}", Thread.CurrentThread.ManagedThreadId, result.Status);
         }
 
+        private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
+
         public string ApplicationMode => _applicationMode ;
 
         public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
@@ -214,6 +216,12 @@ namespace ProjLib
 
         public ObservableCollection < ILogInvocation > LogInvocations { get ; } =
             new ObservableCollection < ILogInvocation > ( ) ;
+
+        public ObservableCollection < LogEventInfo > EventInfos
+        {
+            get => eventInfos ;
+            set => eventInfos = value ;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

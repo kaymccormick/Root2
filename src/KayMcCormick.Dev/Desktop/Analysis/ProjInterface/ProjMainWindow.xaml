@@ -7,6 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
+  xmlns:nLog="clr-namespace:NLog;assembly=NLog"
   Name="mainWindow"
   AllowDrop="True"
   Drop="ProjMainWindow_OnDrop"
@@ -17,6 +18,18 @@
   DataContext="{Binding ElementName=mainWindow, Path=ViewModel}"
   mc:Ignorable="d">
   <Window.Resources>
+    <DataTemplate DataType="{x:Type nLog:LogLevel}">
+      <Border BorderBrush="DimGray" BorderThickness="3" CornerRadius="10">
+        <TextBlock><Run Typography.Capitals="AllSmallCaps" Text="{Binding Name,Mode=OneTime}" FontSize="14" FontWeight="ExtraBold" FontFamily="Nunito Sans"/>
+        </TextBlock>
+      </Border>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type nLog:LogEventInfo}">
+      <StackPanel Orientation="Horizontal">
+        <ContentControl Content="{Binding Level}"></ContentControl>
+        <TextBlock><Run Text="{Binding FormattedMessage,Mode=OneTime}"></Run></TextBlock>
+      </StackPanel>
+    </DataTemplate>
     <local:MruBackground x:Key="MruBackground" />
     <CollectionViewSource x:Key="VsSource"
                           Source="{Binding Path=VsCollection}" />
@@ -44,6 +57,12 @@
       DataType="projLib:IMruItem">
       <TextBlock Text="{Binding Location}" />
     </DataTemplate>
+    <Style x:Key="LogStyle" TargetType="ContentPresenter">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Level}" Value="{x:Static nLog:LogLevel.Debug}">
+          <Setter Property="TextElement.Foreground" Value="CornflowerBlue"></Setter>
+        </DataTrigger></Style.Triggers>
+    </Style>
   </Window.Resources>
 
   <Window.CommandBindings>
@@ -112,9 +131,8 @@
     <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
-    <FlowDocumentScrollViewer x:Name="flow" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2">
-      <FlowDocumentScrollViewer.Document><FlowDocument/></FlowDocumentScrollViewer.Document>
-    </FlowDocumentScrollViewer>
+    <ItemsControl x:Name="logs" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}" ItemContainerStyle="{StaticResource LogStyle}">
+    </ItemsControl>
     <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
       <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
       </TabItem>

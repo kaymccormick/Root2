@@ -19,6 +19,7 @@ using System.Windows.Input ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
+using NLog ;
 
 namespace ProjLib
 {
@@ -51,6 +52,8 @@ namespace ProjLib
         string ApplicationMode { get ; }
 
         AdhocWorkspace Workspace { get ; set ; }
+
+        ObservableCollection < LogEventInfo > EventInfos { get ; set ; }
     }
 
     public struct DesignWorkspacesViewModel : IWorkspacesViewModel
@@ -66,6 +69,7 @@ namespace ProjLib
         private PipelineResult _pipelineResult ;
         private string _applicationMode ;
         private AdhocWorkspace _workspace ;
+        private ObservableCollection < LogEventInfo > _eventInfos ;
         #region Implementation of INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged ;
         #endregion
@@ -96,6 +100,8 @@ namespace ProjLib
         public string ApplicationMode => _applicationMode = "Design Mode" ;
 
         public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
+
+        public ObservableCollection < LogEventInfo > EventInfos { get => _eventInfos ; set => _eventInfos = value ; }
         #endregion
     }
 
