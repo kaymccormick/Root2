@@ -98,6 +98,11 @@ namespace KayMcCormick.Dev.Logging
             // );
             InternalLogging();
 
+            if(Environment.GetEnvironmentVariable("DISABLE_LOGGING") != null)
+            {
+                LogManager.Configuration = new CodeConfiguration();
+                return ;
+            }
             LogFactory proxiedFactory = null;
             if (proxyLogging)
             {

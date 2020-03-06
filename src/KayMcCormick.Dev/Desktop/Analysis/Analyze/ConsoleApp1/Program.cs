@@ -8,7 +8,9 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Autofac ;
+#if COMMANDLINE
 using CommandLine ;
+#endif
 using KayMcCormick.Dev.Logging ;
 using MessageTemplates ;
 using MessageTemplates.Core ;
@@ -75,7 +77,7 @@ namespace ConsoleApp1
                 Logger.Fatal ( ex , ex.Message ) ;
                 return ;
             }
-
+#if COMMANDLINE
             var parsed = Parser.Default.ParseArguments < Options > ( args )
                   .WithNotParsed (
                                   errors => {
@@ -94,7 +96,9 @@ namespace ConsoleApp1
             {
                 await MainCommand((parsed as Parsed<Options>).Value, context);
             }
-
+#else
+            await MainCommand(context);
+#endif
             return ;
             Logger.Debug ( "heelo" ) ;
         }
@@ -131,18 +135,25 @@ namespace ConsoleApp1
 #endif
         }
 
-        private static async Task MainCommand ( Options options , AppContext context )
+        private static async Task MainCommand ( 
+            #if COMMANDLINE
+            Options options ,
+            #endif
+            AppContext context )
         {
+#if COMMANDLINE
             if ( options.FirstChance )
             {
                 AppDomain.CurrentDomain.FirstChanceException +=
                     CurrentDomainOnFirstChanceException ;
             }
+#endif
 
             var viewModel = context.ViewModel ;
             var x = ( ISupportInitialize ) viewModel ;
             x.BeginInit ( ) ;
             x.EndInit ( ) ;
+#if COMMANDLINE
             if ( options.ListVsInstances )
             {
                 foreach ( var vsInstance in viewModel.VsCollection )
@@ -155,7 +166,7 @@ namespace ConsoleApp1
                                                          vsInstance
                                                        , typeof ( TemplatePropertyValue )
                                                         ) ;
-                    Logger.Info ( "converted = {converted}" , converted ) ;
+                    Logger.Info ( "" + "converted = {converted}" , converted ) ;
                     var templateProperties = new[]
                                              {
                                                  new TemplateProperty (
@@ -172,7 +183,7 @@ namespace ConsoleApp1
                     // Console.WriteLine(l\ine);
                 }
             }
-
+            #endif
 
             var instances = MSBuildLocator.QueryVisualStudioInstances ( )
                                           .Where (
@@ -241,7 +252,7 @@ namespace ConsoleApp1
             Console.WriteLine ( "FIRST CHANCE EXCEPTION\n" + e.Exception.ToString ( ) ) ;
         }
     }
-
+#if COMMANDLINE
     internal class Options
     {
         private bool _listVsInstances ;
@@ -255,4 +266,6 @@ namespace ConsoleApp1
         [ Option ( 'f' ) ]
         public bool FirstChance { get ; set ; }
     }
+#endif
+
 }

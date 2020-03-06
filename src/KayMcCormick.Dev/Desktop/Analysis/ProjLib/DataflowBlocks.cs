@@ -23,7 +23,7 @@ namespace ProjLib
         public static TransformManyBlock < Document , ILogInvocation > FindLogUsages ( )
         {
             var findLogUsagesBlock =
-                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc ) ;
+                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 4}) ;
             return findLogUsagesBlock ;
         }
 #if USEMSBUILD

@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigTest", "ConfigTest\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogService", "Services\LogService\LogService\LogService.csproj", "{29806796-4B30-4429-A447-75D5B89624D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandLine", "CommandLine\src\CommandLine\CommandLine.csproj", "{D89BD4D2-8108-4167-8886-51E79720E5C2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisControls", "Desktop\Analysis\AnalysisControls\AnalysisControls.csproj", "{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}"
 EndProject
 Global
@@ -161,18 +159,6 @@ Global
 		{29806796-4B30-4429-A447-75D5B89624D3}.Release|x64.Build.0 = Release|x64
 		{29806796-4B30-4429-A447-75D5B89624D3}.Release|x86.ActiveCfg = Release|x86
 		{29806796-4B30-4429-A447-75D5B89624D3}.Release|x86.Build.0 = Release|x86
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Debug|x64.ActiveCfg = Debug|x64
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Debug|x64.Build.0 = Debug|x64
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Debug|x86.ActiveCfg = Debug|x86
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Debug|x86.Build.0 = Debug|x86
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Release|x64.ActiveCfg = Release|x64
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Release|x64.Build.0 = Release|x64
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Release|x86.ActiveCfg = Release|x86
-		{D89BD4D2-8108-4167-8886-51E79720E5C2}.Release|x86.Build.0 = Release|x86
 		{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}.Debug|x64.ActiveCfg = Debug|x64
 		{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}.Debug|x64.Build.0 = Debug|x64

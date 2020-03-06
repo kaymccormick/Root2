@@ -39,7 +39,7 @@ namespace ProjLib
                 }
                 var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
                 return
-                    from node in root.DescendantNodes ( )
+                    from node in root.DescendantNodes ( ).AsParallel()
                     where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression
                     let @out =
                         LogUsages.CheckInvocationExpression (

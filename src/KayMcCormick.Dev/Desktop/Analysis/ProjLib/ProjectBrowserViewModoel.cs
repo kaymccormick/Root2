@@ -20,7 +20,7 @@ namespace ProjLib
                                      {
                                          Name = "My Project",
                                          RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
-                                         SolutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\ManagedProd.sln"
+                                         SolutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\ProjStuff\src\KayMcCormick.Dev\ManagedProd.sln"
             } ;
             browserNodeCollection.Add ( projectBrowserNode ) ;
         }
