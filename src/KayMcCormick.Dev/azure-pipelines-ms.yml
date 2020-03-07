@@ -19,7 +19,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
+  solution: 'src/KayMcCormick.Dev/Deployment.sln'
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
   KmGlobalOutputPath: $(Build.BinariesDirectory)
