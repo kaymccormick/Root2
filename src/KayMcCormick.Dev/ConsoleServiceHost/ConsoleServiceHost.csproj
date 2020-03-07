@@ -5,8 +5,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../build</KmGlobalOutputPath>
-    <IntermediateOutputPath>$(KmGlobalOutputPath)\..\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</IntermediateOutputPath>
-    <OutputPath>$(KmGlobalOutputPath)\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
+    <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(KmGlobalOutputPath)\bin\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{70264C77-6A64-4B26-B934-01B7D032A5B3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ConsoleServiceHost</RootNamespace>

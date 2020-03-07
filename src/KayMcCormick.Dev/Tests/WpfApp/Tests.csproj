@@ -3,10 +3,10 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
-    <IntermediateOutputPath>$(KmGlobalOutputPath)\..\test\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
-    <OutputPath>$(KmGlobalOutputPath)\..\test\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
+    <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
+    <OutputPath>$(KmGlobalOutputPath)\test\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{963A7522-EE3E-4487-BAF5-8600141A0350}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
