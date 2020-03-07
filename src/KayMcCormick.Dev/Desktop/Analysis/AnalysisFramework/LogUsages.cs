@@ -44,14 +44,17 @@ namespace AnalysisFramework
 
             var limitToMarkedStatements = false ;
             var qq0 =
-                from node in currentRoot.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
+               ( from node in currentRoot.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
                 where limitToMarkedStatements == false
                       || node.GetLeadingTrivia ( )
                              .Any (
-                                   trivia => trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia
-                                             && trivia.ToString ( ).Contains ( "doprocess" )
+                                   trivia => {
+                                       var b = trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia ;
+                                       var contains = trivia.ToString ( ).Contains ( "doprocess" ) ;
+                                       return b && contains ;
+                                   }
                                   )
-                select node ;
+                select node).ToList (  ) ;
 
             var logVisitedStatements = false ;
             if ( logVisitedStatements )
@@ -75,16 +78,15 @@ namespace AnalysisFramework
                 let @out = CheckInvocationExpression ( invocation , currentModel )
                 let methodSymbol = methodSymbol1
                 where @out.Item1
-                select InvocationParms.ProcessInvocation (
-                                                          new InvocationParms (
+                select (new InvocationParms (
                                                                                document1
                                                                              , syntaxTree
                                                                              , currentModel
                                                                              , statement
                                                                              , @out
                                                                              , ExceptionType
-                                                                              )
-                                                         ) ;
+                                                                              ).ProcessInvocation());
+                                                         
         }
 
         public const            string ILoggerClassName    = "ILogger" ;

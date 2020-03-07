@@ -86,42 +86,44 @@ namespace ProjLib
                 }
                 catch ( Exception ex )
                 {
-                    Logger.Warn ( ex , ex.ToString ( ) ) ;
+                    Logger.Debug ( ex , ex.Message ) ;
                 }
 
                 // "Msbuild failed when processing the file 'C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\V3\\Root\\src\\KayMcCormick.Dev\\Desktop\\App1\\App1.csproj' with message: C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319\\Microsoft.WinFx.targets: (268, 9): Unknown build error, 'Object reference not set to an instance of an object.' "
                 Logger.Debug ( "Load workspace failed: {} {x}" , e.Diagnostic.Message, e.Diagnostic.Kind ) ;
             } ;
-
-            List<string> solList;
-            var sol = Path.Combine(arg, "solutions.txt");
-            if (File.Exists(sol))
+            
+            var solutionPath = req.Info.SolutionPath;
+            if ( solutionPath == null )
             {
-                solList = File.ReadAllLines(sol).ToList();
-            }
-            else
-            {
-                var dirPath = arg;
-                try
+                List < string > solList ;
+                var sol = Path.Combine ( arg , "solutions.txt" ) ;
+                if ( File.Exists ( sol ) )
                 {
-
-                    solList = Directory
-                             .EnumerateFiles ( dirPath , "*.sln" , SearchOption.AllDirectories )
-                             .ToList ( ) ;
+                    solList = File.ReadAllLines ( sol ).ToList ( ) ;
                 }
-                catch ( IOException ioex )
+                else
                 {
-                    var message = $"Unable to enumerate directory {dirPath}: {ioex.Message}" ;
-                    Logger.Debug ( ioex , message ) ;
-                    throw new Exception ( message, ioex ) ;
+                    var dirPath = arg ;
+                    try
+                    {
+
+                        solList = Directory
+                                 .EnumerateFiles ( dirPath , "*.sln" , SearchOption.AllDirectories )
+                                 .ToList ( ) ;
+                    }
+                    catch ( IOException ioex )
+                    {
+                        var message = $"Unable to enumerate directory {dirPath}: {ioex.Message}" ;
+                        Logger.Debug ( ioex , message ) ;
+                        throw new Exception ( message , ioex ) ;
+                    }
                 }
+
+                // ReSharper disable once LocalizableElement
+             solutionPath = Path.Combine ( arg , solList.First ( ) ) ;
             }
 
-            // ReSharper disable once LocalizableElement
-            var solutionPath = Path.Combine (
-                                             arg
-                                           , solList.First ( )
-                                            ) ;
             Debug.Assert ( solutionPath != null , nameof ( solutionPath ) + " != null" ) ;
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 

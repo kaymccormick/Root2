@@ -12,13 +12,13 @@ namespace ProjLib
 {
     internal static class FindLogUsages
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public static async Task < IEnumerable < ILogInvocation > > FindUsagesFunc ( Document d )
         {
             try
             {
-                Logger.Debug ( "Here at FindUsagesfunc" ) ;
+                Logger.Trace ( "Entering {funcName}" , nameof ( FindUsagesFunc ) );
                 var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
                 var root = tree.GetCompilationUnitRoot ( ) ;
                 var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
@@ -49,7 +49,7 @@ namespace ProjLib
                         where @out.Item1
                     let statement =
                         node.AncestorsAndSelf ( ).Where(Predicate).First ( )
-                    select InvocationParms.ProcessInvocation (
+                    select (
                                                               new InvocationParms (
                                                                                    new CodeSource (
                                                                                                    tree.FilePath
@@ -59,8 +59,8 @@ namespace ProjLib
                                                                                  , statement
                                                                                  , @out
                                                                                  , exceptionType
-                                                                                  )
-                                                             ) ;
+                                                                                  )).ProcessInvocation();
+                                                             
             }
             catch ( Exception ex )
             {

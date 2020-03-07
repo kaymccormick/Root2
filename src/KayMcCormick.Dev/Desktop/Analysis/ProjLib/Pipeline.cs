@@ -85,14 +85,15 @@ namespace ProjLib
         {
             if ( task.IsFaulted )
             {
+                var faultReaon = task.Exception.Message ;
                 new LogBuilder ( Logger )
-                   .LoggerName ( $"{Logger.Name}.{logName}" )
-                   .Level ( LogLevel.Debug )
-                   .Exception ( task.Exception )
-                   .Message ( "fault is {ex}" , task.Exception.Message )
-                   .Write ( ) ;
+                                                              .LoggerName ( $"{Logger.Name}.{logName}" )
+                                                              .Level ( LogLevel.Trace )
+                                                              .Exception ( task.Exception )
+                                                              .Message ( "fault is {ex}" , faultReaon )
+                                                              .Write ( ) ;
             }
-            else { Logger.Debug ( $"{logName} complete - not faulted" ) ; }
+            else { Logger.Trace( $"{logName} complete - not faulted" ) ; }
         }
 
         protected virtual IPropagatorBlock <AnalysisRequest, AnalysisRequest> ConfigureInput ( )

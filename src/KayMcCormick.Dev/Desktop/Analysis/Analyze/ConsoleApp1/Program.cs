@@ -1,4 +1,5 @@
 ﻿using System ;
+using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
 using System.Reflection ;
@@ -181,24 +182,52 @@ namespace ConsoleApp1
             }
             #endif
 
-            #if MSBUILDLOCATOR
+#if MSBUILDLOCATOR
             var instances = MSBuildLocator.QueryVisualStudioInstances ( )
                                           .Where (
-                                                  ( instance , i )
+                                                  instance 
                                                       => instance.Version.Major    == 16
                                                          && instance.Version.Minor == 4
                                                  ) ;
             MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
-            #endif
-
-            var projectNode = viewModel.ProjectBrowserViewModel.RootCollection
-                                              .OfType < IProjectBrowserNode > ( )
-                                              .First ( ) ;
-            Console.WriteLine ( projectNode.SolutionPath ) ;
-            _ = Console.ReadLine ( ) ;
-            await viewModel.AnalyzeCommand (
-                                            projectNode
+#endif
+            int i = 0 ;
+            var browserNodeCollection = viewModel.ProjectBrowserViewModel.RootCollection ;
+            List < IBrowserNode >
+                nodes = new List < IBrowserNode > ( browserNodeCollection.Count ) ;
+            foreach ( var browserNode in browserNodeCollection )
+            {
+                i += 1 ;
+                Console.WriteLine ( $"{i}: {browserNode.Name}" ) ;
+                nodes.Add ( browserNode ) ;
+                if ( browserNode is IProjectBrowserNode project )
+                {
+                    Console.WriteLine ( $"\tSolutionPath is {project.SolutionPath}" ) ;
+                    Console.WriteLine (
+                                       $"\tConfiguration property Platform is {project.Platform ?? "Null"}"
                                            ) ;
+                    Console.WriteLine ($"\tRepositoryUrl is {project.RepositoryUrl}" ) ;
+                }
+            }
+
+            var key = Console.ReadKey ( ) ;
+            if ( ! Char.IsDigit ( key.KeyChar ) )
+            {
+                return ;
+
+            }
+
+            var selection = (int)char.GetNumericValue ( key.KeyChar ) ;
+
+            var projectNode = nodes[selection - 1] as IProjectBrowserNode;
+
+            if ( projectNode != null )
+            {
+                Console.WriteLine ( projectNode.SolutionPath ) ;
+                _ = Console.ReadLine ( ) ;
+                await viewModel.AnalyzeCommand ( projectNode ) ;
+            }
+
             var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
 
 
