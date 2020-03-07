@@ -5,6 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
+    <AlwaysCompileMarkupFilesInSeparateDomain>true</AlwaysCompileMarkupFilesInSeparateDomain>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\bin\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{74792445-F224-4C75-B204-094FF689D950}</ProjectGuid>

@@ -44,7 +44,6 @@ namespace KayMcCormick.Dev
             foreach (var target in NLog.LogManager.Configuration.AllTargets)
             {
                 var loginfo = new LoggerInfo ( ) { TargetName = target.Name } ;
-                loginfo.FileTarget = target as FileTarget ;
                 appInstanceInfo.LoggerInfos.Add ( loginfo ) ;
             }
 

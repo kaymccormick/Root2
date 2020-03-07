@@ -37,3 +37,11 @@ TestResult.xml
 /src/KayMcCormick.Dev/x64/Release
 /src/KayMcCormick.Dev/Desktop/WpfApp/html/M-Tests.Lib.Fixtures.FixtureLogger.LogFixtureLifecycleEvent.htm
 /src/KayMcCormick.Dev/CommandLine/src/CommandLine
+/build
+/src/KayMcCormick.Dev/Docs/Help/fti
+/src/KayMcCormick.Dev/Docs/Help/html
+/src/KayMcCormick.Dev/Docs/Help/toc
+/src/KayMcCormick.Dev/Docs/Help
+/src/KayMcCormick.Dev/zzzz
+/test/Debug/x86/ProjTests
+/test/Debug/x86/Tests
