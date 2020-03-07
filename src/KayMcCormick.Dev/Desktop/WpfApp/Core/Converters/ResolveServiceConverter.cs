@@ -2,6 +2,7 @@ using System ;
 using System.Globalization ;
 using System.Windows.Data ;
 using Autofac ;
+using KayMcCormick.Lib.Wpf ;
 using WpfApp.Core.Xaml ;
 
 namespace WpfApp.Core.Converters
@@ -34,7 +35,7 @@ namespace WpfApp.Core.Converters
             }
 
             var s = ( ResolveService ) value ;
-            var lifetimeScope = Props.GetLifetimeScope ( s ) ?? parameter as ILifetimeScope ;
+            var lifetimeScope = AttachedProperties.GetLifetimeScope ( s ) ?? parameter as ILifetimeScope ;
 
             if ( lifetimeScope == null )
             {

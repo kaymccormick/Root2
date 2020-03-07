@@ -7,6 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
   xmlns:nLog="clr-namespace:NLog;assembly=NLog"
   Name="mainWindow"
   AllowDrop="True"
@@ -142,12 +143,13 @@
         <StatusBarItem>
           <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
         </StatusBarItem>
-      </StatusBar>
+    </StatusBar>
     </Border>
     <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
-    <ItemsControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Events}"><ItemsControl.ItemTemplate>
+    <ContentControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Content="{wpf:Resolve {x:Type analysisControls:SyntaxPanel}}"/>
+    <ItemsControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Hidden" ItemsSource="{Binding Events}"><ItemsControl.ItemTemplate>
       <DataTemplate>
           <ContentControl Content="{Binding Converter={StaticResource JsonConverter}}"/>
       </DataTemplate>

@@ -24,6 +24,7 @@ using AnalysisFramework ;
 using Autofac;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis;
 using NLog;
 using ProjLib;
@@ -55,9 +56,12 @@ namespace ProjInterface
             _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope) : this()
+        public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope)
         {
-            
+            SetValue(AttachedProperties.LifetimeScopeProperty, scope);
+            InitializeComponent();
+            _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
+
             ViewModel = viewModel ;
             Scope = scope ;
             
@@ -155,6 +159,7 @@ namespace ProjInterface
         private ConcurrentQueue < IBoundCommandOperation > opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
         private ObservableCollection < Task < bool > > waitingTasks = new ObservableCollection < Task < bool > > ();
         private IWorkspacesViewModel _viewModel = new DesignWorkspacesViewModel() ;
+        private string _viewTitle ;
 
         internal struct DesignWorkspacesViewModel : IWorkspacesViewModel
         {
@@ -414,5 +419,9 @@ namespace ProjInterface
                 
             }
         }
+
+        #region Implementation of IView1
+        public string ViewTitle => "Main View" ;
+        #endregion
     }
 }

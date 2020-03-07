@@ -1,5 +1,6 @@
 ﻿using System.Windows ;
 using System.Windows.Controls ;
+using KayMcCormick.Lib.Wpf ;
 using NLog ;
 
 namespace WpfApp.Controls
@@ -9,7 +10,7 @@ namespace WpfApp.Controls
     {
         /// <summary>The lifetime scope property</summary>
         public static readonly DependencyProperty LifetimeScopeProperty =
-            Props.LifetimeScopeProperty ;
+            AttachedProperties.LifetimeScopeProperty ;
 
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InternalOrPrivateMemberNotDocumented

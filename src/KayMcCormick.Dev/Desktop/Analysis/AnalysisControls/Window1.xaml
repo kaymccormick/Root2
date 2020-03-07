@@ -1,0 +1,15 @@
+﻿<wpf:AppWindow x:Class="AnalysisControls.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnalysisControls"
+        xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
+        mc:Ignorable="d"
+        Title="Window1" Height="450" Width="800">
+    <DockPanel LastChildFill="True">
+        <TabControl>
+          <TabItem Header="{Binding RelativeSource={RelativeSource Self},Path=Content.ViewTitle }"  Content="{wpf:Resolve {x:Type local:TestView1}}"/>
+        </TabControl>
+    </DockPanel>
+</wpf:AppWindow>

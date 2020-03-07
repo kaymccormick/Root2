@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -13,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using AnalysisFramework ;
-using Autofac ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using MigraDoc.DocumentObjectModel ;
@@ -25,17 +23,6 @@ using Section = MigraDoc.DocumentObjectModel.Section ;
 
 namespace AnalysisControls
 {
-    public class AnalysisControlsModule : Module {
-        #region Overrides of Module
-        protected override void Load ( ContainerBuilder builder )
-        {
-            builder.RegisterType < CompilationView > ( ).AsSelf ( ) ;
-            builder.RegisterType < CompilationViewModel > ( ).As < ICompilationViewModel > ( ) ;
-            builder.RegisterType < ComponentViewModel > ( ).As < IComponentViewModel > ( ) ;
-            builder.RegisterType < ComponentPage > ( ).As < Page > ( ) ;
-        }
-        #endregion
-    }
     /// <summary>
     /// Interaction logic for CompilationView.xaml
     /// </summary>
@@ -43,26 +30,40 @@ namespace AnalysisControls
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private ICompilationViewModel viewModel ;
+        private string _viewTitle ;
 
         [UsedImplicitly]
-        public CompilationView(ICompilationViewModel viewModel, ICodeAnalyseContext codeAnalyseContext)
+        public CompilationView(ICompilationViewModel viewModel/*, ICodeAnalyseContext codeAnalyseContext*/)
         {
             this.viewModel = viewModel ;
-            viewModel.CompilationUnitRootContext = codeAnalyseContext ;
-            viewModel.SemanticModelContext = codeAnalyseContext ;
+            // viewModel.CompilationUnitRootContext = codeAnalyseContext ;
+            // viewModel.SemanticModelContext = codeAnalyseContext ;
             InitializeComponent();
 
-            Document doc = new Document();
-            var section = new Section() ;
-            var paragraph = new Paragraph() ;
-            paragraph.Format.Font = new Font("Fira Code", 14.0);
-            paragraph.AddText ( ViewModel.CompilationUnitRootContext.CompilationUnit.ToFullString ( ) ) ;
-            section.Add(paragraph);
-            doc.Add (section );
-            var s = new MigraDoc.RtfRendering.RtfDocumentRenderer ( ).RenderToString ( doc , @"C:\temp" ) ;
-            rtfCode.Text = s ;
+            
+            if ( ViewModel.CompilationUnitRootContext != null )
+            {
+                Document doc = new Document();
+                var section = new Section();
+                var paragraph = new Paragraph();
+                paragraph.Format.Font = new Font("Fira Code", 14.0);
+                paragraph.AddText (
+                                   ViewModel.CompilationUnitRootContext.CompilationUnit
+                                            .ToFullString ( )
+                                  ) ;
+                section.Add ( paragraph ) ;
+                doc.Add ( section ) ;
+                var s =
+                    new MigraDoc.RtfRendering.RtfDocumentRenderer ( ).RenderToString (
+                                                                                      doc
+                                                                                    , @"C:\temp"
+                                                                                     ) ;
+                rtfCode.Text = s ;
 
-            this.SyntaxPanel.ViewModel.CompilationUnitSyntax = ViewModel.CompilationUnitRootContext.CompilationUnit;
+                this.SyntaxPanel.ViewModel.CompilationUnitSyntax =
+                    ViewModel.CompilationUnitRootContext.CompilationUnit ;
+            }
+
             this.SyntaxPanel.ViewModel.PropertyChanged += ( sender , args ) => {
                 Logger.Debug ( "PropertyChanged: {prop}" , args.PropertyName ) ;
                 if ( args.PropertyName == "SelectedItem" )
@@ -102,5 +103,9 @@ namespace AnalysisControls
             ICompilationViewModel tempQualifier = ViewModel ;
             ViewModel.GetDeclaredSymbol ( ViewModel.SelectedItem , tempQualifier.SemanticModelContext.CurrentModel ) ;
         }
+
+        #region Implementation of IView1
+        public string ViewTitle => "Compilation View";
+        #endregion
     }
 }

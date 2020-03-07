@@ -231,14 +231,31 @@ namespace ProjInterface
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
             var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule(),
                                                                  new AnalysisControlsModule()) ;
+            #if false
+            foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
+            {
+                if ( view1 is Window vW )
+                {
+                    vW.Show ( ) ;
+                }
+                else
+                {
+                    Window w = new Window ( ) ;
+                    w.Content = view1 ;
+                    w.Show ( ) ;
+                }
+            }
+#endif
+            var windowType = typeof ( Window1 ) ;
             try
             {
-                var mainWindow = lifetimeScope.Resolve < ProjMainWindow > ( ) ;
+                var mainWindow = (Window)lifetimeScope.Resolve(windowType);
+                // mainWindow.SetValue ( AttachedProperties.LifetimeScopeProperty , lifetimeScope ) ;
                 mainWindow.Show ( ) ;
             }
             catch ( Exception ex )
             {
-                Logger.Error ( ex , ex.ToString ) ;
+                Logger.Error ( ex , ex.ToString() ) ;
                 KayMcCormick.Dev.Utils.HandleInnerExceptions ( ex ) ;
                 MessageBox.Show ( ex.Message , "Error" ) ;
             }

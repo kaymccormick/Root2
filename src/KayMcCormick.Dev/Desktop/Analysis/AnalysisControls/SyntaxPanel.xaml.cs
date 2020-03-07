@@ -23,9 +23,10 @@ namespace AnalysisControls
     /// <summary>
     /// Interaction logic for SyntaxPanel.xaml
     /// </summary>
-    public partial class SyntaxPanel : UserControl, IView <ISyntaxPanelViewModel>
+    public partial class SyntaxPanel : UserControl, IView <ISyntaxPanelViewModel>, IView1
     {
         private ISyntaxPanelViewModel viewModel = new SyntaxPanelViewModel();
+        private string _viewTitle ;
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public SyntaxPanel()
         {
@@ -151,6 +152,10 @@ namespace AnalysisControls
 
         #region Implementation of IView<ISyntaxPanelViewModel>
         public ISyntaxPanelViewModel ViewModel { get => viewModel ; set => viewModel = value ; }
+        #endregion
+
+        #region Implementation of IView1
+        public string ViewTitle => "Syntax Panel" ;
         #endregion
     }
 }

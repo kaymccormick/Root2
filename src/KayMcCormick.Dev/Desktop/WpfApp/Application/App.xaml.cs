@@ -539,7 +539,7 @@ namespace WpfApp.Application
                                  , new AssemblyList(AppDomain.CurrentDomain.GetAssemblies())
                                   );
             Props.SetContainer(fe, _container);
-            Props.SetLifetimeScope(fe, AppContainer);
+            AttachedProperties.SetLifetimeScope(fe, AppContainer);
         }
 
         private void AddEventListeners()
