@@ -1,0 +1,50 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - '*'
+    exclude:
+    - azure-pipelines-1.yml
+    - azure-pipelines-1.yml
+    - azure-pipelines-1-exo.yml
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
+  buildPlatform: 'x86'
+  buildConfiguration: 'Release'
+
+steps:
+- checkout: self
+  submodules: false
+  persistCredentials: true
+
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    createLogFile: true
+    logFileVerbosity: 'diagnostic'
+    
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)\SetupProject1\bin\Release\\Kay McCormick Mega App.msi'
+    artifact: 'MsiInstaller'
+    publishLocation: 'pipeline'
