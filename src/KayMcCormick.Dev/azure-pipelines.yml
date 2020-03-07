@@ -23,6 +23,7 @@ variables:
   solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
+  KmGlobalOutputPath: $(Build.BinariesDirectory)
 
 steps:
 - checkout: self
@@ -37,9 +38,24 @@ steps:
 
 - task: VSBuild@1
   inputs:
+    msbuildArgs: "/p:KmGlobalOutputPath=$(KmGlobalOutputPath)"
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     createLogFile: true
     logFileVerbosity: 'diagnostic'
 
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+    verbose: true
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'''
+    artifact: 'Build Archive'
+    publishLocation: 'pipeline'
