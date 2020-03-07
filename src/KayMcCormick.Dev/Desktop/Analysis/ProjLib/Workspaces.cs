@@ -101,9 +101,18 @@ namespace ProjLib
             }
             else
             {
-                solList = Directory
-                         .EnumerateFiles(arg, "*.sln", SearchOption.AllDirectories)
-                         .ToList();
+                var dirPath = arg;
+                try
+                {
+
+                    solList = Directory
+                             .EnumerateFiles ( dirPath , "*.sln" , SearchOption.AllDirectories )
+                             .ToList ( ) ;
+                }
+                catch ( IOException ioex )
+                {
+                    throw new Exception ( $"Unable to enumerate directory {dirPath}", ioex ) ;
+                }
             }
 
             // ReSharper disable once LocalizableElement

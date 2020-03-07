@@ -125,41 +125,32 @@ namespace ProjLib
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
             AnalysisRequest req = new AnalysisRequest();
             req.Info = projectBrowserNode ;
+            Logger.Trace("About to await sendasync on pipeline");
             await PipelineViewModel.Pipeline.PipelineInstance
                                    .SendAsync ( req )
                                    .ConfigureAwait ( true ) ;
-            var result = await actionBlock.Completion.ContinueWith (
-                                                                    task => {
-                                                                        Logger.Info (
-                                                                                     "received task {fault}"
-                                                                                   , task.IsFaulted
-                                                                                    ) ;
-                                                                        if ( task.IsFaulted )
-                                                                        {
-                                                                            return new
-                                                                                PipelineResult (
-                                                                                                ResultStatus
-                                                                                                   .Failed
-                                                                                              , task
-                                                                                                   .Exception
-                                                                                               ) ;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            return new
-                                                                                PipelineResult (
-                                                                                                ResultStatus
-                                                                                                   .Success
-                                                                                               ) ;
-                                                                        }
-                                                                    }
-                                                                  , CancellationToken.None
-                                                                  , TaskContinuationOptions.None
-                                                                  , TaskScheduler.Current)
-                                                                  
-                                          .ConfigureAwait ( true ) ;
-            PipelineResult = result ;
-            if ( result.Status == ResultStatus.Failed )
+            Logger.Trace("back from await sendasync on pipeline");
+            PipelineResult result;
+            try
+            {
+                await actionBlock.Completion.ConfigureAwait(true);
+                result =            new                                          
+                    PipelineResult(
+                                   ResultStatus
+                                      .Success
+                                  );
+
+            }
+            catch ( Exception ex )
+            {
+                Logger.Debug ( ex , $"actionTask completion threw exception {ex.Message}" ) ;
+                result = new
+                    PipelineResult(
+                                   ResultStatus
+                                      .Failed, ex);
+            }
+        
+        if ( result.Status == ResultStatus.Failed )
             {
                 Logger.Error (
                               result.TaskException

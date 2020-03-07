@@ -260,6 +260,9 @@
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>
     </PackageReference>
+    <PackageReference Include="Xceed.Products.Wpf.Toolkit.AvalonDock">
+      <Version>4.0.20076.12200</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\DataDesignersUI_2400.ico" />
