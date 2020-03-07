@@ -89,7 +89,7 @@ namespace ProjLib
                    .LoggerName ( $"{Logger.Name}.{logName}" )
                    .Level ( LogLevel.Debug )
                    .Exception ( task.Exception )
-                   .Message ( "fault is {ex}" , task.Exception )
+                   .Message ( "fault is {ex}" , task.Exception.Message )
                    .Write ( ) ;
             }
             else { Logger.Debug ( $"{logName} complete - not faulted" ) ; }

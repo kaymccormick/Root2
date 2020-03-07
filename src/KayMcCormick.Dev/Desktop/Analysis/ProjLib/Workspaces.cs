@@ -111,7 +111,9 @@ namespace ProjLib
                 }
                 catch ( IOException ioex )
                 {
-                    throw new Exception ( $"Unable to enumerate directory {dirPath}", ioex ) ;
+                    var message = $"Unable to enumerate directory {dirPath}: {ioex.Message}" ;
+                    Logger.Debug ( ioex , message ) ;
+                    throw new Exception ( message, ioex ) ;
                 }
             }
 
