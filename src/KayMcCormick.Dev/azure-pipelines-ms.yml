@@ -32,7 +32,10 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
+    command: 'restore'
     restoreSolution: '$(solution)'
+    feedsToUse: 'select'
+    vstsFeed: 'https://dotnet.myget.org/F/roslyn/api/v3/index.json'
 
 - task: VSBuild@1
   inputs:
