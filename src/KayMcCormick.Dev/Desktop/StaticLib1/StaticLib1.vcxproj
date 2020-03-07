@@ -18,6 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <PropertyGroup Condition="'$(KmGlobalOutputPath)'==''" Label="GlobalOutputPath">
+    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../build</KmGlobalOutputPath>
+  </PropertyGroup>
+
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{694E1F18-C1BE-4741-870C-86645033BBC9}</ProjectGuid>

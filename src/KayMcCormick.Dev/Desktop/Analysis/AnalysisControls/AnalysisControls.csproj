@@ -5,6 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../../build</KmGlobalOutputPath>
+    <IntermediateOutputPath>$(KmGlobalOutputPath)\..\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <ProjectGuid>{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}</ProjectGuid>
     <OutputType>library</OutputType>
     <RootNamespace>AnalysisControls</RootNamespace>
