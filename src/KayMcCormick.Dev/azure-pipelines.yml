@@ -42,10 +42,4 @@ steps:
     configuration: '$(buildConfiguration)'
     createLogFile: true
     logFileVerbosity: 'diagnostic'
-    
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.SourcesDirectory)\SetupProject1\bin\Release\\Kay McCormick Mega App.msi'
-    artifact: 'MsiInstaller'
-    publishLocation: 'pipeline'
