@@ -159,7 +159,6 @@ namespace ProjInterface
         private ConcurrentQueue < IBoundCommandOperation > opqueue = new ConcurrentQueue < IBoundCommandOperation > ();
         private ObservableCollection < Task < bool > > waitingTasks = new ObservableCollection < Task < bool > > ();
         private IWorkspacesViewModel _viewModel = new DesignWorkspacesViewModel() ;
-        private string _viewTitle ;
 
         internal struct DesignWorkspacesViewModel : IWorkspacesViewModel
         {

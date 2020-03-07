@@ -99,8 +99,6 @@ namespace ConsoleApp1
 #else
             await MainCommand(context);
 #endif
-            return ;
-            Logger.Debug ( "heelo" ) ;
         }
 
         public static void Action ( ILogInvocation invocation )
@@ -112,7 +110,7 @@ namespace ConsoleApp1
                               // ) ;
         }
 
-        private static void Instances ( Logger Logger )
+        private static void Instances ( )
         {
 #if false
             var instances = MSBuildLocator.QueryVisualStudioInstances (
@@ -193,7 +191,7 @@ namespace ConsoleApp1
                                                  ) ;
             MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
             
-            viewModel.AnalyzeCommand (
+            await viewModel.AnalyzeCommand (
                                       viewModel.ProjectBrowserViewModel.RootCollection
                                                .OfType < IProjectBrowserNode > ( )
                                                .First ( )

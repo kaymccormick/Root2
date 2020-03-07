@@ -12,19 +12,18 @@ namespace KayMcCormick.Dev.TestLib
     /// TODO Edit XML Comment Template for LogTestMethodAttribute
     public class LogTestMethodAttribute : BeforeAfterTestAttribute
     {
-        private readonly LogLevel _level ;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private LogLevel LogLevel;
+        private readonly        LogLevel _level ;
+        private static readonly Logger   Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private                 LogLevel LogLevel ;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logLevel"></param>
-        public LogTestMethodAttribute ( ){
+        public LogTestMethodAttribute ( )
         {
-        }
-        LogLevel level = null ;
-            _level = level ?? LogLevel.Debug;
+            LogLevel level = null ;
+            _level = level ?? LogLevel.Debug ;
         }
 
         public LogLevel Level { get => LogLevel ; set => LogLevel = value ; }
@@ -33,7 +32,7 @@ namespace KayMcCormick.Dev.TestLib
         ///     This method is called after the test method is executed.
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        [ EditorBrowsable ( EditorBrowsableState.Never ) ]
         public override void After ( MethodInfo methodUnderTest )
         {
             new LogBuilder ( Logger ).Level ( LogLevel.Info )
@@ -54,12 +53,12 @@ namespace KayMcCormick.Dev.TestLib
         ///     This method is called before the test method is executed.
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
-        [EditorBrowsable( EditorBrowsableState.Never)]
+        [ EditorBrowsable ( EditorBrowsableState.Never ) ]
         public override void Before ( MethodInfo methodUnderTest )
         {
             new LogBuilder ( Logger ).Level ( LogLevel.Info )
                                      .Message (
-                                               $"{nameof ( Before)} test method {methodUnderTest.Name}"
+                                               $"{nameof ( Before )} test method {methodUnderTest.Name}"
                                               )
                                      .Properties (
                                                   LogHelper.TestMethodProperties (

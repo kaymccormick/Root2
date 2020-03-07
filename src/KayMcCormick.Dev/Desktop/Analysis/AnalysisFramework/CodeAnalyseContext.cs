@@ -42,7 +42,6 @@ namespace AnalysisFramework
             return $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes().Count()} nodes" ;
         }
 
-        private readonly string _code ;
         private readonly string _assemblyName ;
 
         protected SemanticModel _currentModel ;

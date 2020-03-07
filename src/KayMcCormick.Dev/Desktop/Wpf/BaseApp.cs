@@ -25,15 +25,16 @@ namespace KayMcCormick.Lib.Wpf
         [ Option ( 't' ) ]
         public bool EnableTracing { get ; set ; }
     }
-    #endif
+#endif
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public abstract class BaseApp : Application
     {
-        private IComponentContext       scope ;
-        private Type[]                  _optionType ;
+        private IComponentContext scope ;
+
 #if COMMANDLINE
+        private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
 
@@ -93,10 +94,11 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-#region Overrides of Application
+        #region Overrides of Application
         protected override void OnStartup ( StartupEventArgs e )
         {
             base.OnStartup ( e ) ;
+#if COMMANDLINE
             var optionTypes = OptionTypes ;
             var args = e.Args ;
             if ( e.Args.Length       == 0
@@ -104,11 +106,13 @@ namespace KayMcCormick.Lib.Wpf
             {
                 args = args.Prepend ( "default" ).ToArray ( ) ;
             }
-            // ArgParseResult = Parser.Default.ParseArguments ( args , optionTypes ) ;
-            // ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
+
+            ArgParseResult = Parser.Default.ParseArguments ( args , optionTypes ) ;
+             ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
+#endif
         }
 
-        protected abstract void OnArgumentParseError ( IEnumerable < object> obj ) ;
+        protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
 
 #if COMMANDLINE
@@ -117,10 +121,8 @@ namespace KayMcCormick.Lib.Wpf
             get => _argParseResult ;
             set => _argParseResult = value ;
         }
-        #endif
-
         public virtual Type[] OptionTypes => _optionType ;
-#endregion
+#endif
+        #endregion
     }
 }
-

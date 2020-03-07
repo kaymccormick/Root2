@@ -30,7 +30,6 @@ namespace AnalysisControls
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private ICompilationViewModel viewModel ;
-        private string _viewTitle ;
 
         [UsedImplicitly]
         public CompilationView(ICompilationViewModel viewModel/*, ICodeAnalyseContext codeAnalyseContext*/)

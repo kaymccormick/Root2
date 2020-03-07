@@ -67,8 +67,6 @@ namespace ProjLib
                 Logger.Debug( ex , ex.ToString ( ) ) ;
                 throw ;
             }
-
-            return null ;
         }
 
         private static bool Predicate ( SyntaxNode arg1 , int arg2 )

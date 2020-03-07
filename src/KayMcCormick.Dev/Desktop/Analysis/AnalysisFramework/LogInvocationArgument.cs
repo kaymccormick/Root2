@@ -28,10 +28,6 @@ namespace AnalysisFramework
 
     public class LogInvocationArgument : ILogInvocationArgument
     {
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-
-        private readonly ILogInvocation  _debugInvo ;
-     
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 
         private readonly ArgumentSyntax _syntax ;
@@ -51,7 +47,6 @@ namespace AnalysisFramework
 
         public LogInvocationArgument ( [ NotNull ] ILogInvocation debugInvo , [ NotNull ] ArgumentSyntax syntax ) : this(syntax)
         {
-            _debugInvo = debugInvo ?? throw new ArgumentNullException ( nameof ( debugInvo ) ) ;
             _syntax    = syntax ?? throw new ArgumentNullException ( nameof ( syntax ) ) ;
 
 

@@ -14,19 +14,19 @@ namespace AnalysisFramework
     public static class LogUsages
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public static IEnumerable<ILogInvocation> FindLogUsages(
-            ICodeSource                 document1
-          , CompilationUnitSyntax       currentRoot
-          , SemanticModel               currentModel
-           ,
-            SyntaxTree                  syntaxTree
+
+        public static IEnumerable < ILogInvocation > FindLogUsages (
+            ICodeSource           document1
+          , CompilationUnitSyntax currentRoot
+          , SemanticModel         currentModel
+          , SyntaxTree            syntaxTree
         )
         {
             var comp = currentModel.Compilation ;
             var ExceptionType = comp.GetTypeByMetadataName ( "System.Exception" ) ;
             if ( ExceptionType == null )
             {
-                Logger.Warn( "No exception type" ) ;
+                Logger.Warn ( "No exception type" ) ;
             }
 
             var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
@@ -39,10 +39,10 @@ namespace AnalysisFramework
             var t2 = comp.GetTypeByMetadataName ( ILoggerClassFullName ) ;
             if ( t2 == null )
             {
-                throw new MissingTypeException(ILoggerClassFullName);
+                throw new MissingTypeException ( ILoggerClassFullName ) ;
             }
 
-            bool limitToMarkedStatements = false ;
+            var limitToMarkedStatements = false ;
             var qq0 =
                 from node in currentRoot.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
                 where limitToMarkedStatements == false
@@ -53,7 +53,7 @@ namespace AnalysisFramework
                                   )
                 select node ;
 
-            bool logVisitedStatements = false ;
+            var logVisitedStatements = false ;
             if ( logVisitedStatements )
             {
                 foreach ( var q in qq0 )
@@ -63,7 +63,7 @@ namespace AnalysisFramework
             }
 
             IMethodSymbol methodSymbol1 = null ;
-return
+            return
                 from statement in qq0
                 let invocations =
                     statement.DescendantNodes (
@@ -85,8 +85,6 @@ return
                                                                              , ExceptionType
                                                                               )
                                                          ) ;
-
-
         }
 
         public const            string ILoggerClassName    = "ILogger" ;
@@ -99,11 +97,7 @@ return
         private const string NLogNamespace = "NLog" ;
 
 
-        private static bool CheckSymbol (
-            IMethodSymbol    methSym
-          , params INamedTypeSymbol[] t1
-          
-        )
+        private static bool CheckSymbol ( IMethodSymbol methSym , params INamedTypeSymbol[] t1 )
         {
             var cType = methSym.ContainingType ;
             var r = t1.Any ( symbol => SymbolEqualityComparer.Default.Equals ( cType , symbol ) ) ;
@@ -112,7 +106,11 @@ return
 
         public static bool IsException ( INamedTypeSymbol exceptionType , ITypeSymbol baseType )
         {
-            if ( exceptionType == null ) return false ;
+            if ( exceptionType == null )
+            {
+                return false ;
+            }
+
             var isException = false ;
             while ( baseType != null )
             {
@@ -127,15 +125,16 @@ return
             return isException ;
         }
 
-        public static Tuple<bool, IMethodSymbol, InvocationExpressionSyntax> CheckInvocationExpression (
-            InvocationExpressionSyntax node
-          , SemanticModel              currentModel
-,
-params INamedTypeSymbol[] t)
+        public static Tuple < bool , IMethodSymbol , InvocationExpressionSyntax >
+            CheckInvocationExpression (
+                InvocationExpressionSyntax node
+              , SemanticModel              currentModel
+              , params INamedTypeSymbol[]  t
+            )
         {
             try
             {
-                var symbolInfo = currentModel.GetSymbolInfo(node.Expression);
+                var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
 #if DEBUG
                 Logger.Debug (
                               "{method} mode is {node}"
@@ -144,59 +143,59 @@ params INamedTypeSymbol[] t)
                              ) ;
                 Logger.Debug ( "{exprKind}, {exor}" , node.Expression.Kind ( ) , node.Expression ) ;
 
-                Logger.Info ( "symbolinfo is {node}" , symbolInfo.Symbol?.ToDisplayString() ?? "null" ) ;
-                if(symbolInfo.Symbol == null)
+                Logger.Info (
+                             "symbolinfo is {node}"
+                           , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
+                            ) ;
+                if ( symbolInfo.Symbol == null )
                 {
                     Logger.Info ( "candidate symbols: {x}" , symbolInfo.CandidateSymbols ) ;
                 }
-                #endif
+#endif
                 var methodSymbol = symbolInfo.Symbol as IMethodSymbol ;
                 var result = methodSymbol != null
-                                  // TODO optmize
-                                  && CheckSymbol (
-                                                  methodSymbol, t
-                                                ) ;
-                #if DEBUG
+                             // TODO optmize
+                             && CheckSymbol ( methodSymbol , t ) ;
+#if DEBUG
                 Logger.Debug ( "result is {result}" , result ) ;
-                #endif
-                return Tuple.Create (
-                                     result
-                                   , methodSymbol
-                                   , node
-                                    ) ;
-            } catch(Exception ex)
+#endif
+                return Tuple.Create ( result , methodSymbol , node ) ;
+            }
+            catch ( Exception ex )
             {
                 throw ;
-               // return Tuple.Create ( false , null , node  ) ;
+                // return Tuple.Create ( false , null , node  ) ;
             }
         }
 
         public static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )
         {
-            return model.Compilation.GetTypeByMetadataName(ILoggerClassFullName);
+            return model.Compilation.GetTypeByMetadataName ( ILoggerClassFullName ) ;
         }
 
         public static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
         {
-            return model.Compilation.GetTypeByMetadataName(LoggerClassFullName);
-
+            return model.Compilation.GetTypeByMetadataName ( LoggerClassFullName ) ;
         }
     }
 
     public class MissingTypeException : Exception
     {
-        public MissingTypeException ( ) {
-        }
+        public MissingTypeException ( ) { }
 
-        public MissingTypeException ( string message ) : base ( message )
+        public MissingTypeException ( string message ) : base ( message ) { }
+
+        public MissingTypeException ( string message , Exception innerException ) : base (
+                                                                                          message
+                                                                                        , innerException
+                                                                                         )
         {
         }
 
-        public MissingTypeException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected MissingTypeException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected MissingTypeException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
         }
     }

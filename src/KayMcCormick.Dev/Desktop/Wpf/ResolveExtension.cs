@@ -63,7 +63,6 @@ namespace KayMcCormick.Lib.Wpf
                 throw new Exception ( "No lifetime scope" ) ;
             }
 
-            return null ;
         }
         #endregion
     }

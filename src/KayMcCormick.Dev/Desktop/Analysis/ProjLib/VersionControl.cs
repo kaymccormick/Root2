@@ -2,19 +2,21 @@ using System.IO ;
 using System.Threading.Tasks ;
 using LibGit2Sharp ;
 using NLog ;
-using ProjLib ;
 
-static internal class VersionControl
+namespace ProjLib
 {
-    
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-    public static async Task < string > CloneProjectAsync ( string arg )
+    static internal class VersionControl
     {
-        Logger.Info ( "Clone {arg}" , arg ) ;
-        var workdirPath = Path.Combine ( FilePaths.ProjectRootDir , Path.GetRandomFileName ( ) ) ;
+    
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        var r = await Task.Run ( ( ) => Repository.Clone ( arg , workdirPath ) ) ;
-        return workdirPath ;
+        public static async Task < string > CloneProjectAsync ( string arg )
+        {
+            Logger.Info ( "Clone {arg}" , arg ) ;
+            var workdirPath = Path.Combine ( FilePaths.ProjectRootDir , Path.GetRandomFileName ( ) ) ;
+
+            var r = await Task.Run ( ( ) => Repository.Clone ( arg , workdirPath ) ) ;
+            return workdirPath ;
+        }
     }
 }

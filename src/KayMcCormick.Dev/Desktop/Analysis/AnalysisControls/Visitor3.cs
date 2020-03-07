@@ -144,7 +144,7 @@ namespace AnalysisControls
                 // AdornerDecorator d = new AdornerDecorator();
                 _curLine += 1 ;
                 // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
-                ///AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
+                //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
                 //_document.Blocks.Add ( _curBlock ) ;
                 Logger.Warn($"add to blocks");
                 _document.Blocks.Add ( _curBlock ) ;

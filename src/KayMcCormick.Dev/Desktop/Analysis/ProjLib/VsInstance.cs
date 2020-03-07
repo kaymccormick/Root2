@@ -59,7 +59,7 @@ namespace ProjLib
                     {
                         _mruItems = _provider.GetMruItemListFor ( this ) ;
                     }
-                } catch(COMException ex)
+                } catch(COMException)
                 {
                     }
 

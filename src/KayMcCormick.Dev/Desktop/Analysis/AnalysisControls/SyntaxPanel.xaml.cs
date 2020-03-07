@@ -26,7 +26,6 @@ namespace AnalysisControls
     public partial class SyntaxPanel : UserControl, IView <ISyntaxPanelViewModel>, IView1
     {
         private ISyntaxPanelViewModel viewModel = new SyntaxPanelViewModel();
-        private string _viewTitle ;
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public SyntaxPanel()
         {

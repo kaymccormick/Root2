@@ -20,7 +20,6 @@ using KayMcCormick.Lib.Wpf ;
 using Microsoft.Build.Locator ;
 #endif
 using NLog ;
-
 using ProjLib ;
 
 namespace ProjInterface
@@ -58,7 +57,8 @@ namespace ProjInterface
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static readonly DependencyProperty HelpTextProperty = DependencyProperty.Register("HelpText", typeof(string), typeof(Example), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, new PropertyChangedCallback(OnHelpTextChanged)));
+        private static readonly DependencyProperty HelpTextProperty =
+ DependencyProperty.Register("HelpText", typeof(string), typeof(Example), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, new PropertyChangedCallback(OnHelpTextChanged)));
 
         private static void OnHelpTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
         {
@@ -94,7 +94,8 @@ namespace ProjInterface
             }
         }
 
-        public static readonly RoutedEvent HelpTextChangedEvent = EventManager.RegisterRoutedEvent("HelpTextChanged",
+        public static readonly RoutedEvent HelpTextChangedEvent =
+ EventManager.RegisterRoutedEvent("HelpTextChanged",
             RoutingStrategy.Bubble,
             typeof(RoutedPropertyChangedEventHandler<string>), typeof(Example));
 
@@ -184,7 +185,8 @@ namespace ProjInterface
             set { SetValue(ExamplesProperty, value); }
         }
 
-        public static readonly RoutedEvent ExamplesChangedEvent = EventManager.RegisterRoutedEvent("ExamplesChanged",
+        public static readonly RoutedEvent ExamplesChangedEvent =
+ EventManager.RegisterRoutedEvent("ExamplesChanged",
                                                                                                    RoutingStrategy.Bubble,
                                                                                                    typeof(RoutedPropertyChangedEventHandler<FreezableCollection<Example>>), typeof(Usage));
 
@@ -201,11 +203,12 @@ namespace ProjInterface
 #endif
     public partial class ProjInterfaceApp : BaseApp
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private Type[] _optionTypes ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
 #if COMMANDLINE
+private Type[] _optionTypes ;
         private Options _options ;
-        #endif
+#endif
         public ProjInterfaceApp ( )
         {
 #if false
@@ -227,21 +230,26 @@ namespace ProjInterface
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
 
-            AppInfoService service = new AppInfoService ( start ) ;
+            var service = new AppInfoService ( start ) ;
 
-            
+
             Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
 
-            ServiceHost host = new ServiceHost(service, new Uri("http://localhost:8736/ProjInterface/App"));
+            var host = new ServiceHost (
+                                        service
+                                      , new Uri ( "http://localhost:8736/ProjInterface/App" )
+                                       ) ;
             host.Open ( ) ;
 #if COMMANDLINE
             ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
 #endif
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
-            var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule(),
-                                                                 new AnalysisControlsModule()) ;
+            var lifetimeScope = InterfaceContainer.GetContainer (
+                                                                 new ProjInterfaceModule ( )
+                                                               , new AnalysisControlsModule ( )
+                                                                ) ;
             var appViewModel = lifetimeScope.Resolve < IApplicationViewModel > ( ) ;
-            #if false
+#if false
             foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
             {
                 if ( view1 is Window vW )
@@ -259,26 +267,26 @@ namespace ProjInterface
             var windowType = typeof ( Window1 ) ;
             try
             {
-                var mainWindow = (Window)lifetimeScope.Resolve(windowType);
+                var mainWindow = ( Window ) lifetimeScope.Resolve ( windowType ) ;
                 // mainWindow.SetValue ( AttachedProperties.LifetimeScopeProperty , lifetimeScope ) ;
                 mainWindow.Show ( ) ;
             }
             catch ( Exception ex )
             {
-                Logger.Error ( ex , ex.ToString() ) ;
-                KayMcCormick.Dev.Utils.HandleInnerExceptions ( ex ) ;
+                Logger.Error ( ex , ex.ToString ( ) ) ;
+                Utils.HandleInnerExceptions ( ex ) ;
                 MessageBox.Show ( ex.Message , "Error" ) ;
             }
-            #if MSBUILDLOCATOR
-            var instances = MSBuildLocator.QueryVisualStudioInstances()
-                                          .Where(
-                                                 (instance, i)
-                                                     => instance.Version.Major    == 16
-                                                        && instance.Version.Minor == 4
-                                                );
-            var visualStudioInstance = instances.First() ;
-            MSBuildLocator.RegisterInstance(visualStudioInstance);
-            Logger.Debug("REgistering MSBuild  instance {vs}", visualStudioInstance.Name);
+#if MSBUILDLOCATOR
+            var instances = MSBuildLocator.QueryVisualStudioInstances ( )
+                                          .Where (
+                                                  ( instance , i )
+                                                      => instance.Version.Major    == 16
+                                                         && instance.Version.Minor == 4
+                                                 ) ;
+            var visualStudioInstance = instances.First ( ) ;
+            MSBuildLocator.RegisterInstance ( visualStudioInstance ) ;
+            Logger.Debug ( "REgistering MSBuild  instance {vs}" , visualStudioInstance.Name ) ;
 #endif
 
             var elapsed = DateTime.Now - start ;
@@ -332,7 +340,6 @@ namespace ProjInterface
             }
     }
 #endif
-
     }
 #if COMMANDLINE
     public class Options : BaseOptions
@@ -345,14 +352,21 @@ namespace ProjInterface
 
     public class ProjInterfaceModule : Module
     {
-#region Overrides of Module
+        #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
-            builder.Register( ( context , parameters ) => new ProjMainWindow(context.Resolve<IWorkspacesViewModel>(), context.Resolve<ILifetimeScope>())).AsSelf ( ) ;
-
+            builder.Register (
+                              ( context , parameters )
+                                  => new ProjMainWindow (
+                                                         context
+                                                            .Resolve < IWorkspacesViewModel > ( )
+                                                       , context.Resolve < ILifetimeScope > ( )
+                                                        )
+                             )
+                   .AsSelf ( ) ;
         }
-#endregion
+        #endregion
     }
 
     public class BreakTraceListener : TraceListener

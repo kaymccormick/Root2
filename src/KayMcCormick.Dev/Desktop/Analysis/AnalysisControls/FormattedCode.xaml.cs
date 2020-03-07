@@ -59,7 +59,8 @@ namespace AnalysisControls
         public async Task<object> VisitAsync ( )
         {
             var visitor3 = new Visitor3 ( FlowViewerDocument , FlowViewer ) ;
-            visitor3.DefaultVisit ( SyntaxTree.GetRoot ( ) ) ;
+            var root = await SyntaxTree.GetRootAsync ( ) ;
+            visitor3.DefaultVisit ( root) ;
             return new object();
             // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
             // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;

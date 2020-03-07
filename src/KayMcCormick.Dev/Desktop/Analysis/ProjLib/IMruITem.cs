@@ -70,7 +70,7 @@ namespace ProjLib
 
                 FilePath = filePath ;
             }
-            catch ( IOException ex )
+            catch ( IOException )
             {
                 FileInf = null ;
             }

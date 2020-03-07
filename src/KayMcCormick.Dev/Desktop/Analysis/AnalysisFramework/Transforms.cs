@@ -474,10 +474,9 @@ namespace AnalysisFramework
                              , Kind    = predefinedTypeSyntax.Kind ( ).ToString().ToString ( )
                              , Keyword = TransformKeyword ( predefinedTypeSyntax.Keyword )
                            } ;
-                    break ;
+                
                 case RefTypeSyntax refTypeSyntax :     break ;
                 case TupleTypeSyntax tupleTypeSyntax : break ;
-                default :                              break ;
             }
 
             throw new UnsupportedExpressionTypeSyntax (
@@ -629,7 +628,7 @@ namespace AnalysisFramework
         {
             var syntaxNode = contextSyntaxTree.GetRoot ( ) ;
             return TransformSyntaxNode ( syntaxNode ) ;
-            ;
+            
         }
 
         public static object TransformSyntaxNode ( SyntaxNode syntaxNode )
@@ -701,7 +700,7 @@ namespace AnalysisFramework
             }
 
             throw new UnsupportedExpressionTypeSyntax ( arg.Kind ( ).ToString().ToString ( ) ) ;
-            ;
+            
         }
 
         private static object TransformClassDeclarationSyntax ( ClassDeclarationSyntax classDecl )
