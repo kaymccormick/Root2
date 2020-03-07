@@ -5,10 +5,8 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis;
-using Microsoft.TeamFoundation.Server ;
 using NLog ;
 using ProjLib ;
-using Rxx ;
 using System ;
 using System.Collections.Concurrent ;
 using System.Collections.ObjectModel ;
@@ -19,16 +17,12 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Text ;
-using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data;
-using System.Windows.Documents ;
 using System.Windows.Input;
-using System.Windows.Markup ;
-using System.Windows.Media ;
 using System.Windows.Threading ;
 using Task = System.Threading.Tasks.Task ;
 
@@ -168,26 +162,16 @@ namespace ProjInterface
 
         internal struct DesignWorkspacesViewModel : IWorkspacesViewModel
         {
-            private bool                                    _processing ;
-            private string                                  _currentProject ;
-            private string                                  _currentDocumentPath ;
-            private VisualStudioInstancesCollection         _vsCollection ;
-            private MyProjectLoadProgress                   _currentProgress ;
+            private bool _processing ;
+            private string _currentProject ;
+            private string _currentDocumentPath ;
+            private VisualStudioInstancesCollection _vsCollection ;
+            private MyProjectLoadProgress _currentProgress ;
             private ObservableCollection < ILogInvocation > _logInvocations ;
-            private IPipelineViewModel                      _pipelineViewModel ;
-            private IProjectBrowserViewModoel               _projectBrowserViewModel ;
-            private PipelineResult                          _pipelineResult ;
-            private string                                  _applicationMode ;
-            private bool _processing;
-            private string _currentProject;
-            private string _currentDocumentPath;
-            private VisualStudioInstancesCollection _vsCollection;
-            private MyProjectLoadProgress _currentProgress;
-            private ObservableCollection<ILogInvocation> _logInvocations;
-            private IPipelineViewModel _pipelineViewModel;
-            private IProjectBrowserViewModoel _projectBrowserViewModel;
-            private PipelineResult _pipelineResult;
-            private string _applicationMode;
+            private IPipelineViewModel _pipelineViewModel ;
+            private IProjectBrowserViewModoel _projectBrowserViewModel ;
+            private PipelineResult _pipelineResult ;
+            private string _applicationMode ;
             private AdhocWorkspace _workspace ;
             private ObservableCollection < LogEventInfo > _eventInfos ;
             private ObservableCollection < string > _events ;
@@ -198,59 +182,27 @@ namespace ProjInterface
             #region Implementation of IAppState
             public bool Processing { get => _processing ; set => _processing = value ; }
 
-            public string CurrentProject
-            {
-                get => _currentProject ;
-                set => _currentProject = value ;
-            }
+            public string CurrentProject { get => _currentProject ; set => _currentProject = value ; }
 
-            public string CurrentDocumentPath
-            {
-                get => _currentDocumentPath ;
-                set => _currentDocumentPath = value ;
-            }
+            public string CurrentDocumentPath { get => _currentDocumentPath ; set => _currentDocumentPath = value ; }
             #endregion
 
             #region Implementation of IWorkspacesViewModel
-            public VisualStudioInstancesCollection VsCollection
-            {
-                get => _vsCollection ;
-                set => _vsCollection = value ;
-            }
+            public VisualStudioInstancesCollection VsCollection { get => _vsCollection ; set => _vsCollection = value ; }
 
-            public MyProjectLoadProgress CurrentProgress
-            {
-                get => _currentProgress ;
-                set => _currentProgress = value ;
-            }
+            public MyProjectLoadProgress CurrentProgress { get => _currentProgress ; set => _currentProgress = value ; }
 
-            public ObservableCollection < ILogInvocation > LogInvocations
-            {
-                get => _logInvocations ;
-                set => _logInvocations = value ;
-            }
+            public ObservableCollection < ILogInvocation > LogInvocations { get => _logInvocations ; set => _logInvocations = value ; }
 
-            public IPipelineViewModel PipelineViewModel
-            {
-                get => _pipelineViewModel ;
-                set => _pipelineViewModel = value ;
-            }
+            public IPipelineViewModel PipelineViewModel { get => _pipelineViewModel ; set => _pipelineViewModel = value ; }
 
-            public IProjectBrowserViewModoel ProjectBrowserViewModel
-            {
-                get => _projectBrowserViewModel ;
-                set => _projectBrowserViewModel = value ;
-            }
+            public IProjectBrowserViewModoel ProjectBrowserViewModel { get => _projectBrowserViewModel ; set => _projectBrowserViewModel = value ; }
 
-            public PipelineResult PipelineResult
-            {
-                get => _pipelineResult ;
-                set => _pipelineResult = value ;
-            }
+            public PipelineResult PipelineResult { get => _pipelineResult ; set => _pipelineResult = value ; }
 
             public Task AnalyzeCommand ( object viewCurrentItem ) { return null ; }
 
-            public string ApplicationMode => _applicationMode = "Design Mode";
+            public string ApplicationMode { get => _applicationMode ; set => _applicationMode = value ; }
 
             public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
 
@@ -354,13 +306,6 @@ namespace ProjInterface
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
-
-        internal interface ICodeReference
-        {
-            Workspace Workspace { get ; }
-
-            Triple Trifecta { get ; }
         }
 
         private void DataGrid_OnAutoGeneratingColumn (

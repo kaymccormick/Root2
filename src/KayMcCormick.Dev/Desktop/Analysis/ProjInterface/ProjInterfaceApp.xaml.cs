@@ -338,7 +338,10 @@ private Type[] _optionTypes ;
 
                 ErrorExit ( ExitCode.ArgumentsError ) ;
             }
+}
+#endif
     }
+
 #if COMMANDLINE
     public class Options : BaseOptions
     {

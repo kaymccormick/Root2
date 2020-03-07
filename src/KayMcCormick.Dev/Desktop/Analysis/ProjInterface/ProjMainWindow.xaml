@@ -10,8 +10,6 @@
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
   xmlns:nLog="clr-namespace:NLog;assembly=NLog"
   Name="mainWindow"
-  AllowDrop="True"
-  Drop="ProjMainWindow_OnDrop"
   Title="MainWindow"
   Width="800"
   Height="450"
