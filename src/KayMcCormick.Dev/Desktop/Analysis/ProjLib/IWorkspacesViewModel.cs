@@ -82,8 +82,11 @@ namespace ProjLib
     public class ProjectBrowserNode : BrowserNode, IProjectBrowserNode, IBrowserNode
     {
         private string _solutionPath ;
+        private string _platform ;
 
         public string RepositoryUrl { get ; set ; }
+
+        public string Platform { get => _platform ; set => _platform = value ; }
 
         public string SolutionPath { get { return _solutionPath ; } set { _solutionPath = value ; } }
     }
@@ -91,7 +94,7 @@ namespace ProjLib
     public interface IProjectBrowserNode : IBrowserNode
     {
         string RepositoryUrl { get ; }
-
+        string Platform { get ; }
         string SolutionPath { get ; set ; }
     }
 }

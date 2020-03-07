@@ -123,9 +123,10 @@ namespace ProjLib
                                                                 }
                                                                ) ;
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
-
+            AnalysisRequest req = new AnalysisRequest();
+            req.Info = projectBrowserNode ;
             await PipelineViewModel.Pipeline.PipelineInstance
-                                   .SendAsync ( Path.GetDirectoryName(projectBrowserNode.SolutionPath) )
+                                   .SendAsync ( req )
                                    .ConfigureAwait ( true ) ;
             var result = await actionBlock.Completion.ContinueWith (
                                                                     task => {

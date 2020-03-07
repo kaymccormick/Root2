@@ -65,8 +65,6 @@ namespace ConsoleApp1
             Init ( ) ;
             var scope = InterfaceContainer.GetContainer ( new AppModule ( ) ) ;
 
-            
-            
             AppContext context ;
             try
             {
@@ -183,6 +181,7 @@ namespace ConsoleApp1
             }
             #endif
 
+            #if MSBUILDLOCATOR
             var instances = MSBuildLocator.QueryVisualStudioInstances ( )
                                           .Where (
                                                   ( instance , i )
@@ -190,12 +189,16 @@ namespace ConsoleApp1
                                                          && instance.Version.Minor == 4
                                                  ) ;
             MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
-            
+            #endif
+
+            var projectNode = viewModel.ProjectBrowserViewModel.RootCollection
+                                              .OfType < IProjectBrowserNode > ( )
+                                              .First ( ) ;
+            Console.WriteLine ( projectNode.SolutionPath ) ;
+            _ = Console.ReadLine ( ) ;
             await viewModel.AnalyzeCommand (
-                                      viewModel.ProjectBrowserViewModel.RootCollection
-                                               .OfType < IProjectBrowserNode > ( )
-                                               .First ( )
-                                     ) ;
+                                            projectNode
+                                           ) ;
             var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
 
 
@@ -203,15 +206,6 @@ namespace ConsoleApp1
             Logger.Info ( "waiting " + timeSpan ) ;
 
             await context.actionBlock.Completion ;
-            // if ( viewModel.PipelineViewModel.Pipeline.ResultBufferBlock
-                          // .TryReceiveAll ( out var list ) )
-            // {
-                // Logger.Info ( "Here" ) ;
-                // foreach ( var logInvocation in list )
-                // {
-                    // Logger.Info ( "{logInvocation}" , logInvocation ) ;
-                // }
-            // }
 
             if ( pipe.Completion.IsFaulted )
             {

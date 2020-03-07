@@ -10,13 +10,12 @@ namespace ProjLib
     
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static async Task < string > CloneProjectAsync ( string arg )
+        public static async Task <AnalysisRequest> CloneProjectAsync ( AnalysisRequest req)
         {
-            Logger.Info ( "Clone {arg}" , arg ) ;
             var workdirPath = Path.Combine ( FilePaths.ProjectRootDir , Path.GetRandomFileName ( ) ) ;
 
-            var r = await Task.Run ( ( ) => Repository.Clone ( arg , workdirPath ) ) ;
-            return workdirPath ;
+            var r = await Task.Run ( ( ) => Repository.Clone ( req.Info.RepositoryUrl, workdirPath ) ) ;
+            return req ;
         }
     }
 }

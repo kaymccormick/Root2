@@ -16,11 +16,11 @@ namespace ProjLib
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public IPropagatorBlock < string , ILogInvocation > PipelineInstance { get ; private set ; }
+        public IPropagatorBlock <AnalysisRequest, ILogInvocation > PipelineInstance { get ; private set ; }
 
         private List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
         private DataflowLinkOptions _linkOptions = new DataflowLinkOptions { PropagateCompletion = true } ;
-        private IPropagatorBlock < string , string > _currentBlock ;
+        private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
 
         public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
 
@@ -30,7 +30,7 @@ namespace ProjLib
             set => _linkOptions = value ;
         }
 
-        public IPropagatorBlock< string ,string> CurrentBlock { get { return _currentBlock ; } set { _currentBlock = value ; } }
+        public IPropagatorBlock<AnalysisRequest, AnalysisRequest> CurrentBlock { get { return _currentBlock ; } set { _currentBlock = value ; } }
 
         public Pipeline ( )
         {
@@ -39,11 +39,11 @@ namespace ProjLib
             _ = BuildPipeline ( ) ;
         }
 
-        public virtual IPropagatorBlock < string , ILogInvocation > BuildPipeline ( )
+        public virtual IPropagatorBlock < AnalysisRequest , ILogInvocation > BuildPipeline ( )
         {
             var initWorkspace = Register ( DataflowBlocks.InitializeWorkspace ( ) ) ;
 
-            IPropagatorBlock<string, string > cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
+            IPropagatorBlock<AnalysisRequest, AnalysisRequest> cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
             cur.LinkTo ( initWorkspace , LinkOptions ) ;
 
             var toDocuments = Register ( Workspaces.SolutionDocumentsBlock ( ) ) ;
@@ -95,21 +95,28 @@ namespace ProjLib
             else { Logger.Debug ( $"{logName} complete - not faulted" ) ; }
         }
 
-        protected virtual IPropagatorBlock < string, string > ConfigureInput ( )
+        protected virtual IPropagatorBlock <AnalysisRequest, AnalysisRequest> ConfigureInput ( )
         {
             
-            var input = new WriteOnceBlock < string > ( s => s ) ;
+            var input = new WriteOnceBlock <AnalysisRequest> ( s => s ) ;
             Head = input ;
             return input ;
         }
         
-        public ITargetBlock<string> Head { get ; set ; }
+        public ITargetBlock<AnalysisRequest> Head { get ; set ; }
+    }
+
+    public class AnalysisRequest
+    {
+        private IProjectBrowserNode projectInfo ;
+
+        public IProjectBrowserNode Info { get => projectInfo ; set => projectInfo = value ; }
     }
 
     class PipelineRemoteSource : Pipeline
     {
         #region Overrides of PipeLine
-        public override IPropagatorBlock < string , ILogInvocation > BuildPipeline ( )
+        public override IPropagatorBlock < AnalysisRequest , ILogInvocation > BuildPipeline ( )
         {
             var opt = LinkOptions ;
 

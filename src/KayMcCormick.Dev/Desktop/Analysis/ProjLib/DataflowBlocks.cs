@@ -13,10 +13,10 @@ namespace ProjLib
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public static TransformBlock < string, Workspace > InitializeWorkspace ( )
+        public static TransformBlock <AnalysisRequest, Workspace > InitializeWorkspace ( )
         {
             var makeWs =
-                new TransformBlock < string, Workspace > ( Workspaces.MakeWorkspaceAsync ) ;
+                new TransformBlock <AnalysisRequest, Workspace > ( Workspaces.MakeWorkspaceAsync ) ;
             return makeWs ;
         }
 
@@ -48,9 +48,9 @@ namespace ProjLib
         #endif
 #endif
 
-        public static TransformBlock < string , string > CloneSource ( )
+        public static TransformBlock <AnalysisRequest, AnalysisRequest> CloneSource ( )
         {
-            return new TransformBlock < string , string > ( VersionControl.CloneProjectAsync ) ;
+            return new TransformBlock <AnalysisRequest, AnalysisRequest> ( VersionControl.CloneProjectAsync ) ;
         }
     }
 #if NUGET

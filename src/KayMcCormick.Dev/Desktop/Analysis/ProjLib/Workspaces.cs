@@ -20,17 +20,21 @@ namespace ProjLib
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] string arg)
+        public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] AnalysisRequest req)
         {
-            if ( arg == null )
+            if ( req == null )
             {
-                throw new ArgumentNullException ( nameof ( arg) ) ;
+                throw new ArgumentNullException ( nameof ( req ) ) ;
             }
 
+            var arg = req.Info.SolutionPath ;
             Logger.Debug ( "[{action}] arg is {arg}", nameof ( MakeWorkspaceAsync ) , arg ) ;
 
             var b = ImmutableDictionary.CreateBuilder < string , string > ( ) ;
-            b[ "Platform" ] = "x86" ;
+            if (req.Info.Platform != null )
+            {
+                b[ "Platform" ] = req.Info.Platform ;
+            }
 
             IDictionary < string , string > props = b.ToImmutable ( ) ;
 
