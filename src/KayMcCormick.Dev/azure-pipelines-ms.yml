@@ -22,6 +22,7 @@ variables:
   solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
+  KmGlobalOutputPath: $(Build.BinariesDirectory)
 
 steps:
 - checkout: self
