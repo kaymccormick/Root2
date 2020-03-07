@@ -6,7 +6,8 @@
              MinWidth="300" MinHeight="200"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:wpfApp="clr-namespace:WpfApp"
-             DataContext="{Binding (wpfApp:Props.LifetimeScope)}"
+             xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
+             DataContext="{Binding (wpf:AttachedProperties.LifetimeScope)}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <CollectionViewSource

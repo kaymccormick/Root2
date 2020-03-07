@@ -24,7 +24,7 @@
             </xaml:ResolveService>
         </wpfApp:ResolveServiceList>
     </Window.Resources>
-    <Grid DataContext="{Binding ElementName=mainWindow, Path=(wpfApp:Props.LifetimeScope)}">
+    <Grid DataContext="{Binding ElementName=mainWindow, Path=(wpf:AttachedProperties.LifetimeScope)}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -54,7 +54,7 @@
             <TabItem Header="Registrations">
                 <controls:Registrations>
                     <wpf:AttachedProperties.LifetimeScope>
-                        <Binding ElementName="mainWindow" Path="(wpfApp:Props.LifetimeScope)" />
+                        <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
                     </wpf:AttachedProperties.LifetimeScope>
                 </controls:Registrations>
             </TabItem>
