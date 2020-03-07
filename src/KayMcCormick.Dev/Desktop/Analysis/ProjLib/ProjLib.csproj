@@ -87,6 +87,9 @@
     <Compile Include="IFormattedCode.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
+    <Compile Include="MyProgress.cs" />
+    <Compile Include="MyProjectLoadProgress.cs" />
+    <Compile Include="PipelineResult.cs" />
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
@@ -127,6 +130,7 @@
       <DependentUpon>LibResources.resx</DependentUpon>
     </Compile>
     <None Include="Resources\AttachedProps.cs" />
+    <Compile Include="ResultStatus.cs" />
     <Compile Include="SpanObject.cs" />
     <Compile Include="SpanToolTipViewModel.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />

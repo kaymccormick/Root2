@@ -37,10 +37,30 @@ namespace KayMcCormick.Lib.Wpf
                                                           ) ;
                 }
             }
+            if(scope == null)
+            {
+                var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
+                if ( svc != null )
+                {
+                    var rootP = ( IRootObjectProvider ) svc ;
+                    if ( rootP.RootObject is DependencyObject d )
+                    {
+                        scope = ( ILifetimeScope ) d.GetValue (
+                                                               AttachedProperties
+                                                                  .LifetimeScopeProperty
+                                                              ) ;
+                    }
+                }
+
+            }
 
             if ( scope != null )
             {
                 return scope.Resolve ( _componentType ) ;
+            }
+            else
+            {
+                throw new Exception ( "No lifetime scope" ) ;
             }
 
             return null ;

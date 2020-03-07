@@ -5,11 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnalysisControls"
         xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
-        mc:Ignorable="d"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d" FontSize="18.0"
         Title="Window1" Height="450" Width="800">
-    <DockPanel LastChildFill="True">
-        <TabControl>
-          <TabItem Header="{Binding RelativeSource={RelativeSource Self},Path=Content.ViewTitle }"  Content="{wpf:Resolve {x:Type local:TestView1}}"/>
-        </TabControl>
-    </DockPanel>
+  <Window.Resources>
+    <DataTemplate DataType="{x:Type local:SyntaxItem}">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding SyntaxKind}"/>
+        <TextBlock Text="{Binding Token}"/>
+        <xctk:ColorPicker AdvancedTabHeader="BG"/>
+      <xctk:ColorPicker/>
+      </StackPanel>
+    </DataTemplate>
+  </Window.Resources>
+  <xcad:DockingManager AllowMixedOrientation="True">
+    <xcad:LayoutRoot x:Name="_layoutRoot">
+      <xcad:LayoutPanel Orientation="Horizontal">
+        <xcad:LayoutAnchorablePane DockWidth="200">
+<xcad:LayoutAnchorable>
+  <ListView ItemsSource="{Binding Source={wpf:Resolve local:IApplicationViewModel},Path=SyntaxItems}">
+    <ListView.View>
+      <GridView>
+                  <GridViewColumn Header="Kind" DisplayMemberBinding="{Binding Path=SyntaxKind}"></GridViewColumn>
+        <GridViewColumn Header="Token" DisplayMemberBinding="{Binding Path=Token}"></GridViewColumn>
+                </GridView>
+    </ListView.View>
+  </ListView>
+</xcad:LayoutAnchorable>
+        </xcad:LayoutAnchorablePane>
+        </xcad:LayoutPanel>
+    </xcad:LayoutRoot>
+      </xcad:DockingManager>
 </wpf:AppWindow>

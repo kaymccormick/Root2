@@ -5,6 +5,7 @@ using System.Diagnostics ;
 using System.Globalization ;
 using System.IO ;
 using System.Linq ;
+using System.ServiceModel ;
 using System.Text ;
 using System.Windows ;
 using AnalysisControls ;
@@ -225,12 +226,21 @@ namespace ProjInterface
         {
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
+
+            AppInfoService service = new AppInfoService ( start ) ;
+
+            
+            Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
+
+            ServiceHost host = new ServiceHost(service, new Uri("http://localhost:8736/ProjInterface/App"));
+            host.Open ( ) ;
 #if COMMANDLINE
             ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
 #endif
             Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
             var lifetimeScope = InterfaceContainer.GetContainer (new ProjInterfaceModule(),
                                                                  new AnalysisControlsModule()) ;
+            var appViewModel = lifetimeScope.Resolve < IApplicationViewModel > ( ) ;
             #if false
             foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
             {
