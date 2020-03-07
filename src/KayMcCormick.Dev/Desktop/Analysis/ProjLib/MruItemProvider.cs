@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if VSSETTINGS
+#region header
 // Kay McCormick (mccor)
 // 
 // Proj
@@ -114,3 +115,4 @@ namespace ProjLib
         }
     }
 }
+#endif

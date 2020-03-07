@@ -63,8 +63,9 @@ namespace ProjLib
 
             builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
             builder.RegisterType<Pipeline>().AsSelf();
+            #if VSSETTINGS
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
-
+            #endif
 
 #if adapter
             builder.RegisterAdapter < IVsInstance , IMruItems > (

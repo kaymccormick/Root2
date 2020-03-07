@@ -1,7 +1,9 @@
+#if VSSETTINGS
 using System;
 using System.Collections.Generic ;
 using System.Diagnostics;
 using System.IO;
+
 using Microsoft.VisualStudio.Settings;
 
 namespace ProjLib
@@ -28,3 +30,4 @@ namespace ProjLib
 
     }
 }
+#endif

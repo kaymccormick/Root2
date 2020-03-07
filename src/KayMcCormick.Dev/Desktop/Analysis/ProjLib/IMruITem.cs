@@ -10,7 +10,6 @@ using System.Windows.Threading ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
-using Microsoft.VisualStudio.Shell.Interop ;
 using NLog ;
 
 namespace ProjLib
