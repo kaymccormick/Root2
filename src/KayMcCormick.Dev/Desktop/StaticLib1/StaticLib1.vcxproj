@@ -164,7 +164,6 @@
     <None Include="CodeAnalysisApp1.man">
       <FileType>Manifest</FileType>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CodeAnalysisApp1.rc" />

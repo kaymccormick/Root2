@@ -562,8 +562,17 @@ Logger.Error(inner, inner.ToString);
             codeControl.SyntaxTree            = syntaxTree;
             codeControl.Model                 = model;
             codeControl.CompilationUnitSyntax = compilationUnitSyntax;
-            Task.Run ( ( ) => codeControl.Refresh ( ) ) ;
-            w.ShowDialog();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            Task.Run ( ( ) => codeControl.Refresh ( ) )
+                .ContinueWith (
+                               task => {
+                                   tcs.SetResult ( true ) ;
+
+                               }
+                              ) ;
+
+            w.Show();
+            tcs.Task.Wait ( ) ;
 
             // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
             // File.WriteAllText ( @"c:\data\out.xaml", argument1 ) ;
