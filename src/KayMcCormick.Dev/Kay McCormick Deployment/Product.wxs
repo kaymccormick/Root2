@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Wix
-  xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
-  xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define KayMcCormick.Dev_TargetDir=$(var.KayMcCormick.Dev.TargetDir)?>
   <?define LogService_TargetDir=$(var.LogService.TargetDir)?>
   <?define ProjInterface_TargetDir=$(var.ProjInterface.TargetDir)?>
@@ -11,54 +9,38 @@
   <?define WpfApp_TargetDir=$(var.WpfApp.TargetDir)?>
   <?define WpfApp2_TargetDir=$(var.WpfApp2.TargetDir)?>
   <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
-  <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?>
-  <Product Id="*" Name="Kay_McCormick_Deployment"
-           Language="1033" Version="1.0.0.0"
-           Manufacturer="Kay McCormick"
-           UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
-    <Package InstallerVersion="200" Compressed="yes"
-             InstallScope="perMachine" />
+  <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define ConsoleServiceHost_TargetDir=$(var.ConsoleServiceHost.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?>
+  <Product Id="*" Name="Kay_McCormick_Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-    <MajorUpgrade
-      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate />
 
-    <Feature Id="ProductFeature"
-             Title="Kay_McCormick_Deployment" Level="1">
+    <Feature Id="ProductFeature" Title="Kay_McCormick_Deployment" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentGroupRef Id="_files" />
       <ComponentGroupRef Id="lib_win32_x86_files" />
       <ComponentGroupRef Id="lib_win32_x64_files" />
-      <ComponentGroupRef
-        Id="lib_alpine_x64_native_.._files" />
-      <ComponentGroupRef
-        Id="lib_debian_arm64_native_.._files" />
-      <ComponentGroupRef
-        Id="lib_alpine.3.9_x64_native_.._files" />
-      <ComponentGroupRef
-        Id="lib_fedora_x64_native_.._files" />
-      <ComponentGroupRef
-        Id="lib_debian.9_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_alpine_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_debian_arm64_native_.._files" />
+      <ComponentGroupRef Id="lib_alpine.3.9_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_fedora_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_debian.9_x64_native_.._files" />
       <ComponentGroupRef Id="lib_linux_x64_native_.._files" />
       <ComponentGroupRef Id="lib_osx_native_.._files" />
       <ComponentGroupRef Id="lib_rhel_x64_native_.._files" />
-      <ComponentGroupRef
-        Id="lib_ubuntu.16.04_arm64_native_.._files" />
-      <ComponentGroupRef
-        Id="lib_ubuntu.18.04_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_ubuntu.16.04_arm64_native_.._files" />
+      <ComponentGroupRef Id="lib_ubuntu.18.04_x64_native_.._files" />
     </Feature>
   </Product>
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER"
-                   Name="Kay_McCormick_Deployment">
+        <Directory Id="INSTALLFOLDER" Name="Kay_McCormick_Deployment">
           <Directory Id="BIN" Name="bin" />
-          <Directory Id="LogReceiverServiceDirectory"
-                     Name="WcfLogReceiver">
-            <Directory Id="LogReceiverServiceBinDir"
-                       Name="bin" />
+          <Directory Id="LogReceiverServiceDirectory" Name="WcfLogReceiver">
+            <Directory Id="LogReceiverServiceBinDir" Name="bin" />
           </Directory>
           <Directory Id="bin" Name="bin" />
           <Directory Id="lib" Name="lib">
@@ -66,82 +48,54 @@
               <Directory Id="lib_win32_x86" Name="x86" />
               <Directory Id="lib_win32_x64" Name="x64" />
             </Directory>
-            <Directory Id="lib_ubuntu.18.04_x64"
-                       Name="ubuntu.18.04-x64">
-              <Directory Id="lib_ubuntu.18.04_x64_native"
-                         Name="native">
-                <Directory
-                  Id="lib_ubuntu.18.04_x64_native_.."
-                  Name=".." />
+            <Directory Id="lib_ubuntu.18.04_x64" Name="ubuntu.18.04-x64">
+              <Directory Id="lib_ubuntu.18.04_x64_native" Name="native">
+                <Directory Id="lib_ubuntu.18.04_x64_native_.." Name="x" />
               </Directory>
             </Directory>
-            <Directory Id="lib_ubuntu.16.04_arm64"
-                       Name="ubuntu.16.04-arm64">
-              <Directory Id="lib_ubuntu.16.04_arm64_native"
-                         Name="native">
-                <Directory
-                  Id="lib_ubuntu.16.04_arm64_native_.."
-                  Name=".." />
+            <Directory Id="lib_ubuntu.16.04_arm64" Name="ubuntu.16.04-arm64">
+              <Directory Id="lib_ubuntu.16.04_arm64_native" Name="native">
+                <Directory Id="lib_ubuntu.16.04_arm64_native_.." Name="x" />
               </Directory>
             </Directory>
             <Directory Id="lib_rhel_x64" Name="rhel-x64">
-              <Directory Id="lib_rhel_x64_native"
-                         Name="native">
-                <Directory Id="lib_rhel_x64_native_.."
-                           Name=".." />
+              <Directory Id="lib_rhel_x64_native" Name="native">
+                <Directory Id="lib_rhel_x64_native_.." Name="x" />
               </Directory>
             </Directory>
             <Directory Id="lib_osx" Name="osx">
               <Directory Id="lib_osx_native" Name="native">
-                <Directory Id="lib_osx_native_.." Name=".." />
+                <Directory Id="lib_osx_native_.." Name="x" />
               </Directory>
             </Directory>
             <Directory Id="lib_linux_x64" Name="linux-x64">
-              <Directory Id="lib_linux_x64_native"
-                         Name="native">
-                <Directory Id="lib_linux_x64_native_.."
-                           Name=".." />
+              <Directory Id="lib_linux_x64_native" Name="native">
+                <Directory Id="lib_linux_x64_native_.." Name="x" />
               </Directory>
             </Directory>
-            <Directory Id="lib_fedora_x64"
-                       Name="fedora-x64">
-              <Directory Id="lib_fedora_x64_native"
-                         Name="native">
-                <Directory Id="lib_fedora_x64_native_.."
-                           Name=".." />
+            <Directory Id="lib_fedora_x64" Name="fedora-x64">
+              <Directory Id="lib_fedora_x64_native" Name="native">
+                <Directory Id="lib_fedora_x64_native_.." Name="x" />
               </Directory>
             </Directory>
-            <Directory Id="lib_debian_arm64"
-                       Name="debian-arm64">
-              <Directory Id="lib_debian_arm64_native"
-                         Name="native">
-                <Directory Id="lib_debian_arm64_native_.."
-                           Name=".." />
+            <Directory Id="lib_debian_arm64" Name="debian-arm64">
+              <Directory Id="lib_debian_arm64_native" Name="native">
+                <Directory Id="lib_debian_arm64_native_.." Name="x" />
               </Directory>
             </Directory>
-            <Directory Id="lib_debian.9_x64"
-                       Name="debian.9-x64">
-              <Directory Id="lib_debian.9_x64_native"
-                         Name="native">
-                <Directory Id="lib_debian.9_x64_native_.."
-                           Name=".." />
+            <Directory Id="lib_debian.9_x64" Name="debian.9-x64">
+              <Directory Id="lib_debian.9_x64_native" Name="native">
+                <Directory Id="lib_debian.9_x64_native_.." Name="x" />
               </Directory>
             </Directory>
-            <Directory Id="lib_alpine_x64"
-                       Name="alpine-x64">
-              <Directory Id="lib_alpine_x64_native"
-                         Name="native">
-                <Directory Id="lib_alpine_x64_native_.."
-                           Name=".." />
+            <Directory Id="lib_alpine_x64" Name="alpine-x64">
+              <Directory Id="lib_alpine_x64_native" Name="native">
+                <Directory Id="lib_alpine_x64_native_.." Name="x" />
               </Directory>
             </Directory>
-            <Directory Id="lib_alpine.3.9_x64"
-                       Name="alpine.3.9-x64">
-              <Directory Id="lib_alpine.3.9_x64_native"
-                         Name="native">
-                <Directory
-                  Id="lib_alpine.3.9_x64_native_.."
-                  Name=".." />
+            <Directory Id="lib_alpine.3.9_x64" Name="alpine.3.9-x64">
+              <Directory Id="lib_alpine.3.9_x64_native" Name="native">
+                <Directory Id="lib_alpine.3.9_x64_native_.." Name="x" />
               </Directory>
             </Directory>
           </Directory>
@@ -152,312 +106,343 @@
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="ProductComponents"
-                    Directory="INSTALLFOLDER">
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
       <!-- <Component Id="ProductComponent"> -->
       <!-- TODO: Insert files, registry keys, and other resources here. -->
       <!-- </Component> -->
-      <Component Id="LogReceiverServiceComponent"
-                 Guid="9a4cf6ba-b641-4ded-8886-0d7d3c09d276">
-        <CreateFolder />
-        <CreateFolder
-          Directory="LogReceiverServiceDirectory" />
-        <Component Id="Global.asax"
-                   Guid="edc006b6-b4f3-4793-bc1c-5af8099e255a">
-          <File Id="Global.asax" Name="Global.asax"
-                Source="$(var.WcfService1_TargetDir)\..\..\..\Global.asax" />
-        </Component>
-        <Component Id="ReceiveLogs.svc"
-                   Guid="b348b6e7-b0a6-4e37-8db1-a8cee66c2728">
-          <File Id="ReceiveLogs.svc" Name="ReceiveLogs.svc"
-                Source="$(var.WcfService1_TargetDir)..\..\..\ReceiveLogs.svc" />
-        </Component>
-        <Component Id="Service1.svc"
-                   Guid="62a94f48-3b93-460b-abf2-d5622211f578">
-          <File Id="Service1.svc" Name="Service1.svc"
-                Source="$(var.WcfService1_TargetDir)..\..\..\Service1.svc" />
-        </Component>
-        <Component Id="Web.config"
-                   Guid="45912b54-d816-453e-9b51-8530a52e6b35">
-          <File Id="Web.config" Name="Web.config"
-                Source="$(var.WcfService1_TargetDir)..\..\..\Web.config" />
-        </Component>
-        <iis:WebSite SiteId="*"
-                     Directory="LogReceiverServiceDirectory"
-                     Id="LogReceiverServiceWebSite"
-                     Description="My Site">
-          <iis:WebAddress Id="LogReceiverServiceWebAddress"
-                          Port="80" />
-        </iis:WebSite>
+      <Component Id="KayMcCormick.Dev.dll" Guid="a1193935-56c2-42b1-ba5a-31250517b99c">
+        <File Id="KayMcCormick.Dev.dll" Name="KayMcCormick.Dev.dll" Source="$(var.KayMcCormick.Dev_TargetDir)KayMcCormick.Dev.dll" />
+      </Component>
+      <Component Id="LogService.exe" Guid="5b6d6e61-7fd9-4b1e-ae4e-9e98de85d6c2">
+        <File Id="LogService.exe" Name="LogService.exe" Source="$(var.LogService_TargetDir)LogService.exe" />
+      </Component>
+      <Component Id="LogService.exe.config" Guid="5cb9819f-a099-41fc-a61a-0e77ba274080">
+        <File Id="LogService.exe.config" Name="LogService.exe.config" Source="$(var.LogService_TargetDir)LogService.exe.config" />
       </Component>
 
 
-      <Component Id="KayMcCormick.Dev.dll"
-                 Guid="a1193935-56c2-42b1-ba5a-31250517b99c">
-        <File Id="KayMcCormick.Dev.dll"
-              Name="KayMcCormick.Dev.dll"
-              Source="$(var.KayMcCormick.Dev_TargetDir)KayMcCormick.Dev.dll" />
+      <Component Id="ProjInterface.exe" Guid="45ef7127-21a1-4bab-8d1b-1c92543e67ba">
+        <File Id="ProjInterface.exe" Name="ProjInterface.exe" Source="$(var.ProjInterface_TargetDir)ProjInterface.exe" />
       </Component>
-      <Component Id="LogService.exe"
-                 Guid="5b6d6e61-7fd9-4b1e-ae4e-9e98de85d6c2">
-        <File Id="LogService.exe" Name="LogService.exe"
-              Source="$(var.LogService_TargetDir)LogService.exe" />
+      <Component Id="ProjInterface.exe.config" Guid="f63b16d2-d9a7-4e55-8d06-d92da516b779">
+        <File Id="ProjInterface.exe.config" Name="ProjInterface.exe.config" Source="$(var.ProjInterface_TargetDir)ProjInterface.exe.config" />
       </Component>
-      <Component Id="LogService.exe.config"
-                 Guid="5cb9819f-a099-41fc-a61a-0e77ba274080">
-        <File Id="LogService.exe.config"
-              Name="LogService.exe.config"
-              Source="$(var.LogService_TargetDir)LogService.exe.config" />
+      <Component Id="ProjLib.dll" Guid="4bb3307e-d03b-4fa2-b053-8465d5e36aa3">
+        <File Id="ProjLib.dll" Name="ProjLib.dll" Source="$(var.ProjLib_TargetDir)ProjLib.dll" />
       </Component>
-
-
-      <Component Id="ProjInterface.exe"
-                 Guid="45ef7127-21a1-4bab-8d1b-1c92543e67ba">
-        <File Id="ProjInterface.exe"
-              Name="ProjInterface.exe"
-              Source="$(var.ProjInterface_TargetDir)ProjInterface.exe" />
+      <Component Id="WpfApp.exe" Guid="a8b84463-a0e5-40b1-befa-1ae32f963ebe">
+        <File Id="WpfApp.exe" Name="WpfApp.exe" Source="$(var.WpfApp_TargetDir)WpfApp.exe" />
       </Component>
-      <Component Id="ProjInterface.exe.config"
-                 Guid="f63b16d2-d9a7-4e55-8d06-d92da516b779">
-        <File Id="ProjInterface.exe.config"
-              Name="ProjInterface.exe.config"
-              Source="$(var.ProjInterface_TargetDir)ProjInterface.exe.config" />
+      <Component Id="WpfApp.exe.config" Guid="2be12bb0-b1f3-4cab-bbc0-ebfefa749587">
+        <File Id="WpfApp.exe.config" Name="WpfApp.exe.config" Source="$(var.WpfApp_TargetDir)WpfApp.exe.config" />
       </Component>
-      <Component Id="ProjLib.dll"
-                 Guid="4bb3307e-d03b-4fa2-b053-8465d5e36aa3">
-        <File Id="ProjLib.dll" Name="ProjLib.dll"
-              Source="$(var.ProjLib_TargetDir)ProjLib.dll" />
+      <Component Id="WpfApp2.exe" Guid="2dda6bbd-9daa-4527-ae21-72254a5dbf89">
+        <File Id="WpfApp2.exe" Name="WpfApp2.exe" Source="$(var.WpfApp2_TargetDir)WpfApp2.exe" />
       </Component>
-      <Component Id="WpfApp.exe"
-                 Guid="a8b84463-a0e5-40b1-befa-1ae32f963ebe">
-        <File Id="WpfApp.exe" Name="WpfApp.exe"
-              Source="$(var.WpfApp_TargetDir)WpfApp.exe" />
+      <Component Id="WpfApp2.exe.config" Guid="04b2f9ea-a9a9-401b-a36e-71bd079deaf5">
+        <File Id="WpfApp2.exe.config" Name="WpfApp2.exe.config" Source="$(var.WpfApp2_TargetDir)WpfApp2.exe.config" />
       </Component>
-      <Component Id="WpfApp.exe.config"
-                 Guid="2be12bb0-b1f3-4cab-bbc0-ebfefa749587">
-        <File Id="WpfApp.exe.config"
-              Name="WpfApp.exe.config"
-              Source="$(var.WpfApp_TargetDir)WpfApp.exe.config" />
-      </Component>
-      <Component Id="WpfApp2.exe"
-                 Guid="2dda6bbd-9daa-4527-ae21-72254a5dbf89">
-        <File Id="WpfApp2.exe" Name="WpfApp2.exe"
-              Source="$(var.WpfApp2_TargetDir)WpfApp2.exe" />
-      </Component>
-      <Component Id="WpfApp2.exe.config"
-                 Guid="04b2f9ea-a9a9-401b-a36e-71bd079deaf5">
-        <File Id="WpfApp2.exe.config"
-              Name="WpfApp2.exe.config"
-              Source="$(var.WpfApp2_TargetDir)WpfApp2.exe.config" />
-      </Component>
-      <Component Id="KayMcCormick.Lib.Wpf.dll"
-                 Guid="f78ec651-f4bd-4078-a1d4-c00bdd04a452">
-        <File Id="KayMcCormick.Lib.Wpf.dll"
-              Name="KayMcCormick.Lib.Wpf.dll"
-              Source="$(var.KayMcCormick.Lib.Wpf_TargetDir)KayMcCormick.Lib.Wpf.dll" />
+      <Component Id="KayMcCormick.Lib.Wpf.dll" Guid="f78ec651-f4bd-4078-a1d4-c00bdd04a452">
+        <File Id="KayMcCormick.Lib.Wpf.dll" Name="KayMcCormick.Lib.Wpf.dll" Source="$(var.KayMcCormick.Lib.Wpf_TargetDir)KayMcCormick.Lib.Wpf.dll" />
       </Component>
 
 
-      <Component Id="AnalysisControls.dll"
-                 Guid="e66b8682-4f7e-40c0-b423-77ea453ace69">
-        <File Id="AnalysisControls.dll"
-              Name="AnalysisControls.dll"
-              Source="$(var.AnalysisControls_TargetDir)AnalysisControls.dll" />
+      <Component Id="AnalysisControls.dll" Guid="e66b8682-4f7e-40c0-b423-77ea453ace69">
+        <File Id="AnalysisControls.dll" Name="AnalysisControls.dll" Source="$(var.AnalysisControls_TargetDir)AnalysisControls.dll" />
       </Component>
-      <Component Id="AnalysisFramework.dll"
-                 Guid="e2226093-f729-43cc-b2bd-b7e3efe7c643">
-        <File Id="AnalysisFramework.dll"
-              Name="AnalysisFramework.dll"
-              Source="$(var.AnalysisFramework_TargetDir)AnalysisFramework.dll" />
+      <Component Id="AnalysisFramework.dll" Guid="e2226093-f729-43cc-b2bd-b7e3efe7c643">
+        <File Id="AnalysisFramework.dll" Name="AnalysisFramework.dll" Source="$(var.AnalysisFramework_TargetDir)AnalysisFramework.dll" />
       </Component>
-      <Component Id="LibGit2Sharp.dll.config"
-                 Guid="9d217e21-8036-4917-bed1-3ec27312f5e8">
-        <File Id="LibGit2Sharp.dll.config"
-              Name="LibGit2Sharp.dll.config"
-              Source="$(var.ProjLib_TargetDir)LibGit2Sharp.dll.config" />
+      <Component Id="LibGit2Sharp.dll.config" Guid="9d217e21-8036-4917-bed1-3ec27312f5e8">
+        <File Id="LibGit2Sharp.dll.config" Name="LibGit2Sharp.dll.config" Source="$(var.ProjLib_TargetDir)LibGit2Sharp.dll.config" />
       </Component>
-      <Component Id="NLog.config"
-                 Guid="a4d842ff-cfaa-4065-8861-013838230300">
-        <File Id="NLog.config" Name="NLog.config"
-              Source="$(var.WcfService1_TargetDir)NLog.config" />
+      <Component Id="NLog.config" Guid="a4d842ff-cfaa-4065-8861-013838230300">
+        <File Id="NLog.config" Name="NLog.config" Source="$(var.WcfService1_TargetDir)NLog.config" />
+      </Component>
+      <Component Id="LibGit2Sharp.dll" Guid="0b7deda6-79de-4ec8-9b41-7bc63cc29a09">
+        <File Id="LibGit2Sharp.dll" Name="LibGit2Sharp.dll" Source="$(var.ConsoleApp1_TargetDir)LibGit2Sharp.dll" />
+      </Component>
+      <Component Id="ConfigTest.exe" Guid="77b75ee6-a8c9-418e-ba21-48465818971b">
+        <File Id="ConfigTest.exe" Name="ConfigTest.exe" Source="$(var.ConfigTest_TargetDir)ConfigTest.exe" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.CSharp.dll" Guid="411582c1-684a-41a7-936f-ca028a16b424">
+        <File Id="Microsoft.CodeAnalysis.CSharp.dll" Name="Microsoft.CodeAnalysis.CSharp.dll" Source="$(var.ConsoleApp1_TargetDir)Microsoft.CodeAnalysis.CSharp.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="70012158-a0ad-4fe9-84b1-79b5b6c3ca74">
+        <File Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.ProjInterface_TargetDir)Xceed.Wpf.Toolkit.dll" />
+      </Component>
+      <Component Id="Autofac.Integration.Mef.dll" Guid="1c478e46-abae-46f2-842c-ddbc3106ffb1">
+        <File Id="Autofac.Integration.Mef.dll" Name="Autofac.Integration.Mef.dll" Source="$(var.ConsoleApp1_TargetDir)Autofac.Integration.Mef.dll" />
+      </Component>
+      <Component Id="MessageTemplates.dll" Guid="e23bb7fc-aee0-400a-bee7-516554290705">
+        <File Id="MessageTemplates.dll" Name="MessageTemplates.dll" Source="$(var.ConsoleApp1_TargetDir)MessageTemplates.dll" />
+      </Component>
+      <Component Id="System.Text.Encodings.Web.dll" Guid="3a87c132-9b58-401d-ac16-064ed25a403d">
+        <File Id="System.Text.Encodings.Web.dll" Name="System.Text.Encodings.Web.dll" Source="$(var.ConsoleApp1_TargetDir)System.Text.Encodings.Web.dll" />
+      </Component>
+      <Component Id="Mono.Cecil.dll" Guid="04b7d5ee-bf27-409e-8b78-389d0f3aa014">
+        <File Id="Mono.Cecil.dll" Name="Mono.Cecil.dll" Source="$(var.WpfApp_TargetDir)Mono.Cecil.dll" />
+      </Component>
+      <Component Id="Vanara.Core.dll" Guid="5b0e1b43-5f9a-4582-b255-20bd3143704e">
+        <File Id="Vanara.Core.dll" Name="Vanara.Core.dll" Source="$(var.WpfApp_TargetDir)Vanara.Core.dll" />
+      </Component>
+      <Component Id="Autofac.Extras.AttributeMetadata.dll" Guid="b32687d0-7558-4979-861d-4e2c634393bc">
+        <File Id="Autofac.Extras.AttributeMetadata.dll" Name="Autofac.Extras.AttributeMetadata.dll" Source="$(var.WpfApp_TargetDir)Autofac.Extras.AttributeMetadata.dll" />
+      </Component>
+      <Component Id="Autofac.Extras.DynamicProxy.dll" Guid="d625f166-fcba-47a0-b86d-84c867c12a0d">
+        <File Id="Autofac.Extras.DynamicProxy.dll" Name="Autofac.Extras.DynamicProxy.dll" Source="$(var.WpfApp_TargetDir)Autofac.Extras.DynamicProxy.dll" />
+      </Component>
+      <Component Id="NJection.LambdaConverter.dll" Guid="a01931cd-aedc-400c-8db7-176a60683514">
+        <File Id="NJection.LambdaConverter.dll" Name="NJection.LambdaConverter.dll" Source="$(var.WpfApp_TargetDir)NJection.LambdaConverter.dll" />
+      </Component>
+      <Component Id="PdfSharp.Charting_wpf.dll" Guid="d1210c83-d781-47a2-95ce-fde77f39cd61">
+        <File Id="PdfSharp.Charting_wpf.dll" Name="PdfSharp.Charting-wpf.dll" Source="$(var.ProjInterface_TargetDir)PdfSharp.Charting-wpf.dll" />
+      </Component>
+      <Component Id="MigraDoc.Rendering_wpf.dll" Guid="583377cf-140f-4169-8f95-e2a5fe7c31ee">
+        <File Id="MigraDoc.Rendering_wpf.dll" Name="MigraDoc.Rendering-wpf.dll" Source="$(var.ProjInterface_TargetDir)MigraDoc.Rendering-wpf.dll" />
+      </Component>
+      <Component Id="ConsoleServiceHost.exe" Guid="46742595-4b8e-456f-a8b5-577355690991">
+        <File Id="ConsoleServiceHost.exe" Name="ConsoleServiceHost.exe" Source="$(var.ConsoleServiceHost_TargetDir)ConsoleServiceHost.exe" />
+      </Component>
+      <Component Id="ConsoleServiceHost.exe.config" Guid="7a377d6a-f779-4f2b-be5d-003f0ecd1ee6">
+        <File Id="ConsoleServiceHost.exe.config" Name="ConsoleServiceHost.exe.config" Source="$(var.ConsoleServiceHost_TargetDir)ConsoleServiceHost.exe.config" />
+      </Component>
+      <Component Id="AnalysisServiceLibrary.dll" Guid="48cfce17-428f-4520-a3e6-7a3cddcd3cc7">
+        <File Id="AnalysisServiceLibrary.dll" Name="AnalysisServiceLibrary.dll" Source="$(var.AnalysisServiceLibrary_TargetDir)AnalysisServiceLibrary.dll" />
+      </Component>
+      <Component Id="PdfSharp_wpf.dll" Guid="52821af5-cf1d-4bfc-807a-7181c0a75207">
+        <File Id="PdfSharp_wpf.dll" Name="PdfSharp-wpf.dll" Source="$(var.ProjInterface_TargetDir)PdfSharp-wpf.dll" />
+      </Component>
+      <Component Id="MigraDoc.RtfRendering_wpf.dll" Guid="279e5617-ff1b-4755-a3c4-ed118078ce12">
+        <File Id="MigraDoc.RtfRendering_wpf.dll" Name="MigraDoc.RtfRendering-wpf.dll" Source="$(var.ProjInterface_TargetDir)MigraDoc.RtfRendering-wpf.dll" />
+      </Component>
+      <Component Id="Ninject.dll" Guid="1a485443-9255-4430-965e-d4401f47257b">
+        <File Id="Ninject.dll" Name="Ninject.dll" Source="$(var.LogService_TargetDir)Ninject.dll" />
+      </Component>
+      <Component Id="Common.Logging.Core.dll" Guid="e90f91b7-994a-4bc3-abd9-e4d874216430">
+        <File Id="Common.Logging.Core.dll" Name="Common.Logging.Core.dll" Source="$(var.LogService_TargetDir)Common.Logging.Core.dll" />
+      </Component>
+      <Component Id="Topshelf.dll" Guid="5a1a5085-1e78-49b5-8350-96f28e7a6531">
+        <File Id="Topshelf.dll" Name="Topshelf.dll" Source="$(var.LogService_TargetDir)Topshelf.dll" />
+      </Component>
+      <Component Id="Common.Logging.dll" Guid="9a641397-50d2-4f5e-bf8a-14ae008c52bd">
+        <File Id="Common.Logging.dll" Name="Common.Logging.dll" Source="$(var.LogService_TargetDir)Common.Logging.dll" />
+      </Component>
+      <Component Id="Topshelf.Common.Logging.dll" Guid="bb643ed9-0ade-426a-8a24-bed07d492adb">
+        <File Id="Topshelf.Common.Logging.dll" Name="Topshelf.Common.Logging.dll" Source="$(var.LogService_TargetDir)Topshelf.Common.Logging.dll" />
+      </Component>
+      <Component Id="Topshelf.Ninject.dll" Guid="ddd23919-c92b-4090-a7a5-7a7281509453">
+        <File Id="Topshelf.Ninject.dll" Name="Topshelf.Ninject.dll" Source="$(var.LogService_TargetDir)Topshelf.Ninject.dll" />
+      </Component>
+      <Component Id="MigraDoc.DocumentObjectModel_wpf.dll" Guid="53a2aa80-18a5-44ee-b080-534f5b6f2513">
+        <File Id="MigraDoc.DocumentObjectModel_wpf.dll" Name="MigraDoc.DocumentObjectModel-wpf.dll" Source="$(var.ProjInterface_TargetDir)MigraDoc.DocumentObjectModel-wpf.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="a2a5208a-e3c6-420b-b8a4-8d0274a0e621">
+        <File Id="Xceed.Wpf.AvalonDock.dll" Name="Xceed.Wpf.AvalonDock.dll" Source="$(var.ProjInterface_TargetDir)Xceed.Wpf.AvalonDock.dll" />
+      </Component>
+      <Component Id="RibbonControlsLibrary.dll" Guid="eb7b0ac0-6bf1-4a0d-93d4-569a9bd4e933">
+        <File Id="RibbonControlsLibrary.dll" Name="RibbonControlsLibrary.dll" Source="$(var.ProjInterface_TargetDir)RibbonControlsLibrary.dll" />
+      </Component>
+      <Component Id="System.Composition.Hosting.dll" Guid="ecd1b5cd-9416-4bdc-9e21-56783ae4b08f">
+        <File Id="System.Composition.Hosting.dll" Name="System.Composition.Hosting.dll" Source="$(var.ConsoleApp1_TargetDir)System.Composition.Hosting.dll" />
+      </Component>
+      <Component Id="System.Composition.TypedParts.dll" Guid="15127fc5-e7a4-4618-8009-d073f4fc85e3">
+        <File Id="System.Composition.TypedParts.dll" Name="System.Composition.TypedParts.dll" Source="$(var.ConsoleApp1_TargetDir)System.Composition.TypedParts.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.Workspaces.MSBuild.dll" Guid="e3998180-d0e6-40be-816b-73051554e2fb">
+        <File Id="Microsoft.CodeAnalysis.Workspaces.MSBuild.dll" Name="Microsoft.CodeAnalysis.Workspaces.MSBuild.dll" Source="$(var.ConsoleApp1_TargetDir)Microsoft.CodeAnalysis.Workspaces.MSBuild.dll" />
+      </Component>
+      <Component Id="System.Composition.AttributedModel.dll" Guid="45891366-380f-41a1-9408-454d994370d4">
+        <File Id="System.Composition.AttributedModel.dll" Name="System.Composition.AttributedModel.dll" Source="$(var.ConsoleApp1_TargetDir)System.Composition.AttributedModel.dll" />
+      </Component>
+      <Component Id="ConsoleApp1.exe" Guid="368a3e2b-c3cb-4dda-a760-f1bf5cbcd2e6">
+        <File Id="ConsoleApp1.exe" Name="ConsoleApp1.exe" Source="$(var.ConsoleApp1_TargetDir)ConsoleApp1.exe" />
+      </Component>
+      <Component Id="DynamicData.dll" Guid="a1e15a26-ece3-4222-838b-6669852f867b">
+        <File Id="DynamicData.dll" Name="DynamicData.dll" Source="$(var.ConfigTest_TargetDir)DynamicData.dll" />
+      </Component>
+      <Component Id="xunit.execution.desktop.dll" Guid="37db4474-763d-4de9-bbea-9445fb1575aa">
+        <File Id="xunit.execution.desktop.dll" Name="xunit.execution.desktop.dll" Source="$(var.ConfigTest_TargetDir)xunit.execution.desktop.dll" />
+      </Component>
+      <Component Id="Castle.Core.dll" Guid="38b0178c-09e3-423f-b356-0d4e89708433">
+        <File Id="Castle.Core.dll" Name="Castle.Core.dll" Source="$(var.ConfigTest_TargetDir)Castle.Core.dll" />
+      </Component>
+      <Component Id="xunit.abstractions.dll" Guid="32977cfe-adca-49ca-91cd-ba75be17c383">
+        <File Id="xunit.abstractions.dll" Name="xunit.abstractions.dll" Source="$(var.ConfigTest_TargetDir)xunit.abstractions.dll" />
+      </Component>
+      <Component Id="xunit.core.dll" Guid="7cc1ea70-9833-4364-a4b5-9c182483d5d8">
+        <File Id="xunit.core.dll" Name="xunit.core.dll" Source="$(var.ConfigTest_TargetDir)xunit.core.dll" />
+      </Component>
+      <Component Id="System.Reactive.dll" Guid="3fe45f8c-7781-4b45-9795-20124c5e8112">
+        <File Id="System.Reactive.dll" Name="System.Reactive.dll" Source="$(var.ConfigTest_TargetDir)System.Reactive.dll" />
+      </Component>
+      <Component Id="System.ValueTuple.dll" Guid="fb650a44-0702-41c7-b1e8-49f98d516e2b">
+        <File Id="System.ValueTuple.dll" Name="System.ValueTuple.dll" Source="$(var.ConfigTest_TargetDir)System.ValueTuple.dll" />
+      </Component>
+      <Component Id="System.Runtime.CompilerServices.Unsafe.dll" Guid="eb7aaba2-73c9-485a-9d1a-734eac688d8f">
+        <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.ConfigTest_TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.Extensions.dll" Guid="4f026fad-7c55-4fc4-b523-0b6c29deb73e">
+        <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="$(var.ConfigTest_TargetDir)System.Threading.Tasks.Extensions.dll" />
+      </Component>
+      <Component Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="0e056192-7005-476a-b7aa-4f092abe8b22">
+        <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.ConfigTest_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+      </Component>
+      <Component Id="Autofac.dll" Guid="38b77aaf-9f4b-4555-804e-7aef2f727242">
+        <File Id="Autofac.dll" Name="Autofac.dll" Source="$(var.ConfigTest_TargetDir)Autofac.dll" />
+      </Component>
+      <Component Id="NLog.dll" Guid="612bcc7e-3b34-4d3e-9795-d31d6118435a">
+        <File Id="NLog.dll" Name="NLog.dll" Source="$(var.ConfigTest_TargetDir)NLog.dll" />
+      </Component>
+      <Component Id="ICSharpCode.Decompiler.dll" Guid="f362aa27-cee7-4a92-8f44-99120a0414a8">
+        <File Id="ICSharpCode.Decompiler.dll" Name="ICSharpCode.Decompiler.dll" Source="$(var.WpfApp_TargetDir)ICSharpCode.Decompiler.dll" />
+      </Component>
+      <Component Id="ConfigTest.exe.config" Guid="cda6cb75-606c-4e30-93e8-de326615fbd3">
+        <File Id="ConfigTest.exe.config" Name="ConfigTest.exe.config" Source="$(var.ConfigTest_TargetDir)ConfigTest.exe.config" />
+      </Component>
+      <Component Id="ConsoleApp1.exe.config" Guid="c1cb4da5-f42a-4be2-91c6-4f174e934634">
+        <File Id="ConsoleApp1.exe.config" Name="ConsoleApp1.exe.config" Source="$(var.ConsoleApp1_TargetDir)ConsoleApp1.exe.config" />
+      </Component>
+      <Component Id="System.Composition.Runtime.dll" Guid="e2f34756-cedb-4d83-bc25-f443aef13ba2">
+        <File Id="System.Composition.Runtime.dll" Name="System.Composition.Runtime.dll" Source="$(var.ConsoleApp1_TargetDir)System.Composition.Runtime.dll" />
+      </Component>
+      <Component Id="Microsoft.Build.Locator.dll" Guid="53faf415-e6ab-402e-8ab8-cb8d01015d0e">
+        <File Id="Microsoft.Build.Locator.dll" Name="Microsoft.Build.Locator.dll" Source="$(var.ProjInterface_TargetDir)Microsoft.Build.Locator.dll" />
+      </Component>
+      <Component Id="System.Text.Json.dll" Guid="df206a11-fe8d-4683-a8f4-67b7d61a56ce">
+        <File Id="System.Text.Json.dll" Name="System.Text.Json.dll" Source="$(var.ConsoleApp1_TargetDir)System.Text.Json.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.Workspaces.dll" Guid="349f9aa7-52ca-4f3a-9e09-48a449252169">
+        <File Id="Microsoft.CodeAnalysis.Workspaces.dll" Name="Microsoft.CodeAnalysis.Workspaces.dll" Source="$(var.ConsoleApp1_TargetDir)Microsoft.CodeAnalysis.Workspaces.dll" />
+      </Component>
+      <Component Id="System.Text.Encoding.CodePages.dll" Guid="52ff2c9f-b02c-4357-af11-988bd4a8aa88">
+        <File Id="System.Text.Encoding.CodePages.dll" Name="System.Text.Encoding.CodePages.dll" Source="$(var.ConsoleApp1_TargetDir)System.Text.Encoding.CodePages.dll" />
+      </Component>
+      <Component Id="System.Buffers.dll" Guid="89f884b1-0e42-47ea-b095-823b14f34fd7">
+        <File Id="System.Buffers.dll" Name="System.Buffers.dll" Source="$(var.ConsoleApp1_TargetDir)System.Buffers.dll" />
+      </Component>
+      <Component Id="System.Numerics.Vectors.dll" Guid="85819804-d22e-41d9-bd81-5d607299ef71">
+        <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll" Source="$(var.ConsoleApp1_TargetDir)System.Numerics.Vectors.dll" />
+      </Component>
+      <Component Id="System.Memory.dll" Guid="adc019e4-8f09-475f-9fe6-5de0255b30bc">
+        <File Id="System.Memory.dll" Name="System.Memory.dll" Source="$(var.ConsoleApp1_TargetDir)System.Memory.dll" />
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.dll" Guid="cfebcdaa-a148-4dde-9094-bb048edf5998">
+        <File Id="ICSharpCode.NRefactory.dll" Name="ICSharpCode.NRefactory.dll" Source="$(var.WpfApp_TargetDir)ICSharpCode.NRefactory.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.Dataflow.dll" Guid="dccfe7c5-b969-418e-8e6d-d1af7bf4ff19">
+        <File Id="System.Threading.Tasks.Dataflow.dll" Name="System.Threading.Tasks.Dataflow.dll" Source="$(var.ConsoleApp1_TargetDir)System.Threading.Tasks.Dataflow.dll" />
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.CSharp.dll" Guid="68efc4fa-28c1-4c89-9d69-360e9a003891">
+        <File Id="ICSharpCode.NRefactory.CSharp.dll" Name="ICSharpCode.NRefactory.CSharp.dll" Source="$(var.WpfApp_TargetDir)ICSharpCode.NRefactory.CSharp.dll" />
+      </Component>
+      <Component Id="System.Reflection.Metadata.dll" Guid="e8a612fd-d195-46ae-bb0a-ee56311d4ae9">
+        <File Id="System.Reflection.Metadata.dll" Name="System.Reflection.Metadata.dll" Source="$(var.ConsoleApp1_TargetDir)System.Reflection.Metadata.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.dll" Guid="4d2c99ad-29e2-478e-945c-9338285d855f">
+        <File Id="Microsoft.CodeAnalysis.dll" Name="Microsoft.CodeAnalysis.dll" Source="$(var.ConsoleApp1_TargetDir)Microsoft.CodeAnalysis.dll" />
+      </Component>
+      <Component Id="System.Collections.Immutable.dll" Guid="3d2461ed-54b0-4c02-9cb4-823e00e6d6d4">
+        <File Id="System.Collections.Immutable.dll" Name="System.Collections.Immutable.dll" Source="$(var.ConsoleApp1_TargetDir)System.Collections.Immutable.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="_files"
-                    Directory="LogReceiverServiceBinDir">
-      <Component Id="bin_WcfService1.dll"
-                 Guid="acbe9251-30a5-43a4-a695-7d585469ebab">
-        <File Id="bin_WcfService1.dll"
-              Name="WcfService1.dll"
-              Source="$(var.WcfService1_TargetDir)WcfService1.dll" />
+    <ComponentGroup Id="_files" Directory="LogReceiverServiceBinDir">
+      <Component Id="bin_WcfService1.dll" Guid="acbe9251-30a5-43a4-a695-7d585469ebab">
+        <File Id="bin_WcfService1.dll" Name="WcfService1.dll" Source="$(var.WcfService1_TargetDir)WcfService1.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_win32_x86_files"
-                    Directory="lib_win32_x86">
-      <Component Id="lib_win32_x86_git2_ef5a385.dll"
-                 Guid="b6b0c70b-913e-4ec4-99e8-69e4b03a7489">
-        <File Id="lib_win32_x86_git2_ef5a385.dll"
-              Name="git2-ef5a385.dll"
-              Source="$(var.ProjLib_TargetDir)lib\win32\x86\git2-ef5a385.dll" />
+    <ComponentGroup Id="lib_win32_x86_files" Directory="lib_win32_x86">
+      <Component Id="lib_win32_x86_git2_ef5a385.dll" Guid="b6b0c70b-913e-4ec4-99e8-69e4b03a7489">
+        <File Id="lib_win32_x86_git2_ef5a385.dll" Name="git2-ef5a385.dll" Source="$(var.ProjLib_TargetDir)lib\win32\x86\git2-ef5a385.dll" />
       </Component>
-      <Component Id="lib_win32_x86_git2_ef5a385.pdb"
-                 Guid="040e36ad-9bd2-4836-863f-0bb269c89a1d">
-        <File Id="lib_win32_x86_git2_ef5a385.pdb"
-              Name="git2-ef5a385.pdb"
-              Source="$(var.ProjLib_TargetDir)lib\win32\x86\git2-ef5a385.pdb" />
+      <Component Id="lib_win32_x86_git2_ef5a385.pdb" Guid="040e36ad-9bd2-4836-863f-0bb269c89a1d">
+        <File Id="lib_win32_x86_git2_ef5a385.pdb" Name="git2-ef5a385.pdb" Source="$(var.ProjLib_TargetDir)lib\win32\x86\git2-ef5a385.pdb" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_win32_x64_files"
-                    Directory="lib_win32_x64">
-      <Component Id="lib_win32_x64_git2_ef5a385.dll"
-                 Guid="d75e0226-8330-4c92-b69d-a4f39e570d73">
-        <File Id="lib_win32_x64_git2_ef5a385.dll"
-              Name="git2-ef5a385.dll"
-              Source="$(var.ProjLib_TargetDir)lib\win32\x64\git2-ef5a385.dll" />
+    <ComponentGroup Id="lib_win32_x64_files" Directory="lib_win32_x64">
+      <Component Id="lib_win32_x64_git2_ef5a385.dll" Guid="d75e0226-8330-4c92-b69d-a4f39e570d73">
+        <File Id="lib_win32_x64_git2_ef5a385.dll" Name="git2-ef5a385.dll" Source="$(var.ProjLib_TargetDir)lib\win32\x64\git2-ef5a385.dll" />
       </Component>
-      <Component Id="lib_win32_x64_git2_ef5a385.pdb"
-                 Guid="7d6f9a35-e0fc-4e8b-99f3-37bb48ae98e5">
-        <File Id="lib_win32_x64_git2_ef5a385.pdb"
-              Name="git2-ef5a385.pdb"
-              Source="$(var.ProjLib_TargetDir)lib\win32\x64\git2-ef5a385.pdb" />
+      <Component Id="lib_win32_x64_git2_ef5a385.pdb" Guid="7d6f9a35-e0fc-4e8b-99f3-37bb48ae98e5">
+        <File Id="lib_win32_x64_git2_ef5a385.pdb" Name="git2-ef5a385.pdb" Source="$(var.ProjLib_TargetDir)lib\win32\x64\git2-ef5a385.pdb" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_alpine_x64_native_.._files"
-                    Directory="lib_alpine_x64_native_..">
-      <Component
-        Id="lib_alpine_x64_native_.._libgit2_ef5a385.so"
-        Guid="cf23e13e-2714-444f-807c-95f4f54ad73f">
-        <File
-          Id="lib_alpine_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\alpine-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_alpine_x64_native_.._files" Directory="lib_alpine_x64_native_..">
+      <Component Id="lib_alpine_x64_native_.._libgit2_ef5a385.so" Guid="cf23e13e-2714-444f-807c-95f4f54ad73f">
+        <File Id="lib_alpine_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\alpine-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_debian_arm64_native_.._files"
-                    Directory="lib_debian_arm64_native_..">
-      <Component
-        Id="lib_debian_arm64_native_.._libgit2_ef5a385.so"
-        Guid="67688ef8-6f71-42d9-9915-489efb28c31e">
-        <File
-          Id="lib_debian_arm64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\debian-arm64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_debian_arm64_native_.._files" Directory="lib_debian_arm64_native_..">
+      <Component Id="lib_debian_arm64_native_.._libgit2_ef5a385.so" Guid="67688ef8-6f71-42d9-9915-489efb28c31e">
+        <File Id="lib_debian_arm64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\debian-arm64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_alpine.3.9_x64_native_.._files"
-                    Directory="lib_alpine.3.9_x64_native_..">
-      <Component
-        Id="lib_alpine.3.9_x64_native_.._libgit2_ef5a385.so"
-        Guid="00abc45e-dd8a-4b9a-9c90-48cdcb6bab69">
-        <File
-          Id="lib_alpine.3.9_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\alpine.3.9-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_alpine.3.9_x64_native_.._files" Directory="lib_alpine.3.9_x64_native_..">
+      <Component Id="lib_alpine.3.9_x64_native_.._libgit2_ef5a385.so" Guid="00abc45e-dd8a-4b9a-9c90-48cdcb6bab69">
+        <File Id="lib_alpine.3.9_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\alpine.3.9-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_fedora_x64_native_.._files"
-                    Directory="lib_fedora_x64_native_..">
-      <Component
-        Id="lib_fedora_x64_native_.._libgit2_ef5a385.so"
-        Guid="d8d4d2a7-d8d2-44d3-883c-6884a8d79907">
-        <File
-          Id="lib_fedora_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\fedora-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_fedora_x64_native_.._files" Directory="lib_fedora_x64_native_..">
+      <Component Id="lib_fedora_x64_native_.._libgit2_ef5a385.so" Guid="d8d4d2a7-d8d2-44d3-883c-6884a8d79907">
+        <File Id="lib_fedora_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\fedora-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_debian.9_x64_native_.._files"
-                    Directory="lib_debian.9_x64_native_..">
-      <Component
-        Id="lib_debian.9_x64_native_.._libgit2_ef5a385.so"
-        Guid="56c72fa8-8494-4d8c-976e-b5b6ddeb499c">
-        <File
-          Id="lib_debian.9_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\debian.9-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_debian.9_x64_native_.._files" Directory="lib_debian.9_x64_native_..">
+      <Component Id="lib_debian.9_x64_native_.._libgit2_ef5a385.so" Guid="56c72fa8-8494-4d8c-976e-b5b6ddeb499c">
+        <File Id="lib_debian.9_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\debian.9-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_linux_x64_native_.._files"
-                    Directory="lib_linux_x64_native_..">
-      <Component
-        Id="lib_linux_x64_native_.._libgit2_ef5a385.so"
-        Guid="147ec442-b02e-42a3-b167-3ff405f31569">
-        <File
-          Id="lib_linux_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\linux-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_linux_x64_native_.._files" Directory="lib_linux_x64_native_..">
+      <Component Id="lib_linux_x64_native_.._libgit2_ef5a385.so" Guid="147ec442-b02e-42a3-b167-3ff405f31569">
+        <File Id="lib_linux_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\linux-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_osx_native_.._files"
-                    Directory="lib_osx_native_..">
-      <Component
-        Id="lib_osx_native_.._libgit2_ef5a385.dylib"
-        Guid="b89b0dae-7c21-4871-a71a-bdafd372e559">
-        <File Id="lib_osx_native_.._libgit2_ef5a385.dylib"
-              Name="libgit2-ef5a385.dylib"
-              Source="$(var.ProjLib_TargetDir)lib\osx\native\..\libgit2-ef5a385.dylib" />
+    <ComponentGroup Id="lib_osx_native_.._files" Directory="lib_osx_native_..">
+      <Component Id="lib_osx_native_.._libgit2_ef5a385.dylib" Guid="b89b0dae-7c21-4871-a71a-bdafd372e559">
+        <File Id="lib_osx_native_.._libgit2_ef5a385.dylib" Name="libgit2-ef5a385.dylib" Source="$(var.ProjLib_TargetDir)lib\osx\native\..\libgit2-ef5a385.dylib" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="lib_rhel_x64_native_.._files"
-                    Directory="lib_rhel_x64_native_..">
-      <Component
-        Id="lib_rhel_x64_native_.._libgit2_ef5a385.so"
-        Guid="27d9703b-2145-48fb-9685-3d7591357df3">
-        <File
-          Id="lib_rhel_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\rhel-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_rhel_x64_native_.._files" Directory="lib_rhel_x64_native_..">
+      <Component Id="lib_rhel_x64_native_.._libgit2_ef5a385.so" Guid="27d9703b-2145-48fb-9685-3d7591357df3">
+        <File Id="lib_rhel_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\rhel-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup
-      Id="lib_ubuntu.16.04_arm64_native_.._files"
-      Directory="lib_ubuntu.16.04_arm64_native_..">
-      <Component
-        Id="lib_ubuntu.16.04_arm64_native_.._libgit2_ef5a385.so"
-        Guid="3f1d5e06-4c0d-4dd8-bce1-6214a3795b9e">
-        <File
-          Id="lib_ubuntu.16.04_arm64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\ubuntu.16.04-arm64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_ubuntu.16.04_arm64_native_.._files" Directory="lib_ubuntu.16.04_arm64_native_..">
+      <Component Id="lib_ubuntu.16.04_arm64_native_.._libgit2_ef5a385.so" Guid="3f1d5e06-4c0d-4dd8-bce1-6214a3795b9e">
+        <File Id="lib_ubuntu.16.04_arm64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\ubuntu.16.04-arm64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup
-      Id="lib_ubuntu.18.04_x64_native_.._files"
-      Directory="lib_ubuntu.18.04_x64_native_..">
-      <Component
-        Id="lib_ubuntu.18.04_x64_native_.._libgit2_ef5a385.so"
-        Guid="c07a85d4-532d-419f-a15c-9ab15a50b637">
-        <File
-          Id="lib_ubuntu.18.04_x64_native_.._libgit2_ef5a385.so"
-          Name="libgit2-ef5a385.so"
-          Source="$(var.ProjLib_TargetDir)lib\ubuntu.18.04-x64\native\..\libgit2-ef5a385.so" />
+    <ComponentGroup Id="lib_ubuntu.18.04_x64_native_.._files" Directory="lib_ubuntu.18.04_x64_native_..">
+      <Component Id="lib_ubuntu.18.04_x64_native_.._libgit2_ef5a385.so" Guid="c07a85d4-532d-419f-a15c-9ab15a50b637">
+        <File Id="lib_ubuntu.18.04_x64_native_.._libgit2_ef5a385.so" Name="libgit2-ef5a385.so" Source="$(var.ProjLib_TargetDir)lib\ubuntu.18.04-x64\native\..\libgit2-ef5a385.so" />
       </Component>
     </ComponentGroup>
   </Fragment>

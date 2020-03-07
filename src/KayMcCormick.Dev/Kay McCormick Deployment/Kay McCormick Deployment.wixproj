@@ -26,9 +26,49 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Desktop\Analysis\CodeAnalysisApp1\CodeAnalysisApp1.csproj">
-      <Name>CodeAnalysisApp1</Name>
-      <Project>{8290c68f-59df-4283-8961-22b47dd198bd}</Project>
+    <ProjectReference Include="..\AnalysisServiceLibrary\AnalysisServiceLibrary.csproj">
+      <Name>AnalysisServiceLibrary</Name>
+      <Project>{1f5d1b87-40ff-42c0-88d9-874162e5d234}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\ConfigTest\ConfigTest.csproj">
+      <Name>ConfigTest</Name>
+      <Project>{a688c320-781a-4453-b86b-324785618dd8}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\ConsoleServiceHost\ConsoleServiceHost.csproj">
+      <Name>ConsoleServiceHost</Name>
+      <Project>{70264c77-6a64-4b26-b934-01b7d032a5b3}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
+      <Name>AnalysisControls</Name>
+      <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Desktop\Analysis\AnalysisFramework\AnalysisFramework.csproj">
+      <Name>AnalysisFramework</Name>
+      <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Desktop\Analysis\Analyze\ConsoleApp1\ConsoleApp1.csproj">
+      <Name>ConsoleApp1</Name>
+      <Project>{fad293b8-c008-4243-88fc-a3a8a01db52d}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
@@ -45,6 +85,14 @@
     <ProjectReference Include="..\Desktop\Analysis\ProjLib\ProjLib.csproj">
       <Name>ProjLib</Name>
       <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Desktop\StaticLib1\StaticLib1.vcxproj">
+      <Name>StaticLib1</Name>
+      <Project>{694e1f18-c1be-4741-870c-86645033bbc9}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
@@ -72,15 +120,6 @@
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\Docs\Docs.shfbproj">
-      <Name>Docs</Name>
-      <Project>{fa438012-e41b-4bdd-8391-8616d20fdcf8}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>
-      </DoNotHarvest>
-      <RefProjectOutputGroups>Documents</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
     <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
