@@ -61,11 +61,14 @@ namespace ProjLib
                    .As < IWorkspacesViewModel > ( )
                    .InstancePerLifetimeScope ( ) ;
 
-            builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
+
             builder.RegisterType<Pipeline>().AsSelf();
-            #if VSSETTINGS
+
+#if VSSETTINGS
+            builder.RegisterType < VsInstanceCollector > ( ).As < IVsInstanceCollector > ( ) ;
             builder.RegisterType < MruItemProvider > ( ).As < IMruItemProvider > ( ) ;
-            #endif
+                        builder.RegisterType < VsInstance > ( ).As < IVsInstance > ( ) ;
+#endif
 
 #if adapter
             builder.RegisterAdapter < IVsInstance , IMruItems > (
@@ -76,8 +79,8 @@ namespace ProjLib
                                                                                           , context.Resolve<IMruItemProvider>())
                                                                 ) ;
 #endif
-            builder.RegisterType < VsInstance > ( ).As < IVsInstance > ( ) ;
-            
+
+
             // var mruItemses = Scope.Resolve < IEnumerable < IMruItems > > ( ) ;
             // var viewModel = Scope.Resolve < IWorkspacesViewModel > ( ) ;
 

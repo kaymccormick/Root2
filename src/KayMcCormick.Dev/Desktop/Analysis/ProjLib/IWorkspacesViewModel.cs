@@ -25,8 +25,9 @@ namespace ProjLib
 {
     public interface IWorkspacesViewModel : INotifyPropertyChanged , IAppState
     {
+        #if VSSETTINGS
         VisualStudioInstancesCollection VsCollection { get ; } //ObservableCollection<VsInstance> ;
-
+        #endif
         MyProjectLoadProgress CurrentProgress { get ; }
 
         ObservableCollection < ILogInvocation > LogInvocations { get ; }

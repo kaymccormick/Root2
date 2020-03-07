@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if VSSETTINGS
+#region header
 // Kay McCormick (mccor)
 // 
 // ConsoleApp1
@@ -88,3 +89,4 @@ namespace ProjLib
         #endregion
     }
 }
+#endif

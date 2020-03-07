@@ -165,7 +165,9 @@ namespace ProjInterface
             private bool _processing ;
             private string _currentProject ;
             private string _currentDocumentPath ;
+            #if VSSETTINGS
             private VisualStudioInstancesCollection _vsCollection ;
+#endif
             private MyProjectLoadProgress _currentProgress ;
             private ObservableCollection < ILogInvocation > _logInvocations ;
             private IPipelineViewModel _pipelineViewModel ;
@@ -188,7 +190,9 @@ namespace ProjInterface
             #endregion
 
             #region Implementation of IWorkspacesViewModel
+            #if VSSETTINGS
             public VisualStudioInstancesCollection VsCollection { get => _vsCollection ; set => _vsCollection = value ; }
+#endif
 
             public MyProjectLoadProgress CurrentProgress { get => _currentProgress ; set => _currentProgress = value ; }
 

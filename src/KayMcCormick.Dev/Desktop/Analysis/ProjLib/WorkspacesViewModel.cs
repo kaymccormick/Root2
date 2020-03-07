@@ -30,7 +30,9 @@ using Microsoft.TeamFoundation.TestManagement.WebApi.Legacy ;
 namespace ProjLib
 {
     public class WorkspacesViewModel : IWorkspacesViewModel
+#if VSSETTINGS
       , ISupportInitialize
+        #endif
       , INotifyPropertyChanged
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -42,8 +44,12 @@ namespace ProjLib
         public delegate IFormattedCode CreateFormattedCodeDelegate2 ( ) ;
 
         // private IList<IVsInstance> vsInstances;
-        private readonly IVsInstanceCollector vsInstanceCollector ;
+#if VSSETTINGS
+                public VisualStudioInstancesCollection VsCollection { get ; } =
+            new VisualStudioInstancesCollection ( ) ;
 
+        private readonly IVsInstanceCollector vsInstanceCollector ;
+#endif
         public IPipelineViewModel PipelineViewModel { get ; }
 
         private string                _currentDocumentPath ;
@@ -58,19 +64,27 @@ namespace ProjLib
         private AdhocWorkspace _workspace ;
 
         public WorkspacesViewModel (
+            #if VSSETTINGS
             IVsInstanceCollector      collector
-          , IPipelineViewModel        pipelineViewModel
+          , 
+            
+            #endif
+            IPipelineViewModel        pipelineViewModel
           , IProjectBrowserViewModoel projectBrowserViewModel
             , SqlConnection sqlConn
         )
         {
+            #if VSSETTINGS
             vsInstanceCollector      = collector ;
+#endif
             _projectBrowserViewModel = projectBrowserViewModel ;
             _sqlConn = sqlConn ;
             PipelineViewModel        = pipelineViewModel ;
         }
 
+#if VSSETTINGS
         /// <summary>Signals the object that initialization is starting.</summary>
+        /// 
         public void BeginInit ( )
         {
             var vsInstances = vsInstanceCollector.CollectVsInstances ( ) ;
@@ -82,9 +96,10 @@ namespace ProjLib
             OnPropertyChanged ( nameof ( VsCollection ) ) ;
         }
 
+
         /// <summary>Signals the object that initialization is complete.</summary>
         public void EndInit ( ) { }
-
+#endif
         public MyProjectLoadProgress CurrentProgress
         {
             get => _currentProgress ;
@@ -95,9 +110,7 @@ namespace ProjLib
             }
         }
 
-        public VisualStudioInstancesCollection VsCollection { get ; } =
-            new VisualStudioInstancesCollection ( ) ;
- 
+    
         public IProjectBrowserViewModoel ProjectBrowserViewModel
         {
             get => _projectBrowserViewModel ;

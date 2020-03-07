@@ -1,4 +1,5 @@
-﻿// <copyright file="Program.cs" company="Microsoft Corporation">
+﻿#if VSSETTINGS
+// <copyright file="Program.cs" company="Microsoft Corporation">
 // Copyright (C) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 // </copyright>
@@ -269,3 +270,4 @@ namespace ProjLib
         }
     }
 }
+#endif

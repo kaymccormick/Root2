@@ -63,7 +63,7 @@ namespace ProjTests
             }
             var y = x.Resolve < IWorkspacesViewModel > ( ) ;
             Logger.Debug("{viewModel}", y);
-
+            #if VSSETTINGS
             var p = x.Resolve<IMruItemProvider>();
             Assert.NotEmpty(y.VsCollection);
             foreach ( var vsInstance in y.VsCollection )
@@ -83,6 +83,7 @@ namespace ProjTests
                     Logger.Debug(mruItem.FilePath);
                 }
             }
+#endif
 
             
         }

@@ -1,4 +1,6 @@
-﻿#region header
+﻿#if VSSETTINGS
+
+#region header
 // Kay McCormick (mccor)
 // 
 // WpfApp2
@@ -30,3 +32,5 @@ namespace ProjLib
         public IList<IVsInstance> CollectVsInstances() { return vsInstanceCollectorImplementation.CollectVsInstances(); }
     }
 }
+
+#endif

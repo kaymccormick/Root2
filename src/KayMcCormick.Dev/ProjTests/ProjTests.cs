@@ -46,7 +46,9 @@ namespace ProjTests
 
     [Collection ( "GeneralPurpose" ) ]
     [ ClearLoggingRules ]
+    #if VSSETTINGS
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
+#endif
     [ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
     [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
     [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]

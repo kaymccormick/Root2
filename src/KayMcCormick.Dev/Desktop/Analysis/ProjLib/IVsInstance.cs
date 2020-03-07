@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if VSSETTINGS
+#region header
 // Kay McCormick (mccor)
 // 
 // WpfApp2
@@ -63,3 +64,4 @@ namespace ProjLib
         ) ;
     }
 }
+#endif

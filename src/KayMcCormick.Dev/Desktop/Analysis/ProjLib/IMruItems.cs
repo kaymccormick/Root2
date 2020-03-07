@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic ;
+﻿#if VSSETTINGS
+using System.Collections.Generic ;
 using NLog.LayoutRenderers.Wrappers ;
 
 namespace ProjLib
@@ -13,3 +14,4 @@ namespace ProjLib
         List < IMruItem > GetMruItemList ( ) ;
     }
 }
+#endif
