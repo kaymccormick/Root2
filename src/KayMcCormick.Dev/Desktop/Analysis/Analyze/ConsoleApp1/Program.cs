@@ -1,30 +1,22 @@
-﻿using Microsoft.VisualStudio.Services.Common ;
-using Microsoft.VisualStudio.Services.Client ;
-using Microsoft.TeamFoundation.SourceControl.WebApi ;
-using Microsoft.VisualStudio.Services.WebApi ;
-using System ;
-using System.Collections.Generic ;
+﻿using System ;
 using System.ComponentModel ;
 using System.Linq ;
-using System.Net.Http ;
-using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
-using System.Text ;
-using System.Threading ;
+using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Autofac ;
+#if COMMANDLINE
 using CommandLine ;
+#endif
 using KayMcCormick.Dev.Logging ;
 using MessageTemplates ;
 using MessageTemplates.Core ;
 using MessageTemplates.Structure ;
 using Microsoft.Build.Locator ;
-using Microsoft.IdentityModel.Clients.ActiveDirectory ;
-using Microsoft.TeamFoundation.Core.WebApi ;
-using Newtonsoft.Json ;
+
 using NLog ;
 using ProjLib ;
 using Module = Autofac.Module ;
@@ -85,7 +77,7 @@ namespace ConsoleApp1
                 Logger.Fatal ( ex , ex.Message ) ;
                 return ;
             }
-
+#if COMMANDLINE
             var parsed = Parser.Default.ParseArguments < Options > ( args )
                   .WithNotParsed (
                                   errors => {
@@ -104,22 +96,23 @@ namespace ConsoleApp1
             {
                 await MainCommand((parsed as Parsed<Options>).Value, context);
             }
-
-            return ;
-            Logger.Debug ( "heelo" ) ;
+#else
+            await MainCommand(context);
+#endif
         }
 
         public static void Action ( ILogInvocation invocation )
         {
-            var json = JsonConvert.SerializeObject ( invocation ) ;
+            var json = JsonSerializer.Serialize( invocation ) ;
             Logger.Debug ( json ) ;
             Console.WriteLine ( json ) ;
                                // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
                               // ) ;
         }
 
-        private static void Instances ( Logger Logger )
+        private static void Instances ( )
         {
+#if false
             var instances = MSBuildLocator.QueryVisualStudioInstances (
                                                                        new
                                                                        VisualStudioInstanceQueryOptions ( )
@@ -137,20 +130,28 @@ namespace ConsoleApp1
                            , visualStudioInstance.Version
                             ) ;
             }
+#endif
         }
 
-        private static async Task MainCommand ( Options options , AppContext context )
+        private static async Task MainCommand ( 
+            #if COMMANDLINE
+            Options options ,
+            #endif
+            AppContext context )
         {
+#if COMMANDLINE
             if ( options.FirstChance )
             {
                 AppDomain.CurrentDomain.FirstChanceException +=
                     CurrentDomainOnFirstChanceException ;
             }
+#endif
 
             var viewModel = context.ViewModel ;
             var x = ( ISupportInitialize ) viewModel ;
             x.BeginInit ( ) ;
             x.EndInit ( ) ;
+#if COMMANDLINE
             if ( options.ListVsInstances )
             {
                 foreach ( var vsInstance in viewModel.VsCollection )
@@ -163,7 +164,7 @@ namespace ConsoleApp1
                                                          vsInstance
                                                        , typeof ( TemplatePropertyValue )
                                                         ) ;
-                    Logger.Info ( "converted = {converted}" , converted ) ;
+                    Logger.Info ( "" + "converted = {converted}" , converted ) ;
                     var templateProperties = new[]
                                              {
                                                  new TemplateProperty (
@@ -180,7 +181,7 @@ namespace ConsoleApp1
                     // Console.WriteLine(l\ine);
                 }
             }
-
+            #endif
 
             var instances = MSBuildLocator.QueryVisualStudioInstances ( )
                                           .Where (
@@ -189,8 +190,8 @@ namespace ConsoleApp1
                                                          && instance.Version.Minor == 4
                                                  ) ;
             MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
-
-            viewModel.AnalyzeCommand (
+            
+            await viewModel.AnalyzeCommand (
                                       viewModel.ProjectBrowserViewModel.RootCollection
                                                .OfType < IProjectBrowserNode > ( )
                                                .First ( )
@@ -249,7 +250,7 @@ namespace ConsoleApp1
             Console.WriteLine ( "FIRST CHANCE EXCEPTION\n" + e.Exception.ToString ( ) ) ;
         }
     }
-
+#if COMMANDLINE
     internal class Options
     {
         private bool _listVsInstances ;
@@ -263,4 +264,6 @@ namespace ConsoleApp1
         [ Option ( 'f' ) ]
         public bool FirstChance { get ; set ; }
     }
+#endif
+
 }

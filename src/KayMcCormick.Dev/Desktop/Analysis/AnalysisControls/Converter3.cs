@@ -67,12 +67,13 @@ namespace AnalysisControls
                         case Converter1Param.Kind : return ((CSharpSyntaxNode)s).Kind ( ) ;
                         case Converter1Param.ChildNodesAndTokens :return s.ChildNodesAndTokens() ;
                         case Converter1Param.ChildNodes : return s.ChildNodes();
-                        case Converter1Param.ChildTokens : return s.ChildNodes() ;
+                        case Converter1Param.ChildTokens : return s.ChildTokens() ;
                         case Converter1Param.DescendantNodes : return s.DescendantNodes();
                         case Converter1Param.DescendantNodesAndSelf : return s.DescendantNodesAndSelf() ;
                         case Converter1Param.DescendantNodesAndTokens : return s.DescendantNodesAndTokens() ;
                         case Converter1Param.DescendantNodesAndTokensAndSelf : return s.DescendantNodesAndTokensAndSelf();
-                        case Converter1Param.DescendantTokens : return s.DescendantTrivia ( ) ;
+                        case Converter1Param.DescendantTokens : return s.DescendantTokens (node => true, true
+                                                                                           ) ;
                         case Converter1Param.Diagnostics : return s.GetDiagnostics() ;
                         case Converter1Param.DescendantTrivia :return s.DescendantTrivia();
                         case Converter1Param.GetLeadingTrivia : return s.GetLeadingTrivia() ;

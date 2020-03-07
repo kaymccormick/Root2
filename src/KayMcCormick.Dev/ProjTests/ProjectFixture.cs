@@ -10,22 +10,28 @@
 // ---
 #endregion
 using System.Linq ;
+#if MSBUILDLOCATOR
 using Microsoft.Build.Locator ;
+#endif
 
 namespace ProjTests
 {
     public class ProjectFixture 
     {
+#if MSBUILDLOCATOR
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public ProjectFixture ( ) {
+
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances();
             var r = visualStudioInstances.Where (
                                                  instance => instance.DiscoveryType
                                                              == DiscoveryType.VisualStudioSetup
                                                 ) ;
             I = r.First ( ) ;
-        }
+
+    }
 
         public VisualStudioInstance I { get ; set ; }
+#endif
     }
 }

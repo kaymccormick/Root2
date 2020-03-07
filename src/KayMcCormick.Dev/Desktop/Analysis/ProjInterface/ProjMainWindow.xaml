@@ -7,6 +7,8 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
+  xmlns:nLog="clr-namespace:NLog;assembly=NLog"
   Name="mainWindow"
   AllowDrop="True"
   Drop="ProjMainWindow_OnDrop"
@@ -17,35 +19,69 @@
   DataContext="{Binding ElementName=mainWindow, Path=ViewModel}"
   mc:Ignorable="d">
   <Window.Resources>
-    <local:MruBackground x:Key="MruBackground" />
-    <CollectionViewSource x:Key="VsSource"
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary>
+          <analysisControls:JsonConverter x:Key="JsonConverter"></analysisControls:JsonConverter>
+            <DataTemplate DataType="{x:Type nLog:LogLevel}">
+            <Border BorderBrush="DimGray" BorderThickness="3" CornerRadius="10">
+              <TextBlock><Run Typography.Capitals="AllSmallCaps" Text="{Binding Name,Mode=OneTime}" FontSize="14" FontFamily="Copperplate Gothic"/>
+              </TextBlock>
+            </Border>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type nLog:LogEventInfo}">
+            <StackPanel Orientation="Horizontal">
+              <ContentControl Content="{Binding Level}"></ContentControl>
+              <TextBlock><Run Text="{Binding FormattedMessage,Mode=OneTime}"></Run></TextBlock>
+            </StackPanel>
+          </DataTemplate>
+          <local:MruBackground x:Key="MruBackground" />
+          <CollectionViewSource x:Key="VsSource"
                           Source="{Binding Path=VsCollection}" />
-    <CollectionViewSource x:Key="MruItems"
+          <CollectionViewSource x:Key="MruItems"
                           Source="{Binding ElementName=vs,Path=SelectedItem.MruItems}" />
-    <CollectionViewSource x:Key="SolutionInfo"
+          <CollectionViewSource x:Key="SolutionInfo"
                           Source="{Binding ElementName=mru,Path=SelectedItem.ProjectCollection}" />
-    <DataTemplate x:Key="VsCell"
+          <DataTemplate x:Key="VsCell"
                   DataType="projLib:IVsInstance">
-      <TextBlock>
+            <TextBlock>
         <Run Text="{Binding DisplayName}" />
         <Run Text="{Binding Product}" /> (
         <Run Text="{Binding InstallationVersion}" />)
-      </TextBlock>
-    </DataTemplate>
-    <DataTemplate x:Key="MruNameTemplate"
+            </TextBlock>
+          </DataTemplate>
+          <DataTemplate x:Key="MruNameTemplate"
                   DataType="projLib:IMruItem">
-      <DockPanel VerticalAlignment="Stretch"
+            <DockPanel VerticalAlignment="Stretch"
                  HorizontalAlignment="Stretch">
-        <TextBlock Text="{Binding Name}" />
-      </DockPanel>
-    </DataTemplate>
-    <DataTemplate
+              <TextBlock Text="{Binding Name}" />
+            </DockPanel>
+          </DataTemplate>
+          <DataTemplate
       x:Key="MruLocationTemplate"
       DataType="projLib:IMruItem">
-      <TextBlock Text="{Binding Location}" />
-    </DataTemplate>
+            <TextBlock Text="{Binding Location}" />
+          </DataTemplate>
+          <Style x:Key="LogStyle" TargetType="ContentPresenter">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Level}" Value="{x:Static nLog:LogLevel.Debug}">
+                <Setter Property="TextElement.Foreground" Value="CornflowerBlue"></Setter>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+          <DataTemplate x:Key="Properties">
+            <ItemsControl ItemsSource="{Binding Properties}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <ContentControl Content="{Binding}"/>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </DataTemplate>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
   </Window.Resources>
-
   <Window.CommandBindings>
     <CommandBinding Command="ApplicationCommands.Open" Executed="CommandBinding_OnExecuted"/>
     <CommandBinding Command="local:ProjCommands.NewAdHocWorkspace" Executed="CommandBinding_OnExecuted2"/>
@@ -79,28 +115,52 @@
                   />
         <MenuItem Header="Exit" />
       </MenuItem>
-
     </Menu>
     <Border BorderBrush="AntiqueWhite" BorderThickness="10" CornerRadius="4" Grid.Row="1"
             Grid.ColumnSpan="3">
-    <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
-        <Border VerticalAlignment="Center" Padding="10"  BorderBrush="Red" BorderThickness="3" CornerRadius="15"><TextBlock  VerticalAlignment="Center" Text="{Binding ApplicationMode,FallbackValue=None}"/></Border>
-      <TextBlock Margin="10" VerticalAlignment="Center"
-                 Text="Status" />
-      <TextBlock Margin="10"
-                 Text="{Binding CurrentProgress.FileName}" />
-      <TextBlock Margin="10"
+    <StatusBar FontSize="16">
+      <StatusBarItem>
+          <Border VerticalAlignment="Center" Padding="10"  BorderBrush="Red" BorderThickness="3" CornerRadius="15">
+            <TextBlock  VerticalAlignment="Center" Text="{Binding ApplicationMode,FallbackValue=None}"/>
+          </Border>
+      </StatusBarItem>
+      <StatusBarItem><TextBlock Margin="10" VerticalAlignment="Center"
+                 Text="Status" /></StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
+                 Text="{Binding CurrentProgress.FileName}" /></StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
                  Text="{Binding CurrentProgress.Operation}" />
-      <TextBlock Margin="10"
+        </StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
                  Text="{Binding CurrentProgress.ElapsedTime}" />
-      <TextBlock Text="{Binding Processing}" />
-      <TextBlock Text="{Binding PipelineResult.Status}"/>
-      <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
-    </WrapPanel>
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding Processing}" />
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding PipelineResult.Status}"/>
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
+        </StatusBarItem>
+    </StatusBar>
     </Border>
-    <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0">
+    <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
+    <ContentControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Content="{wpf:Resolve {x:Type analysisControls:SyntaxPanel}}"/>
+    <ItemsControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Hidden" ItemsSource="{Binding Events}"><ItemsControl.ItemTemplate>
+      <DataTemplate>
+          <ContentControl Content="{Binding Converter={StaticResource JsonConverter}}"/>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate></ItemsControl>
+
+    <DataGrid   Visibility="Hidden"
+                AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}">
+<DataGrid.Columns><DataGridTemplateColumn CellTemplate="{StaticResource Properties}"></DataGridTemplateColumn></DataGrid.Columns>
+    </DataGrid>
+    <ItemsControl Visibility="Hidden" x:Name="logs" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}" ItemContainerStyle="{StaticResource LogStyle}">
+    </ItemsControl>
     <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
       <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
       </TabItem>

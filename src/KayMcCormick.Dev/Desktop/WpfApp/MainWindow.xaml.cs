@@ -3,6 +3,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Navigation ;
+using KayMcCormick.Lib.Wpf ;
 using NLog ;
 using WpfApp.Controls ;
 
@@ -38,10 +39,10 @@ namespace WpfApp
                     {
                         var valueSource = DependencyPropertyHelper.GetValueSource (
                                                                                    resolveService
-                                                                                 , Props
+                                                                                 , AttachedProperties
                                                                                       .LifetimeScopeProperty
                                                                                   ) ;
-                        var lifetimeScope = Props.GetLifetimeScope ( resolveService ) ;
+                        var lifetimeScope = AttachedProperties.GetLifetimeScope ( resolveService ) ;
                         Logger.Warn (
                                      $"{resolveService.ServiceType} {lifetimeScope} {valueSource}"
                                     ) ;

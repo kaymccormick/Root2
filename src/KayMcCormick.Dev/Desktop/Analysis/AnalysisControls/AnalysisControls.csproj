@@ -79,17 +79,24 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\..\..\..\..\..\..\..\..\.nuget\packages\xceed.wpf.avalondock\4.0.20076.12200\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.Toolkit">
       <HintPath>..\..\..\..\..\..\..\..\..\.nuget\packages\xceed.wpf.toolkit\4.0.20076.12200\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalysisCommands.cs" />
+    <Compile Include="AnalysisControlsModule.cs" />
     <Compile Include="CodeWindow.cs" />
     <Compile Include="CompilationView.xaml.cs">
       <DependentUpon>CompilationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CompilationViewModel.cs" />
+    <Compile Include="ComponentPage.xaml.cs">
+      <DependentUpon>ComponentPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter1.cs" />
     <Compile Include="Converter1Param.cs" />
     <Compile Include="Converter3.cs" />
@@ -102,6 +109,7 @@
     <Compile Include="ICompilationViewModel.cs" />
     <Compile Include="INodePanel.cs" />
     <Compile Include="ISyntaxPanelViewModel.cs" />
+    <Compile Include="JsonConverter.cs" />
     <Compile Include="LocationConverter.cs" />
     <Compile Include="MainStatusBar.xaml.cs">
       <DependentUpon>MainStatusBar.xaml</DependentUpon>
@@ -117,15 +125,30 @@
       <DependentUpon>SyntaxPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="SyntaxPanelViewModel.cs" />
+    <Compile Include="TestView1.xaml.cs">
+      <DependentUpon>TestView1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Token.cs" />
+    <Compile Include="TokenConverter.cs" />
     <Compile Include="ToolTips.cs" />
+    <Compile Include="TransformConverter.cs" />
+    <Compile Include="Types.xaml.cs">
+      <DependentUpon>Types.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueTemplateItemSelector.cs" />
     <Compile Include="Visitor3.cs" />
+    <Compile Include="Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
     <Page Include="AnalysisControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CompilationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComponentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -173,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="TestView1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -180,6 +207,14 @@
     <Compile Include="CustomControl1.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Types.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -205,6 +240,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Wpf\KayMcCormick.Lib.Wpf.csproj">
+      <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
+      <Name>KayMcCormick.Lib.Wpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnalysisFramework\AnalysisFramework.csproj">
       <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
       <Name>AnalysisFramework</Name>
@@ -215,8 +254,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common">
-      <Version>3.6.0-beta1-20111-10</Version>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
     </PackageReference>
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>

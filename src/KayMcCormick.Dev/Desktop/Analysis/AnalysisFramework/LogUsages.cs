@@ -1,10 +1,9 @@
 using System ;
+using System.Collections ;
 using System.Collections.Generic ;
-using System.IO ;
 using System.Linq ;
-using System.Text ;
-using MessageTemplates ;
-using MessageTemplates.Parsing ;
+using System.Runtime.Serialization ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -14,86 +13,36 @@ namespace AnalysisFramework
 {
     public static class LogUsages
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public static void FindLogUsages(
-            ICodeSource                 document1
-          , CompilationUnitSyntax       currentRoot
-          , SemanticModel               currentModel
-          , Action < ILogInvocation >    consumeLogInvocation
-          , bool                        limitToMarkedStatements
-          , bool                        logVisitedStatements
-          , Action < InvocationParms  > processInvocation,
-            SyntaxTree                  syntaxTree
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        public static IEnumerable < ILogInvocation > FindLogUsages (
+            ICodeSource           document1
+          , CompilationUnitSyntax currentRoot
+          , SemanticModel         currentModel
+          , SyntaxTree            syntaxTree
         )
         {
             var comp = currentModel.Compilation ;
             var ExceptionType = comp.GetTypeByMetadataName ( "System.Exception" ) ;
             if ( ExceptionType == null )
             {
-                Logger.Warn( "No exception type" ) ;
+                Logger.Warn ( "No exception type" ) ;
             }
 
             var t1 = comp.GetTypeByMetadataName ( LoggerClassFullName ) ;
+
             if ( t1 == null )
             {
-                // Logger.Trace(       
-                // "No {clas} in {document}"
-                // , LoggerClassFullName
-                // , document1
-                // ) ;
+                throw new MissingTypeException ( LoggerClassFullName ) ;
             }
 
             var t2 = comp.GetTypeByMetadataName ( ILoggerClassFullName ) ;
             if ( t2 == null )
             {
-                return ;
+                throw new MissingTypeException ( ILoggerClassFullName ) ;
             }
 
-            var namespaceMembers = comp.GlobalNamespace.GetNamespaceMembers ( ) ;
-            foreach ( var namespaceMember in namespaceMembers )
-            {
-                // Logger.Debug ( "{ns}" , namespaceMember.Name ) ;
-            }
-
-            var ns = namespaceMembers.Select ( symbol => symbol.MetadataName == NLogNamespace )
-                                     .FirstOrDefault ( ) ;
-            if ( ns == null )
-            {
-                Logger.Info (
-                             "{0}"
-                           , String.Join (
-                                          ", "
-                                        , namespaceMembers.Select ( symbol => symbol.Name )
-                                         )
-                            ) ;
-                throw new InvalidOperationException ( "no " + NLogNamespace + " namespace" ) ;
-            }
-            // foreach ( IMethodSymbol method in methodSymbols)
-            // {
-            //     var x = Transforms.TransformMethodSymbol ( method ) ;
-            //     new LogBuilder ( Logger )
-            //        .Message ( "Method" )
-            //        //.Properties ( x.ToDictionary ( ) )
-            //        .Level ( LogLevel.Debug )
-            //        .Write ( ) ;
-            // }
-
-
-            // Logger.Info("{t1}", t1);
-            // Logger.Info("{t2}", t2);
-            // foreach ( var s in comp.SyntaxTrees )
-            // {
-            //     Logger.Info ( "{count} {path}" , s.Length , s.FilePath ) ;
-            // }
-            // foreach ( var extRef in comp.ExternalReferences )
-            // {
-            //     var f = Path.GetFileName ( extRef.Display ) ;
-            //     Logger.Info (
-            //                  "{f} {compilationExternalReference_Display}"
-            //                , f, extRef.Display
-            //                 ) ;
-            // }
-
+            var limitToMarkedStatements = false ;
             var qq0 =
                 from node in currentRoot.DescendantNodesAndSelf ( ).OfType < StatementSyntax > ( )
                 where limitToMarkedStatements == false
@@ -104,6 +53,7 @@ namespace AnalysisFramework
                                   )
                 select node ;
 
+            var logVisitedStatements = false ;
             if ( logVisitedStatements )
             {
                 foreach ( var q in qq0 )
@@ -113,7 +63,7 @@ namespace AnalysisFramework
             }
 
             IMethodSymbol methodSymbol1 = null ;
-            var qxy =
+            return
                 from statement in qq0
                 let invocations =
                     statement.DescendantNodes (
@@ -122,34 +72,19 @@ namespace AnalysisFramework
                                               )
                              .OfType < InvocationExpressionSyntax > ( )
                 from invocation in invocations
-                where CheckInvocationExpression(invocation, out methodSymbol1, currentModel)
+                let @out = CheckInvocationExpression ( invocation , currentModel )
                 let methodSymbol = methodSymbol1
-                select new { statement , invocation , methodSymbol } ;
-            
-            foreach ( var qqq in qxy )
-            {
-                try
-                {
-
-                    processInvocation (
-                                       new InvocationParms( currentRoot,currentModel,
-                                                            document1
-                                                          , qqq.statement
-                                                          , qqq.invocation
-                                                          , qqq.methodSymbol
-                                                          , ExceptionType, consumeLogInvocation
-                                                          , syntaxTree
-                                                          )
-                                      ) ;
-                }
-                catch ( Exception ex )
-                {
-                    Logger.Warn ( ex , "unable to process invocation: {message}" , ex.Message ) ;
-                }
-            }
-
-            return ;
-
+                where @out.Item1
+                select InvocationParms.ProcessInvocation (
+                                                          new InvocationParms (
+                                                                               document1
+                                                                             , syntaxTree
+                                                                             , currentModel
+                                                                             , statement
+                                                                             , @out
+                                                                             , ExceptionType
+                                                                              )
+                                                         ) ;
         }
 
         public const            string ILoggerClassName    = "ILogger" ;
@@ -162,175 +97,20 @@ namespace AnalysisFramework
         private const string NLogNamespace = "NLog" ;
 
 
-        private static bool CheckSymbol (
-            IMethodSymbol    methSym
-          , INamedTypeSymbol t1
-          , INamedTypeSymbol t2
-        )
+        private static bool CheckSymbol ( IMethodSymbol methSym , params INamedTypeSymbol[] t1 )
         {
             var cType = methSym.ContainingType ;
-
-            var r = cType == t1 || cType == t2 ;
-            // Logger.Trace (
-                          // "{name} {ns} {r}"
-                        // , cType.MetadataName
-                        // , cType.ContainingNamespace.MetadataName
-                        // , r
-                         // ) ;
-            return r ;
-            return cType.MetadataName    == LogUsages.LoggerClassName
-                   || cType.MetadataName == LogUsages.ILoggerClassName ; //  || methSym.Name == "Debug";
+            var r = t1.Any ( symbol => SymbolEqualityComparer.Default.Equals ( cType , symbol ) ) ;
             return r ;
         }
 
-        public static ILogInvocation ProcessInvocation ( InvocationParms ivp )
+        public static bool IsException ( INamedTypeSymbol exceptionType , ITypeSymbol baseType )
         {
-            var exceptionArg = IsException (
-                                            ivp.NamedTypeSymbol
-                                          , ivp.MethodSymbol.Parameters.First ( ).Type
-                                           ) ;
-            var msgParam = ivp.MethodSymbol.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
-                              .Where ( arg1 => arg1.symbol.Name == "message" ) ;
-            if ( ! msgParam.Any ( ) )
+            if ( exceptionType == null )
             {
-                Logger.Info ( "{params}", string.Join(", ", ivp.MethodSymbol.Parameters.Select ( symbol => symbol.Name )) ) ;
+                return false ;
             }
 
-            int ? msgI = msgParam.Any ( ) ? (int?) msgParam.First ( ).i : null ;
-            var methodSymbol = ivp.MethodSymbol ;
-            Logger.Debug (
-                          "params = {params}"
-                        , String.Join (
-                                       ", "
-                                     , methodSymbol.Parameters.Select ( symbol => symbol.Name )
-                                      )
-                         ) ;
-            var invocation = ivp.InvocationExpression ;
-            IEnumerable < ArgumentSyntax > rest ;
-            var semanticModel = ivp.Model;
-            LogMessageRepr msgval = null ;
-            if ( msgI != null )
-            {
-                var fargs = invocation.ArgumentList.Arguments.Skip ( msgI.Value ) ;
-                rest = fargs.Skip ( 1 ) ;
-                var msgarg = fargs.First();
-                var msgArgExpr = msgarg.Expression;
-                var msgArgTypeInfo = semanticModel.GetTypeInfo(msgArgExpr);
-                var baseType = msgArgTypeInfo.Type;
-                var symbolInfo = semanticModel.GetSymbolInfo(msgArgExpr);
-                var arg1sym = symbolInfo.Symbol;
-                if (arg1sym != null)
-                {
-                    Logger.Debug("{type} {symb}", arg1sym.GetType(), arg1sym);
-                }
-
-                var constant = semanticModel.GetConstantValue(msgArgExpr);
-
-                msgval = new LogMessageRepr() ;
-                if ( constant.HasValue )
-                {
-                    msgval.IsMessageTemplate = true ;
-                    Logger.Debug ( "Constant {constant}" , constant.Value ) ;
-                    msgval.ConstantMessage = constant.Value ;
-                    var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
-                    var o = new List < object > ( ) ;
-                    msgval.MessageTemplate = m ;
-                    foreach ( var messageTemplateToken in m.Tokens )
-                    {
-                        if ( messageTemplateToken is PropertyToken prop )
-                        {
-                            var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
-                            o.Add ( t ) ;
-                        }
-                        else if ( messageTemplateToken is TextToken t )
-                        {
-                            var xt = Tuple.Create ( t.Text ) ;
-                            o.Add ( xt ) ;
-                        }
-                    }
-                    Logger.Debug("{}", String.Join(", ", o));
-                }
-                else
-                    {
-                        StringBuilder t = new StringBuilder();
-                        //invocation.WithArgumentList(invocation.ArgumentList.)
-                        if ( msgArgExpr is InterpolatedStringExpressionSyntax interp )
-                        {
-                            int n = 1 ;
-                            foreach ( var s in interp.Contents )
-                            {
-                                if ( s is InterpolationSyntax expr )
-                                {
-                                    string varName = "arg" + n.ToString();
-                                  if(expr.Expression is IdentifierNameSyntax nn)
-                                  {
-                                      varName = nn.Identifier.ValueText ;
-                                  }
-                                  
-                                  //expr.Expression.
-                                }
-                            }
-                        }
-                        Logger.Debug("{}", msgArgExpr);
-                        msgval.MessageExprPojo = Transforms.TransformExpr(msgArgExpr);
-                    }
-
-            }
-            else
-            {
-                rest = invocation.ArgumentList.Arguments ;
-            }
-
-            
-
-            var document1 = ivp.Document ;
-            var statementSyntax = ivp.Statement ;
-            var sourceLocation = document1.FilePath
-                                 + ":"
-                                 + ( statementSyntax.GetLocation ( )
-                                                    .GetMappedLineSpan ( )
-                                                    .StartLinePosition.Line
-                                     + 1 ) ;
-            
-            var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, statementSyntax, semanticModel, ivp.Arg2, document1, ivp.SyntaxTree);
-            
-            var sourceContext = statementSyntax.Parent.ChildNodes ( ).ToList ( ) ;
-            var i2 = sourceContext.IndexOf( statementSyntax ) ;
-            string code = "" ;
-            string p = statementSyntax.GetLocation ( ).GetMappedLineSpan ( ).Path ;
-            try
-            {
-                string[] lines = File.ReadAllLines ( p ) ;
-                debugInvo.PrecedingCode =
-                    lines[ statementSyntax.GetLocation ( )
-                                          .GetMappedLineSpan ( )
-                                          .StartLinePosition.Line
-                           - 1 ] ;
-
-                debugInvo.Code = statementSyntax.ToFullString ( ) ;
-                debugInvo.FollowingCode = lines[ statementSyntax.GetLocation ( )
-                                                                .GetMappedLineSpan ( )
-                                                                .EndLinePosition.Line
-                                                 + 1 ] ;
-
-            }
-            catch ( Exception ex )
-            {
-                Logger.Warn(ex, ex.ToString());
-            }
-
-            debugInvo.SourceContext = code ;
-
-            var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
-            debugInvo.Arguments = transformed.ToList ( ) ;
-            Logger.Debug ( "{t}" , transformed ) ;
-            ivp.ConsumeAction?.Invoke( debugInvo ) ;
-            return debugInvo ;
-        }
-
-        private static bool IsException ( INamedTypeSymbol exceptionType , ITypeSymbol baseType )
-        {
-            if ( exceptionType == null ) return false ;
             var isException = false ;
             while ( baseType != null )
             {
@@ -345,33 +125,78 @@ namespace AnalysisFramework
             return isException ;
         }
 
-        public static bool CheckInvocationExpression (
-            InvocationExpressionSyntax node
-          , out IMethodSymbol          methodSymbol
-          , SemanticModel              currentModel
-        )
+        public static Tuple < bool , IMethodSymbol , InvocationExpressionSyntax >
+            CheckInvocationExpression (
+                InvocationExpressionSyntax node
+              , SemanticModel              currentModel
+              , params INamedTypeSymbol[]  t
+            )
         {
-            var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
-            var symbol = symbolInfo.Symbol ;
-            methodSymbol = symbol as IMethodSymbol;
-            return methodSymbol != null
-                   && CheckSymbol (
-                                   methodSymbol
-                                 , GetNLogSymbol ( currentModel )
-                                 , GetILoggerSymbol ( currentModel )
-                                  ) ;
+            try
+            {
+                var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
+#if DEBUG
+                Logger.Debug (
+                              "{method} mode is {node}"
+                            , nameof ( CheckInvocationExpression )
+                            , node.GetLocation ( )
+                             ) ;
+                Logger.Debug ( "{exprKind}, {exor}" , node.Expression.Kind ( ) , node.Expression ) ;
 
+                Logger.Info (
+                             "symbolinfo is {node}"
+                           , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
+                            ) ;
+                if ( symbolInfo.Symbol == null )
+                {
+                    Logger.Info ( "candidate symbols: {x}" , symbolInfo.CandidateSymbols ) ;
+                }
+#endif
+                var methodSymbol = symbolInfo.Symbol as IMethodSymbol ;
+                var result = methodSymbol != null
+                             // TODO optmize
+                             && CheckSymbol ( methodSymbol , t ) ;
+#if DEBUG
+                Logger.Debug ( "result is {result}" , result ) ;
+#endif
+                return Tuple.Create ( result , methodSymbol , node ) ;
+            }
+            catch ( Exception ex )
+            {
+                throw ;
+                // return Tuple.Create ( false , null , node  ) ;
+            }
         }
 
-        private static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )
+        public static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )
         {
-            return model.Compilation.GetTypeByMetadataName(ILoggerClassFullName);
+            return model.Compilation.GetTypeByMetadataName ( ILoggerClassFullName ) ;
         }
 
-        private static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
+        public static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
         {
-            return model.Compilation.GetTypeByMetadataName(LoggerClassFullName);
+            return model.Compilation.GetTypeByMetadataName ( LoggerClassFullName ) ;
+        }
+    }
 
+    public class MissingTypeException : Exception
+    {
+        public MissingTypeException ( ) { }
+
+        public MissingTypeException ( string message ) : base ( message ) { }
+
+        public MissingTypeException ( string message , Exception innerException ) : base (
+                                                                                          message
+                                                                                        , innerException
+                                                                                         )
+        {
+        }
+
+        protected MissingTypeException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
+        {
         }
     }
 }

@@ -267,7 +267,6 @@
     <Compile Include="Core\Logging\AppLogger.cs" />
     <Compile Include="Core\Logging\LoggerTracker.cs" />
     <Compile Include="Core\Logging\LoggingEntityMetadataAttribute.cs" />
-    <Compile Include="Core\Logging\MyCacheTarget.cs" />
     <Compile Include="Core\Menus\MenuItemContainerStyleSelector.cs" />
     <Compile Include="Core\Menus\MenuMenuItemTemplateSelector.cs" />
     <Compile Include="Core\Menus\MenuModule.cs" />
@@ -409,6 +408,9 @@
     </PackageReference>
     <PackageReference Include="nlog">
       <Version>4.7.0-rc1</Version>
+    </PackageReference>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>4.3.2</Version>

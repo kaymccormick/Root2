@@ -20,15 +20,6 @@ namespace ProjLib
         private readonly ITargetBlock<Document> documentTarget;
         private readonly IReceivableSourceBlock<ILogInvocation> _source = new BufferBlock<ILogInvocation>();
 
-        public FindLogUsagesBlock(ITargetBlock<ILogInvocation> target)
-        {
-            this._target = target;
-            actionBlock = new ActionBlock<Document>(
-                                                        Action, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 4 }
-                                                       );
-            documentTarget = actionBlock;
-        }
-
         private async Task Action ( Document d )
         {
             var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait(true) ;
@@ -38,20 +29,8 @@ namespace ProjLib
                             ( ) => LogUsages.FindLogUsages (
                                                             new CodeSource ( d.FilePath )
                                                           , tree.GetCompilationUnitRoot ( )
-                                                          , model
-                                                          , invocation
-                                                                => {
-                                                                Logger.Debug (
-                                                                             "Posting invocation {invocation}"
-                                                                           , invocation
-                                                                            ) ;
-                                                                _target.Post ( invocation ) ;
-                                                            }
-                                                          , false
-                                                          , false
-                                                          , ( p )
-                                                                => LogUsages.ProcessInvocation ( p )
-                                                          , tree
+                                                          , model,
+                                                            tree
                                                            )
                            )
                       .ConfigureAwait ( false ) ;

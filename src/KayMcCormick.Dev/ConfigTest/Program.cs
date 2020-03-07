@@ -9,17 +9,37 @@ using System.Text;
 using System.Threading.Tasks;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.ServiceReference1 ;
+using AppInstanceInfoRequest = KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest ;
 
 namespace ConfigTest
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main ( string[] args )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured(message => Console.WriteLine ( message ));
+            AppLoggingConfigHelper.EnsureLoggingConfigured (
+                                                            message => Console.WriteLine ( message )
+                                                           ) ;
             Utils.PerformLogConfigDump ( Console.Out ) ;
             NLog.LogManager.GetCurrentClassLogger ( ).Info ( "Test log message" ) ;
+            using ( AppInfoServiceClient client = new AppInfoServiceClient ( ) )
+            {
+                var appInstanceInfoResponse =
+                    client.GetAppInstanceInfo ( new AppInstanceInfoRequest ( ) ) ;
+                var info = appInstanceInfoResponse.Info ;
+                Console.WriteLine ( info.StartupTime ) ;
 
+                foreach ( var infoLoggerInfo in info.LoggerInfos )
+                {
+                    Console.WriteLine ( infoLoggerInfo.TargetName ) ;
+                    if(infoLoggerInfo.FileTarget != null)
+                    {
+                        Console.WriteLine ( infoLoggerInfo.FileTarget.FileName ) ;
+
+                    }
+                }
+            }
         }
     }
 }

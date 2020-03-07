@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+/* test 123 */ using System; /* test 123 */
+/* test 123 */ using System.Collections.Generic; /* test 123 */ 
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -98,6 +98,11 @@ namespace KayMcCormick.Dev.Logging
             // );
             InternalLogging();
 
+            if(Environment.GetEnvironmentVariable("DISABLE_LOGGING") != null)
+            {
+                LogManager.Configuration = new CodeConfiguration();
+                return ;
+            }
             LogFactory proxiedFactory = null;
             if (proxyLogging)
             {
@@ -173,17 +178,17 @@ namespace KayMcCormick.Dev.Logging
             var consoleTarget = new ConsoleTarget ( "console" )
                                 {
                                     Error = true,
-                                    Layout = SimpleLayout.FromString( "${level} ${message} ${logger}" )
+                                    Layout = new SimpleLayout( "${level} ${message} ${logger}" )
                                 } ;
             dict[LogLevel.Warn].Add ( consoleTarget ) ;
 
-            
-            #region Cache Target
-#if false
-            var cacheTarget = new  MyCacheTarget ( ) ;
-            t.Add ( cacheTarget );
 
-#endif
+            #region Cache Target
+            var cacheTarget = new MyCacheTarget();
+            dict[LogLevel.Debug].Add(cacheTarget);
+            var cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
+            dict[LogLevel.Debug].Add(cacheTarget2);
+
             #endregion
             #region NLogViewer Target
             var viewer = Viewer();
@@ -628,6 +633,10 @@ namespace KayMcCormick.Dev.Logging
             return l;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rule2"></param>
         public static void AddRule ( LoggingRule rule2 )
         {
             LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;

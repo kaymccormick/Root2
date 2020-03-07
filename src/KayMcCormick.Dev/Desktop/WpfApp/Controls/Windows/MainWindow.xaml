@@ -6,6 +6,7 @@
         xmlns:nLog="clr-namespace:NLog;assembly=NLog"
         xmlns:wpfApp="clr-namespace:WpfApp"
         xmlns:controls1="clr-namespace:WpfApp.Controls"
+        xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
         mc:Ignorable="d"
         DataContext="{Binding ElementName=mainWindow}"
         Title="Main Window" Height="450" Width="1000"
@@ -31,9 +32,9 @@
         </TabItem>
         <TabItem Header="Autofac" Padding="15" DataContext="{Binding Path=Container}">
             <controls1:Container>
-                <wpfApp:Props.LifetimeScope>
-                    <Binding ElementName="mainWindow" Path="(wpfApp:Props.LifetimeScope)" />
-                </wpfApp:Props.LifetimeScope>
+                <wpf:AttachedProperties.LifetimeScope>
+                    <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
+                </wpf:AttachedProperties.LifetimeScope>
             </controls1:Container>
         </TabItem>
         <TabItem Header="Home">

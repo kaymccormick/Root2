@@ -6,14 +6,17 @@ using System.IO ;
 using System.Linq ;
 using System.Windows ;
 using Autofac ;
+#if COMMANDLINE
 using CommandLine ;
 using CommandLine.Text ;
+#endif
 using KayMcCormick.Dev ;
 using NLog ;
 using static KayMcCormick.Dev.Logging.AppLoggingConfigHelper ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+#if COMMANDLINE
     public abstract class BaseOptions
     {
         [ Option ( 'q' ) ]
@@ -22,15 +25,18 @@ namespace KayMcCormick.Lib.Wpf
         [ Option ( 't' ) ]
         public bool EnableTracing { get ; set ; }
     }
-
+#endif
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public abstract class BaseApp : Application
     {
-        private IComponentContext       scope ;
+        private IComponentContext scope ;
+
+#if COMMANDLINE
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
+#endif
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Application" /> class.</summary>
         /// <exception cref="System.InvalidOperationException">More than one instance of the <see cref="System.Windows.Application" /> class is created per <see cref="System.AppDomain" />.</exception>
@@ -92,6 +98,7 @@ namespace KayMcCormick.Lib.Wpf
         protected override void OnStartup ( StartupEventArgs e )
         {
             base.OnStartup ( e ) ;
+#if COMMANDLINE
             var optionTypes = OptionTypes ;
             var args = e.Args ;
             if ( e.Args.Length       == 0
@@ -100,18 +107,21 @@ namespace KayMcCormick.Lib.Wpf
                 args = args.Prepend ( "default" ).ToArray ( ) ;
             }
             ArgParseResult = Parser.Default.ParseArguments ( args , optionTypes ) ;
-            ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
+             ArgParseResult.WithNotParsed ( OnArgumentParseError ) ;
+#endif
         }
 
-        protected abstract void OnArgumentParseError ( IEnumerable < Error > obj ) ;
+        protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
+
+#if COMMANDLINE
         public ParserResult < object > ArgParseResult
         {
             get => _argParseResult ;
             set => _argParseResult = value ;
         }
-
         public virtual Type[] OptionTypes => _optionType ;
+#endif
         #endregion
     }
 }

@@ -539,7 +539,7 @@ namespace WpfApp.Application
                                  , new AssemblyList(AppDomain.CurrentDomain.GetAssemblies())
                                   );
             Props.SetContainer(fe, _container);
-            Props.SetLifetimeScope(fe, AppContainer);
+            AttachedProperties.SetLifetimeScope(fe, AppContainer);
         }
 
         private void AddEventListeners()
@@ -614,6 +614,8 @@ namespace WpfApp.Application
                 base.OnStartup(e);
             }
         }
+
+        protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
 
         /// <summary>Does the on startup.</summary>
         /// <param name="args">The arguments.</param>

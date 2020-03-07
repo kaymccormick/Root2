@@ -8,6 +8,7 @@
         xmlns:controls="clr-namespace:WpfApp.Controls"
         xmlns:xaml="clr-namespace:WpfApp.Core.Xaml"
         xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+        xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
         MinWidth="800"
         MinHeight="600"
         mc:Ignorable="d" FontSize="20"
@@ -17,9 +18,9 @@
 
         <wpfApp:ResolveServiceList x:Key="ResolveServices">
             <xaml:ResolveService ServiceType="{x:Type dev:IObjectIdProvider}">
-                <wpfApp:Props.LifetimeScope>
-                    <Binding ElementName="mainWindow" Path="(wpfApp:Props.LifetimeScope)" />
-                </wpfApp:Props.LifetimeScope>
+                <wpf:AttachedProperties.LifetimeScope>
+                    <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
+                </wpf:AttachedProperties.LifetimeScope>
             </xaml:ResolveService>
         </wpfApp:ResolveServiceList>
     </Window.Resources>
@@ -52,9 +53,9 @@
             </TabItem>
             <TabItem Header="Registrations">
                 <controls:Registrations>
-                    <wpfApp:Props.LifetimeScope>
+                    <wpf:AttachedProperties.LifetimeScope>
                         <Binding ElementName="mainWindow" Path="(wpfApp:Props.LifetimeScope)" />
-                    </wpfApp:Props.LifetimeScope>
+                    </wpf:AttachedProperties.LifetimeScope>
                 </controls:Registrations>
             </TabItem>
             <TabItem Header="Y">

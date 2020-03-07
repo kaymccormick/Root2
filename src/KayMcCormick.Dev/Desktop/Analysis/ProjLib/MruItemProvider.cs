@@ -40,7 +40,7 @@ namespace ProjLib
                 throw new ArgumentException("product path is null");
             }
 
-            var mruItemListFor = new List<IMruItem>();;
+            var mruItemListFor = new List<IMruItem>();
             var path = Path.Combine ( vsInstance.InstallationPath , vsInstance.ProductPath ) ;
             try
             {
@@ -68,7 +68,7 @@ namespace ProjLib
                     }
                 }
             }
-            catch(COMException ex1)
+            catch(COMException)
             {
                 }
             catch ( PropagateException ex1 )

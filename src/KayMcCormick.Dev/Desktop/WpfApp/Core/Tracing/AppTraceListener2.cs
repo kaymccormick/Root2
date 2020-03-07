@@ -55,8 +55,8 @@ namespace WpfApp.Core.Tracing
         /// </param>
         /// <param name="id">A numeric identifier for the event.</param>
         public override void TraceEvent (
-            [ NotNull ] TraceEventCache eventCache
-          , [ NotNull ] string          source
+            TraceEventCache eventCache
+          , string          source
           , TraceEventType  eventType
           , int             id
         )

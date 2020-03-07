@@ -14,18 +14,23 @@ namespace ProjLib
 {
     public class Pipeline
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        private TransformManyBlock < Workspace , Document > _solutionDocumentsBlock ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public IPropagatorBlock < string , ILogInvocation > PipelineInstance { get ; private set ; }
 
         private List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
-
-        private List < ISourceBlock < object > > sourceBlocks =
-            new List < ISourceBlock < object > > ( ) ;
+        private DataflowLinkOptions _linkOptions = new DataflowLinkOptions { PropagateCompletion = true } ;
+        private IPropagatorBlock < string , string > _currentBlock ;
 
         public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
+
+        public DataflowLinkOptions LinkOptions
+        {
+            get => _linkOptions ;
+            set => _linkOptions = value ;
+        }
+
+        public IPropagatorBlock< string ,string> CurrentBlock { get { return _currentBlock ; } set { _currentBlock = value ; } }
 
         public Pipeline ( )
         {
@@ -34,87 +39,93 @@ namespace ProjLib
             _ = BuildPipeline ( ) ;
         }
 
-        private static IPropagatorBlock < string , ProjectContext > ProjectContextBlock ( )
+        public virtual IPropagatorBlock < string , ILogInvocation > BuildPipeline ( )
         {
-            return new TransformBlock < string , ProjectContext > (
-                                                                   ProjLibUtils
-                                                                      .MakeProjectContextForSolutionPath
-                                                                  ) ;
-        }
+            var initWorkspace = Register ( DataflowBlocks.InitializeWorkspace ( ) ) ;
 
-        private static TransformBlock < string , string > repositoryTransformBlock ( )
-        {
-            return new TransformBlock < string , string > ( ProjLibUtils.CloneProjectAsync ) ;
-        }
+            IPropagatorBlock<string, string > cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
+            cur.LinkTo ( initWorkspace , LinkOptions ) ;
 
-        public IPropagatorBlock < string , ILogInvocation > BuildPipeline ( )
-        {
-            var opt = new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
-
-            var input = new WriteOnceBlock < string > ( s => s ) ;
-            var clone = repositoryTransformBlock ( ) ;
-            input.LinkTo ( clone , opt ) ;
-            var build = DataflowBlocks.BuildBlock ( ) ;
-            clone.LinkTo ( build , opt ) ;
-            var initWorkspace = DataflowBlocks.WorkspaceBlock ( ) ;
-            build.LinkTo ( initWorkspace , opt ) ;
-
-            var findLogUsages = DataflowBlocks.FindLogUsagesBlock ( ) ;
+            var toDocuments = Register ( Workspaces.SolutionDocumentsBlock ( ) ) ;
             
-            var toDocuments = _solutionDocumentsBlock = DataflowBlocks.SolutionDocumentsBlock();
-            initWorkspace.LinkTo ( toDocuments , opt ) ;
-            toDocuments.LinkTo ( findLogUsages , opt ) ;
-            findLogUsages.LinkTo ( ResultBufferBlock , opt ) ;
+            initWorkspace.LinkTo ( toDocuments , LinkOptions ) ;
+            var findLogUsages = Register(DataflowBlocks.FindLogUsages());
+            toDocuments.LinkTo ( findLogUsages , LinkOptions ) ;
+            findLogUsages.LinkTo ( Register ( ResultBufferBlock ), LinkOptions ) ;
 
-            Continuation ( input ,                  nameof ( input ) ) ;
-            Continuation ( clone ,                  nameof ( clone ) ) ;
-            Continuation ( build ,                  nameof ( build ) ) ;
-            Continuation ( initWorkspace ,        nameof ( initWorkspace ) ) ;
-            Continuation ( toDocuments , nameof ( toDocuments ) ) ;
-            Continuation ( findLogUsages ,     nameof ( findLogUsages ) ) ;
-            Continuation ( ResultBufferBlock ,      nameof ( ResultBufferBlock ) ) ;
-            PipelineInstance = DataflowBlock.Encapsulate ( input , ResultBufferBlock ) ;
+            // Continuation ( clone ,             nameof ( clone ) ) ;
+            // Continuation ( build ,             nameof ( build ) ) ; 
+            // Continuation ( initWorkspace ,     nameof ( initWorkspace ) ) ;
+            // Continuation ( toDocuments ,       nameof ( toDocuments ) ) ;
+            // Continuation ( findLogUsages ,     nameof ( findLogUsages ) ) ;
+            // Continuation ( ResultBufferBlock , nameof ( ResultBufferBlock ) ) ;
+
+            PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
             return PipelineInstance ;
         }
 
-        private void Continuation ( IDataflowBlock writeOnceBlock , string writeOnceBlockName )
+        private T Register <T>( T block ) where T:IDataflowBlock
         {
-            writeOnceBlock.Completion.ContinueWith (
-                                                    task => ContinuationFunction (
-                                                                                  task
-                                                                                , writeOnceBlockName
-                                                                                 )
-                                                   ) ;
+            _dataflowBlocks.Add ( ( block ) ) ;
+            Continuation ( block , block.ToString ( ) ) ;
+            return block ;
         }
 
-        private void ContinuationFunction ( Task task , string onceBlockName )
+        private static void Continuation ( IDataflowBlock block , string writeOnceBlockName )
+        {
+            block.Completion.ContinueWith (
+                                           task => ContinuationFunction (
+                                                                         task
+                                                                       , writeOnceBlockName
+                                                                        )
+                                          ) ;
+        }
+
+        private static void ContinuationFunction ( Task task , string logName )
         {
             if ( task.IsFaulted )
             {
                 new LogBuilder ( Logger )
-                   .LoggerName ( $"{Logger.Name}.{onceBlockName}" )
+                   .LoggerName ( $"{Logger.Name}.{logName}" )
                    .Level ( LogLevel.Debug )
                    .Exception ( task.Exception )
-                   .Message ( "fault is {ex}" , task.Exception.ToString ( ) )
+                   .Message ( "fault is {ex}" , task.Exception )
                    .Write ( ) ;
             }
-            else { Logger.Debug ( $"{onceBlockName} complete - not faulted" ) ; }
+            else { Logger.Debug ( $"{logName} complete - not faulted" ) ; }
         }
 
-        private Workspace Transform ( BuildResults arg ) { return null ; }
+        protected virtual IPropagatorBlock < string, string > ConfigureInput ( )
+        {
+            
+            var input = new WriteOnceBlock < string > ( s => s ) ;
+            Head = input ;
+            return input ;
+        }
+        
+        public ITargetBlock<string> Head { get ; set ; }
     }
 
-    public class BuildResults
+    class PipelineRemoteSource : Pipeline
     {
-        private string sourceDir ;
+        #region Overrides of PipeLine
+        public override IPropagatorBlock < string , ILogInvocation > BuildPipeline ( )
+        {
+            var opt = LinkOptions ;
 
-        public List < string > SolutionsFilesList { get ; set ; } = new List < string > ( ) ;
+            var input = ConfigureInput ( ) ;
+            var clone = DataflowBlocks.CloneSource();
+            input.LinkTo(clone, opt);
 
-        public string SourceDir { get => sourceDir ; set => sourceDir = value ; }
-    }
+            #if NUGET
+            var build = DataflowBlocks.PackagesRestore();
+            clone.LinkTo(build, opt);
 
-    public class ProjectContext
-    {
-        public ProjectContext ( string s ) { }
+            CurrentBlock = build ;
+#endif
+
+            return base.BuildPipeline ( ) ;
+        }
+        #endregion
     }
 }

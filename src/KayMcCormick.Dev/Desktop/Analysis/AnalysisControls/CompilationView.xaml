@@ -136,12 +136,15 @@
 
 
           <CollectionViewSource
-            Source="{Binding AnalyseContext.CurrentRoot.Members}"
+            Source="{Binding CompilationUnitRootContext.CompilationUnit.Members}"
             x:Key="Compilation" />
 
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
       <local:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
+      <DataTemplate x:Key="ChildTokens">
+        <ItemsControl ItemsSource="{Binding ConverterParameter={x:Static local:Converter1Param.ChildTokens},Converter={StaticResource Converter3}}"></ItemsControl>
+      </DataTemplate>
     </ResourceDictionary>
   </Window.Resources>
   <Window.CommandBindings>
@@ -179,6 +182,60 @@
     </ToolBarTray>
     <TabControl x:Name="TabControl" Grid.Row="1"
                 Grid.Column="0" Grid.RowSpan="3">
+      <TabItem Header="Token View" FontSize="20"
+               FontFamily="Lucida Console">
+        <TabItem.Resources>
+          <DataTemplate DataType="{x:Type codeAnalysis:SyntaxNode}">
+            <WrapPanel>
+            <TextBlock Text="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/>
+            <ItemsControl ItemsSource="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.ChildNodes}}">
+              <ItemsControl.Resources>
+              </ItemsControl.Resources>
+              <ItemsControl.Template>
+                <ControlTemplate TargetType="ItemsControl">
+                  <ItemsPresenter/>
+                </ControlTemplate>
+              </ItemsControl.Template>
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            </WrapPanel>
+          </DataTemplate>
+        </TabItem.Resources>
+        <ItemsControl ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.ChildNodes}}">
+          <ItemsControl.Resources>
+            <DataTemplate DataType="codeAnalysis:SyntaxNode">
+              <TextBlock Text="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/>
+            </DataTemplate>
+          </ItemsControl.Resources>
+          <ItemsControl.Template>
+              <ControlTemplate TargetType="ItemsControl">
+              <ScrollViewer>
+                <ItemsPresenter/>
+              </ScrollViewer>
+            </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel/>
+            </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+      </TabItem>
+      <TabItem Header="Data">
+        <DataGrid ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,ConverterParameter={x:Static local:Converter1Param.DescendantNodesAndSelf},Converter={StaticResource Converter3}}" AutoGenerateColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Kind" Binding="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/>
+            <DataGridTextColumn Header="Leading Trivia" Binding="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.GetLeadingTrivia}}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Location" Binding="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.GetLocation}}"></DataGridTextColumn>
+            <DataGridTextColumn Header="JSON Transform" Binding="{Binding Converter={StaticResource TransformConverter}}"></DataGridTextColumn>
+            <DataGridTemplateColumn Header="Child Tokens" CellTemplate="{StaticResource ChildTokens}"></DataGridTemplateColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+      </TabItem>
       <TabItem Header="Source Code">
         <xctk:RichTextBox FontSize="20"
                           FontFamily="Lucida Console"

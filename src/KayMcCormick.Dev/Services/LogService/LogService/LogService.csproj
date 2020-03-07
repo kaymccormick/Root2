@@ -120,6 +120,9 @@
     <PackageReference Include="NLog">
       <Version>4.7.0-rc1</Version>
     </PackageReference>
+    <PackageReference Include="NuGet.Build">
+      <Version>2.12.1</Version>
+    </PackageReference>
     <PackageReference Include="Topshelf">
       <Version>4.2.1.218-develop</Version>
     </PackageReference>

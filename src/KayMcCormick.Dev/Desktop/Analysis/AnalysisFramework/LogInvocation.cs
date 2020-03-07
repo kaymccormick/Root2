@@ -11,9 +11,10 @@
 #endregion
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.Text.Json.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Newtonsoft.Json ;
+
 
 namespace AnalysisFramework
 {
@@ -25,42 +26,36 @@ namespace AnalysisFramework
 
         private string _LoggerType ;
         private string _methodName ;
-
-
-        public LogInvocation (
+        public LogInvocation(
             string                sourceLocation
           , IMethodSymbol         methodSymbol
           , LogMessageRepr        msgval
-          , StatementSyntax       statement
+          , SyntaxNode relevantNode 
           , SemanticModel         currentModel
           , CompilationUnitSyntax currentRoot
           , ICodeSource           document
           , SyntaxTree            syntaxTree
-        ) : base (
-                  currentModel
-                , currentRoot
-                , statement
-                , statement
-                , document
-                , syntaxTree
-                 )
-        {
-            CurrentModel   = currentModel ;
-            Statement      = statement ;
-            Msgval         = msgval ;
-            SourceLocation = sourceLocation ;
-            MethodSymbol   = methodSymbol ;
-            if ( methodSymbol != null )
+        ) : base(
+                 currentModel
+               , relevantNode as  StatementSyntax
+               , relevantNode
+               , document
+               , syntaxTree
+                )
+        { 
+            Msgval         = msgval;
+            SourceLocation = sourceLocation;
+            MethodSymbol   = methodSymbol;
+            if (methodSymbol != null)
             {
-                MethodName = MethodSymbol.Name ;
+                MethodName = MethodSymbol.Name;
                 LoggerType = methodSymbol.ContainingType.ContainingNamespace.MetadataName
                              + "."
-                             + methodSymbol.ContainingType.MetadataName ;
+                             + methodSymbol.ContainingType.MetadataName;
             }
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>[
-        [JsonConstructor]
         public LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string sourceContext , string followingCode , string precedingCode , string code ) : base ( document )
         {
             _msgval = msgval ;
@@ -78,7 +73,6 @@ namespace AnalysisFramework
 
         [ JsonIgnore ]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-
         public IMethodSymbol MethodSymbol { get => methodSymbol ; set => methodSymbol = value ; }
 
 

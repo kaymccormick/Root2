@@ -1,6 +1,6 @@
 ﻿namespace ProjLib
 {
-    public interface IView < T >
+    public interface IView < out T >
     {
         T ViewModel { get ; }
     }

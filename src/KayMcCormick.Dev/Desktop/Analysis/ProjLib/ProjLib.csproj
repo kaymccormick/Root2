@@ -76,9 +76,20 @@
     <Compile Include="ActiveSpans.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
+    <Compile Include="BuildResults.cs" />
+    <Compile Include="BuildTool.cs" />
     <Compile Include="DataflowBlocks.cs" />
+    <Compile Include="FailedBuildException.cs" />
+    <Compile Include="FilePaths.cs" />
+    <Compile Include="FindLogUsages.cs" />
+    <Compile Include="GlobalSuppressions2.cs" />
     <Compile Include="ICodeRenderer.cs" />
     <Compile Include="IFormattedCode.cs" />
+    <Compile Include="MyLogger.cs" />
+    <Compile Include="MyLogger2.cs" />
+    <Compile Include="MyProgress.cs" />
+    <Compile Include="MyProjectLoadProgress.cs" />
+    <Compile Include="PipelineResult.cs" />
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
@@ -112,7 +123,6 @@
     <Compile Include="Pipeline.cs" />
     <Compile Include="ProjectBrowserViewModoel.cs" />
     <Compile Include="ProjectHandler.cs" />
-    <Compile Include="ProjLibUtils.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="LibResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -120,6 +130,7 @@
       <DependentUpon>LibResources.resx</DependentUpon>
     </Compile>
     <None Include="Resources\AttachedProps.cs" />
+    <Compile Include="ResultStatus.cs" />
     <Compile Include="SpanObject.cs" />
     <Compile Include="SpanToolTipViewModel.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />
@@ -127,6 +138,7 @@
     <Compile Include="TransformArgs.cs" />
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="LogInvocationAnnotationHandler.cs" />
+    <Compile Include="VersionControl.cs" />
     <Compile Include="Visitor2.cs" />
     <Compile Include="Visitor4.cs" />
     <Compile Include="VisitorStub.cs" />
@@ -136,6 +148,7 @@
     <Compile Include="VsInstance.cs" />
     <Compile Include="VsInstanceCollector.cs" />
     <Compile Include="VsInstanceConverter.cs" />
+    <Compile Include="Workspaces.cs" />
     <Compile Include="WorkspacesViewModel.cs" />
     <EmbeddedResource Include="LibResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -161,21 +174,11 @@
     <PackageReference Include="MessageTemplates">
       <Version>1.0.0-rc-00275</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime">
-      <Version>16.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime">
-      <Version>16.4.0</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
       <Version>3.0.0-beta2.20059.3</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Build.Tasks">
-      <Version>3.6.0-beta1-20111-10</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="3.6.0-beta1-20111-10" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>2.9.8</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -208,9 +211,6 @@
     </PackageReference>
     <PackageReference Include="Autofac.Extras.DynamicProxy">
       <Version>5.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Build.Locator">
-      <Version>1.2.6</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Settings.15.0">
       <Version>16.4.29519.181</Version>
