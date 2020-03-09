@@ -311,7 +311,7 @@ namespace KayMcCormick.Dev.Logging
             var f = new FileTarget ( JsonTargetName )
                     {
                         FileName = Layout.FromString ( @"c:\data\logs\${processName}.json" )
-                      , Layout   = new MyJsonLayout ( )
+                      , Layout   = SetupJsonLayout( )
                     } ;
 
             return f ;
@@ -619,8 +619,8 @@ namespace KayMcCormick.Dev.Logging
 
             var l = new JsonLayout
                     {
-                        IncludeGdc           = true
-                      , IncludeMdlc          = true
+                        IncludeGdc           = false
+                      , IncludeMdlc          = false
                       , IncludeAllProperties = false
                       , MaxRecursionLimit    = 3
                     } ;

@@ -27,7 +27,10 @@ namespace AnalysisFramework
 
         )
         {
-            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, relevantNode.ToString() ) ;
+            #if TRACE
+            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, 
+relevantNode.ToString() ) ;
+#endif
             SyntaxTree = syntaxTree ;
 
             Model = model ;
@@ -69,13 +72,17 @@ namespace AnalysisFramework
             if ( ivp.MethodSymbol != null ) {
                 var msgParam = ivp.MethodSymbol.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
                                   .Where ( arg1 => arg1.symbol.Name == "message" ) ;
+                #if TRACE
                 if ( ! msgParam.Any ( ) )
                 {
+                    
                     Logger.Trace( "{params}", String.Join(", ", ivp.MethodSymbol.Parameters.Select ( symbol => symbol.Name )) ) ;
                 }
+#endif
 
                 int ? msgI = msgParam.Any ( ) ? (int?) msgParam.First ( ).i : null ;
                 var methodSymbol = ivp.MethodSymbol ;
+                #if TRACE
                 Logger.Trace(
                               "params = {params}"
                             , String.Join (
@@ -83,6 +90,7 @@ namespace AnalysisFramework
                                          , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                           )
                              ) ;
+#endif
                 var invocation = ivp.InvocationExpression ;
                 IEnumerable < ArgumentSyntax > rest ;
                 var semanticModel = ivp.Model;
@@ -96,10 +104,13 @@ namespace AnalysisFramework
                     var msgArgTypeInfo = semanticModel.GetTypeInfo(msgArgExpr);
                     var symbolInfo = semanticModel.GetSymbolInfo(msgArgExpr);
                     var arg1sym = symbolInfo.Symbol;
+                    #if TRACE
                     if (arg1sym != null)
                     {
                         Logger.Trace("{type} {symb}", arg1sym.GetType(), arg1sym);
                     }
+#endif
+
 
                     var constant = semanticModel.GetConstantValue(msgArgExpr);
 
@@ -107,7 +118,9 @@ namespace AnalysisFramework
                     if ( constant.HasValue )
                     {
                         msgval.IsMessageTemplate = true ;
+                        #if TRACE
                         Logger.Trace( "Constant {constant}" , constant.Value ) ;
+#endif
                         msgval.ConstantMessage = constant.Value ;
                         var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
                         var o = new List < object > ( ) ;
@@ -125,7 +138,9 @@ namespace AnalysisFramework
                                 o.Add ( xt ) ;
                             }
                         }
+                        #if TRACE
                         Logger.Debug("{}", String.Join(", ", o));
+#endif
                     }
                     else
                     {
@@ -148,7 +163,9 @@ namespace AnalysisFramework
                                 }
                             }
                         }
+                        #if TRACE
                         Logger.Trace("{}", msgArgExpr);
+#endif
                         msgval.MessageExprPojo = Transforms.TransformExpr(msgArgExpr);
                     }
 
@@ -197,7 +214,9 @@ namespace AnalysisFramework
 
                 var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
                 debugInvo.Arguments = transformed.ToList ( ) ;
+                #if TRACE
                 Logger.Trace( "{t}" , transformed ) ;
+#endif
                 return debugInvo ;
             }
             else

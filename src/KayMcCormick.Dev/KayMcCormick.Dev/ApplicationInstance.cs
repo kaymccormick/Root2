@@ -68,15 +68,20 @@ namespace KayMcCormick.Dev
         private List <IModule> _modules = new List < IModule > ();
         private IContainer _container ;
         private ApplicationInstanceHost _host ;
+        private Guid _instanceRunGuid ;
 
         /// <summary>
         /// 
         /// </summary>
         public event EventHandler < AppStartupEventArgs > AppStartup ;
+
         /// <summary>
         /// 
         /// </summary>
-        public ApplicationInstance ( ) {
+        public ApplicationInstance ( )
+        {
+            _instanceRunGuid = Guid.NewGuid ( ) ;
+            GlobalDiagnosticsContext.Set ( "RunId" , _instanceRunGuid ) ;
         }
 
         /// <summary>

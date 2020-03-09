@@ -137,11 +137,11 @@ namespace AnalysisFramework
             try
             {
                 var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
-#if DEBUG
+#if TRACE
                 Logger.Debug (
                               "{method} node location is {node}"
                             , nameof ( CheckInvocationExpression )
-                            , node.GetLocation ( )
+                            , node.GetLocation ( ).ToString()
                              ) ;
                 Logger.Debug ( "{exprKind}, {expr}" , node.Expression.Kind ( ) , node.Expression.ToString() ) ;
 
@@ -158,7 +158,7 @@ namespace AnalysisFramework
                 var result = methodSymbol != null
                              // TODO optmize
                              && CheckSymbol ( methodSymbol , t ) ;
-#if DEBUG
+#if TRACE
                 Logger.Debug ( "result is {result}" , result ) ;
 #endif
                 return Tuple.Create ( result , methodSymbol , node ) ;
