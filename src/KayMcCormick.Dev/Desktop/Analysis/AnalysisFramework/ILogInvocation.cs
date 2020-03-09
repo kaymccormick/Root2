@@ -17,8 +17,6 @@ namespace AnalysisFramework
     {
         string SourceLocation { get ; set ; }
 
-        string SourceContext { get ; set ; }
-
         string FollowingCode { get ; set ; }
 
         string PrecedingCode { get ; set ; }

@@ -17,7 +17,6 @@ using System.Text.RegularExpressions ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using Castle.DynamicProxy ;
-
 using JetBrains.Annotations ;
 using NLog ;
 using NLog.Common ;
@@ -143,6 +142,15 @@ namespace KayMcCormick.Dev.Logging
                 }
             }
 
+            _doConfig ( logMethod , proxyLogging , proxiedFactory ) ;
+        }
+
+        private static void _doConfig (
+            LogDelegates.LogMethod  logMethod
+          , bool       proxyLogging
+          , LogFactory proxiedFactory
+        )
+        {
             var useFactory = proxyLogging ? proxiedFactory : LogManager.LogFactory ;
             var lConf = new CodeConfiguration ( useFactory ) ;
 
@@ -154,8 +162,7 @@ namespace KayMcCormick.Dev.Logging
             var t = dict[ LogLevel.Trace ] ;
 
 
-            var disabledLogTargets =
-                Environment.GetEnvironmentVariable ( DisableLogTargetsEnvVarName ) ;
+            var disabledLogTargets = Environment.GetEnvironmentVariable ( DisableLogTargetsEnvVarName ) ;
             HashSet < string > disabled ;
             if ( disabledLogTargets != null )
             {
@@ -172,9 +179,8 @@ namespace KayMcCormick.Dev.Logging
             // errorTargets.Add(x);
 
             // TODO make this address configurable
-            var endpointAddress =
-                Environment.GetEnvironmentVariable ( "LOGGING_WEBSERVICE_ENDPOINT" )
-                ?? $"http://{PublicFacingHostAddress}/LogService/ReceiveLogs.svc" ;
+            var endpointAddress = Environment.GetEnvironmentVariable ( "LOGGING_WEBSERVICE_ENDPOINT" )
+                                  ?? $"http://{PublicFacingHostAddress}/LogService/ReceiveLogs.svc" ;
             var webServiceTarget = new LogReceiverWebServiceTarget ( "log" )
                                    {
                                        // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
@@ -225,8 +231,7 @@ namespace KayMcCormick.Dev.Logging
             foreach ( var k in keys )
             {
                 var v = dict[ k ] ;
-                dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
-                             .ToList ( ) ;
+                dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) ).ToList ( ) ;
             }
 
             foreach ( var target in dict.SelectMany ( pair => pair.Value ) )
@@ -311,7 +316,7 @@ namespace KayMcCormick.Dev.Logging
             var f = new FileTarget ( JsonTargetName )
                     {
                         FileName = Layout.FromString ( @"c:\data\logs\${processName}.json" )
-                      , Layout   = SetupJsonLayout( )
+                      , Layout   = new MyJsonLayout( )
                     } ;
 
             return f ;
@@ -624,18 +629,22 @@ namespace KayMcCormick.Dev.Logging
                       , IncludeAllProperties = false
                       , MaxRecursionLimit    = 3
                     } ;
-            ((List<JsonAttribute>)l.Attributes).AddRange (
-                                   atts.Select (
-                                                tuple => new JsonAttribute (
-                                                                            tuple.Item1
-                                                                          , Layout.FromString (
-                                                                                               tuple
-                                                                                                  .Item2
-                                                                                               ?? $"${{{tuple.Item1}}}"
-                                                                                              )
-                                                                           )
-                                               )
-                                  ) ;
+            ( ( List < JsonAttribute > ) l.Attributes ).AddRange (
+                                                                  atts.Select (
+                                                                               tuple
+                                                                                   => new
+                                                                                       JsonAttribute (
+                                                                                                      tuple
+                                                                                                         .Item1
+                                                                                                    , Layout
+                                                                                                         .FromString (
+                                                                                                                      tuple
+                                                                                                                         .Item2
+                                                                                                                      ?? $"${{{tuple.Item1}}}"
+                                                                                                                     )
+                                                                                                     )
+                                                                              )
+                                                                 ) ;
             l.Attributes.Add (
                               new JsonAttribute (
                                                  "properties"
@@ -684,6 +693,9 @@ namespace KayMcCormick.Dev.Logging
     {
         private JsonSerializerOptions options ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MyJsonLayout ( )
         {
             Options = new JsonSerializerOptions ( ) ;
@@ -692,9 +704,17 @@ namespace KayMcCormick.Dev.Logging
             //options.Converters.Add ( new DictConverterFactory ( ) ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public JsonSerializerOptions Options { get => options ; set => options = value ; }
 
         #region Overrides of Layout
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logEvent"></param>
+        /// <returns></returns>
         protected override string GetFormattedMessage ( LogEventInfo logEvent )
         {
             return JsonSerializer.Serialize ( logEvent , Options ) ;
@@ -702,6 +722,9 @@ namespace KayMcCormick.Dev.Logging
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonTypeConverter : JsonConverter < Type >
     {
         #region Overrides of JsonConverter<Type>
@@ -978,7 +1001,7 @@ namespace KayMcCormick.Dev.Logging
                             JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (
                                                                                            ref
                                                                                            reader
-                                                                 , options
+                                                             , options
                                                                                           ) ;
 
 
@@ -1023,10 +1046,10 @@ namespace KayMcCormick.Dev.Logging
 
             // if ( value.Exception != null )
             // {
-                // writer.WritePropertyName( "Exception");
-                // JsonSerializer.Serialize ( writer , value.Exception , options ) ;
+            // writer.WritePropertyName( "Exception");
+            // JsonSerializer.Serialize ( writer , value.Exception , options ) ;
             // }
-            writer.WriteNumber("ManagedThreadId", Thread.CurrentThread.ManagedThreadId);
+            writer.WriteNumber ( "ManagedThreadId" , Thread.CurrentThread.ManagedThreadId ) ;
             if ( Thread.CurrentThread.Name == null )
             {
                 Thread.CurrentThread.Name = "Thread" + value.SequenceID ;
@@ -1059,7 +1082,7 @@ namespace KayMcCormick.Dev.Logging
                         }
                         catch ( Exception ex )
                         {
-                            Debug.WriteLine ($"{p.Key}: {p.Value}: {ex.ToString ( )}");
+                            Debug.WriteLine ( $"{p.Key}: {p.Value}: {ex.ToString ( )}" ) ;
                             throw ;
                         }
                     }
@@ -1067,6 +1090,57 @@ namespace KayMcCormick.Dev.Logging
 
                 writer.WriteEndObject ( ) ;
             }
+
+            writer.WriteStartObject ( "GDC" ) ;
+            foreach ( var name in GlobalDiagnosticsContext.GetNames ( ) )
+            {
+                writer.WritePropertyName ( name ) ;
+                var value1 = GlobalDiagnosticsContext.GetObject ( name ) ;
+                if ( value1 is Type t )
+                {
+                    JsonSerializer.Serialize ( writer , t , typeof ( Type ) , options ) ;
+                }
+                else
+                {
+                    try
+                    {
+                        JsonSerializer.Serialize ( writer , value1 , options ) ;
+                    }
+                    catch ( Exception ex )
+                    {
+                        Debug.WriteLine ( $"{name}: {value1}: {ex.ToString ( )}" ) ;
+                        throw ;
+                    }
+                }
+            }
+
+            writer.WriteEndObject ( ) ;
+
+            writer.WriteStartObject("MDLC");
+
+            foreach ( var name in MappedDiagnosticsLogicalContext.GetNames ( ) )
+            {
+                writer.WritePropertyName ( name ) ;
+                var value1 = GlobalDiagnosticsContext.GetObject ( name ) ;
+                if ( value1 is Type t )
+                {
+                    JsonSerializer.Serialize ( writer , t , typeof ( Type ) , options ) ;
+                }
+                else
+                {
+                    try
+                    {
+                        JsonSerializer.Serialize ( writer , value1 , options ) ;
+                    }
+                    catch ( Exception ex )
+                    {
+                        Debug.WriteLine ( $"{name}: {value1}: {ex.ToString ( )}" ) ;
+                        throw ;
+                    }
+                }
+            }
+
+            writer.WriteEndObject ( ) ;
 
             writer.WriteEndObject ( ) ;
         }

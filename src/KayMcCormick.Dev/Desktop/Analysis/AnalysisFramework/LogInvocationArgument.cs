@@ -21,6 +21,7 @@ namespace AnalysisFramework
 {
     public interface ILogInvocationArgument
     {
+        [JsonIgnore]
         string JSON { get ; set ; }
 
         object Pojo { get ; set ; }
@@ -56,5 +57,7 @@ namespace AnalysisFramework
         public string JSON { get ; set ; }
 
         public object Pojo { get ; set ; }
+
+        public override string ToString ( ) { return $"{nameof ( JSON )}: {JSON}" ; }
     }
 }

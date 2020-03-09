@@ -39,8 +39,6 @@ namespace AnalysisFramework
 
         public string SourceLocation { get => _sourceLocation ; set => _sourceLocation = value ; }
 
-        public string SourceContext { get => _sourceContext ; set => _sourceContext = value ; }
-
         public string FollowingCode { get => _followingCode ; set => _followingCode = value ; }
 
         public string PrecedingCode { get => _precedingCode ; set => _precedingCode = value ; }
@@ -55,5 +53,10 @@ namespace AnalysisFramework
 
         public IList < ILogInvocationArgument > Arguments { get => _arguments ; set => _arguments = value ; }
         #endregion
+
+        public override string ToString ( )
+        {
+            return $"{nameof ( _sourceLocation )}: {_sourceLocation}, {nameof ( _code )}: {_code}, {nameof ( _methodDisplayName )}: {_methodDisplayName}, {nameof ( _arguments )}: {_arguments}" ;
+        }
     }
 }

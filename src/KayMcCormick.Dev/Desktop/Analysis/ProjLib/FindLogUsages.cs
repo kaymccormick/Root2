@@ -82,7 +82,9 @@ namespace ProjLib
         {
             var b = arg1 is StatementSyntax
                     || arg1 is MemberDeclarationSyntax ;
+            #if TRACE
             Logger.Debug("Got {arg1}- {b}", arg1.Kind(), b);
+            #endif
             if ( b )
             {
                 return true ;

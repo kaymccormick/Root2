@@ -145,7 +145,6 @@
     </StatusBar>
     </Border>
     <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
-    
     </analysisControls:ProjectBrowser>
     <ListView Name="_eventView" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}">
       <ListView.View>

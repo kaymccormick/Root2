@@ -63,7 +63,6 @@ namespace AnalysisFramework
             _LoggerType = loggerType ;
             _methodName = methodName ;
             Arguments = arguments ;
-            SourceContext = sourceContext ;
             FollowingCode = followingCode ;
             PrecedingCode = precedingCode ;
             Code = code ;
@@ -77,8 +76,6 @@ namespace AnalysisFramework
 
 
         public LogMessageRepr Msgval { get => _msgval ; set => _msgval = value ; }
-
-        public string SourceContext { get ; set ; }
 
         public string FollowingCode { get ; set ; }
 

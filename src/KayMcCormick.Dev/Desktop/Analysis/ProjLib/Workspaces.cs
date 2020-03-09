@@ -97,7 +97,11 @@ namespace ProjLib
                                         , file1.ToString ( )
                                         , message.ToString ( )
                                          ) ;
-                            Errors.Enqueue ( e.Diagnostic.Message ) ;
+                            if ( ! message.ToString ( ).Contains ( "WinFX.targets" )
+                                 || ! message.ToString ( ).Contains ( "Object reference not set" ) )
+                            {
+                                Errors.Enqueue ( e.Diagnostic.Message ) ;
+                            }
                         }
                     }
                     catch ( Exception ex )
@@ -158,10 +162,10 @@ namespace ProjLib
                 await workspace.OpenSolutionAsync ( solutionPath ).ConfigureAwait ( true ) ;
                 // , new Program.ConsoleProgressReporter()
                 // );
-                if ( ! Errors.IsEmpty )
-                {
-                    throw new UnableToInitializeWorkspace ( string.Join ( ", " , Errors ) ) ;
-                }
+                // if ( ! Errors.IsEmpty )
+                // {
+                        // throw new UnableToInitializeWorkspace ( string.Join ( ", " , Errors ) ) ;
+                // }
                 
                 Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
                 return workspace;

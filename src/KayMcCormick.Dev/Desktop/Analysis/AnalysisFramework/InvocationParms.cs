@@ -187,7 +187,7 @@ relevantNode.ToString() ) ;
                 var debugInvo = LogUsages.CreateLogInvocation(sourceLocation, methodSymbol, msgval, relevantNode, semanticModel, null, codeSource, ivp.SyntaxTree, null);
                 var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
                 var i2 = sourceContext.IndexOf( relevantNode ) ;
-                string code = "" ;
+
                 string p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
                 try
                 {
@@ -209,8 +209,6 @@ relevantNode.ToString() ) ;
                 {
                     Logger.Warn(ex, ex.ToString());
                 }
-
-                debugInvo.SourceContext = code ;
 
                 var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
                 debugInvo.Arguments = transformed.ToList ( ) ;

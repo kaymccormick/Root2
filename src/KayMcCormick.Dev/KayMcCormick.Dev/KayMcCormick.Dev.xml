@@ -599,6 +599,28 @@
             </summary>
             <param name="rule2"></param>
         </member>
+        <member name="M:KayMcCormick.Dev.Logging.MyJsonLayout.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Logging.MyJsonLayout.Options">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.MyJsonLayout.GetFormattedMessage(NLog.LogEventInfo)">
+            <summary>
+            
+            </summary>
+            <param name="logEvent"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.Logging.JsonTypeConverter">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.Logging.LogEventInfoConverter">
             <summary>
             

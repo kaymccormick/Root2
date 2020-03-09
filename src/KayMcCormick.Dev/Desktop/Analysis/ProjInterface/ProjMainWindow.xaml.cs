@@ -200,8 +200,9 @@ namespace ProjInterface
             if ( e.OriginalSource is ListView ) {
             
                 var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
-
-                Task t = ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
+                var viewCurrentItem = v.View.CurrentItem ;
+                Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
+                Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
                 TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
                 AddTask ( t, tw ) ;
             }
@@ -300,6 +301,11 @@ namespace ProjInterface
             set => _obsTasks = value ;
         }
         #endregion
+
+        private void _projectBrowser_OnSelected ( object sender , RoutedEventArgs e )
+        {
+            Logger.Info ( "selected {i}" , sender.ToString ( ) ) ;
+        }
     }
 
     internal class PropertyConverter : IValueConverter
