@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="4d9cd7cf-570d-4643-b717-4a8f98028a28" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>false</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8737/CentralSvc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="CentralSvc.xsd" MetadataType="Schema" ID="ce7bf140-1683-477e-90e7-1fb3d1b82635" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?xsd=xsd5" />
+    <MetadataFile FileName="CentralSvc1.xsd" MetadataType="Schema" ID="597288a5-0429-4e89-9f93-570d9a6b798a" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?xsd=xsd1" />
+    <MetadataFile FileName="CentralSvc2.xsd" MetadataType="Schema" ID="c0ab0159-b707-4cd2-bae3-3688bf7b3ec2" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?xsd=xsd0" />
+    <MetadataFile FileName="CentralSvc3.xsd" MetadataType="Schema" ID="bb546cd4-955f-4d6b-8b42-b95a0f105631" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?xsd=xsd3" />
+    <MetadataFile FileName="CentralSvc4.xsd" MetadataType="Schema" ID="b0f60dd8-f6f0-46b8-83ea-608dbab000a9" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?xsd=xsd2" />
+    <MetadataFile FileName="CentralSvc.disco" MetadataType="Disco" ID="abd1633b-6dc7-4a80-819a-663a8d11107f" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?disco" />
+    <MetadataFile FileName="CentralSvc5.xsd" MetadataType="Schema" ID="da242727-42cf-4a4f-9b93-1de083a290ec" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?xsd=xsd4" />
+    <MetadataFile FileName="CentralService.wsdl" MetadataType="Wsdl" ID="521e06e0-7584-46c1-a6e5-bcc8adb6f2c4" SourceId="1" SourceUrl="http://localhost:8737/CentralSvc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
