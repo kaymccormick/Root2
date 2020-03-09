@@ -24,6 +24,19 @@ namespace AnalysisFramework
         private string _methodDisplayName ;
         private IList < ILogInvocationArgument > _arguments ;
         #region Implementation of ILogInvocation
+        public LogInvocation2 ( string sourceLocation , string sourceContext , string followingCode , string precedingCode , string code , string loggerType , string methodName , string methodDisplayName , IList < ILogInvocationArgument > arguments )
+        {
+            _sourceLocation = sourceLocation ;
+            _sourceContext = sourceContext ;
+            _followingCode = followingCode ;
+            _precedingCode = precedingCode ;
+            _code = code ;
+            _loggerType = loggerType ;
+            _methodName = methodName ;
+            _methodDisplayName = methodDisplayName ;
+            _arguments = arguments ;
+        }
+
         public string SourceLocation { get => _sourceLocation ; set => _sourceLocation = value ; }
 
         public string SourceContext { get => _sourceContext ; set => _sourceContext = value ; }

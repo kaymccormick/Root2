@@ -143,7 +143,7 @@ namespace AnalysisFramework
                             , nameof ( CheckInvocationExpression )
                             , node.GetLocation ( )
                              ) ;
-                Logger.Debug ( "{exprKind}, {expr}" , node.Expression.Kind ( ) , node.Expression ) ;
+                Logger.Debug ( "{exprKind}, {expr}" , node.Expression.Kind ( ) , node.Expression.ToString() ) ;
 
                 Logger.Info (
                              "symbolinfo is {node}"
@@ -178,6 +178,21 @@ namespace AnalysisFramework
         public static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
         {
             return model.Compilation.GetTypeByMetadataName ( LoggerClassFullName ) ;
+        }
+
+        public static ILogInvocation CreateLogInvocation (
+            string                           sourceLocation
+          , IMethodSymbol                    methodSymbol
+          , LogMessageRepr                   msgVal
+          , SyntaxNode                       relevantNode
+          , SemanticModel                    semanticModel
+          , CompilationUnitSyntax            o
+          , ICodeSource                      codeSource
+          , SyntaxTree                       ivpSyntaxTree
+          , IList < ILogInvocationArgument > args
+        )
+        {
+            return new LogInvocation2(sourceLocation, null, null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName, args);
         }
     }
 

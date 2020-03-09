@@ -27,7 +27,7 @@ namespace AnalysisFramework
 
         )
         {
-            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, relevantNode ) ;
+            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, relevantNode.ToString() ) ;
             SyntaxTree = syntaxTree ;
 
             Model = model ;
@@ -167,7 +167,7 @@ namespace AnalysisFramework
                                                      .StartLinePosition.Line
                                          + 1 ) ;
             
-                var debugInvo = new LogInvocation(sourceLocation, methodSymbol, msgval, relevantNode, semanticModel, null, codeSource, ivp.SyntaxTree);
+                var debugInvo = LogUsages.CreateLogInvocation(sourceLocation, methodSymbol, msgval, relevantNode, semanticModel, null, codeSource, ivp.SyntaxTree, null);
                 var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
                 var i2 = sourceContext.IndexOf( relevantNode ) ;
                 string code = "" ;

@@ -22,6 +22,7 @@ using System.ComponentModel ;
 using System.Data.SqlClient ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
+using System.Text.Json ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -114,7 +115,13 @@ namespace ProjLib
             PipelineResult = new PipelineResult(ResultStatus.Pending);
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                   invocation => {
-                                                                      Logger.Warn(
+                                                                      Console.WriteLine (
+                                                                                         JsonSerializer
+                                                                                            .Serialize (
+                                                                                                        invocation
+                                                                                                       )
+                                                                                        ) ;
+                                                                      Logger.Debug(
                                                                                     "{invocation}"
                                                                                   , invocation
                                                                                    ) ;
