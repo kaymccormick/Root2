@@ -8,9 +8,13 @@ using Microsoft.CodeAnalysis;
 using NLog ;
 using ProjLib ;
 using System ;
+using System.Collections ;
 using System.Collections.Concurrent ;
+using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Diagnostics ;
+using System.Globalization ;
 using System.IO ;
 using System.Linq;
 using System.Reactive.Concurrency ;
@@ -32,12 +36,13 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ProjMainWindow : Window
+    public partial class ProjMainWindow : AppWindow
       , IView < IWorkspacesViewModel >
       , IView1
       , IWorkspacesView
       , INotifyPropertyChanged
     {
+        private readonly ILifetimeScope _scope ;
         private static readonly Logger      Logger = LogManager.GetCurrentClassLogger ( ) ;
         private                 TaskFactory _factory ;
 
@@ -51,7 +56,7 @@ namespace ProjInterface
             }
         }
 
-        public ProjMainWindow ( )
+        public ProjMainWindow ( ) : base(null)
         {
             InitializeComponent ( ) ;
             _factory = new TaskFactory ( TaskScheduler.FromCurrentSynchronizationContext ( ) ) ;
@@ -59,6 +64,7 @@ namespace ProjInterface
 
         public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope)
         {
+            _scope = scope ;
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext() ;
@@ -87,6 +93,23 @@ namespace ProjInterface
                                         {
                                             var i = JsonSerializer
                                                .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions{ } ) ;
+                                            foreach ( var p in i.Properties )
+                                            {
+                                                var g = ( _eventView.View as GridView ) ;
+                                                if ( ! PropertiesColumns.ContainsKey ( p.Key ) )
+                                                {
+                                                    var gridViewColumn = new GridViewColumn ( )
+                                                                         {
+                                                                             Header = p.Key,
+                                                                             DisplayMemberBinding =
+                                                                                 new Binding (
+                                                                                             ) {Converter = _propConverter, ConverterParameter = p.Key}
+                                                                         } ;
+                                                    PropertiesColumns[ p.Key ] = gridViewColumn ;
+                                                    g.Columns.Add ( gridViewColumn ) ;
+                                     //               _eventView.UpdateLayout();
+                                                }
+                                            }
                                             ViewModel.Events.Add(i);
                                         }
                                     }
@@ -108,9 +131,9 @@ namespace ProjInterface
                                    );
         }
 
+        public Dictionary<string, GridViewColumn> PropertiesColumns { get ; set ; } = new Dictionary<string, GridViewColumn>();
 
-        /// <summary>Raises the <see cref="E:System.Windows.FrameworkElement.Initialized" /> event. This method is invoked whenever <see cref="P:System.Windows.FrameworkElement.IsInitialized" /> is set to <see langword="true " />internally. </summary>
-        /// <param name="e">The <see cref="T:System.Windows.RoutedEventArgs" /> that contains the event data.</param>
+
         protected override void OnInitialized ( EventArgs e )
         {
             base.OnInitialized ( e ) ;
@@ -145,6 +168,7 @@ namespace ProjInterface
         private ConcurrentBag <Task> _tasks = new ConcurrentBag < Task > ();
         private TaskScheduler _taskScheduler ;
         private ObservableCollection<TaskWrap> _obsTasks = new ObservableCollection < TaskWrap > ();
+        private IValueConverter _propConverter = new PropertyConverter() ;
 
         public ActionBlock < Workspace > WorkspaceActionBlock { get ; private set ; }
 
@@ -199,7 +223,7 @@ namespace ProjInterface
                            .GetSemanticModelAsync ( )
                            .ContinueWith (
                                           ( task  ) => {
-                                              var w = Scope.Resolve < CompilationView > (
+                                              var w = _scope.Resolve < CompilationView > (
                                                                                          new
                                                                                              TypedParameter (
                                                                                                              typeof
@@ -275,6 +299,112 @@ namespace ProjInterface
             get => _obsTasks ;
             set => _obsTasks = value ;
         }
+        #endregion
+    }
+
+    internal class PropertyConverter : IValueConverter
+    {
+        #region Implementation of IValueConverter
+        public object Convert (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            LogEventInstance instance = value as LogEventInstance;
+            if ( instance.Properties != null && instance.Properties.TryGetValue ( ( string ) parameter , out var elem ) )
+            {
+                var process = Process ( elem ) ;
+                if(targetType == typeof(string))
+                {
+                    var convertToString = ConvertToString ( process ) ;
+                    if ( convertToString.Length > 80 )
+                    {
+                        return convertToString.Substring ( 0 , 80 ) ;
+                    }
+
+                    return convertToString ;
+                }
+                return process ;
+            }
+
+            return null ;
+        }
+
+        private string ConvertToString ( object process )
+        {
+            if(process is IDictionary d)
+            {
+                List <string> strings = new List < string > ();
+                foreach ( var dKey in d.Keys )
+                {
+                    strings.Add ( dKey + ": " + ConvertToString ( d[ dKey ] ) ) ;
+                }
+
+                return string.Join ( ", " , strings ) ;
+            }
+            if (process is IEnumerable  ie && process.GetType() != typeof(string))
+            {
+                List<string> strings = new List<string>();
+                foreach (var dKey in ie)
+                {
+                    strings.Add ( ConvertToString ( dKey ) ) ;
+                }
+
+                return string.Join(", ", strings);
+            }
+
+            return process.ToString ( ) ;
+
+        }
+
+        private object Process ( JsonElement elem )
+        {
+            switch ( elem.ValueKind )
+            {
+                case JsonValueKind.Undefined : return null ;
+                case JsonValueKind.Object :
+                    try
+                    {
+                        Dictionary<string, object> dd = new Dictionary < string , object > ();
+                        foreach ( var q in elem.EnumerateObject ( ) )
+                        {
+                            if ( dd.ContainsKey ( q.Name ) )
+                            {
+                                Debug.WriteLine ( "Uh oh key exists " + q.Name ) ;
+                            }
+                            else
+                            {
+                                dd[ q.Name ] = Process ( q.Value ) ;
+                            }
+                        }
+
+                        return dd ;
+                        // .ToDictionary ( property => property.Name , property
+                        // => Process ( property.Value )) ;
+
+                    }
+                    catch ( Exception ex )
+                    {
+                        return ex.Message ;
+                    }
+
+                    return "test" ;
+                case JsonValueKind.Array :     return elem.EnumerateArray ( ).Select ( Process ) ;
+                case JsonValueKind.String :    return elem.GetString ( ) ;
+                case JsonValueKind.Number :    return elem.GetInt32 ( ) ;
+                case JsonValueKind.True :      return true ;
+                case JsonValueKind.False :     return false ;
+                case JsonValueKind.Null :      return null ;
+                default :                      throw new ArgumentOutOfRangeException ( ) ;
+            }
+
+            return elem.GetString ( ) ;
+        }
+
+
+        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
         #endregion
     }
 

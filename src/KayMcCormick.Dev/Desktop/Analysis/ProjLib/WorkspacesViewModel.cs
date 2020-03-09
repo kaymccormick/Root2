@@ -171,7 +171,7 @@ namespace ProjLib
         }
 
         private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
-        private ObservableCollection < LogEventInstance > _events  = new ObservableCollection < string > ();
+        private ObservableCollection < LogEventInstance > _events  = new ObservableCollection < LogEventInstance > ();
 
         public string ApplicationMode => _applicationMode ;
 

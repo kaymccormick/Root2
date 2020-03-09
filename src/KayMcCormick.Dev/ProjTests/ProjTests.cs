@@ -12,8 +12,10 @@
 using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
+using System.IO ;
 using System.Linq ;
 using System.Runtime.ExceptionServices ;
+using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using AnalysisControls ;
@@ -21,6 +23,7 @@ using AnalysisFramework ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 
@@ -282,6 +285,25 @@ namespace ProjTests
             #endif
         }
 
+        [Fact]
+        public void DeserializeLog ( )
+        {
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
+            var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
+            while ( ! t.EndOfStream )
+            {
+                var line = t.ReadLine ( ) ;
+
+                LogEventInfo info = JsonSerializer.Deserialize < LogEventInfo > ( line, options ) ;
+                Logger.Debug(info.FormattedMessage);
+                foreach ( var keyValuePair in info.Properties )
+                {
+                    Logger.Debug ( keyValuePair.Key ) ;
+                    Logger.Debug ( keyValuePair.Value ) ;
+                }
+            }
+        }
         public List<Action> Finalizers { get { return _finalizers ; } set { _finalizers = value ; } }
 
 //        public //VisualStudioInstance VSI { get ; set ; }

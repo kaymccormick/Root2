@@ -96,7 +96,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        public abstract IEnumerable < IModule > GetModules ( ) ;
+        public virtual IEnumerable < IModule > GetModules ( ) { return Array.Empty < IModule > ( ) ; }
         #region Overrides of Application
         protected override void OnExit ( ExitEventArgs e )
         {

@@ -10,8 +10,14 @@ namespace KayMcCormick.Lib.Wpf
 {
     public class AppWindow : Window
     {
+        private readonly ILifetimeScope _lifetimeScope ;
+
+        public AppWindow ( ) {
+        }
+
         public AppWindow (ILifetimeScope lifetimeScope )
         {
+            _lifetimeScope = lifetimeScope ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lifetimeScope ) ;
         }
     }

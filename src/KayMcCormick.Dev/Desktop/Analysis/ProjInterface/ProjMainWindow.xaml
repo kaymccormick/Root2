@@ -1,4 +1,4 @@
-﻿<Window
+﻿<wpf:AppWindow
   x:Class="ProjInterface.ProjMainWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -147,11 +147,17 @@
     <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
-    <ItemsControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}"><ItemsControl.ItemTemplate>
-      <DataTemplate>
-          <ContentControl Content="{Binding Converter={StaticResource JsonConverter}}"/>
-      </DataTemplate>
-    </ItemsControl.ItemTemplate></ItemsControl>
+    <ListView Name="_eventView" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}"/>
+          <GridViewColumn Header="Time" DisplayMemberBinding="{Binding EventTime}"/>
+          <GridViewColumn Header="Logger" DisplayMemberBinding="{Binding Logger}"/>
+          <GridViewColumn Header="MessageTemplate" DisplayMemberBinding="{Binding MessageTemplate}"/>
+        </GridView>
+      </ListView.View>
+
+    </ListView>
 
     <DataGrid   Visibility="Hidden"
                 AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}">
@@ -174,4 +180,4 @@
                            Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>
-</Window>
+</wpf:AppWindow>

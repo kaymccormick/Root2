@@ -2,8 +2,12 @@
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Reflection ;
+using System.Text.Json ;
+using System.Text.Json.Serialization ;
 using System.Windows ;
 using AnalysisControls ;
+using AnalysisFramework ;
 using Autofac ;
 using Autofac.Core ;
 #if COMMANDLINE
@@ -11,11 +15,15 @@ using CommandLine ;
 using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.CodeAnalysis.CSharp ;
 #if MSBUILDLOCATOR
 using Microsoft.Build.Locator ;
 #endif
 using NLog ;
+using NLog.Targets ;
+using JsonConverter = System.Text.Json.Serialization.JsonConverter ;
 
 namespace ProjInterface
 {
@@ -215,7 +223,15 @@ private Type[] _optionTypes ;
             var nLogTraceListener = new NLogTraceListener ( ) ;
             nLogTraceListener.Filter = new MyTraceFilter ( ) ;
             bs.Listeners.Add ( nLogTraceListener ) ;
+
 #endif
+            foreach ( var myJsonLayout in LogManager
+                                         .Configuration.AllTargets.OfType < TargetWithLayout > ( )
+                                         .Select ( t => t.Layout )
+                                         .OfType < MyJsonLayout > ( ) )
+            {
+                myJsonLayout.Options.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
+            }
         }
 
 
@@ -231,7 +247,7 @@ private Type[] _optionTypes ;
             #endif
             base.OnStartup ( e ) ;
 
-            Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
+            //Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
 
 
 #if COMMANDLINE
@@ -340,6 +356,55 @@ private Type[] _optionTypes ;
             }
 }
 #endif
+    }
+
+    public class JsonSyntaxNodeConverter : JsonConverterFactory
+    {
+        #region Overrides of JsonConverter
+        public override bool CanConvert ( Type typeToConvert ) { return typeof(CSharpSyntaxNode).IsAssignableFrom(typeToConvert) ; }
+        #endregion
+        #region Overrides of JsonConverterFactory
+        public override JsonConverter CreateConverter (
+            Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return ( JsonConverter ) Activator.CreateInstance (
+                                                               typeof ( InnerConverter <> ).MakeGenericType (
+                                                                                                             typeToConvert
+                                                                                                            )
+                                                             , BindingFlags.Instance | BindingFlags.Public
+                                                             , null
+                                                             , new object[] { options }
+                                                             , null
+                                                              ) ;
+        }
+        #endregion
+
+        class InnerConverter < T > : JsonConverter < T > where T : CSharpSyntaxNode
+        {
+            private readonly JsonSerializerOptions _options ;
+
+            public InnerConverter (JsonSerializerOptions options ) { _options = options ; }
+
+            #region Overrides of JsonConverter<T>
+            public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
+
+            public override void Write (
+                Utf8JsonWriter        writer
+              , T                     value
+              , JsonSerializerOptions options
+            )
+            {
+                writer.WriteStartObject();
+                writer.WriteBoolean("JsonConverter", true);
+                writer.WritePropertyName ( "Value" ) ;
+                var transformed = Transforms.TransformSyntaxNode ( value ) ;
+                JsonSerializer.Serialize ( writer , transformed , options ) ;
+                writer.WriteEndObject();
+            }
+            #endregion
+        }
     }
 
 #if COMMANDLINE

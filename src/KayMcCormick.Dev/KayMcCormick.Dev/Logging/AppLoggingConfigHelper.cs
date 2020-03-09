@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
+using System.Text.Json ;
+using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions;
 using Castle.DynamicProxy;
 using DynamicData;
@@ -14,9 +16,11 @@ using JetBrains.Annotations;
 using NLog;
 using NLog.Common;
 using NLog.Config;
+using NLog.Fluent ;
 using NLog.Layouts;
 using NLog.Targets;
 using NLog.Targets.Wrappers ;
+using JsonAttribute = NLog.Layouts.JsonAttribute ;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -135,7 +139,6 @@ namespace KayMcCormick.Dev.Logging
             var useFactory = proxyLogging ? proxiedFactory : LogManager.LogFactory;
             var lConf = new CodeConfiguration(useFactory);
 
-
             var dict = LogLevel.AllLoggingLevels.ToDictionary(
                                                                level => level
                                                              , level => new List<Target>()
@@ -197,9 +200,9 @@ namespace KayMcCormick.Dev.Logging
             #region Debugger Target
             if (DebuggerTargetEnabled)
             {
-                var debuggerTarget =
-                    new DebuggerTarget { Layout = new SimpleLayout("${message}") };
-                t.Add(debuggerTarget);
+                // var debuggerTarget =
+                    // new DebuggerTarget { Layout = new SimpleLayout("${message}") };
+                // t.Add(debuggerTarget);
             }
             #endregion
             #region Chainsaw Target
@@ -302,7 +305,7 @@ namespace KayMcCormick.Dev.Logging
             {
                 FileName = Layout.FromString(@"c:\data\logs\${processName}.json")
                       ,
-                Layout = SetupJsonLayout()
+                Layout = new MyJsonLayout()
             };
 
             return f;
@@ -600,6 +603,7 @@ namespace KayMcCormick.Dev.Logging
             var atts = new[]
                        {
                            Tuple.Create ( "logger" ,    ( string ) null )
+                           , Tuple.Create ( "level" , ( string ) null )
                          , Tuple.Create ( "@t" ,        "${longdate}" )
                          , Tuple.Create ( "logger" ,    ( string ) null )
                          , Tuple.Create ( "@mt" ,       "${message}" )
@@ -613,7 +617,7 @@ namespace KayMcCormick.Dev.Logging
                       ,
                 IncludeMdlc = true
                       ,
-                IncludeAllProperties = true
+                IncludeAllProperties = false
                       ,
                 MaxRecursionLimit = 3
             };
@@ -629,7 +633,9 @@ namespace KayMcCormick.Dev.Logging
                                                                            )
                                                )
                                   );
-
+            l.Attributes.Add(new JsonAttribute("properties", new JsonLayout() { IncludeAllProperties = true, MaxRecursionLimit = 3 }, false));
+            l.Attributes.Add(new JsonAttribute("gdc", new JsonLayout() { IncludeGdc = true, MaxRecursionLimit = 3 }, false));
+            l.Attributes.Add(new JsonAttribute("mdlc", new JsonLayout() { IncludeMdlc= true, MaxRecursionLimit = 3 }, false));
             return l;
         }
 
@@ -641,6 +647,235 @@ namespace KayMcCormick.Dev.Logging
         {
             LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;
         }
+    }
+
+    public class MyJsonLayout : Layout
+    {
+        private JsonSerializerOptions options ;
+
+        public MyJsonLayout ( )
+        {
+            Options = new JsonSerializerOptions ( ) ;
+            Options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
+            Options.Converters.Add ( new JsonTypeConverter ( ) ) ;
+            //options.Converters.Add ( new DictConverterFactory ( ) ) ;
+        }
+
+        public JsonSerializerOptions Options { get => options ; set => options = value ; }
+
+        #region Overrides of Layout
+        protected override string GetFormattedMessage ( LogEventInfo logEvent )
+        {
+            return JsonSerializer.Serialize ( logEvent, Options ) ;
+        }
+        #endregion
+    }
+
+    public class JsonTypeConverter : JsonConverter<Type>
+    {
+        #region Overrides of JsonConverter<Type>
+        public override Type Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
+
+        public override void Write (
+            Utf8JsonWriter        writer
+          , Type                  value
+          , JsonSerializerOptions options
+        )
+        {
+            writer.WriteStringValue(value.FullName);
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class LogEventInfoConverter : JsonConverter<LogEventInfo>
+    {
+        #region Overrides of JsonConverter<LogEventInfo>
+        public override LogEventInfo Read (
+            ref Utf8JsonReader    reader
+          , Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            //var builder = new LogBuilder(null);
+            var info = new LogEventInfo ( ) ;
+            while ( reader.Read ( ) )
+            {
+                if ( reader.TokenType == JsonTokenType.EndObject ) break ;
+                if ( reader.TokenType != JsonTokenType.PropertyName )
+                {
+                    throw new JsonException ( ) ;
+                }
+
+                var field = reader.GetString ( ) ;
+                switch ( field )
+                {
+                    case "Level" :
+                        reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.Number )
+                        {
+                            throw new JsonException ( ) ;
+                        }
+
+                        info.Level = LogLevel.FromOrdinal ( reader.GetInt32 ( ) ) ;
+                        break ;
+                    case nameof ( LogEventInfo.LoggerName ) :
+                        reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.String )
+                        {
+                            throw new JsonException ( ) ;
+                        }
+
+                        info.LoggerName = reader.GetString ( ) ;
+                        break ;
+                    case nameof ( LogEventInfo.FormattedMessage ) :
+                        reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.String )
+                        {
+                            throw new JsonException ( ) ;
+
+                        }
+
+                        var msg = reader.GetString ( ) ;
+                        info.Message = msg ;
+                       // builder      = builder.Message ( msg ) ;
+                        break ;
+                    case "Properties" :
+                        var properties =
+                            JsonSerializer.Deserialize < Dictionary < string , object > > (
+                                                                                           ref
+                                                                                           reader
+                                                                                         , options
+                                                                                          ) ;
+
+
+
+                        foreach ( var keyValuePair in properties )
+                        {
+                            info.Properties[ keyValuePair.Key ] = keyValuePair.Value ;
+                        }
+
+                        break ;
+                    default : throw new JsonException ( ) ;
+                }
+               
+            }
+            return info;
+        }
+
+        public override void Write (
+            Utf8JsonWriter        writer
+          , LogEventInfo          value
+          , JsonSerializerOptions options
+        )
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("Level", value.Level.Ordinal);
+            writer.WriteString("LoggerName", value.LoggerName);
+            writer.WriteString ( "FormattedMessage" , value.FormattedMessage ) ;
+            if ( value.HasProperties )
+            {
+                writer.WriteStartObject ( "Properties" ) ;
+                foreach ( var p in value.Properties )
+                {
+                    writer.WritePropertyName ( p.Key.ToString ( ) ) ;
+                    if ( p.Value is Type t )
+                    {
+                        JsonSerializer.Serialize(writer, t, typeof(Type), options);
+                    }
+                    else
+                    {
+                        JsonSerializer.Serialize(writer, p.Value, options);
+                    }
+                }
+
+                writer.WriteEndObject ( ) ;
+            }
+            writer.WriteEndObject();
+        }
+        #endregion
+    }
+
+    public class DictConverterFactory : JsonConverterFactory
+    {
+        #region Overrides of JsonConverter
+        public override bool CanConvert ( Type typeToConvert )
+        {
+            if ( typeToConvert == typeof ( IDictionary < object , object > ) )
+            {
+                return true ;
+            }
+
+            return false ;
+        }
+        #endregion
+        #region Overrides of JsonConverterFactory
+        public override JsonConverter CreateConverter (
+            Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return new Inner ( ) ;
+        }
+
+        public class Inner : JsonConverter<IDictionary <object, object>>
+        {
+            #region Overrides of JsonConverter<IDictionary<object,object>>
+            public override IDictionary < object , object > Read (
+                ref Utf8JsonReader    reader
+              , Type                  typeToConvert
+              , JsonSerializerOptions options
+            )
+            {
+                IDictionary < object , object > dict = new Dictionary < object , object > ( ) ;
+                while ( reader.Read ( ) )
+                {
+                    if ( reader.TokenType == JsonTokenType.EndObject )
+                    {
+                        return dict ;
+                    }
+
+                    if ( reader.TokenType != JsonTokenType.PropertyName )
+                    {
+                        throw new JsonException ( ) ;
+                    }
+
+                    string propertyName = reader.GetString ( ) ;
+                    var value = JsonSerializer.Deserialize < object > ( ref reader , options ) ;
+                    dict[ propertyName ] = value ;
+                }
+
+                return dict ;
+            }
+
+            public override void Write (
+                Utf8JsonWriter                  writer
+              , IDictionary < object , object > value
+              , JsonSerializerOptions           options
+            )
+            {
+                writer.WriteStartObject ( ) ;
+                foreach ( var keyValuePair in value )
+                {
+                    writer.WritePropertyName ( keyValuePair.Key.ToString ( ) ) ;
+                    JsonSerializer.Serialize (
+                                              writer
+                                            , keyValuePair.Value
+                                            , keyValuePair.Value.GetType ( )
+                                            , options
+                                             ) ;
+                }
+
+                writer.WriteEndObject ( ) ;
+            }
+
+        
+            
+            #endregion
+        }
+        #endregion
     }
 
     public interface ILoggingConfiguration

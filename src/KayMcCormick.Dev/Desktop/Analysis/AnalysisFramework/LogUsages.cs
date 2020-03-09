@@ -139,11 +139,11 @@ namespace AnalysisFramework
                 var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
 #if DEBUG
                 Logger.Debug (
-                              "{method} mode is {node}"
+                              "{method} node location is {node}"
                             , nameof ( CheckInvocationExpression )
                             , node.GetLocation ( )
                              ) ;
-                Logger.Debug ( "{exprKind}, {exor}" , node.Expression.Kind ( ) , node.Expression ) ;
+                Logger.Debug ( "{exprKind}, {expr}" , node.Expression.Kind ( ) , node.Expression ) ;
 
                 Logger.Info (
                              "symbolinfo is {node}"

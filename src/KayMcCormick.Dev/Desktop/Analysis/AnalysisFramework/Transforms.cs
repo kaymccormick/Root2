@@ -652,10 +652,21 @@ namespace AnalysisFramework
                                                    ) ;
                 case ExpressionSyntax s: return TransformExpr ( s ) ;
                 case UsingDirectiveSyntax u: return TransformUsingDirectiveSyntax ( u ) ;
+                case ExpressionStatementSyntax x: return TransformExpressionStatementSyntax ( x ) ;
                 case MemberDeclarationSyntax m: return TransformMemberDeclarationSyntax ( m ) ;
             }
 
             throw new UnsupportedExpressionTypeSyntax ( syntaxNode.Kind ( ).ToString ( ).ToString ( ) ) ;
+        }
+
+        private static object TransformExpressionStatementSyntax ( ExpressionStatementSyntax ex )
+        {
+            return new
+                   {
+                       ex.RawKind
+                     , Kind       = ex.Kind ( ).ToString ( )
+                     , Expression = TransformExpr ( ex.Expression )
+                   } ;
         }
 
         private static object TransformMemberDeclarationSyntax ( MemberDeclarationSyntax arg )

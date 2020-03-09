@@ -175,6 +175,9 @@
     <PackageReference Include="NuGet.Build">
       <Version>2.12.1</Version>
     </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>4.7.1</Version>
+    </PackageReference>
     <PackageReference Include="Xunit">
       <Version>2.4.1</Version>
     </PackageReference>

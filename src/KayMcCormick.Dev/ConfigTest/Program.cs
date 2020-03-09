@@ -10,18 +10,21 @@ using System.Threading.Tasks;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.ServiceReference1 ;
+using NLog ;
 using AppInstanceInfoRequest = KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest ;
 
 namespace ConfigTest
 {
     class Program
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         static void Main ( string[] args )
         {
             AppLoggingConfigHelper.EnsureLoggingConfigured (
                                                             message => Console.WriteLine ( message )
                                                            ) ;
             Utils.PerformLogConfigDump ( Console.Out ) ;
+            Logger.Info ( "{test}" , new Test1 ( ) { Test2 = new Test2 ( ) { Hello = "derp" } } ) ;
             NLog.LogManager.GetCurrentClassLogger ( ).Info ( "Test log message" ) ;
             using ( AppInfoServiceClient client = new AppInfoServiceClient ( ) )
             {
@@ -46,5 +49,15 @@ namespace ConfigTest
                 
             }
         }
+    }
+
+    internal class Test1
+    {
+        public Test2 Test2 { get ; set ; }
+    }
+
+    internal class Test2
+    {
+        public string Hello { get ; set ; }
     }
 }
