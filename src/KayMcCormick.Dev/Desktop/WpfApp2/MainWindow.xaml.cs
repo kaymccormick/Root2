@@ -1,9 +1,9 @@
-﻿
-using NLog ;
+﻿using NLog ;
 using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
+using System.Collections.Specialized ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
@@ -25,7 +25,7 @@ namespace WpfApp2
     // ReSharper disable once RedundantExtendsListEntry
     public partial class MainWindow : Window
     {
-        private static string Path = @"c:\data\logs\test2.json" ;
+        private static          string Path   = @"c:\data\logs\test2.json" ;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly ISet < string > _propertiesSet = new HashSet < string > ( ) ;
@@ -37,7 +37,8 @@ namespace WpfApp2
                                                                                       "LoggedTime"
                                                                                     , "Logged Time"
                                                                                     , "Time of log event."
-                                                                                    , typeof ( DateTime )
+                                                                                    , typeof (
+                                                                                          DateTime )
                                                                                      ) ;
 
         private static readonly LogProperty _loggerLogProperty = new LogProperty (
@@ -51,20 +52,26 @@ namespace WpfApp2
                                                                                             "callerLineNumber"
                                                                                           , "Line number"
                                                                                           , "Line number of caller."
-                                                                                          , typeof ( int )
+                                                                                          , typeof (
+                                                                                                int
+                                                                                            )
                                                                                            ) ;
 
-        public ObservableCollection<LogProperty> LogPropertiesCollection { get ; set ; } = new ObservableCollection < LogProperty > ();
+        private Dictionary < string , GridViewColumn > gridViewColumns =
+            new Dictionary < string , GridViewColumn > ( ) ;
+
+        public ObservableCollection < LogProperty > LogPropertiesCollection { get ; set ; } =
+            new ObservableCollection < LogProperty > ( ) ;
 
         public ObservablePropertyCollection PropInfos { get ; set ; } =
             new ObservablePropertyCollection (
-                                                   new[]
-                                                   {
-                                                       new PropInfo ( _loggedTimeLogProperty )
-                                                     , new PropInfo ( _loggerLogProperty )
-                                                     , new PropInfo ( _callerLineNumberLogProperty )
-                                                   }
-                                                  ) ;
+                                              new[]
+                                              {
+                                                  new PropInfo ( _loggedTimeLogProperty )
+                                                , new PropInfo ( _loggerLogProperty )
+                                                , new PropInfo ( _callerLineNumberLogProperty )
+                                              }
+                                             ) ;
 
         public MainWindow ( )
         {
@@ -73,6 +80,20 @@ namespace WpfApp2
             InitializeProperties ( ) ;
             PopulateGridViewColumns ( ) ;
             SetupTraceSources ( ) ;
+
+            Entries.CollectionChanged += ( sender , args ) => {
+                var gridView = ( GridView ) mainListView.View ;
+                if ( args.Action == NotifyCollectionChangedAction.Add )
+                {
+                    foreach ( LogEntry item in args.NewItems )
+                    {
+                        foreach ( var itemKey in item.Keys )
+                        {
+                            MakePropertyColumn ( PropertyInfos[ itemKey ] , gridView ) ;
+                        }
+                    }
+                }
+            } ;
 
             Logger.Info ( "Nubmer of props {numProps}" , PropInfos.Count ) ;
             // var propsWindow = new PropertiesWindow ( ) ;
@@ -105,43 +126,57 @@ namespace WpfApp2
             PresentationTraceSources.DataBindingSource.Listeners.Add ( new NLogTraceListener ( ) ) ;
         }
 
-        private void LoadLogFile ( )
+        private async Task LoadLogFileAsync ( )
         {
-            LogFileReader = File.OpenText ( Path ) ;
-            while ( ! LogFileReader.EndOfStream )
-            {
-                var readLine = LogFileReader.ReadLine ( ) ;
-                var logEntry = JsonSerializer.Deserialize< LogEntry > ( readLine ) ;
-                foreach ( var logEntryKey in logEntry.Keys )
-                {
-                    if ( PropertyInfos.TryGetValue ( logEntryKey , out var propInfo ) )
-                    {
+            await Task.Run (
+                            ( ) => {
+                                LogFileReader = File.OpenText ( Path ) ;
+                                while ( ! LogFileReader.EndOfStream )
+                                {
+                                    var readLine = LogFileReader.ReadLine ( ) ;
+                                    var logEntry =
+                                        JsonSerializer.Deserialize < LogEntry > ( readLine ) ;
+                                    foreach ( var logEntryKey in logEntry.Keys )
+                                    {
+                                        if ( PropertyInfos.TryGetValue (
+                                                                        logEntryKey
+                                                                      , out var propInfo
+                                                                       ) )
+                                        {
 #pragma warning disable RCS1089 // Use --/++ operator instead of assignment.
-                        propInfo.Count += 1 ;
+                                            propInfo.Count += 1 ;
 #pragma warning restore RCS1089 // Use --/++ operator instead of assignment.
-                    }
-                    else
-                    {
-                        var newProp = new PropInfo { Name = logEntryKey , Count = 1 } ;
-                        if ( PropertiesDict.ContainsKey ( logEntryKey ) )
-                        {
-                            newProp.LogProperty = PropertiesDict[ logEntryKey ] ;
-                        }
+                                        }
+                                        else
+                                        {
+                                            var newProp =
+                                                new PropInfo { Name = logEntryKey , Count = 1 } ;
+                                            if ( PropertiesDict.ContainsKey ( logEntryKey ) )
+                                            {
+                                                Logger.Debug (
+                                                              "adding new propinfo for existing property with key {key}"
+                                                            , logEntryKey
+                                                             ) ;
+                                                newProp.LogProperty =
+                                                    PropertiesDict[ logEntryKey ] ;
+                                            }
 
-                        PropertyInfos[ logEntryKey ] = newProp ;
-                    }
-                }
-
-                _propertiesSet.UnionWith ( logEntry.Keys ) ;
-                Dispatcher?.Invoke (
-                                    ( ) => {
-                                        Entries.Add ( logEntry ) ;
+                                            PropertyInfos[ logEntryKey ] = newProp ;
+                                        }
                                     }
-                                   ) ;
-            }
+
+                                    _propertiesSet.UnionWith ( logEntry.Keys ) ;
+                                    Dispatcher?.Invoke (
+                                                        ( ) => {
+                                                            Entries.Add ( logEntry ) ;
+                                                        }
+                                                       ) ;
+                                }
+                            }
+                           ) ;
         }
 
-        public void OnLogLoaded ( )
+        public async Task OnLogLoadedAsync ( )
         {
             foreach ( var keyValuePair in PropertyInfos )
             {
@@ -165,42 +200,61 @@ namespace WpfApp2
 
             AllProps = PropertiesDict.Values.ToList ( ) ;
 
-            var objJson = JsonSerializer.Serialize( PropertiesDict.Values ) ;
-            File.WriteAllText ( "props.json" , objJson ) ;
-
+            try
+            {
+                var stream = File.OpenWrite ( "props.json" ) ;
+                await JsonSerializer.SerializeAsync ( stream , PropertiesDict.Values ) ;
+                stream.Close ( ) ;
+                stream.Dispose ( ) ;
+            }
+            catch ( Exception ex )
+            {
+                Logger.Warn ( ex , "Unable to serialize: {message}" , ex.Message ) ;
+            }
 
             File.WriteAllText (
-                               @"c:\data\logs\parsed.json",
-            JsonSerializer.Serialize( Entries )
+                               @"c:\data\logs\parsed.json"
+                             , JsonSerializer.Serialize ( Entries )
                               ) ;
         }
 
         private void PopulateGridViewColumns ( )
         {
             var gridView = ( GridView ) mainListView.View ;
-            foreach ( var logProperty in LogPropertiesCollection )
+            // foreach ( var logProperty in LogPropertiesCollection )
+            // {
+                // if ( MakePropertyColumn ( logProperty , gridView ) )
+                // {
+                    // continue ;
+                // }
+            // }
+        }
+
+        private bool MakePropertyColumn ( PropInfo logProperty , GridView gridView )
+        {
+            var column = new GridViewColumn { Header = logProperty.Name} ;
+
+            var key = $"{logProperty.Name}PropertyValueTemplate" ;
+            var maybeTemplate = TryFindResource ( key ) ;
+            if ( maybeTemplate == null )
             {
-                var key = $"{logProperty.Name}PropertyValueTemplate" ;
-                var maybeTemplate = TryFindResource ( key ) ;
-                if ( maybeTemplate == null )
-                {
-                    Logger.Error (
-                                  "Cant find template {templateName} for property {logProperty}"
-                                , key
-                                , logProperty
-                                 ) ;
-                    continue ;
-                }
-
-                var column = new GridViewColumn
-                             {
-                                 CellTemplate = ( DataTemplate ) maybeTemplate
-                               , Header       = logProperty.Header
-                             } ;
-
-                gridView.Columns.Add ( column ) ;
-                PropertiesDict[ logProperty.Name ] = logProperty ;
+                column.DisplayMemberBinding = new Binding ( "[" + logProperty.Name + "]" ) ;
+                // Logger.Error (
+                // "Cant find template {templateName} for property {logProperty}"
+                // , key
+                // , logProperty
+                // ) ;
+                // return true ;
             }
+            else
+            {
+                column.CellTemplate = ( DataTemplate ) maybeTemplate ;
+            }
+
+
+            gridView.Columns.Add ( column ) ;
+            gridViewColumns[ logProperty.Name ] = column ;
+            return false ;
         }
 
         private void InitializeProperties ( )
@@ -242,41 +296,30 @@ namespace WpfApp2
             window.ShowDialog ( ) ;
         }
 
-        private void LoadLogFileButton_OnClick ( object sender , RoutedEventArgs e )
+        private async void LoadLogFileButton_OnClick ( object sender , RoutedEventArgs e )
         {
             var openFileDialog = new OpenFileDialog ( ) ;
-            
-                openFileDialog.DefaultExt       = ".json" ;
-                openFileDialog.InitialDirectory = @"C:\data\logs" ;
-                var result = openFileDialog.ShowDialog ( ) ;
-                if ( ( bool ) !result )
-                {
-                    return ;
-                }
 
-                Path = openFileDialog.FileName ;
-            
-            if(!File.Exists(Path))
+            openFileDialog.DefaultExt       = ".json" ;
+            openFileDialog.InitialDirectory = @"C:\data\logs" ;
+            var result = openFileDialog.ShowDialog ( ) ;
+            if ( ( bool ) ! result )
             {
                 return ;
             }
+
+            Path = openFileDialog.FileName ;
+
+            if ( ! File.Exists ( Path ) )
+            {
+                return ;
+            }
+
             var origCursor = mainWindow.Cursor ;
-            mainWindow.SetCurrentValue(CursorProperty, Cursors.Wait) ;
-            _ = Task.Run(LoadLogFile)
-                .ContinueWith(
-                               task =>
-                               {
-                                   OnLogLoaded();
-                               }
-                              )
-                .ContinueWith(
-                               task => Dispatcher?.Invoke (
-                                                           ( ) => mainWindow.SetCurrentValue (
-                                                                                              CursorProperty
-                                                                                            , origCursor
-                                                                                             )
-                                                          )
-                             );
+            mainWindow.SetCurrentValue ( CursorProperty , Cursors.Wait ) ;
+            await LoadLogFileAsync ( ) ;
+            await OnLogLoadedAsync ( ) ;
+            mainWindow.SetCurrentValue ( CursorProperty , origCursor ) ;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace WpfApp2
 
         public string Description { get ; set ; }
 
-        public Type ExpectedType { get ; set ; }
+        public string ExpectedType { get ; set ; }
 
         public string CellTemplateKey { get ; set ; }
 
@@ -35,7 +35,7 @@ namespace WpfApp2
             Name = name ;
             Header = header ;
             Description = description ;
-            ExpectedType = expectedType ;
+            ExpectedType = expectedType.FullName ;
             CellTemplateKey = cellTemplateKey ;
         }
     }

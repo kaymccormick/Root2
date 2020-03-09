@@ -14,6 +14,8 @@ using System.Text ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
+using System.Threading ;
+using System.Threading.Tasks ;
 using Castle.DynamicProxy ;
 using DynamicData ;
 using JetBrains.Annotations ;
@@ -1019,7 +1021,18 @@ namespace KayMcCormick.Dev.Logging
                 writer.WritePropertyName( "Exception");
                 JsonSerializer.Serialize ( writer , value.Exception , options ) ;
             }
-            
+            writer.WriteNumber("ManagedThreadId", Thread.CurrentThread.ManagedThreadId);
+            if ( Thread.CurrentThread.Name == null )
+            {
+                Thread.CurrentThread.Name = "Thread" + value.SequenceID ;
+            }
+
+            writer.WriteString ( "ThreadName" , Thread.CurrentThread.Name ) ;
+            if ( Task.CurrentId.HasValue )
+            {
+                writer.WriteNumber ( "CurrentTaskId" , Task.CurrentId.Value ) ;
+            }
+
             writer.WriteString ( "Message" ,          value.Message ) ;
             writer.WriteString ( "TimeStamp" ,        value.TimeStamp.ToString ( ) ) ;
             writer.WriteString ( "FormattedMessage" , value.FormattedMessage ) ;

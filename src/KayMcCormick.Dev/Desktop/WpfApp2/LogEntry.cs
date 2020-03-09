@@ -189,7 +189,7 @@ namespace WpfApp2
         /// <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2" /> is read-only.</exception>
         public object this [ string key ]
         {
-            get => _dictionaryImplementation[ key ] ;
+            get => _dictionaryImplementation.ContainsKey(key) ? _dictionaryImplementation[ key ]  : null;
             set => _dictionaryImplementation[ key ] = value ;
         }
 
