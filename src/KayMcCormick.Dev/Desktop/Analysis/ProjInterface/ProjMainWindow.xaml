@@ -94,6 +94,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="2*" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
@@ -158,7 +159,18 @@
     </DataGrid>
     <ItemsControl Visibility="Hidden" x:Name="logs" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}" ItemContainerStyle="{StaticResource LogStyle}">
     </ItemsControl>
-    <analysisControls:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3"
+    <ListView ItemsSource="{Binding ElementName=mainWindow,Path=ObsTasks}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Task.Id}"/>
+          <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Path=Desc}"/>
+          <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=Status}"/>
+          <GridViewColumn Header="Task Status" DisplayMemberBinding="{Binding Path=Task.Status}"/>
+<GridViewColumn Header="Exception" DisplayMemberBinding="{Binding Path=Task.Exception}"/>
+        </GridView>
+      </ListView.View>
+    </ListView>
+    <analysisControls:MainStatusBar Grid.Row="4" Grid.ColumnSpan="3"
                            Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>

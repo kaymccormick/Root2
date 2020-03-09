@@ -7,12 +7,15 @@ using Autofac ;
 
 namespace KayMcCormick.Dev
 {
-    class InfraModule : Module
+    /// <summary>
+    /// 
+    /// </summary>
+    public class InfraModule : Module
     {
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-            
+            builder.RegisterModule < IdGeneratorModule > ( ) ;
             base.Load ( builder ) ;
         }
         #endregion

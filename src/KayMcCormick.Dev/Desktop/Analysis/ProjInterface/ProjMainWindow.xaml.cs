@@ -60,11 +60,12 @@ namespace ProjInterface
         {
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
-            _factory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
+            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext() ;
+            _factory = new TaskFactory(_taskScheduler);
 
             ViewModel = viewModel ;
             Scope     = scope ;
-            _factory  = new TaskFactory ( TaskScheduler.FromCurrentSynchronizationContext ( ) ) ;
+            _factory  = new TaskFactory ( _taskScheduler ) ;
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                  invocation
                                                                      => {
@@ -73,7 +74,7 @@ namespace ProjInterface
                                                                         .Add (
                                                                               invocation
                                                                              ) ;
-                                                                 }, new ExecutionDataflowBlockOptions() { TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext()}) ;
+                                                                 }, new ExecutionDataflowBlockOptions() { TaskScheduler = _taskScheduler}) ;
             // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
 
             // XamlXmlReader x = new XamlXmlReader();
@@ -230,6 +231,10 @@ namespace ProjInterface
                                             , typeof ( ProjMainWindow )
                                              ) ;
 
+        private ConcurrentBag <Task> _tasks = new ConcurrentBag < Task > ();
+        private TaskScheduler _taskScheduler ;
+        private ObservableCollection<TaskWrap> _obsTasks = new ObservableCollection < TaskWrap > ();
+
         public ActionBlock < Workspace > WorkspaceActionBlock { get ; private set ; }
 
         private ITargetBlock < string > DataflowHead { get ; }
@@ -258,13 +263,15 @@ namespace ProjInterface
             table.Show ( ) ;
         }
 
-        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        private async void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
             if ( e.OriginalSource is ListView )
             {
                 var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
 
-                ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
+                Task t = ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
+                TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
+                AddTask ( t, tw ) ;
             }
             else
             {
@@ -304,6 +311,18 @@ namespace ProjInterface
             }
         }
 
+        private void AddTask ( Task task , TaskWrap tw )
+        {
+            _obsTasks.Add(tw);
+            task.ContinueWith (
+                               delegate ( Task t ) {
+                                   tw.Status = t.Status.ToString() ;
+                                   //ObsTasks.Remove ( t ) ;
+                               }, _taskScheduler
+                              ) ;
+            _tasks.Add ( task ) ;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
@@ -341,6 +360,46 @@ namespace ProjInterface
 
         #region Implementation of IView1
         public string ViewTitle => "Main View" ;
+
+        public ObservableCollection < TaskWrap > ObsTasks
+        {
+            get => _obsTasks ;
+            set => _obsTasks = value ;
+        }
         #endregion
+    }
+
+    public class TaskWrap : INotifyPropertyChanged
+    {
+        private string _status ;
+
+        public Task Task { get ; }
+
+        public string Desc { get ; }
+
+        public string Status
+        {
+            get => _status ;
+            set
+            {
+                _status = value ;
+                OnPropertyChanged();
+                OnPropertyChanged("Task");
+            }
+        }
+
+        public TaskWrap ( Task task , string desc )
+        {
+            Task = task ;
+            Desc = desc ;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
     }
 }

@@ -1,15 +1,11 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
 using System.Diagnostics ;
-using System.Globalization ;
-using System.IO ;
 using System.Linq ;
-using System.ServiceModel ;
-using System.Text ;
 using System.Windows ;
 using AnalysisControls ;
 using Autofac ;
+using Autofac.Core ;
 #if COMMANDLINE
 using CommandLine ;
 using CommandLine.Text ;
@@ -20,7 +16,6 @@ using KayMcCormick.Lib.Wpf ;
 using Microsoft.Build.Locator ;
 #endif
 using NLog ;
-using ProjLib ;
 
 namespace ProjInterface
 {
@@ -203,7 +198,8 @@ namespace ProjInterface
 #endif
     public partial class ProjInterfaceApp : BaseApp
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly List < IModule > appModules = new List < IModule > ( ) ;
+        private static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
 
 #if COMMANDLINE
 private Type[] _optionTypes ;
@@ -223,34 +219,28 @@ private Type[] _optionTypes ;
         }
 
 
-        /// <summary>Raises the <see cref="E:System.Windows.Application.Startup" /> event.</summary>
-        /// <param name="e">A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.</param>
+        public override IEnumerable < IModule > GetModules ( ) { return appModules ; }
+
+        
         protected override void OnStartup ( StartupEventArgs e )
         {
+            appModules.Add ( new ProjInterfaceModule ( ) ) ;
+            appModules.Add ( new AnalysisControlsModule ( ) ) ;
+            #if DEBUG
             var start = DateTime.Now ;
+            #endif
             base.OnStartup ( e ) ;
-
-            
-
 
             Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
 
-          
+
 #if COMMANDLINE
             ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
 #endif
-            Logger.Info ( "{}" , nameof ( OnStartup ) ) ;
-            var lifetimeScope = InterfaceContainer.GetContainer (
-                                                                 new ProjInterfaceModule ( )
-                                                               , new AnalysisControlsModule ( )
-                                                                ) ;
+            Logger.Trace( "{methodName}" , nameof ( OnStartup ) ) ;
 
-            var service = new AppInfoService(start, lifetimeScope.Resolve<IObjectIdProvider>());
-            var host = new ServiceHost(
-                                       service
-                                     , new Uri("http://localhost:8736/ProjInterface/App")
-                                      );
-            host.Open();
+            var lifetimeScope = Scope ;
+
             var appViewModel = lifetimeScope.Resolve < IApplicationViewModel > ( ) ;
 #if false
             foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
@@ -267,11 +257,28 @@ private Type[] _optionTypes ;
                 }
             }
 #endif
+#if MSBUILDLOCATOR
+            var instances = MSBuildLocator
+                           .QueryVisualStudioInstances(
+                                                       new VisualStudioInstanceQueryOptions()
+                                                       {
+                                                           DiscoveryTypes =
+                                                               DiscoveryType.VisualStudioSetup
+                                                       }
+                                                      )
+                           .Where(
+                                  (instance, i)
+                                      => instance.Version.Major    == 16
+                                         && instance.Version.Minor == 4
+                                 );
+            var visualStudioInstance = instances.First();
+            MSBuildLocator.RegisterInstance(visualStudioInstance);
+            Logger.Debug("Registering MSBuild  instance {vs}", visualStudioInstance.Name);
+#endif
             var windowType = typeof ( ProjMainWindow ) ;
             try
             {
                 var mainWindow = ( Window ) lifetimeScope.Resolve ( windowType ) ;
-                // mainWindow.SetValue ( AttachedProperties.LifetimeScopeProperty , lifetimeScope ) ;
                 mainWindow.Show ( ) ;
             }
             catch ( Exception ex )
@@ -279,22 +286,12 @@ private Type[] _optionTypes ;
                 Logger.Error ( ex , ex.ToString ( ) ) ;
                 Utils.HandleInnerExceptions ( ex ) ;
                 MessageBox.Show ( ex.Message , "Error" ) ;
+                Shutdown((int)ExitCode.ExceptionalError);
             }
-#if MSBUILDLOCATOR
-            var instances = MSBuildLocator.QueryVisualStudioInstances (new VisualStudioInstanceQueryOptions(){DiscoveryTypes = DiscoveryType.VisualStudioSetup} )
-                                          .Where (
-                                                  ( instance , i )
-                                                      => instance.Version.Major    == 16
-                                                         && instance.Version.Minor == 4
-                                                 ) ;
-            var visualStudioInstance = instances.First ( ) ;
-            MSBuildLocator.RegisterInstance ( visualStudioInstance ) ;
-            Logger.Debug ( "REgistering MSBuild  instance {vs}" , visualStudioInstance.Name ) ;
-#endif
-
+            #if DEBUG
             var elapsed = DateTime.Now - start ;
-            Console.WriteLine ( elapsed.ToString ( ) ) ;
             Logger.Info ( "Initialization took {elapsed} time." , elapsed ) ;
+            #endif
         }
 
         protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
@@ -353,47 +350,4 @@ private Type[] _optionTypes ;
 
     }
 #endif
-
-    public class ProjInterfaceModule : Module
-    {
-        #region Overrides of Module
-        protected override void Load ( ContainerBuilder builder )
-        {
-            base.Load ( builder ) ;
-            builder.Register (
-                              ( context , parameters )
-                                  => new ProjMainWindow (
-                                                         context
-                                                            .Resolve < IWorkspacesViewModel > ( )
-                                                       , context.Resolve < ILifetimeScope > ( )
-                                                        )
-                             )
-                   .AsSelf ( ) ;
-        }
-        #endregion
-    }
-
-    public class BreakTraceListener : TraceListener
-    {
-        private bool _doBreak ;
-
-        /// <summary>When overridden in a derived class, writes the specified message to the listener you create in the derived class.</summary>
-        /// <param name="message">A message to write. </param>
-        public override void Write ( string message )
-        {
-            if ( DoBreak )
-            {
-                Debugger.Break ( ) ;
-            }
-        }
-
-        /// <summary>When overridden in a derived class, writes a message to the listener you create in the derived class, followed by a line terminator.</summary>
-        /// <param name="message">A message to write. </param>
-        public override void WriteLine ( string message )
-        {
-            if ( DoBreak ) { Debugger.Break ( ) ; }
-        }
-
-        public bool DoBreak { get => _doBreak ; set => _doBreak = value ; }
-    }
 }

@@ -17,14 +17,17 @@ using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
+using NLog ;
 
 namespace ProjLib
 {
-    public class ProjInterfaceModule : Module
+    public class ProjLibModule : Module
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
+            Logger.Trace ( "{methodName}" , nameof ( Load ) ) ;
             builder.RegisterType<WorkspacesViewModel>()
                    .As<IWorkspacesViewModel>()
                    .InstancePerLifetimeScope();
@@ -41,6 +44,7 @@ namespace ProjLib
 
         public static ILifetimeScope GetContainer (params IModule[] modules)
         {
+            throw new AppInfraException ( "Dont use InterfaceContainer" ) ;
             if ( Scope != null )
             {
                 return Scope ;

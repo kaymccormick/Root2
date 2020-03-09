@@ -88,8 +88,10 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BreakTraceListener.cs" />
     <Compile Include="ICommandSpec.cs" />
     <Compile Include="MruBackground.cs" />
+    <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="WorkspaceTable.cs" />
     <EmbeddedResource Include="Program-Parse.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

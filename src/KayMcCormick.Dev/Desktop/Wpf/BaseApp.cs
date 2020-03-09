@@ -6,6 +6,7 @@ using System.IO ;
 using System.Linq ;
 using System.Windows ;
 using Autofac ;
+using Autofac.Core ;
 #if COMMANDLINE
 using CommandLine ;
 using CommandLine.Text ;
@@ -31,6 +32,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public abstract class BaseApp : Application
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private IComponentContext scope ;
         private ApplicationInstance appInst ;
 #if COMMANDLINE
@@ -38,7 +40,7 @@ namespace KayMcCormick.Lib.Wpf
         private ParserResult < object > _argParseResult ;
 #endif
         protected BaseApp ( ) {
-            appInst = new ApplicationInstance();
+            appInst = new ApplicationInstance() { };
             EnsureLoggingConfigured();
         }
 
@@ -74,7 +76,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        public IComponentContext Scope => scope ;
+        public IComponentContext Scope { get => scope ; set => scope = value ; }
 
         protected void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
         {
@@ -94,10 +96,26 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        public abstract IEnumerable < IModule > GetModules ( ) ;
         #region Overrides of Application
+        protected override void OnExit ( ExitEventArgs e )
+        {
+            base.OnExit ( e ) ;
+            appInst.Dispose();
+
+
+        }
+
         protected override void OnStartup ( StartupEventArgs e )
         {
+            foreach ( var module in GetModules ( ) )
+            {
+                Logger.Debug ( "Adding module {module}" , module ) ;
+                appInst.AddModule(module);
+            }
             appInst.Initialize ( ) ;
+            appInst.Startup();
+            Scope = appInst.GetLifetimeScope ( ) ;
             base.OnStartup ( e ) ;
 #if COMMANDLINE
             var optionTypes = OptionTypes ;

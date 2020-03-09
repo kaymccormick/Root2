@@ -118,6 +118,7 @@ namespace ProjLib
 
         public async Task AnalyzeCommand ( object viewCurrentItem )
         {
+
             PipelineResult = new PipelineResult(ResultStatus.Pending);
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                   invocation => {
@@ -146,39 +147,35 @@ namespace ProjLib
                              ) ;
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
             AnalysisRequest req = new AnalysisRequest { Info = projectBrowserNode } ;
-            Logger.Trace ( "About to await sendasync on pipeline" ) ;
-            await pInstance.SendAsync ( req ).ConfigureAwait ( true ) ;
+            Logger.Trace ( "About to post on pipeline" ) ;
+            if(!pInstance.Post( req ))
+            {
+                throw new AnalyzeException("Post failed" ) ;
+            }
 
-            Logger.Trace("back from await sendasync on pipeline");
-            PipelineResult result;
+            await NewMethod ( actionBlock ) ;
+        }
+
+        private static async Task NewMethod ( ActionBlock < ILogInvocation > actionBlock )
+        {
+            PipelineResult result ;
             try
             {
-                await actionBlock.Completion.ConfigureAwait(true);
-                result =            new                                          
-                    PipelineResult(
-                                   ResultStatus
-                                      .Success
-                                  );
-
+                await actionBlock.Completion.ConfigureAwait ( true ) ;
+                result = new PipelineResult ( ResultStatus.Success ) ;
             }
             catch ( Exception ex )
             {
                 Logger.Debug ( ex , $"actionTask completion threw exception {ex.Message}" ) ;
-                result = new
-                    PipelineResult(
-                                   ResultStatus
-                                      .Failed, ex);
+                result = new PipelineResult ( ResultStatus.Failed , ex ) ;
             }
-        
-        if ( result.Status == ResultStatus.Failed )
+
+            if ( result.Status == ResultStatus.Failed )
             {
-                Logger.Error (
-                              result.TaskException
-                            , "Failed: {}"
-                            , result.TaskException.Message
-                             ) ;
+                Logger.Error ( result.TaskException , "Failed: {}" , result.TaskException.Message ) ;
             }
-            Logger.Debug("{id} {result}", Thread.CurrentThread.ManagedThreadId, result.Status);
+
+            Logger.Debug ( "{id} {result}" , Thread.CurrentThread.ManagedThreadId , result.Status ) ;
         }
 
         private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
@@ -248,6 +245,24 @@ namespace ProjLib
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
+    }
+
+    public class CommandException : Exception
+    {
+        public CommandException ( ) {
+        }
+
+        public CommandException ( string message ) : base ( message )
+        {
+        }
+
+        public CommandException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected CommandException ( [ JetBrains.Annotations.NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 

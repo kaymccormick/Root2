@@ -219,7 +219,7 @@ namespace AnalysisControls
             }
         }
 
-        private void VisitLeadingTrivia ( SyntaxToken token )
+        private new void VisitLeadingTrivia ( SyntaxToken token )
         {
             foreach ( var syntaxTrivia in token.LeadingTrivia )
             {
@@ -254,7 +254,7 @@ namespace AnalysisControls
             
         }
 
-        private void VisitTrailingTrivia ( SyntaxToken token )
+        private new void VisitTrailingTrivia ( SyntaxToken token )
         {
             foreach (var syntaxTrivia in token.TrailingTrivia)
             {

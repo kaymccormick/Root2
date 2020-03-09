@@ -68,7 +68,7 @@ namespace ConsoleApp1
             Init ( ) ;
             var appinst = new ApplicationInstance ( ) ;
             appinst.AddModule ( new AppModule ( ));
-              appinst.AddModule(new ProjInterfaceModule()) ;
+              appinst.AddModule(new ProjLibModule()) ;
             var scope = appinst.GetLifetimeScope ( ) ;
 
             AppContext context ;

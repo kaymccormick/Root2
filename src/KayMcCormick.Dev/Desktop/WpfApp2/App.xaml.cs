@@ -1,6 +1,7 @@
 ﻿
 
 using System.Collections.Generic ;
+using Autofac.Core ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace WpfApp2
@@ -16,6 +17,8 @@ namespace WpfApp2
         }
 
         #region Overrides of BaseApp
+        public override IEnumerable < IModule > GetModules ( ) { yield break ; }
+
         protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
         #endregion
     }

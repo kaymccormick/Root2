@@ -50,7 +50,6 @@ namespace KayMcCormick.Dev
         /// <returns></returns>
         public static MyCacheTarget2 GetInstance ( int defaultMaxCount )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
             var target =
                 ( MyCacheTarget2 ) LogManager.Configuration.AllTargets.FirstOrDefault (
                                                                                       t => t is
