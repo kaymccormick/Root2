@@ -289,7 +289,7 @@ namespace ProjTests
         [Fact]
         public void DeserializeLog ( )
         {
-            var ctx = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
+            var ctx = (ICompilationUnitRootContext)AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
             LogEventInfo info1 = LogEventInfo.Create(LogLevel.Debug, "test", "test");
             info1.Properties[ "node" ] = ctx.CompilationUnit ;
             
@@ -559,8 +559,10 @@ Logger.Error(inner, inner.ToString);
             var w = new Window();
             w.Content = codeControl;
 
-            var context = AnalysisService.Parse(sourceText, "test1");
-            var (syntaxTree, model, compilationUnitSyntax) = context;
+            var context = (ISemanticModelContext)AnalysisService.Parse(sourceText, "test1");
+            var syntaxTree = context.CurrentModel.SyntaxTree ;
+            var model = context.CurrentModel ;
+            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
             Logger.Info("Context is {Context}", context);
             codeControl.SyntaxTree            = syntaxTree;
             codeControl.Model                 = model;
@@ -590,13 +592,11 @@ Logger.Error(inner, inner.ToString);
 
             var sourceText = LibResources.Program_Parse;
             codeControl.SourceCode = sourceText;
-            
-             var context = AnalysisService.Parse(sourceText, "test1");
-            var (syntaxTree, model, compilationUnitSyntax) = context;
-            Logger.Info("Context is {Context}", context);
-            codeControl.SyntaxTree            = syntaxTree;
-            codeControl.Model                 = model;
-            codeControl.CompilationUnitSyntax = compilationUnitSyntax;
+
+            var context = (ISemanticModelContext)AnalysisService.Parse(sourceText, "test1");
+            var syntaxTree = context.CurrentModel.SyntaxTree;
+            var model = context.CurrentModel;
+            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot();
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Task.Run ( ( ) => codeControl.Refresh ( ) )
                 .ContinueWith (
@@ -660,21 +660,7 @@ Logger.Error(inner, inner.ToString);
         {
             var comp = Compilation ;
             var tree = TestSyntaxTree ;
-            var codeAnalyseContext = new CodeAnalyseContext (
-                                                             comp.GetSemanticModel ( tree )
-                                                           , null
-                                                           , tree.GetRoot ( )
-                                                           , new CodeSource ( "Test Source" )
-                                                           , TestSyntaxTree
-                                                            ) ;
-            // var logUsagesRewriter = new LogUsagesRewriter (
-                                                           // TestSyntaxTree
-                                                         // , codeAnalyseContext.CurrentModel
-                                                         // , codeAnalyseContext.Document
-                                                         // , codeAnalyseContext.CurrentRoot
-                                                         // , ( node , span )
-                                                               // => Logger.Info ( "{span}" , span )
-                                                          // ) ;
+            var codeAnalyseContext = AnalysisService.Parse(LibResources.Program_Parse, "test");
             // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
             // var s = new StringWriter ( ) ;
             // using ( var fileStream = File.OpenWrite ( @"out.cs" ) )

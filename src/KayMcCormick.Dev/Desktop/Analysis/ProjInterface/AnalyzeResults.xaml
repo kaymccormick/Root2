@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjInterface"
-        xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
         xmlns:analysisFramework="clr-namespace:AnalysisFramework;assembly=AnalysisFramework"
         mc:Ignorable="d"
         DataContext="{Binding ElementName=results, Path=ViewModel}"
@@ -12,19 +11,16 @@
 <Window.Resources>
   <CollectionViewSource x:Key="logs"
                         Source="{Binding Path=LogInvocations}" />
-  <DataTemplate x:Key="CodeTemplate" DataType="analysisFramework:LogInvocation" >
+  <DataTemplate x:Key="CodeTemplate" DataType="analysisFramework:ILogInvocation" >
     <StackPanel>
       <TextBlock Text="{Binding PrecedingCode}"/>
         <TextBlock Background="Yellow" Foreground="Black" Text="{Binding Code}"/>
       <TextBlock Text="{Binding FollowingCode}"/>
 </StackPanel>
     </DataTemplate>
-  <DataTemplate x:Key="FCodeTemplate" DataType="codeAnalysisApp1:LogInvocation" >
+  <DataTemplate x:Key="FCodeTemplate" DataType="analysisFramework:ILogInvocation" >
     <TextBlock/>
   </DataTemplate>
-
-
-<local:CodeConverter x:Key="CodeConverter" />
 </Window.Resources>
   <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"></ColumnDefinition></Grid.ColumnDefinitions>
     <Grid.RowDefinitions><RowDefinition Height="Auto"></RowDefinition><RowDefinition Height="*"></RowDefinition></Grid.RowDefinitions>

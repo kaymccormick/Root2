@@ -43,7 +43,7 @@ namespace AnalysisFramework
             return compilation ;
         }
 
-        public static CodeAnalyseContext CreateFromCompilation (
+        public static ICodeAnalyseContext CreateFromCompilation (
             SyntaxTree        syntaxTree
           , CSharpCompilation compilation
         )
@@ -58,7 +58,7 @@ namespace AnalysisFramework
                                           ) ;
         }
 
-        public static CodeAnalyseContext Parse ( [ NotNull ] string code , [ NotNull ] string assemblyName )
+        public static ICodeAnalyseContext Parse ( [ NotNull ] string code , [ NotNull ] string assemblyName )
         {
             if ( code == null)
             {

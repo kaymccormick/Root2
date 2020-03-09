@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev.Interfaces" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev.Interfaces" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8737/CentralSvc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Security.Policy" />
+  <xs:complexType name="RegisterApplicationInstanceRequest">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Security.Policy" minOccurs="0" name="EndpointUrl" nillable="true" type="q1:Url" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RegisterApplicationInstanceRequest" nillable="true" type="tns:RegisterApplicationInstanceRequest" />
+  <xs:complexType name="RegisterApplicationInstanceResponse">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:element name="RegisterApplicationInstanceResponse" nillable="true" type="tns:RegisterApplicationInstanceResponse" />
+</xs:schema>

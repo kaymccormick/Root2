@@ -23,7 +23,7 @@ using NLog ;
 
 namespace AnalysisFramework
 {
-    public class CodeAnalyseContext : ICodeAnalyseContext
+    internal class CodeAnalyseContext : ICodeAnalyseContext
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 

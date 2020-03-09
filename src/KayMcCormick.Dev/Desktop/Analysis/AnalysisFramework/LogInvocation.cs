@@ -18,7 +18,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisFramework
 {
-    public class LogInvocation : CodeAnalyseContext , ILogInvocation
+    internal class LogInvocation : CodeAnalyseContext , ILogInvocation
     {
         private LogMessageRepr _msgval ;
         private string         sourceLocation ;
