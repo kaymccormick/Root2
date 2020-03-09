@@ -11,12 +11,9 @@
 #endregion
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Threading ;
 using System.Threading.Tasks ;
-using System.Windows.Input ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.MSBuild ;
 using NLog ;
 
 namespace ProjLib

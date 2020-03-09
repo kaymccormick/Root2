@@ -16,7 +16,7 @@ using System.Runtime.CompilerServices ;
 using Castle.DynamicProxy ;
 using JetBrains.Annotations ;
 using Microsoft.CSharp ;
-using NJection.LambdaConverter.Fluent ;
+
 using NLog ;
 
 namespace WpfApp.Proxy
@@ -46,17 +46,17 @@ namespace WpfApp.Proxy
         /// TODO Edit XML Comment Template for DumpDelegate
         protected void DumpDelegate ( Delegate d , string prefix = "" )
         {
-            try
-            {
-                var expression = Lambda.TransformMethodTo < Delegate > ( )
-                                       .From ( ( ) => d )
-                                       .ToLambda ( ) ;
-                Logger.Debug ( $"{expression}" ) ;
-            }
-            catch ( Exception )
-            {
+            // try
+            // {
+                // var expression = Lambda.TransformMethodTo < Delegate > ( )
+                                       // .From ( ( ) => d )
+                                       // .ToLambda ( ) ;
+                // Logger.Debug ( $"{expression}" ) ;
+            // }
+            // catch ( Exception )
+            // {
                 // ignored
-            }
+            // }
 
             var typeDesc = NameForType ( d.Target.GetType ( ) ) ;
             var methodInfo = d.Method ;

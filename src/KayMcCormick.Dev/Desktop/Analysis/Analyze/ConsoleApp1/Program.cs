@@ -203,13 +203,14 @@ namespace ConsoleApp1
             #endif
 
 #if MSBUILDLOCATOR
-            var instances = MSBuildLocator.QueryVisualStudioInstances ( )
-                                          .Where (
-                                                  instance 
-                                                      => instance.Version.Major    == 16
-                                                         && instance.Version.Minor == 4
-                                                 ) ;
-            MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
+            var instances = MSBuildLocator.RegisterDefaults ( ) ;
+                // .QueryVisualStudioInstances ( )
+                                          // .Where (
+                                                  // instance 
+                                                      // => instance.Version.Major    == 16
+                                                         // && instance.Version.Minor == 4
+                                                 // ) ;
+            // MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
 #endif
             int i = 0 ;
             var browserNodeCollection = viewModel.ProjectBrowserViewModel.RootCollection ;

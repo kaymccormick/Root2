@@ -15,8 +15,6 @@ using System.Linq ;
 using AnalysisFramework ;
 using Autofac ;
 using Autofac.Core ;
-using Autofac.Core.Activators.Reflection ;
-using Autofac.Core.Lifetime ;
 using Autofac.Integration.Mef ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

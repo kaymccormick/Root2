@@ -10,7 +10,7 @@ using System.Runtime.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using DynamicData.Kernel ;
+
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
@@ -29,6 +29,7 @@ namespace ProjLib
                 throw new ArgumentNullException ( nameof ( req ) ) ;
             }
 
+
             var arg = req.Info.SolutionPath ;
             Logger.Debug ( "[{action}] arg is {arg}", nameof ( MakeWorkspaceAsync ) , arg ) ;
 
@@ -38,6 +39,7 @@ namespace ProjLib
                 b[ "Platform" ] = req.Info.Platform ;
             }
 
+            b[ "SkipGetTargetFrameworkProperties" ] = "true" ;
             IDictionary < string , string > props = b.ToImmutable ( ) ;
 
             MSBuildWorkspace workspace ;

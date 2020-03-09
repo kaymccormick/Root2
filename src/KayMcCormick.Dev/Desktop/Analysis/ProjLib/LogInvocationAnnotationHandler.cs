@@ -10,9 +10,7 @@
 // ---
 #endregion
 using System.Linq ;
-
 using Microsoft.CodeAnalysis ;
-using Newtonsoft.Json ;
 using NLog ;
 
 namespace ProjLib

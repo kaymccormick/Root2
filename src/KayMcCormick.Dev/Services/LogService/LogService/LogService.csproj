@@ -97,18 +97,8 @@
     <PackageReference Include="Common.Logging.Log4Net208">
       <Version>3.4.1</Version>
     </PackageReference>
-    <PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers">
-      <Version>1.0.0-beta.59</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="log4net">
       <Version>2.0.8</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-      <Version>2.9.8</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
@@ -118,9 +108,6 @@
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.7.0-rc1</Version>
-    </PackageReference>
-    <PackageReference Include="NuGet.Build">
-      <Version>2.12.1</Version>
     </PackageReference>
     <PackageReference Include="Topshelf">
       <Version>4.2.1.218-develop</Version>

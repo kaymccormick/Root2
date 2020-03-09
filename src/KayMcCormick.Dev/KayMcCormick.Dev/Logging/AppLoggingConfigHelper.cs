@@ -17,7 +17,7 @@ using System.Text.RegularExpressions ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using Castle.DynamicProxy ;
-using DynamicData ;
+
 using JetBrains.Annotations ;
 using NLog ;
 using NLog.Common ;
@@ -246,7 +246,12 @@ namespace KayMcCormick.Dev.Logging
 
             foreach ( var result in dict.Select ( LoggingRule ) )
             {
-                lConf.LoggingRules.Add ( result ) ;
+                foreach ( var loggingRule in result )
+                {
+                    lConf.LoggingRules.Add ( loggingRule ) ;
+                }
+
+                // ((List<LoggingRule>lConf.LoggingRules)).AddRange ( result ) ;
             }
 
             LogManager.Configuration = lConf ;
@@ -619,7 +624,7 @@ namespace KayMcCormick.Dev.Logging
                       , IncludeAllProperties = false
                       , MaxRecursionLimit    = 3
                     } ;
-            l.Attributes.AddRange (
+            ((List<JsonAttribute>)l.Attributes).AddRange (
                                    atts.Select (
                                                 tuple => new JsonAttribute (
                                                                             tuple.Item1
@@ -1016,11 +1021,11 @@ namespace KayMcCormick.Dev.Logging
                 writer.WriteString ( "CallerMemberName" , value.CallerMemberName ) ;
             }
 
-            if ( value.Exception != null )
-            {
-                writer.WritePropertyName( "Exception");
-                JsonSerializer.Serialize ( writer , value.Exception , options ) ;
-            }
+            // if ( value.Exception != null )
+            // {
+                // writer.WritePropertyName( "Exception");
+                // JsonSerializer.Serialize ( writer , value.Exception , options ) ;
+            // }
             writer.WriteNumber("ManagedThreadId", Thread.CurrentThread.ManagedThreadId);
             if ( Thread.CurrentThread.Name == null )
             {

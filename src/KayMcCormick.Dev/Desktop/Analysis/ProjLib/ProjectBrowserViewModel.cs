@@ -23,14 +23,15 @@ namespace ProjLib
                                          SolutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
                                          
             } ;
-            browserNodeCollection.Add ( projectBrowserNode ) ; var projectBrowserNode2 = new ProjectBrowserNode()
+            browserNodeCollection.Add ( projectBrowserNode ) ;
+            var projectBrowserNode2 = new ProjectBrowserNode()
                                                                                         {
                                                                                             Name          = "My Project",
                                                                                             RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
-                                                                                            SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\test1234\src\KayMcCormick.Dev\ManagedProd.sln",
+                                                                                            SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\ManagedProd.sln",
                                                                                             Platform = "x86"
                                                                                         };
-            browserNodeCollection.Add(projectBrowserNode); 
+            browserNodeCollection.Add(projectBrowserNode2); 
             var projectBrowserNode3 = new ProjectBrowserNode()
                                                                                      {
                                                                                          Name          = "My Project",

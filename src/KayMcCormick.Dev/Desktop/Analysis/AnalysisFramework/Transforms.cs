@@ -32,7 +32,7 @@ namespace AnalysisFramework
         {
             if ( expressionSyntaxNode == null )
             {
-                throw new ArgumentNullException ( nameof ( expressionSyntaxNode ) ) ;
+                return null ;
             }
 
             try
@@ -84,7 +84,6 @@ namespace AnalysisFramework
                     case RefTypeExpressionSyntax refTypeExpressionSyntax : break ;
                     case RefTypeSyntax refTypeSyntax : break ;
                     case RefValueExpressionSyntax refValueExpressionSyntax : break ;
-                    case SimpleLambdaExpressionSyntax simpleLambdaExpressionSyntax : break ;
                     case SizeOfExpressionSyntax sizeOfExpressionSyntax : break ;
                     case StackAllocArrayCreationExpressionSyntax stackAllocArrayCreationExpressionSyntax : break ;
                     case SwitchExpressionSyntax switchExpressionSyntax : break ;
@@ -137,19 +136,36 @@ namespace AnalysisFramework
                                  , Expression  = TransformExpr ( cond.Expression )
                                  , WhenNotNull = TransformExpr ( cond.WhenNotNull )
                                } ;
-                    case LambdaExpressionSyntax l :
+                    case SimpleLambdaExpressionSyntax l:
                         return new
                                {
                                    l.RawKind
-                                 , Kind = l.Kind ( ).ToString()
-                                 , Parameters =
-                                       ( l as ParenthesizedLambdaExpressionSyntax )
-                                     ?.ParameterList.Parameters.Select ( TransformParameter )
-                                      .ToList ( )
-                                 , Block = l.Block?.Statements.Select ( TransformStatement )
-                                            .ToList ( )
-                                 , ExpressionBody = TransformExpr ( l.ExpressionBody )
-                               } ;
+                                  ,
+                                   Kind = l.Kind().ToString()
+                                  ,
+                                   Parameter = TransformParameter (  l.Parameter)
+                                  ,
+                                   Block = l.Block?.Statements.Select(TransformStatement)
+                                            .ToList()
+                                  ,
+                                   ExpressionBody = TransformExpr(l.ExpressionBody)
+                               };
+                    case ParenthesizedLambdaExpressionSyntax pl :
+                        return new
+                               {
+                                   pl.RawKind
+                                  ,
+                                   Kind = pl.Kind().ToString()
+                                  ,
+                                   Parameters =
+                                       pl.ParameterList.Parameters.Select(TransformParameter)
+                                          .ToList()
+                                  ,
+                                   Block = pl.Block?.Statements.Select(TransformStatement)
+                                            .ToList()
+                                  ,
+                                   ExpressionBody = TransformExpr(pl.ExpressionBody)
+                               };
                     case InstanceExpressionSyntax instanceExpressionSyntax : break ;
                     
                     case AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax : break ;

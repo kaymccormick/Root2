@@ -242,9 +242,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Build">
-      <Version>2.12.1</Version>
-    </PackageReference>
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>
     </PackageReference>
