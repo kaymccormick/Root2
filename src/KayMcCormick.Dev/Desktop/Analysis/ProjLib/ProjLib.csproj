@@ -94,7 +94,7 @@
     <Compile Include="IMruItems.cs" />
     <Compile Include="InterfaceContainer.cs" />
     <Compile Include="IPipelineViewModel.cs" />
-    <Compile Include="IProjectBrowserViewModoel.cs" />
+    <Compile Include="IProjectBrowserViewModel.cs" />
     <Compile Include="IRuntimestatus.cs" />
     <Compile Include="ISpanObject.cs" />
     <Compile Include="ISpanToolTip.cs" />
@@ -116,7 +116,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Compile Include="Pipeline.cs" />
-    <Compile Include="ProjectBrowserViewModoel.cs" />
+    <Compile Include="ProjectBrowserViewModel.cs" />
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="LibResources.Designer.cs">

@@ -11,9 +11,9 @@
 #endregion
 namespace ProjLib
 {
-    public class ProjectBrowserViewModoel : IProjectBrowserViewModoel
+    public class ProjectBrowserViewModel : IProjectBrowserViewModel
     {
-        public ProjectBrowserViewModoel ( ) {
+        public ProjectBrowserViewModel ( ) {
             var browserNodeCollection = new BrowserNodeCollection() ;
             _rootCollection = browserNodeCollection;
             var projectBrowserNode = new ProjectBrowserNode ( )

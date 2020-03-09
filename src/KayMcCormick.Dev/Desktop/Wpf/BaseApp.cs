@@ -32,15 +32,15 @@ namespace KayMcCormick.Lib.Wpf
     public abstract class BaseApp : Application
     {
         private IComponentContext scope ;
-
+        private ApplicationInstance appInst ;
 #if COMMANDLINE
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Application" /> class.</summary>
-        /// <exception cref="System.InvalidOperationException">More than one instance of the <see cref="System.Windows.Application" /> class is created per <see cref="System.AppDomain" />.</exception>
-        public BaseApp ( ) { EnsureLoggingConfigured ( ) ; }
+        protected BaseApp ( ) {
+            appInst = new ApplicationInstance();
+            EnsureLoggingConfigured();
+        }
 
         /// <summary>Gets a value indicating whether [do tracing].</summary>
         /// <value>
@@ -97,6 +97,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of Application
         protected override void OnStartup ( StartupEventArgs e )
         {
+            appInst.Initialize ( ) ;
             base.OnStartup ( e ) ;
 #if COMMANDLINE
             var optionTypes = OptionTypes ;

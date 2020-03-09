@@ -143,11 +143,10 @@
         </StatusBarItem>
     </StatusBar>
     </Border>
-    <analysisControls:ProjectBrowser Name="ProjectBrowser" Grid.Row="2" Grid.Column="0">
+    <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
     
     </analysisControls:ProjectBrowser>
-    <ContentControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Content="{wpf:Resolve {x:Type analysisControls:SyntaxPanel}}"/>
-    <ItemsControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Hidden" ItemsSource="{Binding Events}"><ItemsControl.ItemTemplate>
+    <ItemsControl Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}"><ItemsControl.ItemTemplate>
       <DataTemplate>
           <ContentControl Content="{Binding Converter={StaticResource JsonConverter}}"/>
       </DataTemplate>
@@ -159,10 +158,6 @@
     </DataGrid>
     <ItemsControl Visibility="Hidden" x:Name="logs" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}" ItemContainerStyle="{StaticResource LogStyle}">
     </ItemsControl>
-    <TabControl Background="White" Name="results" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="2">
-      <TabItem Header="Pipeline" DataContext="{Binding Path=PipelineViewModel}">
-      </TabItem>
-    </TabControl>
     <analysisControls:MainStatusBar Grid.Row="3" Grid.ColumnSpan="3"
                            Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->

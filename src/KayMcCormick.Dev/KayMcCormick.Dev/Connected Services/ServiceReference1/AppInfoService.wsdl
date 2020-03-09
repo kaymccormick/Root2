@@ -154,10 +154,6 @@
       <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev" />
-      <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/NLog.Targets" />
-      <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/NLog.Layouts" />
-      <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Text" />
-      <xsd:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/System.Globalization" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IAppInfoService_GetAppInstanceInfo_InputMessage">

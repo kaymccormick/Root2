@@ -11,7 +11,7 @@
 #endregion
 namespace ProjLib
 {
-    public interface IProjectBrowserViewModoel : IViewModel
+    public interface IProjectBrowserViewModel : IViewModel
     {
         IBrowserNodeCollection RootCollection { get ; }
     }

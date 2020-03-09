@@ -171,7 +171,7 @@ namespace ProjInterface
             private MyProjectLoadProgress _currentProgress ;
             private ObservableCollection < ILogInvocation > _logInvocations ;
             private IPipelineViewModel _pipelineViewModel ;
-            private IProjectBrowserViewModoel _projectBrowserViewModel ;
+            private IProjectBrowserViewModel _projectBrowserViewModel ;
             private PipelineResult _pipelineResult ;
             private string _applicationMode ;
             private AdhocWorkspace _workspace ;
@@ -200,7 +200,7 @@ namespace ProjInterface
 
             public IPipelineViewModel PipelineViewModel { get => _pipelineViewModel ; set => _pipelineViewModel = value ; }
 
-            public IProjectBrowserViewModoel ProjectBrowserViewModel { get => _projectBrowserViewModel ; set => _projectBrowserViewModel = value ; }
+            public IProjectBrowserViewModel ProjectBrowserViewModel { get => _projectBrowserViewModel ; set => _projectBrowserViewModel = value ; }
 
             public PipelineResult PipelineResult { get => _pipelineResult ; set => _pipelineResult = value ; }
 
@@ -262,7 +262,7 @@ namespace ProjInterface
         {
             if ( e.OriginalSource is ListView )
             {
-                var v = ProjectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
+                var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
 
                 ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
             }

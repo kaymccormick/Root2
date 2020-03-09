@@ -260,6 +260,7 @@ namespace ProjTests
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Post (f[0]) ;
 #endif
 
+            #if false
             viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.ContinueWith (
                                                                                            task => {
                                                                                                if (
@@ -278,7 +279,7 @@ namespace ProjTests
                                                                                            }
                                                                                           )
                      .Wait ( TimeSpan.FromMinutes ( 5 )) ;
-
+            #endif
         }
 
         public List<Action> Finalizers { get { return _finalizers ; } set { _finalizers = value ; } }

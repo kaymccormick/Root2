@@ -33,12 +33,17 @@ namespace ConfigTest
                 foreach ( var infoLoggerInfo in info.LoggerInfos )
                 {
                     Console.WriteLine ( infoLoggerInfo.TargetName ) ;
-                    if(infoLoggerInfo.FileTarget != null)
-                    {
-                        Console.WriteLine ( infoLoggerInfo.FileTarget.FileName ) ;
+                }
 
+                foreach ( var ci in info.ComponentInfos )
+                {
+                    Console.WriteLine ( ci.Id ) ;
+                    foreach(var i in ci.Instances)
+                    {
+                        Console.WriteLine ( "\t" + i.Desc ) ;
                     }
                 }
+                
             }
         }
     }

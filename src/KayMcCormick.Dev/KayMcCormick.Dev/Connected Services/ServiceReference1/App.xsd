@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/NLog.Targets" />
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8736/ProjInterface/App?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="AppInstanceInfoRequest">
     <xs:sequence />
   </xs:complexType>
@@ -13,11 +13,37 @@
   <xs:element name="AppInstanceInfoResponse" nillable="true" type="tns:AppInstanceInfoResponse" />
   <xs:complexType name="AppInstanceInfo">
     <xs:sequence>
+      <xs:element minOccurs="0" name="ComponentInfos" nillable="true" type="tns:ArrayOfWireComponentInfo" />
       <xs:element minOccurs="0" name="LoggerInfos" nillable="true" type="tns:ArrayOfLoggerInfo" />
       <xs:element minOccurs="0" name="StartupTime" type="xs:dateTime" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="AppInstanceInfo" nillable="true" type="tns:AppInstanceInfo" />
+  <xs:complexType name="ArrayOfWireComponentInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WireComponentInfo" nillable="true" type="tns:WireComponentInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWireComponentInfo" nillable="true" type="tns:ArrayOfWireComponentInfo" />
+  <xs:complexType name="WireComponentInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Instances" nillable="true" type="tns:ArrayOfWireInstanceInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WireComponentInfo" nillable="true" type="tns:WireComponentInfo" />
+  <xs:complexType name="ArrayOfWireInstanceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WireInstanceInfo" nillable="true" type="tns:WireInstanceInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWireInstanceInfo" nillable="true" type="tns:ArrayOfWireInstanceInfo" />
+  <xs:complexType name="WireInstanceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Desc" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WireInstanceInfo" nillable="true" type="tns:WireInstanceInfo" />
   <xs:complexType name="ArrayOfLoggerInfo">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="LoggerInfo" nillable="true" type="tns:LoggerInfo" />
@@ -26,7 +52,6 @@
   <xs:element name="ArrayOfLoggerInfo" nillable="true" type="tns:ArrayOfLoggerInfo" />
   <xs:complexType name="LoggerInfo">
     <xs:sequence>
-      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/NLog.Targets" minOccurs="0" name="FileTarget" nillable="true" type="q1:FileTarget" />
       <xs:element minOccurs="0" name="TargetName" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>

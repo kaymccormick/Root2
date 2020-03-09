@@ -22,6 +22,7 @@ using System.ComponentModel ;
 using System.Data.SqlClient ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -57,7 +58,7 @@ namespace ProjLib
         private string                _currentProject ;
 
         private bool                      _processing ;
-        private IProjectBrowserViewModoel _projectBrowserViewModel ;
+        private IProjectBrowserViewModel _projectBrowserViewModel ;
         private readonly SqlConnection _sqlConn ;
         private PipelineResult            _pipelineResult ;
         private string _applicationMode = "Runtime mode" ;
@@ -69,17 +70,15 @@ namespace ProjLib
           , 
             
             #endif
-            IPipelineViewModel        pipelineViewModel
-          , IProjectBrowserViewModoel projectBrowserViewModel
-            , SqlConnection sqlConn
+            IProjectBrowserViewModel projectBrowserViewModel
         )
         {
             #if VSSETTINGS
             vsInstanceCollector      = collector ;
 #endif
             _projectBrowserViewModel = projectBrowserViewModel ;
-            _sqlConn = sqlConn ;
-            PipelineViewModel        = pipelineViewModel ;
+            // _sqlConn = sqlConn ;
+            // PipelineViewModel        = pipelineViewModel ;
         }
 
 #if VSSETTINGS
@@ -111,7 +110,7 @@ namespace ProjLib
         }
 
     
-        public IProjectBrowserViewModoel ProjectBrowserViewModel
+        public IProjectBrowserViewModel ProjectBrowserViewModel
         {
             get => _projectBrowserViewModel ;
             set => _projectBrowserViewModel = value ;
@@ -128,20 +127,28 @@ namespace ProjLib
                                                                                    ) ;
                                                                   }
                                                                  ) ;
-            PipelineViewModel.Pipeline.PipelineInstance.LinkTo (
-                                                                actionBlock
-                                                              , new DataflowLinkOptions ( )
-                                                                {
-                                                                    PropagateCompletion = true
-                                                                }
-                                                               ) ;
+            var pipeline = new Pipeline();
+            if ( pipeline == null )
+            {
+                throw new AnalyzeException( "Pipeline is null" ) ;
+            }
+
+            pipeline.BuildPipeline ( ) ;
+            var pInstance = pipeline.PipelineInstance ;
+            if ( pInstance == null )
+            {
+                throw new AnalyzeException ( "pipeline instance is null" ) ;
+            }
+
+            pInstance.LinkTo (
+                              actionBlock
+                            , new DataflowLinkOptions ( ) { PropagateCompletion = true }
+                             ) ;
             var projectBrowserNode = ( IProjectBrowserNode ) viewCurrentItem ;
-            AnalysisRequest req = new AnalysisRequest();
-            req.Info = projectBrowserNode ;
-            Logger.Trace("About to await sendasync on pipeline");
-            await PipelineViewModel.Pipeline.PipelineInstance
-                                   .SendAsync ( req )
-                                   .ConfigureAwait ( true ) ;
+            AnalysisRequest req = new AnalysisRequest { Info = projectBrowserNode } ;
+            Logger.Trace ( "About to await sendasync on pipeline" ) ;
+            await pInstance.SendAsync ( req ).ConfigureAwait ( true ) ;
+
             Logger.Trace("back from await sendasync on pipeline");
             PipelineResult result;
             try
@@ -241,6 +248,24 @@ namespace ProjLib
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
+    }
+
+    public class AnalyzeException : Exception
+    {
+        public AnalyzeException ( ) {
+        }
+
+        public AnalyzeException ( string message ) : base ( message )
+        {
+        }
+
+        public AnalyzeException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected AnalyzeException ( [ JetBrains.Annotations.NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 }

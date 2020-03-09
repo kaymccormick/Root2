@@ -20,6 +20,21 @@ using Microsoft.CodeAnalysis ;
 
 namespace ProjLib
 {
+    public class ProjInterfaceModule : Module
+    {
+        #region Overrides of Module
+        protected override void Load ( ContainerBuilder builder )
+        {
+            builder.RegisterType<WorkspacesViewModel>()
+                   .As<IWorkspacesViewModel>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType < ProjectBrowserViewModel > ( )
+                   .As < IProjectBrowserViewModel > ( ) ;
+
+        }
+        #endregion
+    }
+
     public static class InterfaceContainer
     {
         public static ILifetimeScope Scope = null ;

@@ -33,8 +33,13 @@ namespace KayMcCormick.Dev
     public class AppInfoService : IAppInfoService
     {
         private DateTime _startupTime ;
+        private readonly IObjectIdProvider _objectId ;
 
-        public AppInfoService ( DateTime startupTime ) { _startupTime = startupTime ; }
+        public AppInfoService ( DateTime startupTime, IObjectIdProvider objectId )
+        {
+            _startupTime = startupTime ;
+            _objectId = objectId ;
+        }
 
         #region Implementation of IAppInfoService
         public AppInstanceInfoResponse GetAppInstanceInfo ( AppInstanceInfoRequest request )
@@ -47,12 +52,48 @@ namespace KayMcCormick.Dev
                 appInstanceInfo.LoggerInfos.Add ( loginfo ) ;
             }
 
+            
+            foreach ( var rootNode in _objectId.GetRootNodes ( ) )
+            {
+                WireComponentInfo info1 = new WireComponentInfo { Id = rootNode } ;
+                var info = _objectId.GetComponentInfo ( rootNode ) ;
+                foreach ( var infoInstance in info.Instances )
+                {
+                    info1.Instances.Add (
+                                         new WireInstanceInfo
+                                         {
+                                             Desc = infoInstance.Instance.ToString ( ) 
+                                         }
+                                        ) ;
+                    appInstanceInfo.ComponentInfos.Add ( @info1 ) ;
+                }
+            }
+
             return new AppInstanceInfoResponse ( )
                    {
                        Info = appInstanceInfo
                    } ;
         }
         #endregion
+    }
+
+    public class WireInstanceInfo
+    {
+        private string _desc ;
+        public string Desc { get { return _desc ; } set { _desc = value ; } }
+    }
+
+    public class WireComponentInfo
+    {
+        private List<WireInstanceInfo> _instances = new List < WireInstanceInfo > ();
+        private Guid _id ;
+
+        public WireComponentInfo ( ) {
+        }
+
+        public List<WireInstanceInfo> Instances { get { return _instances ; } }
+
+        public Guid Id { get { return _id ; } set { _id = value ; } }
     }
 
     /// <summary>
@@ -66,7 +107,6 @@ namespace KayMcCormick.Dev
     public class LoggerInfo
     {
         public string TargetName { get ; set ; }
-        public FileTarget FileTarget { get ; set ; }
 
     }
 
@@ -75,8 +115,12 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class AppInstanceInfo
     {
+        private List<WireComponentInfo> _componentInfos = new List < WireComponentInfo > ();
+
         public DateTime StartupTime { get ; set ; }
         public IList<LoggerInfo> LoggerInfos { get; set; } = new List<LoggerInfo>();
+
+        public List<WireComponentInfo> ComponentInfos { get { return _componentInfos ; } set { _componentInfos = value ; } }
     }
 
     /// <summary>

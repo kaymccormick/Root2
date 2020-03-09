@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppInfoService.cs" />
+    <Compile Include="ApplicationInstance.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\ServiceReference1\Reference.cs">
@@ -110,6 +111,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IdGeneratorModule.cs" />
     <Compile Include="IHaveObjectId.cs" />
+    <Compile Include="InfraModule.cs" />
     <Compile Include="InstanceInfo.cs" />
     <Compile Include="IObjectIdProvider.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
@@ -188,18 +190,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ServiceReference1\App2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App31.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App32.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App33.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ServiceReference1\AppInfoService.wsdl" />

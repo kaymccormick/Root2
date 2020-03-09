@@ -22,15 +22,11 @@
     <MetadataSource Address="http://localhost:8736/ProjInterface/App" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="App2.xsd" MetadataType="Schema" ID="cf978ced-dc05-4eed-8bb4-859e34aac54f" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd0" />
     <MetadataFile FileName="AppInfoService.wsdl" MetadataType="Wsdl" ID="6b6c3959-fef7-4340-9181-5e52b0ce0c4b" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?wsdl" />
-    <MetadataFile FileName="App3.xsd" MetadataType="Schema" ID="017db7f7-cd39-410d-926a-da554f76cf2b" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd4" />
-    <MetadataFile FileName="App31.xsd" MetadataType="Schema" ID="6f00c530-3229-416f-8f21-64e130c72ab8" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd5" />
-    <MetadataFile FileName="App.disco" MetadataType="Disco" ID="3155ca41-c94c-4161-b2c0-4a99d6eb9e83" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?disco" />
-    <MetadataFile FileName="App1.xsd" MetadataType="Schema" ID="b114556e-44dd-4acc-b7d9-ff44b1f677ad" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd1" />
-    <MetadataFile FileName="App32.xsd" MetadataType="Schema" ID="6579b63c-08ad-400c-942e-1009e184732d" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd6" />
     <MetadataFile FileName="App.xsd" MetadataType="Schema" ID="a93c4a58-e131-458d-bca9-69b50b0b3b5b" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd2" />
-    <MetadataFile FileName="App33.xsd" MetadataType="Schema" ID="a7de327c-f04d-43a2-8e0e-24c41200b64a" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd3" />
+    <MetadataFile FileName="App1.xsd" MetadataType="Schema" ID="b114556e-44dd-4acc-b7d9-ff44b1f677ad" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd1" />
+    <MetadataFile FileName="App2.xsd" MetadataType="Schema" ID="cf978ced-dc05-4eed-8bb4-859e34aac54f" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?xsd=xsd0" />
+    <MetadataFile FileName="App.disco" MetadataType="Disco" ID="3155ca41-c94c-4161-b2c0-4a99d6eb9e83" SourceId="1" SourceUrl="http://localhost:8736/ProjInterface/App?disco" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -9,6 +9,8 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Autofac ;
+using Autofac.Core ;
+using KayMcCormick.Dev ;
 #if COMMANDLINE
 using CommandLine ;
 #endif
@@ -49,7 +51,7 @@ namespace ConsoleApp1
             var actionBlock = new ActionBlock<ILogInvocation>(Program.Action) ;
             builder.RegisterInstance(actionBlock).As<ActionBlock <ILogInvocation>>().SingleInstance();
             Pipeline pipeline = new Pipeline();
-            pipeline.PipelineInstance.LinkTo ( actionBlock ) ;
+            pipeline.BuildPipeline ( ).LinkTo ( actionBlock ) ;
             builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
         }
@@ -64,12 +66,28 @@ namespace ConsoleApp1
         private static async Task Main ( string[] args )
         {
             Init ( ) ;
-            var scope = InterfaceContainer.GetContainer ( new AppModule ( ) ) ;
+            var appinst = new ApplicationInstance ( ) ;
+            appinst.AddModule ( new AppModule ( ));
+              appinst.AddModule(new ProjInterfaceModule()) ;
+            var scope = appinst.GetLifetimeScope ( ) ;
 
             AppContext context ;
             try
             {
                 context = scope.Resolve < AppContext > ( ) ;
+            }
+            catch ( DependencyResolutionException depex )
+            {
+                Exception ex1 = depex ;
+                while ( ex1 != null )
+                {
+                    Logger.Debug ( ex1.Message ) ;
+                    ex1 = ex1.InnerException ;
+                }
+
+                return ;
+
+
             }
             catch ( Exception ex )
             {
@@ -147,9 +165,11 @@ namespace ConsoleApp1
 #endif
 
             var viewModel = context.ViewModel ;
+            #if VSSETTINGS
             var x = ( ISupportInitialize ) viewModel ;
             x.BeginInit ( ) ;
             x.EndInit ( ) ;
+#endif
 #if COMMANDLINE
             if ( options.ListVsInstances )
             {
@@ -227,19 +247,19 @@ namespace ConsoleApp1
                 _ = Console.ReadLine ( ) ;
                 await viewModel.AnalyzeCommand ( projectNode ) ;
             }
-
-            var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
-
-
-            var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
-            Logger.Info ( "waiting " + timeSpan ) ;
-
-            await context.actionBlock.Completion ;
-
-            if ( pipe.Completion.IsFaulted )
-            {
-                Logger.Error ( pipe.Completion.Exception , pipe.Completion.Exception.ToString ) ;
-            }
+            //
+            // var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
+            //
+            //
+            // var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
+            // Logger.Info ( "waiting " + timeSpan ) ;
+            //
+            // await context.actionBlock.Completion ;
+            //
+            // if ( pipe.Completion.IsFaulted )
+            // {
+            //     Logger.Error ( pipe.Completion.Exception , pipe.Completion.Exception.ToString ) ;
+            // }
         }
 
         private static void Init ( )

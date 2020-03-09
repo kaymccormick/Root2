@@ -43,7 +43,7 @@ namespace ProjLib
         ) ;
 #endif
 
-        IProjectBrowserViewModoel ProjectBrowserViewModel { get ; }
+        IProjectBrowserViewModel ProjectBrowserViewModel { get ; }
 
         PipelineResult PipelineResult { get ; set ; }
 

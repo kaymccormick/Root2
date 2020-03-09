@@ -36,7 +36,6 @@ namespace ProjLib
         {
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) { } ) ;
-            _ = BuildPipeline ( ) ;
         }
 
         public virtual IPropagatorBlock < AnalysisRequest , ILogInvocation > BuildPipeline ( )

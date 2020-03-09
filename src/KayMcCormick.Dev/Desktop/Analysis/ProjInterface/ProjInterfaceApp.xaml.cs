@@ -230,16 +230,12 @@ private Type[] _optionTypes ;
             var start = DateTime.Now ;
             base.OnStartup ( e ) ;
 
-            var service = new AppInfoService ( start ) ;
+            
 
 
             Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
 
-            var host = new ServiceHost (
-                                        service
-                                      , new Uri ( "http://localhost:8736/ProjInterface/App" )
-                                       ) ;
-            host.Open ( ) ;
+          
 #if COMMANDLINE
             ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
 #endif
@@ -248,6 +244,13 @@ private Type[] _optionTypes ;
                                                                  new ProjInterfaceModule ( )
                                                                , new AnalysisControlsModule ( )
                                                                 ) ;
+
+            var service = new AppInfoService(start, lifetimeScope.Resolve<IObjectIdProvider>());
+            var host = new ServiceHost(
+                                       service
+                                     , new Uri("http://localhost:8736/ProjInterface/App")
+                                      );
+            host.Open();
             var appViewModel = lifetimeScope.Resolve < IApplicationViewModel > ( ) ;
 #if false
             foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
@@ -264,7 +267,7 @@ private Type[] _optionTypes ;
                 }
             }
 #endif
-            var windowType = typeof ( Window1 ) ;
+            var windowType = typeof ( ProjMainWindow ) ;
             try
             {
                 var mainWindow = ( Window ) lifetimeScope.Resolve ( windowType ) ;
@@ -278,7 +281,7 @@ private Type[] _optionTypes ;
                 MessageBox.Show ( ex.Message , "Error" ) ;
             }
 #if MSBUILDLOCATOR
-            var instances = MSBuildLocator.QueryVisualStudioInstances ( )
+            var instances = MSBuildLocator.QueryVisualStudioInstances (new VisualStudioInstanceQueryOptions(){DiscoveryTypes = DiscoveryType.VisualStudioSetup} )
                                           .Where (
                                                   ( instance , i )
                                                       => instance.Version.Major    == 16

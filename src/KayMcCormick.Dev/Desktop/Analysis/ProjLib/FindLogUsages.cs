@@ -1,6 +1,7 @@
 using System ;
 using System.Collections.Generic ;
 using System.Linq ;
+using System.Threading ;
 using System.Threading.Tasks ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
@@ -18,7 +19,7 @@ namespace ProjLib
         {
             try
             {
-                Logger.Trace ( "Entering {funcName}" , nameof ( FindUsagesFunc ) );
+                Logger.Trace ( "[{id}] Entering {funcName}", Thread.CurrentThread.ManagedThreadId, nameof ( FindUsagesFunc ) );
                 var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
                 var root = tree.GetCompilationUnitRoot ( ) ;
                 var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
