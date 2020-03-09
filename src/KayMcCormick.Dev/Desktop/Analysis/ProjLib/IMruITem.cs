@@ -1,16 +1,10 @@
 ﻿using System ;
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
-using System.Threading.Tasks ;
-using System.Windows.Threading ;
 using JetBrains.Annotations ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.MSBuild ;
-using NLog ;
 
 namespace ProjLib
 {
@@ -84,51 +78,7 @@ namespace ProjLib
 
         public string VerbatimPath { get ; }
 
-        public async Task Load ( )
-        {
-            try
-            {
-                var x = new MSBuildProjectLoader ( new AdhocWorkspace ( ) ) ;
-                var sol = await x.LoadSolutionInfoAsync ( FilePath ) ;
-                foreach ( var p in sol.Projects )
-                {
-                    LogManager.GetCurrentClassLogger ( ).Info ( "Project {name}" , p.Name ) ;
-                }
-            }
-            catch ( Exception ex )
-            {
-                LogManager.GetCurrentClassLogger ( ).Error ( ex , ex.ToString ( ) ) ;
-            }
-        }
-        //
-        // .ContinueWith (
-        //                        task => task.Result.Projects.Select (
-        //                                                             info => new AppProjectInfo (
-        //                                                                                         info.Name
-        //                                                                                       , info.FilePath
-        //                                                                                       , info
-        //                                                                                        .Documents.Count
-        //                                                                                        )
-        //                                                            )
-        //                       )
-        //      .ContinueWith (
-        //                     task => {
-        //                         Dispatcher.CurrentDispatcher.Invoke (
-        //                                                              ( ) => {
-        //                                                                  foreach ( var p in task.Result )
-        //                                                                  {
-        //                                                                      LogManager
-        //                                                                         .GetCurrentClassLogger ( )
-        //                                                                         .Info ( "Project is {p}" ) ;
-        //                                                                      _projectCollection.Add ( p ) ;
-        //                                                                  }
-        //                                                              }
-        //                                                            , DispatcherPriority.Send
-        //                                                             ) ;
-        //                     }
-        //                    ) ;
-        // }
-
+        
         public string Location { get ; set ; }
 
         public FileInfo FileInf { get ; }

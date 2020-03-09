@@ -147,7 +147,7 @@ namespace KayMcCormick.Dev
         public DateTime StartupTime { get ; set ; }
         public IList<LoggerInfo> LoggerInfos { get; set; } = new List<LoggerInfo>();
 
-        public List<WireComponentInfo> ComponentInfos { get { return _componentInfos ; } set { _componentInfos = value ; } }
+        public List<WireComponentInfo> ComponentInfos { get { return _componentInfos ; } }
     }
 
     /// <summary>

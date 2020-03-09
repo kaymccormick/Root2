@@ -17,6 +17,7 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Text ;
+using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
@@ -64,7 +65,6 @@ namespace ProjInterface
             _factory = new TaskFactory(_taskScheduler);
 
             ViewModel = viewModel ;
-            Scope     = scope ;
             _factory  = new TaskFactory ( _taskScheduler ) ;
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                  invocation
@@ -75,20 +75,6 @@ namespace ProjInterface
                                                                               invocation
                                                                              ) ;
                                                                  }, new ExecutionDataflowBlockOptions() { TaskScheduler = _taskScheduler}) ;
-            // DataflowHead = Pipeline.BuildPipeline(  actionBlock ) ;
-
-            // XamlXmlReader x = new XamlXmlReader();
-            //Typography t = Typography.SetCapitals ( FontCapitals.AllSmallCaps ) ;
-            // foreach ( var systemFontFamily in Fonts.SystemFontFamilies )
-            // {
-            //     Logger.Info (
-            //                  "{font}"
-            //                , systemFontFamily.FamilyNames.Select(pair => $"{pair.Key} = {pair.Value}"));
-            //     foreach ( var familyTypeface in systemFontFamily.FamilyTypefaces )
-            //     {
-            //         Logger.Info ( "{name} {style}" ,familyTypeface.DeviceFontName,familyTypeface.Style ) ;
-            //     }
-            // }
 
             var myCacheTarget2 = MyCacheTarget2.GetInstance(1000);
             myCacheTarget2.Cache.SubscribeOn(Scheduler.Default)
@@ -97,18 +83,11 @@ namespace ProjInterface
                          .ObserveOnDispatcher(DispatcherPriority.Background)
                          .Subscribe(
                                     infos => {
-                                        // ReSharper disable once UnusedVariable
-                                        foreach (var logEventInfo in infos)
+                                        foreach (var json in infos)
                                         {
-                                            ViewModel.Events.Add(logEventInfo);
-                                            // flow.Document.Blocks.Add (
-                                            // new Paragraph (
-                                            // new Run (
-                                            // logEventInfo
-                                            // .FormattedMessage
-                                            // )
-                                            // )
-                                            // ) ;
+                                            var i = JsonSerializer
+                                               .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions{ } ) ;
+                                            ViewModel.Events.Add(i);
                                         }
                                     }
                                    );
@@ -121,18 +100,9 @@ namespace ProjInterface
                          .ObserveOnDispatcher(DispatcherPriority.Background)
                          .Subscribe(
                                     infos => {
-                                        // ReSharper disable once UnusedVariable
                                         foreach (var logEventInfo in infos)
                                         {
                                             ViewModel.EventInfos.Add ( logEventInfo ) ;
-                                            // flow.Document.Blocks.Add (
-                                                                      // new Paragraph (
-                                                                                     // new Run (
-                                                                                              // logEventInfo
-                                                                                                 // .FormattedMessage
-                                                                                             // )
-                                                                                    // )
-                                                                     // ) ;
                                         }
                                     }
                                    );
@@ -150,72 +120,13 @@ namespace ProjInterface
             // ViewModel.BeginInit();
         }
 
-        public ILifetimeScope Scope { get ; set ; }
-
-
         private ConcurrentQueue < IBoundCommandOperation > opqueue =
             new ConcurrentQueue < IBoundCommandOperation > ( ) ;
 
         private ObservableCollection < Task < bool > > waitingTasks =
             new ObservableCollection < Task < bool > > ( ) ;
 
-        private IWorkspacesViewModel _viewModel = new DesignWorkspacesViewModel ( ) ;
-
-        internal struct DesignWorkspacesViewModel : IWorkspacesViewModel
-        {
-            private bool _processing ;
-            private string _currentProject ;
-            private string _currentDocumentPath ;
-            #if VSSETTINGS
-            private VisualStudioInstancesCollection _vsCollection ;
-#endif
-            private MyProjectLoadProgress _currentProgress ;
-            private ObservableCollection < ILogInvocation > _logInvocations ;
-            private IPipelineViewModel _pipelineViewModel ;
-            private IProjectBrowserViewModel _projectBrowserViewModel ;
-            private PipelineResult _pipelineResult ;
-            private string _applicationMode ;
-            private AdhocWorkspace _workspace ;
-            private ObservableCollection < LogEventInfo > _eventInfos ;
-            private ObservableCollection < string > _events ;
-            #region Implementation of INotifyPropertyChanged
-            public event PropertyChangedEventHandler PropertyChanged ;
-            #endregion
-
-            #region Implementation of IAppState
-            public bool Processing { get => _processing ; set => _processing = value ; }
-
-            public string CurrentProject { get => _currentProject ; set => _currentProject = value ; }
-
-            public string CurrentDocumentPath { get => _currentDocumentPath ; set => _currentDocumentPath = value ; }
-            #endregion
-
-            #region Implementation of IWorkspacesViewModel
-            #if VSSETTINGS
-            public VisualStudioInstancesCollection VsCollection { get => _vsCollection ; set => _vsCollection = value ; }
-#endif
-
-            public MyProjectLoadProgress CurrentProgress { get => _currentProgress ; set => _currentProgress = value ; }
-
-            public ObservableCollection < ILogInvocation > LogInvocations { get => _logInvocations ; set => _logInvocations = value ; }
-
-            public IPipelineViewModel PipelineViewModel { get => _pipelineViewModel ; set => _pipelineViewModel = value ; }
-
-            public IProjectBrowserViewModel ProjectBrowserViewModel { get => _projectBrowserViewModel ; set => _projectBrowserViewModel = value ; }
-
-            public PipelineResult PipelineResult { get => _pipelineResult ; set => _pipelineResult = value ; }
-
-            public Task AnalyzeCommand ( object viewCurrentItem ) { return null ; }
-
-            public string ApplicationMode { get => _applicationMode ; set => _applicationMode = value ; }
-
-            public AdhocWorkspace Workspace { get => _workspace ; set => _workspace = value ; }
-
-            public ObservableCollection < LogEventInfo > EventInfos { get => _eventInfos ; set => _eventInfos = value ; }
-
-            public ObservableCollection < string > Events { get => _events ; set => _events = value ; }
-            #endregion
-        }
+        private IWorkspacesViewModel _viewModel = null ;
 
         public event RoutedEventHandler TaskCompleted
         {
@@ -258,15 +169,12 @@ namespace ProjInterface
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
 
-            AdhocWorkspace workspace = new AdhocWorkspace ( ) ;
-            WorkspaceTable table = new WorkspaceTable ( ) ;
-            table.Show ( ) ;
         }
 
-        private async void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            if ( e.OriginalSource is ListView )
-            {
+            if ( e.OriginalSource is ListView ) {
+            
                 var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
 
                 Task t = ViewModel.AnalyzeCommand ( v.View.CurrentItem ) ;
@@ -313,6 +221,7 @@ namespace ProjInterface
 
         private void AddTask ( Task task , TaskWrap tw )
         {
+            Logger.Trace ( "Adding task {desc}", tw?.Desc ?? "null" ) ;
             _obsTasks.Add(tw);
             task.ContinueWith (
                                delegate ( Task t ) {

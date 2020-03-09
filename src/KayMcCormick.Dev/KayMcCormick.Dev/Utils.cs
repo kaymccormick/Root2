@@ -23,43 +23,52 @@ namespace KayMcCormick.Dev
           , Logger    logger = null
         )
         {
-            TextWriter s = new StringWriter ( ) ;
-            try
+            using ( var stringWriter = new StringWriter ( ) )
             {
-                void doLog ( Exception exception )
+                TextWriter s = stringWriter ;
+                try
                 {
-                    new LogBuilder ( logger ?? Logger )
-                       .Level ( level ?? LogLevel.Debug )
-                       .Exception ( exception )
-                       .Message ( exception.Message )
-                       .Write ( ) ;
-                }
+                    void doLog ( Exception exception )
+                    {
+                        new LogBuilder ( logger ?? Logger )
+                           .Level ( level ?? LogLevel.Debug )
+                           .Exception ( exception )
+                           .Message ( exception.Message )
+                           .Write ( ) ;
+                    }
 
-                var msg = $"{e.Message}" ;
-                doLog ( e ) ;
-                s.WriteLine ( e.Message ) ;
-                var inner = e.InnerException ;
-                var seen = new HashSet < object > ( ) ;
-                while ( inner != null
-                        && ! seen.Contains ( inner ) )
-                {
-                    doLog ( inner ) ;
-                    seen.Add ( inner ) ;
-                    inner = inner.InnerException ;
+                    var msg = $"{e.Message}" ;
+                    doLog ( e ) ;
+                    s.WriteLine ( e.Message ) ;
+                    var inner = e.InnerException ;
+                    var seen = new HashSet < object > ( ) ;
+                    while ( inner != null
+                            && ! seen.Contains ( inner ) )
+                    {
+                        doLog ( inner ) ;
+                        seen.Add ( inner ) ;
+                        inner = inner.InnerException ;
+                    }
                 }
-            }
-            catch ( Exception ex )
-            {
-                Debug.WriteLine ( "Exception: " + ex ) ;
+                catch ( Exception ex )
+                {
+                    Debug.WriteLine ( "Exception: " + ex ) ;
+                }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="out"></param>
         public static void 
             PerformLogConfigDump ( TextWriter @out )
         {
             var doDumpConfig = AppLoggingConfigHelper.DoDumpConfig ( s => { } ) ;
-            IndentedTextWriter writer = new IndentedTextWriter ( @out ) ;
-            DoDump ( writer , doDumpConfig ) ;
+            using ( IndentedTextWriter writer = new IndentedTextWriter ( @out ) )
+            {
+                DoDump ( writer , doDumpConfig ) ;
+            }
         }
 
         private static void DoDump (

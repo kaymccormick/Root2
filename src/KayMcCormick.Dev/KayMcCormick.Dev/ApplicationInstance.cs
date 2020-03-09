@@ -187,7 +187,7 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="e"></param>
-        protected void OnAppStartup ( AppStartupEventArgs e )
+        private void OnAppStartup ( AppStartupEventArgs e )
         {
             AppStartup?.Invoke ( this , e ) ;
         }

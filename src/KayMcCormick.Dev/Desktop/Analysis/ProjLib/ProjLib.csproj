@@ -69,22 +69,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveSpans.cs" />
+    <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
+    <Compile Include="BrowserNode.cs" />
+    <Compile Include="BrowserNodeCollection.cs" />
     <Compile Include="BuildResults.cs" />
     <Compile Include="BuildTool.cs" />
+    <Compile Include="CommandException.cs" />
     <Compile Include="DataflowBlocks.cs" />
     <Compile Include="FailedBuildException.cs" />
     <Compile Include="FilePaths.cs" />
     <Compile Include="FindLogUsages.cs" />
     <Compile Include="GlobalSuppressions2.cs" />
+    <Compile Include="IBrowserNode.cs" />
+    <Compile Include="IBrowserNodeCollection.cs" />
     <Compile Include="ICodeRenderer.cs" />
     <Compile Include="IFormattedCode.cs" />
+    <Compile Include="IProjectBrowserNode.cs" />
+    <Compile Include="LogEventInstance.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
     <Compile Include="MyProgress.cs" />
     <Compile Include="MyProjectLoadProgress.cs" />
     <Compile Include="PipelineResult.cs" />
+    <Compile Include="ProjectBrowserNode.cs" />
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />

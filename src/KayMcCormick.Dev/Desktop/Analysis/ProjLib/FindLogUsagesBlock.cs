@@ -4,7 +4,6 @@ using System.Threading.Tasks.Dataflow;
 using AnalysisFramework;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using NLog ;
 
 namespace ProjLib
@@ -19,23 +18,6 @@ namespace ProjLib
         private readonly ActionBlock<Document> actionBlock;
         private readonly ITargetBlock<Document> documentTarget;
         private readonly IReceivableSourceBlock<ILogInvocation> _source = new BufferBlock<ILogInvocation>();
-
-        private async Task Action ( Document d )
-        {
-            var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait(true) ;
-            var model = await d.GetSemanticModelAsync ( ) ;
-            
-            await Task.Run (
-                            ( ) => LogUsages.FindLogUsages (
-                                                            new CodeSource ( d.FilePath )
-                                                          , tree.GetCompilationUnitRoot ( )
-                                                          , model,
-                                                            tree
-                                                           )
-                           )
-                      .ConfigureAwait ( false ) ;
-
-        }
 
         public ITargetBlock<Document> Target { get { return actionBlock; } }
         #region Implementation of IDataflowBlock

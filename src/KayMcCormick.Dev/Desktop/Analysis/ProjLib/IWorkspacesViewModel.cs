@@ -9,9 +9,7 @@
 // 
 // ---
 #endregion
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
-using System.Collections.Specialized ;
 using System.ComponentModel ;
 using System.Threading ;
 using System.Threading.Tasks ;
@@ -54,48 +52,8 @@ namespace ProjLib
 
         AdhocWorkspace Workspace { get ; set ; }
 
-        ObservableCollection < LogEventInfo > EventInfos { get ; set ; }
+        ObservableCollection < LogEventInfo > EventInfos { get ;  }
 
-        ObservableCollection<string> Events { get ; set ; }
-    }
-
-    public interface IBrowserNodeCollection : ICollection<IBrowserNode>, INotifyCollectionChanged, INotifyPropertyChanged
-    {
-    }
-
-    class BrowserNodeCollection : ObservableCollection<IBrowserNode>, IBrowserNodeCollection
-    {
-    }
-
-    public interface IBrowserNode
-    {
-        string Name { get ; }
-    }
-
-    public class BrowserNode : IBrowserNode
-    {
-        private string _name ;
-        #region Implementation of IBrowserNode
-        public string Name { get => _name ; set => _name = value ; }
-        #endregion
-    }
-
-    public class ProjectBrowserNode : BrowserNode, IProjectBrowserNode, IBrowserNode
-    {
-        private string _solutionPath ;
-        private string _platform ;
-
-        public string RepositoryUrl { get ; set ; }
-
-        public string Platform { get => _platform ; set => _platform = value ; }
-
-        public string SolutionPath { get { return _solutionPath ; } set { _solutionPath = value ; } }
-    }
-
-    public interface IProjectBrowserNode : IBrowserNode
-    {
-        string RepositoryUrl { get ; }
-        string Platform { get ; }
-        string SolutionPath { get ; set ; }
+        ObservableCollection<LogEventInstance> Events { get ; set ; }
     }
 }

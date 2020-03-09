@@ -22,7 +22,6 @@ using System.ComponentModel ;
 using System.Data.SqlClient ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
-using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -36,13 +35,7 @@ namespace ProjLib
         #endif
       , INotifyPropertyChanged
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        public delegate IFormattedCode CreateFormattedCodeDelegate (
-            Tuple < SyntaxTree , SemanticModel , CompilationUnitSyntax > tuple
-        ) ;
-
-        public delegate IFormattedCode CreateFormattedCodeDelegate2 ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         // private IList<IVsInstance> vsInstances;
 #if VSSETTINGS
@@ -59,7 +52,6 @@ namespace ProjLib
 
         private bool                      _processing ;
         private IProjectBrowserViewModel _projectBrowserViewModel ;
-        private readonly SqlConnection _sqlConn ;
         private PipelineResult            _pipelineResult ;
         private string _applicationMode = "Runtime mode" ;
         private AdhocWorkspace _workspace ;
@@ -179,7 +171,7 @@ namespace ProjLib
         }
 
         private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
-        private ObservableCollection < string > _events  = new ObservableCollection < string > ();
+        private ObservableCollection < LogEventInstance > _events  = new ObservableCollection < string > ();
 
         public string ApplicationMode => _applicationMode ;
 
@@ -235,52 +227,15 @@ namespace ProjLib
             set => eventInfos = value ;
         }
 
-        public ObservableCollection < string > Events { get => _events ; set => _events = value ; }
+        public ObservableCollection < LogEventInstance > Events { get => _events ; set => _events = value ; }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 
-        private void DoSomething ( ) { }
 
         [ NotifyPropertyChangedInvocator ]
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
-    }
-
-    public class CommandException : Exception
-    {
-        public CommandException ( ) {
-        }
-
-        public CommandException ( string message ) : base ( message )
-        {
-        }
-
-        public CommandException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected CommandException ( [ JetBrains.Annotations.NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
-        {
-        }
-    }
-
-    public class AnalyzeException : Exception
-    {
-        public AnalyzeException ( ) {
-        }
-
-        public AnalyzeException ( string message ) : base ( message )
-        {
-        }
-
-        public AnalyzeException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected AnalyzeException ( [ JetBrains.Annotations.NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
-        {
         }
     }
 }
