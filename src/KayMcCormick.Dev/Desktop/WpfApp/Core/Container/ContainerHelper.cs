@@ -9,6 +9,7 @@ using Autofac.Core.Lifetime ;
 using Autofac.Core.Resolving ;
 using Autofac.Extras.AttributeMetadata ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 
 #if ENABLE_BUILDERPROXY

@@ -1,6 +1,7 @@
 /* test 123 */ using System; /* test 123 */
 /* test 123 */ using System.Collections.Generic; /* test 123 */ 
 using System.Diagnostics;
+using System.Globalization ;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -692,6 +693,7 @@ namespace KayMcCormick.Dev.Logging
     /// </summary>
     public class LogEventInfoConverter : JsonConverter<LogEventInfo>
     {
+        public delegate object ReadDelegate(ref Utf8JsonReader reader, Type toConvert, JsonSerializerOptions options ) ;
         #region Overrides of JsonConverter<LogEventInfo>
         public override LogEventInfo Read (
             ref Utf8JsonReader    reader
@@ -740,14 +742,184 @@ namespace KayMcCormick.Dev.Logging
 
                         var msg = reader.GetString ( ) ;
                         info.Message = msg ;
-                       // builder      = builder.Message ( msg ) ;
+                        // builder      = builder.Message ( msg ) ;
                         break ;
                     case "Properties" :
+                        reader.Read ( ) ;
+#if true
+                        while ( reader.Read ( ) )
+                        {
+                            if ( reader.TokenType == JsonTokenType.EndObject ) break ;
+                            if ( reader.TokenType != JsonTokenType.PropertyName )
+                                throw new JsonException ( ) ;
+
+                            var curKey = reader.GetString ( ) ;
+                            reader.Read ( ) ;
+                            object value = null ;
+                            if ( reader.TokenType == JsonTokenType.String )
+                            {
+                                value = reader.GetString ( ) ;
+                            }
+                            else if ( reader.TokenType == JsonTokenType.StartObject )
+                            {
+                                reader.Read ( ) ;
+                                if ( reader.TokenType != JsonTokenType.PropertyName )
+                                    throw new JsonException ( ) ;
+                                var key = reader.GetString ( ) ;
+                                if ( key != "JsonConverter" )
+                                {
+                                    Dictionary < string , JsonElement > dict =
+                                        new Dictionary < string , JsonElement > ( ) ;
+                                    var myVal =
+                                        JsonSerializer.Deserialize < JsonElement > (
+                                                                                    ref reader
+                                                                                  , options
+                                                                                   ) ;
+                                    dict[ key ] = myVal ;
+                                    while ( reader.Read ( ) )
+                                    {
+                                        if ( reader.TokenType == JsonTokenType.EndObject ) break ;
+                                        if ( reader.TokenType != JsonTokenType.PropertyName )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        var key1 = reader.GetString ( ) ;
+                                        var myVal2 =
+                                            JsonSerializer.Deserialize < JsonElement > (
+                                                                                        ref reader
+                                                                                      , options
+                                                                                       ) ;
+                                        dict[ key1 ] = myVal2 ;
+                                    }
+
+                                    info.Properties[ curKey ] = dict ;
+                                }
+                                else
+                                {
+                                    reader.Read ( ) ;
+                                    if ( reader.TokenType != JsonTokenType.True )
+                                    {
+                                        throw new JsonException ( ) ;
+                                    }
+
+                                    reader.Read ( ) ;
+                                    if ( reader.TokenType != JsonTokenType.PropertyName )
+                                    {
+                                        throw new JsonException ( ) ;
+                                    }
+
+                                    var key2 = reader.GetString ( ) ;
+                                    if ( key2 != "Type" )
+                                    {
+                                        throw new JsonException ( ) ;
+                                    }
+
+                                    reader.Read ( ) ;
+                                    if ( reader.TokenType != JsonTokenType.String )
+                                        throw new JsonException ( ) ;
+
+                                    var typeName = reader.GetString ( ) ;
+                                    var type = Type.GetType ( typeName ) ;
+
+                                    reader.Read ( ) ;
+                                    if ( reader.TokenType != JsonTokenType.PropertyName )
+                                    {
+                                        throw new JsonException ( ) ;
+                                    }
+
+                                    var key3 = reader.GetString ( ) ;
+                                    if ( key3 != "Value" )
+                                    {
+                                        throw new JsonException ( ) ;
+                                    }
+
+                                    var o1 = JsonSerializer.Deserialize (
+                                                                         ref reader
+                                                                       , type
+                                                                       , options
+                                                                        ) ;
+
+                                    reader.Read ( ) ;
+                                    if ( reader.TokenType != JsonTokenType.EndObject )
+                                    {
+                                        throw new JsonException ( ) ;
+                                    }
+                                    // var del =
+                                    //     typeof ( ReadDelegate ) ; //<> ).MakeGenericType ( type ) ;
+                                    // var converter = options.GetConverter ( type ) ;
+                                    // if ( converter == null )
+                                    // {
+                                    //     throw new JsonException ( ) ;
+                                    // }
+                                    //
+                                    //
+                                    // JsonConverter < object > v1 =
+                                    //     ( JsonConverter < object > ) converter ;
+                                    // var o1 = v1.Read(ref reader, type, options);
+                                    // MethodInfo readMethod1 = null ;
+                                    // foreach ( var methodInfo in converter
+                                    //                            .GetType ( )
+                                    //                            .GetMethods (
+                                    //                                         BindingFlags.Public
+                                    //                                         | BindingFlags.Instance
+                                    //                                        ) )
+                                    // {
+                                    //     Debug.WriteLine ( methodInfo.Name ) ;
+                                    //     if ( methodInfo.Name == "Read" )
+                                    //     {
+                                    //         readMethod1 = methodInfo ;
+                                    //     }
+                                    // }
+                                    //
+                                    // var parameterModifier = new ParameterModifier(3) ;
+                                    // // parameterModifier[ 0 ] = true ;
+                                    // var readMethod = converter.GetType().GetMethod(
+                                    //                                                "Read", BindingFlags.Public | BindingFlags.Instance, new MyBinder(), new Type[]
+                                    //                                                                                                                     {
+                                    //                                                                                                                         typeof ( Utf8JsonReader ).MakeByRefType()
+                                    //                                                                                                                       , typeof ( Type )
+                                    //                                                                                                                       , typeof ( JsonSerializerOptions )
+                                    //                                                                                                                     }, new ParameterModifier[] { parameterModifier }
+                                    //                                               ) ;
+                                    // if(readMethod1 == null)
+                                    // {
+                                    //     throw new JsonException ( ) ;
+                                    //
+                                    // }
+                                    //
+                                    // var d = readMethod.CreateDelegate (
+                                    //                            typeof ( ReadDelegate )
+                                    //                          , converter
+                                    //                           ) ;
+
+                                    // var byRef = typeof ( Utf8JsonReader ).MakeByRefType ( ) ;
+                                    // foreach ( var constructorInfo in byRef.GetConstructors ( ) )
+                                    // {
+                                    // Debug.WriteLine (
+                                    // $"{string.Join ( ", " , constructorInfo.GetParameters ( ).Select ( parameterInfo => parameterInfo.ParameterType.FullName ) )}"
+                                    // ) ;
+                                    // }
+
+                                    // Delegate v =
+                                    // readMethod1.CreateDelegate ( typeof(Delegate), converter ) ;
+                                    // reader.Read ( ) ;
+
+                                    // var result = v.DynamicInvoke (, options ) ;
+                                    // var result = v ( ref reader , type , options ) ;
+                                    // value = result ;
+                                    value = o1 ;
+                                }
+
+                                info.Properties[ curKey ] = value ;
+                            }
+
+#else
                         var properties =
-                            JsonSerializer.Deserialize < Dictionary < string , object > > (
+                            JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (
                                                                                            ref
                                                                                            reader
-                                                                                         , options
+                                                                     , options
                                                                                           ) ;
 
 
@@ -758,11 +930,15 @@ namespace KayMcCormick.Dev.Logging
                         }
 
                         break ;
-                    default : throw new JsonException ( ) ;
+#endif
+                        }
+
+                        break ;
                 }
-               
             }
+
             return info;
+            
         }
 
         public override void Write (
@@ -795,6 +971,60 @@ namespace KayMcCormick.Dev.Logging
             }
             writer.WriteEndObject();
         }
+        #endregion
+    }
+
+    public class MyBinder : Binder
+    {
+        #region Overrides of Binder
+        public override MethodBase BindToMethod (
+            BindingFlags        bindingAttr
+          , MethodBase[]        match
+          , ref object[]        args
+          , ParameterModifier[] modifiers
+          , CultureInfo         culture
+          , string[]            names
+          , out object          state
+        )
+        {
+            state = null ;
+            return match[ 0 ] ;
+        }
+
+        public override FieldInfo BindToField (
+            BindingFlags bindingAttr
+          , FieldInfo[]  match
+          , object       value
+          , CultureInfo  culture
+        )
+        {
+            return null ;
+        }
+
+        public override MethodBase SelectMethod (
+            BindingFlags        bindingAttr
+          , MethodBase[]        match
+          , Type[]              types
+          , ParameterModifier[] modifiers
+        )
+        {
+            return match[0] ;
+        }
+
+        public override PropertyInfo SelectProperty (
+            BindingFlags        bindingAttr
+          , PropertyInfo[]      match
+          , Type                returnType
+          , Type[]              indexes
+          , ParameterModifier[] modifiers
+        )
+        {
+            return null ;
+        }
+
+        public override object ChangeType ( object value , Type type , CultureInfo culture ) { return null ; }
+
+        public override void ReorderArgumentArray ( ref object[] args , object state ) { }
         #endregion
     }
 

@@ -14,7 +14,7 @@ using System.Collections ;
 using System.Collections.Generic ;
 using Autofac.Core ;
 
-namespace KayMcCormick.Dev
+namespace KayMcCormick.Dev.Interfaces
 {
     // [ InterfaceMetadata ( typeof ( ObjectIdControl ) ) ]
     /// <summary></summary>

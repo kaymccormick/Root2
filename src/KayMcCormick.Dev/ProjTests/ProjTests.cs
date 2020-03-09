@@ -31,6 +31,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Layouts ;
+using ProjInterface ;
 using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
@@ -288,8 +289,19 @@ namespace ProjTests
         [Fact]
         public void DeserializeLog ( )
         {
+            var ctx = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
+            LogEventInfo info1 = LogEventInfo.Create(LogLevel.Debug, "test", "test");
+            info1.Properties[ "node" ] = ctx.CompilationUnit ;
+            
             JsonSerializerOptions options = new JsonSerializerOptions();
-            options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
+            options.Converters.Add ( new LogEventInfoConverter ( ));
+            options.Converters.Add (new JsonSyntaxNodeConverter()) ;
+
+            var json = JsonSerializer.Serialize ( info1 , options ) ;
+            Logger.Info ( json ) ;
+            var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
+            return ;
+            
             var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
             while ( ! t.EndOfStream )
             {

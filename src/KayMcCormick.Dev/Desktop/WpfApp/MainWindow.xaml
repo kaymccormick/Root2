@@ -9,6 +9,7 @@
         xmlns:xaml="clr-namespace:WpfApp.Core.Xaml"
         xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
         xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
+        xmlns:dev1="clr-namespace:KayMcCormick.Dev.Interfaces;assembly=KayMcCormick.Dev"
         MinWidth="800"
         MinHeight="600"
         mc:Ignorable="d" FontSize="20"
@@ -17,7 +18,7 @@
         <CollectionViewSource x:Key="ResourcesList" Source="{Binding ElementName=mainWindow,Path=ResourcesCollection}" />
 
         <wpfApp:ResolveServiceList x:Key="ResolveServices">
-            <xaml:ResolveService ServiceType="{x:Type dev:IObjectIdProvider}">
+            <xaml:ResolveService ServiceType="{x:Type dev1:IObjectIdProvider}">
                 <wpf:AttachedProperties.LifetimeScope>
                     <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
                 </wpf:AttachedProperties.LifetimeScope>

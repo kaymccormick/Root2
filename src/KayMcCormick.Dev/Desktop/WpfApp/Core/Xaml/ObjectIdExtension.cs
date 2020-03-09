@@ -3,6 +3,7 @@ using System.Windows.Markup ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 using WpfApp.Core.Interfaces ;
 

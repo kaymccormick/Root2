@@ -99,6 +99,11 @@
     <Compile Include="ApplicationInstance.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Connected Services\CentralServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\ServiceReference1\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -111,10 +116,11 @@
     <Compile Include="ExitCode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IdGeneratorModule.cs" />
-    <Compile Include="IHaveObjectId.cs" />
+    <Compile Include="Interfaces\ICentralService.cs" />
+    <Compile Include="Interfaces\IHaveObjectId.cs" />
     <Compile Include="InfraModule.cs" />
     <Compile Include="InstanceInfo.cs" />
-    <Compile Include="IObjectIdProvider.cs" />
+    <Compile Include="Interfaces\IObjectIdProvider.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
@@ -187,6 +193,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Connected Services\CentralServiceReference\CentralService.wsdl" />
+    <None Include="Connected Services\CentralServiceReference\CentralSvc.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\CentralServiceReference\CentralSvc1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\CentralServiceReference\CentralSvc2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\CentralServiceReference\CentralSvc3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\CentralServiceReference\CentralSvc4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\CentralServiceReference\CentralSvc5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\CentralServiceReference\KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\ServiceReference1\App.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -206,6 +234,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\CentralServiceReference\" />
     <WCFMetadataStorage Include="Connected Services\ServiceReference1\" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +248,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\ServiceReference1\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\CentralServiceReference\CentralSvc.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\CentralServiceReference\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\CentralServiceReference\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\CentralServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

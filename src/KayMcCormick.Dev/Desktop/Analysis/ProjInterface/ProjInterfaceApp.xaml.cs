@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
+using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
@@ -17,7 +18,9 @@ using CommandLine.Text ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 #if MSBUILDLOCATOR
 using Microsoft.Build.Locator ;
 #endif
@@ -358,6 +361,28 @@ private Type[] _optionTypes ;
 #endif
     }
 
+    public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
+    {
+        #region Overrides of JsonConverter<SyntaxToken>
+        public override SyntaxToken Read (
+            ref Utf8JsonReader    reader
+          , Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return default ;
+        }
+
+        public override void Write (
+            Utf8JsonWriter        writer
+          , SyntaxToken           value
+          , JsonSerializerOptions options
+        )
+        {
+            
+        }
+        #endregion
+    }
     public class JsonSyntaxNodeConverter : JsonConverterFactory
     {
         #region Overrides of JsonConverter
@@ -388,7 +413,23 @@ private Type[] _optionTypes ;
             public InnerConverter (JsonSerializerOptions options ) { _options = options ; }
 
             #region Overrides of JsonConverter<T>
-            public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
+            public override T Read (
+                ref Utf8JsonReader    reader
+              , Type                  typeToConvert
+              , JsonSerializerOptions options
+            )
+            {
+                if ( typeToConvert == typeof ( ThisExpressionSyntax ) )
+                {
+                    var d = JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (ref 
+                                                                                        reader
+                                                                                      , options
+                                                                                       ) ;
+                    return ( T ) ( ( CSharpSyntaxNode ) SyntaxFactory.ThisExpression ( ) ) ;
+                }
+
+                return null ;
+            }
 
             public override void Write (
                 Utf8JsonWriter        writer
@@ -398,7 +439,11 @@ private Type[] _optionTypes ;
             {
                 writer.WriteStartObject();
                 writer.WriteBoolean("JsonConverter", true);
+                writer.WriteString("Type", value.GetType().AssemblyQualifiedName);
                 writer.WritePropertyName ( "Value" ) ;
+                // MemoryStream s = new MemoryStream();
+                // value.SerializeTo(s);
+                // writer.WriteBase64StringValue(s.GetBuffer());
                 var transformed = Transforms.TransformSyntaxNode ( value ) ;
                 JsonSerializer.Serialize ( writer , transformed , options ) ;
                 writer.WriteEndObject();

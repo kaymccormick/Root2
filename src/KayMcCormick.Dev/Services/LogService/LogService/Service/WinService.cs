@@ -4,9 +4,11 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.ServiceModel ;
 using System.Text ;
 using System.Threading ;
 using System.Threading.Tasks ;
+using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 using NLog.Config ;
 using NLog.Fluent ;
@@ -38,6 +40,10 @@ namespace LogService.Service
         public bool Start ( HostControl hostControl )
         {
             Log.Info ( $"{nameof ( WinService )} Start command received." ) ;
+
+            CentralService service = new CentralService();
+            ServiceHost svcHost = new ServiceHost(service);
+            svcHost.Open();
 
             var conf = new LoggingConfiguration() ;
             var  target = new LogReceiverWebServiceTarget("wcf") ;

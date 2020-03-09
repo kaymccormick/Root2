@@ -6,6 +6,7 @@ using System.Linq ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Tests.Lib.Fixtures ;

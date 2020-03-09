@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -78,6 +78,10 @@
     <ProjectReference Include="..\AnalysisServiceLibrary\AnalysisServiceLibrary.csproj">
       <Project>{1f5d1b87-40ff-42c0-88d9-874162e5d234}</Project>
       <Name>AnalysisServiceLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+      <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
+      <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

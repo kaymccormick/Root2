@@ -5,6 +5,7 @@ using System.Collections.Generic ;
 using System.Runtime.Serialization ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 using NLog.Fluent ;
 

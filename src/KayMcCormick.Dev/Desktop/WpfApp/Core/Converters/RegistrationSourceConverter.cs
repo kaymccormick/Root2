@@ -4,6 +4,7 @@ using System.Windows.Data ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
 using WpfApp.Core.Interfaces ;
 
 namespace WpfApp.Core.Converters

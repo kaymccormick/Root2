@@ -3,6 +3,7 @@ using System.Runtime.Serialization ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
+using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 
 namespace KayMcCormick.Dev

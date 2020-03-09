@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Autofac.Core ;
 using Autofac.Features.Decorators ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 
 namespace KayMcCormick.Dev

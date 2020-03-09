@@ -5,6 +5,7 @@ using System.ServiceModel ;
 using System.Text;
 using System.Threading.Tasks;
 using AnalysisServiceLibrary ;
+using KayMcCormick.Dev.Interfaces ;
 
 namespace ConsoleServiceHost
 {
@@ -12,7 +13,11 @@ namespace ConsoleServiceHost
     {
         static void Main(string[] args)
         {
-            using (ServiceHost serviceHost = new ServiceHost(typeof(Service1)))
+            CentralService service = new CentralService();
+            ServiceHost host2 = new ServiceHost ( service, new Uri("http://localhost:8737/CentralSvc" )) ;
+            host2.Open();
+
+            using (ServiceHost serviceHost = new ServiceHost(typeof(AnalysisService1), new Uri("http://localhost:8738/AnalysisService1")))
             {
                 try
                 {

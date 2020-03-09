@@ -6,6 +6,7 @@ using Autofac ;
 using Autofac.Core ;
 using DynamicData.Kernel ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
 using WpfApp.Core.Interfaces ;
 using WpfApp.Core.Model ;
 
