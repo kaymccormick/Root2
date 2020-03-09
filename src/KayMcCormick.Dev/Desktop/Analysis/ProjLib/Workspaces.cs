@@ -1,4 +1,5 @@
 using System ;
+using System.Collections.Concurrent ;
 using System.Collections.Generic ;
 using System.Collections.Immutable ;
 using System.Diagnostics ;
@@ -9,6 +10,7 @@ using System.Runtime.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using DynamicData.Kernel ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.MSBuild ;
@@ -70,6 +72,7 @@ namespace ProjLib
 
             // Print message for WorkspaceFailed event to help diagnosing project load failures.
 
+            ConcurrentQueue <string> Errors = new ConcurrentQueue < string > ();
             workspace.WorkspaceFailed += ( o , e ) => {
                 try
                 {
@@ -81,7 +84,8 @@ namespace ProjLib
                     {
                         var file1 = m.Groups[ 1 ].Captures[ 0 ] ;
                         var message = m.Groups[ 2 ].Captures[ 0 ] ;
-                        Logger.Debug ( "Workspace Error: {file}, {msg}" , file1 , message ) ;
+                        Logger.Debug ( "Workspace Error: {file}, {msg}" , file1.ToString() , message.ToString() ) ;
+                        Errors.Enqueue(e.Diagnostic.Message);
                     }
                 }
                 catch ( Exception ex )
@@ -128,11 +132,15 @@ namespace ProjLib
             Logger.Debug ( $"Loading solution '{solutionPath}'" ) ;
 
             // Attach progress reporter so we print projects as they are loaded.
-            //workspace.Services.GetService < IOptionService > ( ) ;
+            //workspace.Services.GetService < IOptionervice > ( ) ;
             //workspace.Options.WithChangedOption(new OptionKey(), ))
             await workspace.OpenSolutionAsync ( solutionPath ).ConfigureAwait ( true ) ;
             // , new Program.ConsoleProgressReporter()
             // );
+            if ( ! Errors.IsEmpty )
+            {
+                throw new UnableToInitializeWorkspace ( string.Join ( ", " , Errors ) ) ;
+            }
             Logger.Debug ( $"Finished loading solution '{solutionPath}'" ) ;
             return workspace ;
         }

@@ -27,10 +27,18 @@ namespace ProjLib
                                                                                         {
                                                                                             Name          = "My Project",
                                                                                             RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
-                                                                                            SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\ProjStuff\src\KayMcCormick.Dev\ManagedProd.sln",
+                                                                                            SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\test1234\src\KayMcCormick.Dev\ManagedProd.sln",
                                                                                             Platform = "x86"
                                                                                         };
-            browserNodeCollection.Add(projectBrowserNode2);
+            browserNodeCollection.Add(projectBrowserNode); 
+            var projectBrowserNode3 = new ProjectBrowserNode()
+                                                                                     {
+                                                                                         Name          = "My Project",
+                                                                                         RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
+                                                                                         SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\ManagedProd.sln",
+                                                                                         Platform      = "x86"
+                                                                                     };
+            browserNodeCollection.Add(projectBrowserNode3);
         }
 
         private IBrowserNodeCollection _rootCollection ;
