@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using KayMcCormick.Dev.CentralServiceReference ;
 
 namespace ProjLib
 {

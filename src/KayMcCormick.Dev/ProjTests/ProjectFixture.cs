@@ -9,8 +9,8 @@
 // 
 // ---
 #endregion
-using System.Linq ;
 #if MSBUILDLOCATOR
+using System.Linq ;
 using Microsoft.Build.Locator ;
 #endif
 

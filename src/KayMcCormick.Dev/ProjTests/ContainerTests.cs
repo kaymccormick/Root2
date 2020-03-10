@@ -3,7 +3,6 @@ using System.Collections.Generic ;
 using System.Linq ;
 using System.Windows.Controls ;
 using System.Windows.Navigation ;
-using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
 using KayMcCormick.Dev;
@@ -57,8 +56,9 @@ namespace ProjTests
                                           }
                                          ) ;
             var pages = s.Resolve < IEnumerable < Page > > ( ) ;
-            Assert.NotEmpty(pages);
-            foreach ( var page in pages )
+            var collection = pages.ToList ( ) ;
+            Assert.NotEmpty(collection);
+            foreach ( var page in collection )
             {
                 NavigationWindow w = new NavigationWindow();
                 w.Content = page ;

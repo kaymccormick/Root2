@@ -9,11 +9,13 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Linq ;
+using System.Collections.Generic ;
+using AnalysisFramework ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Integration.Mef ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Fluent ;
 
@@ -28,7 +30,7 @@ namespace ProjLib
             
             var b = new ContainerBuilder ( ) ;
             b.RegisterMetadataRegistrationSources ( ) ;
-#if false
+
             // b.RegisterGeneric ( typeof ( SpanObject <> ) ).As ( typeof ( ISpanObject <> ) ) ;
             foreach ( var module in modules )
             {
@@ -36,7 +38,7 @@ namespace ProjLib
             }
             b.RegisterType < LogInvocationSpan > ( )
              .As < ISpanViewModel > ( )
-             .As < ISpanObject < LogInvocation > > ( ) ;
+             .As < ISpanObject < ILogInvocation > > ( ) ;
             b.RegisterType < TokenSpanObject > ( )
              .As < ISpanViewModel > ( )
              .As < ISpanObject < SyntaxToken > > ( ) ;
@@ -44,184 +46,13 @@ namespace ProjLib
              .As < ISpanViewModel > ( )
              .As < ISpanObject < SyntaxTrivia > > ( ) ;
             b.RegisterType < Visitor2 > ( ).AsSelf ( ).As < CSharpSyntaxWalker > ( ) ;
-            b.RegisterType < FormattedCode > ( ).AsSelf ( ) ;
-            // b.RegisterType<HasSourceCode>()
-            //  .As<ISourceCode>()
-            //  .WithParameter(new PositionalParameter(0, Resources.Program_Parse));
+            //b.RegisterType < FormattedCode > ( ).AsSelf ( ) ;
 
             b.RegisterType < TransformScope > ( )
              .WithParameter ( new NamedParameter ( "sourceCode" , LibResources.Program_Parse ) )
              .AsSelf ( )
              .InstancePerLifetimeScope ( ) ;
-            b.RegisterAdapter < IHasCompilation , IEnumerable < IHasTreeAndCompilation > > (
-                                                                                            (
-                                                                                                context
-                                                                                              , x
-                                                                                            ) => {
-                                                                                                new
-                                                                                                        LogBuilder (
-                                                                                                                    Logger
-                                                                                                                   ).Level (
-                                                                                                                            LogLevel
-                                                                                                                               .Debug
-                                                                                                                           )
-                                                                                                                    .Property (
-                                                                                                                               "TreeAndCompilation"
-                                                                                                                             , x
-                                                                                                                              )
-                                                                                                                    .Message (
-                                                                                                                              "Debug adapte"
-                                                                                                                             )
-                                                                                                                    .Write ( ) ;
-                                                                                                IList
-                                                                                                < IHasTreeAndCompilation
-                                                                                                > r
-                                                                                                    = new
-                                                                                                        List
-                                                                                                        < IHasTreeAndCompilation
-                                                                                                        > ( ) ;
-                                                                                                foreach
-                                                                                                ( var
-                                                                                                      compilationSyntaxTree
-                                                                                                    in
-                                                                                                    x
-                                                                                                       .Compilation
-                                                                                                       .SyntaxTrees
-                                                                                                )
-                                                                                                {
-                                                                                                    var x2 =
-                                                                                                        new
-                                                                                                            HasTreeAndCompilation (
-                                                                                                                                   x
-                                                                                                                                 , new
-                                                                                                                                       HasTree (
-                                                                                                                                                compilationSyntaxTree
-                                                                                                                                               )
-                                                                                                                                  ) ;
-                                                                                                    r.Add (
-                                                                                                           x2
-                                                                                                          ) ;
-                                                                                                }
 
-                                                                                                return
-                                                                                                    r ;
-                                                                                            }
-                                                                                           ) ;
-            b.RegisterAdapter < IHasTreeAndCompilation , IHasTreeAndModel > (
-                                                                             (
-                                                                                 context
-                                                                               , compilation
-                                                                             ) => {
-                                                                                 Logger.Info("{tree}", compilation.Tree.GetDiagnostics());
-                                                                                 var semanticModel = compilation
-                                                                                                    .Compilation
-                                                                                                    .GetSemanticModel (
-                                                                                                                       compilation
-                                                                                                                          .Tree
-                                                                                                                      ) ;
-
-                                                                                 var hassModelImplementation = new
-                                                                                     HassModel (
-                                                                                                semanticModel
-                                                                                               ) ;
-                                                                                 return new
-                                                                                     HasTreeAndModel (
-                                                                                                      hassModelImplementation
-                                                                                                    , compilation
-                                                                                                     ) ;
-                                                                             }
-                                                                            ) ;
-                
-            b.RegisterAdapter < IHasTreeAndModel , IHasLogInvocations > (
-                                                                         ( context , tree ) => {
-                                                                             var visitor =
-                                                                                 context
-                                                                                    .Resolve <
-                                                                                         Visitor2
-                                                                                     > ( ) ;
-                                                                             visitor.Visit (
-                                                                                            tree
-                                                                                               .Tree
-                                                                                               .GetRoot ( )
-                                                                                           ) ;
-                                                                             return new
-                                                                                 HasLogInvocations ( ) ;
-                                                                         }
-                                                                        ) ;
-
-            b.RegisterAdapter < IHasTree , IHasCompilation > (
-                                                              ( context , tree )
-                                                                  => new HasCompilation (
-                                                                                         CSharpCompilation
-                                                                                            .Create (
-                                                                                                     "random"
-                                                                                                    )
-                                                                                            .AddReferences (
-                                                                                                            MetadataReference
-                                                                                                               .CreateFromFile (
-                                                                                                                                typeof
-                                                                                                                                    ( string
-                                                                                                                                    ).Assembly
-                                                                                                                                     .Location
-                                                                                                                               )
-                                                                                                          , MetadataReference
-                                                                                                               .CreateFromFile (
-                                                                                                                                typeof
-                                                                                                                                    ( Logger
-                                                                                                                                    ).Assembly
-                                                                                                                                     .Location
-                                                                                                                               )
-                                                                                                           )
-                                                                                            .AddSyntaxTrees (
-                                                                                                             tree
-                                                                                                                .Tree
-                                                                                                            )
-                                                                                        )
-                                                             ) ;
-            b.RegisterAdapter < ISourceCode , IHasTree > (
-                                                          ( context , code )
-                                                              => new HasTree (
-                                                                              CSharpSyntaxTree
-                                                                                 .ParseText (
-                                                                                             code
-                                                                                                .SourceCode
-                                                                                            )
-                                                                             )
-                                                         ) ;
-
-            // b.RegisterAdapter < ISourceContext , IIntermediateContext > ( ) ;
-            b.RegisterType < TransformArgs > ( ).AsSelf ( ) ;
-            // ( c , p ) => new TransformArgs.TransformArgsFactory(new TransformArgs())  p.TypedAs < CodeAnalyseContext > ( )
-            //                                                     , c.Resolve < Visitor2 > ( ))).AsSelf();
-            b.Register ( ( c , p ) => new CodeAnalyseContext.Factory1 ( CodeAnalyseContext.Parse ) )
-             .AsSelf ( )
-             .InstancePerLifetimeScope ( ) ;
-            // b.RegisterAdapter<IHasTreeAndCompilation, IHasTreeAndModel>();
-            b.RegisterAdapter < IHasCompilation , IHasTreeAndCompilation > (
-                                                                            (
-                                                                                context
-                                                                              , compilation
-                                                                            ) => new
-                                                                                HasTreeAndCompilation (
-                                                                                                       compilation
-                                                                                                     , context
-                                                                                                          .Resolve
-                                                                                                           < IHasTree
-                                                                                                           > ( )
-                                                                                                      )
-                                                                           ) ;
-
-            b.Register (
-                        ( c , p ) => new MakeInfo (
-                                                   null
-                                                 , p.Named < FormattedCode > ( "control" )
-                                                 , p.Named < string > ( "sourceText" )
-                                                 , null
-                                                 , c.Resolve < CodeAnalyseContext.Factory1 > ( )
-                                                  )
-                       )
-             .AsSelf ( ) ;
-            #endif
             return b.Build ( ).BeginLifetimeScope ( ) ;
         }
     }

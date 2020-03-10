@@ -86,7 +86,6 @@ namespace ProjTests
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture    _loggingFixture ;
         private          SyntaxTree        _testSyntaxTree ;
         private          CSharpCompilation _compilation ;
@@ -100,7 +99,6 @@ namespace ProjTests
                           )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
-            _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             //VSI                                          =  projectFixture.I ;
             loggingFixture.SetOutputHelper ( output , this ) ;
@@ -274,6 +272,8 @@ namespace ProjTests
             var json = JsonSerializer.Serialize ( info1 , options ) ;
             Logger.Info ( json ) ;
             var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
+            Assert.Equal(info1.CallerClassName, info2.CallerClassName);
+
 
             var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
             while ( ! t.EndOfStream )

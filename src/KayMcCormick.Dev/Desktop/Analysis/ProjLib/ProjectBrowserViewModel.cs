@@ -46,7 +46,7 @@ namespace ProjLib
 
         private IBrowserNodeCollection _rootCollection ;
         #region Implementation of IProjectBrowserViewModoel
-        public IBrowserNodeCollection RootCollection { get => _rootCollection ; private set => _rootCollection = value ; }
+        public IBrowserNodeCollection RootCollection { get => _rootCollection ; }
         #endregion
     }
 }

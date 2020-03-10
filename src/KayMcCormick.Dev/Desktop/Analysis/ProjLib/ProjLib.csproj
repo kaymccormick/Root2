@@ -118,7 +118,6 @@
     <Compile Include="IWorkspacesView.cs" />
     <Compile Include="IWorkspacesViewModel.cs" />
     <Compile Include="LogInvocationSpan.cs" />
-    <Compile Include="MakeInfo.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
     <EmbeddedResource Include="Program-Parse.cs">

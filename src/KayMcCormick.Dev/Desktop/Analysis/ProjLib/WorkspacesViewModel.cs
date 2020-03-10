@@ -233,7 +233,7 @@ namespace ProjLib
             set => eventInfos = value ;
         }
 
-        public ObservableCollection < LogEventInstance > Events { get => _events ; private set => _events = value ; }
+        public ObservableCollection < LogEventInstance > Events { get => _events ; }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 
