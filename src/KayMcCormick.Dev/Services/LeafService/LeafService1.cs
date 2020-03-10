@@ -14,6 +14,7 @@ using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.ServiceModel ;
 using System.Threading ;
+using System.Timers ;
 using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 using NLog.Config ;
@@ -22,6 +23,7 @@ using NLog.Targets ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;
 using LogManager = NLog.LogManager ;
+using Timer = System.Timers.Timer ;
 
 namespace LeafService
 {
@@ -31,6 +33,7 @@ namespace LeafService
         private static Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
         private ServiceHost _svcHost ;
         private CentralService _centralService ;
+        private Timer _timer ;
 
         public LeafService1 ( ) { }
 
@@ -57,6 +60,11 @@ namespace LeafService
             conf.AddRuleForAllLevels(console);
             LogManager.Configuration = conf;
 #endif
+            _timer = new Timer(60 * 1000) ;
+            _timer.AutoReset = true ;
+            _timer.Elapsed += TimerOnElapsed;
+            _timer.Start ( ) ;
+
             var e = new EventLog ( "Application" ) ;
             e.EntryWritten        += EOnEntryWritten ;
             e.EnableRaisingEvents =  true ;
@@ -65,6 +73,11 @@ namespace LeafService
             // MyThread.Start ( true ) ;
             //TODO: Implement your service start routine.
             return true ;
+        }
+
+        private void TimerOnElapsed ( object sender , ElapsedEventArgs e )
+        {
+            Logger.Debug ( "Timer elapsed" ) ;
         }
 
         public Thread MyThread { get ; set ; }
@@ -128,7 +141,7 @@ namespace LeafService
         public bool Pause ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Pause command received." ) ;
-
+            _timer.Stop();
             //TODO: Implement your service start routine.
             return true ;
         }
@@ -137,7 +150,7 @@ namespace LeafService
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Continue command received." ) ;
 
-            //TODO: Implement your service stop routine.
+            _timer.Start();
             return true ;
         }
 
@@ -152,6 +165,7 @@ namespace LeafService
         #region IDisposable
         public void Dispose ( )
         {
+            _timer?.Dispose();
             ( ( IDisposable ) _svcHost )?.Dispose ( ) ;
             _centralService?.Dispose ( ) ;
         }
