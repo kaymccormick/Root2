@@ -26,8 +26,8 @@
     <WixVariables>
     </WixVariables>
     <VerboseOutput>True</VerboseOutput>
-    <SuppressAllWarnings>False</SuppressAllWarnings>
-    <Pedantic>True</Pedantic>
+    <SuppressAllWarnings>True</SuppressAllWarnings>
+    <Pedantic>False</Pedantic>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="File1.wxs" />
