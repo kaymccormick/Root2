@@ -145,10 +145,10 @@ namespace KayMcCormick.Dev.Logging
                 }
             }
 
-            _doConfig(logMethod, proxyLogging, proxiedFactory);
+            PerformConfiguration(logMethod, proxyLogging, proxiedFactory);
         }
 
-        private static void _doConfig(
+        private static void PerformConfiguration(
             LogDelegates.LogMethod logMethod
           , bool proxyLogging
           , LogFactory proxiedFactory

@@ -42,8 +42,13 @@ namespace KayMcCormick.Lib.Wpf
                                                                                )
                                                 ) ;
 
-        private static object CoerceLifetimeScopeValue ( DependencyObject d , object baseValue )
+        private static object CoerceLifetimeScopeValue ( [ NotNull ] DependencyObject d , object baseValue )
         {
+            if ( d == null )
+            {
+                throw new ArgumentNullException ( nameof ( d ) ) ;
+            }
+
             return baseValue ;
         }
 

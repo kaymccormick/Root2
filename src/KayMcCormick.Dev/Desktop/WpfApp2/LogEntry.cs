@@ -40,7 +40,7 @@ namespace WpfApp2
 
         private readonly IDictionary < string , object > _dictionaryImplementation ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+
         public LogEntry ( )
         {
 

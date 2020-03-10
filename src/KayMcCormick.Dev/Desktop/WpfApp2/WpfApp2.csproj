@@ -83,6 +83,7 @@
     <Compile Include="AttachedProps.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="DictInterceptor.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogProperty.cs" />
     <Compile Include="ObservablePropertyCollection.cs" />
@@ -164,6 +165,13 @@
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

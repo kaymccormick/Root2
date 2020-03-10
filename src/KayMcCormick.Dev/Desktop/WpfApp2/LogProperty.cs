@@ -26,10 +26,6 @@ namespace WpfApp2
         public string CellTemplateKey { get ; set ; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public LogProperty ( ) {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogProperty ( string name , string header, string description, Type expectedType , string cellTemplateKey = null)
         {
             Name = name ;

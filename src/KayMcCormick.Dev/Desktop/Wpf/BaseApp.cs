@@ -31,7 +31,7 @@ namespace KayMcCormick.Lib.Wpf
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private IComponentContext scope ;
-        private ApplicationInstance appInst ;
+        private readonly ApplicationInstance appInst ;
 #if COMMANDLINE
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
@@ -142,7 +142,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         #endregion
 
         #region IDisposable
-        public void Dispose ( )
+        public virtual void Dispose ( )
         {
             appInst?.Dispose ( ) ;
         }
