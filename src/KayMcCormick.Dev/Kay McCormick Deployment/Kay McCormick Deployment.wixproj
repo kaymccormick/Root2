@@ -16,12 +16,18 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
+    <VerboseOutput>True</VerboseOutput>
+    <SuppressAllWarnings>False</SuppressAllWarnings>
+    <Pedantic>True</Pedantic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DefineConstants>Debug;KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
+    <DefineConstants>KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
     <WixVariables>
     </WixVariables>
+    <VerboseOutput>True</VerboseOutput>
+    <SuppressAllWarnings>False</SuppressAllWarnings>
+    <Pedantic>True</Pedantic>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="File1.wxs" />

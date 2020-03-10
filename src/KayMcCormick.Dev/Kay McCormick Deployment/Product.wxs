@@ -11,9 +11,7 @@
   <?define WpfApp2_TargetDir=$(var.WpfApp2.TargetDir)?>
   <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
   <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define ConsoleServiceHost_TargetDir=$(var.ConsoleServiceHost.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?>
-  <Product Id="*" Name="Kay_McCormick_Deployment" 
-   Language="1033" Version="1.0.0.0"
-     Manufacturer="Kay McCormick" UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
+  <Product Id="*" Name="Kay_McCormick_Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -89,6 +87,7 @@
               </Directory>
             </Directory>
           </Directory>
+          <Directory Id="bin" Name="bin" />
         </Directory>
 
       </Directory>
@@ -145,9 +144,7 @@
         <File Id="AnalysisFramework.dll" Name="AnalysisFramework.dll" Source="$(var.AnalysisFramework_TargetDir)AnalysisFramework.dll" />
       </Component>
       
-      <Component Id="NLog.config" Guid="a4d842ff-cfaa-4065-8861-013838230300">
-        <File Id="NLog.config" Name="NLog.config" Source="$(var.WcfService1_TargetDir)NLog.config" />
-      </Component>
+      
       <Component Id="LibGit2Sharp.dll" Guid="0b7deda6-79de-4ec8-9b41-7bc63cc29a09">
         <File Id="LibGit2Sharp.dll" Name="LibGit2Sharp.dll" Source="$(var.ConsoleApp1_TargetDir)LibGit2Sharp.dll" />
       </Component>
