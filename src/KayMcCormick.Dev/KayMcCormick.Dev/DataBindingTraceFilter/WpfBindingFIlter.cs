@@ -20,7 +20,7 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
     /// 
     /// </summary>
     // ReSharper disable once UnusedType.Global
-    public class MyTraceFilter : TraceFilter
+    public class WpfBindingFIlter : TraceFilter
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

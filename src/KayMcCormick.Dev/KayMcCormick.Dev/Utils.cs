@@ -30,7 +30,7 @@ namespace KayMcCormick.Dev
         public static void HandleInnerExceptions(
             Exception e
           , LogLevel level = null
-          , Logger logger = null
+          , ILogger logger = null
         )
         {
             using (var stringWriter = new StringWriter())

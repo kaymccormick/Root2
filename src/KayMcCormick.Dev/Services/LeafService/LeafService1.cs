@@ -18,6 +18,7 @@ using System.ServiceModel.Discovery ;
 using System.Threading ;
 using System.Timers ;
 using Common.Logging ;
+using KayMcCormick.Dev.DataBindingTraceFilter ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
@@ -40,12 +41,20 @@ namespace LeafService
         private ServiceHost _svcHost ;
         private CentralService _centralService ;
         private Timer _timer ;
+        private ServiceHost _svcReceiver ;
 
         public LeafService1 (ILog commonLogger ) { _commonLogger = commonLogger ; }
 
         public bool Start ( HostControl hostControl )
         {
-
+            var f = new LogFactory < MyLogger > ( ) ;
+            Trace.Refresh();
+            Trace.Listeners.Add ( new NLogTraceListener ( )
+                                  {
+                                      AutoLoggerName = false, Filter = new LeafServiceTraceFilter (  ),
+                                      Name = "test1", TraceOutputOptions = TraceOptions.Callstack | TraceOptions.LogicalOperationStack,
+                                      LogFactory = f
+                                  } ) ;
             var svcTarget = AppLoggingConfigHelper.ServiceTarget ;
             if(svcTarget != null) {
                 Logger.Debug("Existing service target endpoing is {endpoingAddress}", svcTarget.EndpointAddress);
@@ -53,15 +62,21 @@ namespace LeafService
             }
             Log.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
 
-            Uri baseAddress = new Uri ( $"http://10.25.0.102:8737/leafService/" ) ;
-            Uri receiverUri = new Uri ( baseAddress , "receiver" ) ;
+            Uri baseAddress = new Uri($"http://{System.Net.Dns.GetHostName()}:8737/discovery/scenarios/logreceiver/{Guid.NewGuid().ToString()}/");
 
-            var svcReceiver = new ServiceHost ( typeof ( LogReceiver ) , receiverUri ) ;
+            //Uri baseAddress = new Uri ( $"http://10.25.0.102:8737/leafService/" ) ;
+            //Uri receiverUri = new Uri ( baseAddress , "receiver" ) ;
+
+            var svcReceiver = new ServiceHost ( typeof ( LogReceiver ) , baseAddress) ;
             // Add calculator endpoint
-            svcReceiver.AddServiceEndpoint(typeof(ILogReceiverServer), new WSHttpBinding(), receiverUri);
+            svcReceiver.AddServiceEndpoint(typeof(ILogReceiverServer), new WSHttpBinding(), String.Empty);
             svcReceiver.Faulted += SvcReceiverOnFaulted;
             svcReceiver.UnknownMessageReceived += ( sender , args ) => {
-                _commonLogger.Warn ( nameof ( svcReceiver.UnknownMessageReceived ) ) ;
+                _commonLogger.Warn(nameof(svcReceiver.UnknownMessageReceived));
+                _commonLogger.Info($"From: {args.Message.Headers.From}");
+                _commonLogger.Info($"To: {args.Message.Headers.To}");
+                _commonLogger.Info ( $"Via: {args.Message.Properties.Via}" ) ;
+                _commonLogger.Info($"Action: {args.Message.Headers.Action}");
             } ;
             svcReceiver.Opened += ( sender , args )
                 => _commonLogger.Info ( nameof ( svcReceiver.Opened ) ) ;
@@ -75,7 +90,9 @@ namespace LeafService
             // Add the discovery endpoint that specifies where to publish the services
             svcReceiver.AddServiceEndpoint(new UdpDiscoveryEndpoint());
             svcReceiver.Open();
+            _svcReceiver = svcReceiver ;
 
+#if false
             _centralService = new CentralService ( ) ;
             var serviceHost = new ServiceHost ( _centralService , new Uri ( "http://localhost:8737/CentralSvc1" ) );
 
@@ -95,7 +112,9 @@ namespace LeafService
            // Open the ServiceHost to create listeners and start listening for messages.
             serviceHost.Open();
 
+
             _svcHost = serviceHost;
+#endif
 
 #if USEOWNCONFIG
             var conf = new LoggingConfiguration() ;
@@ -224,6 +243,25 @@ namespace LeafService
             _timer?.Dispose();
             ( ( IDisposable ) _svcHost )?.Dispose ( ) ;
             _centralService?.Dispose ( ) ;
+        }
+        #endregion
+    }
+
+    internal class LeafServiceTraceFilter : TraceFilter
+    {
+        #region Overrides of TraceFilter
+        public override bool ShouldTrace (
+            TraceEventCache cache
+          , string          source
+          , TraceEventType  eventType
+          , int             id
+          , string          formatOrMessage
+          , object[]        args
+          , object          data1
+          , object[]        data
+        )
+        {
+            return true ;
         }
         #endregion
     }

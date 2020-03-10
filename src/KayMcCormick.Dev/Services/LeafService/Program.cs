@@ -16,6 +16,7 @@ using Topshelf.Autofac ;
 using Topshelf.Common.Logging ;
 using Topshelf.HostConfigurators ;
 using Topshelf.ServiceConfigurators ;
+using LogLevel = NLog.LogLevel ;
 using LogManager = Common.Logging.LogManager ;
 
 namespace LeafService
@@ -47,6 +48,13 @@ namespace LeafService
 
         private void Run ( )
         {
+            ILog logger = Common.Logging.LogManager.GetLogger < Program > ( ) ;
+            AppDomain.CurrentDomain.FirstChanceException += ( sender , args )
+                => Utils.HandleInnerExceptions (
+                                                args.Exception
+                                              , LogLevel.Info
+                                              , _appInst.Logger
+                                               ) ;
             HostFactory.Run ( Configure ) ;
             _appInst.Logger.Debug ( "Returned from HostFactory.run" ) ;
         }
