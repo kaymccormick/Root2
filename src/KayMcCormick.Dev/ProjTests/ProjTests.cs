@@ -1,12 +1,12 @@
 ﻿#region header
 // Kay McCormick (mccor)
-// 
+//
 // KayMcCormick.Dev
 // ProjTests
 // ProjTests.cs
-// 
+//
 // 2020-02-21-12:38 AM
-// 
+//
 // ---
 #endregion
 using System ;
@@ -41,7 +41,6 @@ using LogLevel = NLog.LogLevel ;
 namespace ProjTests
 {
 
-    /// GlobalLoggingFixture" />
     [CollectionDefinition( "GeneralPurpose")]
     [UsedImplicitly]
     public class GeneralPurpose : ICollectionFixture<GlobalLoggingFixture>
@@ -50,7 +49,7 @@ namespace ProjTests
 
     [Collection ( "GeneralPurpose" ) ]
     [ ClearLoggingRules ]
-    #if VSSETTINGS
+#if VSSETTINGS
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
 #endif
     [ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
@@ -58,57 +57,28 @@ namespace ProjTests
     [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
     [BeforeAfterLogger]
     public class ProjTests : IClassFixture < LoggingFixture >
-      , IClassFixture < ProjectFixture >
-      , IDisposable
+        , IClassFixture < ProjectFixture >
+        , IDisposable
     {
-        private string code =
-            "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Text;\nusing System.Threading.Tasks;\nusing NLog ;\n\nnamespace LogTest\n{\n    class Program\n    {\n        private static readonly  Logger Logger = LogManager.GetCurrentClassLogger();\n        static void Main(string[] args) {\n            Action<string> xx = Logger.Info;\n            xx(\"hi\");\n            Logger.Debug ( \"Hello\" ) ;\n            try {\n                string xxx = null;\n                var q = xxx.ToString();\n            } catch(Exception ex) {\n                Logger.Info(ex, ex.Message);\n            }\n            var x = Logger;\n            // doprocess\n            x.Info(\"hello {test} {ab}\", 123, 45);\n        }\n\n    }\n}\n" ;
-
-        public SyntaxTree TestSyntaxTree
-        {
-            get
-            {
-                if ( _testSyntaxTree == null )
-                {
-                    _testSyntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
-                }
-
-                return _testSyntaxTree ;
-            }
-        }
-
-
-        public CSharpCompilation Compilation
-        {
-            get
-            {
-                if ( _compilation == null )
-                {
-                    _compilation = CreateCompilation ( TestSyntaxTree , "TestSyntaxTree" ) ;
-                }
-
-                return _compilation ;
-            }
-        }
 
         public CSharpCompilation CreateCompilation ( SyntaxTree syntaxTree , string assemblyName )
         {
             var compilation = CSharpCompilation.Create ( assemblyName )
-                                               .AddReferences (
-                                                               MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( string
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                             , MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( Logger
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                              )
-                                               .AddSyntaxTrees ( syntaxTree ) ;
+                .AddReferences (
+                                MetadataReference.CreateFromFile (
+                                                                  typeof
+                                                                  ( string
+                                                                    ).Assembly
+                                                                  .Location
+                                                                  )
+                                , MetadataReference.CreateFromFile (
+                                                                    typeof
+                                                                    ( Logger
+                                                                      ).Assembly
+                                                                    .Location
+                                                                    )
+                                )
+                .AddSyntaxTrees ( syntaxTree ) ;
             return compilation ;
         }
 
@@ -124,10 +94,10 @@ namespace ProjTests
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
-            ITestOutputHelper output
-          , LoggingFixture    loggingFixture
-          , ProjectFixture    projectFixture
-        )
+                          ITestOutputHelper output
+                          , LoggingFixture    loggingFixture
+                          , ProjectFixture    projectFixture
+                          )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
@@ -156,11 +126,11 @@ namespace ProjTests
             this.Finalizers.Add (
                                  ( ) => {
                                      foreach ( var enumerateFileSystemEntry in Directory
-                                        .EnumerateFileSystemEntries (
-                                                                     tempDir
-                                                                   , "*"
-                                                                   , SearchOption.AllDirectories
-                                                                    ) )
+                                               .EnumerateFileSystemEntries (
+                                                                            tempDir
+                                                                            , "*"
+                                                                            , SearchOption.AllDirectories
+                                                                            ) )
                                      {
                                          if ( File.Exists ( enumerateFileSystemEntry ) )
                                          {
@@ -179,22 +149,22 @@ namespace ProjTests
                                          }
                                      }
                                  }
-                                ) ;
+                                 ) ;
 #endif
-                Logger.Info ( "tempdir is {tempDir}" , tempDir ) ;
+            Logger.Info ( "tempdir is {tempDir}" , tempDir ) ;
             var cloneOptions = new CloneOptions ( ) ;
             cloneOptions.OnCheckoutProgress = ( path , steps , totalSteps )
                 => Logger.Debug (
                                  "Checkout progress: {path} ( {steps} / {totalSteps} )"
-                               , path
-                               , steps
-                               , totalSteps
-                                ) ;
+                                 , path
+                                 , steps
+                                 , totalSteps
+                                 ) ;
             cloneOptions.RepositoryOperationStarting = context => {
                 Logger.Info ( "{a} {b}" , context.ParentRepositoryPath , context.RemoteUrl ) ;
                 return true ;
             } ;
-            //cloneOptions.OnUpdateTips = ( name , id , newId ) => 
+            //cloneOptions.OnUpdateTips = ( name , id , newId ) =>
             cloneOptions.RepositoryOperationCompleted =
                 context => Logger.Info ( context.ToString ( ) ) ;
             cloneOptions.OnTransferProgress = progress => {
@@ -205,85 +175,89 @@ namespace ProjTests
                 Logger.Debug ( output ) ;
                 return true ;
             } ;
-            
+
             Repository.Clone (
                               "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
-                            , cloneDir
-                      /*      , cloneOptions*/
-                             ) ;
+                              , cloneDir
+                              /*      , cloneOptions*/
+                              ) ;
             var dd = new DirectoryInfo ( cloneDir ) ;
             var f = Directory.EnumerateFiles (
                                               cloneDir
-                                            , "KayMcCormick.dev.sln"
-                                            , SearchOption.AllDirectories
-                                             )
-                             .ToList ( ) ;
+                                              , "KayMcCormick.dev.sln"
+                                              , SearchOption.AllDirectories
+                                              )
+                .ToList ( ) ;
             Assert.NotEmpty ( f ) ;
             foreach ( var s in f )
             {
                 Logger.Info ( s ) ;
             }
 #endif
-            #if MSBUILDLOCATOR  
+#if MSBUILDLOCATOR
             var instances = MSBuildLocator.QueryVisualStudioInstances()
-                                          .Where(
-                                                 (instance, i)
-                                                     => instance.Version.Major    == 16
-                                                        && instance.Version.Minor == 4
-                                                );
+                .Where(
+                       (instance, i)
+                       => instance.Version.Major    == 16
+                       && instance.Version.Minor == 4
+                       );
             MSBuildLocator.RegisterInstance(instances.First());
 #endif
-            var scope = InterfaceContainer.GetContainer ( ) ;
-            var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
-            viewModel.AnalyzeCommand(viewModel.ProjectBrowserViewModel.RootCollection.OfType<IProjectBrowserNode>().First());
+            using ( var appinst = new ApplicationInstance ( ) )
+            {
+                appinst.AddModule ( new ProjLibModule ( ) ) ;
+                var scope = appinst.GetLifetimeScope ( ) ;
+                var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
+                viewModel.AnalyzeCommand(viewModel.ProjectBrowserViewModel.RootCollection.OfType<IProjectBrowserNode>().First());
 #if false
-            var vsInstance = viewModel.VsCollection.First (instance => instance.InstallationVersion.StartsWith("16.4.")) ;
-            var mruItem = vsInstance.MruItems.Skip ( 1 ).First ( item => item.Exists ) ;
-            Assert.NotNull ( viewModel.PipelineViewModel.Pipeline ) ;
-            var i = MSBuildLocator
-                   .QueryVisualStudioInstances (
-                                                new VisualStudioInstanceQueryOptions ( )
-                                                {
-                                                    DiscoveryTypes =
-                                                        DiscoveryType.VisualStudioSetup
-                                                  , WorkingDirectory = @"c:\\temp\work1"
-                                                }
-                                               )
-                   .Where (
-                           instance => instance.VisualStudioRootPath == vsInstance.InstallationPath
-                          )
-                   .First ( ) ;
+                var vsInstance = viewModel.VsCollection.First (instance => instance.InstallationVersion.StartsWith("16.4.")) ;
+                var mruItem = vsInstance.MruItems.Skip ( 1 ).First ( item => item.Exists ) ;
+                Assert.NotNull ( viewModel.PipelineViewModel.Pipeline ) ;
+                var i = MSBuildLocator
+                    .QueryVisualStudioInstances (
+                                                 new VisualStudioInstanceQueryOptions ( )
+                                                 {
+                                                     DiscoveryTypes =
+                                                     DiscoveryType.VisualStudioSetup
+                                                     , WorkingDirectory = @"c:\\temp\work1"
+                                                 }
+                                                 )
+                    .Where (
+                            instance => instance.VisualStudioRootPath == vsInstance.InstallationPath
+                            )
+                    .First ( ) ;
 
-            var root = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos" ;
-            var solution = @"V3\TestCopy\src\KayMcCormick.Dev\KayMcCormick.Dev.sln" ;
-            //solution = @"V2\LogTest\LogTest.sln";
+                var root = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos" ;
+                var solution = @"V3\TestCopy\src\KayMcCormick.Dev\KayMcCormick.Dev.sln" ;
+                //solution = @"V2\LogTest\LogTest.sln";
 
-            
-            var spath = Path.Combine ( root , solution ) ;
-            Logger.Debug("posting {file}", f[0]);
-            viewModel.PipelineViewModel.Pipeline.PipelineInstance.Post (f[0]) ;
+
+                var spath = Path.Combine ( root , solution ) ;
+                Logger.Debug("posting {file}", f[0]);
+                viewModel.PipelineViewModel.Pipeline.PipelineInstance.Post (f[0]) ;
 #endif
 
-            #if false
-            viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.ContinueWith (
-                                                                                           task => {
-                                                                                               if (
-                                                                                                   task
-                                                                                                      .IsFaulted
-                                                                                               )
-                                                                                               {
-                                                                                                   Logger
-                                                                                                      .Fatal ( task
-                                                                                                                  .Exception
-                                                                                                    , "Faulted with {ex}"
-                                                                                                     , task
-                                                                                                      .Exception
-                                                                                                       ) ;
+#if false
+                viewModel.PipelineViewModel.Pipeline.PipelineInstance.Completion.ContinueWith (
+                                                                                               task => {
+                                                                                                   if (
+                                                                                                       task
+                                                                                                       .IsFaulted
+                                                                                                       )
+                                                                                                   {
+                                                                                                       Logger
+                                                                                                       .Fatal ( task
+                                                                                                                .Exception
+                                                                                                                , "Faulted with {ex}"
+                                                                                                                , task
+                                                                                                                .Exception
+                                                                                                                ) ;
+                                                                                                   }
                                                                                                }
-                                                                                           }
-                                                                                          )
-                     .Wait ( TimeSpan.FromMinutes ( 5 )) ;
-            #endif
+                                                                                               )
+                    .Wait ( TimeSpan.FromMinutes ( 5 )) ;
+#endif
+            }
         }
 
         [Fact]
@@ -292,7 +266,7 @@ namespace ProjTests
             var ctx = (ICompilationUnitRootContext)AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
             LogEventInfo info1 = LogEventInfo.Create(LogLevel.Debug, "test", "test");
             info1.Properties[ "node" ] = ctx.CompilationUnit ;
-            
+
             JsonSerializerOptions options = new JsonSerializerOptions();
             options.Converters.Add ( new LogEventInfoConverter ( ));
             options.Converters.Add (new JsonSyntaxNodeConverter()) ;
@@ -300,8 +274,7 @@ namespace ProjTests
             var json = JsonSerializer.Serialize ( info1 , options ) ;
             Logger.Info ( json ) ;
             var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
-            return ;
-            
+
             var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
             while ( ! t.EndOfStream )
             {
@@ -318,7 +291,7 @@ namespace ProjTests
         }
         public List<Action> Finalizers { get { return _finalizers ; } set { _finalizers = value ; } }
 
-//        public //VisualStudioInstance VSI { get ; set ; }
+        //        public //VisualStudioInstance VSI { get ; set ; }
 
         /// <summary>Tests application of configuration in the app.config file.</summary>
         /// <autogeneratedoc />d ndfajdsad
@@ -340,9 +313,9 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-                , document.Name
-                , document.SourceCodeKind
-                             ) ;
+                              , document.Name
+                              , document.SourceCodeKind
+                              ) ;
             } ;
             await v.ProcessAsync ( ) ;
 
@@ -360,7 +333,7 @@ namespace ProjTests
             var p = Path.Combine ( root , p1 ) ;
             Assert.True ( File.Exists ( p ) ) ;
             var projectHandlerImpl =
- new ProjectHandlerImpl ( p , VSI, SynchronizationContext.Current) ;
+                new ProjectHandlerImpl ( p , VSI, SynchronizationContext.Current) ;
             await projectHandlerImpl.LoadAsync ( ) ;
             projectHandlerImpl.ProcessProject += ( workspace , project ) => {
                 Logger.Debug ( "project is {project}" , project.Name, Dispatcher.CurrentDispatcher) ;
@@ -368,9 +341,9 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-                        , document.Name
-                        , document.SourceCodeKind
-                             ) ;
+                              , document.Name
+                              , document.SourceCodeKind
+                              ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
                 WorkspacesViewModel.CreateFormattedCodeDelegate2> d = t
@@ -381,20 +354,20 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                       , yy.Item1
-                       , yy.Item2
-                       , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
-                            ) ;
+                             , yy.Item1
+                             , yy.Item2
+                             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+                             ) ;
             }
 
             foreach ( var inv in projectHandlerImpl.Invocations )
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-                        , inv.SourceLocation
-                        , inv.MethodSymbol.Name
-                        , inv.Msgval
-                             ) ;
+                              , inv.SourceLocation
+                              , inv.MethodSymbol.Name
+                              , inv.Msgval
+                              ) ;
             }
         }
 
@@ -406,11 +379,11 @@ namespace ProjTests
         }
 
         private async Task Command_ (
-            string         p1
-      , string         proj
-      , string         doc
-      , ILifetimeScope scope
-        )
+                                     string         p1
+                                     , string         proj
+                                     , string         doc
+                                     , ILifetimeScope scope
+                                     )
         {
             Assert.NotNull ( VSI ) ;
             var root = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos" ;
@@ -418,7 +391,7 @@ namespace ProjTests
             Assert.True ( File.Exists ( p ) ) ;
             // getScope.Resolve < ProjectHandlerImpl > ( ) ;
             var projectHandlerImpl =
- new ProjectHandlerImpl ( p , VSI, SynchronizationContext.Current) ;
+                new ProjectHandlerImpl ( p , VSI, SynchronizationContext.Current) ;
             await projectHandlerImpl.LoadAsync ( ) ;
             projectHandlerImpl.ProcessProject += ( workspace , project ) => {
                 Logger.Debug ( "project is {project}" , project.Name ) ;
@@ -427,8 +400,8 @@ namespace ProjTests
                 Logger.Trace ( "Document: {doc} {sourcecode}" , document.Name , document.SourceCodeKind ) ;
             } ;
             var theDocument = projectHandlerImpl.Workspace.CurrentSolution.Projects
-                                                .Single ( project => project.Name             == proj )
-                                                .Documents.Single ( document => document.Name == doc ) ;
+                .Single ( project => project.Name             == proj )
+                .Documents.Single ( document => document.Name == doc ) ;
             await projectHandlerImpl.OnPrepareProcessDocumentAsync ( theDocument ).ConfigureAwait ( true ) ;
             Action < LogInvocation > consumeLogInvocation = invocation => {
                 var container = new StackPanel ( ) { Orientation = Orientation.Vertical } ;
@@ -437,15 +410,15 @@ namespace ProjTests
                 visitor.Visit ( invocation.Statement ) ;
             } ;
             await projectHandlerImpl.OnProcessDocumentAsync ( theDocument , consumeLogInvocation )
-                                    .ConfigureAwait ( true ) ;
+                .ConfigureAwait ( true ) ;
             foreach ( var yy in projectHandlerImpl.OutputList )
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                       , yy.Item1
-                       , yy.Item2
-                       , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
-                            ) ;
+                             , yy.Item1
+                             , yy.Item2
+                             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+                             ) ;
             }
         }
 
@@ -481,9 +454,9 @@ namespace ProjTests
         }
 #endif
         private void CurrentDomainOnFirstChanceException (
-            object                        sender
-          , FirstChanceExceptionEventArgs e
-        )
+                                                          object                        sender
+                                                          , FirstChanceExceptionEventArgs e
+                                                          )
         {
             HandleInnerExceptions ( e ) ;
         }
@@ -514,7 +487,7 @@ namespace ProjTests
                         && ! seen.Contains ( inner ) )
                 {
 #if false
-Logger.Error(inner, inner.ToString);
+                    Logger.Error(inner, inner.ToString);
 #endif
 
                     Debug.WriteLine ( "Exception: " + e.Exception ) ;
@@ -526,26 +499,6 @@ Logger.Error(inner, inner.ToString);
             {
                 Debug.WriteLine ( "Exception: " + ex ) ;
             }
-        }
-
-        [ WpfFact ]
-        public void TestContainer ( )
-        {
-            var scope = ProjLibContainer.GetScope ( ) ;
-            // var q1= scope.Resolve<IEnumerable<ISourceCode>>();
-            // foreach ( var sourceCode in q1 )
-            // {
-            // Logger.Trace ( "SourceCode is {sourceCode}" , sourceCode.SourceiviCode ) ;
-            // }
-
-
-            var fmt = scope.Resolve < IEnumerable < IHasLogInvocations > > ( ) ;
-            foreach ( var q in fmt )
-            {
-                Logger.Info ( "tre is {x}" , q.LogInvocationList ) ;
-            }
-
-            Assert.NotNull ( fmt ) ;
         }
 
         [ WpfFact ]
@@ -583,7 +536,7 @@ Logger.Error(inner, inner.ToString);
             var codeControl = new FormattedCode2();
             var w = new Window();
             w.Content = codeControl;
-           
+
             Task t = new Task ( ( ) => { } ) ;
             w.Closed += ( sender , args ) => {
                 t.Start ( ) ;
@@ -619,33 +572,13 @@ Logger.Error(inner, inner.ToString);
         [ WpfFact ]
         public void TestCommand ( )
         {
-            // AppDomain.CurrentDomain.FirstChanceException += ( sender , args ) => {
-            // HandleInnerExceptions ( args) ;
-
-            // } ;
-
-            var transform = new TransformScope ( code , new FormattedCode ( ) , new Visitor2 ( ) ) ;
+            var transform = new TransformScope ( LibResources.Program_Parse , new FormattedCode ( ) , new Visitor2 ( ) ) ;
             Logger.Info ( "Transform is {transform}" , transform ) ;
             var w = new Window ( ) { } ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
             var fmt = transform.FormattedCodeControl as IFormattedCode;
             fmt.SourceCode = transform.SourceCode ;
             w.Content      = fmt ;
-            // var mi = new MakeInfo ( fmt , transform.SourceCode ) ;
-            // Assert.NotNull ( mi ) ;
-            // var task = fmt.TaskFactory.StartNew(ProjUtils.MakeFormattedCode, mi
-            // , CancellationToken.None, 
-            // TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning
-
-            // ,
-            // TaskScheduler.Default
-            // ) ;
-            // fmt.tasks.Add(task);
-            // w.ShowDialog();
-            // Task.WaitAll ( fmt.tasks.ToArray()) ;
-            // TaskCompletionSource <bool> tcs = new TaskCompletionSource < bool > ();
-            // w.Closed += ( sender , args ) => tcs.TrySetResult ( true ) ;
-            // Logger.Info ( "{xaml}" , XamlWriter.Save ( f.Content ) ) ;
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
@@ -658,8 +591,9 @@ Logger.Error(inner, inner.ToString);
         [ Fact ]
         public void TestRewrite ( )
         {
-            var comp = Compilation ;
-            var tree = TestSyntaxTree ;
+            var ctx = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
+            var comp = ctx.CompilationUnit;
+            var tree = ctx.CurrentModel.SyntaxTree;
             var codeAnalyseContext = AnalysisService.Parse(LibResources.Program_Parse, "test");
             // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
             // var s = new StringWriter ( ) ;

@@ -11,6 +11,6 @@
     <Grid>
     <Grid.ColumnDefinitions><ColumnDefinition Width="*"></ColumnDefinition></Grid.ColumnDefinitions>
       <Grid.RowDefinitions><RowDefinition Height="Auto"></RowDefinition></Grid.RowDefinitions>
-      <TextBlock Text="{Binding Path=RootContext.CompilationUnit.}"></TextBlock>
+      <TextBlock Text="{Binding Path=RootContext.CompilationUnit.Language}"></TextBlock>
     </Grid>
 </Page>

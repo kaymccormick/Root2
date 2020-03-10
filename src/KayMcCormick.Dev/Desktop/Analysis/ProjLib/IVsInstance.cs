@@ -1,5 +1,4 @@
-﻿#if VSSETTINGS
-#region header
+﻿#region header
 // Kay McCormick (mccor)
 // 
 // WpfApp2
@@ -17,7 +16,9 @@ using Microsoft.VisualStudio.Setup.Configuration ;
 
 namespace ProjLib
 {
+#if VSSETTINGS
     [TypeConverter(typeof(VsInstanceConverter))]
+#endif
     public interface IVsInstance
     {
         string InstanceId { get ; set ; }
@@ -33,13 +34,13 @@ namespace ProjLib
         string Description { get ; set ; }
 
         DateTime InstallDate { get ; set ; }
-
+#if VSSETTINGS
         VsInstanceState State { get ; }
-
+        
         IList < SetupPackage > PackageCollection { get ; }
 
         ISetupPackageReference Product { get ; set ; }
-
+#endif
         string ProductPath { get ; set ; }
 
         IList<IMruItem> MruItems { get ; }
@@ -49,9 +50,9 @@ namespace ProjLib
         IDictionary < string , object > Properties { get ; set ; }
 
         bool IsPrerelease { get ; set ; }
-
+#if VSSETTINGS
         ICollection < Workload > Workloads { get ; }
-
+#endif
         void AddWorkload (
             string id
           , string branch
@@ -64,4 +65,3 @@ namespace ProjLib
         ) ;
     }
 }
-#endif
