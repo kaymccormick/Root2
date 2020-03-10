@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <FeatureGroup Id="unused">
+      <ComponentGroupRef Id="lib_alpine_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_debian_arm64_native_.._files" />
+      <ComponentGroupRef Id="lib_alpine.3.9_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_fedora_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_debian.9_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_linux_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_osx_native_.._files" />
+      <ComponentGroupRef Id="lib_rhel_x64_native_.._files" />
+      <ComponentGroupRef Id="lib_ubuntu.16.04_arm64_native_.._files" />
+      <ComponentGroupRef Id="lib_ubuntu.18.04_x64_native_.._files" />
+    </FeatureGroup>
+	</Fragment>
+</Wix>

@@ -15,6 +15,7 @@ namespace AnalysisFramework
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        #if false
         public static IEnumerable < ILogInvocation > FindLogUsages (
             ICodeSource           document1
           , CompilationUnitSyntax currentRoot
@@ -88,10 +89,15 @@ namespace AnalysisFramework
                                                                               ).ProcessInvocation());
                                                          
         }
+        #endif
+        public const string LogBuilderClassName= "LogBuilder";
+        public const string LogBuilderNamespaceName = NLogNamespace + ".Fluent" ;
 
-        public const            string ILoggerClassName    = "ILogger" ;
-        public const            string LoggerClassName     = "Logger" ;
-        private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName ;
+        public const string LogBuilderClassFullName =
+            LogBuilderNamespaceName + "." + LogBuilderClassName ;
+        public const string ILoggerClassName = "ILogger";
+        public const            string LoggerClassName     = "Logger";
+        private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName;
 
         public static readonly string
             ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
@@ -102,6 +108,14 @@ namespace AnalysisFramework
         private static bool CheckSymbol ( IMethodSymbol methSym , params INamedTypeSymbol[] t1 )
         {
             var cType = methSym.ContainingType ;
+            return CheckTypeSymbol ( cType , t1 ) ;
+        }
+
+        private static bool CheckTypeSymbol (
+            INamedTypeSymbol          cType
+          , params INamedTypeSymbol[] t1
+        )
+        {
             var r = t1.Any ( symbol => SymbolEqualityComparer.Default.Equals ( cType , symbol ) ) ;
             return r ;
         }
@@ -127,41 +141,59 @@ namespace AnalysisFramework
             return isException ;
         }
 
-        public static Tuple < bool , IMethodSymbol , InvocationExpressionSyntax >
-            CheckInvocationExpression (
-                InvocationExpressionSyntax node
+        public static Tuple < bool , IMethodSymbol , SyntaxNode > CheckInvocationExpression (
+                SyntaxNode n1
               , SemanticModel              currentModel
               , params INamedTypeSymbol[]  t
             )
         {
             try
             {
-                var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
-#if TRACE
-                Logger.Debug (
-                              "{method} node location is {node}"
-                            , nameof ( CheckInvocationExpression )
-                            , node.GetLocation ( ).ToString()
-                             ) ;
-                Logger.Debug ( "{exprKind}, {expr}" , node.Expression.Kind ( ) , node.Expression.ToString() ) ;
-
-                Logger.Info (
-                             "symbolinfo is {node}"
-                           , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
-                            ) ;
-                if ( symbolInfo.Symbol == null )
+                if ( n1 is InvocationExpressionSyntax node )
                 {
-                    Logger.Info ( "candidate symbols: {x}" , symbolInfo.CandidateSymbols ) ;
-                }
-#endif
-                var methodSymbol = symbolInfo.Symbol as IMethodSymbol ;
-                var result = methodSymbol != null
-                             // TODO optmize
-                             && CheckSymbol ( methodSymbol , t ) ;
+                    var symbolInfo = currentModel.GetSymbolInfo ( node.Expression ) ;
 #if TRACE
-                Logger.Debug ( "result is {result}" , result ) ;
+                    Logger.Debug (
+                                  "{method} node location is {node}"
+                                , nameof ( CheckInvocationExpression )
+                                , node.GetLocation ( ).ToString ( )
+                                 ) ;
+                    Logger.Debug (
+                                  "{exprKind}, {expr}"
+                                , node.Expression.Kind ( )
+                                , node.Expression.ToString ( )
+                                 ) ;
+
+                    Logger.Info (
+                                 "symbolinfo is {node}"
+                               , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
+                                ) ;
+                    if ( symbolInfo.Symbol == null )
+                    {
+                        Logger.Info ( "candidate symbols: {x}" , symbolInfo.CandidateSymbols ) ;
+                    }
 #endif
-                return Tuple.Create ( result , methodSymbol , node ) ;
+
+                    var methodSymbol = symbolInfo.Symbol as IMethodSymbol ;
+                    var result = methodSymbol != null
+                                 // TODO optmize
+                                 && CheckSymbol ( methodSymbol , t ) ;
+#if TRACE
+                    Logger.Debug ( "result is {result}" , result ) ;
+#endif
+                    return Tuple.Create(result, methodSymbol, n1);
+                }
+                else if (n1 is ObjectCreationExpressionSyntax o)
+                {
+                    var symbolInfo = currentModel.GetSymbolInfo(o.Type);
+                    var typeSymbol = symbolInfo.Symbol as INamedTypeSymbol;
+                    var result = 
+                                  CheckTypeSymbol(typeSymbol, t);
+                    return Tuple.Create <bool, IMethodSymbol, SyntaxNode> ( result , null, n1 ) ;
+                }
+
+                throw new Exception ( "Error" ) ;
+
             }
             catch ( Exception ex )
             {
@@ -170,11 +202,15 @@ namespace AnalysisFramework
             }
         }
 
-        public static INamedTypeSymbol GetILoggerSymbol ( SemanticModel model )
+        public static INamedTypeSymbol GetILoggerSymbol(SemanticModel model)
         {
-            return model.Compilation.GetTypeByMetadataName ( ILoggerClassFullName ) ;
+            return model.Compilation.GetTypeByMetadataName(ILoggerClassFullName);
         }
 
+        public static INamedTypeSymbol GetLogBuilderSymbol(SemanticModel model)
+        {
+            return model.Compilation.GetTypeByMetadataName(LogBuilderClassFullName);
+        }
         public static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
         {
             return model.Compilation.GetTypeByMetadataName ( LoggerClassFullName ) ;

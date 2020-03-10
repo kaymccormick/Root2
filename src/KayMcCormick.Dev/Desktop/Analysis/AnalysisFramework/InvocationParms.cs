@@ -22,7 +22,7 @@ namespace AnalysisFramework
           , SyntaxTree                 syntaxTree
           , SemanticModel              model
           , SyntaxNode relevantNode
-            , Tuple<bool, IMethodSymbol, InvocationExpressionSyntax> tuple
+            , Tuple < bool , IMethodSymbol , SyntaxNode > tuple
           , INamedTypeSymbol           namedTypeSymbol
 
         )
@@ -37,12 +37,10 @@ relevantNode.ToString() ) ;
             ICodeSoure = codeSoure ;
             RelevantNode = relevantNode ;
             var (_ , item2 , item3) = tuple ;
-            InvocationExpression = item3;
+            InvocationExpression = item3 as InvocationExpressionSyntax;
             MethodSymbol = item2;
             NamedTypeSymbol = namedTypeSymbol ;
         }
-
-        // public InvocationParms ( ICodeSource codeSoure , SyntaxTree syntaxTree , SemanticModel currentModel , StatementSyntax statement , InvocationExpressionSyntax invocation , IMethodSymbol namedTypeSymbol , INamedTypeSymbol exceptionType ) { }
 
         public SemanticModel Model { get ; private set ; }
 

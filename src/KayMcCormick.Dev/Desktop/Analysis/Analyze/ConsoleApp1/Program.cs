@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
@@ -203,14 +204,22 @@ namespace ConsoleApp1
             #endif
 
 #if MSBUILDLOCATOR
-            var instances = MSBuildLocator.RegisterDefaults ( ) ;
-                // .QueryVisualStudioInstances ( )
-                                          // .Where (
-                                                  // instance 
-                                                      // => instance.Version.Major    == 16
-                                                         // && instance.Version.Minor == 4
-                                                 // ) ;
-            // MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
+            // var instances = MSBuildLocator.RegisterDefaults ( ) ;
+            var i2 = MSBuildLocator
+               .QueryVisualStudioInstances (
+                                            new VisualStudioInstanceQueryOptions ( )
+                                            {
+                                                DiscoveryTypes = DiscoveryType.VisualStudioSetup
+                                            }
+                                           )
+               .Where ( instance => instance.Version.Major == 16 && instance.Version.Minor == 4 )
+               .First ( ) ;
+            Logger.Warn(
+                        "Selected instance {instance} {path}"
+                      , i2.Name
+                      , i2.MSBuildPath
+                       );
+            MSBuildLocator.RegisterInstance (i2);
 #endif
             int i = 0 ;
             var browserNodeCollection = viewModel.ProjectBrowserViewModel.RootCollection ;
@@ -247,6 +256,10 @@ namespace ConsoleApp1
                 Console.WriteLine ( projectNode.SolutionPath ) ;
                 _ = Console.ReadLine ( ) ;
                 await viewModel.AnalyzeCommand ( projectNode ) ;
+                using ( var s = File.OpenWrite ( "invocs.json" ) )
+                {
+                    await JsonSerializer.SerializeAsync( s , viewModel.LogInvocations ) ;
+                }
             }
             //
             // var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;

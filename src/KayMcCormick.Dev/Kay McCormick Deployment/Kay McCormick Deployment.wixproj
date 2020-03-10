@@ -10,6 +10,7 @@
     <OutputType>Package</OutputType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -19,10 +20,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>Debug;KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
+    <WixVariables>
+    </WixVariables>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="File1.wxs" />
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,8 +145,8 @@
       <Name>WcfService1</Name>
       <Project>{e6ad0c25-0e7f-4e23-b3c9-c56e059e51c9}</Project>
       <Private>True</Private>
-      <DoNotHarvest>False</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites;Sources</RefProjectOutputGroups>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Documents;Satellites;Sources;Content</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
