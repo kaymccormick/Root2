@@ -4,20 +4,29 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.IO ;
-using System.Linq ;
-using System.Text ;
-using System.Threading.Tasks ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
 using NLog.Fluent ;
 
 namespace KayMcCormick.Dev
 {
-    public class Utils
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class Utils
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public static void HandleInnerExceptions (
+        // ReSharper disable once UnusedMember.Global
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="level"></param>
+        /// <param name="logger"></param>
+        [ UsedImplicitly ]
+        private static void HandleInnerExceptions (
             Exception e
           , LogLevel  level  = null
           , Logger    logger = null
@@ -37,8 +46,6 @@ namespace KayMcCormick.Dev
                            .Write ( ) ;
                     }
 
-                    var msg = $"{e.Message}" ;
-                    doLog ( e ) ;
                     s.WriteLine ( e.Message ) ;
                     var inner = e.InnerException ;
                     var seen = new HashSet < object > ( ) ;
@@ -74,7 +81,7 @@ namespace KayMcCormick.Dev
         private static void DoDump (
             IndentedTextWriter dumpConfig
           , IDictionary        doDumpConfig
-          , int                depth = 0
+          , [ UsedImplicitly ] int                depth = 0
         )
         {
             foreach ( var key in doDumpConfig.Keys )
@@ -104,7 +111,7 @@ namespace KayMcCormick.Dev
                 }
                 else
                 {
-                    @out = @out + " = " + value?.ToString ( ) ;
+                    @out = @out + " = " + value ;
                     dumpConfig.WriteLine ( @out ) ;
                 }
             }

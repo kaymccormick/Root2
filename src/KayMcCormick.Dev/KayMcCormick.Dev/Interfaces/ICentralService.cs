@@ -1,26 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy ;
+﻿using System.Security.Policy ;
 using System.ServiceModel ;
-using System.Text;
-using System.Threading.Tasks;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ServiceContract]
     public interface ICentralService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [ OperationContract ]
         RegisterApplicationInstanceResponse RegisterApplicationInstance (
             RegisterApplicationInstanceRequest request
         ) ;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CentralService : ICentralService
     {
         #region Implementation of ICentralService
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public RegisterApplicationInstanceResponse RegisterApplicationInstance (
             RegisterApplicationInstanceRequest request
         )
@@ -30,16 +42,15 @@ namespace KayMcCormick.Dev.Interfaces
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    [ UsedImplicitly ]
     public class RegisterApplicationInstanceRequest
     {
-        public Url EndpointUrl { get ; set ; }
-
-        public RegisterApplicationInstanceRequest ( )
-        {
-        }
-    }
-
-    public class RegisterApplicationInstanceResponse
-    {
+        /// <summary>
+        /// 
+        /// </summary>
+        [ UsedImplicitly ] public Url EndpointUrl { get ; set ; }
     }
 }

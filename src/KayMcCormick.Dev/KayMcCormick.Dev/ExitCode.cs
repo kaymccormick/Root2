@@ -17,7 +17,10 @@
         /// <summary>Invalid arguments to application.</summary>
         // ReSharper disable once UnusedMember.Global
         ArgumentsError = 2
-
-       , ExceptionalError
+            ,
+        /// <summary>
+        /// 
+        /// </summary>
+        ExceptionalError
     }
 }

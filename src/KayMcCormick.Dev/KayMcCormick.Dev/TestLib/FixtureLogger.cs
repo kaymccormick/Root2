@@ -1,5 +1,4 @@
 ﻿using System ;
-using KayMcCormick.Dev.Logging ;
 using NLog ;
 using NLog.Fluent ;
 

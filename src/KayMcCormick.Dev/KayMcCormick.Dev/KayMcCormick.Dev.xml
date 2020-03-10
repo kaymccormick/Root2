@@ -21,6 +21,20 @@
             
             </summary>
         </member>
+        <member name="M:KayMcCormick.Dev.AppInfoService.#ctor(System.DateTime,KayMcCormick.Dev.Interfaces.IObjectIdProvider)">
+            <summary>
+            
+            </summary>
+            <param name="startupTime"></param>
+            <param name="objectId"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.AppInfoService.GetAppInstanceInfo(KayMcCormick.Dev.AppInstanceInfoRequest)">
+            <summary>
+            
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="T:KayMcCormick.Dev.WireInstanceInfo">
             <summary>
             
@@ -36,17 +50,22 @@
             
             </summary>
         </member>
-        <member name="M:KayMcCormick.Dev.WireComponentInfo.#ctor">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="P:KayMcCormick.Dev.WireComponentInfo.Instances">
             <summary>
             
             </summary>
         </member>
+        <member name="P:KayMcCormick.Dev.WireComponentInfo.Id">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.AppInstanceInfoResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.AppInstanceInfoResponse.Info">
             <summary>
             
             </summary>
@@ -71,10 +90,50 @@
             
             </summary>
         </member>
+        <member name="P:KayMcCormick.Dev.AppInstanceInfo.LoggerInfos">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.AppInstanceInfo.ComponentInfos">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.AppInstanceInfoRequest">
             <summary>
             
             </summary>
+        </member>
+        <member name="T:KayMcCormick.Dev.AppInfraException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.AppInfraException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.AppInfraException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.AppInfraException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.AppInfraException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
         </member>
         <member name="T:KayMcCormick.Dev.ApplicationInstanceHost">
             <summary>
@@ -150,6 +209,31 @@
             
             </summary>
         </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.AppStartupEventArgs">
             <summary>
             
@@ -196,6 +280,11 @@
             
             </summary>
         </member>
+        <member name="F:KayMcCormick.Dev.ConfigurationSetting.LogsRootDirectory">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.IConfiguration">
             <summary>
             
@@ -207,6 +296,11 @@
             </summary>
         </member>
         <member name="T:KayMcCormick.Dev.Win32RegistryConfiguration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Win32RegistryConfiguration.LoadConfiguration">
             <summary>
             
             </summary>
@@ -236,6 +330,11 @@
             
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.DataBindingTraceFilter.MyTraceFilter">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:KayMcCormick.Dev.DataBindingTraceFilter.MyTraceFilter.ShouldTrace(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.String,System.Object[],System.Object,System.Object[])">
             <summary>When overridden in a derived class, determines whether the trace listener should trace the event.</summary>
@@ -283,6 +382,13 @@
             <returns></returns>
             <autogeneratedoc />
             TODO Edit XML Comment Template for GetInstanceByComponentRegistration
+        </member>
+        <member name="M:KayMcCormick.Dev.DefaultObjectIdProvider.GetComponentInfo(System.Guid)">
+            <summary>
+            
+            </summary>
+            <param name="regId"></param>
+            <returns></returns>
         </member>
         <member name="M:KayMcCormick.Dev.DefaultObjectIdProvider.GetInstanceCount(Autofac.Core.IComponentRegistration)">
             <summary>Gets the instance count.</summary>
@@ -345,6 +451,11 @@
         <member name="F:KayMcCormick.Dev.ExitCode.ArgumentsError">
             <summary>Invalid arguments to application.</summary>
         </member>
+        <member name="F:KayMcCormick.Dev.ExitCode.ExceptionalError">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.IdGeneratorModule">
             <summary></summary>
             <seealso cref="T:Autofac.Module" />
@@ -384,6 +495,40 @@
             </remarks>
             <param name="componentRegistry">The component registry.</param>
             <param name="registration">The registration to attach functionality to.</param>
+        </member>
+        <member name="T:KayMcCormick.Dev.Interfaces.ICentralService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Interfaces.ICentralService.RegisterApplicationInstance(KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceRequest)">
+            <summary>
+            
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.Interfaces.CentralService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Interfaces.CentralService.RegisterApplicationInstance(KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceRequest)">
+            <summary>
+            
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceRequest.EndpointUrl">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:KayMcCormick.Dev.Interfaces.IHaveObjectId">
             <summary></summary>
@@ -446,10 +591,28 @@
             <autogeneratedoc />
             TODO Edit XML Comment Template for GetRootNodes
         </member>
+        <member name="M:KayMcCormick.Dev.Interfaces.IObjectIdProvider.GetComponentInfo(System.Guid)">
+            <summary>
+            
+            </summary>
+            <param name="regId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceResponse">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.InfraModule">
             <summary>
             
             </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.InfraModule.Load(Autofac.ContainerBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="builder"></param>
         </member>
         <member name="T:KayMcCormick.Dev.InstanceInfo">
             <summary></summary>
@@ -504,10 +667,63 @@
             <param name="context"></param>
             <returns></returns>
         </member>
+        <member name="T:KayMcCormick.Dev.LoggingAttributeContext">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.LoggingAttributeContext.Target">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.LoggingAttributeContext.RuleMatch(NLog.Config.LoggingRule)">
+            <summary>
+            
+            </summary>
+            <param name="rule"></param>
+            <returns></returns>
+        </member>
         <member name="T:KayMcCormick.Dev.LoggingRuleAttribute">
             <summary>
             
             </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.LoggingRuleAttribute.ClassLoggerType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.LoggingRuleAttribute.Level">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.LoggingRuleAttribute.#ctor(System.Type,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="classLoggerType"></param>
+            <param name="logLevel"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.LoggingRuleAttribute.#ctor(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="pattern"></param>
+            <param name="logLevel"></param>
+        </member>
+        <member name="P:KayMcCormick.Dev.LoggingRuleAttribute.LoggerNamePattern">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.LoggingRuleAttribute.Apply(KayMcCormick.Dev.LoggingAttributeContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
         </member>
         <member name="T:KayMcCormick.Dev.Logging.AppLoggingConfigHelper">
             <summary>Static class containing logging configuration methods</summary>
@@ -599,6 +815,11 @@
             </summary>
             <param name="rule2"></param>
         </member>
+        <member name="T:KayMcCormick.Dev.Logging.MyJsonLayout">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:KayMcCormick.Dev.Logging.MyJsonLayout.#ctor">
             <summary>
             
@@ -621,7 +842,85 @@
             
             </summary>
         </member>
+        <member name="M:KayMcCormick.Dev.Logging.JsonTypeConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="typeToConvert"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.JsonTypeConverter.Write(System.Text.Json.Utf8JsonWriter,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="options"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.Logging.LogEventInfoConverter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:KayMcCormick.Dev.Logging.LogEventInfoConverter.ReadDelegate">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="toConvert"></param>
+            <param name="options"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.LogEventInfoConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="typeToConvert"></param>
+            <param name="options"></param>
+            <returns></returns>
+            <exception cref="T:System.Text.Json.JsonException"></exception>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.LogEventInfoConverter.Write(System.Text.Json.Utf8JsonWriter,NLog.LogEventInfo,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="options"></param>
+        </member>
+        <member name="T:KayMcCormick.Dev.Logging.DictConverterFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.DictConverterFactory.CanConvert(System.Type)">
+            <summary>
+            
+            </summary>
+            <param name="typeToConvert"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.DictConverterFactory.CreateConverter(System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="typeToConvert"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.Logging.DictConverterFactory.Inner">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:KayMcCormick.Dev.Logging.AppLoggingConfiguration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Logging.AppLoggingConfiguration.IsEnabledConsoleTarget">
             <summary>
             
             </summary>
@@ -642,6 +941,16 @@
             <summary>
                 Initializes a new instance of the
                 <see cref="T:NLog.Config.LoggingConfiguration" /> class.
+            </summary>
+        </member>
+        <member name="T:KayMcCormick.Dev.Logging.ILoggingConfiguration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Logging.ILoggingConfiguration.IsEnabledConsoleTarget">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:KayMcCormick.Dev.Logging.LogDelegates">
@@ -1113,7 +1422,11 @@
             <summary>
             
             </summary>
-            <param name="logLevel"></param>
+        </member>
+        <member name="P:KayMcCormick.Dev.TestLib.LogTestMethodAttribute.Level">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:KayMcCormick.Dev.TestLib.LogTestMethodAttribute.After(System.Reflection.MethodInfo)">
             <summary>
@@ -1167,6 +1480,19 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="info" /> is <see langword="null" />.</exception>
             <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
+        </member>
+        <member name="T:KayMcCormick.Dev.Utils">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Utils.HandleInnerExceptions(System.Exception,NLog.LogLevel,NLog.Logger)">
+            <summary>
+            
+            </summary>
+            <param name="e"></param>
+            <param name="level"></param>
+            <param name="logger"></param>
         </member>
         <member name="M:KayMcCormick.Dev.Utils.PerformLogConfigDump(System.IO.TextWriter)">
             <summary>

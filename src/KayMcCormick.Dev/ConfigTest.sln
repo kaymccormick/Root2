@@ -9,6 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KayMcCormick.Dev", "KayMcCo
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ConfigTestSetup", "Install\ConfigTestSetup\ConfigTestSetup.wixproj", "{D7672351-3BB3-4F76-9FEB-7046F9D0FBED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibTests", "Tests\ClassLibTests\ClassLibTests.csproj", "{94530180-751F-4A72-A747-637D066EF5A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3B099ACC-8896-4AC9-8991-80E6A63C15B6}"
+	ProjectSection(SolutionItems) = preProject
+		ConfigTest\.editorconfig = ConfigTest\.editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +56,16 @@ Global
 		{D7672351-3BB3-4F76-9FEB-7046F9D0FBED}.Release|x64.ActiveCfg = Release|x86
 		{D7672351-3BB3-4F76-9FEB-7046F9D0FBED}.Release|x86.ActiveCfg = Release|x86
 		{D7672351-3BB3-4F76-9FEB-7046F9D0FBED}.Release|x86.Build.0 = Release|x86
+		{94530180-751F-4A72-A747-637D066EF5A9}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{94530180-751F-4A72-A747-637D066EF5A9}.Debug|x64.ActiveCfg = Debug|x64
+		{94530180-751F-4A72-A747-637D066EF5A9}.Debug|x64.Build.0 = Debug|x64
+		{94530180-751F-4A72-A747-637D066EF5A9}.Debug|x86.ActiveCfg = Debug|x86
+		{94530180-751F-4A72-A747-637D066EF5A9}.Debug|x86.Build.0 = Debug|x86
+		{94530180-751F-4A72-A747-637D066EF5A9}.Release|Any CPU.ActiveCfg = Release|x86
+		{94530180-751F-4A72-A747-637D066EF5A9}.Release|x64.ActiveCfg = Release|x64
+		{94530180-751F-4A72-A747-637D066EF5A9}.Release|x64.Build.0 = Release|x64
+		{94530180-751F-4A72-A747-637D066EF5A9}.Release|x86.ActiveCfg = Release|x86
+		{94530180-751F-4A72-A747-637D066EF5A9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

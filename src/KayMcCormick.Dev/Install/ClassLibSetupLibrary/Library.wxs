@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define KayMcCormick.Dev_TargetDir=$(var.KayMcCormick.Dev.TargetDir)?>
+	<Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="ClassLibSetup" Name="KayMcCormick">
+        </Directory>
+      </Directory>
+    </Directory>
+
+      <!-- TODO: Put your code here. -->
+	</Fragment>
+	<Fragment>
+	  <ComponentGroup Id="INSTALLFOLDER_files" Directory="INSTALLFOLDER">
+	    <Component Id="System.Reactive.dll" Guid="dccc8a29-0efb-4cd9-b1e5-69ef84f272da">
+	      <File Id="System.Reactive.dll" Name="System.Reactive.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Reactive.dll" />
+	    </Component>
+	    <Component Id="KayMcCormick.Dev.dll" Guid="e9976c11-6859-47bc-a01f-03b923aa092f">
+	      <File Id="KayMcCormick.Dev.dll" Name="KayMcCormick.Dev.dll" Source="$(var.KayMcCormick.Dev_TargetDir)KayMcCormick.Dev.dll" />
+	    </Component>
+	    <Component Id="NLog.dll" Guid="df978a3b-4e2d-49de-bb9d-f822d921cfd4">
+	      <File Id="NLog.dll" Name="NLog.dll" Source="$(var.KayMcCormick.Dev_TargetDir)NLog.dll" />
+	    </Component>
+	    <Component Id="Autofac.dll" Guid="8327dd48-f091-4e30-bbe0-f0728784d77a">
+	      <File Id="Autofac.dll" Name="Autofac.dll" Source="$(var.KayMcCormick.Dev_TargetDir)Autofac.dll" />
+	    </Component>
+	    <Component Id="xunit.core.dll" Guid="ee63a341-37fa-41a6-8d3d-2d5ab1b8eee6">
+	      <File Id="xunit.core.dll" Name="xunit.core.dll" Source="$(var.KayMcCormick.Dev_TargetDir)xunit.core.dll" />
+	    </Component>
+	    <Component Id="xunit.abstractions.dll" Guid="2b083296-accc-4b78-a7a8-db2e715bc1e7">
+	      <File Id="xunit.abstractions.dll" Name="xunit.abstractions.dll" Source="$(var.KayMcCormick.Dev_TargetDir)xunit.abstractions.dll" />
+	    </Component>
+	    <Component Id="Castle.Core.dll" Guid="c5a9ced5-c528-43fc-aef9-f2bde348a4dc">
+	      <File Id="Castle.Core.dll" Name="Castle.Core.dll" Source="$(var.KayMcCormick.Dev_TargetDir)Castle.Core.dll" />
+	    </Component>
+	    <Component Id="System.Text.Json.dll" Guid="a226d93b-2a28-4724-9ea1-777c19602e0d">
+	      <File Id="System.Text.Json.dll" Name="System.Text.Json.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Text.Json.dll" />
+	    </Component>
+	    <Component Id="xunit.execution.desktop.dll" Guid="82e8a1f2-11c1-472a-8447-7d4aef064ab0">
+	      <File Id="xunit.execution.desktop.dll" Name="xunit.execution.desktop.dll" Source="$(var.KayMcCormick.Dev_TargetDir)xunit.execution.desktop.dll" />
+	    </Component>
+	    <Component Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="deba2546-cfd0-440c-b3ef-1a9b230c5838">
+	      <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.KayMcCormick.Dev_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+	    </Component>
+	    <Component Id="System.Threading.Tasks.Extensions.dll" Guid="d87a86df-420b-4602-9cae-de4d2e1ed49e">
+	      <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Threading.Tasks.Extensions.dll" />
+	    </Component>
+	    <Component Id="System.Runtime.CompilerServices.Unsafe.dll" Guid="e64451b0-df01-4f5e-9a78-0cbe26b03c26">
+	      <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+	    </Component>
+	    <Component Id="System.ValueTuple.dll" Guid="61a95792-1bc1-4149-ba63-1a3968795eb9">
+	      <File Id="System.ValueTuple.dll" Name="System.ValueTuple.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.ValueTuple.dll" />
+	    </Component>
+	    <Component Id="System.Memory.dll" Guid="002a745a-96ec-43eb-9bc5-157554a24748">
+	      <File Id="System.Memory.dll" Name="System.Memory.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Memory.dll" />
+	    </Component>
+	    <Component Id="System.Numerics.Vectors.dll" Guid="e9f8e87f-60ec-448a-84bb-1f8a2fc79ff3">
+	      <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Numerics.Vectors.dll" />
+	    </Component>
+	    <Component Id="System.Buffers.dll" Guid="18983a5e-6f3e-43ed-950c-f80c081ea397">
+	      <File Id="System.Buffers.dll" Name="System.Buffers.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Buffers.dll" />
+	    </Component>
+	    <Component Id="System.Text.Encodings.Web.dll" Guid="17077fd3-cbc2-4aed-a597-71d42c09e641">
+	      <File Id="System.Text.Encodings.Web.dll" Name="System.Text.Encodings.Web.dll" Source="$(var.KayMcCormick.Dev_TargetDir)System.Text.Encodings.Web.dll" />
+	    </Component>
+	  </ComponentGroup>
+	</Fragment>
+</Wix>

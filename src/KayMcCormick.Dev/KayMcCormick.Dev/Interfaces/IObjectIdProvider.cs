@@ -71,6 +71,11 @@ namespace KayMcCormick.Dev.Interfaces
         /// TODO Edit XML Comment Template for GetRootNodes
         ICollection < Guid > GetRootNodes ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regId"></param>
+        /// <returns></returns>
         ComponentInfo GetComponentInfo ( Guid regId ) ;
     }
 }

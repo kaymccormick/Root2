@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel ;
 using System.Reflection ;
+using JetBrains.Annotations ;
 using NLog ;
 using NLog.Fluent ;
 using Xunit.Sdk ;
@@ -12,6 +13,7 @@ namespace KayMcCormick.Dev.TestLib
     /// TODO Edit XML Comment Template for LogTestMethodAttribute
     public class LogTestMethodAttribute : BeforeAfterTestAttribute
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly        LogLevel _level ;
         private static readonly Logger   Logger = LogManager.GetCurrentClassLogger ( ) ;
         private                 LogLevel LogLevel ;
@@ -19,14 +21,15 @@ namespace KayMcCormick.Dev.TestLib
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logLevel"></param>
         public LogTestMethodAttribute ( )
         {
-            LogLevel level = null ;
-            _level = level ?? LogLevel.Debug ;
+            _level = LogLevel.Debug ;
         }
 
-        public LogLevel Level { get => LogLevel ; set => LogLevel = value ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ UsedImplicitly ] public LogLevel Level { get => LogLevel ; set => LogLevel = value ; }
 
         /// <summary>
         ///     This method is called after the test method is executed.

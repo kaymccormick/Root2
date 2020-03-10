@@ -69,9 +69,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\PublishProfiles\x86DebugBuild.pubxml" />
     <None Include="Properties\PublishProfiles\x86ReleaseBuild.pubxml" />
     <None Include="Web.Debug.config">

@@ -69,6 +69,11 @@ namespace KayMcCormick.Dev
             return Array.Empty < InstanceInfo > ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regId"></param>
+        /// <returns></returns>
         public ComponentInfo GetComponentInfo ( Guid regId )
         {
             ByComponent.TryGetValue ( regId , out var compInfo ) ;

@@ -3,6 +3,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)\..\..\..\build</KmGlobalOutputPath>
+    <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
+    <OutputPath>$(KmGlobalOutputPath)\install\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>44e3b99f-9da6-419e-b9bc-ed0feb5a177c</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
@@ -13,13 +16,9 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug;KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
     <WixVariables>
     </WixVariables>

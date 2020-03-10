@@ -5,6 +5,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)\..\..\..\build</KmGlobalOutputPath>
+    <KmLibBindRedir Condition=" '$(KmLibBindRedit)' == '' ">true</KmLibBindRedir>
+    <AutoGenerateBindingRedirects>$(KmLibBindRedir)</AutoGenerateBindingRedirects>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\lib\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</ProjectGuid>
@@ -78,7 +80,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -108,7 +109,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Container\ContainerAdjunct.cs" />
     <Compile Include="DataBindingTraceFilter\MyTraceFilter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
@@ -120,10 +120,13 @@
     <Compile Include="InfraModule.cs" />
     <Compile Include="InstanceInfo.cs" />
     <Compile Include="Interfaces\IObjectIdProvider.cs" />
+    <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
+    <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
     <Compile Include="Logging\GlobalSuppressions.cs" />
+    <Compile Include="Logging\ILoggingConfiguration.cs" />
     <Compile Include="Logging\LogDelegates.cs" />
     <Compile Include="Logging\LogFactoryInterceptor.cs" />
     <Compile Include="Logging\LoggerFactoryHook.cs" />
@@ -175,9 +178,6 @@
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading.Tasks.Extensions">
-      <Version>4.5.3</Version>
     </PackageReference>
     <PackageReference Include="Xunit">
       <Version>2.4.1</Version>
@@ -261,6 +261,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Container\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

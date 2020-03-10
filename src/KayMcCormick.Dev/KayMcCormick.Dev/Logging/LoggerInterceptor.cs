@@ -1,7 +1,6 @@
 ﻿using System ;
 using System.Linq ;
 using Castle.DynamicProxy ;
-using KayMcCormick.Logging.Common ;
 using NLog ;
 
 namespace KayMcCormick.Dev.Logging
@@ -12,12 +11,6 @@ namespace KayMcCormick.Dev.Logging
     /// TODO Edit XML Comment Template for LoggerInterceptor
     public class LoggerInterceptor : IInterceptor
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="System.Object" />
-        ///     class.
-        /// </summary>
-        public LoggerInterceptor ( ) { }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoggerInterceptor" />
         ///     class.

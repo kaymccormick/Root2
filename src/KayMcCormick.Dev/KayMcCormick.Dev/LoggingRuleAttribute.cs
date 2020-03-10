@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Linq ;
+using JetBrains.Annotations ;
 using NLog ;
 using NLog.Config ;
 using NLog.Targets ;
@@ -51,13 +52,24 @@ namespace KayMcCormick.Dev
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class LoggingAttributeContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Target Target { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <returns></returns>
         public bool RuleMatch ( LoggingRule rule )
         {
-            return Target != null ? rule.Targets.Contains ( Target ) : true ;
+            return Target == null || rule.Targets.Contains ( Target ) ;
         }
     }
 
@@ -69,10 +81,22 @@ namespace KayMcCormick.Dev
     {
         private string _loggerNamePattern ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ClassLoggerType { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LogLevel Level { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classLoggerType"></param>
+        /// <param name="logLevel"></param>
+        [ UsedImplicitly ]
         public LoggingRuleAttribute(Type classLoggerType, string logLevel)
         {
             ClassLoggerType   = classLoggerType;
@@ -80,6 +104,11 @@ namespace KayMcCormick.Dev
             Level             = LogLevel.FromString(logLevel);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="logLevel"></param>
         public LoggingRuleAttribute(string pattern, string logLevel)
         {
             ClassLoggerType = null ;
@@ -87,6 +116,9 @@ namespace KayMcCormick.Dev
             Level             = LogLevel.FromString(logLevel);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string LoggerNamePattern
         {
             get => _loggerNamePattern ;
@@ -94,7 +126,12 @@ namespace KayMcCormick.Dev
         }
 
         #region Overrides of LoggingAttribute
-        public override bool Apply ( LoggingAttributeContext context ) { return false ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override bool Apply ( LoggingAttributeContext context ) => false ;
         #endregion
     }
 }

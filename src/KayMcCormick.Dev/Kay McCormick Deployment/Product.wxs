@@ -11,7 +11,9 @@
   <?define WpfApp2_TargetDir=$(var.WpfApp2.TargetDir)?>
   <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
   <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define ConsoleServiceHost_TargetDir=$(var.ConsoleServiceHost.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?>
-  <Product Id="*" Name="Kay_McCormick_Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
+  <Product Id="*" Name="Kay_McCormick_Deployment" 
+   Language="1033" Version="1.0.0.0"
+     Manufacturer="Kay McCormick" UpgradeCode="715179d2-24c8-46d4-a637-03dabc5a52a1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -28,11 +30,9 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="Kay_McCormick_Deployment">
-          <Directory Id="BIN" Name="bin" />
           <Directory Id="LogReceiverServiceDirectory" Name="WcfLogReceiver">
             <Directory Id="LogReceiverServiceBinDir" Name="bin" />
           </Directory>
-          <Directory Id="bin" Name="bin" />
           <Directory Id="lib" Name="lib">
             <Directory Id="lib_win32" Name="win32">
               <Directory Id="lib_win32_x86" Name="x86" />

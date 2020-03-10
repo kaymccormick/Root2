@@ -10,7 +10,6 @@
 // ---
 #endregion
 using Castle.DynamicProxy ;
-using KayMcCormick.Logging.Common ;
 
 namespace KayMcCormick.Dev.Logging
 {

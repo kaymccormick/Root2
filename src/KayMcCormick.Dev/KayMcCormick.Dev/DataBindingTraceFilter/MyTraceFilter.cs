@@ -16,9 +16,13 @@ using NLog ;
 
 namespace KayMcCormick.Dev.DataBindingTraceFilter
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class MyTraceFilter : TraceFilter
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         /// <summary>When overridden in a derived class, determines whether the trace listener should trace the event.</summary>
         /// <param name="cache">The <see cref="T:System.Diagnostics.TraceEventCache" /> that contains information for the trace event.</param>
         /// <param name="source">The name of the source.</param>

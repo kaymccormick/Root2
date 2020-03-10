@@ -1,5 +1,4 @@
 ﻿using System ;
-using System.Collections.Generic ;
 using System.Linq ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
@@ -22,9 +21,9 @@ namespace KayMcCormick.Dev
             }
 
             return string.Join (
-                                ( string ) ", "
-                              , ( IEnumerable < string > ) reg.Services.Where ( ( service , i ) => service != null )
-                                                              .Select ( ( service ,         i ) => service.DebugFormat ( ) )
+                                ", "
+                              , reg.Services.Where ( ( service , i ) => service != null )
+                                   .Select ( ( service ,         i ) => service.DebugFormat ( ) )
                                ) ;
         }
 

@@ -1,12 +1,9 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.Linq ;
 using System.ServiceModel ;
-using System.Text ;
-using System.Threading.Tasks ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 using NLog ;
-using NLog.Targets ;
 
 namespace KayMcCormick.Dev
 {
@@ -33,9 +30,14 @@ namespace KayMcCormick.Dev
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class AppInfoService : IAppInfoService
     {
-        private DateTime _startupTime ;
+        private readonly DateTime _startupTime ;
         private readonly IObjectIdProvider _objectId ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startupTime"></param>
+        /// <param name="objectId"></param>
         public AppInfoService ( DateTime startupTime, IObjectIdProvider objectId )
         {
             _startupTime = startupTime ;
@@ -43,14 +45,19 @@ namespace KayMcCormick.Dev
         }
 
         #region Implementation of IAppInfoService
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public AppInstanceInfoResponse GetAppInstanceInfo ( AppInstanceInfoRequest request )
         {
             var appInstanceInfo = new AppInstanceInfo ( ) { StartupTime = _startupTime } ;
 
-            foreach (var target in NLog.LogManager.Configuration.AllTargets)
+            foreach (var target in LogManager.Configuration.AllTargets)
             {
-                var loginfo = new LoggerInfo ( ) { TargetName = target.Name } ;
-                appInstanceInfo.LoggerInfos.Add ( loginfo ) ;
+                var logInfo = new LoggerInfo ( ) { TargetName = target.Name } ;
+                appInstanceInfo.LoggerInfos.Add ( logInfo ) ;
             }
 
 
@@ -68,7 +75,7 @@ namespace KayMcCormick.Dev
                                                  Desc = infoInstance.Instance.ToString ( )
                                              }
                                             ) ;
-                        appInstanceInfo.ComponentInfos.Add ( @info1 ) ;
+                        appInstanceInfo.ComponentInfos.Add ( info1 ) ;
                     }
                 }
             }
@@ -86,11 +93,10 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class WireInstanceInfo
     {
-        private string _desc ;
         /// <summary>
         /// 
         /// </summary>
-        public string Desc { get { return _desc ; } set { _desc = value ; } }
+        public string Desc { get ; set ; }
     }
 
     /// <summary>
@@ -98,21 +104,18 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class WireComponentInfo
     {
-        private List<WireInstanceInfo> _instances = new List < WireInstanceInfo > ();
+        private readonly List<WireInstanceInfo> _instances = new List < WireInstanceInfo > ();
         private Guid _id ;
 
         /// <summary>
         /// 
         /// </summary>
-        public WireComponentInfo ( ) {
-        }
+        public List<WireInstanceInfo> Instances => _instances ;
 
         /// <summary>
         /// 
         /// </summary>
-        public List<WireInstanceInfo> Instances { get { return _instances ; } }
-
-        public Guid Id { get { return _id ; } set { _id = value ; } }
+        public Guid Id { get => _id ; set { _id = value ; } }
     }
 
     /// <summary>
@@ -120,6 +123,9 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class AppInstanceInfoResponse
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public AppInstanceInfo Info { get ; set ; }
     }
 
@@ -140,20 +146,27 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class AppInstanceInfo
     {
-        private List<WireComponentInfo> _componentInfos = new List < WireComponentInfo > ();
+        private readonly List<WireComponentInfo> _componentInfos = new List < WireComponentInfo > ();
 
         /// <summary>
         /// 
         /// </summary>
         public DateTime StartupTime { get ; set ; }
+        /// <summary>
+        /// 
+        /// </summary>
         public IList<LoggerInfo> LoggerInfos { get; set; } = new List<LoggerInfo>();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<WireComponentInfo> ComponentInfos { get { return _componentInfos ; } }
     }
 
     /// <summary>
     /// 
     /// </summary>
+    [ UsedImplicitly ]
     public class AppInstanceInfoRequest
     {
     }

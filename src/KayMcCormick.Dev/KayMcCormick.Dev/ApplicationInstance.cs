@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization ;
 using System.ServiceModel ;
-using System.Text;
-using System.Threading.Tasks;
 using Autofac.Core ;
 using Autofac.Features.Decorators ;
 using JetBrains.Annotations ;
@@ -20,8 +18,8 @@ namespace KayMcCormick.Dev
     public sealed class ApplicationInstanceHost : IDisposable
     {
         private  ServiceHost _host ;
-        private AppInfoService _service ;
-        private Uri _baseAddresses ;
+        private readonly AppInfoService _service ;
+        private readonly Uri _baseAddresses ;
 
         /// <summary>
         /// 
@@ -61,18 +59,24 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
+    [ UsedImplicitly ]
     public sealed class ApplicationInstance : IDisposable
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private ILifetimeScope lifetimeScope ;
-        private List <IModule> _modules = new List < IModule > ();
+        private readonly List <IModule> _modules = new List < IModule > ();
         private IContainer _container ;
         private ApplicationInstanceHost _host ;
-        private Guid _instanceRunGuid ;
 
         /// <summary>
         /// 
         /// </summary>
+        public Guid InstanceRunGuid { get ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        // ReSharper disable once EventNeverSubscribedTo.Global
         public event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
@@ -80,25 +84,28 @@ namespace KayMcCormick.Dev
         /// </summary>
         public ApplicationInstance ( )
         {
-            _instanceRunGuid = Guid.NewGuid ( ) ;
-            GlobalDiagnosticsContext.Set ( "RunId" , _instanceRunGuid ) ;
+            InstanceRunGuid = Guid.NewGuid ( ) ;
+            GlobalDiagnosticsContext.Set ( "RunId" , InstanceRunGuid ) ;
         }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public void Initialize ( ) { _container = BuildContainer ( ) ; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="appModule"></param>
-        public void AddModule ( IModule appModule ) { _modules.Add ( appModule ) ; }
+        // ReSharper disable once UnusedMember.Global
+        public void AddModule ( IModule appModule ) => _modules.Add ( appModule ) ;
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        [ UsedImplicitly ]
         public ILifetimeScope GetLifetimeScope ( )
         {
             if(lifetimeScope != null)
@@ -130,6 +137,7 @@ namespace KayMcCormick.Dev
             return c ;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private static void DebugServices ( IContainer c )
         {
             foreach ( var componentRegistryRegistration in c.ComponentRegistry.Registrations )
@@ -145,7 +153,7 @@ namespace KayMcCormick.Dev
                                                                                               {
                                                                                                   case
                                                                                                       KeyedService
-                                                                                                      keyedService
+                                                                                                      _
                                                                                                       :
                                                                                                       break ;
                                                                                                   case
@@ -158,12 +166,12 @@ namespace KayMcCormick.Dev
                                                                                                              .FullName ;
                                                                                                   case
                                                                                                       UniqueService
-                                                                                                      uniqueService
+                                                                                                      _
                                                                                                       :
                                                                                                       break ;
                                                                                                   case
                                                                                                       DecoratorService
-                                                                                                      decoratorService
+                                                                                                      _
                                                                                                       :
                                                                                                       break ;
                                                                                                   default :
@@ -188,6 +196,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
+        [ UsedImplicitly ]
         public void Startup ( )
         {
             // if ( lifetimeScope == null )
@@ -223,19 +232,37 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
+    [ UsedImplicitly ]
     public class ApplicationInstanceException : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ApplicationInstanceException ( ) {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public ApplicationInstanceException ( string message ) : base ( message )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public ApplicationInstanceException ( string message , Exception innerException ) : base ( message , innerException )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected ApplicationInstanceException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
         {
         }
