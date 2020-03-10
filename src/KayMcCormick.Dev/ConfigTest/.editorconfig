@@ -5,3 +5,9 @@ dotnet_style_prefer_auto_properties = false:none
 
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = none
+
+# CA1303: Method 'void ApplicationInstance.DebugServices(IContainer c)' passes a literal string as parameter 'message' of a call to 'void Logger.Debug(string message, string argument)'. Retrieve the following string(s) from a resource table instead: "services: {services}".
+dotnet_diagnostic.CA1303.severity = none
+
+# CA1305: The behavior of 'Logger.Debug(string, string)' could vary based on the current user's locale settings. Replace this call in 'ApplicationInstance.DebugServices(IContainer)' with a call to 'Logger.Debug(IFormatProvider, string, string)'.
+dotnet_diagnostic.CA1305.severity = none

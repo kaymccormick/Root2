@@ -70,8 +70,11 @@ namespace KayMcCormick.Dev
           , IComponentRegistration registration
         )
         {
-            registration.Preparing  += RegistrationOnPreparing ;
-            registration.Activating += RegistrationOnActivating ;
+            if ( registration != null )
+            {
+                registration.Preparing  += RegistrationOnPreparing ;
+                registration.Activating += RegistrationOnActivating ;
+            }
         }
 
         private void RegistrationOnActivating ( object sender , ActivatingEventArgs < object > e )

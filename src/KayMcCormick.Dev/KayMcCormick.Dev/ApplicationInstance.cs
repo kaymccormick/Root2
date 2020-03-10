@@ -2,60 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization ;
-using System.ServiceModel ;
 using Autofac.Core ;
 using Autofac.Features.Decorators ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev.Interfaces ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 
 namespace KayMcCormick.Dev
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class ApplicationInstanceHost : IDisposable
-    {
-        private  ServiceHost _host ;
-        private readonly AppInfoService _service ;
-        private readonly Uri _baseAddresses ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="container"></param>
-        public ApplicationInstanceHost ( [ NotNull ] IContainer container )
-        {
-            if ( container == null )
-            {
-                throw new ArgumentNullException ( nameof ( container ) ) ;
-            }
-
-            _service = new AppInfoService(DateTime.Now, container.ResolveOptional<IObjectIdProvider>()) ;
-            _baseAddresses = new Uri("http://localhost:8736/ProjInterface/App") ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void HostOpen ( )
-        {
-            _host = new ServiceHost ( _service , _baseAddresses ) ;
-            _host.Open ( ) ;
-        }
-
-        #region IDisposable
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose ( )
-        {
-            var disposable = _host as IDisposable ;
-            disposable?.Dispose();
-        }
-        #endregion
-    }
     /// <summary>
     /// 
     /// </summary>
@@ -216,6 +170,15 @@ namespace KayMcCormick.Dev
             AppStartup?.Invoke ( this , e ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        ///  todo call from wpf
+        // ReSharper disable once UnusedMember.Global
+        public void Shutdown()
+        {
+            AppLoggingConfigHelper.ServiceTarget?.Dispose();
+        }
         #region IDisposable
         /// <summary>
         /// 
@@ -227,52 +190,5 @@ namespace KayMcCormick.Dev
             _container?.Dispose ( ) ;
         }
         #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    [ UsedImplicitly ]
-    public class ApplicationInstanceException : Exception
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ApplicationInstanceException ( ) {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        public ApplicationInstanceException ( string message ) : base ( message )
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public ApplicationInstanceException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected ApplicationInstanceException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
-        {
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class AppStartupEventArgs : EventArgs
-    {
-
     }
 }

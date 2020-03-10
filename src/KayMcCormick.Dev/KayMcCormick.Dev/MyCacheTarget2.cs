@@ -91,7 +91,7 @@ namespace KayMcCormick.Dev
         /// TODO Edit XML Comment Template for Write
         protected override void Write ( LogEventInfo logEvent )
         {
-            var rendered  = this.RenderLogEvent ( Layout , logEvent ) ;
+            var rendered  = RenderLogEvent ( Layout , logEvent ) ;
             _cacheSubject.OnNext ( rendered ) ;
         }
         #endregion

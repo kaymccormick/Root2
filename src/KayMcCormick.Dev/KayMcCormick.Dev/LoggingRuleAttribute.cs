@@ -1,5 +1,4 @@
 ﻿using System ;
-using System.Linq ;
 using JetBrains.Annotations ;
 using NLog ;
 using NLog.Config ;
@@ -23,38 +22,6 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    public class ClearLoggingRulesAttribute : LoggingAttribute
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public override bool Apply ( LoggingAttributeContext context )
-        {
-            var fupdated = false ;
-            var configurationLoggingRules = LogManager.Configuration.LoggingRules.ToList ( ) ;
-            foreach ( var loggingRule in configurationLoggingRules.Where (
-                                                                          rule => context
-                                                                             .RuleMatch ( rule )
-                                                                         ) )
-            {
-                fupdated = true ;
-                if ( context.Target != null )
-                {
-                    loggingRule.Targets.Remove ( context.Target ) ;
-                }
-
-                // LogManager.Configuration.LoggingRules.Remove ( loggingRule ) ;
-            }
-
-            return fupdated ;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     public class LoggingAttributeContext
     {
         /// <summary>
@@ -67,8 +34,13 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="rule"></param>
         /// <returns></returns>
-        public bool RuleMatch ( LoggingRule rule )
+        public bool RuleMatch ( [ NotNull ] LoggingRule rule )
         {
+            if ( rule == null )
+            {
+                throw new ArgumentNullException ( nameof ( rule ) ) ;
+            }
+
             return Target == null || rule.Targets.Contains ( Target ) ;
         }
     }
@@ -97,9 +69,14 @@ namespace KayMcCormick.Dev
         /// <param name="classLoggerType"></param>
         /// <param name="logLevel"></param>
         [ UsedImplicitly ]
-        public LoggingRuleAttribute(Type classLoggerType, string logLevel)
+        public LoggingRuleAttribute( [ NotNull ] Type classLoggerType, [ NotNull ] string logLevel)
         {
-            ClassLoggerType   = classLoggerType;
+            if ( logLevel == null )
+            {
+                throw new ArgumentNullException ( nameof ( logLevel ) ) ;
+            }
+
+            ClassLoggerType   = classLoggerType ?? throw new ArgumentNullException ( nameof ( classLoggerType ) );
             LoggerNamePattern = ClassLoggerType.ToString();
             Level             = LogLevel.FromString(logLevel);
         }

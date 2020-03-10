@@ -26,6 +26,7 @@ namespace KayMcCormick.Dev
         /// <param name="level"></param>
         /// <param name="logger"></param>
         [ UsedImplicitly ]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private static void HandleInnerExceptions (
             Exception e
           , LogLevel  level  = null
@@ -89,7 +90,7 @@ namespace KayMcCormick.Dev
                 string @out = key.ToString ( ) ;
                 var value = doDumpConfig[ key ] ;
                 if ( ! ( value is IDictionary || value is string)
-                     && ( value is IEnumerable e ) )
+                     && value is IEnumerable e )
                 {
                     Dictionary <int, object> d =new Dictionary < int , object > ();
                     int i = 0;

@@ -79,26 +79,4 @@ namespace KayMcCormick.Dev
             }
         }
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    [ UsedImplicitly ]
-    public class Configuration
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public const string LOGGING_WEBSERVICE_ENDPOINT = "LOGGING_WEBSERVICE_ENDPOINT" ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Configuration ( ) { GetConfigurationSources ( ) ; }
-
-        private static void GetConfigurationSources ( ) { }
-
-        //"http://xx1.mynetgear.com/LogService/ReceiveLogs.svc"
-    }
 }

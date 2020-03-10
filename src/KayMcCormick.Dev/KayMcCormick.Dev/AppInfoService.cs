@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.Diagnostics.CodeAnalysis ;
 using System.ServiceModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
@@ -105,7 +106,6 @@ namespace KayMcCormick.Dev
     public class WireComponentInfo
     {
         private readonly List<WireInstanceInfo> _instances = new List < WireInstanceInfo > ();
-        private Guid _id ;
 
         /// <summary>
         /// 
@@ -115,7 +115,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public Guid Id { get => _id ; set { _id = value ; } }
+        public Guid Id { get ; set ; }
     }
 
     /// <summary>
@@ -155,12 +155,12 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public IList<LoggerInfo> LoggerInfos { get; set; } = new List<LoggerInfo>();
+        [ SuppressMessage ( "ReSharper" , "CollectionNeverQueried.Global" ) ] public IList<LoggerInfo> LoggerInfos { get; } = new List<LoggerInfo>();
 
         /// <summary>
         /// 
         /// </summary>
-        public List<WireComponentInfo> ComponentInfos { get { return _componentInfos ; } }
+        public List<WireComponentInfo> ComponentInfos => _componentInfos ;
     }
 
     /// <summary>

@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
@@ -32,16 +33,20 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         ///     Initializes a new instance of the <see cref="System.Object" />
         ///     class.
         /// </summary>
-        public GlobalLoggingFixture ( IMessageSink sink )
+        public GlobalLoggingFixture ( [ NotNull ] IMessageSink sink )
         {
-            
+            if ( sink == null )
+            {
+                throw new ArgumentNullException ( nameof ( sink ) ) ;
+            }
+
             LogHelper.EnsureLoggingConfigured (
-                                                            message => sink.OnMessage (
-                                                                                       new DiagnosticMessage (
-                                                                                                              message
-                                                                                                             )
-                                                                                      )
-                                                           ) ;
+                                               message => sink.OnMessage (
+                                                                          new DiagnosticMessage (
+                                                                                                 message
+                                                                                                )
+                                                                         )
+                                              ) ;
 
             var l = AppLoggingConfigHelper.SetupJsonLayout ( ) ;
 

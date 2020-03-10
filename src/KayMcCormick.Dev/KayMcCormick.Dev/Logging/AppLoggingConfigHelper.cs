@@ -50,6 +50,11 @@ namespace KayMcCormick.Dev.Logging
         [ ThreadStatic ]
         private static int ? _numTimesConfigured ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public static LogReceiverWebServiceTarget ServiceTarget { get ; private set ; }
+
 
         /// <summary>Gets or sets a value indicating whether [debugger target enabled].</summary>
         /// <value>
@@ -180,12 +185,12 @@ namespace KayMcCormick.Dev.Logging
             // TODO make this address configurable
             var endpointAddress = Environment.GetEnvironmentVariable ( "LOGGING_WEBSERVICE_ENDPOINT" )
                                   ?? $"http://{PublicFacingHostAddress}/LogService/ReceiveLogs.svc" ;
-            var webServiceTarget = new LogReceiverWebServiceTarget ( "log" )
-                                   {
-                                       // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
-                                       EndpointAddress = endpointAddress
-                                   } ;
-            var wrap = new AsyncTargetWrapper ( "wrap1" , webServiceTarget ) ;
+            ServiceTarget = new LogReceiverWebServiceTarget ( "log" )
+                                {
+                                    // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
+                                    EndpointAddress = endpointAddress
+                                } ;
+            var wrap = new AsyncTargetWrapper ( "wrap1" , ServiceTarget ) ;
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             dict[ LogLevel.Debug ].Add ( wrap ) ;
@@ -753,11 +758,21 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , Type                  value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] Type                  value
           , JsonSerializerOptions options
         )
         {
+            if ( writer == null )
+            {
+                throw new ArgumentNullException ( nameof ( writer ) ) ;
+            }
+
+            if ( value == null )
+            {
+                throw new ArgumentNullException ( nameof ( value ) ) ;
+            }
+
             writer.WriteStringValue ( value.FullName ) ;
         }
         #endregion
@@ -1052,67 +1067,76 @@ namespace KayMcCormick.Dev.Logging
           , JsonSerializerOptions options
         )
         {
+            if ( writer == null )
+            {
+                return ;
+            }
+
             writer.WriteStartObject ( ) ;
-            writer.WriteNumber ( "Level" ,      value.Level.Ordinal ) ;
-            writer.WriteNumber ( "SequenceID" , value.SequenceID ) ;
-            writer.WriteString ( "LoggerName" ,      value.LoggerName ) ;
-            writer.WriteString ( "CallerClassName" , value.CallerClassName ) ;
-            if ( value.CallerFilePath != null )
+            if ( value == null ) { }
+            else
             {
-                writer.WriteString ( "CallerFilePath" , value.CallerFilePath ) ;
-                writer.WriteNumber ( "CallerLineNumber" , value.CallerLineNumber ) ;
-            }
-
-            if ( value.CallerMemberName != null )
-            {
-                writer.WriteString ( "CallerMemberName" , value.CallerMemberName ) ;
-            }
-
-            // if ( value.Exception != null )
-            // {
-            // writer.WritePropertyName( "Exception");
-            // JsonSerializer.Serialize ( writer , value.Exception , options ) ;
-            // }
-            writer.WriteNumber ( "ManagedThreadId" , Thread.CurrentThread.ManagedThreadId ) ;
-            if ( Thread.CurrentThread.Name == null )
-            {
-                Thread.CurrentThread.Name = "Thread" + value.SequenceID ;
-            }
-
-            writer.WriteString ( "ThreadName" , Thread.CurrentThread.Name ) ;
-            if ( Task.CurrentId.HasValue )
-            {
-                writer.WriteNumber ( "CurrentTaskId" , Task.CurrentId.Value ) ;
-            }
-
-            writer.WriteString ( "Message" ,          value.Message ) ;
-            writer.WriteString ( "TimeStamp" ,        value.TimeStamp ) ;
-            writer.WriteString ( "FormattedMessage" , value.FormattedMessage ) ;
-            if ( value.HasProperties )
-            {
-                writer.WriteStartObject ( "Properties" ) ;
-                foreach ( var p in value.Properties )
+                writer.WriteNumber ( "Level" ,      value.Level.Ordinal ) ;
+                writer.WriteNumber ( "SequenceID" , value.SequenceID ) ;
+                writer.WriteString ( "LoggerName" ,      value.LoggerName ) ;
+                writer.WriteString ( "CallerClassName" , value.CallerClassName ) ;
+                if ( value.CallerFilePath != null )
                 {
-                    writer.WritePropertyName ( p.Key.ToString ( ) ) ;
-                    if ( p.Value is Type t )
-                    {
-                        JsonSerializer.Serialize ( writer , t , typeof ( Type ) , options ) ;
-                    }
-                    else
-                    {
-                        try
-                        {
-                            JsonSerializer.Serialize ( writer , p.Value , options ) ;
-                        }
-                        catch ( Exception ex )
-                        {
-                            Debug.WriteLine ( $"{p.Key}: {p.Value}: {ex}" ) ;
-                            throw ;
-                        }
-                    }
+                    writer.WriteString ( "CallerFilePath" , value.CallerFilePath ) ;
+                    writer.WriteNumber ( "CallerLineNumber" , value.CallerLineNumber ) ;
                 }
 
-                writer.WriteEndObject ( ) ;
+                if ( value.CallerMemberName != null )
+                {
+                    writer.WriteString ( "CallerMemberName" , value.CallerMemberName ) ;
+                }
+
+                // if ( value.Exception != null )
+                // {
+                // writer.WritePropertyName( "Exception");
+                // JsonSerializer.Serialize ( writer , value.Exception , options ) ;
+                // }
+                writer.WriteNumber ( "ManagedThreadId" , Thread.CurrentThread.ManagedThreadId ) ;
+                if ( Thread.CurrentThread.Name == null )
+                {
+                    Thread.CurrentThread.Name = "Thread" + value.SequenceID ;
+                }
+
+                writer.WriteString ( "ThreadName" , Thread.CurrentThread.Name ) ;
+                if ( Task.CurrentId.HasValue )
+                {
+                    writer.WriteNumber ( "CurrentTaskId" , Task.CurrentId.Value ) ;
+                }
+
+                writer.WriteString ( "Message" ,          value.Message ) ;
+                writer.WriteString ( "TimeStamp" ,        value.TimeStamp ) ;
+                writer.WriteString ( "FormattedMessage" , value.FormattedMessage ) ;
+                if ( value.HasProperties )
+                {
+                    writer.WriteStartObject ( "Properties" ) ;
+                    foreach ( var p in value.Properties )
+                    {
+                        writer.WritePropertyName ( p.Key.ToString ( ) ) ;
+                        if ( p.Value is Type t )
+                        {
+                            JsonSerializer.Serialize ( writer , t , typeof ( Type ) , options ) ;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                JsonSerializer.Serialize ( writer , p.Value , options ) ;
+                            }
+                            catch ( Exception ex )
+                            {
+                                Debug.WriteLine ( $"{p.Key}: {p.Value}: {ex}" ) ;
+                                throw ;
+                            }
+                        }
+                    }
+
+                    writer.WriteEndObject ( ) ;
+                }
             }
 
             writer.WriteStartObject ( "GDC" ) ;
@@ -1140,7 +1164,7 @@ namespace KayMcCormick.Dev.Logging
 
             writer.WriteEndObject ( ) ;
 
-            writer.WriteStartObject("MDLC");
+            writer.WriteStartObject ( "MDLC" ) ;
 
             foreach ( var name in MappedDiagnosticsLogicalContext.GetNames ( ) )
             {

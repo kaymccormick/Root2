@@ -17,13 +17,17 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AppInstanceInfoRequest", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest'
     public partial class AppInstanceInfoRequest : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -32,9 +36,13 @@ namespace KayMcCormick.Dev.ServiceReference1 {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoRequest.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -46,7 +54,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AppInstanceInfoResponse", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse'
     public partial class AppInstanceInfoResponse : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -55,7 +65,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         private KayMcCormick.Dev.ServiceReference1.AppInstanceInfo InfoField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -65,7 +77,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.Info'
         public KayMcCormick.Dev.ServiceReference1.AppInstanceInfo Info {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.Info'
             get {
                 return this.InfoField;
             }
@@ -77,9 +91,13 @@ namespace KayMcCormick.Dev.ServiceReference1 {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfoResponse.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -91,7 +109,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AppInstanceInfo", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo'
     public partial class AppInstanceInfo : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -106,7 +126,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         private System.DateTime StartupTimeField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -116,7 +138,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.ComponentInfos'
         public KayMcCormick.Dev.ServiceReference1.WireComponentInfo[] ComponentInfos {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.ComponentInfos'
             get {
                 return this.ComponentInfosField;
             }
@@ -129,7 +153,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.LoggerInfos'
         public KayMcCormick.Dev.ServiceReference1.LoggerInfo[] LoggerInfos {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.LoggerInfos'
             get {
                 return this.LoggerInfosField;
             }
@@ -142,7 +168,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.StartupTime'
         public System.DateTime StartupTime {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.StartupTime'
             get {
                 return this.StartupTimeField;
             }
@@ -154,9 +182,13 @@ namespace KayMcCormick.Dev.ServiceReference1 {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInstanceInfo.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -168,7 +200,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="WireComponentInfo", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo'
     public partial class WireComponentInfo : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -180,7 +214,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         private KayMcCormick.Dev.ServiceReference1.WireInstanceInfo[] InstancesField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -190,7 +226,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.Id'
         public System.Guid Id {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.Id'
             get {
                 return this.IdField;
             }
@@ -203,7 +241,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.Instances'
         public KayMcCormick.Dev.ServiceReference1.WireInstanceInfo[] Instances {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.Instances'
             get {
                 return this.InstancesField;
             }
@@ -215,9 +255,13 @@ namespace KayMcCormick.Dev.ServiceReference1 {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireComponentInfo.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -229,7 +273,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="LoggerInfo", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo'
     public partial class LoggerInfo : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -238,7 +284,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         private string TargetNameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -248,7 +296,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.TargetName'
         public string TargetName {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.TargetName'
             get {
                 return this.TargetNameField;
             }
@@ -260,9 +310,13 @@ namespace KayMcCormick.Dev.ServiceReference1 {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoggerInfo.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -274,7 +328,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="WireInstanceInfo", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo'
     public partial class WireInstanceInfo : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -283,7 +339,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         private string DescField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -293,7 +351,9 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.Desc'
         public string Desc {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.Desc'
             get {
                 return this.DescField;
             }
@@ -305,9 +365,13 @@ namespace KayMcCormick.Dev.ServiceReference1 {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WireInstanceInfo.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -317,47 +381,71 @@ namespace KayMcCormick.Dev.ServiceReference1 {
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference1.IAppInfoService")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoService'
     public interface IAppInfoService {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoService'
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAppInfoService/GetAppInstanceInfo", ReplyAction="http://tempuri.org/IAppInfoService/GetAppInstanceInfoResponse")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoService.GetAppInstanceInfo(AppInstanceInfoRequest)'
         KayMcCormick.Dev.ServiceReference1.AppInstanceInfoResponse GetAppInstanceInfo(KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest request);
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoService.GetAppInstanceInfo(AppInstanceInfoRequest)'
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAppInfoService/GetAppInstanceInfo", ReplyAction="http://tempuri.org/IAppInfoService/GetAppInstanceInfoResponse")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoService.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
         System.Threading.Tasks.Task<KayMcCormick.Dev.ServiceReference1.AppInstanceInfoResponse> GetAppInstanceInfoAsync(KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest request);
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoService.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoServiceChannel'
     public interface IAppInfoServiceChannel : KayMcCormick.Dev.ServiceReference1.IAppInfoService, System.ServiceModel.IClientChannel {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IAppInfoServiceChannel'
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient'
     public partial class AppInfoServiceClient : System.ServiceModel.ClientBase<KayMcCormick.Dev.ServiceReference1.IAppInfoService>, KayMcCormick.Dev.ServiceReference1.IAppInfoService {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient()'
         public AppInfoServiceClient() {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient()'
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(string)'
         public AppInfoServiceClient(string endpointConfigurationName) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(string)'
                 base(endpointConfigurationName) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(string, string)'
         public AppInfoServiceClient(string endpointConfigurationName, string remoteAddress) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(string, string)'
                 base(endpointConfigurationName, remoteAddress) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(string, EndpointAddress)'
         public AppInfoServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(string, EndpointAddress)'
                 base(endpointConfigurationName, remoteAddress) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(Binding, EndpointAddress)'
         public AppInfoServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.AppInfoServiceClient(Binding, EndpointAddress)'
                 base(binding, remoteAddress) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfo(AppInstanceInfoRequest)'
         public KayMcCormick.Dev.ServiceReference1.AppInstanceInfoResponse GetAppInstanceInfo(KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest request) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfo(AppInstanceInfoRequest)'
             return base.Channel.GetAppInstanceInfo(request);
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
         public System.Threading.Tasks.Task<KayMcCormick.Dev.ServiceReference1.AppInstanceInfoResponse> GetAppInstanceInfoAsync(KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest request) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
             return base.Channel.GetAppInstanceInfoAsync(request);
         }
     }

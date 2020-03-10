@@ -1,6 +1,9 @@
-﻿namespace KayMcCormick.Dev
+﻿using JetBrains.Annotations ;
+
+namespace KayMcCormick.Dev
 {
     /// <summary>Exit status of application.</summary>
+    [ UsedImplicitly ]
     public enum ExitCode
     {
         /// <summary>Successful exit.</summary>
@@ -10,7 +13,7 @@
        ,
 
         /// <summary>General error.</summary>
-        GeneralError = 1
+        [ UsedImplicitly ] GeneralError = 1
 
        ,
 
@@ -21,6 +24,6 @@
         /// <summary>
         /// 
         /// </summary>
-        ExceptionalError
+        [ UsedImplicitly ] ExceptionalError
     }
 }

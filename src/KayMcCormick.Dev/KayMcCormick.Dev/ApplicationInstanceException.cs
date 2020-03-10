@@ -1,4 +1,15 @@
-﻿using System ;
+﻿#region header
+// Kay McCormick (mccor)
+// 
+// ConfigTest
+// KayMcCormick.Dev
+// ApplicationInstanceException.cs
+// 
+// 2020-03-09-8:43 PM
+// 
+// ---
+#endregion
+using System ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 
@@ -9,19 +20,19 @@ namespace KayMcCormick.Dev
     /// </summary>
     [ UsedImplicitly ]
     [Serializable]
-    public class AppInfraException : Exception
+    public class ApplicationInstanceException : Exception
     {
         /// <summary>
         /// 
         /// </summary>
-        public AppInfraException ( ) {
+        public ApplicationInstanceException ( ) {
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public AppInfraException ( string message ) : base ( message )
+        public ApplicationInstanceException ( string message ) : base ( message )
         {
         }
 
@@ -30,7 +41,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public AppInfraException ( string message , Exception innerException ) : base ( message , innerException )
+        public ApplicationInstanceException ( string message , Exception innerException ) : base ( message , innerException )
         {
         }
 
@@ -39,7 +50,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected AppInfraException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected ApplicationInstanceException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
         {
         }
     }

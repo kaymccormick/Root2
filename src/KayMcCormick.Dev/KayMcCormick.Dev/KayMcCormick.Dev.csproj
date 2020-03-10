@@ -97,6 +97,10 @@
     <Compile Include="AppInfoService.cs" />
     <Compile Include="AppInfraException.cs" />
     <Compile Include="ApplicationInstance.cs" />
+    <Compile Include="ApplicationInstanceException.cs" />
+    <Compile Include="ApplicationInstanceHost.cs" />
+    <Compile Include="AppStartupEventArgs.cs" />
+    <Compile Include="ClearLoggingRulesAttribute.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\CentralServiceReference\Reference.cs">
@@ -169,6 +173,11 @@
     </PackageReference>
     <PackageReference Include="JetBrains.Annotations">
       <Version>2019.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.7.0-rc1</Version>
