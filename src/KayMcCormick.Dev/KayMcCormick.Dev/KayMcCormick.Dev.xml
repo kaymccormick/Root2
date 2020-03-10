@@ -150,10 +150,11 @@
             
             </summary>
         </member>
-        <member name="M:KayMcCormick.Dev.ApplicationInstance.#ctor">
+        <member name="M:KayMcCormick.Dev.ApplicationInstance.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
             <summary>
             
             </summary>
+            <param name="logMethod"></param>
         </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstance.Initialize">
             <summary>

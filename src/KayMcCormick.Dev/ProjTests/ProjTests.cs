@@ -86,6 +86,7 @@ namespace ProjTests
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture    _loggingFixture ;
         private          SyntaxTree        _testSyntaxTree ;
         private          CSharpCompilation _compilation ;
@@ -99,6 +100,7 @@ namespace ProjTests
                           )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
+            _output = output ;
             _loggingFixture                              =  loggingFixture ;
             //VSI                                          =  projectFixture.I ;
             loggingFixture.SetOutputHelper ( output , this ) ;
@@ -201,7 +203,7 @@ namespace ProjTests
                        );
             MSBuildLocator.RegisterInstance(instances.First());
 #endif
-            using ( var appinst = new ApplicationInstance ( ) )
+            using ( var appinst = new ApplicationInstance ( _output.WriteLine ) )
             {
                 appinst.AddModule ( new ProjLibModule ( ) ) ;
                 var scope = appinst.GetLifetimeScope ( ) ;

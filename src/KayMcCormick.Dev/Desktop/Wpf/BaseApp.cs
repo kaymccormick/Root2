@@ -37,8 +37,17 @@ namespace KayMcCormick.Lib.Wpf
         private ParserResult < object > _argParseResult ;
 #endif
         protected BaseApp ( ) {
-            appInst = new ApplicationInstance() ;
-            EnsureLoggingConfigured();
+            using ( EventLog e = new EventLog ( "Application" ) )
+            {
+                appInst = new ApplicationInstance (
+                                                   message => {
+                                                       e.WriteEntry (
+                                                                     message
+                                                                   , EventLogEntryType.Information
+                                                                    ) ;
+                                                   }
+                                                  ) ;
+            }
         }
 
         /// <summary>Gets a value indicating whether [do tracing].</summary>

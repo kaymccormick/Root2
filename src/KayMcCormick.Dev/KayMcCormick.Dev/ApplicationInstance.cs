@@ -36,10 +36,13 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public ApplicationInstance()
+        /// <param name="logMethod"></param>
+        public ApplicationInstance ( LogDelegates.LogMethod logMethod )
         {
             InstanceRunGuid = Guid.NewGuid();
+            AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod);
             GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);
+            
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
 using System.IO ;
 using System.Linq ;
 using System.Reflection ;
@@ -17,9 +16,6 @@ using KayMcCormick.Dev ;
 using CommandLine ;
 #endif
 using KayMcCormick.Dev.Logging ;
-using MessageTemplates ;
-using MessageTemplates.Core ;
-using MessageTemplates.Structure ;
 using Microsoft.Build.Locator ;
 
 using NLog ;
@@ -71,7 +67,7 @@ namespace ConsoleApp1
         private static async Task Main ( string[] args )
         {
             Init ( ) ;
-            using ( var appinst = new ApplicationInstance ( ) )
+            using ( var appinst = new ApplicationInstance ( Console.Error.WriteLine ) )
             {
                 appinst.AddModule ( new AppModule ( ) ) ;
                 appinst.AddModule ( new ProjLibModule ( ) ) ;

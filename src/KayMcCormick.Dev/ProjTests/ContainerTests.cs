@@ -22,11 +22,13 @@ namespace ProjTests
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture _loggingFixture;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ContainerTests(ITestOutputHelper output, LoggingFixture loggingFixture)
         {
+            _output = output ;
             _loggingFixture = loggingFixture;
             loggingFixture.SetOutputHelper(output);
             _loggingFixture.Layout = Layout.FromString("${message}");
@@ -41,7 +43,7 @@ namespace ProjTests
         {
             ISyntaxTreeContext c = AnalysisService.Parse ( LibResources.Program_Parse , "x" ) ;
 
-            using ( var appinst = new ApplicationInstance ( ) )
+            using ( var appinst = new ApplicationInstance ( _output.WriteLine ) )
             {
                 appinst.AddModule ( new ProjLibModule ( ) ) ;
                 var x = appinst.GetLifetimeScope ( ) ;
