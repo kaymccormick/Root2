@@ -52,7 +52,7 @@ namespace WpfApp2
 
         public XmlDocument TemplateXamlXml { get ; set ; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public TemplateInfo ( ) {
         }
 
@@ -66,7 +66,7 @@ namespace WpfApp2
             set => _xamlViewer = value ;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public TemplateInfo ( object key , DataTemplate template )
         {
             Key          = key ;

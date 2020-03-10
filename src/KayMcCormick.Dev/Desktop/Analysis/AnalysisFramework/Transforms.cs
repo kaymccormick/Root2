@@ -1283,7 +1283,7 @@ namespace AnalysisFramework
                 case SyntaxKind.ImplicitStackAllocArrayCreationExpression : break ;
                 case SyntaxKind.SuppressNullableWarningExpression : break ;
                 case SyntaxKind.NullableDirectiveTrivia : break ;
-                default : throw new ArgumentOutOfRangeException ( ) ;
+                default : throw new ArgumentOutOfRangeException (nameof(token) ) ;
             }
             throw new UnsupportedExpressionTypeSyntaxException(token.Kind (  ).ToString());
         }

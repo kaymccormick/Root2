@@ -53,7 +53,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -107,7 +107,6 @@
     <Compile Include="IProjectBrowserViewModel.cs" />
     <Compile Include="IRuntimestatus.cs" />
     <Compile Include="ISpanObject.cs" />
-    <Compile Include="ISpanToolTip.cs" />
     <Compile Include="ISpanToolTipViewModel.cs" />
     <Compile Include="ISpanViewModel.cs" />
     <Compile Include="IView.cs" />

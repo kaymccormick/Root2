@@ -29,6 +29,6 @@ namespace AnalysisFramework
 
         string MethodDisplayName { get ; }
 
-        IList < ILogInvocationArgument > Arguments { get ; set ; }
+        IList < ILogInvocationArgument > Arguments { get ; }
     }
 }

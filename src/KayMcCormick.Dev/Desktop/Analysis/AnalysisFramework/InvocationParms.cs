@@ -219,8 +219,11 @@ relevantNode.ToString() ) ;
                 }
 
                 var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
-                debugInvo.Arguments = transformed.ToList ( ) ;
-                #if TRACE
+                foreach ( var logInvocationArgument in transformed )
+                {
+                    debugInvo.Arguments.Add ( logInvocationArgument ) ;
+                }
+#if TRACE
                 Logger.Trace( "{t}" , transformed ) ;
 #endif
                 return debugInvo ;
