@@ -259,20 +259,18 @@ namespace WpfApp.Controls
         private string NameForType ( Type myType )
         {
             // todo move to a better place
-            using ( var provider = new CSharpCodeProvider ( ) )
+            using var provider = new CSharpCodeProvider ( ) ;
+            if ( myType.IsGenericType )
             {
-                if ( myType.IsGenericType )
-                {
-                    var type = myType.GetGenericTypeDefinition ( ) ;
-                    myType = type ;
-                }
-
-                var codeTypeReference = new CodeTypeReference ( myType ) ;
-                var q = codeTypeReference ;
-                //myType.GetGenericTypeParameters()
-                return provider.GetTypeOutput ( q ) ;
-                // return myType.IsGenericType ? myType.GetGenericTypeDefinition ( ).Name : myType.Name ;
+                var type = myType.GetGenericTypeDefinition ( ) ;
+                myType = type ;
             }
+
+            var codeTypeReference = new CodeTypeReference ( myType ) ;
+            var q = codeTypeReference ;
+            //myType.GetGenericTypeParameters()
+            return provider.GetTypeOutput ( q ) ;
+            // return myType.IsGenericType ? myType.GetGenericTypeDefinition ( ).Name : myType.Name ;
         }
 
         private void HyperLinkOnRequestNavigate ( object sender , RequestNavigateEventArgs e )

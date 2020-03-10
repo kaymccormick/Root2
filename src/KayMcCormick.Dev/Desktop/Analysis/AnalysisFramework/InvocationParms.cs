@@ -16,8 +16,9 @@ namespace AnalysisFramework
 {
     public class InvocationParms
     {
-        public readonly SyntaxTree SyntaxTree ;
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        public SyntaxTree Tree { get ; }
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public InvocationParms (
             [ NotNull ] ICodeSource                codeSoure
           , SyntaxTree                 syntaxTree
@@ -38,14 +39,22 @@ namespace AnalysisFramework
                 throw new ArgumentNullException(nameof(tuple));
             }
 #if TRACE
-            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, 
-relevantNode.ToString() ) ;
+            if ( relevantNode != null )
+            {
+                Logger.Debug (
+                              "{id} relevant node is {node}"
+                            , Thread.CurrentThread.ManagedThreadId
+                            , relevantNode.ToString ( )
+                             ) ;
 #endif
-            SyntaxTree = syntaxTree ?? throw new ArgumentNullException(nameof(syntaxTree));
+                Tree = syntaxTree ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
 
-            Model = model ?? throw new ArgumentNullException(nameof(model));
-            ICodeSoure = codeSoure ;
-            RelevantNode = relevantNode ?? throw new ArgumentNullException(nameof(relevantNode));
+                Model      = model ?? throw new ArgumentNullException ( nameof ( model ) ) ;
+                ICodeSoure = codeSoure ;
+                RelevantNode = relevantNode
+                               ?? throw new ArgumentNullException ( nameof ( relevantNode ) ) ;
+            }
+
             var (_ , item2 , item3) = tuple ;
             InvocationExpression = item3 as InvocationExpressionSyntax;
             MethodSymbol = item2;
@@ -192,7 +201,9 @@ relevantNode.ToString() ) ;
                                                      .StartLinePosition.Line
                                          + 1 ) ;
             
-                var debugInvo = LogUsages.CreateLogInvocation(sourceLocation, methodSymbol, msgval, relevantNode, semanticModel, null, codeSource, ivp.SyntaxTree, null);
+                var debugInvo = LogUsages.CreateLogInvocation(sourceLocation, methodSymbol
+                                                            , relevantNode, semanticModel, null
+                                                            , null);
                 var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
                 var i2 = sourceContext.IndexOf( relevantNode ) ;
 
@@ -218,7 +229,7 @@ relevantNode.ToString() ) ;
                     Logger.Warn(ex, ex.ToString());
                 }
 
-                var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
+                var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( syntax )) ) ;
                 foreach ( var logInvocationArgument in transformed )
                 {
                     debugInvo.Arguments.Add ( logInvocationArgument ) ;

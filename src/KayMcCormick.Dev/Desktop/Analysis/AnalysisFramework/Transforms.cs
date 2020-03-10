@@ -520,8 +520,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="simple"></param>
         /// <returns></returns>
-        public static object TransformSimpleNameSyntax ( SimpleNameSyntax simple )
+        public static object TransformSimpleNameSyntax ( [ NotNull ] SimpleNameSyntax simple )
         {
+            if ( simple == null )
+            {
+                throw new ArgumentNullException ( nameof ( simple ) ) ;
+            }
+
             switch ( simple )
             {
                 case GenericNameSyntax gen :   return TransformGenericNameSyntax ( gen ) ;
@@ -536,8 +541,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static object TransformIdentifierNameSyntax ( IdentifierNameSyntax id )
+        public static object TransformIdentifierNameSyntax ( [ NotNull ] IdentifierNameSyntax id )
         {
+            if ( id == null )
+            {
+                throw new ArgumentNullException ( nameof ( id ) ) ;
+            }
+
             return TransformIdentifier ( id.Identifier ) ;
         }
 
@@ -546,8 +556,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="gen"></param>
         /// <returns></returns>
-        public static object TransformGenericNameSyntax ( GenericNameSyntax gen )
+        public static object TransformGenericNameSyntax ( [ NotNull ] GenericNameSyntax gen )
         {
+            if ( gen == null )
+            {
+                throw new ArgumentNullException ( nameof ( gen ) ) ;
+            }
+
             return new
                    {
                        gen.RawKind
@@ -575,8 +590,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public static object TransformStatement ( StatementSyntax arg )
+        public static object TransformStatement ( [ NotNull ] StatementSyntax arg )
         {
+            if ( arg == null )
+            {
+                throw new ArgumentNullException ( nameof ( arg ) ) ;
+            }
+
             return arg.ToString ( ) ;
         }
 

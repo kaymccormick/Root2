@@ -35,7 +35,9 @@ namespace ProjLib
                                                                            => argument.JSON
                                                                       )
                                            ) ;
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
             Logger.Info ( "{disp}" , _displayString ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
         }
 
         private Func < object , object > _getResource ;

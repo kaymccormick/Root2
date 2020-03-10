@@ -23,7 +23,7 @@ namespace ProjLib
 {
     public static class ProjLibContainer
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public static ILifetimeScope GetScope (params IModule[] modules )
         {

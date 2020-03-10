@@ -5,14 +5,14 @@ namespace ProjLib
 {
     static internal class FilePaths
     {
-        private static string _projectRootDir = Path.Combine (
-                                                              Environment.GetFolderPath (
-                                                                                         Environment
-                                                                                            .SpecialFolder
-                                                                                            .MyDocuments
-                                                                                        )
-                                                            , "ProjectLib"
-                                                             ) ;
+        private static readonly string _projectRootDir = Path.Combine (
+                                                                       Environment.GetFolderPath (
+                                                                                                  Environment
+                                                                                                     .SpecialFolder
+                                                                                                     .MyDocuments
+                                                                                                 )
+                                                                     , "ProjectLib"
+                                                                      ) ;
 
         public static string ProjectRootDir => _projectRootDir ;
     }

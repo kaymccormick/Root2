@@ -129,14 +129,18 @@ namespace ProjLib
             var pipeline = new Pipeline();
             if ( pipeline == null )
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new AnalyzeException( "Pipeline is null" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             }
 
             pipeline.BuildPipeline ( ) ;
             var pInstance = pipeline.PipelineInstance ;
             if ( pInstance == null )
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new AnalyzeException ( "pipeline instance is null" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             }
 
             pInstance.LinkTo (
@@ -148,7 +152,9 @@ namespace ProjLib
             Logger.Trace ( "About to post on pipeline" ) ;
             if(!pInstance.Post( req ))
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new AnalyzeException("Post failed" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             }
 
             await NewMethod ( actionBlock ) ;
@@ -230,7 +236,7 @@ namespace ProjLib
         public ObservableCollection < LogEventInfo > EventInfos
         {
             get => eventInfos ;
-            set => eventInfos = value ;
+            private set => eventInfos = value ;
         }
 
         public ObservableCollection < LogEventInstance > Events { get => _events ; }

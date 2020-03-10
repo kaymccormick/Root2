@@ -265,7 +265,6 @@
     <Compile Include="Core\Menus\MenuTemplateSelector.cs" />
     <Compile Include="Core\Menus\WindowsTopLevelMenu.cs" />
     <Compile Include="Core\Menus\XMenuItem.cs" />
-    <Compile Include="Core\Model\ComponentRegistration.cs" />
     <Compile Include="Core\Model\InstanceRegistration.cs" />
     <Compile Include="Core\Model\MenuItemCollection.cs" />
     <Compile Include="Core\Model\MethodInvocation.cs" />

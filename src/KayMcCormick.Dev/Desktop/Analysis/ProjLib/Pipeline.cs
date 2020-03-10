@@ -2,6 +2,7 @@ using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
+using JetBrains.Annotations ;
 using NLog ;
 using NLog.Fluent ;
 
@@ -13,7 +14,7 @@ namespace ProjLib
 
         public IPropagatorBlock <AnalysisRequest, ILogInvocation > PipelineInstance { get ; private set ; }
 
-        private List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
+        private readonly List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
         private DataflowLinkOptions _linkOptions = new DataflowLinkOptions { PropagateCompletion = true } ;
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
 
@@ -101,6 +102,7 @@ namespace ProjLib
         public IProjectBrowserNode Info { get => projectInfo ; set => projectInfo = value ; }
     }
 
+    [ UsedImplicitly ]
     class PipelineRemoteSource : Pipeline
     {
         #region Overrides of PipeLine

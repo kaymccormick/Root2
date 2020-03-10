@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Linq ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -20,12 +21,10 @@ namespace ProjLib
 {
     public class Visitor2 : CSharpSyntaxWalker
     {
-        private          SemanticModel                 _model ;
         private readonly Func <object, ISpanViewModel> _mFunc ;
 
-        protected      object                                _logInvAnno ;
-        private static Logger                                logger = LogManager.GetCurrentClassLogger ( ) ;
-        private        Func < string , object , LogBuilder > _message ;
+        private static readonly Logger                                logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly Func < string , object , LogBuilder > _message ;
 
         public Visitor2 ( )
         {
@@ -42,8 +41,13 @@ namespace ProjLib
             //base.VisitToken ( token ) ;
         }
         
-        public override void DefaultVisit ( SyntaxNode node )
+        public override void DefaultVisit ( [ NotNull ] SyntaxNode node )
         {
+            if ( node == null )
+            {
+                throw new ArgumentNullException ( nameof ( node ) ) ;
+            }
+
             _message("{method}", nameof(DefaultVisit)).Write();
             ISpanViewModel model =  _mFunc?.Invoke (node ) ;
             ActiveSpans.AddSpan ( node , node.Span, model ) ;
@@ -94,7 +98,7 @@ namespace ProjLib
             }
         }
 
-        public SemanticModel Model { get { return _model ; } }
+        
 
     }
 }

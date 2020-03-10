@@ -46,9 +46,12 @@ namespace LogService.Service
             svcHost.Open();
 
             var conf = new LoggingConfiguration() ;
-            var  target = new LogReceiverWebServiceTarget("wcf") ;
+            var target = new LogReceiverWebServiceTarget ( "wcf" )
+                         {
+                             EndpointAddress = "http://serenity/LogService/ReceiveLogs.svc"
+                         } ;
 
-            target.EndpointAddress = "http://serenity/LogService/ReceiveLogs.svc" ;//"http://localhost:27809/ReceiveLogs.svc";
+            //"http://localhost:27809/ReceiveLogs.svc";
             conf.AddTarget ( target ) ;
             conf.AddRuleForAllLevels(target);
             var console = new ConsoleTarget ("console" ) ;
@@ -96,21 +99,23 @@ namespace LogService.Service
                     break ;
             }
 
-            var props = new Dictionary < string , object > ( ) ;
-            props[ "Category" ]           = e.Entry.Category ;
-            props[ "CategoryNumber" ]     = e.Entry.CategoryNumber ;
-            props[ "EncodedData" ]        = Convert.ToBase64String ( e.Entry.Data ) ;
-            props[ "MachineName" ]        = e.Entry.MachineName ;
-            props[ "Index" ]              = e.Entry.Index ;
-            props[ "EntryType" ]          = e.Entry.EntryType ;
-            props[ "ReplacementStrings" ] = e.Entry.ReplacementStrings ;
-            props[ "Source" ]             = e.Entry.Source ;
-            props[ "InstanceId" ]         = e.Entry.InstanceId ;
-            props[ "UserName" ]           = e.Entry.UserName ;
-            props[ "TimeGenerated" ] = e.Entry.TimeGenerated ;
-            props[ "TimeWritten" ] = e.Entry.TimeWritten ;
+            var props = new Dictionary < string , object >
+                        {
+                            [ "Category" ]           = e.Entry.Category
+                          , [ "CategoryNumber" ]     = e.Entry.CategoryNumber
+                          , [ "EncodedData" ]        = Convert.ToBase64String ( e.Entry.Data )
+                          , [ "MachineName" ]        = e.Entry.MachineName
+                          , [ "Index" ]              = e.Entry.Index
+                          , [ "EntryType" ]          = e.Entry.EntryType
+                          , [ "ReplacementStrings" ] = e.Entry.ReplacementStrings
+                          , [ "Source" ]             = e.Entry.Source
+                          , [ "InstanceId" ]         = e.Entry.InstanceId
+                          , [ "UserName" ]           = e.Entry.UserName
+                          , [ "TimeGenerated" ]      = e.Entry.TimeGenerated
+                          , [ "TimeWritten" ]        = e.Entry.TimeWritten
+                        } ;
 
-            
+
             var l = new LogBuilder(Logger).LoggerName($"{e.Entry.MachineName}.{e.Entry.Source}").Level(level).Message(e.Entry.Message).Properties(props);
             l.Write(l.LogEventInfo.FormattedMessage);
         }

@@ -34,8 +34,6 @@ namespace AnalysisControls
         private Style _curStyle ;
         private Stack < Style > _styles  = new Stack < Style > ();
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private List < double > _lineStart  = new List < double> ();
-        private double _oldLineStart ;
         private bool attached ;
 
         public Visitor3 ( FlowDocument document , MyFlowDocumentScrollViewer flowViewer ):base(SyntaxWalkerDepth.Trivia)

@@ -56,7 +56,7 @@ namespace AnalysisFramework
         }
 
         
-        private LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string sourceContext , string followingCode , string precedingCode , string code ) : base ( document )
+        private LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string followingCode , string precedingCode , string code ) : base ( document )
         {
             _msgval = msgval ;
             this.sourceLocation = sourceLocation ;

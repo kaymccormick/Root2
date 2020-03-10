@@ -126,7 +126,10 @@ namespace LeafService
         }
 
         #region IDisposable
-        public void Dispose ( ) { _appInst?.Dispose ( ) ; }
+        public void Dispose ( )
+        {
+            _appInst.Dispose ( ) ;
+        }
         #endregion
     }
 

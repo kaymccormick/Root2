@@ -15,7 +15,7 @@ namespace ProjLib
 {
     public class SpanObject < T > : ISpanViewModel, ISpanObject <T>
     {
-        public  T                                     _instance ;
+        private T                                     _instance ;
         public SpanObject (
             TextSpan                              span
           , T                                     instance

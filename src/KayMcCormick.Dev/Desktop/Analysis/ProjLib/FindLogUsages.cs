@@ -36,14 +36,18 @@ namespace ProjLib
                     if ( t == null )
                     {
                         return Array.Empty < ILogInvocation > ( ) ;
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                         throw new MissingTypeException ( "nlog" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                     }
 
                     var t2 = LogUsages.GetILoggerSymbol ( model ) ;
                     if ( t2 == null )
                     {
                         return Array.Empty < ILogInvocation > ( ) ;
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                         throw new MissingTypeException ( "nlog" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                     }
 
                     var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;

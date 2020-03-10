@@ -34,12 +34,20 @@ namespace Tests.Main
         public ContainerHelperTests (
             LoggingFixture        loggingFixture
           , ITestOutputHelper     output
-          , AppContainerFixture   appContainerFixture
+          , [ NotNull ] AppContainerFixture   appContainerFixture
         )
         {
-            loggingFixture.SetOutputHelper ( output ) ;
+            if ( appContainerFixture == null )
+            {
+                throw new ArgumentNullException ( nameof ( appContainerFixture ) ) ;
+            }
 
-            LoggingFixture = loggingFixture ;
+            if ( loggingFixture != null )
+            {
+                loggingFixture.SetOutputHelper ( output ) ;
+
+                LoggingFixture = loggingFixture ;
+            }
 
             Scope  = appContainerFixture.BeginLifetimeScope ( nameof ( ContainerHelperTests ) ) ;
         }

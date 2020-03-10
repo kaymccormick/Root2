@@ -18,7 +18,7 @@ namespace ProjLib
     public class TokenSpanObject : SpanObject < SyntaxToken >
     {
         private readonly string _instanceRawKind ;
-        private          string _instanceValueText ;
+        private          readonly string _instanceValueText ;
 
         
         public TokenSpanObject ( TextSpan span , SyntaxToken instance ) : base ( span , instance )

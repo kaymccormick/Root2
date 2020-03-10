@@ -18,40 +18,44 @@ namespace WcfService1
     {
         public void ProcessLogMessages ( NLogEvents nevents )
         {
-            LogManager.GetCurrentClassLogger ( )
-                      .Trace (
-                              "{name}: {count}"
-                            , nameof ( ProcessLogMessages )
-                            , nevents.Events.Length
-                             ) ;
-            var context = OperationContext.Current ;
-            var properties = context.IncomingMessageProperties ;
-            var endpoint =
-                properties[ RemoteEndpointMessageProperty.Name ] as RemoteEndpointMessageProperty ;
-            var address = string.Empty ;
-            //http://www.simosh.com/article/ddbggghj-get-client-ip-address-using-wcf-4-5-remoteendpointmessageproperty-in-load-balanc.html
-            if ( properties.Keys.Contains ( HttpRequestMessageProperty.Name ) )
+            if ( nevents != null )
             {
-                if ( properties[ HttpRequestMessageProperty.Name ] is HttpRequestMessageProperty
-                         endpointLoadBalancer
-                     && endpointLoadBalancer.Headers[ "X-Forwarded-For" ] != null )
+                LogManager.GetCurrentClassLogger ( )
+                          .Trace (
+                                  "{name}: {count}"
+                                , nameof ( ProcessLogMessages )
+                                , nevents.Events.Length
+                                 ) ;
+                var context = OperationContext.Current ;
+                var properties = context.IncomingMessageProperties ;
+                var endpoint =
+                    properties[ RemoteEndpointMessageProperty.Name ] as
+                        RemoteEndpointMessageProperty ;
+                var address = string.Empty ;
+                //http://www.simosh.com/article/ddbggghj-get-client-ip-address-using-wcf-4-5-remoteendpointmessageproperty-in-load-balanc.html
+                if ( properties.Keys.Contains ( HttpRequestMessageProperty.Name ) )
                 {
-                    address = endpointLoadBalancer.Headers[ "X-Forwarded-For" ] ;
+                    if ( properties[ HttpRequestMessageProperty.Name ] is HttpRequestMessageProperty
+                             endpointLoadBalancer
+                         && endpointLoadBalancer.Headers[ "X-Forwarded-For" ] != null )
+                    {
+                        address = endpointLoadBalancer.Headers[ "X-Forwarded-For" ] ;
+                    }
                 }
-            }
 
-            if ( string.IsNullOrEmpty ( address ) )
-            {
-                address = endpoint.Address ;
-            }
+                if ( string.IsNullOrEmpty ( address ) )
+                {
+                    address = endpoint.Address ;
+                }
 
-            var events = nevents.ToEventInfo ( "Client." + address?.ToString ( ) + "." ) ;
-            Debug.WriteLine ( "in: {0} {1}" , nevents.Events.Length , events.Count ) ;
+                var events = nevents.ToEventInfo ( "Client." + address?.ToString ( ) + "." ) ;
+                Debug.WriteLine ( "in: {0} {1}" , nevents.Events.Length , events.Count ) ;
 
-            foreach ( var ev in events )
-            {
-                var logger = LogManager.GetLogger ( ev.LoggerName ) ;
-                logger.Log ( ev ) ;
+                foreach ( var ev in events )
+                {
+                    var logger = LogManager.GetLogger ( ev.LoggerName ) ;
+                    logger.Log ( ev ) ;
+                }
             }
         }
     }

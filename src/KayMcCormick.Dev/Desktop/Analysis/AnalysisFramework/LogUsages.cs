@@ -165,7 +165,9 @@ namespace AnalysisFramework
                                  ) ;
 
                     Logger.Info (
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                                  "symbolinfo is {node}"
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                                , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
@@ -179,7 +181,9 @@ namespace AnalysisFramework
                                  // TODO optmize
                                  && CheckSymbol ( methodSymbol , t ) ;
 #if TRACE
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                     Logger.Debug ( "result is {result}" , result ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 #endif
                     return Tuple.Create(result, methodSymbol, n1);
                 }
@@ -192,7 +196,9 @@ namespace AnalysisFramework
                     return Tuple.Create <bool, IMethodSymbol, SyntaxNode> ( result , null, n1 ) ;
                 }
 
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new Exception ( "Error" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 
             }
             catch ( Exception ex )
@@ -234,12 +240,9 @@ namespace AnalysisFramework
         internal static ILogInvocation CreateLogInvocation (
             string                           sourceLocation
           , IMethodSymbol                    methodSymbol
-          , LogMessageRepr                   msgVal
           , SyntaxNode                       relevantNode
           , SemanticModel                    semanticModel
           , CompilationUnitSyntax            o
-          , ICodeSource                      codeSource
-          , SyntaxTree                       ivpSyntaxTree
           , IList < ILogInvocationArgument > args
         )
         {

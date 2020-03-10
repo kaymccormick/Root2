@@ -17,7 +17,7 @@ using Xunit.Abstractions ;
 namespace ProjTests
 {
     [Collection("GeneralPurpose")]
-    public class ContainerTests : IClassFixture<LoggingFixture>, IDisposable
+    public sealed class ContainerTests : IClassFixture<LoggingFixture>, IDisposable
     {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
@@ -30,7 +30,11 @@ namespace ProjTests
         {
             _output = output ;
             _loggingFixture = loggingFixture;
-            loggingFixture.SetOutputHelper(output);
+            if ( loggingFixture != null )
+            {
+                loggingFixture.SetOutputHelper ( output ) ;
+            }
+
             _loggingFixture.Layout = Layout.FromString("${message}");
         }
 

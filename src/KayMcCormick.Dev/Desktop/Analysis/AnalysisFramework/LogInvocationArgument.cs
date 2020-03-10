@@ -45,7 +45,7 @@ namespace AnalysisFramework
         public LogInvocationArgument ( ) {
         }
 
-        public LogInvocationArgument ( [ NotNull ] ILogInvocation debugInvo , [ NotNull ] ArgumentSyntax syntax ) : this(syntax)
+        public LogInvocationArgument ( [ NotNull ] ArgumentSyntax syntax ) : this(syntax)
         {
             _syntax    = syntax ?? throw new ArgumentNullException ( nameof ( syntax ) ) ;
 

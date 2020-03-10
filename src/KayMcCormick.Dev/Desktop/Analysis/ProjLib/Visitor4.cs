@@ -28,12 +28,12 @@ namespace ProjLib
         private int  _curLine         = - 1 ;
         private bool _isAtStartOfLine = true ;
 #if DEBUG
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 #else
         private static Logger Logger = LogManager.CreateNullLogger();
 #endif
-        private List < double > _lineStart = new List < double > ( ) ;
+        private List < double > readonly _lineStart = new List < double > ( ) ;
 
 
         public Visitor4 ( TaskScheduler t , SynchronizationContext ctx , ICodeRenderer ctl ) :
@@ -87,11 +87,15 @@ namespace ProjLib
                 {
                     if ( _curLine >= 0 )
                     {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                         Logger.Trace ( "Insert New line {line}" , _curLine ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                     }
                 }
 #if DEBUG
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 Logger.Trace ( "New line {line}" , line ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 #endif
 #if DEBUG
                 Logger.Trace ( $"create new paragraph" ) ;

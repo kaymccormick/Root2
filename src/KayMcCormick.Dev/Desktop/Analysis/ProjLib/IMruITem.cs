@@ -36,7 +36,7 @@ namespace ProjLib
 
     public class MruItem : IMruItem , INotifyPropertyChanged
     {
-        private ObservableCollection< IProjectInfo > _projectCollection = new ObservableCollection<IProjectInfo>();
+        private readonly ObservableCollection< IProjectInfo > _projectCollection = new ObservableCollection<IProjectInfo>();
 
         public string FilePath { get ; set ; }
 

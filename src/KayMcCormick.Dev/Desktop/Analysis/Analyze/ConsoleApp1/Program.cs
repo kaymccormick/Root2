@@ -64,7 +64,7 @@ namespace ConsoleApp1
         private static Logger Logger ;
 
         //============= Config [Edit these with your settings] =====================
-        private static async Task Main ( string[] args )
+        private static async Task Main ( )
         {
             Init ( ) ;
             using ( var appinst = new ApplicationInstance ( Console.Error.WriteLine ) )

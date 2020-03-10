@@ -20,7 +20,6 @@ using Castle.DynamicProxy.Internal ;
 using KayMcCormick.Dev ;
 using NLog ;
 using WpfApp.Core.Infos ;
-using WpfApp.Core.Model ;
 
 namespace WpfApp.Core.Converters
 {

@@ -61,6 +61,11 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Kay McCormick Deployment", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeafService", "Services\LeafService\LeafService.csproj", "{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FA3D5A54-4541-41D3-9EA6-490FC560B494}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -13,6 +13,7 @@ using System ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisFramework
@@ -49,7 +50,7 @@ namespace AnalysisFramework
             type2 = me.ConvertedType ;
         }
 
-        public static string ShortenedPath ( this Document doc )
+        public static string ShortenedPath ( [ NotNull ] this Document doc )
         {
             var strings = doc.FilePath.Split(Path.DirectorySeparatorChar);
             var numElems = 4 ;
@@ -61,7 +62,7 @@ namespace AnalysisFramework
             return String.Join(Path.DirectorySeparatorChar.ToString(), p);
         }
 
-        public static string RelativePath ( this Document doc )
+        public static string RelativePath ( [ NotNull ] this Document doc )
         {
             return GetRelativePath ( doc.Project.FilePath , doc.FilePath ) ;
         }

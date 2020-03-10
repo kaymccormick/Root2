@@ -199,8 +199,9 @@ namespace WpfApp.Application
         ///     Performs application-defined tasks associated with freeing,
         ///     releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
+
             var cd = AppDomain.CurrentDomain;
             cd.AssemblyLoad -= CurrentDomainOnAssemblyLoad;
             //cd.TypeResolve += CdOnTypeResolve;

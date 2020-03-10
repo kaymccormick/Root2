@@ -44,7 +44,7 @@ namespace ProjLib
             browserNodeCollection.Add(projectBrowserNode3);
         }
 
-        private IBrowserNodeCollection _rootCollection ;
+        private readonly IBrowserNodeCollection _rootCollection ;
         #region Implementation of IProjectBrowserViewModoel
         public IBrowserNodeCollection RootCollection { get => _rootCollection ; }
         #endregion

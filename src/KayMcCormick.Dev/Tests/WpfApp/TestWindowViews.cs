@@ -10,11 +10,14 @@ namespace Tests
     // ReSharper disable once UnusedType.Global
     public class TestWindowViews
     {
+        private readonly AppContainerFixture _appContainerFixture ;
+
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         // ReSharper disable once UnusedParameter.Local
         // ReSharper disable once UnusedParameter.Local
         public TestWindowViews (AppContainerFixture appContainerFixture)
         {
+            _appContainerFixture = appContainerFixture ;
         }
 
         /// <summary>Tests the container1.</summary>
