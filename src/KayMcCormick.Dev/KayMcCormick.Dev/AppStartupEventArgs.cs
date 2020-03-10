@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-using System ;
+using System;
 
 namespace KayMcCormick.Dev
 {

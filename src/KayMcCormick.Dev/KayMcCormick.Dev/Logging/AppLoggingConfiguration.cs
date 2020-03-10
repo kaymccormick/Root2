@@ -9,21 +9,21 @@
 // 
 // ---
 #endregion
-using JetBrains.Annotations ;
+using JetBrains.Annotations;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// 
     /// </summary>
-    [ UsedImplicitly ]
+    [UsedImplicitly]
     public class AppLoggingConfiguration : ILoggingConfiguration
     {
         #region Implementation of ILoggingConfiguration
         /// <summary>
         /// 
         /// </summary>
-        public bool IsEnabledConsoleTarget { get ; set ; }
+        public bool IsEnabledConsoleTarget { get; set; }
         #endregion
     }
 }

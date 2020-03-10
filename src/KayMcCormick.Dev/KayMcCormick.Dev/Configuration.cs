@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations ;
-using Microsoft.Win32 ;
-using NLog ;
+﻿using JetBrains.Annotations;
+using Microsoft.Win32;
+using NLog;
 
 namespace KayMcCormick.Dev
 {
@@ -14,22 +14,22 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        AppConfig , 
+        AppConfig,
         /// <summary>
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        EnvironmentVariable , 
+        EnvironmentVariable,
         /// <summary>
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        Win32Registry , 
+        Win32Registry,
         /// <summary>
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        Compilation ,
+        Compilation,
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        LogsRootDirectory ,
+        LogsRootDirectory,
     }
 
     /// <summary>
@@ -53,8 +53,8 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        [ UsedImplicitly ]
-        void LoadConfiguration ( ) ;
+        [UsedImplicitly]
+        void LoadConfiguration();
     }
 
     /// <summary>
@@ -62,20 +62,20 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class Win32RegistryConfiguration : IConfiguration
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// 
         /// </summary>
-        public void LoadConfiguration ( )
+        public void LoadConfiguration()
         {
-            var x = new[] { Registry.LocalMachine , Registry.CurrentUser } ;
-            foreach ( var q in x )
+            var x = new[] { Registry.LocalMachine, Registry.CurrentUser };
+            foreach (var q in x)
             {
-                var mainSubKey = q.OpenSubKey ( @"SOFTWARE" ) ;
-                Logger.Debug ( "{key}" , mainSubKey ) ;
-                var e = mainSubKey?.OpenSubKey ( "Kay McCormick" ) ;
-                Logger.Debug ( "k: {k}" , e ) ;
+                var mainSubKey = q.OpenSubKey(@"SOFTWARE");
+                Logger.Debug("{key}", mainSubKey);
+                var e = mainSubKey?.OpenSubKey("Kay McCormick");
+                Logger.Debug("k: {k}", e);
             }
         }
     }

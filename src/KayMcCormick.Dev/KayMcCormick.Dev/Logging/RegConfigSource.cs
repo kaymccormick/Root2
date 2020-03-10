@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations ;
+﻿using JetBrains.Annotations;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -76,7 +76,7 @@ namespace KayMcCormick.Dev.Logging
     [UsedImplicitly]
     internal enum FunctionalArea
     {
-        [ UsedImplicitly ] Configuration,
+        [UsedImplicitly] Configuration,
         [UsedImplicitly] UserInterface,
         [UsedImplicitly] DependencyInjection,
         [UsedImplicitly] Model,

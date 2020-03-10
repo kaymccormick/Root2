@@ -1,6 +1,6 @@
-﻿using System.Security.Policy ;
-using System.ServiceModel ;
-using JetBrains.Annotations ;
+﻿using JetBrains.Annotations;
+using System.Security.Policy;
+using System.ServiceModel;
 
 namespace KayMcCormick.Dev.Interfaces
 {
@@ -15,10 +15,10 @@ namespace KayMcCormick.Dev.Interfaces
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [ OperationContract ]
-        RegisterApplicationInstanceResponse RegisterApplicationInstance (
+        [OperationContract]
+        RegisterApplicationInstanceResponse RegisterApplicationInstance(
             RegisterApplicationInstanceRequest request
-        ) ;
+        );
     }
 
     /// <summary>
@@ -33,11 +33,11 @@ namespace KayMcCormick.Dev.Interfaces
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public RegisterApplicationInstanceResponse RegisterApplicationInstance (
+        public RegisterApplicationInstanceResponse RegisterApplicationInstance(
             RegisterApplicationInstanceRequest request
         )
         {
-            return null ;
+            return null;
         }
         #endregion
     }
@@ -45,12 +45,12 @@ namespace KayMcCormick.Dev.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    [ UsedImplicitly ]
+    [UsedImplicitly]
     public class RegisterApplicationInstanceRequest
     {
         /// <summary>
         /// 
         /// </summary>
-        [ UsedImplicitly ] public Url EndpointUrl { get ; set ; }
+        [UsedImplicitly] public Url EndpointUrl { get; set; }
     }
 }

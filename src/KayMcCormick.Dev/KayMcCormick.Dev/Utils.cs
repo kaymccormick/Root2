@@ -1,13 +1,13 @@
-﻿using System ;
-using System.CodeDom.Compiler ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Diagnostics ;
-using System.IO ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev.Logging ;
-using NLog ;
-using NLog.Fluent ;
+﻿using JetBrains.Annotations;
+using KayMcCormick.Dev.Logging;
+using NLog;
+using NLog.Fluent;
+using System;
+using System.CodeDom.Compiler;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace KayMcCormick.Dev
 {
@@ -16,7 +16,7 @@ namespace KayMcCormick.Dev
     /// </summary>
     public static class Utils
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // ReSharper disable once UnusedMember.Global
         /// <summary>
@@ -25,42 +25,42 @@ namespace KayMcCormick.Dev
         /// <param name="e"></param>
         /// <param name="level"></param>
         /// <param name="logger"></param>
-        [ UsedImplicitly ]
+        [UsedImplicitly]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        private static void HandleInnerExceptions (
+        private static void HandleInnerExceptions(
             Exception e
-          , LogLevel  level  = null
-          , Logger    logger = null
+          , LogLevel level = null
+          , Logger logger = null
         )
         {
-            using ( var stringWriter = new StringWriter ( ) )
+            using (var stringWriter = new StringWriter())
             {
-                TextWriter s = stringWriter ;
+                TextWriter s = stringWriter;
                 try
                 {
-                    void doLog ( Exception exception )
+                    void doLog(Exception exception)
                     {
-                        new LogBuilder ( logger ?? Logger )
-                           .Level ( level ?? LogLevel.Debug )
-                           .Exception ( exception )
-                           .Message ( exception.Message )
-                           .Write ( ) ;
+                        new LogBuilder(logger ?? Logger)
+                           .Level(level ?? LogLevel.Debug)
+                           .Exception(exception)
+                           .Message(exception.Message)
+                           .Write();
                     }
 
-                    s.WriteLine ( e.Message ) ;
-                    var inner = e.InnerException ;
-                    var seen = new HashSet < object > ( ) ;
-                    while ( inner != null
-                            && ! seen.Contains ( inner ) )
+                    s.WriteLine(e.Message);
+                    var inner = e.InnerException;
+                    var seen = new HashSet<object>();
+                    while (inner != null
+                            && !seen.Contains(inner))
                     {
-                        doLog ( inner ) ;
-                        seen.Add ( inner ) ;
-                        inner = inner.InnerException ;
+                        doLog(inner);
+                        seen.Add(inner);
+                        inner = inner.InnerException;
                     }
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
-                    Debug.WriteLine ( "Exception: " + ex ) ;
+                    Debug.WriteLine("Exception: " + ex);
                 }
             }
         }
@@ -69,51 +69,51 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="out"></param>
-        public static void 
-            PerformLogConfigDump ( TextWriter @out )
+        public static void
+            PerformLogConfigDump(TextWriter @out)
         {
-            var doDumpConfig = AppLoggingConfigHelper.DoDumpConfig ( s => { } ) ;
-            using ( IndentedTextWriter writer = new IndentedTextWriter ( @out ) )
+            var doDumpConfig = AppLoggingConfigHelper.DoDumpConfig(s => { });
+            using (IndentedTextWriter writer = new IndentedTextWriter(@out))
             {
-                DoDump ( writer , doDumpConfig ) ;
+                DoDump(writer, doDumpConfig);
             }
         }
 
-        private static void DoDump (
+        private static void DoDump(
             IndentedTextWriter dumpConfig
-          , IDictionary        doDumpConfig
-          , [ UsedImplicitly ] int                depth = 0
+          , IDictionary doDumpConfig
+          , [UsedImplicitly] int depth = 0
         )
         {
-            foreach ( var key in doDumpConfig.Keys )
+            foreach (var key in doDumpConfig.Keys)
             {
-                string @out = key.ToString ( ) ;
-                var value = doDumpConfig[ key ] ;
-                if ( ! ( value is IDictionary || value is string)
-                     && value is IEnumerable e )
+                string @out = key.ToString();
+                var value = doDumpConfig[key];
+                if (!(value is IDictionary || value is string)
+                     && value is IEnumerable e)
                 {
-                    Dictionary <int, object> d =new Dictionary < int , object > ();
+                    Dictionary<int, object> d = new Dictionary<int, object>();
                     int i = 0;
-                    foreach(var yy in e)
+                    foreach (var yy in e)
                     {
-                        d[ i ] = yy ;
-                        i ++ ;
+                        d[i] = yy;
+                        i++;
                     }
 
-                    value = d ;
+                    value = d;
                 }
 
-                if(value is IDictionary dict)
+                if (value is IDictionary dict)
                 {
                     dumpConfig.WriteLine($"{key}:");
                     dumpConfig.Indent += 1;
                     DoDump(dumpConfig, dict, depth + 1);
-                    dumpConfig.Indent -= 1 ;
+                    dumpConfig.Indent -= 1;
                 }
                 else
                 {
-                    @out = @out + " = " + value ;
-                    dumpConfig.WriteLine ( @out ) ;
+                    @out = @out + " = " + value;
+                    dumpConfig.WriteLine(@out);
                 }
             }
         }

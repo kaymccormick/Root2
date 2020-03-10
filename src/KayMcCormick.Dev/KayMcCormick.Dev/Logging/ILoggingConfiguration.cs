@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-using JetBrains.Annotations ;
+using JetBrains.Annotations;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -21,6 +21,6 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// 
         /// </summary>
-        [ UsedImplicitly ] bool IsEnabledConsoleTarget { get ; }
+        [UsedImplicitly] bool IsEnabledConsoleTarget { get; }
     }
 }

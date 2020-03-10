@@ -9,14 +9,14 @@
 // 
 // ---
 #endregion
-using JetBrains.Annotations ;
+using JetBrains.Annotations;
 
 namespace KayMcCormick.Dev.Interfaces
 {
     /// <summary>
     /// 
     /// </summary>
-    [ UsedImplicitly ]
+    [UsedImplicitly]
     public class RegisterApplicationInstanceResponse
     {
     }

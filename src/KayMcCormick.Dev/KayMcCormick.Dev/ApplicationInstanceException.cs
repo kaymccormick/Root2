@@ -9,30 +9,31 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Runtime.Serialization ;
-using JetBrains.Annotations ;
+using JetBrains.Annotations;
+using System;
+using System.Runtime.Serialization;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
     /// </summary>
-    [ UsedImplicitly ]
+    [UsedImplicitly]
     [Serializable]
     public class ApplicationInstanceException : Exception
     {
         /// <summary>
         /// 
         /// </summary>
-        public ApplicationInstanceException ( ) {
+        public ApplicationInstanceException()
+        {
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public ApplicationInstanceException ( string message ) : base ( message )
+        public ApplicationInstanceException(string message) : base(message)
         {
         }
 
@@ -41,7 +42,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public ApplicationInstanceException ( string message , Exception innerException ) : base ( message , innerException )
+        public ApplicationInstanceException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
@@ -50,7 +51,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected ApplicationInstanceException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected ApplicationInstanceException([NotNull] SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

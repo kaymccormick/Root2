@@ -1,12 +1,12 @@
-﻿using Autofac ;
-using JetBrains.Annotations ;
+﻿using Autofac;
+using JetBrains.Annotations;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
     /// </summary>
-    [ UsedImplicitly ]
+    [UsedImplicitly]
     public class InfraModule : Module
     {
         #region Overrides of Module
@@ -14,10 +14,10 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="builder"></param>
-        protected override void Load ( ContainerBuilder builder )
+        protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterModule < IdGeneratorModule > ( ) ;
-            base.Load ( builder ) ;
+            builder.RegisterModule<IdGeneratorModule>();
+            base.Load(builder);
         }
         #endregion
     }

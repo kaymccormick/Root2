@@ -1,27 +1,28 @@
-﻿using System ;
-using System.Runtime.Serialization ;
-using JetBrains.Annotations ;
+﻿using JetBrains.Annotations;
+using System;
+using System.Runtime.Serialization;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
     /// </summary>
-    [ UsedImplicitly ]
+    [UsedImplicitly]
     [Serializable]
     public class AppInfraException : Exception
     {
         /// <summary>
         /// 
         /// </summary>
-        public AppInfraException ( ) {
+        public AppInfraException()
+        {
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public AppInfraException ( string message ) : base ( message )
+        public AppInfraException(string message) : base(message)
         {
         }
 
@@ -30,7 +31,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public AppInfraException ( string message , Exception innerException ) : base ( message , innerException )
+        public AppInfraException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
@@ -39,7 +40,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected AppInfraException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected AppInfraException([NotNull] SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

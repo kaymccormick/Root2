@@ -9,10 +9,10 @@
 // 
 // ---
 #endregion
-using System.Diagnostics ;
-using System.Linq ;
-using System.Text.RegularExpressions ;
-using NLog ;
+using NLog;
+using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace KayMcCormick.Dev.DataBindingTraceFilter
 {
@@ -22,8 +22,8 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
     // ReSharper disable once UnusedType.Global
     public class MyTraceFilter : TraceFilter
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-       
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// 
         /// </summary>
@@ -36,33 +36,33 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
         /// <param name="data1"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public override bool ShouldTrace (
+        public override bool ShouldTrace(
             TraceEventCache cache
-          , string          source
-          , TraceEventType  eventType
-          , int             id
-          , string          formatOrMessage
-          , object[]        args
-          , object          data1
-          , object[]        data
+          , string source
+          , TraceEventType eventType
+          , int id
+          , string formatOrMessage
+          , object[] args
+          , object data1
+          , object[] data
         )
         {
-            string[] ignores = new[] { "UserOptions." } ;
-            var match = Regex.Match ( formatOrMessage , "BindingExpression:(.*) DataItem" ) ;
-            if ( match.Success )
+            string[] ignores = new[] { "UserOptions." };
+            var match = Regex.Match(formatOrMessage, "BindingExpression:(.*) DataItem");
+            if (match.Success)
             {
-                var expr = match.Groups[ 1 ].Captures[ 0 ].Value ;
-                
-                var haveIgnore = ignores.Any ( s => expr.Contains ( s) ) ;
-                Logger.Trace( @"{ignore}" , haveIgnore ) ;
-                if ( ! haveIgnore )
+                var expr = match.Groups[1].Captures[0].Value;
+
+                var haveIgnore = ignores.Any(s => expr.Contains(s));
+                Logger.Trace(@"{ignore}", haveIgnore);
+                if (!haveIgnore)
                 {
                     Logger.Debug(@"expr is {expr}", expr);
                 }
-                return haveIgnore ;
+                return haveIgnore;
             }
 
-            return false ;
+            return false;
         }
     }
 }
