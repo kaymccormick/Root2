@@ -9,6 +9,9 @@
 // 
 // ---
 #endregion
+using System ;
+using KayMcCormick.Dev.CentralServiceReference ;
+
 namespace ProjLib
 {
     public class ProjectBrowserNode : BrowserNode, IProjectBrowserNode, IBrowserNode
@@ -16,7 +19,7 @@ namespace ProjLib
         private string _solutionPath ;
         private string _platform ;
 
-        public string RepositoryUrl { get ; set ; }
+        public Uri RepositoryUrl { get ; set ; }
 
         public string Platform { get => _platform ; set => _platform = value ; }
 

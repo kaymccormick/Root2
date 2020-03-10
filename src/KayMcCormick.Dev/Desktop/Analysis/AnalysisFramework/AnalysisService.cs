@@ -20,10 +20,19 @@ namespace AnalysisFramework
     public static class AnalysisService
     {
         public static CSharpCompilation CreateCompilation (
-            string     assemblyName
-          , SyntaxTree syntaxTree
+            [ NotNull ] string     assemblyName
+          , [ NotNull ] SyntaxTree syntaxTree
         )
         {
+            if ( assemblyName == null )
+            {
+                throw new ArgumentNullException ( nameof ( assemblyName ) ) ;
+            }
+
+            if ( syntaxTree == null )
+            {
+                throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
+            }
 
             var compilation = CSharpCompilation.Create ( assemblyName )
                                                .AddReferences (
@@ -44,10 +53,20 @@ namespace AnalysisFramework
         }
 
         public static ICodeAnalyseContext CreateFromCompilation (
-            SyntaxTree        syntaxTree
-          , CSharpCompilation compilation
+            [ NotNull ] SyntaxTree        syntaxTree
+          , [ NotNull ] CSharpCompilation compilation
         )
         {
+            if ( syntaxTree == null )
+            {
+                throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
+            }
+
+            if ( compilation == null )
+            {
+                throw new ArgumentNullException ( nameof ( compilation ) ) ;
+            }
+
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
             return new CodeAnalyseContext (
                                            compilation.GetSemanticModel ( syntaxTree )

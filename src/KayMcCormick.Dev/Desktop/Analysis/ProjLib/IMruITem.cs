@@ -42,7 +42,7 @@ namespace ProjLib
 
         public string Name { get ; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public MruItem ( string filePath , string name )
         {
             try
@@ -88,7 +88,7 @@ namespace ProjLib
         public ObservableCollection < IProjectInfo > ProjectCollection
         {
             get => _projectCollection ;
-            set => _projectCollection = value ;
+            private set => _projectCollection = value ;
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;

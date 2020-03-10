@@ -27,13 +27,12 @@ namespace AnalysisFramework
         object Pojo { get ; set ; }
     }
 
-    public class LogInvocationArgument : ILogInvocationArgument
+    internal class LogInvocationArgument : ILogInvocationArgument
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 
         private readonly ArgumentSyntax _syntax ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogInvocationArgument ( ArgumentSyntax syntax )
         {
             _syntax = syntax ;
@@ -42,7 +41,7 @@ namespace AnalysisFramework
             Pojo = jsonOut;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public LogInvocationArgument ( ) {
         }
 

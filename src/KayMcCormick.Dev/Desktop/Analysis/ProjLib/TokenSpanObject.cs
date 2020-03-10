@@ -20,7 +20,7 @@ namespace ProjLib
         private readonly string _instanceRawKind ;
         private          string _instanceValueText ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public TokenSpanObject ( TextSpan span , SyntaxToken instance ) : base ( span , instance )
         {
             _instanceRawKind   = Instance.Kind ( ) + " (" + Instance.RawKind + ")" ;

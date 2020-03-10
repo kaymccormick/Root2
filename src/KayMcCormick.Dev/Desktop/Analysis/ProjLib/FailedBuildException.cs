@@ -15,6 +15,7 @@ using JetBrains.Annotations ;
 
 namespace ProjLib
 {
+    [Serializable]
     public class FailedBuildException : Exception
     {
         public FailedBuildException ( ) {

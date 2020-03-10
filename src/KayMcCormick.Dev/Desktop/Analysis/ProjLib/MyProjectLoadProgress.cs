@@ -17,10 +17,6 @@ namespace ProjLib
 {
     public class MyProjectLoadProgress
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:System.Object" />
-        ///     class.
-        /// </summary>
         public MyProjectLoadProgress (
             string   filePath
           , string   operation

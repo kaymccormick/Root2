@@ -202,21 +202,36 @@ namespace AnalysisFramework
             }
         }
 
-        public static INamedTypeSymbol GetILoggerSymbol(SemanticModel model)
+        public static INamedTypeSymbol GetILoggerSymbol( [ NotNull ] SemanticModel model)
         {
+            if ( model == null )
+            {
+                throw new ArgumentNullException ( nameof ( model ) ) ;
+            }
+
             return model.Compilation.GetTypeByMetadataName(ILoggerClassFullName);
         }
 
-        public static INamedTypeSymbol GetLogBuilderSymbol(SemanticModel model)
+        public static INamedTypeSymbol GetLogBuilderSymbol( [ NotNull ] SemanticModel model)
         {
+            if ( model == null )
+            {
+                throw new ArgumentNullException ( nameof ( model ) ) ;
+            }
+
             return model.Compilation.GetTypeByMetadataName(LogBuilderClassFullName);
         }
-        public static INamedTypeSymbol GetNLogSymbol ( SemanticModel model )
+        public static INamedTypeSymbol GetNLogSymbol ( [ NotNull ] SemanticModel model )
         {
+            if ( model == null )
+            {
+                throw new ArgumentNullException ( nameof ( model ) ) ;
+            }
+
             return model.Compilation.GetTypeByMetadataName ( LoggerClassFullName ) ;
         }
 
-        public static ILogInvocation CreateLogInvocation (
+        internal static ILogInvocation CreateLogInvocation (
             string                           sourceLocation
           , IMethodSymbol                    methodSymbol
           , LogMessageRepr                   msgVal
@@ -232,6 +247,7 @@ namespace AnalysisFramework
         }
     }
 
+    [Serializable]
     public class MissingTypeException : Exception
     {
         public MissingTypeException ( ) { }

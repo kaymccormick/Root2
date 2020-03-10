@@ -4,6 +4,7 @@ using System.IO ;
 using System.Linq ;
 using System.Text ;
 using System.Threading ;
+using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
@@ -18,7 +19,7 @@ namespace AnalysisFramework
         public readonly SyntaxTree SyntaxTree ;
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public InvocationParms (
-            ICodeSource                codeSoure
+            [ NotNull ] ICodeSource                codeSoure
           , SyntaxTree                 syntaxTree
           , SemanticModel              model
           , SyntaxNode relevantNode
@@ -27,19 +28,28 @@ namespace AnalysisFramework
 
         )
         {
-            #if TRACE
+            if ( codeSoure == null )
+            {
+                throw new ArgumentNullException ( nameof ( codeSoure ) ) ;
+            }
+
+            if (tuple is null)
+            {
+                throw new ArgumentNullException(nameof(tuple));
+            }
+#if TRACE
             Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, 
 relevantNode.ToString() ) ;
 #endif
-            SyntaxTree = syntaxTree ;
+            SyntaxTree = syntaxTree ?? throw new ArgumentNullException(nameof(syntaxTree));
 
-            Model = model ;
+            Model = model ?? throw new ArgumentNullException(nameof(model));
             ICodeSoure = codeSoure ;
-            RelevantNode = relevantNode ;
+            RelevantNode = relevantNode ?? throw new ArgumentNullException(nameof(relevantNode));
             var (_ , item2 , item3) = tuple ;
             InvocationExpression = item3 as InvocationExpressionSyntax;
             MethodSymbol = item2;
-            NamedTypeSymbol = namedTypeSymbol ;
+            NamedTypeSymbol = namedTypeSymbol ?? throw new ArgumentNullException(nameof(namedTypeSymbol));
         }
 
         public SemanticModel Model { get ; private set ; }

@@ -9,11 +9,13 @@
 // 
 // ---
 #endregion
+using System ;
+
 namespace ProjLib
 {
     public interface IProjectBrowserNode : IBrowserNode
     {
-        string RepositoryUrl { get ; }
+        Uri RepositoryUrl { get ; }
         string Platform      { get ; }
         string SolutionPath  { get ; set ; }
     }

@@ -14,7 +14,8 @@ using System.Runtime.Serialization ;
 
 namespace ProjLib
 {
-    public class AnalyzeException : CommandException
+    [Serializable]
+    internal class AnalyzeException : CommandException
     {
         public AnalyzeException ( ) {
         }

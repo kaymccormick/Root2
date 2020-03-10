@@ -24,7 +24,6 @@ namespace ProjLib
     public class LogInvocationSpan : SpanObject < ILogInvocation >, ISpanObject <ILogInvocation>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger() ;
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogInvocationSpan (
             TextSpan                 span
           , ILogInvocation            instance

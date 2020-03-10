@@ -16,7 +16,7 @@ namespace ProjLib
 {
     public class TriviaSpanObject : SpanObject < SyntaxTrivia >
     {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public TriviaSpanObject ( TextSpan span , SyntaxTrivia instance ) : base ( span , instance )
         {
         }

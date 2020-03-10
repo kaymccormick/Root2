@@ -10,14 +10,10 @@
 // ---
 #endregion
 using System ;
-using System.Collections.Generic ;
 using System.Linq ;
-using AnalysisFramework ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Integration.Mef ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Fluent ;
 
@@ -228,145 +224,5 @@ namespace ProjLib
             #endif
             return b.Build ( ).BeginLifetimeScope ( ) ;
         }
-    }
-
-    public interface IHasTreeAndCompilation : IHasTree , IHasCompilation
-    {
-    }
-
-    internal class HasTreeAndCompilation : IHasTreeAndCompilation
-    {
-        private IHasCompilation _hasCompilationImplementation ;
-        private IHasTree        _hasTreeImplementation ;
-
-#region Implementation of IHasCompilation
-        public HasTreeAndCompilation (
-            IHasCompilation hasCompilationImplementation
-          , IHasTree        hasTreeImplementation
-        )
-        {
-            _hasCompilationImplementation = hasCompilationImplementation ;
-            _hasTreeImplementation        = hasTreeImplementation ;
-        }
-
-        public CSharpCompilation Compilation => _hasCompilationImplementation.Compilation ;
-#endregion
-
-#region Implementation of IHasTree
-        public SyntaxTree Tree => _hasTreeImplementation.Tree ;
-#endregion
-    }
-
-    public interface IHasLogInvocations
-    {
-        IList < ILogInvocation > LogInvocationList { get ; }
-    }
-
-    internal class HasLogInvocations : IHasLogInvocations
-    {
-        private IList < ILogInvocation > _logInvocationList = new List < ILogInvocation > ( ) ;
-#region Implementation of IHasLogInvocations
-        public IList < ILogInvocation > LogInvocationList
-        {
-            get => _logInvocationList ;
-            set => _logInvocationList = value ;
-        }
-#endregion
-    }
-
-    public class HasSourceCode : ISourceCode
-    {
-        private string _sourceCode ;
-#region Implementation of ISourceCode
-        public string SourceCode { get => _sourceCode ; set => _sourceCode = value ; }
-#endregion
-
-        public HasSourceCode ( string sourceCode ) { _sourceCode = sourceCode ; }
-    }
-
-    public interface IHasCompilation
-    {
-        CSharpCompilation Compilation { get ; }
-    }
-
-    internal class HasCompilation : IHasCompilation
-    {
-        private CSharpCompilation _compilation ;
-#region Implementation of IHasCompilation
-        public CSharpCompilation Compilation { get => _compilation ; set => _compilation = value ; }
-#endregion
-
-        public HasCompilation ( CSharpCompilation compilation ) { _compilation = compilation ; }
-    }
-
-    public class HasTree : IHasTree
-    {
-        private SyntaxTree _tree ;
-
-        public HasTree ( SyntaxTree parseText ) { _tree = parseText ; }
-
-#region Implementation of IHasTree
-        public SyntaxTree Tree { get => _tree ; set => _tree = value ; }
-#endregion
-    }
-
-    public interface IIntermediateContext
-    {
-    }
-
-    public interface ISourceContext : ISourceCode , IHassModel , IHasTree
-    {
-    }
-
-    public interface IHasTreeAndModel : IHasTree , IHassModel
-    {
-    }
-
-    internal class HasTreeAndModel : IHasTree , IHassModel , IHasTreeAndModel
-    {
-        private IHassModel _hassModelImplementation ;
-        private IHasTree   _hasTreeImplementation ;
-
-#region Implementation of IHassModel
-        public SemanticModel Model => _hassModelImplementation.Model ;
-#endregion
-
-#region Implementation of IHasTree
-        public SyntaxTree Tree => _hasTreeImplementation.Tree ;
-#endregion
-
-        public HasTreeAndModel (
-            IHassModel hassModelImplementation
-          , IHasTree   hasTreeImplementation
-        )
-        {
-            _hassModelImplementation = hassModelImplementation ;
-            _hasTreeImplementation   = hasTreeImplementation ;
-        }
-    }
-
-    public interface IHasTree
-    {
-        SyntaxTree Tree { get ; }
-    }
-
-    public interface IHassModel
-    {
-        SemanticModel Model { get ; }
-    }
-
-    internal class HassModel : IHassModel
-    {
-        private SemanticModel _model ;
-#region Implementation of IHassModel
-        public SemanticModel Model { get => _model ; set => _model = value ; }
-#endregion
-
-        public HassModel ( SemanticModel model ) { _model = model ; }
-    }
-
-    public interface ISourceCode
-    {
-        string SourceCode { get ; }
     }
 }

@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+using System ;
+
 namespace ProjLib
 {
     public class ProjectBrowserViewModel : IProjectBrowserViewModel
@@ -27,7 +29,7 @@ namespace ProjLib
             var projectBrowserNode2 = new ProjectBrowserNode()
                                                                                         {
                                                                                             Name          = "My Project (root2)",
-                                                                                            RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
+                                                                                            RepositoryUrl = new Uri ( "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev" ),
                                                                                             SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\ManagedProd.sln",
                                                                                             Platform = "x86"
                                                                                         };
@@ -35,7 +37,7 @@ namespace ProjLib
             var projectBrowserNode3 = new ProjectBrowserNode()
                                                                                      {
                                                                                          Name          = "My Project (root)",
-                                                                                         RepositoryUrl = "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev",
+                                                                                         RepositoryUrl = new Uri ( "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev" ),
                                                                                          SolutionPath  = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\test1234\src\KayMcCormick.Dev\ManagedProd.sln",
                                                                                          Platform      = "x86"
                                                                                      };
@@ -44,7 +46,7 @@ namespace ProjLib
 
         private IBrowserNodeCollection _rootCollection ;
         #region Implementation of IProjectBrowserViewModoel
-        public IBrowserNodeCollection RootCollection { get => _rootCollection ; set => _rootCollection = value ; }
+        public IBrowserNodeCollection RootCollection { get => _rootCollection ; private set => _rootCollection = value ; }
         #endregion
     }
 }
