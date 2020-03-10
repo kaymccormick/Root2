@@ -25,10 +25,12 @@ using LogManager = NLog.LogManager ;
 
 namespace LeafService
 {
-    internal class LeafService1
+    internal class LeafService1 : IDisposable
     {
         private static Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
         private static Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
+        private ServiceHost _svcHost ;
+        private CentralService _centralService ;
 
         public LeafService1 ( ) { }
 
@@ -36,9 +38,9 @@ namespace LeafService
         {
             Log.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
 
-            var service = new CentralService ( ) ;
-            var svcHost = new ServiceHost ( service ) ;
-            svcHost.Open ( ) ;
+            _centralService = new CentralService ( ) ;
+            _svcHost = new ServiceHost ( _centralService , new Uri ( "http://localhost:8737/CentralSvc" ) );
+            _svcHost.Open ( ) ;
 
 #if USEOWNCONFIG
             var conf = new LoggingConfiguration() ;
@@ -146,5 +148,13 @@ namespace LeafService
             //TODO: Implement your service stop routine.
             return true ;
         }
+
+        #region IDisposable
+        public void Dispose ( )
+        {
+            ( ( IDisposable ) _svcHost )?.Dispose ( ) ;
+            _centralService?.Dispose ( ) ;
+        }
+        #endregion
     }
 }

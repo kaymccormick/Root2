@@ -132,10 +132,12 @@
     <Compile Include="Logging\GlobalSuppressions.cs" />
     <Compile Include="Logging\ILoggingConfiguration.cs" />
     <Compile Include="Logging\LogDelegates.cs" />
+    <Compile Include="Logging\LogEventInfoConverter.cs" />
     <Compile Include="Logging\LogFactoryInterceptor.cs" />
     <Compile Include="Logging\LoggerFactoryHook.cs" />
     <Compile Include="Logging\LoggerInterceptor.cs" />
     <Compile Include="Logging\LoggerProxyHelper.cs" />
+    <Compile Include="Logging\MyJsonLayout.cs" />
     <Compile Include="Logging\MyLogFactory.cs" />
     <Compile Include="Logging\Properties\Resource.Designer.cs" />
     <Compile Include="Logging\RegConfigSource.cs" />

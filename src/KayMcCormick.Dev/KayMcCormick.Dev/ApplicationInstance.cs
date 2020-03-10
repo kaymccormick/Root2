@@ -16,7 +16,7 @@ namespace KayMcCormick.Dev
     [UsedImplicitly]
     public sealed class ApplicationInstance : IDisposable
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private ILifetimeScope lifetimeScope;
         private readonly List<IModule> _modules = new List<IModule>();
         private IContainer _container;
@@ -26,6 +26,11 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         public Guid InstanceRunGuid { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ILogger Logger => _logger ;
 
         /// <summary>
         /// 
@@ -40,7 +45,8 @@ namespace KayMcCormick.Dev
         public ApplicationInstance ( LogDelegates.LogMethod logMethod )
         {
             InstanceRunGuid = Guid.NewGuid();
-            AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod);
+            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod);
+            
             GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);
             
         }
@@ -84,7 +90,7 @@ namespace KayMcCormick.Dev
             var builder1 = new ContainerBuilder();
             foreach (var module in _modules)
             {
-                Logger.Debug("Registering module {module}", module);
+                _logger.Debug("Registering module {module}", module);
                 builder1.RegisterModule(module);
             }
 
@@ -95,59 +101,59 @@ namespace KayMcCormick.Dev
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static void DebugServices(IContainer c)
+        private void DebugServices(IContainer c)
         {
             foreach (var componentRegistryRegistration in c.ComponentRegistry.Registrations)
             {
-                Logger.Debug(
-                              "services: {services}"
-                            , string.Join(
-                                           ", "
-                                         , componentRegistryRegistration.Services.Select(
-                                                                                          service =>
-                                                                                          {
-                                                                                              switch (
-                                                                                                  service)
-                                                                                              {
-                                                                                                  case
-                                                                                                      KeyedService
-                                                                                                      _
-                                                                                                      :
-                                                                                                      break;
-                                                                                                  case
-                                                                                                      TypedService
-                                                                                                      typedService
-                                                                                                      :
-                                                                                                      return
-                                                                                                          typedService
-                                                                                                             .ServiceType
-                                                                                                             .FullName;
-                                                                                                  case
-                                                                                                      UniqueService
-                                                                                                      _
-                                                                                                      :
-                                                                                                      break;
-                                                                                                  case
-                                                                                                      DecoratorService
-                                                                                                      _
-                                                                                                      :
-                                                                                                      break;
-                                                                                                  default:
-                                                                                                      throw
-                                                                                                          new
-                                                                                                              ArgumentOutOfRangeException(
-                                                                                                                                           nameof
-                                                                                                                                           (service
-                                                                                                                                           )
-                                                                                                                                          );
-                                                                                              }
+                _logger.Debug(
+                                  "services: {services}"
+                                , string.Join(
+                                              ", "
+                                            , componentRegistryRegistration.Services.Select(
+                                                                                            service =>
+                                                                                            {
+                                                                                                switch (
+                                                                                                    service)
+                                                                                                {
+                                                                                                    case
+                                                                                                        KeyedService
+                                                                                                        _
+                                                                                                        :
+                                                                                                        break;
+                                                                                                    case
+                                                                                                        TypedService
+                                                                                                        typedService
+                                                                                                        :
+                                                                                                        return
+                                                                                                            typedService
+                                                                                                               .ServiceType
+                                                                                                               .FullName;
+                                                                                                    case
+                                                                                                        UniqueService
+                                                                                                        _
+                                                                                                        :
+                                                                                                        break;
+                                                                                                    case
+                                                                                                        DecoratorService
+                                                                                                        _
+                                                                                                        :
+                                                                                                        break;
+                                                                                                    default:
+                                                                                                        throw
+                                                                                                            new
+                                                                                                                ArgumentOutOfRangeException(
+                                                                                                                                            nameof
+                                                                                                                                            (service
+                                                                                                                                            )
+                                                                                                                                           );
+                                                                                                }
 
-                                                                                              return service
-                                                                                                 .Description;
-                                                                                          }
-                                                                                         )
-                                          )
-                             );
+                                                                                                return service
+                                                                                                   .Description;
+                                                                                            }
+                                                                                           )
+                                             )
+                                 );
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System ;
+using JetBrains.Annotations;
 using System.Security.Policy;
 using System.ServiceModel;
 
@@ -25,7 +26,7 @@ namespace KayMcCormick.Dev.Interfaces
     /// 
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class CentralService : ICentralService
+    public sealed class CentralService : ICentralService, IDisposable
     {
         #region Implementation of ICentralService
         /// <summary>
@@ -38,6 +39,15 @@ namespace KayMcCormick.Dev.Interfaces
         )
         {
             return null;
+        }
+        #endregion
+
+        #region IDisposable
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose ( )
+        {
         }
         #endregion
     }
