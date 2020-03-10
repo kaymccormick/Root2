@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows ;
+﻿using System.Windows ;
 using Autofac ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     public class AppWindow : Window
     {
-        private readonly ILifetimeScope _lifetimeScope ;
+        [ UsedImplicitly ] private readonly ILifetimeScope _lifetimeScope ;
 
         public AppWindow ( ) {
         }
