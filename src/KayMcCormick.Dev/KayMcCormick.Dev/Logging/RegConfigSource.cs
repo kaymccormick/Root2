@@ -30,7 +30,9 @@ namespace KayMcCormick.Dev.Logging
     }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext'
+#pragma warning disable IDE1006 // Naming Styles
     public interface ExecutionContext
+#pragma warning restore IDE1006 // Naming Styles
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext.Application'

@@ -29,7 +29,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public abstract class BaseApp : Application, IDisposable
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private IComponentContext scope ;
         private ApplicationInstance appInst ;
 #if COMMANDLINE
