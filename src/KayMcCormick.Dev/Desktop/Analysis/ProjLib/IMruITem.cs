@@ -52,13 +52,15 @@ namespace ProjLib
                 FileInf      = new FileInfo ( filePath ) ;
                 if ( FileInf != null )
                 {
-                    var strings = FileInf.Directory.FullName.Split ( Path.DirectorySeparatorChar ) ;
-                    var p = strings.ToList ( )
-                                   .GetRange (
-                                              strings.Length < 3 ? 0 : strings.Length - 3
-                                            , strings.Length >= 3 ? 3 : strings.Length
-                                             ) ;
-                    Location = string.Join ( Path.DirectorySeparatorChar.ToString ( ) , p ) ;
+                    if ( FileInf.Directory != null ) {
+                        var strings = FileInf.Directory.FullName.Split ( Path.DirectorySeparatorChar ) ;
+                        var p = strings.ToList ( )
+                                       .GetRange (
+                                                  strings.Length < 3 ? 0 : strings.Length - 3
+                                                , strings.Length >= 3 ? 3 : strings.Length
+                                                 ) ;
+                        Location = string.Join ( Path.DirectorySeparatorChar.ToString ( ) , p ) ;
+                    }
                 }
 
                 FilePath = filePath ;
@@ -68,7 +70,7 @@ namespace ProjLib
                 FileInf = null ;
             }
 
-            if ( ! FileInf.Exists )
+            if ( FileInf != null && ! FileInf.Exists )
             {
                 FileInf = null ;
             }
@@ -88,7 +90,6 @@ namespace ProjLib
         public ObservableCollection < IProjectInfo > ProjectCollection
         {
             get => _projectCollection ;
-            private set => _projectCollection = value ;
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;

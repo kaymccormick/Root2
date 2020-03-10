@@ -318,9 +318,10 @@ private Type[] _optionTypes ;
             #endif
         }
 
-        protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
+
 
 #if COMMANDLINE
+protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
         private void TakeOptions ( Options obj ) { _options = obj ; }
 
         public override Type[] OptionTypes => new [] { typeof(Options) } ;

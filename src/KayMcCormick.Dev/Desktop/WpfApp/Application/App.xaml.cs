@@ -614,8 +614,9 @@ namespace WpfApp.Application
                 base.OnStartup(e);
             }
         }
-
+        #if COMMANDLINE
         protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
+#endif
 
         /// <summary>Does the on startup.</summary>
         /// <param name="args">The arguments.</param>

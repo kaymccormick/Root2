@@ -61,8 +61,8 @@ namespace ProjLib
                             LogUsages.CheckInvocationExpression ( node
                                                                 , model_
                                                                 , builderSymbol
-                                                               /*, t_
-                                                               , t2_*/
+                                                               , t_
+                                                               , t2_
                                                                 )
                         where @out.Item1
                         let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
@@ -87,7 +87,7 @@ namespace ProjLib
         {
             var b = arg1 is StatementSyntax || arg1 is MemberDeclarationSyntax ;
 #if TRACE
-            Logger.Debug("Got {arg1}- {b}", arg1.Kind(), b);
+            Logger.Debug("Got {arg1} - {b}", arg1.Kind(), b);
 #endif
             if ( b )
             {
