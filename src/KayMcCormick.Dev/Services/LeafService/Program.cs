@@ -8,12 +8,15 @@ using System.Threading.Tasks ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
+using Common.Logging ;
 using KayMcCormick.Dev ;
 using NLog ;
 using Topshelf ;
 using Topshelf.Autofac ;
+using Topshelf.Common.Logging ;
 using Topshelf.HostConfigurators ;
 using Topshelf.ServiceConfigurators ;
+using LogManager = Common.Logging.LogManager ;
 
 namespace LeafService
 {
@@ -58,6 +61,7 @@ namespace LeafService
             _appInst.Initialize ( ) ;
             configurator.OnException ( HandleException ) ;
             //configurator.UseNLog ( ) ;
+            configurator.UseCommonLogging();
             configurator.UseAutofacContainer ( _appInst.GetLifetimeScope ( ) ) ;
             configurator.Service < LeafService1 > ( ConfigureService ) ;
             configurator.RunAsLocalSystem ( ) ;
@@ -124,6 +128,10 @@ namespace LeafService
         protected override void Load ( ContainerBuilder builder )
         {
             builder.RegisterType < LeafService1 > ( ).AsSelf ( ) ;
+            builder.Register (
+                              ( context , parameters )
+                                  => Common.Logging.LogManager.GetLogger (typeof(LeafService1))).As<ILog> (  );
+            
         }
         #endregion
     }

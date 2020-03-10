@@ -76,6 +76,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,8 +100,8 @@
     <PackageReference Include="Topshelf.Autofac">
       <Version>4.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Topshelf.NLog">
-      <Version>4.2.1.218-develop</Version>
+    <PackageReference Include="Topshelf.Common.Logging">
+      <Version>4.0.1</Version>
     </PackageReference>
     <PackageReference Include="TopShelf.ServiceInstaller">
       <Version>4.2.1.218-develop</Version>

@@ -13,12 +13,17 @@ using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.ServiceModel ;
+using System.ServiceModel.Channels ;
+using System.ServiceModel.Discovery ;
 using System.Threading ;
 using System.Timers ;
+using Common.Logging ;
 using KayMcCormick.Dev.Interfaces ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 using NLog.Config ;
 using NLog.Fluent ;
+using NLog.LogReceiverService ;
 using NLog.Targets ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;
@@ -29,21 +34,68 @@ namespace LeafService
 {
     internal class LeafService1 : IDisposable
     {
+        private readonly ILog _commonLogger ;
         private static Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
         private static Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
         private ServiceHost _svcHost ;
         private CentralService _centralService ;
         private Timer _timer ;
 
-        public LeafService1 ( ) { }
+        public LeafService1 (ILog commonLogger ) { _commonLogger = commonLogger ; }
 
         public bool Start ( HostControl hostControl )
         {
+
+            var svcTarget = AppLoggingConfigHelper.ServiceTarget ;
+            if(svcTarget != null) {
+                Logger.Debug("Existing service target endpoing is {endpoingAddress}", svcTarget.EndpointAddress);
+                AppLoggingConfigHelper.RemoveTarget(svcTarget);
+            }
             Log.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
 
+            Uri baseAddress = new Uri ( $"http://10.25.0.102:8737/leafService/" ) ;
+            Uri receiverUri = new Uri ( baseAddress , "receiver" ) ;
+
+            var svcReceiver = new ServiceHost ( typeof ( LogReceiver ) , receiverUri ) ;
+            // Add calculator endpoint
+            svcReceiver.AddServiceEndpoint(typeof(ILogReceiverServer), new WSHttpBinding(), receiverUri);
+            svcReceiver.Faulted += SvcReceiverOnFaulted;
+            svcReceiver.UnknownMessageReceived += ( sender , args ) => {
+                _commonLogger.Warn ( nameof ( svcReceiver.UnknownMessageReceived ) ) ;
+            } ;
+            svcReceiver.Opened += ( sender , args )
+                => _commonLogger.Info ( nameof ( svcReceiver.Opened ) ) ;
+            // ** DISCOVERY ** //
+            // Make the service discoverable by adding the discovery behavior
+            var discoveryBehavior = new ServiceDiscoveryBehavior();
+            svcReceiver.Description.Behaviors.Add(discoveryBehavior);
+            discoveryBehavior.AnnouncementEndpoints.Add(
+                                                        new UdpAnnouncementEndpoint());
+            // ** DISCOVERY ** //
+            // Add the discovery endpoint that specifies where to publish the services
+            svcReceiver.AddServiceEndpoint(new UdpDiscoveryEndpoint());
+            svcReceiver.Open();
+
             _centralService = new CentralService ( ) ;
-            _svcHost = new ServiceHost ( _centralService , new Uri ( "http://localhost:8737/CentralSvc" ) );
-            _svcHost.Open ( ) ;
+            var serviceHost = new ServiceHost ( _centralService , new Uri ( "http://localhost:8737/CentralSvc1" ) );
+
+            // Add calculator endpoint
+            serviceHost.AddServiceEndpoint(typeof(ICentralService), new WSHttpBinding(), string.Empty);
+
+            // ** DISCOVERY ** //
+            // Make the service discoverable by adding the discovery behavior
+            var discoveryBehavior1 = new ServiceDiscoveryBehavior() ;
+            serviceHost.Description.Behaviors.Add(discoveryBehavior);
+            discoveryBehavior1.AnnouncementEndpoints.Add(
+                                                        new UdpAnnouncementEndpoint());
+            // ** DISCOVERY ** //
+            // Add the discovery endpoint that specifies where to publish the services
+            serviceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
+
+           // Open the ServiceHost to create listeners and start listening for messages.
+            serviceHost.Open();
+
+            _svcHost = serviceHost;
 
 #if USEOWNCONFIG
             var conf = new LoggingConfiguration() ;
@@ -60,8 +112,7 @@ namespace LeafService
             conf.AddRuleForAllLevels(console);
             LogManager.Configuration = conf;
 #endif
-            _timer = new Timer(60 * 1000) ;
-            _timer.AutoReset = true ;
+            _timer = new Timer ( 60 * 1000 ) { AutoReset = true } ;
             _timer.Elapsed += TimerOnElapsed;
             _timer.Start ( ) ;
 
@@ -73,6 +124,11 @@ namespace LeafService
             // MyThread.Start ( true ) ;
             //TODO: Implement your service start routine.
             return true ;
+        }
+
+        private void SvcReceiverOnFaulted ( object sender , EventArgs e )
+        {
+            _commonLogger.Error ( "faulted" ) ;
         }
 
         private void TimerOnElapsed ( object sender , ElapsedEventArgs e )
@@ -168,6 +224,50 @@ namespace LeafService
             _timer?.Dispose();
             ( ( IDisposable ) _svcHost )?.Dispose ( ) ;
             _centralService?.Dispose ( ) ;
+        }
+        #endregion
+    }
+
+    [ServiceBehavior(AddressFilterMode = AddressFilterMode.Any)]
+    internal class LogReceiver : ILogReceiverServer
+    {
+        private static ILog CLogger =
+            Common.Logging.LogManager.GetLogger ( typeof ( LeafService1 ) ) ;
+        public LogReceiver () { CLogger.Warn ( "In constructor" ) ; }
+
+        #region Implementation of ILogReceiverServer
+        public void ProcessLogMessages ( NLogEvents nevents )
+        {
+            CLogger.Warn ( $"Received {nevents.Events.Length} events" ) ;
+            var context = OperationContext.Current;
+            var properties = context.IncomingMessageProperties;
+            var endpoint =
+                properties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+            var address = string.Empty;
+            //http://www.simosh.com/article/ddbggghj-get-client-ip-address-using-wcf-4-5-remoteendpointmessageproperty-in-load-balanc.html
+            if (properties.Keys.Contains(HttpRequestMessageProperty.Name))
+            {
+                if (properties[HttpRequestMessageProperty.Name] is HttpRequestMessageProperty
+                        endpointLoadBalancer
+                    && endpointLoadBalancer.Headers["X-Forwarded-For"] != null)
+                {
+                    address = endpointLoadBalancer.Headers["X-Forwarded-For"];
+                }
+            }
+
+            if (string.IsNullOrEmpty(address))
+            {
+                address = endpoint.Address;
+            }
+
+            var events = nevents.ToEventInfo("Client." + address?.ToString() + ".");
+            Debug.WriteLine("in: {0} {1}", nevents.Events.Length, events.Count);
+
+            foreach (var ev in events)
+            {
+                var logger = LogManager.GetLogger(ev.LoggerName);
+                logger.Log(ev);
+            }
         }
         #endregion
     }

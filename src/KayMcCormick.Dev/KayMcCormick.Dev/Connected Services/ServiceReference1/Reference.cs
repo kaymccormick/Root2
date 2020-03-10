@@ -445,7 +445,7 @@ namespace KayMcCormick.Dev.ServiceReference1 {
         
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
         public System.Threading.Tasks.Task<KayMcCormick.Dev.ServiceReference1.AppInstanceInfoResponse> GetAppInstanceInfoAsync(KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest request) {
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
+#pragma warning restore CS1591 // Missing XML comment @for publicly visible type or member 'AppInfoServiceClient.GetAppInstanceInfoAsync(AppInstanceInfoRequest)'
             return base.Channel.GetAppInstanceInfoAsync(request);
         }
     }

@@ -10,21 +10,54 @@ using NLog.Targets;
 using NLog.Targets.Wrappers;
 using System; /* test 123 */
 /* test 123 */
-using System.Collections.Generic; /* test 123 */
+using System.Collections.Generic;
+using System.Collections.ObjectModel ;
+/* test 123 */
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.ServiceModel ;
+using System.ServiceModel.Discovery ;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using NLog.LogReceiverService ;
 using JsonAttribute = NLog.Layouts.JsonAttribute;
 
 namespace KayMcCormick.Dev.Logging
 {
+    class Client
+    {
+        static public EndpointAddress serviceAddress;
+
+        // ** DISCOVERY ** //  
+        static public bool FindService()
+        {
+            DiscoveryClient discoveryClient =
+                new DiscoveryClient(new UdpDiscoveryEndpoint());
+
+            Collection<EndpointDiscoveryMetadata> logReceiverServices =
+                (Collection<EndpointDiscoveryMetadata>)discoveryClient.Find(
+                    new FindCriteria(typeof(ILogReceiverServer))).Endpoints;
+
+            discoveryClient.Close();
+
+            if (logReceiverServices.Count == 0)
+            {
+                Console.WriteLine("\nNo services are found.");
+                return false;
+            }
+            else
+            {
+                serviceAddress = logReceiverServices[0].Address;
+                return true;
+            }
+        }
+    }
     /// <summary>Static class containing logging configuration methods</summary>
     /// <seealso cref="NLog.Config.LoggingConfiguration" />
     public static class AppLoggingConfigHelper
@@ -95,10 +128,6 @@ namespace KayMcCormick.Dev.Logging
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
-        [SuppressMessage(
-                                                              "Microsoft.Maintainability"
-                                                            , "CA1506:AvoidExcessiveClassCoupling"
-                                                          )]
         internal static LogFactory ConfigureLogging(
             LogDelegates.LogMethod logMethod
           , bool proxyLogging = false
@@ -182,18 +211,29 @@ namespace KayMcCormick.Dev.Logging
             // var x = new EventLogTarget("eventLog") { Source = "Application Error" };
             // errorTargets.Add(x);
 
-            // TODO make this address configurable
             var endpointAddress = Environment.GetEnvironmentVariable("LOGGING_WEBSERVICE_ENDPOINT")
                                   ?? $"http://{PublicFacingHostAddress}/LogService/ReceiveLogs.svc";
+            EndpointAddress receiverAddress = null;//new EndpointAddress(endpointAddress);
+            if(Client.FindService())
+            {
+                receiverAddress = Client.serviceAddress ;
+                logMethod($"Found service at endpoint {receiverAddress}");
+
+            }
+            // TODO make this address configurable
+            if(receiverAddress  != null) {
             ServiceTarget = new LogReceiverWebServiceTarget("log")
             {
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
-                EndpointAddress = endpointAddress
+                EndpointAddress = receiverAddress.ToString(), ClientId = new SimpleLayout("${processName}"),
+                EndpointConfigurationName = "WSDualHttpBinding_ILogReceiverServer", IncludeEventProperties = true,
+                
             };
             var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             dict[LogLevel.Debug].Add(wrap);
+}
 
             var consoleTarget = new ConsoleTarget("console")
             {
