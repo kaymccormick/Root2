@@ -27,7 +27,7 @@ namespace KayMcCormick.Dev
         /// <param name="logger"></param>
         [UsedImplicitly]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        private static void HandleInnerExceptions(
+        public static void HandleInnerExceptions(
             Exception e
           , LogLevel level = null
           , Logger logger = null
