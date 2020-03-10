@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
@@ -10,6 +11,7 @@ using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using Autofac ;
 using Autofac.Core ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 #if COMMANDLINE
 using CommandLine ;
@@ -26,7 +28,10 @@ using Module = Autofac.Module ;
 
 namespace ConsoleApp1
 {
+    [UsedImplicitly]
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal class AppContext
+#pragma warning restore CA1812 // Avoid uninstantiated internal classes
     {
         public ILifetimeScope Scope { get ; }
 
@@ -66,34 +71,35 @@ namespace ConsoleApp1
         private static async Task Main ( string[] args )
         {
             Init ( ) ;
-            var appinst = new ApplicationInstance ( ) ;
-            appinst.AddModule ( new AppModule ( ));
-              appinst.AddModule(new ProjLibModule()) ;
-            var scope = appinst.GetLifetimeScope ( ) ;
+            using ( var appinst = new ApplicationInstance ( ) )
+            {
+                appinst.AddModule ( new AppModule ( ) ) ;
+                appinst.AddModule ( new ProjLibModule ( ) ) ;
+                var scope = appinst.GetLifetimeScope ( ) ;
 
-            AppContext context ;
-            try
-            {
-                context = scope.Resolve < AppContext > ( ) ;
-            }
-            catch ( DependencyResolutionException depex )
-            {
-                Exception ex1 = depex ;
-                while ( ex1 != null )
+                AppContext context ;
+                try
                 {
-                    Logger.Debug ( ex1.Message ) ;
-                    ex1 = ex1.InnerException ;
+                    context = scope.Resolve < AppContext > ( ) ;
                 }
+                catch ( DependencyResolutionException depex )
+                {
+                    Exception ex1 = depex ;
+                    while ( ex1 != null )
+                    {
+                        Logger.Debug ( ex1.Message ) ;
+                        ex1 = ex1.InnerException ;
+                    }
 
-                return ;
+                    return ;
 
 
-            }
-            catch ( Exception ex )
-            {
-                Logger.Fatal ( ex , ex.Message ) ;
-                return ;
-            }
+                }
+                catch ( Exception ex )
+                {
+                    Logger.Fatal ( ex , ex.Message ) ;
+                    return ;
+                }
 #if COMMANDLINE
             var parsed = Parser.Default.ParseArguments < Options > ( args )
                   .WithNotParsed (
@@ -101,7 +107,7 @@ namespace ConsoleApp1
                                       Logger.Error (
                                                     string.Join (
                                                                  ", "
-                                                               , errors.Select (
+                                                           , errors.Select (
                                                                                 error => error.Tag
                                                                                )
                                                                 )
@@ -114,8 +120,9 @@ namespace ConsoleApp1
                 await MainCommand((parsed as Parsed<Options>).Value, context);
             }
 #else
-            await MainCommand(context);
+                await MainCommand ( context ) ;
 #endif
+            }
         }
 
         public static void Action ( ILogInvocation invocation )
@@ -203,14 +210,22 @@ namespace ConsoleApp1
             #endif
 
 #if MSBUILDLOCATOR
-            var instances = MSBuildLocator.RegisterDefaults ( ) ;
-                // .QueryVisualStudioInstances ( )
-                                          // .Where (
-                                                  // instance 
-                                                      // => instance.Version.Major    == 16
-                                                         // && instance.Version.Minor == 4
-                                                 // ) ;
-            // MSBuildLocator.RegisterInstance ( instances.First ( ) ) ;
+            // var instances = MSBuildLocator.RegisterDefaults ( ) ;
+            var i2 = MSBuildLocator
+               .QueryVisualStudioInstances (
+                                            new VisualStudioInstanceQueryOptions ( )
+                                            {
+                                                DiscoveryTypes = DiscoveryType.VisualStudioSetup
+                                            }
+                                           )
+               .Where ( instance => instance.Version.Major == 16 && instance.Version.Minor == 4 )
+               .First ( ) ;
+            Logger.Warn(
+                        "Selected instance {instance} {path}"
+                      , i2.Name
+                      , i2.MSBuildPath
+                       );
+            MSBuildLocator.RegisterInstance (i2);
 #endif
             int i = 0 ;
             var browserNodeCollection = viewModel.ProjectBrowserViewModel.RootCollection ;
@@ -240,13 +255,15 @@ namespace ConsoleApp1
 
             var selection = (int)char.GetNumericValue ( key.KeyChar ) ;
 
-            var projectNode = nodes[selection - 1] as IProjectBrowserNode;
-
-            if ( projectNode != null )
+            if ( nodes[selection - 1] is IProjectBrowserNode projectNode )
             {
                 Console.WriteLine ( projectNode.SolutionPath ) ;
                 _ = Console.ReadLine ( ) ;
                 await viewModel.AnalyzeCommand ( projectNode ) ;
+                using ( var s = File.OpenWrite ( "invocs.json" ) )
+                {
+                    await JsonSerializer.SerializeAsync( s , viewModel.LogInvocations ) ;
+                }
             }
             //
             // var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;

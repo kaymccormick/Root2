@@ -1,6 +1,9 @@
-﻿namespace KayMcCormick.Dev
+﻿using JetBrains.Annotations;
+
+namespace KayMcCormick.Dev
 {
     /// <summary>Exit status of application.</summary>
+    [UsedImplicitly]
     public enum ExitCode
     {
         /// <summary>Successful exit.</summary>
@@ -10,14 +13,17 @@
        ,
 
         /// <summary>General error.</summary>
-        GeneralError = 1
+        [UsedImplicitly] GeneralError = 1
 
        ,
 
         /// <summary>Invalid arguments to application.</summary>
         // ReSharper disable once UnusedMember.Global
         ArgumentsError = 2
-
-       , ExceptionalError
+            ,
+        /// <summary>
+        /// 
+        /// </summary>
+        [UsedImplicitly] ExceptionalError
     }
 }

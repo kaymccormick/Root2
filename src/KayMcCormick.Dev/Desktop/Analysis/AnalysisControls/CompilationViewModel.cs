@@ -16,7 +16,6 @@ using System.Runtime.CompilerServices ;
 using AnalysisFramework ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 
 namespace AnalysisControls

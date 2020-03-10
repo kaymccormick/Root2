@@ -1,12 +1,9 @@
 ﻿using System ;
-using System.Collections.Generic ;
-using System.Linq ;
-using System.Text ;
-using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
 using Autofac ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -18,8 +15,15 @@ namespace KayMcCormick.Lib.Wpf
 
         #region Overrides of MarkupExtension
         public override object 
-            ProvideValue ( IServiceProvider serviceProvider )
+            // ReSharper disable once AnnotationRedundancyInHierarchy
+            ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
+            if ( serviceProvider == null )
+            {
+                throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
+            }
+
+            // ReSharper disable once UnusedVariable
             var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                      typeof ( IAmbientProvider )
                                                                     ) ;

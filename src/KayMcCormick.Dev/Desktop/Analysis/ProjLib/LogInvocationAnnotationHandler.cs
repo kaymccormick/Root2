@@ -1,4 +1,7 @@
-﻿#region header
+﻿// TODO FIXME
+#if LOGANNOTATIONS
+
+#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -15,8 +18,6 @@ using NLog ;
 
 namespace ProjLib
 {
-
-#if false
     public class LogInvocationAnnotationHandler : Visitor2
     {
 
@@ -73,5 +74,6 @@ namespace ProjLib
         public object logInvAnno { get { return _logInvAnno ; } set { _logInvAnno = value ; } }
 
     }
-#endif
+
 }
+#endif

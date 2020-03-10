@@ -11,16 +11,11 @@
 #endregion
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using ProjLib.Properties ;
 using System ;
-using System.Collections ;
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Data.SqlClient ;
-using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Text.Json ;
 using System.Threading ;
@@ -121,6 +116,10 @@ namespace ProjLib
                                                                                                         invocation
                                                                                                        )
                                                                                         ) ;
+
+                                                                      LogInvocations.Add (
+                                                                                          invocation
+                                                                                         ) ;
                                                                       Logger.Debug(
                                                                                     "{invocation}"
                                                                                   , invocation
@@ -155,7 +154,7 @@ namespace ProjLib
             await NewMethod ( actionBlock ) ;
         }
 
-        private static async Task NewMethod ( ActionBlock < ILogInvocation > actionBlock )
+        private  async Task NewMethod ( ActionBlock < ILogInvocation > actionBlock )
         {
             PipelineResult result ;
             try
@@ -174,7 +173,7 @@ namespace ProjLib
                 Logger.Error ( result.TaskException , "Failed: {}" , result.TaskException.Message ) ;
             }
 
-            Logger.Debug ( "{id} {result}" , Thread.CurrentThread.ManagedThreadId , result.Status ) ;
+            Logger.Debug ( "{id} {result} {count}" , Thread.CurrentThread.ManagedThreadId , result.Status , LogInvocations.Count) ;
         }
 
         private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
@@ -234,7 +233,7 @@ namespace ProjLib
             set => eventInfos = value ;
         }
 
-        public ObservableCollection < LogEventInstance > Events { get => _events ; set => _events = value ; }
+        public ObservableCollection < LogEventInstance > Events { get => _events ; }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

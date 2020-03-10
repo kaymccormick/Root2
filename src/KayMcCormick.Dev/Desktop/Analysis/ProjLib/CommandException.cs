@@ -14,6 +14,7 @@ using System.Runtime.Serialization ;
 
 namespace ProjLib
 {
+    [Serializable]
     public class CommandException : Exception
     {
         public CommandException ( ) {

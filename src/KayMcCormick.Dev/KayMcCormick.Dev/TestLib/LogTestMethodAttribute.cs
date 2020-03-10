@@ -1,8 +1,9 @@
-﻿using System.ComponentModel ;
-using System.Reflection ;
-using NLog ;
-using NLog.Fluent ;
-using Xunit.Sdk ;
+﻿using JetBrains.Annotations;
+using NLog;
+using NLog.Fluent;
+using System.ComponentModel;
+using System.Reflection;
+using Xunit.Sdk;
 
 namespace KayMcCormick.Dev.TestLib
 {
@@ -12,62 +13,64 @@ namespace KayMcCormick.Dev.TestLib
     /// TODO Edit XML Comment Template for LogTestMethodAttribute
     public class LogTestMethodAttribute : BeforeAfterTestAttribute
     {
-        private readonly        LogLevel _level ;
-        private static readonly Logger   Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private                 LogLevel LogLevel ;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly LogLevel _level;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private LogLevel LogLevel;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logLevel"></param>
-        public LogTestMethodAttribute ( )
+        public LogTestMethodAttribute()
         {
-            LogLevel level = null ;
-            _level = level ?? LogLevel.Debug ;
+            _level = LogLevel.Debug;
         }
 
-        public LogLevel Level { get => LogLevel ; set => LogLevel = value ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [UsedImplicitly] public LogLevel Level { get => LogLevel; set => LogLevel = value; }
 
         /// <summary>
         ///     This method is called after the test method is executed.
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
-        [ EditorBrowsable ( EditorBrowsableState.Never ) ]
-        public override void After ( MethodInfo methodUnderTest )
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void After(MethodInfo methodUnderTest)
         {
-            new LogBuilder ( Logger ).Level ( LogLevel.Info )
-                                     .Message (
-                                               $"{nameof ( After )} test method {methodUnderTest.Name}"
+            new LogBuilder(Logger).Level(LogLevel.Info)
+                                     .Message(
+                                               $"{nameof(After)} test method {methodUnderTest.Name}"
                                               )
-                                     .Properties (
-                                                  LogHelper.TestMethodProperties (
+                                     .Properties(
+                                                  LogHelper.TestMethodProperties(
                                                                                   methodUnderTest
                                                                                 , TestMethodLifecycle
                                                                                      .After
                                                                                  )
                                                  )
-                                     .Write ( ) ;
+                                     .Write();
         }
 
         /// <summary>
         ///     This method is called before the test method is executed.
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
-        [ EditorBrowsable ( EditorBrowsableState.Never ) ]
-        public override void Before ( MethodInfo methodUnderTest )
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void Before(MethodInfo methodUnderTest)
         {
-            new LogBuilder ( Logger ).Level ( LogLevel.Info )
-                                     .Message (
-                                               $"{nameof ( Before )} test method {methodUnderTest.Name}"
+            new LogBuilder(Logger).Level(LogLevel.Info)
+                                     .Message(
+                                               $"{nameof(Before)} test method {methodUnderTest.Name}"
                                               )
-                                     .Properties (
-                                                  LogHelper.TestMethodProperties (
+                                     .Properties(
+                                                  LogHelper.TestMethodProperties(
                                                                                   methodUnderTest
                                                                                 , TestMethodLifecycle
                                                                                      .Before
                                                                                  )
                                                  )
-                                     .Write ( ) ;
+                                     .Write();
         }
     }
 }

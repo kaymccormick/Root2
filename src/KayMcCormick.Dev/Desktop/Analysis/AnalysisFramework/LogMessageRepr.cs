@@ -15,11 +15,10 @@ using MessageTemplates ;
 
 namespace AnalysisFramework
 {
-    public class LogMessageRepr
+    internal class LogMessageRepr
     {
         private readonly string _message ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public LogMessageRepr ( bool isMessageTemplate , object constantMessage )
         {
             IsMessageTemplate = isMessageTemplate ;

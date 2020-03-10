@@ -14,7 +14,7 @@ namespace ProjLib
         {
             var workdirPath = Path.Combine ( FilePaths.ProjectRootDir , Path.GetRandomFileName ( ) ) ;
 
-            var r = await Task.Run ( ( ) => Repository.Clone ( req.Info.RepositoryUrl, workdirPath ) ) ;
+            var r = await Task.Run ( ( ) => Repository.Clone ( req.Info.RepositoryUrl.ToString ( ), workdirPath ) ) ;
             return req ;
         }
     }

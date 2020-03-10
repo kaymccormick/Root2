@@ -19,6 +19,7 @@ namespace AnalysisFramework
     {
     }
 
+    // ReSharper disable once UnusedType.Global
     public class CodeAnalyseContext2 : ICodeAnalyseContext
     {
         public CodeAnalyseContext2 ( SemanticModel currentModel )

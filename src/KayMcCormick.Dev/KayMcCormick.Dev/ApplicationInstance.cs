@@ -1,148 +1,116 @@
 ﻿using Autofac;
+using Autofac.Core;
+using Autofac.Features.Decorators;
+using JetBrains.Annotations;
+using KayMcCormick.Dev.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization ;
-using System.ServiceModel ;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac.Core ;
-using Autofac.Features.Decorators ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev.Interfaces ;
-using NLog ;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ApplicationInstanceHost : IDisposable
-    {
-        private  ServiceHost _host ;
-        private AppInfoService _service ;
-        private Uri _baseAddresses ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="container"></param>
-        public ApplicationInstanceHost ( [ NotNull ] IContainer container )
-        {
-            if ( container == null )
-            {
-                throw new ArgumentNullException ( nameof ( container ) ) ;
-            }
-
-            _service = new AppInfoService(DateTime.Now, container.ResolveOptional<IObjectIdProvider>()) ;
-            _baseAddresses = new Uri("http://localhost:8736/ProjInterface/App") ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void HostOpen ( )
-        {
-            _host = new ServiceHost ( _service , _baseAddresses ) ;
-            _host.Open ( ) ;
-        }
-
-        #region IDisposable
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose ( )
-        {
-            var disposable = _host as IDisposable ;
-            disposable?.Dispose();
-        }
-        #endregion
-    }
-    /// <summary>
-    /// 
-    /// </summary>
+    [UsedImplicitly]
     public sealed class ApplicationInstance : IDisposable
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private ILifetimeScope lifetimeScope ;
-        private List <IModule> _modules = new List < IModule > ();
-        private IContainer _container ;
-        private ApplicationInstanceHost _host ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private ILifetimeScope lifetimeScope;
+        private readonly List<IModule> _modules = new List<IModule>();
+        private IContainer _container;
+        private ApplicationInstanceHost _host;
 
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler < AppStartupEventArgs > AppStartup ;
+        public Guid InstanceRunGuid { get; }
+
         /// <summary>
         /// 
         /// </summary>
-        public ApplicationInstance ( ) {
+        // ReSharper disable once EventNeverSubscribedTo.Global
+        public event EventHandler<AppStartupEventArgs> AppStartup;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ApplicationInstance()
+        {
+            InstanceRunGuid = Guid.NewGuid();
+            GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void Initialize ( ) { _container = BuildContainer ( ) ; }
+        // ReSharper disable once UnusedMember.Global
+        public void Initialize() { _container = BuildContainer(); }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="appModule"></param>
-        public void AddModule ( IModule appModule ) { _modules.Add ( appModule ) ; }
+        // ReSharper disable once UnusedMember.Global
+        public void AddModule(IModule appModule) => _modules.Add(appModule);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public ILifetimeScope GetLifetimeScope ( )
+        [UsedImplicitly]
+        public ILifetimeScope GetLifetimeScope()
         {
-            if(lifetimeScope != null)
+            if (lifetimeScope != null)
             {
-                return lifetimeScope ;
+                return lifetimeScope;
             }
 
-            if ( _container == null )
+            if (_container == null)
             {
-                _container = BuildContainer ( ) ;
+                _container = BuildContainer();
             }
 
-            lifetimeScope = _container.BeginLifetimeScope ( ) ;
-            return _container.BeginLifetimeScope ( ) ;
+            lifetimeScope = _container.BeginLifetimeScope();
+            return _container.BeginLifetimeScope();
         }
 
-        private IContainer BuildContainer ( )
+        private IContainer BuildContainer()
         {
-            var builder1 = new ContainerBuilder ( ) ;
-            foreach ( var module in _modules )
+            var builder1 = new ContainerBuilder();
+            foreach (var module in _modules)
             {
-                Logger.Debug ( "Registering module {module}" , module ) ;
-                builder1.RegisterModule ( module ) ;
+                Logger.Debug("Registering module {module}", module);
+                builder1.RegisterModule(module);
             }
 
             var c
-                = builder1.Build ( ) ;
-//            DebugServices ( c ) ;
-            return c ;
+                = builder1.Build();
+            //            DebugServices ( c ) ;
+            return c;
         }
 
-        private static void DebugServices ( IContainer c )
+        // ReSharper disable once UnusedMember.Local
+        private static void DebugServices(IContainer c)
         {
-            foreach ( var componentRegistryRegistration in c.ComponentRegistry.Registrations )
+            foreach (var componentRegistryRegistration in c.ComponentRegistry.Registrations)
             {
-                Logger.Debug (
+                Logger.Debug(
                               "services: {services}"
-                            , string.Join (
+                            , string.Join(
                                            ", "
-                                         , componentRegistryRegistration.Services.Select (
-                                                                                          service => {
+                                         , componentRegistryRegistration.Services.Select(
+                                                                                          service =>
+                                                                                          {
                                                                                               switch (
-                                                                                                  service )
+                                                                                                  service)
                                                                                               {
                                                                                                   case
                                                                                                       KeyedService
-                                                                                                      keyedService
+                                                                                                      _
                                                                                                       :
-                                                                                                      break ;
+                                                                                                      break;
                                                                                                   case
                                                                                                       TypedService
                                                                                                       typedService
@@ -150,46 +118,47 @@ namespace KayMcCormick.Dev
                                                                                                       return
                                                                                                           typedService
                                                                                                              .ServiceType
-                                                                                                             .FullName ;
+                                                                                                             .FullName;
                                                                                                   case
                                                                                                       UniqueService
-                                                                                                      uniqueService
+                                                                                                      _
                                                                                                       :
-                                                                                                      break ;
+                                                                                                      break;
                                                                                                   case
                                                                                                       DecoratorService
-                                                                                                      decoratorService
+                                                                                                      _
                                                                                                       :
-                                                                                                      break ;
-                                                                                                  default :
+                                                                                                      break;
+                                                                                                  default:
                                                                                                       throw
                                                                                                           new
-                                                                                                              ArgumentOutOfRangeException (
+                                                                                                              ArgumentOutOfRangeException(
                                                                                                                                            nameof
-                                                                                                                                           ( service
+                                                                                                                                           (service
                                                                                                                                            )
-                                                                                                                                          ) ;
+                                                                                                                                          );
                                                                                               }
 
                                                                                               return service
-                                                                                                 .Description ;
+                                                                                                 .Description;
                                                                                           }
                                                                                          )
                                           )
-                             ) ;
+                             );
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void Startup ( )
+        [UsedImplicitly]
+        public void Startup()
         {
             // if ( lifetimeScope == null )
             // {
             //     throw new ApplicationInstanceException ( "lifetime scope not initialized" ) ;
             // }
-            _host = new ApplicationInstanceHost(_container) ;
+            _host = new ApplicationInstanceHost(_container);
             _host.HostOpen();
             OnAppStartup(new AppStartupEventArgs());
         }
@@ -197,50 +166,30 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="e"></param>
-        private void OnAppStartup ( AppStartupEventArgs e )
+        private void OnAppStartup(AppStartupEventArgs e)
         {
-            AppStartup?.Invoke ( this , e ) ;
+            AppStartup?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        ///  todo call from wpf
+        // ReSharper disable once UnusedMember.Global
+        public void Shutdown()
+        {
+            AppLoggingConfigHelper.ServiceTarget?.Dispose();
+        }
         #region IDisposable
         /// <summary>
         /// 
         /// </summary>
-        public void Dispose ( )
+        public void Dispose()
         {
             _host?.Dispose();
-            lifetimeScope?.Dispose ( ) ;
-            _container?.Dispose ( ) ;
+            lifetimeScope?.Dispose();
+            _container?.Dispose();
         }
         #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class ApplicationInstanceException : Exception
-    {
-        public ApplicationInstanceException ( ) {
-        }
-
-        public ApplicationInstanceException ( string message ) : base ( message )
-        {
-        }
-
-        public ApplicationInstanceException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected ApplicationInstanceException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
-        {
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class AppStartupEventArgs : EventArgs
-    {
-
     }
 }

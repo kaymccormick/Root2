@@ -20,8 +20,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
-          <analysisControls:JsonConverter x:Key="JsonConverter"></analysisControls:JsonConverter>
-            <DataTemplate DataType="{x:Type nLog:LogLevel}">
+          <DataTemplate DataType="{x:Type nLog:LogLevel}">
             <Border BorderBrush="DimGray" BorderThickness="3" CornerRadius="10">
               <TextBlock><Run Typography.Capitals="AllSmallCaps" Text="{Binding Name,Mode=OneTime}" FontSize="14" FontFamily="Copperplate Gothic"/>
               </TextBlock>
@@ -145,7 +144,6 @@
     </StatusBar>
     </Border>
     <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
-    
     </analysisControls:ProjectBrowser>
     <ListView Name="_eventView" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}">
       <ListView.View>

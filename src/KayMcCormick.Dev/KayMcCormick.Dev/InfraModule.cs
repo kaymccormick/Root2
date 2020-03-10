@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac ;
+﻿using Autofac;
+using JetBrains.Annotations;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
     /// </summary>
+    [UsedImplicitly]
     public class InfraModule : Module
     {
         #region Overrides of Module
-        protected override void Load ( ContainerBuilder builder )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterModule < IdGeneratorModule > ( ) ;
-            base.Load ( builder ) ;
+            builder.RegisterModule<IdGeneratorModule>();
+            base.Load(builder);
         }
         #endregion
     }

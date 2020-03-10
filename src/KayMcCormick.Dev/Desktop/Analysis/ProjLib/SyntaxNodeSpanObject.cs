@@ -19,7 +19,7 @@ namespace ProjLib
     {
         private SyntaxKind _kind ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public SyntaxNodeSpanObject ( TextSpan span , SyntaxNode instance ) : base (
                                                                                     span
                                                                                   , instance

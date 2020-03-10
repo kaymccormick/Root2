@@ -26,7 +26,7 @@ namespace ProjLib
             
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
 
         public T Instance { get => _instance ; set => _instance = value ; }
 

@@ -17,7 +17,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="RegisterApplicationInstanceRequest", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev.Interfaces")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest'
     public partial class RegisterApplicationInstanceRequest : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -26,7 +28,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         private KayMcCormick.Dev.CentralServiceReference.Url EndpointUrlField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -36,7 +40,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.EndpointUrl'
         public KayMcCormick.Dev.CentralServiceReference.Url EndpointUrl {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.EndpointUrl'
             get {
                 return this.EndpointUrlField;
             }
@@ -48,9 +54,13 @@ namespace KayMcCormick.Dev.CentralServiceReference {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceRequest.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -62,12 +72,16 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Url", Namespace="http://schemas.datacontract.org/2004/07/System.Security.Policy")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Url'
     public partial class Url : KayMcCormick.Dev.CentralServiceReference.EvidenceBase {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Url'
         
         private KayMcCormick.Dev.CentralServiceReference.URLString m_urlField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Url.m_url'
         public KayMcCormick.Dev.CentralServiceReference.URLString m_url {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Url.m_url'
             get {
                 return this.m_urlField;
             }
@@ -85,13 +99,17 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.Runtime.Serialization.DataContractAttribute(Name="EvidenceBase", Namespace="http://schemas.datacontract.org/2004/07/System.Security.Policy")]
     [System.SerializableAttribute()]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(KayMcCormick.Dev.CentralServiceReference.Url))]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase'
     public partial class EvidenceBase : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -100,9 +118,13 @@ namespace KayMcCormick.Dev.CentralServiceReference {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EvidenceBase.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -114,7 +136,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="URLString", Namespace="http://schemas.datacontract.org/2004/07/System.Security.Util")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString'
     public partial class URLString : KayMcCormick.Dev.CentralServiceReference.SiteString {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString'
         
         private KayMcCormick.Dev.CentralServiceReference.DirectoryString m_directoryField;
         
@@ -144,7 +168,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         private string m_userpassField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_directory'
         public KayMcCormick.Dev.CentralServiceReference.DirectoryString m_directory {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_directory'
             get {
                 return this.m_directoryField;
             }
@@ -157,7 +183,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_fullurl'
         public string m_fullurl {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_fullurl'
             get {
                 return this.m_fullurlField;
             }
@@ -170,7 +198,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_isUncShare'
         public bool m_isUncShare {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_isUncShare'
             get {
                 return this.m_isUncShareField;
             }
@@ -183,7 +213,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_localSite'
         public KayMcCormick.Dev.CentralServiceReference.LocalSiteString m_localSite {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_localSite'
             get {
                 return this.m_localSiteField;
             }
@@ -196,7 +228,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_parseDeferred'
         public bool m_parseDeferred {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_parseDeferred'
             get {
                 return this.m_parseDeferredField;
             }
@@ -209,7 +243,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_parsedOriginal'
         public bool m_parsedOriginal {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_parsedOriginal'
             get {
                 return this.m_parsedOriginalField;
             }
@@ -222,7 +258,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_port'
         public int m_port {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_port'
             get {
                 return this.m_portField;
             }
@@ -235,7 +273,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_protocol'
         public string m_protocol {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_protocol'
             get {
                 return this.m_protocolField;
             }
@@ -248,7 +288,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_siteString'
         public KayMcCormick.Dev.CentralServiceReference.SiteString m_siteString {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_siteString'
             get {
                 return this.m_siteStringField;
             }
@@ -261,7 +303,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_urlOriginal'
         public string m_urlOriginal {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_urlOriginal'
             get {
                 return this.m_urlOriginalField;
             }
@@ -274,7 +318,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_userpass'
         public string m_userpass {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'URLString.m_userpass'
             get {
                 return this.m_userpassField;
             }
@@ -299,7 +345,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(KayMcCormick.Dev.CentralServiceReference.EvidenceBase))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceRequest))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse))]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SiteString'
     public partial class SiteString : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SiteString'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -309,7 +357,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         private string m_siteField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SiteString.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SiteString.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -319,7 +369,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SiteString.m_separatedSite'
         public object[] m_separatedSite {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SiteString.m_separatedSite'
             get {
                 return this.m_separatedSiteField;
             }
@@ -332,7 +384,9 @@ namespace KayMcCormick.Dev.CentralServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SiteString.m_site'
         public string m_site {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SiteString.m_site'
             get {
                 return this.m_siteField;
             }
@@ -344,9 +398,13 @@ namespace KayMcCormick.Dev.CentralServiceReference {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SiteString.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SiteString.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SiteString.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SiteString.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -358,12 +416,16 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DirectoryString", Namespace="http://schemas.datacontract.org/2004/07/System.Security.Util")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DirectoryString'
     public partial class DirectoryString : KayMcCormick.Dev.CentralServiceReference.SiteString {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DirectoryString'
         
         private bool m_checkForIllegalCharsField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DirectoryString.m_checkForIllegalChars'
         public bool m_checkForIllegalChars {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DirectoryString.m_checkForIllegalChars'
             get {
                 return this.m_checkForIllegalCharsField;
             }
@@ -380,20 +442,26 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="LocalSiteString", Namespace="http://schemas.datacontract.org/2004/07/System.Security.Util")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LocalSiteString'
     public partial class LocalSiteString : KayMcCormick.Dev.CentralServiceReference.SiteString {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LocalSiteString'
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="RegisterApplicationInstanceResponse", Namespace="http://schemas.datacontract.org/2004/07/KayMcCormick.Dev.Interfaces")]
     [System.SerializableAttribute()]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse'
     public partial class RegisterApplicationInstanceResponse : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse'
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse.ExtensionData'
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse.ExtensionData'
             get {
                 return this.extensionDataField;
             }
@@ -402,9 +470,13 @@ namespace KayMcCormick.Dev.CentralServiceReference {
             }
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse.PropertyChanged'
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse.PropertyChanged'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse.RaisePropertyChanged(string)'
         protected void RaisePropertyChanged(string propertyName) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterApplicationInstanceResponse.RaisePropertyChanged(string)'
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -414,47 +486,71 @@ namespace KayMcCormick.Dev.CentralServiceReference {
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="CentralServiceReference.ICentralService")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ICentralService'
     public interface ICentralService {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ICentralService'
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICentralService/RegisterApplicationInstance", ReplyAction="http://tempuri.org/ICentralService/RegisterApplicationInstanceResponse")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ICentralService.RegisterApplicationInstance(RegisterApplicationInstanceRequest)'
         KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse RegisterApplicationInstance(KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceRequest request);
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ICentralService.RegisterApplicationInstance(RegisterApplicationInstanceRequest)'
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICentralService/RegisterApplicationInstance", ReplyAction="http://tempuri.org/ICentralService/RegisterApplicationInstanceResponse")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ICentralService.RegisterApplicationInstanceAsync(RegisterApplicationInstanceRequest)'
         System.Threading.Tasks.Task<KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse> RegisterApplicationInstanceAsync(KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceRequest request);
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ICentralService.RegisterApplicationInstanceAsync(RegisterApplicationInstanceRequest)'
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ICentralServiceChannel'
     public interface ICentralServiceChannel : KayMcCormick.Dev.CentralServiceReference.ICentralService, System.ServiceModel.IClientChannel {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ICentralServiceChannel'
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient'
     public partial class CentralServiceClient : System.ServiceModel.ClientBase<KayMcCormick.Dev.CentralServiceReference.ICentralService>, KayMcCormick.Dev.CentralServiceReference.ICentralService {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient'
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient()'
         public CentralServiceClient() {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient()'
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(string)'
         public CentralServiceClient(string endpointConfigurationName) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(string)'
                 base(endpointConfigurationName) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(string, string)'
         public CentralServiceClient(string endpointConfigurationName, string remoteAddress) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(string, string)'
                 base(endpointConfigurationName, remoteAddress) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(string, EndpointAddress)'
         public CentralServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(string, EndpointAddress)'
                 base(endpointConfigurationName, remoteAddress) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(Binding, EndpointAddress)'
         public CentralServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.CentralServiceClient(Binding, EndpointAddress)'
                 base(binding, remoteAddress) {
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.RegisterApplicationInstance(RegisterApplicationInstanceRequest)'
         public KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse RegisterApplicationInstance(KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceRequest request) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.RegisterApplicationInstance(RegisterApplicationInstanceRequest)'
             return base.Channel.RegisterApplicationInstance(request);
         }
         
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.RegisterApplicationInstanceAsync(RegisterApplicationInstanceRequest)'
         public System.Threading.Tasks.Task<KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse> RegisterApplicationInstanceAsync(KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceRequest request) {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CentralServiceClient.RegisterApplicationInstanceAsync(RegisterApplicationInstanceRequest)'
             return base.Channel.RegisterApplicationInstanceAsync(request);
         }
     }

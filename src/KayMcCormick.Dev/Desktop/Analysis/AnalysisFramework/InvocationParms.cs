@@ -4,6 +4,7 @@ using System.IO ;
 using System.Linq ;
 using System.Text ;
 using System.Threading ;
+using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
@@ -18,28 +19,38 @@ namespace AnalysisFramework
         public readonly SyntaxTree SyntaxTree ;
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public InvocationParms (
-            ICodeSource                codeSoure
+            [ NotNull ] ICodeSource                codeSoure
           , SyntaxTree                 syntaxTree
           , SemanticModel              model
           , SyntaxNode relevantNode
-            , Tuple<bool, IMethodSymbol, InvocationExpressionSyntax> tuple
+            , Tuple < bool , IMethodSymbol , SyntaxNode > tuple
           , INamedTypeSymbol           namedTypeSymbol
 
         )
         {
-            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, relevantNode.ToString() ) ;
-            SyntaxTree = syntaxTree ;
+            if ( codeSoure == null )
+            {
+                throw new ArgumentNullException ( nameof ( codeSoure ) ) ;
+            }
 
-            Model = model ;
+            if (tuple is null)
+            {
+                throw new ArgumentNullException(nameof(tuple));
+            }
+#if TRACE
+            Logger.Debug( "{id} relevant node is {node}" , Thread.CurrentThread.ManagedThreadId, 
+relevantNode.ToString() ) ;
+#endif
+            SyntaxTree = syntaxTree ?? throw new ArgumentNullException(nameof(syntaxTree));
+
+            Model = model ?? throw new ArgumentNullException(nameof(model));
             ICodeSoure = codeSoure ;
-            RelevantNode = relevantNode ;
+            RelevantNode = relevantNode ?? throw new ArgumentNullException(nameof(relevantNode));
             var (_ , item2 , item3) = tuple ;
-            InvocationExpression = item3;
+            InvocationExpression = item3 as InvocationExpressionSyntax;
             MethodSymbol = item2;
-            NamedTypeSymbol = namedTypeSymbol ;
+            NamedTypeSymbol = namedTypeSymbol ?? throw new ArgumentNullException(nameof(namedTypeSymbol));
         }
-
-        // public InvocationParms ( ICodeSource codeSoure , SyntaxTree syntaxTree , SemanticModel currentModel , StatementSyntax statement , InvocationExpressionSyntax invocation , IMethodSymbol namedTypeSymbol , INamedTypeSymbol exceptionType ) { }
 
         public SemanticModel Model { get ; private set ; }
 
@@ -69,13 +80,17 @@ namespace AnalysisFramework
             if ( ivp.MethodSymbol != null ) {
                 var msgParam = ivp.MethodSymbol.Parameters.Select ( ( symbol , i ) => new { symbol , i } )
                                   .Where ( arg1 => arg1.symbol.Name == "message" ) ;
+                #if TRACE
                 if ( ! msgParam.Any ( ) )
                 {
+                    
                     Logger.Trace( "{params}", String.Join(", ", ivp.MethodSymbol.Parameters.Select ( symbol => symbol.Name )) ) ;
                 }
+#endif
 
                 int ? msgI = msgParam.Any ( ) ? (int?) msgParam.First ( ).i : null ;
                 var methodSymbol = ivp.MethodSymbol ;
+                #if TRACE
                 Logger.Trace(
                               "params = {params}"
                             , String.Join (
@@ -83,6 +98,7 @@ namespace AnalysisFramework
                                          , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                           )
                              ) ;
+#endif
                 var invocation = ivp.InvocationExpression ;
                 IEnumerable < ArgumentSyntax > rest ;
                 var semanticModel = ivp.Model;
@@ -96,10 +112,13 @@ namespace AnalysisFramework
                     var msgArgTypeInfo = semanticModel.GetTypeInfo(msgArgExpr);
                     var symbolInfo = semanticModel.GetSymbolInfo(msgArgExpr);
                     var arg1sym = symbolInfo.Symbol;
+                    #if TRACE
                     if (arg1sym != null)
                     {
                         Logger.Trace("{type} {symb}", arg1sym.GetType(), arg1sym);
                     }
+#endif
+
 
                     var constant = semanticModel.GetConstantValue(msgArgExpr);
 
@@ -107,7 +126,9 @@ namespace AnalysisFramework
                     if ( constant.HasValue )
                     {
                         msgval.IsMessageTemplate = true ;
+                        #if TRACE
                         Logger.Trace( "Constant {constant}" , constant.Value ) ;
+#endif
                         msgval.ConstantMessage = constant.Value ;
                         var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
                         var o = new List < object > ( ) ;
@@ -125,7 +146,9 @@ namespace AnalysisFramework
                                 o.Add ( xt ) ;
                             }
                         }
+                        #if TRACE
                         Logger.Debug("{}", String.Join(", ", o));
+#endif
                     }
                     else
                     {
@@ -148,7 +171,9 @@ namespace AnalysisFramework
                                 }
                             }
                         }
+                        #if TRACE
                         Logger.Trace("{}", msgArgExpr);
+#endif
                         msgval.MessageExprPojo = Transforms.TransformExpr(msgArgExpr);
                     }
 
@@ -170,7 +195,7 @@ namespace AnalysisFramework
                 var debugInvo = LogUsages.CreateLogInvocation(sourceLocation, methodSymbol, msgval, relevantNode, semanticModel, null, codeSource, ivp.SyntaxTree, null);
                 var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
                 var i2 = sourceContext.IndexOf( relevantNode ) ;
-                string code = "" ;
+
                 string p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
                 try
                 {
@@ -193,11 +218,14 @@ namespace AnalysisFramework
                     Logger.Warn(ex, ex.ToString());
                 }
 
-                debugInvo.SourceContext = code ;
-
                 var transformed = rest.Select ( syntax => (ILogInvocationArgument)(new LogInvocationArgument ( debugInvo, syntax )) ) ;
-                debugInvo.Arguments = transformed.ToList ( ) ;
+                foreach ( var logInvocationArgument in transformed )
+                {
+                    debugInvo.Arguments.Add ( logInvocationArgument ) ;
+                }
+#if TRACE
                 Logger.Trace( "{t}" , transformed ) ;
+#endif
                 return debugInvo ;
             }
             else

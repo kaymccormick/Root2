@@ -1,12 +1,7 @@
-using System ;
 using System.Collections.Generic ;
-using System.Linq ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using NLog.Fluent ;
 
@@ -51,13 +46,6 @@ namespace ProjLib
             var findLogUsages = Register(DataflowBlocks.FindLogUsages());
             toDocuments.LinkTo ( findLogUsages , LinkOptions ) ;
             findLogUsages.LinkTo ( Register ( ResultBufferBlock ), LinkOptions ) ;
-
-            // Continuation ( clone ,             nameof ( clone ) ) ;
-            // Continuation ( build ,             nameof ( build ) ) ; 
-            // Continuation ( initWorkspace ,     nameof ( initWorkspace ) ) ;
-            // Continuation ( toDocuments ,       nameof ( toDocuments ) ) ;
-            // Continuation ( findLogUsages ,     nameof ( findLogUsages ) ) ;
-            // Continuation ( ResultBufferBlock , nameof ( ResultBufferBlock ) ) ;
 
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
             return PipelineInstance ;

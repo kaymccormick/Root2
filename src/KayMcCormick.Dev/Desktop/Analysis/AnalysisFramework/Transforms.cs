@@ -263,7 +263,7 @@ namespace AnalysisFramework
 
                 }
 
-                throw new UnsupportedExpressionTypeSyntax (
+                throw new UnsupportedExpressionTypeSyntaxException (
                                                            $"Unsupported mode type {expressionSyntaxNode?.GetType ( ).FullName} at line {expressionSyntaxNode.GetLocation().GetMappedLineSpan().StartLinePosition.Line +1} {expressionSyntaxNode.GetLocation().ToString (  )}"
                                                           ) ;
             }
@@ -334,7 +334,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntax ( isPatternPattern.Kind ( ).ToString().ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntaxException ( isPatternPattern.Kind ( ).ToString().ToString ( ) ) ;
         }
 
         private static object TransformPositionalPatternClauseSyntax (
@@ -401,7 +401,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntax ( designation.Kind ( ).ToString().ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntaxException ( designation.Kind ( ).ToString().ToString ( ) ) ;
         }
 
         /// <summary>
@@ -495,7 +495,7 @@ namespace AnalysisFramework
                 case TupleTypeSyntax tupleTypeSyntax : break ;
             }
 
-            throw new UnsupportedExpressionTypeSyntax (
+            throw new UnsupportedExpressionTypeSyntaxException (
                                                        "Unsupported type "
                                                        + argType.GetType ( ).FullName
                                                       ) ;
@@ -595,8 +595,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public static object TransformInterpolated ( InterpolatedStringContentSyntax arg )
+        public static object TransformInterpolated ( [ NotNull ] InterpolatedStringContentSyntax arg )
         {
+            if ( arg == null )
+            {
+                throw new ArgumentNullException ( nameof ( arg ) ) ;
+            }
+
             switch ( arg )
             {
                 case InterpolatedStringTextSyntax text : return text.TextToken.Value ;
@@ -612,8 +617,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public static object TransformMethodSymbol ( IMethodSymbol method )
+        public static object TransformMethodSymbol ( [ NotNull ] IMethodSymbol method )
         {
+            if ( method == null )
+            {
+                throw new ArgumentNullException ( nameof ( method ) ) ;
+            }
+
             return new
                    {
                        method.MethodKind
@@ -621,12 +631,17 @@ namespace AnalysisFramework
                    } ;
         }
 
-        private static object TransformMethodParameter ( IParameterSymbol arg1 , int arg2 )
+        private static object TransformMethodParameter ( [ NotNull ] IParameterSymbol arg1 )
         {
+            if ( arg1 == null )
+            {
+                throw new ArgumentNullException ( nameof ( arg1 ) ) ;
+            }
+
             return new
                    {
                        arg1.CustomModifiers
-//                     , arg1.ExplicitDefaultValue
+                       //                     , arg1.ExplicitDefaultValue
                      , arg1.HasExplicitDefaultValue
                      , arg1.IsOptional
                      , arg1.IsParams
@@ -635,20 +650,35 @@ namespace AnalysisFramework
                    } ;
         }
 
-        private static object TransformTypeSymbol ( ITypeSymbol arg1Type )
+        private static object TransformTypeSymbol ( [ NotNull ] ITypeSymbol arg1Type )
         {
+            if ( arg1Type == null )
+            {
+                throw new ArgumentNullException ( nameof ( arg1Type ) ) ;
+            }
+
             return new { arg1Type.Name } ;
         }
 
-        public static object TransformTree ( SyntaxTree contextSyntaxTree )
+        public static object TransformTree ( [ NotNull ] SyntaxTree contextSyntaxTree )
         {
+            if ( contextSyntaxTree == null )
+            {
+                throw new ArgumentNullException ( nameof ( contextSyntaxTree ) ) ;
+            }
+
             var syntaxNode = contextSyntaxTree.GetRoot ( ) ;
             return TransformSyntaxNode ( syntaxNode ) ;
             
         }
 
-        public static object TransformSyntaxNode ( SyntaxNode syntaxNode )
+        public static object TransformSyntaxNode ( [ NotNull ] SyntaxNode syntaxNode )
         {
+            if ( syntaxNode == null )
+            {
+                throw new ArgumentNullException ( nameof ( syntaxNode ) ) ;
+            }
+
             switch ( syntaxNode )
             {
                 case CompilationUnitSyntax comp :
@@ -672,7 +702,7 @@ namespace AnalysisFramework
                 case MemberDeclarationSyntax m: return TransformMemberDeclarationSyntax ( m ) ;
             }
 
-            throw new UnsupportedExpressionTypeSyntax ( syntaxNode.Kind ( ).ToString ( ).ToString ( ) ) ;
+            throw new UnsupportedExpressionTypeSyntaxException ( syntaxNode.Kind ( ).ToString ( ).ToString ( ) ) ;
         }
 
         private static object TransformExpressionStatementSyntax ( ExpressionStatementSyntax ex )
@@ -733,7 +763,7 @@ namespace AnalysisFramework
                 default : break ;
             }
 
-            throw new UnsupportedExpressionTypeSyntax ( arg.Kind ( ).ToString().ToString ( ) ) ;
+            throw new UnsupportedExpressionTypeSyntaxException ( arg.Kind ( ).ToString().ToString ( ) ) ;
             
         }
 
@@ -1253,9 +1283,9 @@ namespace AnalysisFramework
                 case SyntaxKind.ImplicitStackAllocArrayCreationExpression : break ;
                 case SyntaxKind.SuppressNullableWarningExpression : break ;
                 case SyntaxKind.NullableDirectiveTrivia : break ;
-                default : throw new ArgumentOutOfRangeException ( ) ;
+                default : throw new ArgumentOutOfRangeException (nameof(token) ) ;
             }
-            throw new UnsupportedExpressionTypeSyntax(token.Kind (  ).ToString());
+            throw new UnsupportedExpressionTypeSyntaxException(token.Kind (  ).ToString());
         }
 
         private static object TransformAttributeListSybtax ( AttributeListSyntax arg )
@@ -1337,52 +1367,26 @@ namespace AnalysisFramework
                      , Expression = TransformExpr ( arg.Expression )
                    } ;
         }
+    }
 
-        public class UnsupportedExpressionTypeSyntax : Exception
+    [Serializable]
+    public class UnsupportedExpressionTypeSyntaxException : Exception
+    {
+            
+        public UnsupportedExpressionTypeSyntaxException ( ) { }
+
+        public UnsupportedExpressionTypeSyntaxException ( string message ) : base ( message ) { }
+
+        public UnsupportedExpressionTypeSyntaxException ( string message , Exception innerException ) :
+            base ( message , innerException )
         {
-            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
-            public UnsupportedExpressionTypeSyntax ( ) { }
-
-            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
-            /// <param name="message">The message that describes the error. </param>
-            public UnsupportedExpressionTypeSyntax ( string message ) : base ( message ) { }
-
-            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
-            /// <param name="message">The error message that explains the reason for the exception. </param>
-            /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified. </param>
-            public UnsupportedExpressionTypeSyntax ( string message , Exception innerException ) :
-                base ( message , innerException )
-            {
-            }
-
-            /// <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with serialized data.</summary>
-            /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown. </param>
-            /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
-            /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
-            /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
-            protected UnsupportedExpressionTypeSyntax (
-                [ NotNull ] SerializationInfo info
-              , StreamingContext              context
-            ) : base ( info , context )
-            {
-            }
         }
 
-
-        public class PojoClassDeclarationSyntax
+        protected UnsupportedExpressionTypeSyntaxException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
-            public PocoSyntaxToken Identifier { get ; }
-
-            public List < object > Members { get ; }
-
-            public PojoClassDeclarationSyntax (
-                in PocoSyntaxToken identifier
-              , List < object >    members
-            )
-            {
-                Identifier = identifier ;
-                Members = members ;
-            }
         }
     }
 

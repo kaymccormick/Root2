@@ -25,6 +25,7 @@ namespace AnalysisFramework
 {
     internal class CodeAnalyseContext : ICodeAnalyseContext
     {
+        // ReSharper disable once UnusedMember.Local
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public void Deconstruct (
@@ -56,7 +57,7 @@ namespace AnalysisFramework
 
         public delegate ISyntaxTreeContext Factory1(string code , string assemblyName) ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public CodeAnalyseContext (
             SemanticModel         currentModel
           , StatementSyntax       statement
@@ -72,7 +73,7 @@ namespace AnalysisFramework
             _syntaxTree    = syntaxTree ;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
+        
         public CodeAnalyseContext ( ICodeSource document ) : this()
         {
             Document = document ;

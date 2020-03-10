@@ -1,35 +1,49 @@
-﻿using Microsoft.Win32 ;
-using NLog ;
+﻿using JetBrains.Annotations;
+using Microsoft.Win32;
+using NLog;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public enum ConfigurationSource
     {
         /// <summary>
         /// 
         /// </summary>
-        AppConfig , 
+        // ReSharper disable once UnusedMember.Global
+        AppConfig,
         /// <summary>
         /// 
         /// </summary>
-        EnvironmentVariable , 
+        // ReSharper disable once UnusedMember.Global
+        EnvironmentVariable,
         /// <summary>
         /// 
         /// </summary>
-        Win32Registry , 
+        // ReSharper disable once UnusedMember.Global
+        Win32Registry,
         /// <summary>
         /// 
         /// </summary>
-        Compilation ,
+        // ReSharper disable once UnusedMember.Global
+        Compilation,
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public enum ConfigurationSetting { LogsRootDirectory , }
+    // ReSharper disable once UnusedType.Global
+    public enum ConfigurationSetting
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        LogsRootDirectory,
+    }
 
     /// <summary>
     /// 
@@ -39,7 +53,8 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        void LoadConfiguration ( ) ;
+        [UsedImplicitly]
+        void LoadConfiguration();
     }
 
     /// <summary>
@@ -47,38 +62,21 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class Win32RegistryConfiguration : IConfiguration
     {
-        private Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public void LoadConfiguration ( )
+        /// <summary>
+        /// 
+        /// </summary>
+        public void LoadConfiguration()
         {
-            var x = new[] { Registry.LocalMachine , Registry.CurrentUser } ;
-            foreach ( var q in x )
+            var x = new[] { Registry.LocalMachine, Registry.CurrentUser };
+            foreach (var q in x)
             {
-                var mainSubKey = q.OpenSubKey ( @"SOFTWARE" ) ;
-                Logger.Debug ( "{key}" , mainSubKey ) ;
-                var e = mainSubKey.OpenSubKey ( "Kay McCormick" ) ;
-                Logger.Debug ( "k: {k}" , e ) ;
+                var mainSubKey = q.OpenSubKey(@"SOFTWARE");
+                Logger.Debug("{key}", mainSubKey);
+                var e = mainSubKey?.OpenSubKey("Kay McCormick");
+                Logger.Debug("k: {k}", e);
             }
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Configuration
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string LOGGING_WEBSERVICE_ENDPOINT = "LOGGING_WEBSERVICE_ENDPOINT" ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Configuration ( ) { GetConfigurationSources ( ) ; }
-
-        private static void GetConfigurationSources ( ) { }
-
-        //"http://xx1.mynetgear.com/LogService/ReceiveLogs.svc"
     }
 }

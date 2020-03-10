@@ -55,7 +55,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="ICompilationViewModel.cs" />
     <Compile Include="INodePanel.cs" />
+    <Compile Include="ISpanToolTip.cs" />
     <Compile Include="ISyntaxPanelViewModel.cs" />
     <Compile Include="JsonConverter.cs" />
     <Compile Include="LocationConverter.cs" />
@@ -247,6 +248,9 @@
   <ItemGroup>
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Extensions">
+      <Version>4.5.3</Version>
     </PackageReference>
     <PackageReference Include="Xceed.Products.Wpf.Toolkit.AvalonDock">
       <Version>4.0.20076.12200</Version>

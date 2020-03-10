@@ -217,7 +217,35 @@ private Type[] _optionTypes ;
         private Options _options ;
 #endif
         public ProjInterfaceApp ( )
+
         {
+            foreach (var myJsonLayout in LogManager
+                                        .Configuration.AllTargets.OfType<TargetWithLayout>()
+                                        .Select(t => t.Layout)
+                                        .OfType<MyJsonLayout>())
+            {
+                myJsonLayout.Options.Converters.Add(new JsonSyntaxNodeConverter());
+            }
+
+#if MSBUILDLOCATOR
+            var instances = MSBuildLocator
+                           .QueryVisualStudioInstances(
+                                                       new VisualStudioInstanceQueryOptions()
+                                                       {
+                                                           DiscoveryTypes =
+                                                               DiscoveryType.VisualStudioSetup
+                                                       }
+                                                      )
+                           .Where(
+                                  (instance, i)
+                                      => instance.Version.Major    == 16
+                                         && instance.Version.Minor == 4
+                                 );
+            var visualStudioInstance = instances.First();
+            //MSBuildLocator.RegisterInstance(visualStudioInstance);
+            var reg = MSBuildLocator.RegisterDefaults();
+            Logger.Debug("Registering MSBuild  instance {vs} - {path}", reg.Name, reg.MSBuildPath);
+#endif
 #if false
             PresentationTraceSources.Refresh();
             var bs = PresentationTraceSources.DataBindingSource;
@@ -228,13 +256,7 @@ private Type[] _optionTypes ;
             bs.Listeners.Add ( nLogTraceListener ) ;
 
 #endif
-            foreach ( var myJsonLayout in LogManager
-                                         .Configuration.AllTargets.OfType < TargetWithLayout > ( )
-                                         .Select ( t => t.Layout )
-                                         .OfType < MyJsonLayout > ( ) )
-            {
-                myJsonLayout.Options.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
-            }
+            
         }
 
 
@@ -276,24 +298,7 @@ private Type[] _optionTypes ;
                 }
             }
 #endif
-#if MSBUILDLOCATOR
-            var instances = MSBuildLocator
-                           .QueryVisualStudioInstances(
-                                                       new VisualStudioInstanceQueryOptions()
-                                                       {
-                                                           DiscoveryTypes =
-                                                               DiscoveryType.VisualStudioSetup
-                                                       }
-                                                      )
-                           .Where(
-                                  (instance, i)
-                                      => instance.Version.Major    == 16
-                                         && instance.Version.Minor == 4
-                                 );
-            var visualStudioInstance = instances.First();
-            MSBuildLocator.RegisterInstance(visualStudioInstance);
-            Logger.Debug("Registering MSBuild  instance {vs}", visualStudioInstance.Name);
-#endif
+
             var windowType = typeof ( ProjMainWindow ) ;
             try
             {
@@ -313,9 +318,10 @@ private Type[] _optionTypes ;
             #endif
         }
 
-        protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
+
 
 #if COMMANDLINE
+protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
         private void TakeOptions ( Options obj ) { _options = obj ; }
 
         public override Type[] OptionTypes => new [] { typeof(Options) } ;

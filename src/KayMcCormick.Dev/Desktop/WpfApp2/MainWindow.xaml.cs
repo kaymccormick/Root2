@@ -1,5 +1,4 @@
-﻿using NLog ;
-using System ;
+﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
@@ -14,6 +13,7 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using Microsoft.Win32 ;
+using NLog ;
 
 namespace WpfApp2
 {
@@ -27,11 +27,6 @@ namespace WpfApp2
     {
         private static          string Path   = @"c:\data\logs\test2.json" ;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        private readonly ISet < string > _propertiesSet = new HashSet < string > ( ) ;
-
-        public Dictionary < string , PropInfo > PropertyInfos { get ; } =
-            new Dictionary < string , PropInfo > ( ) ;
 
         private static readonly LogProperty _loggedTimeLogProperty = new LogProperty (
                                                                                       "LoggedTime"
@@ -57,28 +52,13 @@ namespace WpfApp2
                                                                                             )
                                                                                            ) ;
 
-        private Dictionary < string , GridViewColumn > gridViewColumns =
-            new Dictionary < string , GridViewColumn > ( ) ;
-
-        public ObservableCollection < LogProperty > LogPropertiesCollection { get ; set ; } =
-            new ObservableCollection < LogProperty > ( ) ;
-
-        public ObservablePropertyCollection PropInfos { get ; set ; } =
-            new ObservablePropertyCollection (
-                                              new[]
-                                              {
-                                                  new PropInfo ( _loggedTimeLogProperty )
-                                                , new PropInfo ( _loggerLogProperty )
-                                                , new PropInfo ( _callerLineNumberLogProperty )
-                                              }
-                                             ) ;
+        private readonly ISet < string > _propertiesSet = new HashSet < string > ( ) ;
 
         public MainWindow ( )
         {
             InitializeComponent ( ) ;
 
             InitializeProperties ( ) ;
-            PopulateGridViewColumns ( ) ;
             SetupTraceSources ( ) ;
 
             Entries.CollectionChanged += ( sender , args ) => {
@@ -95,7 +75,7 @@ namespace WpfApp2
                 }
             } ;
 
-            Logger.Info ( "Nubmer of props {numProps}" , PropInfos.Count ) ;
+            Logger.Info ( "Number of props {numProps}" , PropInfos.Count ) ;
             // var propsWindow = new PropertiesWindow ( ) ;
             // Binding b =
             //     new Binding ( ) { Source = this , Path = new PropertyPath ( "PropertyInfos")} ;
@@ -103,6 +83,24 @@ namespace WpfApp2
             //
             // propsWindow.Show ( ) ;
         }
+
+        public Dictionary < string , PropInfo > PropertyInfos { get ; } =
+            new Dictionary < string , PropInfo > ( ) ;
+
+        // ReSharper disable once CollectionNeverQueried.Global
+        // ReSharper disable once CollectionNeverQueried.Local
+        private readonly Dictionary < string , GridViewColumn > gridViewColumns =
+            new Dictionary < string , GridViewColumn > ( ) ;
+
+        public ObservablePropertyCollection PropInfos { get ; } =
+            new ObservablePropertyCollection (
+                                              new[]
+                                              {
+                                                  new PropInfo ( _loggedTimeLogProperty )
+                                                , new PropInfo ( _loggerLogProperty )
+                                                , new PropInfo ( _callerLineNumberLogProperty )
+                                              }
+                                             ) ;
 
         /// <summary>Gets the entries.</summary>
         /// <value>The entries.</value>
@@ -113,11 +111,12 @@ namespace WpfApp2
 
         public List < LogProperty > AllProps { get ; set ; }
 
-        public Dictionary < string , LogProperty > PropertiesDict { get ; set ; } =
+        public Dictionary < string , LogProperty > PropertiesDict { get ; } =
             new Dictionary < string , LogProperty > ( ) ;
 
         private StreamReader LogFileReader { get ; set ; }
 
+        public Dictionary<string, GridViewColumn> GridViewColumns => gridViewColumns;
 
         private static void SetupTraceSources ( )
         {
@@ -154,7 +153,7 @@ namespace WpfApp2
                                             if ( PropertiesDict.ContainsKey ( logEntryKey ) )
                                             {
                                                 Logger.Debug (
-                                                              "adding new propinfo for existing property with key {key}"
+                                                              "adding new Prop Info for existing property with key {key}"
                                                             , logEntryKey
                                                              ) ;
                                                 newProp.LogProperty =
@@ -218,21 +217,9 @@ namespace WpfApp2
                               ) ;
         }
 
-        private void PopulateGridViewColumns ( )
+        private void MakePropertyColumn ( PropInfo logProperty , GridView gridView )
         {
-            var gridView = ( GridView ) mainListView.View ;
-            // foreach ( var logProperty in LogPropertiesCollection )
-            // {
-                // if ( MakePropertyColumn ( logProperty , gridView ) )
-                // {
-                    // continue ;
-                // }
-            // }
-        }
-
-        private bool MakePropertyColumn ( PropInfo logProperty , GridView gridView )
-        {
-            var column = new GridViewColumn { Header = logProperty.Name} ;
+            var column = new GridViewColumn { Header = logProperty.Name } ;
 
             var key = $"{logProperty.Name}PropertyValueTemplate" ;
             var maybeTemplate = TryFindResource ( key ) ;
@@ -253,8 +240,7 @@ namespace WpfApp2
 
 
             gridView.Columns.Add ( column ) ;
-            gridViewColumns[ logProperty.Name ] = column ;
-            return false ;
+            GridViewColumns[ logProperty.Name ] = column ;
         }
 
         private void InitializeProperties ( )
@@ -298,12 +284,13 @@ namespace WpfApp2
 
         private async void LoadLogFileButton_OnClick ( object sender , RoutedEventArgs e )
         {
-            var openFileDialog = new OpenFileDialog ( ) ;
+            var openFileDialog = new OpenFileDialog
+                                 {
+                                     DefaultExt = ".json" , InitialDirectory = @"C:\data\logs"
+                                 } ;
 
-            openFileDialog.DefaultExt       = ".json" ;
-            openFileDialog.InitialDirectory = @"C:\data\logs" ;
             var result = openFileDialog.ShowDialog ( ) ;
-            if ( ( bool ) ! result )
+            if ( !result.HasValue || !result.Value)
             {
                 return ;
             }

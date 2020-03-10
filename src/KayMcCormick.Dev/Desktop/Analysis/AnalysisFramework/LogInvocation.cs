@@ -55,7 +55,7 @@ namespace AnalysisFramework
             }
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>[
+        
         private LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string sourceContext , string followingCode , string precedingCode , string code ) : base ( document )
         {
             _msgval = msgval ;
@@ -63,7 +63,6 @@ namespace AnalysisFramework
             _LoggerType = loggerType ;
             _methodName = methodName ;
             Arguments = arguments ;
-            SourceContext = sourceContext ;
             FollowingCode = followingCode ;
             PrecedingCode = precedingCode ;
             Code = code ;
@@ -77,8 +76,6 @@ namespace AnalysisFramework
 
 
         public LogMessageRepr Msgval { get => _msgval ; set => _msgval = value ; }
-
-        public string SourceContext { get ; set ; }
 
         public string FollowingCode { get ; set ; }
 

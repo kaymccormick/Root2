@@ -51,6 +51,6 @@ namespace ProjLib
 
         ObservableCollection < LogEventInfo > EventInfos { get ;  }
 
-        ObservableCollection<LogEventInstance> Events { get ; set ; }
+        ObservableCollection<LogEventInstance> Events { get ; }
     }
 }

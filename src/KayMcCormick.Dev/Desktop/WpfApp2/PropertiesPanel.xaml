@@ -7,11 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel DataContext="{Binding ElementName=propsPanel,Path=(local:AttachedProps.PropertiesCollection)}">
-        <ListView Name="mainListView">
+        <ListView>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=LogProperty.ExpectedType.FullName}"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=LogProperty.ExpectedType}"></GridViewColumn>
                     <GridViewColumn Header="Count" DisplayMemberBinding="{Binding Count}"></GridViewColumn>
                 </GridView>
             </ListView.View>

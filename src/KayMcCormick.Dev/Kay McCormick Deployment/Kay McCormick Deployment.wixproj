@@ -3,6 +3,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)\..\..\..\build</KmGlobalOutputPath>
+    <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
+    <OutputPath>$(KmGlobalOutputPath)\install\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>44e3b99f-9da6-419e-b9bc-ed0feb5a177c</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
@@ -10,19 +13,24 @@
     <OutputType>Package</OutputType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
+    <VerboseOutput>True</VerboseOutput>
+    <SuppressAllWarnings>False</SuppressAllWarnings>
+    <Pedantic>True</Pedantic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
+    <WixVariables>
+    </WixVariables>
+    <VerboseOutput>True</VerboseOutput>
+    <SuppressAllWarnings>True</SuppressAllWarnings>
+    <Pedantic>False</Pedantic>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="File1.wxs" />
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,8 +150,8 @@
       <Name>WcfService1</Name>
       <Project>{e6ad0c25-0e7f-4e23-b3c9-c56e059e51c9}</Project>
       <Private>True</Private>
-      <DoNotHarvest>False</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites;Sources</RefProjectOutputGroups>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Documents;Satellites;Sources;Content</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>

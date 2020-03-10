@@ -20,7 +20,7 @@
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
-    <ListView
+    <ListView SelectionChanged="Selector_OnSelectionChanged"
       ItemsSource="{Binding Source={StaticResource Root}}">
       <ListView.InputBindings>
         <KeyBinding Key="Enter"

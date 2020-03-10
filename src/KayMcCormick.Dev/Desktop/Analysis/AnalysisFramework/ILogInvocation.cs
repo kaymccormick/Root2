@@ -17,8 +17,6 @@ namespace AnalysisFramework
     {
         string SourceLocation { get ; set ; }
 
-        string SourceContext { get ; set ; }
-
         string FollowingCode { get ; set ; }
 
         string PrecedingCode { get ; set ; }
@@ -31,6 +29,6 @@ namespace AnalysisFramework
 
         string MethodDisplayName { get ; }
 
-        IList < ILogInvocationArgument > Arguments { get ; set ; }
+        IList < ILogInvocationArgument > Arguments { get ; }
     }
 }

@@ -17,68 +17,83 @@ namespace ProjLib
 
         public static async Task < IEnumerable < ILogInvocation > > FindUsagesFunc ( Document d )
         {
-            try
+            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Document" , d.FilePath ) )
             {
-                Logger.Trace ( "[{id}] Entering {funcName}", Thread.CurrentThread.ManagedThreadId, nameof ( FindUsagesFunc ) );
-                var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
-                var root = tree.GetCompilationUnitRoot ( ) ;
-                var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
-
-                var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
-                var t = LogUsages.GetNLogSymbol(model);
-                if (t == null)
+                try
                 {
-                    return Array.Empty < ILogInvocation > ( ) ;
-                    throw new MissingTypeException("nlog");
-                }
-                var t2 = LogUsages.GetILoggerSymbol(model);
-                if (t2 == null)
-                {
+                    Logger.Trace (
+                                  "[{id}] Entering {funcName}"
+                                , Thread.CurrentThread.ManagedThreadId
+                                , nameof ( FindUsagesFunc )
+                                 ) ;
+                    var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
+                    var root = tree.GetCompilationUnitRoot ( ) ;
+                    var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
 
-                    return Array.Empty<ILogInvocation>();
-                    throw new MissingTypeException("nlog");
-                }
-                var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
-                return
-                    from node in root.DescendantNodes ( ).AsParallel()
-                    where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression
-                    let @out =
-                        LogUsages.CheckInvocationExpression (
-                                                             ( InvocationExpressionSyntax ) node
-                                                           , model, t, t2
-                                                            )
+                    var exceptionType =
+                        model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
+                    var t = LogUsages.GetNLogSymbol ( model ) ;
+                    if ( t == null )
+                    {
+                        return Array.Empty < ILogInvocation > ( ) ;
+                        throw new MissingTypeException ( "nlog" ) ;
+                    }
+
+                    var t2 = LogUsages.GetILoggerSymbol ( model ) ;
+                    if ( t2 == null )
+                    {
+                        return Array.Empty < ILogInvocation > ( ) ;
+                        throw new MissingTypeException ( "nlog" ) ;
+                    }
+
+                    var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
+                    var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
+                    return
+                        from node in root.DescendantNodes ( )//.AsParallel ( )
+                        let t_ = t
+                        let t2_ = t2
+                        let builderSymbol = logBuilderSymbol
+                        let tree_ = tree
+                        let model_ = model
+                        let exType = exceptionType
+                        where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression || node.RawKind== (ushort)SyntaxKind.ObjectCreationExpression
+                        let @out =
+                            LogUsages.CheckInvocationExpression ( node
+                                                                , model_
+                                                                , builderSymbol
+                                                               , t_
+                                                               , t2_
+                                                                )
                         where @out.Item1
-                    let statement =
-                        node.AncestorsAndSelf ( ).Where(Predicate).First ( )
-                    select (
-                                                              new InvocationParms (
-                                                                                   new CodeSource (
-                                                                                                   tree.FilePath
-                                                                                                  )
-                                                                                 , tree
-                                                                                 , model
-                                                                                 , statement
-                                                                                 , @out
-                                                                                 , exceptionType
-                                                                                  )).ProcessInvocation();
-                                                             
-            }
-            catch ( Exception ex )
-            {
-                Logger.Debug( ex , ex.ToString ( ) ) ;
-                throw ;
+                        let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
+                        select new InvocationParms (
+                                                    new CodeSource ( tree_.FilePath )
+                                                  , tree_
+                                                  , model_
+                                                  , statement
+                                                  , @out
+                                                  , exType
+                                                   ).ProcessInvocation ( ) ;
+                }
+                catch ( Exception ex )
+                {
+                    Logger.Debug ( ex , ex.ToString ( ) ) ;
+                    throw ;
+                }
             }
         }
 
         private static bool Predicate ( SyntaxNode arg1 , int arg2 )
         {
-            var b = arg1 is StatementSyntax
-                    || arg1 is MemberDeclarationSyntax ;
-            Logger.Debug("Got {arg1}- {b}", arg1.Kind(), b);
+            var b = arg1 is StatementSyntax || arg1 is MemberDeclarationSyntax ;
+#if TRACE
+            Logger.Debug("Got {arg1} - {b}", arg1.Kind(), b);
+#endif
             if ( b )
             {
                 return true ;
             }
+
             return false ;
         }
     }

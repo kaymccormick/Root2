@@ -1,5 +1,7 @@
-﻿using System.Windows ;
+﻿using System ;
+using System.Windows ;
 using System.Windows.Data ;
+using JetBrains.Annotations ;
 
 namespace WpfApp2
 {
@@ -38,10 +40,15 @@ namespace WpfApp2
         /// <param name="target"><see cref="DependencyObject"/> to set <see cref="PropertiesCollectionProperty"/> on.</param>
         /// <param name="value">PropertiesCollection property value.</param>
         public static void SetPropertiesCollection (
-            DependencyObject                  target
+            [ NotNull ] DependencyObject                  target
           , ObservablePropertyCollection value
         )
         {
+            if ( target == null )
+            {
+                throw new ArgumentNullException ( nameof ( target ) ) ;
+            }
+
             target.SetValue ( PropertiesCollectionProperty , value ) ;
         }
 
@@ -49,11 +56,17 @@ namespace WpfApp2
         /// <param name="target"><see cref="DependencyObject"/> to read <see cref="PropertiesCollectionProperty"/> from.</param>
         /// <returns>PropertiesCollection property value.</returns>
         [AttachedPropertyBrowsableForType(typeof ( FrameworkElement ))]
-        public static ObservablePropertyCollection GetPropertiesCollection ( DependencyObject target )
+        public static ObservablePropertyCollection GetPropertiesCollection (
+            [ NotNull ] DependencyObject target )
         {
+            if ( target == null )
+            {
+                throw new ArgumentNullException ( nameof ( target ) ) ;
+            }
+
             return ( ObservablePropertyCollection ) target.GetValue (
-                                                                          PropertiesCollectionProperty
-                                                                         ) ;
+                                                                     PropertiesCollectionProperty
+                                                                    ) ;
         }
     }
 }

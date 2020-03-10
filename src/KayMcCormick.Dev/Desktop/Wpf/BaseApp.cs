@@ -1,9 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
 using System.Diagnostics ;
-using System.IO ;
-using System.Linq ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
@@ -30,17 +27,17 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public abstract class BaseApp : Application
+    public abstract class BaseApp : Application, IDisposable
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private IComponentContext scope ;
-        private ApplicationInstance appInst ;
+        private readonly ApplicationInstance appInst ;
 #if COMMANDLINE
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
         protected BaseApp ( ) {
-            appInst = new ApplicationInstance() { };
+            appInst = new ApplicationInstance() ;
             EnsureLoggingConfigured();
         }
 
@@ -130,10 +127,11 @@ namespace KayMcCormick.Lib.Wpf
 #endif
         }
 
-        protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
 
 #if COMMANDLINE
+protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
+
         public ParserResult < object > ArgParseResult
         {
             get => _argParseResult ;
@@ -141,6 +139,13 @@ namespace KayMcCormick.Lib.Wpf
         }
         public virtual Type[] OptionTypes => _optionType ;
 #endif
+        #endregion
+
+        #region IDisposable
+        public virtual void Dispose ( )
+        {
+            appInst?.Dispose ( ) ;
+        }
         #endregion
     }
 }

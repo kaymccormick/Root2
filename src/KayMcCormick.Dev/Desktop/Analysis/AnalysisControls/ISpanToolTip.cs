@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace ProjLib
+namespace AnalysisControls
 {
     public interface ISpanToolTip
     {

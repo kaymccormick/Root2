@@ -3,9 +3,9 @@ using System.Collections.Generic ;
 using System.Linq ;
 using System.Windows.Controls ;
 using System.Windows.Navigation ;
-using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
+using KayMcCormick.Dev;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
@@ -40,8 +40,11 @@ namespace ProjTests
         void TestContanier ( )
         {
             ISyntaxTreeContext c = AnalysisService.Parse ( LibResources.Program_Parse , "x" ) ;
-            
-            var x = InterfaceContainer.GetContainer (new AnalysisControlsModule()) ;
+
+            using ( var appinst = new ApplicationInstance ( ) )
+            {
+                appinst.AddModule ( new ProjLibModule ( ) ) ;
+                var x = appinst.GetLifetimeScope ( ) ;
             var s = x.BeginLifetimeScope (
                                           b => {
 
@@ -53,8 +56,9 @@ namespace ProjTests
                                           }
                                          ) ;
             var pages = s.Resolve < IEnumerable < Page > > ( ) ;
-            Assert.NotEmpty(pages);
-            foreach ( var page in pages )
+            var collection = pages.ToList ( ) ;
+            Assert.NotEmpty(collection);
+            foreach ( var page in collection )
             {
                 NavigationWindow w = new NavigationWindow();
                 w.Content = page ;
@@ -85,7 +89,7 @@ namespace ProjTests
             }
 #endif
 
-            
+}            
         }
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()

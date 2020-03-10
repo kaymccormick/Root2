@@ -9,9 +9,9 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Runtime.Serialization ;
-using JetBrains.Annotations ;
+using JetBrains.Annotations;
+using System;
+using System.Runtime.Serialization;
 
 namespace KayMcCormick.Dev
 {
@@ -23,19 +23,20 @@ namespace KayMcCormick.Dev
     public class UnableToRegisterObjectIdException : Exception
     {
         /// <summary>Initializes a new instance of the <see cref="System.Exception" /> class.</summary>
-        public UnableToRegisterObjectIdException ( ) {
+        public UnableToRegisterObjectIdException()
+        {
         }
 
         /// <summary>Initializes a new instance of the <see cref="System.Exception" /> class with a specified error message.</summary>
         /// <param name="message">The message that describes the error.</param>
-        public UnableToRegisterObjectIdException ( string message ) : base ( message )
+        public UnableToRegisterObjectIdException(string message) : base(message)
         {
         }
 
         /// <summary>Initializes a new instance of the <see cref="System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is specified.</param>
-        public UnableToRegisterObjectIdException ( string message , Exception innerException ) : base ( message , innerException )
+        public UnableToRegisterObjectIdException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
@@ -45,7 +46,7 @@ namespace KayMcCormick.Dev
         /// <exception cref="System.ArgumentNullException">
         /// <paramref name="info" /> is <see langword="null" />.</exception>
         /// <exception cref="System.Runtime.Serialization.SerializationException">The class name is <see langword="null" /> or <see cref="System.Exception.HResult"/> is zero (0).</exception>
-        protected UnableToRegisterObjectIdException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected UnableToRegisterObjectIdException([NotNull] SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

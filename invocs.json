@@ -1,0 +1,861 @@
+[
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\ProjLib\\Pipeline.cs:88",
+    "FollowingCode": "            }",
+    "PrecedingCode": "                var faultReaon = task.Exception.Message ;",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                                                              .LoggerName ( $\u0022{Logger.Name}.{logName}\u0022 )\r\n                                                              .Level ( LogLevel.Trace )\r\n                                                              .Exception ( task.Exception )\r\n                                                              .Message ( \u0022fault is {ex}\u0022 , faultReaon )\r\n                                                              .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\ProjLib\\Pipeline.cs:88",
+    "FollowingCode": "            }",
+    "PrecedingCode": "                var faultReaon = task.Exception.Message ;",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                                                              .LoggerName ( $\u0022{Logger.Name}.{logName}\u0022 )\r\n                                                              .Level ( LogLevel.Trace )\r\n                                                              .Exception ( task.Exception )\r\n                                                              .Message ( \u0022fault is {ex}\u0022 , faultReaon )\r\n                                                              .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8750, "Kind": "StringLiteralExpression", "Literal": "fault is {ex}" } },
+      { "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "faultReaon", "Tokens": ["faultReaon"] } }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\ProjLib\\Pipeline.cs:88",
+    "FollowingCode": "            }",
+    "PrecedingCode": "                var faultReaon = task.Exception.Message ;",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                                                              .LoggerName ( $\u0022{Logger.Name}.{logName}\u0022 )\r\n                                                              .Level ( LogLevel.Trace )\r\n                                                              .Exception ( task.Exception )\r\n                                                              .Message ( \u0022fault is {ex}\u0022 , faultReaon )\r\n                                                              .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Exception",
+    "MethodDisplayName": "LogBuilder.Exception",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "task", "Tokens": ["task"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Exception", "Tokens": ["Exception"] },
+          "Tokens": ["task", ".", "Exception"],
+          "FullString": "task.Exception "
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\ProjLib\\Pipeline.cs:88",
+    "FollowingCode": "            }",
+    "PrecedingCode": "                var faultReaon = task.Exception.Message ;",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                                                              .LoggerName ( $\u0022{Logger.Name}.{logName}\u0022 )\r\n                                                              .Level ( LogLevel.Trace )\r\n                                                              .Exception ( task.Exception )\r\n                                                              .Message ( \u0022fault is {ex}\u0022 , faultReaon )\r\n                                                              .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Trace", "Tokens": ["Trace"] },
+          "Tokens": ["LogLevel", ".", "Trace"],
+          "FullString": "LogLevel.Trace "
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\ProjLib\\Pipeline.cs:88",
+    "FollowingCode": "            }",
+    "PrecedingCode": "                var faultReaon = task.Exception.Message ;",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                                                              .LoggerName ( $\u0022{Logger.Name}.{logName}\u0022 )\r\n                                                              .Level ( LogLevel.Trace )\r\n                                                              .Exception ( task.Exception )\r\n                                                              .Message ( \u0022fault is {ex}\u0022 , faultReaon )\r\n                                                              .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "LoggerName",
+    "MethodDisplayName": "LogBuilder.LoggerName",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8655,
+          "Kind": "InterpolatedStringExpression",
+          "Contents": [
+            {
+              "RawKind": 8689,
+              "Kind": "SimpleMemberAccessExpression",
+              "Type": "MemberAccessExpressionSyntax",
+              "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Logger", "Tokens": ["Logger"] },
+              "Operator": ".",
+              "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Name", "Tokens": ["Name"] },
+              "Tokens": ["Logger", ".", "Name"],
+              "FullString": "Logger.Name"
+            }, ".", { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "logName", "Tokens": ["logName"] }
+          ],
+          "Tokens": ["$\u0022", "\u0022"]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\ProjLib\\Visitor2.cs:47",
+    "FollowingCode": "            ISpanViewModel model =  _mFunc?.Invoke (node ) ;",
+    "PrecedingCode": "        {",
+    "Code": "            _message(\u0022{method}\u0022, nameof(DefaultVisit)).Write();\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\WpfApp\\Application\\App.xaml.cs:306",
+    "FollowingCode": "                System.Diagnostics.Debug.WriteLine(message);",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder(Logger).Level(LogLevel.Debug)\r\n                                         .Message(message)\r\n                                         .Property(\u0022callerLineNumber\u0022, callerFilePath)\r\n                                         .Property(\u0022callerMemberName\u0022, callerMemberName)\r\n                                         .Property(\u0022callerFilePath\u0022, callerFilePath)\r\n                                         .Write(\r\n                                                 callerMemberName\r\n                                               , callerFilePath\r\n                                               , callerLineNumber\r\n                                                );\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8616,
+          "Kind": "IdentifierName",
+          "Identifier": "callerMemberName",
+          "Tokens": ["callerMemberName"]
+        }
+      },
+      {
+        "Pojo": {
+          "RawKind": 8616,
+          "Kind": "IdentifierName",
+          "Identifier": "callerFilePath",
+          "Tokens": ["callerFilePath"]
+        }
+      },
+      {
+        "Pojo": {
+          "RawKind": 8616,
+          "Kind": "IdentifierName",
+          "Identifier": "callerLineNumber",
+          "Tokens": ["callerLineNumber"]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\WpfApp\\Application\\App.xaml.cs:306",
+    "FollowingCode": "                System.Diagnostics.Debug.WriteLine(message);",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder(Logger).Level(LogLevel.Debug)\r\n                                         .Message(message)\r\n                                         .Property(\u0022callerLineNumber\u0022, callerFilePath)\r\n                                         .Property(\u0022callerMemberName\u0022, callerMemberName)\r\n                                         .Property(\u0022callerFilePath\u0022, callerFilePath)\r\n                                         .Write(\r\n                                                 callerMemberName\r\n                                               , callerFilePath\r\n                                               , callerLineNumber\r\n                                                );\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Property",
+    "MethodDisplayName": "LogBuilder.Property",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8750, "Kind": "StringLiteralExpression", "Literal": "callerFilePath" } },
+      {
+        "Pojo": {
+          "RawKind": 8616,
+          "Kind": "IdentifierName",
+          "Identifier": "callerFilePath",
+          "Tokens": ["callerFilePath"]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\WpfApp\\Application\\App.xaml.cs:306",
+    "FollowingCode": "                System.Diagnostics.Debug.WriteLine(message);",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder(Logger).Level(LogLevel.Debug)\r\n                                         .Message(message)\r\n                                         .Property(\u0022callerLineNumber\u0022, callerFilePath)\r\n                                         .Property(\u0022callerMemberName\u0022, callerMemberName)\r\n                                         .Property(\u0022callerFilePath\u0022, callerFilePath)\r\n                                         .Write(\r\n                                                 callerMemberName\r\n                                               , callerFilePath\r\n                                               , callerLineNumber\r\n                                                );\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Property",
+    "MethodDisplayName": "LogBuilder.Property",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8750, "Kind": "StringLiteralExpression", "Literal": "callerMemberName" } },
+      {
+        "Pojo": {
+          "RawKind": 8616,
+          "Kind": "IdentifierName",
+          "Identifier": "callerMemberName",
+          "Tokens": ["callerMemberName"]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\WpfApp\\Application\\App.xaml.cs:306",
+    "FollowingCode": "                System.Diagnostics.Debug.WriteLine(message);",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder(Logger).Level(LogLevel.Debug)\r\n                                         .Message(message)\r\n                                         .Property(\u0022callerLineNumber\u0022, callerFilePath)\r\n                                         .Property(\u0022callerMemberName\u0022, callerMemberName)\r\n                                         .Property(\u0022callerFilePath\u0022, callerFilePath)\r\n                                         .Write(\r\n                                                 callerMemberName\r\n                                               , callerFilePath\r\n                                               , callerLineNumber\r\n                                                );\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Property",
+    "MethodDisplayName": "LogBuilder.Property",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8750, "Kind": "StringLiteralExpression", "Literal": "callerLineNumber" } },
+      {
+        "Pojo": {
+          "RawKind": 8616,
+          "Kind": "IdentifierName",
+          "Identifier": "callerFilePath",
+          "Tokens": ["callerFilePath"]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\WpfApp\\Application\\App.xaml.cs:306",
+    "FollowingCode": "                System.Diagnostics.Debug.WriteLine(message);",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder(Logger).Level(LogLevel.Debug)\r\n                                         .Message(message)\r\n                                         .Property(\u0022callerLineNumber\u0022, callerFilePath)\r\n                                         .Property(\u0022callerMemberName\u0022, callerMemberName)\r\n                                         .Property(\u0022callerFilePath\u0022, callerFilePath)\r\n                                         .Write(\r\n                                                 callerMemberName\r\n                                               , callerFilePath\r\n                                               , callerLineNumber\r\n                                                );\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Desktop\\WpfApp\\Application\\App.xaml.cs:306",
+    "FollowingCode": "                System.Diagnostics.Debug.WriteLine(message);",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder(Logger).Level(LogLevel.Debug)\r\n                                         .Message(message)\r\n                                         .Property(\u0022callerLineNumber\u0022, callerFilePath)\r\n                                         .Property(\u0022callerMemberName\u0022, callerMemberName)\r\n                                         .Property(\u0022callerFilePath\u0022, callerFilePath)\r\n                                         .Write(\r\n                                                 callerMemberName\r\n                                               , callerFilePath\r\n                                               , callerLineNumber\r\n                                                );\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Debug", "Tokens": ["Debug"] },
+          "Tokens": ["LogLevel", ".", "Debug"],
+          "FullString": "LogLevel.Debug"
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\DefaultObjectIdProvider.cs:153",
+    "FollowingCode": "                RegisterObject ( instance , eComponent , eParameters , id ) ;",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                   .Level ( LogLevel.Debug )\r\n                   .Message ( $\u0022Provisioned ID {id} for instance of type {instance.GetType ( )}.\u0022 )\r\n                   .Property ( \u0022objectId\u0022 ,     id )\r\n                   .Property ( \u0022instanceType\u0022 , instance.GetType ( ).FullName )\r\n                   .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Property",
+    "MethodDisplayName": "LogBuilder.Property",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8750, "Kind": "StringLiteralExpression", "Literal": "objectId" } },
+      { "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "id", "Tokens": ["id"] } }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\DefaultObjectIdProvider.cs:153",
+    "FollowingCode": "                RegisterObject ( instance , eComponent , eParameters , id ) ;",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                   .Level ( LogLevel.Debug )\r\n                   .Message ( $\u0022Provisioned ID {id} for instance of type {instance.GetType ( )}.\u0022 )\r\n                   .Property ( \u0022objectId\u0022 ,     id )\r\n                   .Property ( \u0022instanceType\u0022 , instance.GetType ( ).FullName )\r\n                   .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\DefaultObjectIdProvider.cs:153",
+    "FollowingCode": "                RegisterObject ( instance , eComponent , eParameters , id ) ;",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                   .Level ( LogLevel.Debug )\r\n                   .Message ( $\u0022Provisioned ID {id} for instance of type {instance.GetType ( )}.\u0022 )\r\n                   .Property ( \u0022objectId\u0022 ,     id )\r\n                   .Property ( \u0022instanceType\u0022 , instance.GetType ( ).FullName )\r\n                   .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Debug", "Tokens": ["Debug"] },
+          "Tokens": ["LogLevel", ".", "Debug"],
+          "FullString": "LogLevel.Debug "
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\DefaultObjectIdProvider.cs:153",
+    "FollowingCode": "                RegisterObject ( instance , eComponent , eParameters , id ) ;",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                   .Level ( LogLevel.Debug )\r\n                   .Message ( $\u0022Provisioned ID {id} for instance of type {instance.GetType ( )}.\u0022 )\r\n                   .Property ( \u0022objectId\u0022 ,     id )\r\n                   .Property ( \u0022instanceType\u0022 , instance.GetType ( ).FullName )\r\n                   .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\DefaultObjectIdProvider.cs:153",
+    "FollowingCode": "                RegisterObject ( instance , eComponent , eParameters , id ) ;",
+    "PrecedingCode": "            {",
+    "Code":
+      "                new LogBuilder ( Logger )\r\n                   .Level ( LogLevel.Debug )\r\n                   .Message ( $\u0022Provisioned ID {id} for instance of type {instance.GetType ( )}.\u0022 )\r\n                   .Property ( \u0022objectId\u0022 ,     id )\r\n                   .Property ( \u0022instanceType\u0022 , instance.GetType ( ).FullName )\r\n                   .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Property",
+    "MethodDisplayName": "LogBuilder.Property",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8750, "Kind": "StringLiteralExpression", "Literal": "instanceType" } },
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": {
+            "RawKind": 8634,
+            "Kind": "InvocationExpression",
+            "Expression": {
+              "RawKind": 8689,
+              "Kind": "SimpleMemberAccessExpression",
+              "Type": "MemberAccessExpressionSyntax",
+              "Expression":
+                { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "instance", "Tokens": ["instance"] },
+              "Operator": ".",
+              "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "GetType", "Tokens": ["GetType"] },
+              "Tokens": ["instance", ".", "GetType"],
+              "FullString": "instance.GetType "
+            },
+            "Args": []
+          },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "FullName", "Tokens": ["FullName"] },
+          "Tokens": ["instance", ".", "GetType", "(", ")", ".", "FullName"],
+          "FullString": "instance.GetType ( ).FullName "
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\FixtureLogger.cs:22",
+    "FollowingCode": "        }",
+    "PrecedingCode": "            LogHelper.EnsureLoggingConfigured ( ) ;",
+    "Code":
+      "            new LogBuilder ( Logger ).Level(LogLevel.Trace).Message(\u0022Fixture lifecycle event for {fixtureType}: {lifecycle}\u0022, fixtureType, lifecycle).Write();\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\FixtureLogger.cs:22",
+    "FollowingCode": "        }",
+    "PrecedingCode": "            LogHelper.EnsureLoggingConfigured ( ) ;",
+    "Code":
+      "            new LogBuilder ( Logger ).Level(LogLevel.Trace).Message(\u0022Fixture lifecycle event for {fixtureType}: {lifecycle}\u0022, fixtureType, lifecycle).Write();\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8750,
+          "Kind": "StringLiteralExpression",
+          "Literal": "Fixture lifecycle event for {fixtureType}: {lifecycle}"
+        }
+      },
+      { "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "fixtureType", "Tokens": ["fixtureType"] } },
+      { "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "lifecycle", "Tokens": ["lifecycle"] } }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\FixtureLogger.cs:22",
+    "FollowingCode": "        }",
+    "PrecedingCode": "            LogHelper.EnsureLoggingConfigured ( ) ;",
+    "Code":
+      "            new LogBuilder ( Logger ).Level(LogLevel.Trace).Message(\u0022Fixture lifecycle event for {fixtureType}: {lifecycle}\u0022, fixtureType, lifecycle).Write();\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Trace", "Tokens": ["Trace"] },
+          "Tokens": ["LogLevel", ".", "Trace"],
+          "FullString": "LogLevel.Trace"
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:38",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( After )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .After\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Properties",
+    "MethodDisplayName": "LogBuilder.Properties",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8634,
+          "Kind": "InvocationExpression",
+          "Expression":
+          {
+            "RawKind": 8689,
+            "Kind": "SimpleMemberAccessExpression",
+            "Type": "MemberAccessExpressionSyntax",
+            "Expression":
+              { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogHelper", "Tokens": ["LogHelper"] },
+            "Operator": ".",
+            "Name": {
+              "RawKind": 8616,
+              "Kind": "IdentifierName",
+              "Identifier": "TestMethodProperties",
+              "Tokens": ["TestMethodProperties"]
+            },
+            "Tokens": ["LogHelper", ".", "TestMethodProperties"],
+            "FullString": "                                                  LogHelper.TestMethodProperties "
+          },
+          "Args": [
+            {
+              "RawKind": 8616,
+              "Kind": "IdentifierName",
+              "Identifier": "methodUnderTest",
+              "Tokens": ["methodUnderTest"]
+            },
+            {
+              "RawKind": 8689,
+              "Kind": "SimpleMemberAccessExpression",
+              "Type": "MemberAccessExpressionSyntax",
+              "Expression":
+              {
+                "RawKind": 8616,
+                "Kind": "IdentifierName",
+                "Identifier": "TestMethodLifecycle",
+                "Tokens": ["TestMethodLifecycle"]
+              },
+              "Operator": ".",
+              "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "After", "Tokens": ["After"] },
+              "Tokens": ["TestMethodLifecycle", ".", "After"],
+              "FullString":
+                "TestMethodLifecycle\r\n                                                                                     .After\r\n"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:38",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( After )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .After\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Info", "Tokens": ["Info"] },
+          "Tokens": ["LogLevel", ".", "Info"],
+          "FullString": "LogLevel.Info "
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:38",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( After )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .After\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:59",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( Before )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .Before\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:59",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( Before )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .Before\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Properties",
+    "MethodDisplayName": "LogBuilder.Properties",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8634,
+          "Kind": "InvocationExpression",
+          "Expression":
+          {
+            "RawKind": 8689,
+            "Kind": "SimpleMemberAccessExpression",
+            "Type": "MemberAccessExpressionSyntax",
+            "Expression":
+              { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogHelper", "Tokens": ["LogHelper"] },
+            "Operator": ".",
+            "Name": {
+              "RawKind": 8616,
+              "Kind": "IdentifierName",
+              "Identifier": "TestMethodProperties",
+              "Tokens": ["TestMethodProperties"]
+            },
+            "Tokens": ["LogHelper", ".", "TestMethodProperties"],
+            "FullString": "                                                  LogHelper.TestMethodProperties "
+          },
+          "Args": [
+            {
+              "RawKind": 8616,
+              "Kind": "IdentifierName",
+              "Identifier": "methodUnderTest",
+              "Tokens": ["methodUnderTest"]
+            },
+            {
+              "RawKind": 8689,
+              "Kind": "SimpleMemberAccessExpression",
+              "Type": "MemberAccessExpressionSyntax",
+              "Expression":
+              {
+                "RawKind": 8616,
+                "Kind": "IdentifierName",
+                "Identifier": "TestMethodLifecycle",
+                "Tokens": ["TestMethodLifecycle"]
+              },
+              "Operator": ".",
+              "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Before", "Tokens": ["Before"] },
+              "Tokens": ["TestMethodLifecycle", ".", "Before"],
+              "FullString":
+                "TestMethodLifecycle\r\n                                                                                     .Before\r\n"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:38",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( After )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .After\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:59",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( Before )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .Before\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\TestLib\\LogTestMethodAttribute.cs:59",
+    "FollowingCode": "        }",
+    "PrecedingCode": "        {",
+    "Code":
+      "            new LogBuilder ( Logger ).Level ( LogLevel.Info )\r\n                                     .Message (\r\n                                               $\u0022{nameof ( Before )} test method {methodUnderTest.Name}\u0022\r\n                                              )\r\n                                     .Properties (\r\n                                                  LogHelper.TestMethodProperties (\r\n                                                                                  methodUnderTest\r\n                                                                                , TestMethodLifecycle\r\n                                                                                     .Before\r\n                                                                                 )\r\n                                                 )\r\n                                     .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+          "Operator": ".",
+          "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Info", "Tokens": ["Info"] },
+          "Tokens": ["LogLevel", ".", "Info"],
+          "FullString": "LogLevel.Info "
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\Utils.cs:33",
+    "FollowingCode": "                    }",
+    "PrecedingCode": "                    {",
+    "Code":
+      "                        new LogBuilder ( logger ?? Logger )\r\n                           .Level ( level ?? LogLevel.Debug )\r\n                           .Exception ( exception )\r\n                           .Message ( exception.Message )\r\n                           .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Exception",
+    "MethodDisplayName": "LogBuilder.Exception",
+    "Arguments": [
+      { "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "exception", "Tokens": ["exception"] } }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\Utils.cs:33",
+    "FollowingCode": "                    }",
+    "PrecedingCode": "                    {",
+    "Code":
+      "                        new LogBuilder ( logger ?? Logger )\r\n                           .Level ( level ?? LogLevel.Debug )\r\n                           .Exception ( exception )\r\n                           .Message ( exception.Message )\r\n                           .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\Utils.cs:33",
+    "FollowingCode": "                    }",
+    "PrecedingCode": "                    {",
+    "Code":
+      "                        new LogBuilder ( logger ?? Logger )\r\n                           .Level ( level ?? LogLevel.Debug )\r\n                           .Exception ( exception )\r\n                           .Message ( exception.Message )\r\n                           .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\KayMcCormick.Dev\\Utils.cs:33",
+    "FollowingCode": "                    }",
+    "PrecedingCode": "                    {",
+    "Code":
+      "                        new LogBuilder ( logger ?? Logger )\r\n                           .Level ( level ?? LogLevel.Debug )\r\n                           .Exception ( exception )\r\n                           .Message ( exception.Message )\r\n                           .Write ( ) ;\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8688,
+          "Kind": "CoalesceExpression",
+          "Left": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "level", "Tokens": ["level"] },
+          "Op": "??",
+          "Right": {
+            "RawKind": 8689,
+            "Kind": "SimpleMemberAccessExpression",
+            "Type": "MemberAccessExpressionSyntax",
+            "Expression":
+              { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "LogLevel", "Tokens": ["LogLevel"] },
+            "Operator": ".",
+            "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Debug", "Tokens": ["Debug"] },
+            "Tokens": ["LogLevel", ".", "Debug"],
+            "FullString": "LogLevel.Debug "
+          }
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Services\\LogService\\LogService\\Service\\WinService.cs:115",
+    "FollowingCode": "        }",
+    "PrecedingCode":
+      "            var l = new LogBuilder(Logger).LoggerName($\u0022{e.Entry.MachineName}.{e.Entry.Source}\u0022).Level(level).Message(e.Entry.Message).Properties(props);",
+    "Code": "            l.Write(l.LogEventInfo.FormattedMessage);\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Write",
+    "MethodDisplayName": "LogBuilder.Write",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8689,
+          "Kind": "SimpleMemberAccessExpression",
+          "Type": "MemberAccessExpressionSyntax",
+          "Expression": {
+            "RawKind": 8689,
+            "Kind": "SimpleMemberAccessExpression",
+            "Type": "MemberAccessExpressionSyntax",
+            "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "l", "Tokens": ["l"] },
+            "Operator": ".",
+            "Name": {
+              "RawKind": 8616,
+              "Kind": "IdentifierName",
+              "Identifier": "LogEventInfo",
+              "Tokens": ["LogEventInfo"]
+            },
+            "Tokens": ["l", ".", "LogEventInfo"],
+            "FullString": "l.LogEventInfo"
+          },
+          "Operator": ".",
+          "Name": {
+            "RawKind": 8616,
+            "Kind": "IdentifierName",
+            "Identifier": "FormattedMessage",
+            "Tokens": ["FormattedMessage"]
+          },
+          "Tokens": ["l", ".", "LogEventInfo", ".", "FormattedMessage"],
+          "FullString": "l.LogEventInfo.FormattedMessage"
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Services\\LogService\\LogService\\Service\\WinService.cs:114",
+    "FollowingCode": "            l.Write(l.LogEventInfo.FormattedMessage);",
+    "PrecedingCode": "            ",
+    "Code":
+      "\r\n            \r\n            var l = new LogBuilder(Logger).LoggerName($\u0022{e.Entry.MachineName}.{e.Entry.Source}\u0022).Level(level).Message(e.Entry.Message).Properties(props);\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "LoggerName",
+    "MethodDisplayName": "LogBuilder.LoggerName",
+    "Arguments": [
+      {
+        "Pojo": {
+          "RawKind": 8655,
+          "Kind": "InterpolatedStringExpression",
+          "Contents": [
+            {
+              "RawKind": 8689,
+              "Kind": "SimpleMemberAccessExpression",
+              "Type": "MemberAccessExpressionSyntax",
+              "Expression": {
+                "RawKind": 8689,
+                "Kind": "SimpleMemberAccessExpression",
+                "Type": "MemberAccessExpressionSyntax",
+                "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "e", "Tokens": ["e"] },
+                "Operator": ".",
+                "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Entry", "Tokens": ["Entry"] },
+                "Tokens": ["e", ".", "Entry"],
+                "FullString": "e.Entry"
+              },
+              "Operator": ".",
+              "Name": {
+                "RawKind": 8616,
+                "Kind": "IdentifierName",
+                "Identifier": "MachineName",
+                "Tokens": ["MachineName"]
+              },
+              "Tokens": ["e", ".", "Entry", ".", "MachineName"],
+              "FullString": "e.Entry.MachineName"
+            }, ".",
+            {
+              "RawKind": 8689,
+              "Kind": "SimpleMemberAccessExpression",
+              "Type": "MemberAccessExpressionSyntax",
+              "Expression": {
+                "RawKind": 8689,
+                "Kind": "SimpleMemberAccessExpression",
+                "Type": "MemberAccessExpressionSyntax",
+                "Expression": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "e", "Tokens": ["e"] },
+                "Operator": ".",
+                "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Entry", "Tokens": ["Entry"] },
+                "Tokens": ["e", ".", "Entry"],
+                "FullString": "e.Entry"
+              },
+              "Operator": ".",
+              "Name": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "Source", "Tokens": ["Source"] },
+              "Tokens": ["e", ".", "Entry", ".", "Source"],
+              "FullString": "e.Entry.Source"
+            }
+          ],
+          "Tokens": ["$\u0022", "\u0022"]
+        }
+      }
+    ]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Services\\LogService\\LogService\\Service\\WinService.cs:114",
+    "FollowingCode": "            l.Write(l.LogEventInfo.FormattedMessage);",
+    "PrecedingCode": "            ",
+    "Code":
+      "\r\n            \r\n            var l = new LogBuilder(Logger).LoggerName($\u0022{e.Entry.MachineName}.{e.Entry.Source}\u0022).Level(level).Message(e.Entry.Message).Properties(props);\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Properties",
+    "MethodDisplayName": "LogBuilder.Properties",
+    "Arguments": [{ "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "props", "Tokens": ["props"] } }]
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Services\\LogService\\LogService\\Service\\WinService.cs:114",
+    "FollowingCode": "            l.Write(l.LogEventInfo.FormattedMessage);",
+    "PrecedingCode": "            ",
+    "Code":
+      "\r\n            \r\n            var l = new LogBuilder(Logger).LoggerName($\u0022{e.Entry.MachineName}.{e.Entry.Source}\u0022).Level(level).Message(e.Entry.Message).Properties(props);\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Message",
+    "MethodDisplayName": "LogBuilder.Message",
+    "Arguments": []
+  },
+  {
+    "SourceLocation":
+      "C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\v3\\test1234\\src\\KayMcCormick.Dev\\Services\\LogService\\LogService\\Service\\WinService.cs:114",
+    "FollowingCode": "            l.Write(l.LogEventInfo.FormattedMessage);",
+    "PrecedingCode": "            ",
+    "Code":
+      "\r\n            \r\n            var l = new LogBuilder(Logger).LoggerName($\u0022{e.Entry.MachineName}.{e.Entry.Source}\u0022).Level(level).Message(e.Entry.Message).Properties(props);\r\n",
+    "LoggerType": "LogBuilder",
+    "MethodName": "Level",
+    "MethodDisplayName": "LogBuilder.Level",
+    "Arguments": [{ "Pojo": { "RawKind": 8616, "Kind": "IdentifierName", "Identifier": "level", "Tokens": ["level"] } }]
+  }
+]

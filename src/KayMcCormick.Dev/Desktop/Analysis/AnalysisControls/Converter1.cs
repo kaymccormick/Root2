@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 using NLog ;
+// ReSharper disable All
 
 namespace AnalysisControls
 {
