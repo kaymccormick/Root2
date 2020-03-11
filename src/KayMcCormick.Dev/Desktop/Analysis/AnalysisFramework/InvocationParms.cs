@@ -38,9 +38,9 @@ namespace AnalysisFramework
             {
                 throw new ArgumentNullException(nameof(tuple));
             }
-#if TRACE
             if ( relevantNode != null )
             {
+#if TRACE
                 Logger.Debug (
                               "{id} relevant node is {node}"
                             , Thread.CurrentThread.ManagedThreadId
