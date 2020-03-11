@@ -3,7 +3,9 @@ using System.Windows.Input ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Threading ;
+
 using AnalysisControls ;
+
 using AnalysisFramework ;
 using NLog ;
 

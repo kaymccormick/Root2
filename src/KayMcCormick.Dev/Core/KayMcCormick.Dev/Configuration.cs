@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Microsoft.Win32;
 using NLog;
 
 namespace KayMcCormick.Dev
@@ -57,10 +56,10 @@ namespace KayMcCormick.Dev
         void LoadConfiguration();
     }
 
+#if USEREGISTRY
     /// <summary>
     /// 
     /// </summary>
-#if NETSTANDARD
     public class Win32RegistryConfiguration : IConfiguration
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();

@@ -13,6 +13,6 @@ namespace ProjInterface
 {
     public static class Resources
     {
-        public static string DefaultSourceCode => Properties.Resources.Program_Parse ;
+        public static string DefaultSourceCode => "" ;
     }
 }

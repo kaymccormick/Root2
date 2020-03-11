@@ -2,9 +2,9 @@
   x:Class="ProjInterface.ProjInterfaceApp"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
-  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls">
+  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
+  xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib">
   <wpf:BaseApp.Resources>
     <Style TargetType="Menu">
       <Setter Property="FontFamily" Value="Leelawadee"/>
@@ -16,8 +16,8 @@
     </Style>
 
     <DataTemplate x:Key="{x:Type projLib:IDetailedOperation}"
-                   DataType="projLib:IDetailedOperation">
-      <TextBlock Text="{Binding DisplayName}"></TextBlock>
+    DataType="projLib:IDetailedOperation">
+    <TextBlock Text="{Binding DisplayName}"></TextBlock>
     </DataTemplate>
   </wpf:BaseApp.Resources>
 </wpf:BaseApp>

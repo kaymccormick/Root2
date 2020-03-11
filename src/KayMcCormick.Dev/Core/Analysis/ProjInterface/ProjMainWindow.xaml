@@ -6,9 +6,9 @@
   xmlns:local="clr-namespace:ProjInterface"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
+  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
   xmlns:nLog="clr-namespace:NLog;assembly=NLog"
-  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
   Name="mainWindow"
   Title="MainWindow"
   Width="800"
@@ -59,6 +59,13 @@
       DataType="projLib:IMruItem">
             <TextBlock Text="{Binding Location}" />
           </DataTemplate>
+          <Style x:Key="LogStyle" TargetType="ContentPresenter">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Level}" Value="{x:Static nLog:LogLevel.Debug}">
+                <Setter Property="TextElement.Foreground" Value="CornflowerBlue"></Setter>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
           <DataTemplate x:Key="Properties">
             <ItemsControl ItemsSource="{Binding Properties}">
               <ItemsControl.ItemTemplate>
@@ -109,6 +116,32 @@
     </Menu>
     <Border BorderBrush="AntiqueWhite" BorderThickness="10" CornerRadius="4" Grid.Row="1"
             Grid.ColumnSpan="3">
+    <StatusBar FontSize="16">
+      <StatusBarItem>
+          <Border VerticalAlignment="Center" Padding="10"  BorderBrush="Red" BorderThickness="3" CornerRadius="15">
+            <TextBlock  VerticalAlignment="Center" Text="{Binding ApplicationMode,FallbackValue=None}"/>
+          </Border>
+      </StatusBarItem>
+      <StatusBarItem><TextBlock Margin="10" VerticalAlignment="Center"
+                 Text="Status" /></StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
+                 Text="{Binding CurrentProgress.FileName}" /></StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
+                 Text="{Binding CurrentProgress.Operation}" />
+        </StatusBarItem>
+        <StatusBarItem><TextBlock Margin="10"
+                 Text="{Binding CurrentProgress.ElapsedTime}" />
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding Processing}" />
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding PipelineResult.Status}"/>
+        </StatusBarItem>
+        <StatusBarItem>
+          <TextBlock Text="{Binding PipelineResult.TaskException.Message}"/>
+        </StatusBarItem>
+    </StatusBar>
     </Border>
     <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
     </analysisControls:ProjectBrowser>
@@ -128,6 +161,8 @@
                 AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}">
 <DataGrid.Columns><DataGridTemplateColumn CellTemplate="{StaticResource Properties}"></DataGridTemplateColumn></DataGrid.Columns>
     </DataGrid>
+    <ItemsControl Visibility="Hidden" x:Name="logs" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding EventInfos}" ItemContainerStyle="{StaticResource LogStyle}">
+    </ItemsControl>
     <ListView ItemsSource="{Binding ElementName=mainWindow,Path=ObsTasks}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
       <ListView.View>
         <GridView>
@@ -139,8 +174,8 @@
         </GridView>
       </ListView.View>
     </ListView>
-    <!-- <analysisControls:MainStatusBar Grid.Row="4" Grid.ColumnSpan="3" -->
-    <!--                        Grid.Column="0" /> -->
+    <analysisControls:MainStatusBar Grid.Row="4" Grid.ColumnSpan="3"
+                           Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>
 </wpf:AppWindow>

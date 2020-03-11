@@ -1,4 +1,6 @@
-﻿using AnalysisControls ;
+﻿#if ANALYSISCONTROLS
+using AnalysisControls ;
+#endif
 using AnalysisFramework ;
 using Autofac ;
 using JetBrains.Annotations ;
@@ -22,6 +24,7 @@ using System.Reactive.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Text ;
 using System.Text.Json ;
+using System.Text.Json.Serialization ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
@@ -192,11 +195,22 @@ namespace ProjInterface
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
             if ( e.OriginalSource is ListView ) {
-            
                 var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
                 var viewCurrentItem = v.View.CurrentItem ;
                 Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
                 Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
+                t.ContinueWith (
+                                task => {
+                                    var jsonSerializerOptions = new JsonSerializerOptions {} ;
+                                    jsonSerializerOptions.Converters.Add (
+                                                                          new
+                                                                              LogInvocationConverter ( )
+                                                                         ) ;
+                                    File.WriteAllText ( "invocations.json" , JsonSerializer
+                                                           .Serialize (
+                                                                       ViewModel.LogInvocations.ToList (  ), jsonSerializerOptions));
+                                }
+                               ) ;
                 TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
                 AddTask ( t, tw ) ;
             }
@@ -218,7 +232,7 @@ namespace ProjInterface
                            .GetSemanticModelAsync ( )
                            .ContinueWith (
                                           ( task  ) => {
-                                              var w = _scope.Resolve < CompilationView > (
+                                              var w = _scope.Resolve < ICompilationView > (
                                                                                          new
                                                                                              TypedParameter (
                                                                                                              typeof
@@ -302,6 +316,47 @@ namespace ProjInterface
         }
     }
 
+    internal class LogInvocationConverter : JsonConverter<ILogInvocation>
+    {
+        #region Overrides of JsonConverter<ILogInvocation>
+        public override ILogInvocation Read (
+            ref Utf8JsonReader    reader
+          , Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return null ;
+        }
+
+        public override void Write (
+            Utf8JsonWriter        writer
+          , ILogInvocation        value
+          , JsonSerializerOptions options
+        )
+        {
+            writer.WriteStartObject();
+            writer.WriteString ( "SourceLocation" , value.SourceLocation ) ;
+            writer.WriteString ( "LoggerType" , value.LoggerType ) ;
+            writer.WriteString ( "MethodName" , value.MethodName ) ;
+            writer.WriteString ( "Code" , value.Code ) ;
+            writer.WriteString("PrecedingCode", value.PrecedingCode);
+            writer.WriteString ( "FollowingCode" , value.FollowingCode ) ;
+            writer.WriteStartArray ( "Arguments" ) ;
+            foreach ( var logInvocationArgument in value.Arguments )
+            {
+                JsonSerializer.Serialize ( writer , logInvocationArgument.Pojo , options ) ;
+            }
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+        }
+        #endregion
+    }
+
+    internal interface ICompilationView
+    {
+        void Show ( ) ;
+    }
+
     internal class PropertyConverter : IValueConverter
     {
         #region Implementation of IValueConverter
@@ -315,7 +370,7 @@ namespace ProjInterface
             LogEventInstance instance = value as LogEventInstance;
             if ( instance != null && (instance.Properties != null && instance.Properties.TryGetValue ( ( string ) parameter ?? throw new InvalidOperationException ( ) , out var elem )) )
             {
-                var process = Process ( elem ) ;
+                var process = Process ( (JsonElement )elem) ;
                 if(targetType == typeof(string))
                 {
                     var convertToString = ConvertToString ( process ) ;
