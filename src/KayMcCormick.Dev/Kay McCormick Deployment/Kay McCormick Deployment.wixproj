@@ -20,6 +20,7 @@
     <VerboseOutput>True</VerboseOutput>
     <SuppressAllWarnings>False</SuppressAllWarnings>
     <Pedantic>True</Pedantic>
+    <LinkerAdditionalOptions>-sval</LinkerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DefineConstants>KmGlobalOutputPath=..\..\..\..\..\build\</DefineConstants>
@@ -28,6 +29,7 @@
     <VerboseOutput>True</VerboseOutput>
     <SuppressAllWarnings>True</SuppressAllWarnings>
     <Pedantic>False</Pedantic>
+    <LinkerAdditionalOptions>-sval</LinkerAdditionalOptions>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="File1.wxs" />
