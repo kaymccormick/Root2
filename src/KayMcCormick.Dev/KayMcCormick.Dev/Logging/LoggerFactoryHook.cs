@@ -1,4 +1,5 @@
-﻿using Castle.DynamicProxy;
+﻿#if NETFRAMEWORK
+using Castle.DynamicProxy;
 using System;
 using System.Reflection;
 
@@ -65,3 +66,4 @@ namespace KayMcCormick.Dev.Logging
         }
     }
 }
+#endif

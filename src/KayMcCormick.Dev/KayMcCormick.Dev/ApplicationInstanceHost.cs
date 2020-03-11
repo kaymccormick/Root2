@@ -22,7 +22,9 @@ namespace KayMcCormick.Dev
     /// </summary>
     public sealed class ApplicationInstanceHost : IDisposable
     {
+        #if NETFRAMEWORK
         private ServiceHost _host;
+#endif
         private readonly AppInfoService _service;
         private readonly Uri _baseAddresses;
 
@@ -46,8 +48,10 @@ namespace KayMcCormick.Dev
         /// </summary>
         public void HostOpen()
         {
+            #if NETFRAMEWORK
             _host = new ServiceHost(_service, _baseAddresses);
             _host.Open();
+#endif
         }
 
         #region IDisposable
@@ -56,8 +60,10 @@ namespace KayMcCormick.Dev
         /// </summary>
         public void Dispose()
         {
+            #if NETFRAMEWORK
             var disposable = _host as IDisposable;
             disposable?.Dispose();
+#endif
         }
         #endregion
     }

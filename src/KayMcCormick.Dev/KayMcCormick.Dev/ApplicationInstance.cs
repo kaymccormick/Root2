@@ -7,6 +7,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection ;
 
 namespace KayMcCormick.Dev
 {
@@ -44,6 +45,15 @@ namespace KayMcCormick.Dev
         /// <param name="logMethod"></param>
         public ApplicationInstance ( LogDelegates.LogMethod logMethod )
         {
+            // The Microsoft.Extensions.DependencyInjection.ServiceCollection
+            // has extension methods provided by other .NET Core libraries to
+            // regsiter services with DI.
+            var serviceCollection = new ServiceCollection();
+
+            // The Microsoft.Extensions.Logging package provides this one-liner
+            // to add logging services.
+            serviceCollection.AddLogging();
+
             InstanceRunGuid = Guid.NewGuid();
             _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod);
             
@@ -187,7 +197,9 @@ namespace KayMcCormick.Dev
         // ReSharper disable once UnusedMember.Global
         public void Shutdown()
         {
+#if NETSTANDARD
             AppLoggingConfigHelper.ServiceTarget?.Dispose();
+#endif
         }
         #region IDisposable
         /// <summary>

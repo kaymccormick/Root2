@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Microsoft.Win32;
 using NLog;
 
 namespace KayMcCormick.Dev
@@ -57,6 +56,7 @@ namespace KayMcCormick.Dev
         void LoadConfiguration();
     }
 
+#if USEREGISTRY
     /// <summary>
     /// 
     /// </summary>
@@ -79,4 +79,5 @@ namespace KayMcCormick.Dev
             }
         }
     }
+#endif
 }

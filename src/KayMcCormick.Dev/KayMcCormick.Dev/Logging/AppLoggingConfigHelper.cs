@@ -1,6 +1,9 @@
 /* test 123 */
 
+#if NETFRAMEWORK
 using Castle.DynamicProxy;
+using System.ServiceModel.Discovery ;
+#endif
 using JetBrains.Annotations;
 using NLog;
 using NLog.Common;
@@ -20,16 +23,19 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.ServiceModel ;
-using System.ServiceModel.Discovery ;
+
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+#if NETFRAMEWORK
 using NLog.LogReceiverService ;
+#endif
 using JsonAttribute = NLog.Layouts.JsonAttribute;
 
 namespace KayMcCormick.Dev.Logging
 {
+#if NETFRAMEWORK
     class Client
     {
         static public EndpointAddress serviceAddress;
@@ -60,6 +66,7 @@ namespace KayMcCormick.Dev.Logging
             }
         }
     }
+#endif
     /// <summary>Static class containing logging configuration methods</summary>
     /// <seealso cref="NLog.Config.LoggingConfiguration" />
     public static class AppLoggingConfigHelper
@@ -88,7 +95,9 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// 
         /// </summary>
+#if NETFRAMEWORK
         public static LogReceiverWebServiceTarget ServiceTarget { get; private set; }
+#endif
 
 
         /// <summary>Gets or sets a value indicating whether [debugger target enabled].</summary>
@@ -147,6 +156,7 @@ namespace KayMcCormick.Dev.Logging
                 return LogManager.LogFactory ;
             }
 
+            #if NETFRAMEWORK
             LogFactory proxiedFactory = null;
             if (proxyLogging)
             {
@@ -156,7 +166,7 @@ namespace KayMcCormick.Dev.Logging
                 var lConfLogFactory = loggerProxyHelper.CreateLogFactory(logFactory);
                 proxiedFactory = lConfLogFactory;
             }
-
+            #endif
             var fieldInfo = typeof(LogManager).GetField(
                                                             "factory"
                                                           , BindingFlags.Static
@@ -167,16 +177,21 @@ namespace KayMcCormick.Dev.Logging
                 logMethod($"field info is {fieldInfo.DeclaringType} . {fieldInfo.Name}");
                 var cur = fieldInfo.GetValue(null);
                 logMethod($"cur is {cur}");
-
+#if NETFRAMEWORK
                 if (proxyLogging)
                 {
                     fieldInfo.SetValue(null, proxiedFactory);
                     var newVal = fieldInfo.GetValue(null);
                     logMethod($"New Value = {newVal}");
                 }
+#endif
             }
 
+#if NETFRAMEWORK
             return PerformConfiguration(logMethod, proxyLogging, proxiedFactory);
+#else
+            return PerformConfiguration(logMethod, false, null);
+#endif
         }
 
         private static LogFactory PerformConfiguration(
@@ -213,6 +228,7 @@ namespace KayMcCormick.Dev.Logging
             // var x = new EventLogTarget("eventLog") { Source = "Application Error" };
             // errorTargets.Add(x);
 
+            #if NETFRAMEWORK
             var endpointAddress = Environment.GetEnvironmentVariable("LOGGING_WEBSERVICE_ENDPOINT")
                                   ?? $"http://{PublicFacingHostAddress}/LogService/ReceiveLogs.svc";
             EndpointAddress receiverAddress = null;//new EndpointAddress(endpointAddress);
@@ -224,19 +240,25 @@ namespace KayMcCormick.Dev.Logging
             }
             receiverAddress = new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/");
             // TODO make this address configurable
-            if(receiverAddress  != null) {
-            ServiceTarget = new LogReceiverWebServiceTarget("log")
+            if ( receiverAddress != null )
+            {
+                ServiceTarget = new LogReceiverWebServiceTarget ( "log" )
             {
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
-                EndpointAddress = receiverAddress.ToString(), ClientId = new SimpleLayout("${processName}"),
-                EndpointConfigurationName = "WSDualHttpBinding_ILogReceiverServer", IncludeEventProperties = true,
+                                    EndpointAddress = receiverAddress.ToString ( )
+                                  , ClientId        = new SimpleLayout ( "${processName}" )
+                                  , EndpointConfigurationName =
+                                        "WSDualHttpBinding_ILogReceiverServer"
+                                  , IncludeEventProperties = true
+                                   ,
+                                } ;
+            }
                 
-            };
-            var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
+            // var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
-            dict[LogLevel.Debug].Add(wrap);
-}
+            dict[LogLevel.Debug].Add(ServiceTarget);
+#endif
 
             var consoleTarget = new ConsoleTarget("console")
             {
@@ -247,30 +269,30 @@ namespace KayMcCormick.Dev.Logging
             dict[LogLevel.Warn].Add(consoleTarget);
 
 
-            #region Cache Target
+#region Cache Target
             var cacheTarget = new MyCacheTarget();
             dict[LogLevel.Debug].Add(cacheTarget);
             var cacheTarget2 = new MyCacheTarget2() { Layout = SetupJsonLayout() };
             dict[LogLevel.Debug].Add(cacheTarget2);
-            #endregion
-            #region NLogViewer Target
+#endregion
+#region NLogViewer Target
             var viewer = Viewer();
             t.Add(viewer);
-            #endregion
-            #region Debugger Target
+#endregion
+#region Debugger Target
             if (DebuggerTargetEnabled)
             {
                 // var debuggerTarget =
                 // new DebuggerTarget { Layout = new SimpleLayout("${message}") };
                 // t.Add(debuggerTarget);
             }
-            #endregion
-            #region Chainsaw Target
+#endregion
+#region Chainsaw Target
             var chainsawTarget = new ChainsawTarget();
             string PublicHostAddress = PublicFacingHostAddress;
             SetupNetworkTarget(chainsawTarget, $"udp://{PublicHostAddress}4445");
             t.Add(chainsawTarget);
-            #endregion
+#endregion
             t.Add(MyFileTarget());
             var jsonFileTarget = JsonFileTarget();
             dict[LogLevel.Debug].Add(jsonFileTarget);
@@ -397,7 +419,7 @@ namespace KayMcCormick.Dev.Logging
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for RemoveTarget
         // ReSharper disable once UnusedMember.Global
-        public static void RemoveTarget([NotNull] Target target)
+        public static void RemoveTarget([JetBrains.Annotations.NotNull] Target target)
         {
             if (target == null)
             {
@@ -633,7 +655,7 @@ namespace KayMcCormick.Dev.Logging
 #pragma warning disable IDE0060 // Remove unused parameter
         private static void Debug(string s) { }
 #pragma warning restore IDE0060 // Remove unused parameter
-        #region Target Methods
+#region Target Methods
         /// <summary>Adds the supplied target to the current NLog configuration.</summary>
         /// <param name="target">The target.</param>
         /// <param name="minLevel"></param>
@@ -661,7 +683,7 @@ namespace KayMcCormick.Dev.Logging
             LogManager.Configuration.RemoveTarget(name);
             LogManager.Configuration.LogFactory.ReconfigExistingLoggers();
         }
-        #endregion
+#endregion
 
         /// <summary>Set up a <seealso cref="NLog.Layouts.JsonLayout"/> for json loggers.</summary>
         /// <returns>Configured JSON layout</returns>
@@ -756,7 +778,7 @@ namespace KayMcCormick.Dev.Logging
     /// </summary>
     public class JsonTypeConverter : JsonConverter<Type>
     {
-        #region Overrides of JsonConverter<Type>
+#region Overrides of JsonConverter<Type>
         /// <summary>
         /// 
         /// </summary>
@@ -780,8 +802,8 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write(
-            [NotNull] Utf8JsonWriter writer
-          , [NotNull] Type value
+            [JetBrains.Annotations.NotNull] Utf8JsonWriter writer
+          , [JetBrains.Annotations.NotNull] Type value
           , JsonSerializerOptions options
         )
         {
@@ -797,7 +819,7 @@ namespace KayMcCormick.Dev.Logging
 
             writer.WriteStringValue(value.FullName);
         }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -806,7 +828,7 @@ namespace KayMcCormick.Dev.Logging
     // ReSharper disable once UnusedType.Global
     public class DictConverterFactory : JsonConverterFactory
     {
-        #region Overrides of JsonConverter
+#region Overrides of JsonConverter
         /// <summary>
         /// 
         /// </summary>
@@ -821,8 +843,8 @@ namespace KayMcCormick.Dev.Logging
 
             return false;
         }
-        #endregion
-        #region Overrides of JsonConverterFactory
+#endregion
+#region Overrides of JsonConverterFactory
         /// <summary>
         /// 
         /// </summary>
@@ -842,7 +864,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         private class Inner : JsonConverter<IDictionary<object, object>>
         {
-            #region Overrides of JsonConverter<IDictionary<object,object>>
+#region Overrides of JsonConverter<IDictionary<object,object>>
             public override IDictionary<object, object> Read(
                 ref Utf8JsonReader reader
               , Type typeToConvert
@@ -890,8 +912,8 @@ namespace KayMcCormick.Dev.Logging
 
                 writer.WriteEndObject();
             }
-            #endregion
+#endregion
         }
-        #endregion
+#endregion
     }
 }

@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if NETFRAMEWORK
 using Castle.DynamicProxy;
 
 namespace KayMcCormick.Dev.Logging
@@ -69,3 +70,4 @@ namespace KayMcCormick.Dev.Logging
         }
     }
 }
+#endif

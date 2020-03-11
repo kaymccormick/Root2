@@ -13,6 +13,7 @@ namespace ClassLibTests
 
         public Class1 (ITestOutputHelper helper ) { _helper = helper ; }
 
+        #if USEREGISTRY
         [ Fact ]
 
         public void Test2 ( )
@@ -20,6 +21,7 @@ namespace ClassLibTests
             Win32RegistryConfiguration x = new Win32RegistryConfiguration();
             x.LoadConfiguration();
         }
+#endif
         [Fact]
         public void Test3 ( )
         {

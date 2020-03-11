@@ -25,7 +25,9 @@ namespace KayMcCormick.Dev.Interfaces
     /// <summary>
     /// 
     /// </summary>
+    #if NETFRAMEWORK
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+#endif
     public sealed class CentralService : ICentralService, IDisposable
     {
         #region Implementation of ICentralService

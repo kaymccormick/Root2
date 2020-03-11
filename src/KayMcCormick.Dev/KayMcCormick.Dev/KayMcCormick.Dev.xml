@@ -324,16 +324,6 @@
             
             </summary>
         </member>
-        <member name="T:KayMcCormick.Dev.Win32RegistryConfiguration">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:KayMcCormick.Dev.Win32RegistryConfiguration.LoadConfiguration">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:KayMcCormick.Dev.DataBindingTraceFilter.WpfBindingFIlter">
             <summary>
             

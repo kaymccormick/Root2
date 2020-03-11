@@ -28,7 +28,9 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
+    #if NETFRAMEWORK
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+#endif
     public class AppInfoService : IAppInfoService
     {
         private readonly DateTime _startupTime;
