@@ -21,9 +21,17 @@ namespace AnalysisFramework
         private string _loggerType ;
         private string _methodName ;
         private string _methodDisplayName ;
-        private IList < ILogInvocationArgument > _arguments ;
+        private IList < ILogInvocationArgument > _arguments = new List < ILogInvocationArgument > ();
         #region Implementation of ILogInvocation
-        public LogInvocation2 ( string sourceLocation , string followingCode , string precedingCode , string code , string loggerType , string methodName , string methodDisplayName , IList < ILogInvocationArgument > arguments )
+        public LogInvocation2 (
+            string sourceLocation
+          , string followingCode
+          , string precedingCode
+          , string code
+          , string loggerType
+          , string methodName
+          , string methodDisplayName
+        )
         {
             _sourceLocation = sourceLocation ;
             _followingCode = followingCode ;
@@ -32,7 +40,6 @@ namespace AnalysisFramework
             _loggerType = loggerType ;
             _methodName = methodName ;
             _methodDisplayName = methodDisplayName ;
-            _arguments = arguments ;
         }
 
         public string SourceLocation { get => _sourceLocation ; set => _sourceLocation = value ; }

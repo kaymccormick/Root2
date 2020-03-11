@@ -239,37 +239,37 @@ namespace AnalysisFramework
         }
 
         internal static ILogInvocation CreateLogInvocation (
-            string                           sourceLocation
-          , IMethodSymbol                    methodSymbol
-          , SyntaxNode                       relevantNode
-          , SemanticModel                    semanticModel
-          , CompilationUnitSyntax            o
-          , IList < ILogInvocationArgument > args
+            string                sourceLocation
+          , IMethodSymbol         methodSymbol
+          , SyntaxNode            relevantNode
+          , SemanticModel         semanticModel
+          , CompilationUnitSyntax o
+
         )
         {
-            return new LogInvocation2(sourceLocation , null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName, args);
+            return new LogInvocation2(sourceLocation , null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName);
         }
-    }
+        }
 
-    [Serializable]
-    public class MissingTypeException : Exception
-    {
-        public MissingTypeException ( ) { }
-
-        public MissingTypeException ( string message ) : base ( message ) { }
-
-        public MissingTypeException ( string message , Exception innerException ) : base (
-                                                                                          message
-                                                                                        , innerException
-                                                                                         )
+        [Serializable]
+        public class MissingTypeException : Exception
         {
-        }
+            public MissingTypeException ( ) { }
 
-        protected MissingTypeException (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
-        {
+            public MissingTypeException ( string message ) : base ( message ) { }
+
+            public MissingTypeException ( string message , Exception innerException ) : base (
+                                                                                              message
+                                                                                            , innerException
+                                                                                             )
+            {
+            }
+
+            protected MissingTypeException (
+                [ NotNull ] SerializationInfo info
+              , StreamingContext              context
+            ) : base ( info , context )
+            {
+            }
         }
-    }
-}
+        }

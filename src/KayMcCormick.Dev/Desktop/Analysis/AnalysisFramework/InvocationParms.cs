@@ -202,7 +202,7 @@ namespace AnalysisFramework
             
                 var debugInvo = LogUsages.CreateLogInvocation(sourceLocation, methodSymbol
                                                             , relevantNode, semanticModel, null
-                                                            , null);
+                                                             );
                 var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
                 var i2 = sourceContext.IndexOf( relevantNode ) ;
 

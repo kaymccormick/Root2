@@ -31,6 +31,10 @@
         <GridView>
           <GridViewColumn
             DisplayMemberBinding="{Binding Path=Name}" />
+          <GridViewColumn
+            DisplayMemberBinding="{Binding Path=SolutionPath}" />
+          <GridViewColumn
+            DisplayMemberBinding="{Binding Path=RepositoryUrl}" />
         </GridView>
       </ListView.View>
     </ListView>

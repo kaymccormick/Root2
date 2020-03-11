@@ -429,7 +429,7 @@ namespace AnalysisFramework
                    {
                        arg.RawKind
                      , Kind       = arg.Kind ( ).ToString()
-                     , Type       = TransformTypeSyntax(arg.Type)
+                     , Type       = arg.Type == null ? null : TransformTypeSyntax(arg.Type)
                      , Identifier = TransformIdentifier ( arg.Identifier )
                    } ;
         }

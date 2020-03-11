@@ -109,22 +109,27 @@ namespace ProjLib
             PipelineResult = new PipelineResult(ResultStatus.Pending);
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                   invocation => {
+                                                                      #if TRACE
                                                                       Console.WriteLine (
                                                                                          JsonSerializer
                                                                                             .Serialize (
                                                                                                         invocation
                                                                                                        )
                                                                                         ) ;
+#endif
 
                                                                       LogInvocations.Add (
                                                                                           invocation
                                                                                          ) ;
+#if TRACE
                                                                       Logger.Debug(
                                                                                     "{invocation}"
                                                                                   , invocation
                                                                                    ) ;
+#endif
                                                                   }
                                                                  ) ;
+
             var pipeline = new Pipeline();
             if ( pipeline == null )
             {
@@ -167,10 +172,15 @@ namespace ProjLib
                 await actionBlock.Completion.ConfigureAwait ( true ) ;
                 result = new PipelineResult ( ResultStatus.Success ) ;
             }
-            catch ( Exception ex )
+            catch ( AggregateException ex1 )
             {
-                Logger.Debug ( ex , $"actionTask completion threw exception {ex.Message}" ) ;
-                result = new PipelineResult ( ResultStatus.Failed , ex ) ;
+                var exes = ex1.Flatten().InnerExceptions ;
+                Logger.Debug($"actionTask completion threw exception");
+                foreach ( var exception in exes )
+                {
+                    Logger.Debug ( exception , exception.Message ) ;
+                }
+                result = new PipelineResult(ResultStatus.Failed, ex1);
             }
 
             if ( result.Status == ResultStatus.Failed )

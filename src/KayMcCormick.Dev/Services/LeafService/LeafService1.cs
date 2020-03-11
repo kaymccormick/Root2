@@ -94,15 +94,16 @@ namespace LeafService
             svcReceiver.Open();
             _svcReceiver = svcReceiver ;
 
-#if false
+#if true
             _centralService = new CentralService ( ) ;
             var serviceHost = new ServiceHost ( _centralService , new Uri ( "http://localhost:8737/CentralSvc1" ) );
 
             // Add calculator endpoint
-            serviceHost.AddServiceEndpoint(typeof(ICentralService), new WSHttpBinding(), string.Empty);
+            serviceHost.AddServiceEndpoint(typeof(ICentralService), new BasicHttpBinding(), string.Empty);
 
             // ** DISCOVERY ** //
             // Make the service discoverable by adding the discovery behavior
+#if CENTRALDISC
             var discoveryBehavior1 = new ServiceDiscoveryBehavior() ;
             serviceHost.Description.Behaviors.Add(discoveryBehavior);
             discoveryBehavior1.AnnouncementEndpoints.Add(
@@ -110,9 +111,10 @@ namespace LeafService
             // ** DISCOVERY ** //
             // Add the discovery endpoint that specifies where to publish the services
             serviceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
-
+#endif
            // Open the ServiceHost to create listeners and start listening for messages.
             serviceHost.Open();
+            serviceHost.Opened += ( sender , args ) => Logger.Info ( "central open" ) ;
 
 
             _svcHost = serviceHost;

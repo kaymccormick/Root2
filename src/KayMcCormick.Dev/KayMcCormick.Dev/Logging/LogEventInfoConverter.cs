@@ -334,11 +334,10 @@ namespace KayMcCormick.Dev.Logging
                     writer.WriteString("CallerMemberName", value.CallerMemberName);
                 }
 
-                // if ( value.Exception != null )
-                // {
-                // writer.WritePropertyName( "Exception");
-                // JsonSerializer.Serialize ( writer , value.Exception , options ) ;
-                // }
+                if ( value.Exception != null )
+                {
+                    writer.WriteString ( "ExceptionString", value.Exception.ToString() ) ;
+                }
                 writer.WriteNumber("ManagedThreadId", Thread.CurrentThread.ManagedThreadId);
                 if (Thread.CurrentThread.Name == null)
                 {

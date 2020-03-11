@@ -38,6 +38,7 @@ namespace KayMcCormick.Lib.Wpf
         protected BaseApp ( ) {
             using ( EventLog e = new EventLog ( "Application" ) )
             {
+                e.Source = "Application" ;
                 appInst = new ApplicationInstance (
                                                    message => {
                                                        if ( e != null )
