@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ProjectFixture.cs" />
     <Compile Include="ProjTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

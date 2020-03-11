@@ -220,6 +220,7 @@ namespace KayMcCormick.Dev.Logging
                 logMethod($"Found service at endpoint {receiverAddress}");
 
             }
+            receiverAddress = new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/");
             // TODO make this address configurable
             if(receiverAddress  != null) {
             ServiceTarget = new LogReceiverWebServiceTarget("log")

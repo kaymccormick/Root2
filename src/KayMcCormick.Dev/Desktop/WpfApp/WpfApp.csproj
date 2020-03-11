@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
-    <AlwaysCompileMarkupFilesInSeparateDomain>false</AlwaysCompileMarkupFilesInSeparateDomain>
+    <AlwaysCompileMarkupFilesInSeparateDomain>true</AlwaysCompileMarkupFilesInSeparateDomain>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\bin\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{74792445-F224-4C75-B204-094FF689D950}</ProjectGuid>
@@ -265,7 +265,6 @@
     <Compile Include="Core\Menus\MenuTemplateSelector.cs" />
     <Compile Include="Core\Menus\WindowsTopLevelMenu.cs" />
     <Compile Include="Core\Menus\XMenuItem.cs" />
-    <Compile Include="Core\Model\ComponentRegistration.cs" />
     <Compile Include="Core\Model\InstanceRegistration.cs" />
     <Compile Include="Core\Model\MenuItemCollection.cs" />
     <Compile Include="Core\Model\MethodInvocation.cs" />
@@ -369,6 +368,11 @@
     </PackageReference>
     <PackageReference Include="JetBrains.Annotations">
       <Version>2019.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.8</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="nlog">
       <Version>4.7.0-rc1</Version>

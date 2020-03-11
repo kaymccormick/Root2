@@ -62,14 +62,15 @@ namespace LeafService
             }
             Log.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
 
-            Uri baseAddress = new Uri($"http://{System.Net.Dns.GetHostName()}:8737/discovery/scenarios/logreceiver/{Guid.NewGuid().ToString()}/");
+            Uri baseAddress = new Uri($"http://{System.Net.Dns.GetHostName()}:8737/discovery/scenarios/logreceiver/");
+            Logger.Info ( baseAddress ) ;
 
             //Uri baseAddress = new Uri ( $"http://10.25.0.102:8737/leafService/" ) ;
             //Uri receiverUri = new Uri ( baseAddress , "receiver" ) ;
 
             var svcReceiver = new ServiceHost ( typeof ( LogReceiver ) , baseAddress) ;
             // Add calculator endpoint
-            svcReceiver.AddServiceEndpoint(typeof(ILogReceiverServer), new WSHttpBinding(), String.Empty);
+            // svcReceiver.AddServiceEndpoint(typeof(ILogReceiverServer), new WSHttpBinding(), String.Empty);
             svcReceiver.Faulted += SvcReceiverOnFaulted;
             svcReceiver.UnknownMessageReceived += ( sender , args ) => {
                 _commonLogger.Warn(nameof(svcReceiver.UnknownMessageReceived));
@@ -82,13 +83,13 @@ namespace LeafService
                 => _commonLogger.Info ( nameof ( svcReceiver.Opened ) ) ;
             // ** DISCOVERY ** //
             // Make the service discoverable by adding the discovery behavior
-            var discoveryBehavior = new ServiceDiscoveryBehavior();
-            svcReceiver.Description.Behaviors.Add(discoveryBehavior);
-            discoveryBehavior.AnnouncementEndpoints.Add(
-                                                        new UdpAnnouncementEndpoint());
+            // var discoveryBehavior = new ServiceDiscoveryBehavior();
+            // svcReceiver.Description.Behaviors.Add(discoveryBehavior);
+            // discoveryBehavior.AnnouncementEndpoints.Add(
+                                                        // new UdpAnnouncementEndpoint());
             // ** DISCOVERY ** //
             // Add the discovery endpoint that specifies where to publish the services
-            svcReceiver.AddServiceEndpoint(new UdpDiscoveryEndpoint());
+            // svcReceiver.AddServiceEndpoint(new UdpDiscoveryEndpoint());
             svcReceiver.Open();
             _svcReceiver = svcReceiver ;
 

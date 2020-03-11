@@ -73,6 +73,7 @@
     <Compile Include="CollectionDefinitions\AutofacContainerDef.cs" />
     <Compile Include="CollectionDefinitions\GeneralPurpose.cs" />
     <Compile Include="CollectionDefinitions\WpfApplication.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Lib\Fixtures\testContainerFixture.cs" />
     <Compile Include="Lib\Fixtures\AppContainerFixture.cs" />
     <Compile Include="Lib\Fixtures\ContainerFixture.cs" />
@@ -106,6 +107,9 @@
     <Compile Include="TestWindowViews.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac">
+      <Version>5.1.2</Version>
+    </PackageReference>
     <PackageReference Include="Autofac.Extras.DynamicProxy">
       <Version>5.0.0</Version>
     </PackageReference>

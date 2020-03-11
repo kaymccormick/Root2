@@ -81,6 +81,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Ext.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ICodeAnalyseContext.cs" />
     <Compile Include="ICodeSource.cs" />
     <Compile Include="ILogInvocation.cs" />

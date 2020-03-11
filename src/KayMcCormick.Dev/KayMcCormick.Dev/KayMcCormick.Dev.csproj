@@ -200,6 +200,9 @@
     <EmbeddedResource Include="Logging\Properties\Resource.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="App.config" />
     <None Include="Connected Services\CentralServiceReference\CentralService.wsdl" />
     <None Include="Connected Services\CentralServiceReference\CentralSvc.xsd">
