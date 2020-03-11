@@ -13,7 +13,7 @@
 #endif
 
 
-namespace AnalysisFramework.LogUsage
+namespace AnalysisFramework.LogUsage.Interfaces
 {
     public interface ILogInvocationArgument
     {

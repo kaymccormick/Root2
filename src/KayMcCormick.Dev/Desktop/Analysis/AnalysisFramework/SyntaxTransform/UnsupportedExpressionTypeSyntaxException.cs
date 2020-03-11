@@ -2,7 +2,7 @@ using System ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.SyntaxTransform
 {
     [Serializable]
     public class UnsupportedExpressionTypeSyntaxException : Exception

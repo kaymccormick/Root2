@@ -14,6 +14,7 @@ using System.ComponentModel ;
 using System.Threading.Tasks ;
 using AnalysisFramework ;
 using AnalysisFramework.LogUsage ;
+using AnalysisFramework.LogUsage.Interfaces ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using NLog ;

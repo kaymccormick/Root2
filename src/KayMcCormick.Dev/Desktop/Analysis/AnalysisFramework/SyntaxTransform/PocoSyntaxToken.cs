@@ -1,4 +1,4 @@
-namespace AnalysisFramework
+namespace AnalysisFramework.SyntaxTransform
 {
     public class PocoSyntaxToken
     {

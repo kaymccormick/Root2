@@ -1,5 +1,6 @@
 using System ;
 using System.Linq ;
+using AnalysisFramework.LogUsage.Interfaces ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

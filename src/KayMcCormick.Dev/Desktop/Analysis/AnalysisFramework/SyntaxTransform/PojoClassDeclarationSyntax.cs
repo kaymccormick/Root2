@@ -11,7 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.SyntaxTransform
 {
     public class PojoClassDeclarationSyntax
     {

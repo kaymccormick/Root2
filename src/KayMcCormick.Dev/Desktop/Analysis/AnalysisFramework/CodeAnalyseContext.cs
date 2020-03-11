@@ -11,7 +11,6 @@
 // ---
 #endregion
 using System ;
-using System.ComponentModel ;
 using System.Linq ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

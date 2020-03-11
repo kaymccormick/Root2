@@ -77,7 +77,6 @@ namespace WpfApp2
             TemplateXamlXml = x ;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public TemplateInfo ( object key , string templateXaml )
         {
             Key = key ;

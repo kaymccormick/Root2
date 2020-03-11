@@ -4,6 +4,8 @@ using System.IO ;
 using System.Linq ;
 using System.Text ;
 using System.Threading ;
+using AnalysisFramework.LogUsage.Interfaces ;
+using AnalysisFramework.SyntaxTransform ;
 using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;

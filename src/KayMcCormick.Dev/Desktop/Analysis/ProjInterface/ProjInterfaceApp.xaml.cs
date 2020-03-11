@@ -8,6 +8,7 @@ using System.Text.Json.Serialization ;
 using System.Windows ;
 using AnalysisControls ;
 using AnalysisFramework ;
+using AnalysisFramework.SyntaxTransform ;
 using Autofac ;
 using Autofac.Core ;
 #if COMMANDLINE

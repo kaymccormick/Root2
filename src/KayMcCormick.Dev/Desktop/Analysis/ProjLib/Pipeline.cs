@@ -4,6 +4,7 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
 using AnalysisFramework.LogUsage ;
+using AnalysisFramework.LogUsage.Interfaces ;
 using JetBrains.Annotations ;
 using NLog ;
 using NLog.Fluent ;

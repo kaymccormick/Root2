@@ -13,6 +13,7 @@ using System ;
 using System.Linq ;
 using AnalysisFramework ;
 using AnalysisFramework.LogUsage ;
+using AnalysisFramework.LogUsage.Interfaces ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 

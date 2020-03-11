@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.SyntaxTransform
 {
     /// <summary>
     /// Transforms for Code Analysis nodes.

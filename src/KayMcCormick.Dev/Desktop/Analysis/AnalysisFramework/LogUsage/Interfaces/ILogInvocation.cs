@@ -11,7 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 
-namespace AnalysisFramework.LogUsage
+namespace AnalysisFramework.LogUsage.Interfaces
 {
     public interface ILogInvocation
     {

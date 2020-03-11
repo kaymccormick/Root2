@@ -1,6 +1,6 @@
 using System.Collections.Generic ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.SyntaxTransform
 {
     class TransformNode
     {
