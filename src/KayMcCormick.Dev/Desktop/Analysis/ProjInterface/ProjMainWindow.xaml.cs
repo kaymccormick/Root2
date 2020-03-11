@@ -378,7 +378,9 @@ namespace ProjInterface
                         return ex.Message ;
                     }
 
+#pragma warning disable CS0162 // Unreachable code detected
                     return "test" ;
+#pragma warning restore CS0162 // Unreachable code detected
                 case JsonValueKind.Array :     return elem.EnumerateArray ( ).Select ( Process ) ;
                 case JsonValueKind.String :    return elem.GetString ( ) ;
                 case JsonValueKind.Number :    return elem.GetInt32 ( ) ;

@@ -43,7 +43,9 @@ namespace Tests.Main.UI
         /// <exception cref="AggregateException"></exception>
         // [ WpfFact ]
         [ Trait ( "UITest" , "true" ) ]
+#pragma warning disable CS0628 // 'TypeControlTests.TestTypeControl()': new protected member declared in sealed class
         protected void TestTypeControl ( )
+#pragma warning restore CS0628 // 'TypeControlTests.TestTypeControl()': new protected member declared in sealed class
         {
             
             var controlName = SetupTypeControl ( out var control ) ;

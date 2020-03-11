@@ -40,7 +40,9 @@ namespace ProjLib
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
         }
 
+#pragma warning disable CS0169 // The field 'LogInvocationSpan._getResource' is never used
         private Func < object , object > _getResource ;
+#pragma warning restore CS0169 // The field 'LogInvocationSpan._getResource' is never used
         private string                   _displayString ;
     }
 }

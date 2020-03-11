@@ -89,6 +89,7 @@
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="BreakTraceListener.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ICommandSpec.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
@@ -162,6 +163,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator">
       <Version>1.2.6</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.8</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Xceed.Products.Wpf.Toolkit.AvalonDock">
       <Version>4.0.20076.12200</Version>

@@ -21,7 +21,9 @@ namespace ProjLib
 {
     public class Visitor2 : CSharpSyntaxWalker
     {
+#pragma warning disable CS0649 // Field 'Visitor2._mFunc' is never assigned to, and will always have its default value null
         private readonly Func <object, ISpanViewModel> _mFunc ;
+#pragma warning restore CS0649 // Field 'Visitor2._mFunc' is never assigned to, and will always have its default value null
 
         private static readonly Logger                                logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly Func < string , object , LogBuilder > _message ;

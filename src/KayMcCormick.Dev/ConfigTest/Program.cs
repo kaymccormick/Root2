@@ -25,7 +25,9 @@ namespace ConfigTest
             client1.ProcessLogMessages ( new NLogEvents ( ) { Events = new[] { nLogEvent } } ) ;
 
             return ;
+#pragma warning disable CS0162 // Unreachable code detected
             AppLoggingConfigHelper.EnsureLoggingConfigured(
+#pragma warning restore CS0162 // Unreachable code detected
                                                                                                                   Console.WriteLine
                                                                                                                  );
                                                            Utils.PerformLogConfigDump(Console.Out);

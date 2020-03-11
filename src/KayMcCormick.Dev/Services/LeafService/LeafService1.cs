@@ -35,8 +35,12 @@ namespace LeafService
         private readonly ILog _commonLogger ;
         private static Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
         private static Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
+#pragma warning disable CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
         private ServiceHost _svcHost ;
+#pragma warning restore CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
+#pragma warning disable CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
         private CentralService _centralService ;
+#pragma warning restore CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
         private Timer _timer ;
         private ServiceHost _svcReceiver ;
 

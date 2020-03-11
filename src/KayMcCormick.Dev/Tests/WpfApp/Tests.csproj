@@ -73,6 +73,7 @@
     <Compile Include="CollectionDefinitions\AutofacContainerDef.cs" />
     <Compile Include="CollectionDefinitions\GeneralPurpose.cs" />
     <Compile Include="CollectionDefinitions\WpfApplication.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Lib\Fixtures\testContainerFixture.cs" />
     <Compile Include="Lib\Fixtures\AppContainerFixture.cs" />
     <Compile Include="Lib\Fixtures\ContainerFixture.cs" />

@@ -200,7 +200,9 @@ namespace AnalysisFramework
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
 
             }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch ( Exception ex )
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 throw ;
                 // return Tuple.Create ( false , null , node  ) ;

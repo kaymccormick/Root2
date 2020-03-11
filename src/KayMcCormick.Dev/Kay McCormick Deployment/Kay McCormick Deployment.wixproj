@@ -50,14 +50,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\ConsoleServiceHost\ConsoleServiceHost.csproj">
-      <Name>ConsoleServiceHost</Name>
-      <Project>{70264c77-6a64-4b26-b934-01b7d032a5b3}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
       <Name>AnalysisControls</Name>
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>

@@ -68,6 +68,8 @@ namespace WpfApp.Controls
                                        , new PropertyMetadata ( default ( bool ) )
                                         ) ;
 
+        private static CSharpCodeProvider _provider = new CSharpCodeProvider ( ) ;
+
         /// <summary>Parameterless constructor.</summary>
         public TypeControl3 ( )
         {
@@ -243,12 +245,11 @@ namespace WpfApp.Controls
 
         private object ToolTipContent ( Type myType , StackPanel pp = null )
         {
-            var provider = new CSharpCodeProvider ( ) ;
             var codeTypeReference = new CodeTypeReference ( myType ) ;
             var q = codeTypeReference ;
             var toolTipContent = new TextBlock
                                  {
-                                     Text = provider.GetTypeOutput ( q ) , FontSize = 20
+                                     Text = _provider.GetTypeOutput ( q ) , FontSize = 20
                                      //, Margin = new Thickness ( 15 )
                                  } ;
             if ( pp == null )

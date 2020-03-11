@@ -290,7 +290,7 @@ namespace AnalysisFramework
                            {
                                declarationPatternSyntax.RawKind
                              , Kind = declarationPatternSyntax.Kind ( ).ToString()
-                             , Type = TransformTypeSyntax ( declarationPatternSyntax.Type )
+                             , Type = TransformTypeSyntax(declarationPatternSyntax.Type)
                              , Designation =
                                    TransformVariableDesignation (
                                                                  declarationPatternSyntax
@@ -321,8 +321,8 @@ namespace AnalysisFramework
                                                                          recursivePatternSyntax
                                                                             .PropertyPatternClause
                                                                         )
-                             , Type = TransformTypeSyntax ( recursivePatternSyntax.Type )
-                           } ;
+                             , Type = TransformTypeSyntax(recursivePatternSyntax.Type)
+                    } ;
                 case VarPatternSyntax varPatternSyntax :
                     return new
                            {
@@ -429,7 +429,7 @@ namespace AnalysisFramework
                    {
                        arg.RawKind
                      , Kind       = arg.Kind ( ).ToString()
-                     , Type       = TransformTypeSyntax ( arg.Type )
+                     , Type       = TransformTypeSyntax(arg.Type)
                      , Identifier = TransformIdentifier ( arg.Identifier )
                    } ;
         }
@@ -451,13 +451,17 @@ namespace AnalysisFramework
         /// Transform TypeSyntax
         /// </summary>
         /// <param name="argType"></param>
-        /// <param name="dispatch"></param>
+        /// 
         /// <returns></returns>
-        public static object TransformTypeSyntax (
-            [ NotNull ] TypeSyntax argType
-          , bool                   dispatch = true
+        public static object TransformTypeSyntax(
+            [NotNull] TypeSyntax argType
         )
         {
+            if ( argType == null )
+            {
+                throw new ArgumentNullException ( nameof ( argType ) ) ;
+            }
+
             switch ( argType )
             {
                 case ArrayTypeSyntax arrayTypeSyntax :                   break ;
@@ -505,7 +509,7 @@ namespace AnalysisFramework
             switch ( name )
             {
                 case SimpleNameSyntax simple : return TransformSimpleNameSyntax ( simple ) ;
-                default :                      return TransformTypeSyntax ( name , false ) ;
+                default :                      return TransformTypeSyntax(name);
             }
         }
 
@@ -576,7 +580,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformGenericNameTypeArgument ( TypeSyntax arg )
         {
-            return TransformTypeSyntax ( arg ) ;
+            return TransformTypeSyntax(arg);
         }
 
         /// <summary>
