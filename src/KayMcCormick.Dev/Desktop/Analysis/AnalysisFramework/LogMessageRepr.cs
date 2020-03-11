@@ -10,7 +10,9 @@
 // ---
 #endregion
 using System.ComponentModel ;
+#if !NETSTANDARD2_0
 using System.Text.Json.Serialization ;
+#endif
 using MessageTemplates ;
 
 namespace AnalysisFramework
@@ -32,7 +34,9 @@ namespace AnalysisFramework
         public LogMessageRepr ( string message ) { _message = message ; }
         public LogMessageRepr ( ) { }
 
-        [ JsonIgnore ]
+#if !NETSTANDARD2_0
+        [JsonIgnore ]
+#endif
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public MessageTemplate MessageTemplate { get ; set ; }
 
@@ -44,4 +48,5 @@ namespace AnalysisFramework
 
         public object ConstantMessage { get ; set ; }
     }
+
 }

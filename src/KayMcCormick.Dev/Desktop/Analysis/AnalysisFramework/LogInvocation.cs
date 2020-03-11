@@ -11,7 +11,9 @@
 #endregion
 using System.Collections.Generic ;
 using System.ComponentModel ;
+#if !NETSTANDARD2_0
 using System.Text.Json.Serialization ;
+#endif
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
@@ -57,7 +59,9 @@ namespace AnalysisFramework
 
         public string SourceLocation { get => sourceLocation ; set => sourceLocation = value ; }
 
+#if !NETSTANDARD2_0
         [ JsonIgnore ]
+#endif
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public IMethodSymbol MethodSymbol { get => methodSymbol ; set => methodSymbol = value ; }
 

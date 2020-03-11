@@ -10,8 +10,10 @@
 // ---
 #endregion
 using System.ComponentModel ;
+#if !NETSTANDARD2_0
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+#endif
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 
@@ -19,7 +21,9 @@ namespace AnalysisFramework
 {
     public interface ILogInvocationArgument
     {
+#if !NETSTANDARD2_0
         [JsonIgnore]
+#endif
         string JSON { get ; set ; }
 
         object Pojo { get ; set ; }
@@ -35,7 +39,9 @@ namespace AnalysisFramework
         {
             _syntax = syntax ;
             var jsonOut = Transforms.TransformExpr(syntax.Expression);
+#if !NETSTANDARD2_0
             JSON = JsonSerializer.Serialize(jsonOut);
+#endif
             Pojo = jsonOut;
         }
 
@@ -43,7 +49,9 @@ namespace AnalysisFramework
         public LogInvocationArgument ( ) {
         }
 
+#if !NETSTANDARD2_0
         [JsonIgnore]
+#endif
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public string JSON { get ; set ; }
 
