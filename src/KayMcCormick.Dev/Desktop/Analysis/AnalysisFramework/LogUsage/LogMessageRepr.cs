@@ -10,12 +10,11 @@
 // ---
 #endregion
 using System.ComponentModel ;
-#if !NETSTANDARD2_0
-using System.Text.Json.Serialization ;
-#endif
 using MessageTemplates ;
+#if !NETSTANDARD2_0
+#endif
 
-namespace AnalysisFramework
+namespace AnalysisFramework.LogUsage
 {
     internal class LogMessageRepr
     {
@@ -34,10 +33,6 @@ namespace AnalysisFramework
         public LogMessageRepr ( string message ) { _message = message ; }
         public LogMessageRepr ( ) { }
 
-#if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public MessageTemplate MessageTemplate { get ; set ; }
 
         public bool IsMessageTemplate { get ; set ; }

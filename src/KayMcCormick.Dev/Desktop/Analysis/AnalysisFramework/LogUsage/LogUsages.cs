@@ -1,25 +1,23 @@
 using System ;
-using System.Collections.Generic ;
 using System.Linq ;
-using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.LogUsage
 {
     public static class LogUsages
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        #if false
+#if false
         public static IEnumerable < ILogInvocation > FindLogUsages (
             ICodeSource           document1
-          , CompilationUnitSyntax currentRoot
-          , SemanticModel         currentModel
-          , SyntaxTree            syntaxTree
+      , CompilationUnitSyntax currentRoot
+      , SemanticModel         currentModel
+      , SyntaxTree            syntaxTree
         )
         {
             var comp = currentModel.Compilation ;
@@ -80,21 +78,21 @@ namespace AnalysisFramework
                 where @out.Item1
                 select (new InvocationParms (
                                                                                document1
-                                                                             , syntaxTree
-                                                                             , currentModel
-                                                                             , statement
-                                                                             , @out
-                                                                             , ExceptionType
+                                                                         , syntaxTree
+                                                                         , currentModel
+                                                                         , statement
+                                                                         , @out
+                                                                         , ExceptionType
                                                                               ).ProcessInvocation());
                                                          
         }
-        #endif
-        public const string LogBuilderClassName= "LogBuilder";
+#endif
+        public const string LogBuilderClassName     = "LogBuilder";
         public const string LogBuilderNamespaceName = NLogNamespace + ".Fluent" ;
 
         public const string LogBuilderClassFullName =
             LogBuilderNamespaceName + "." + LogBuilderClassName ;
-        public const string ILoggerClassName = "ILogger";
+        public const            string ILoggerClassName    = "ILogger";
         public const            string LoggerClassName     = "Logger";
         private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName;
 
@@ -141,10 +139,10 @@ namespace AnalysisFramework
         }
 
         public static Tuple < bool , IMethodSymbol , SyntaxNode > CheckInvocationExpression (
-                SyntaxNode n1
-              , SemanticModel              currentModel
-              , params INamedTypeSymbol[]  t
-            )
+            SyntaxNode                n1
+          , SemanticModel             currentModel
+          , params INamedTypeSymbol[] t
+        )
         {
             try
             {
@@ -191,7 +189,7 @@ namespace AnalysisFramework
                     var symbolInfo = currentModel.GetSymbolInfo(o.Type);
                     var typeSymbol = symbolInfo.Symbol as INamedTypeSymbol;
                     var result = 
-                                  CheckTypeSymbol(typeSymbol, t);
+                        CheckTypeSymbol(typeSymbol, t);
                     return Tuple.Create <bool, IMethodSymbol, SyntaxNode> ( result , null, n1 ) ;
                 }
 
@@ -249,27 +247,5 @@ namespace AnalysisFramework
         {
             return new LogInvocation2(sourceLocation , null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName);
         }
-        }
-
-        [Serializable]
-        public class MissingTypeException : Exception
-        {
-            public MissingTypeException ( ) { }
-
-            public MissingTypeException ( string message ) : base ( message ) { }
-
-            public MissingTypeException ( string message , Exception innerException ) : base (
-                                                                                              message
-                                                                                            , innerException
-                                                                                             )
-            {
-            }
-
-            protected MissingTypeException (
-                [ NotNull ] SerializationInfo info
-              , StreamingContext              context
-            ) : base ( info , context )
-            {
-            }
-        }
-        }
+    }
+}

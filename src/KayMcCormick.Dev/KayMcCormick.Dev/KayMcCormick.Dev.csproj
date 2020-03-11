@@ -117,6 +117,7 @@
     <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
+    <Compile Include="EventTimeConverter.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IdGeneratorModule.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="InstanceInfo.cs" />
     <Compile Include="Interfaces\IObjectIdProvider.cs" />
     <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
+    <Compile Include="LogEventInstance.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="Logging\MyLogger.cs" />
     <Compile Include="Logging\Properties\Resource.Designer.cs" />
     <Compile Include="Logging\RegConfigSource.cs" />
+    <Compile Include="LogLevelConverter.cs" />
     <Compile Include="MyCacheTarget.cs" />
     <Compile Include="MyCacheTarget2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

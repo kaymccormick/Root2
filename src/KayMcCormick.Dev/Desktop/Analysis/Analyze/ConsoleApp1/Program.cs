@@ -8,6 +8,7 @@ using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
+using AnalysisFramework.LogUsage ;
 using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
@@ -51,9 +52,9 @@ namespace ConsoleApp1
             base.Load ( builder ) ;
             var actionBlock = new ActionBlock<ILogInvocation>(Program.Action) ;
             builder.RegisterInstance(actionBlock).As<ActionBlock <ILogInvocation>>().SingleInstance();
-            Pipeline pipeline = new Pipeline();
-            pipeline.BuildPipeline ( ).LinkTo ( actionBlock ) ;
-            builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
+            // Pipeline pipeline = new Pipeline();
+            // pipeline.BuildPipeline ( ).LinkTo ( actionBlock ) ;
+            // builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
         }
         #endregion

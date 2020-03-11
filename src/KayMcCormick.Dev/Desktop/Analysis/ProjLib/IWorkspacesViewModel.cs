@@ -13,6 +13,8 @@ using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Threading.Tasks ;
 using AnalysisFramework ;
+using AnalysisFramework.LogUsage ;
+using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 
@@ -22,9 +24,8 @@ namespace ProjLib
     {
         #if VSSETTINGS
         VisualStudioInstancesCollection VsCollection { get ; } //ObservableCollection<VsInstance> ;
-        #endif
-        MyProjectLoadProgress CurrentProgress { get ; }
-
+        
+#endif
         ObservableCollection < ILogInvocation > LogInvocations { get ; }
 
 #if false

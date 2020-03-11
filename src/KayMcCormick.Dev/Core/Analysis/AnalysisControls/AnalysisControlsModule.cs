@@ -11,9 +11,10 @@
 #endregion
 using System ;
 using System.Collections.ObjectModel ;
+using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
-using KayMcCormick.Lib.Wpf ;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -36,7 +37,7 @@ namespace AnalysisControls
                    .Where (
                            type => typeof ( IView1 ).IsAssignableFrom ( type )
                                    || typeof ( IViewModel ).IsAssignableFrom ( type )
-                                   || typeof(AppWindow).IsAssignableFrom(type)
+                                   || typeof(Window).IsAssignableFrom(type)
                           )
                    .AsSelf ( )
                    .AsImplementedInterfaces ( ) ;

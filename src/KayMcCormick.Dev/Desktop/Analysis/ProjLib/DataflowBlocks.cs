@@ -1,5 +1,6 @@
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
+using AnalysisFramework.LogUsage ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 #if NUGET
@@ -12,19 +13,12 @@ namespace ProjLib
     internal static class DataflowBlocks
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        public static TransformBlock <AnalysisRequest, Workspace > InitializeWorkspace ( )
-        {
-            var makeWs =
-                new TransformBlock <AnalysisRequest, Workspace > ( Workspaces.MakeWorkspaceAsync ) ;
-            return makeWs ;
-        }
-
+        
         public static TransformManyBlock < Document , ILogInvocation > FindLogUsages ( )
         {
             Logger.Trace ( "Constructing FindUsagesBlock" ) ;
             var findLogUsagesBlock =
-                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions() ) ;
+                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 4 } ) ;
             return findLogUsagesBlock ;
         }
 #if USEMSBUILD
@@ -49,10 +43,12 @@ namespace ProjLib
         #endif
 #endif
 
+        #if VERSIONCONTROL
         public static TransformBlock <AnalysisRequest, AnalysisRequest> CloneSource ( )
         {
             return new TransformBlock <AnalysisRequest, AnalysisRequest> ( VersionControl.CloneProjectAsync ) ;
         }
+#endif
     }
 #if NUGET
     internal static class NugetTool

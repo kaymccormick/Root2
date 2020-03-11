@@ -4,6 +4,7 @@ using System.Linq ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using AnalysisFramework ;
+using AnalysisFramework.LogUsage ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -72,7 +73,7 @@ namespace ProjLib
                                                                 )
                         where @out.Item1
                         let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                        select new InvocationParms (
+                        select new InvocationParams (
                                                     new CodeSource ( tree_.FilePath )
                                                   , tree_
                                                   , model_

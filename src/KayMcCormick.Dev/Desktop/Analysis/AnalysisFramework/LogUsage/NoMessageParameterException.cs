@@ -2,7 +2,7 @@ using System ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.LogUsage
 {
     [Serializable]
     public class NoMessageParameterException : Exception

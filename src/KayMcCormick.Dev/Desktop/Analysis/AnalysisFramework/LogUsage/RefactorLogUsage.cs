@@ -13,7 +13,7 @@ using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CodeRefactorings ;
 
-namespace AnalysisFramework
+namespace AnalysisFramework.LogUsage
 {
     /// <summary>
     /// Refactoring for logging.
@@ -36,13 +36,9 @@ namespace AnalysisFramework
 
             var root = await document.GetSyntaxRootAsync ( cancellationToken )
                                      .ConfigureAwait ( false ) ;
-            if ( root == null )
-            {
-                return ;
-            }
 
-            var token = root.FindToken ( textSpan.Start ) ;
-            if ( token.Parent == null )
+            var token = root?.FindToken ( textSpan.Start ) ;
+            if ( token?.Parent == null )
             {
                 return ;
             }

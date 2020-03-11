@@ -13,9 +13,6 @@
 using System ;
 using System.ComponentModel ;
 using System.Linq ;
-#if !NETSTANDARD2_0
-using System.Text.Json.Serialization ;
-#endif
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -110,43 +107,18 @@ namespace AnalysisFramework
             return FromSyntaxTree ( tree , assemblyName , opts ) ;
         }
 
-        #if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public StatementSyntax Statement { get => _statement ; set => _statement = value ; }
 
-#if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
+       
         public SemanticModel CurrentModel { get => _currentModel ; set => _currentModel = value ; }
 
-#if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-
         public SyntaxNode Node { get => node ; set => node = value ; }
-#if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
 
         public ICodeSource Document { get ; }
-
-#if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
 
         public SyntaxTree SyntaxTree => _syntaxTree ;
 
         #region Implementation of ICompilationUnitRootContext
-#if !NETSTANDARD2_0
-        [JsonIgnore ]
-#endif
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public CompilationUnitSyntax CompilationUnit
         {
             get

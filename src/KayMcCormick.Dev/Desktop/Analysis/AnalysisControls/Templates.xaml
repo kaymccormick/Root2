@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:analysisFramework="clr-namespace:AnalysisFramework;assembly=AnalysisFramework"
-                    xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis">
-  <DataTemplate DataType="{x:Type analysisFramework:ILogInvocation}">
+                    xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
+                    xmlns:logUsage="clr-namespace:AnalysisFramework.LogUsage;assembly=AnalysisFramework">
+  <DataTemplate DataType="{x:Type logUsage:ILogInvocation}">
 	<Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="AntiqueWhite" ShowGridLines="True">
       <Grid.ColumnDefinitions>
         <ColumnDefinition  Width="Auto"/>

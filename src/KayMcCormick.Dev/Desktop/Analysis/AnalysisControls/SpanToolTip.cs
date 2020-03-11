@@ -18,27 +18,21 @@ namespace AnalysisControls
 {
     internal class SpanTT : ToolTip
     {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.ToolTip" /> class. </summary>
-        public SpanTT(SpanToolTip content) { Content = CustomToolTip = content; }
+        public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }
 
-        public SpanToolTip CustomToolTip { get; set; }
+        public SpanToolTip CustomToolTip { get ; set ; }
 
-        public ISpanToolTipViewModel ViewModel { get; set; }
-
+        public ISpanToolTipViewModel ViewModel { get ; set ; }
     }
+
     public partial class SpanToolTip : UserControl , ISpanToolTip
     {
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.UserControl" /> class.</summary>
-        ///
         public StackPanel Panel { get ; set ; }
-        
+
         public SpanToolTip ( )
         {
-            InitializeComponent();
-            Content = Panel = new StackPanel ( )
-                              { 
-                                  Orientation = Orientation.Vertical ,
-                              } ;
+            InitializeComponent ( ) ;
+            Content = Panel = new StackPanel ( ) { Orientation = Orientation.Vertical , } ;
             // Panel.SetValue ( TextElement.FontSizeProperty , 24.0f ) ;
         }
 
@@ -48,7 +42,7 @@ namespace AnalysisControls
             {
                 o.SetValue ( BorderBrushProperty , Brushes.Black ) ;
 
-                o.SetValue ( BorderThicknessProperty , new Thickness ( 0, 0, 0, 3 ) ) ;
+                o.SetValue ( BorderThicknessProperty , new Thickness ( 0 , 0 , 0 , 3 ) ) ;
                 Panel.Children.Add ( o ) ;
                 // var element = new Line ( ) ;
                 // element.VerticalAlignment   = VerticalAlignment.Stretch ;

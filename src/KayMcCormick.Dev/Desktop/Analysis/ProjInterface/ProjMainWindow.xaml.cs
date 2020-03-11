@@ -32,6 +32,7 @@ using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
+using AnalysisFramework.LogUsage ;
 using Task = System.Threading.Tasks.Task ;
 
 namespace ProjInterface

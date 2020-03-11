@@ -12,7 +12,7 @@
 using System ;
 using System.Linq ;
 using AnalysisFramework ;
-
+using AnalysisFramework.LogUsage ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 
@@ -32,7 +32,7 @@ namespace ProjLib
                                             ", "
                                           , Instance.Arguments.Select (
                                                                        ( argument , i )
-                                                                           => argument.JSON
+                                                                           => argument.GetJSON( argument )
                                                                       )
                                            ) ;
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
