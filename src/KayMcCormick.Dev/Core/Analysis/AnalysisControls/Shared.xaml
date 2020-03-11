@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:AnalysisControls">
+  <local:Converter1 x:Key="Converter1"></local:Converter1>
+  <local:Converter3 x:Key="Converter3"></local:Converter3>
+  <local:TokenConverter x:Key="TokenConverter"></local:TokenConverter>
+  <local:LocationConverter x:Key="LocationConverter"></local:LocationConverter>
+  <local:TransformConverter x:Key="TransformConverter"></local:TransformConverter>
+  <local:JsonConverter x:Key="JsonConverter"/>
+</ResourceDictionary>

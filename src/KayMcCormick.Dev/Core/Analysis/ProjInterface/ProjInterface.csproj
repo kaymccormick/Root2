@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;ANALYSISCONTROLS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Remove="ProjInterfaceApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="ProjInterfaceApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Wpf\wpf.csproj" />
+    <ProjectReference Include="..\AnalysisControls\AnalysisControls.csproj" />
+    <ProjectReference Include="..\ProjLib\ProjLib.csproj" />
+  </ItemGroup>
+
+</Project>
