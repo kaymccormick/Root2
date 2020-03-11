@@ -8,6 +8,7 @@ namespace ProjLib
     static internal class VersionControl
     {
     
+        // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static async Task <AnalysisRequest> CloneProjectAsync ( AnalysisRequest req)

@@ -73,7 +73,7 @@ namespace AnalysisFramework
                                          , null
                                          , syntaxTree.GetRoot ( )
                                          , new CodeSource ( "memory" )
-                                         , syntaxTree
+                                         , syntaxTree, ""
                                           ) ;
         }
 

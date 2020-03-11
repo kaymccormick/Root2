@@ -10,7 +10,6 @@ using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
 using NLog ;
-using static KayMcCormick.Dev.Logging.AppLoggingConfigHelper ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -41,10 +40,14 @@ namespace KayMcCormick.Lib.Wpf
             {
                 appInst = new ApplicationInstance (
                                                    message => {
-                                                       e.WriteEntry (
-                                                                     message
-                                                                   , EventLogEntryType.Information
-                                                                    ) ;
+                                                       if ( e != null )
+                                                       {
+                                                           e.WriteEntry (
+                                                                         message
+                                                                       , EventLogEntryType
+                                                                            .Information
+                                                                        ) ;
+                                                       }
                                                    }
                                                   ) ;
             }

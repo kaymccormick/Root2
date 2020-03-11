@@ -1,8 +1,7 @@
 <ResourceDictionary
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:mcacs="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:system="clr-namespace:System;assembly=mscorlib">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Style
          x:Key="{x:Static mcacs:SyntaxKind.LessThanEqualsToken}">
     <Style.Resources>

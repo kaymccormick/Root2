@@ -1,7 +1,5 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
-using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
@@ -414,9 +412,7 @@ protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
 
         class InnerConverter < T > : JsonConverter < T > where T : CSharpSyntaxNode
         {
-            private readonly JsonSerializerOptions _options ;
-
-            public InnerConverter (JsonSerializerOptions options ) { _options = options ; }
+            public InnerConverter (JsonSerializerOptions options ) { }
 
             #region Overrides of JsonConverter<T>
             public override T Read (

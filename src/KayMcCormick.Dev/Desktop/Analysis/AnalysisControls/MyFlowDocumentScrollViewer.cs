@@ -18,7 +18,7 @@ namespace AnalysisControls
 {
     public class MyFlowDocumentScrollViewer : FlowDocumentScrollViewer
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of Visual
         protected override void OnVisualChildrenChanged (
             DependencyObject visualAdded
@@ -36,6 +36,7 @@ namespace AnalysisControls
         }
         #endregion
         #region Overrides of UIElement
+        // ReSharper disable once RedundantOverriddenMember
         protected override void OnRender ( DrawingContext drawingContext )
         {
             base.OnRender ( drawingContext ) ;

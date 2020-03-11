@@ -230,6 +230,7 @@ namespace ConsoleApp1
             foreach ( var browserNode in browserNodeCollection )
             {
                 i += 1 ;
+                // ReSharper disable once LocalizableElement
                 Console.WriteLine ( $"{i}: {browserNode.Name}" ) ;
                 nodes.Add ( browserNode ) ;
                 if ( browserNode is IProjectBrowserNode project )
@@ -254,7 +255,7 @@ namespace ConsoleApp1
             if ( nodes[selection - 1] is IProjectBrowserNode projectNode )
             {
                 Console.WriteLine ( projectNode.SolutionPath ) ;
-                _ = Console.ReadLine ( ) ;
+                Console.ReadLine ( ) ;
                 await viewModel.AnalyzeCommand ( projectNode ) ;
                 using ( var s = File.OpenWrite ( "invocs.json" ) )
                 {
@@ -288,6 +289,7 @@ namespace ConsoleApp1
             Logger = LogManager.GetCurrentClassLogger ( ) ;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private static void CurrentDomainOnFirstChanceException (
             object                        sender
           , FirstChanceExceptionEventArgs e
@@ -304,7 +306,7 @@ namespace ConsoleApp1
                 }
             }
 
-            Console.WriteLine ( "FIRST CHANCE EXCEPTION\n" + e.Exception.ToString ( ) ) ;
+            Console.WriteLine ( "FIRST CHANCE EXCEPTION\n" + e.Exception ) ;
         }
     }
 #if COMMANDLINE

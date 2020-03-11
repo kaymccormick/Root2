@@ -32,7 +32,6 @@ namespace AnalysisFramework
           , LogMessageRepr        msgval
           , SyntaxNode relevantNode 
           , SemanticModel         currentModel
-          , CompilationUnitSyntax currentRoot
           , ICodeSource           document
           , SyntaxTree            syntaxTree
         ) : base(
@@ -40,7 +39,7 @@ namespace AnalysisFramework
                , relevantNode as  StatementSyntax
                , relevantNode
                , document
-               , syntaxTree
+               , syntaxTree, ""
                 )
         { 
             Msgval         = msgval;
@@ -55,18 +54,6 @@ namespace AnalysisFramework
             }
         }
 
-        
-        private LogInvocation ( ICodeSource document , LogMessageRepr msgval , string sourceLocation , string loggerType , string methodName , IList < ILogInvocationArgument > arguments , string followingCode , string precedingCode , string code ) : base ( document )
-        {
-            _msgval = msgval ;
-            this.sourceLocation = sourceLocation ;
-            _LoggerType = loggerType ;
-            _methodName = methodName ;
-            Arguments = arguments ;
-            FollowingCode = followingCode ;
-            PrecedingCode = precedingCode ;
-            Code = code ;
-        }
 
         public string SourceLocation { get => sourceLocation ; set => sourceLocation = value ; }
 

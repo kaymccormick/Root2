@@ -88,9 +88,7 @@ namespace ProjTests
         private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture    _loggingFixture ;
-        private readonly ProjectFixture _projectFixture ;
-        private          SyntaxTree        _testSyntaxTree ;
-        private          CSharpCompilation _compilation ;
+        [ UsedImplicitly ] private readonly ProjectFixture _projectFixture ;
         private List<Action> _finalizers = new List < Action > ();
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>

@@ -1,6 +1,5 @@
 ﻿using System.Windows ;
 using Autofac ;
-using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {

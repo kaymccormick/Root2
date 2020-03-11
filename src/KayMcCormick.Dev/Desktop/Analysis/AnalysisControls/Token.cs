@@ -17,12 +17,15 @@ namespace AnalysisControls
 {
     public class Token : UIElement
     {
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly string   _text ;
+        // ReSharper disable once NotAccessedField.Local
         private readonly bool _newLine ;
-        private          Typeface _typeface ;
+        private readonly Typeface _typeface ;
         private FormattedText _formattedText ;
         private Size _desiredSize ;
 
+        // ReSharper disable once UnusedParameter.Local
         public Token ( int rawKind , string text , SolidColorBrush solidColorBrush , bool newLine )
         {
             _text     = text ;
@@ -34,7 +37,7 @@ namespace AnalysisControls
                                               , FlowDirection.LeftToRight
                                               , _typeface
                                               , 20
-                                              , solidColorBrush ?? Brushes.Black) ;
+                                              , solidColorBrush ?? Brushes.Black, new NumberSubstitution(NumberCultureSource.User, CultureInfo.CurrentUICulture, NumberSubstitutionMethod.AsCulture), TextFormattingMode.Display, 1.25) ;
             _desiredSize = new Size(_formattedText.Width, _formattedText.Height);
         }
 

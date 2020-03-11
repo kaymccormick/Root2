@@ -1,5 +1,4 @@
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Runtime.Serialization ;
@@ -246,7 +245,7 @@ namespace AnalysisFramework
           , IList < ILogInvocationArgument > args
         )
         {
-            return new LogInvocation2(sourceLocation, null, null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName, args);
+            return new LogInvocation2(sourceLocation , null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName, args);
         }
     }
 

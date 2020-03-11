@@ -1,14 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using System.Windows;
 using ProjLib;
-using Xunit.Sdk;
 
 namespace ProjInterface
 {

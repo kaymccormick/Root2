@@ -138,20 +138,12 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\Services\LogService\LogService\LogService.csproj">
-      <Name>LogService</Name>
-      <Project>{29806796-4b30-4429-a447-75d5b89624d3}</Project>
+    <ProjectReference Include="..\Services\LeafService\LeafService.csproj">
+      <Name>LeafService</Name>
+      <Project>{0f1983a4-f3a8-4340-8f91-1fea45b798fb}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\Services\WcfService1\WcfService1\WcfService1.csproj">
-      <Name>WcfService1</Name>
-      <Project>{e6ad0c25-0e7f-4e23-b3c9-c56e059e51c9}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Documents;Satellites;Sources;Content</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>

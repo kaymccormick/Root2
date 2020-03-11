@@ -24,7 +24,7 @@ namespace ProjLib
         {
             Logger.Trace ( "Constructing FindUsagesBlock" ) ;
             var findLogUsagesBlock =
-                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions() { }) ;
+                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions() ) ;
             return findLogUsagesBlock ;
         }
 #if USEMSBUILD

@@ -7,8 +7,6 @@ using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-using  KayMcCormick.Dev.TestLib ;
-using  KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog ;
 using Tests.CollectionDefinitions ;
 using Tests.Lib.Fixtures ;

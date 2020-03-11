@@ -1,11 +1,3 @@
-using System ;
-using System.Collections.Generic ;
-using System.Linq ;
-using System.Reflection ;
-using System.Resources ;
-using System.Runtime.InteropServices ;
-using System.Threading.Tasks ;
-using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Markup ;
@@ -13,13 +5,7 @@ using System.Windows.Media ;
 using System.Windows.Threading ;
 using AnalysisControls ;
 using AnalysisFramework ;
-
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-using ProjInterface.Properties ;
-using ProjLib ;
 
 namespace ProjInterface
 {
@@ -35,7 +21,6 @@ namespace ProjInterface
           , FormattedCode         control
         )
         {
-            double scale = 1 ;
             ContainFormattedCode (
                                   w
                                 , sourceText
@@ -43,30 +28,6 @@ namespace ProjInterface
                                 , addChild
                             ,     control
                                  ) ;
-        }
-
-        private static void SetupFormattedCode (
-             ContentControl    w
-          , string                sourceText
-          , CSharpCompilation     compilation
-          , SyntaxTree            syntaxTree
-          , CompilationUnitSyntax compilationUnitSyntax
-          , double            scale
-          , IAddChild             addChild
-          , FormattedCode         control
-        )
-        {
-            control.Dispatcher.Invoke(
-                                      DispatcherPriority.Send
-                                    , new ContainDelegate ( _ContainFormattedCode )
-                                    , w
-                                    , sourceText
-                                    , compilation
-                                    , syntaxTree
-                                    , compilationUnitSyntax
-                                    , addChild
-                                    , control
-                                     ) ;
         }
 
         private static void _ContainFormattedCode (
@@ -150,15 +111,18 @@ namespace ProjInterface
         )
         {
             Logger.Info ( "contain" ) ;
-            Control.Dispatcher.Invoke(
-                                      DispatcherPriority.Send
-                                    , new ContainDelegate ( _ContainFormattedCode )
-                                    , w
-                                    , SouceText
-                                    , ctx
-                                    , addChild
-                                    , Control
-                                     ) ;
+            if ( Control.Dispatcher != null )
+            {
+                Control.Dispatcher.Invoke (
+                                           DispatcherPriority.Send
+                                         , new ContainDelegate ( _ContainFormattedCode )
+                                         , w
+                                         , SouceText
+                                         , ctx
+                                         , addChild
+                                         , Control
+                                          ) ;
+            }
         }
     }
 }

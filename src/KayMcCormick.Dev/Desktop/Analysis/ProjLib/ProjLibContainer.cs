@@ -9,7 +9,6 @@
 // 
 // ---
 #endregion
-using System.Collections.Generic ;
 using AnalysisFramework ;
 using Autofac ;
 using Autofac.Core ;
@@ -17,12 +16,12 @@ using Autofac.Integration.Mef ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
-using NLog.Fluent ;
 
 namespace ProjLib
 {
     public static class ProjLibContainer
     {
+        // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public static ILifetimeScope GetScope (params IModule[] modules )

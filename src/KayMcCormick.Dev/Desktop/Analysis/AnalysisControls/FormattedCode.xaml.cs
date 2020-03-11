@@ -16,6 +16,7 @@ namespace AnalysisControls
     /// </summary>
     public partial class FormattedCode : UserControl , IFormattedCode
     {
+        // ReSharper disable once UnusedMember.Local
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public FormattedCode ( ) { InitializeComponent ( ) ; }
 
@@ -60,7 +61,6 @@ namespace AnalysisControls
         {
             var visitor3 = new Visitor3 ( FlowViewerDocument , FlowViewer ) ;
             var root = await SyntaxTree.GetRootAsync ( ) ;
-            visitor3.DefaultVisit ( root) ;
             return new object();
             // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
             // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;

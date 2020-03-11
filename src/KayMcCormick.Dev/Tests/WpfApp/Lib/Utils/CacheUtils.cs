@@ -15,7 +15,6 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Windows.Threading ;
 using KayMcCormick.Dev ;
-using WpfApp.Core.Logging ;
 
 namespace Tests.Lib.Utils
 {

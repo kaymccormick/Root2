@@ -20,7 +20,7 @@ namespace Tests.Main
         /// TODO Edit XML Comment Template for TestUnexpectedItemException_SetObjectData
         public void TestUnexpectedItemException_SetObjectData()
         {
-            UnexpectedPropertyException e = new UnexpectedPropertyException("", null);
+            UnexpectedPropertyException e = new UnexpectedPropertyException(null);
             XmlSerializer x = new XmlSerializer(e.GetType());
             var stringWriter = new StringWriter();
             x.Serialize(stringWriter, e);

@@ -13,7 +13,7 @@ namespace LogService
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main( )
         {
 
             // This will ensure that future calls to Directory.GetCurrentDirectory()

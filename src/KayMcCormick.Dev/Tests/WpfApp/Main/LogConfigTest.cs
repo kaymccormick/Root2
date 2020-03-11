@@ -4,13 +4,9 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-using KayMcCormick.Logging.Common ;
-using  KayMcCormick.Dev.TestLib ;
-using  KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog ;
 using NLog.Config ;
 using NLog.Targets ;
-using WpfApp.Core.Logging ;
 using Xunit ;
 using Xunit.Abstractions ;
 

@@ -51,8 +51,7 @@ namespace AnalysisFramework
 
                 Model      = model ?? throw new ArgumentNullException ( nameof ( model ) ) ;
                 ICodeSoure = codeSoure ;
-                RelevantNode = relevantNode
-                               ?? throw new ArgumentNullException ( nameof ( relevantNode ) ) ;
+                RelevantNode = relevantNode ;
             }
 
             var (_ , item2 , item3) = tuple ;

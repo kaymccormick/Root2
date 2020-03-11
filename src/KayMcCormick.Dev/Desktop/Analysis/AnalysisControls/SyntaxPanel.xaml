@@ -32,7 +32,8 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
+        <RowDefinition />
+      </Grid.RowDefinitions>
       <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"><TextBlock Text="{Binding Path=/,Source={StaticResource AllNodes},Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/></StackPanel>
       <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"><TextBlock Text="{Binding Path=/,Source={StaticResource AllNodes},Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/></StackPanel>
       <TreeView x:Name="tv" Grid.Column="0" Grid.Row="1"

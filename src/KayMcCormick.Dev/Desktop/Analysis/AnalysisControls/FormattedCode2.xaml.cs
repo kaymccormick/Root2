@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using ProjLib ;
 using Color = System.Windows.Media.Color ;
+// ReSharper disable All
 
 namespace AnalysisControls
 {
@@ -70,7 +71,6 @@ namespace AnalysisControls
 
         private void Visit ( )
         {
-            _visitor3.DefaultVisit ( SyntaxTree.GetRoot ( ) ) ;
             // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
             // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
             // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;

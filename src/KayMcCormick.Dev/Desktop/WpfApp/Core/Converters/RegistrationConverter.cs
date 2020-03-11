@@ -5,9 +5,7 @@ using System.Windows.Data ;
 using Autofac ;
 using Autofac.Core ;
 using DynamicData.Kernel ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Interfaces ;
-using WpfApp.Core.Interfaces ;
 using WpfApp.Core.Model ;
 
 namespace WpfApp.Core.Converters

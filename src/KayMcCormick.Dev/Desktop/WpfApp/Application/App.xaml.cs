@@ -75,7 +75,7 @@ namespace WpfApp.Application
             }
 
             DebugLog = DoLogMessage;
-            var folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            
             // DoLogMessage(
             // folderPath
             // );
@@ -199,7 +199,7 @@ namespace WpfApp.Application
         ///     Performs application-defined tasks associated with freeing,
         ///     releasing, or resetting unmanaged resources.
         /// </summary>
-        public virtual void Dispose()
+        public override void Dispose()
         {
 
             var cd = AppDomain.CurrentDomain;
@@ -311,7 +311,9 @@ namespace WpfApp.Application
                                          .Property("callerFilePath", callerFilePath)
                                          .Write(
                                                  callerMemberName
+                                                 // ReSharper disable once ExplicitCallerInfoArgument
                                                , callerFilePath
+                                                 // ReSharper disable once ExplicitCallerInfoArgument
                                                , callerLineNumber
                                                 );
                 System.Diagnostics.Debug.WriteLine(message);
@@ -531,7 +533,7 @@ namespace WpfApp.Application
 
         private void MainWindowLoaded(object o, RoutedEventArgs args)
         {
-            var fe = o as FrameworkElement;
+            var fe = ( FrameworkElement ) o;
             DebugLog(nameof(MainWindowLoaded));
             Props.SetMenuItemListCollectionView(fe, MenuItemListCollectionView);
             DebugLog($"Setting LifetimeScope DependencyProperty to {AppContainer}");

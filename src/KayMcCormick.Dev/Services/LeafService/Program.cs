@@ -1,13 +1,6 @@
 ﻿using System ;
-using System.Collections.Generic ;
 using System.IO ;
-using System.Linq ;
-using System.ServiceModel.Channels ;
-using System.Text ;
-using System.Threading.Tasks ;
 using Autofac ;
-using Autofac.Core ;
-using Autofac.Core.Registration ;
 using Common.Logging ;
 using KayMcCormick.Dev ;
 using NLog ;
@@ -17,7 +10,6 @@ using Topshelf.Common.Logging ;
 using Topshelf.HostConfigurators ;
 using Topshelf.ServiceConfigurators ;
 using LogLevel = NLog.LogLevel ;
-using LogManager = Common.Logging.LogManager ;
 
 namespace LeafService
 {
@@ -25,7 +17,7 @@ namespace LeafService
     {
         private readonly ApplicationInstance _appInst ;
 
-        private static void Main ( string[] args )
+        private static void Main ( )
         {
             // This will ensure that future calls to Directory.GetCurrentDirectory()
             // returns the actual executable directory and not something like C:\Windows\System32 

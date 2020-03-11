@@ -25,7 +25,7 @@ using System.Threading.Tasks.Dataflow ;
 
 namespace ProjLib
 {
-    public class WorkspacesViewModel : IWorkspacesViewModel
+    public sealed class WorkspacesViewModel : IWorkspacesViewModel
 #if VSSETTINGS
       , ISupportInitialize
         #endif
@@ -40,7 +40,6 @@ namespace ProjLib
 
         private readonly IVsInstanceCollector vsInstanceCollector ;
 #endif
-        public IPipelineViewModel PipelineViewModel { get ; }
 
         private string                _currentDocumentPath ;
         private MyProjectLoadProgress _currentProgress ;
@@ -182,7 +181,6 @@ namespace ProjLib
             Logger.Debug ( "{id} {result} {count}" , Thread.CurrentThread.ManagedThreadId , result.Status , LogInvocations.Count) ;
         }
 
-        private ObservableCollection < LogEventInfo > eventInfos  = new ObservableCollection < LogEventInfo > ();
         private ObservableCollection < LogEventInstance > _events  = new ObservableCollection < LogEventInstance > ();
 
         public string ApplicationMode => _applicationMode ;
@@ -233,19 +231,15 @@ namespace ProjLib
         public ObservableCollection < ILogInvocation > LogInvocations { get ; } =
             new ObservableCollection < ILogInvocation > ( ) ;
 
-        public ObservableCollection < LogEventInfo > EventInfos
-        {
-            get => eventInfos ;
-            private set => eventInfos = value ;
-        }
+        public ObservableCollection < LogEventInfo > EventInfos { get ; } = new ObservableCollection < LogEventInfo > () ;
 
-        public ObservableCollection < LogEventInstance > Events { get => _events ; }
+        public ObservableCollection < LogEventInstance > Events => _events ;
 
         public event PropertyChangedEventHandler PropertyChanged ;
 
 
         [ NotifyPropertyChangedInvocator ]
-        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }

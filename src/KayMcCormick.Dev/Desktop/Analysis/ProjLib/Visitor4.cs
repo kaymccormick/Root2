@@ -9,7 +9,6 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
 using System.Threading ;
 using System.Threading.Tasks ;
@@ -21,6 +20,7 @@ namespace ProjLib
 {
     public class Visitor4 : CSharpSyntaxWalker
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly TaskScheduler          _t ;
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer          _ctl ;
@@ -33,7 +33,7 @@ namespace ProjLib
 #else
         private static Logger Logger = LogManager.CreateNullLogger();
 #endif
-        private List < double > readonly _lineStart = new List < double > ( ) ;
+        private readonly List < double >  _lineStart = new List < double > ( ) ;
 
 
         public Visitor4 ( TaskScheduler t , SynchronizationContext ctx , ICodeRenderer ctl ) :
@@ -69,8 +69,6 @@ namespace ProjLib
                      , null
                       ) ;
         }
-
-        public override void DefaultVisit ( SyntaxNode node ) { base.DefaultVisit ( node ) ; }
 
         private void RecordLocation ( Location getLocation , out bool newLine )
         {
@@ -201,8 +199,6 @@ namespace ProjLib
                 DoTrivia ( syntaxTrivia ) ;
             }
         }
-
-        public override void VisitTrivia ( SyntaxTrivia trivia ) { base.VisitTrivia ( trivia ) ; }
         #endregion
     }
 }

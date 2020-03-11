@@ -1,6 +1,5 @@
 ﻿using System.Linq ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Logging.Common ;
 using NLog ;
 using NLog.Config ;
 

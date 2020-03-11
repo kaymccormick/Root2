@@ -14,6 +14,7 @@ namespace ProjLib
 
         public IPropagatorBlock <AnalysisRequest, ILogInvocation > PipelineInstance { get ; private set ; }
 
+        // ReSharper disable once CollectionNeverQueried.Local
         private readonly List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
         private DataflowLinkOptions _linkOptions = new DataflowLinkOptions { PropagateCompletion = true } ;
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
@@ -31,7 +32,7 @@ namespace ProjLib
         public Pipeline ( )
         {
             ResultBufferBlock =
-                new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) { } ) ;
+                new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
         }
 
         public virtual IPropagatorBlock < AnalysisRequest , ILogInvocation > BuildPipeline ( )
@@ -73,13 +74,15 @@ namespace ProjLib
         {
             if ( task.IsFaulted )
             {
-                var faultReaon = task.Exception.Message ;
-                new LogBuilder ( Logger )
-                                                              .LoggerName ( $"{Logger.Name}.{logName}" )
-                                                              .Level ( LogLevel.Trace )
-                                                              .Exception ( task.Exception )
-                                                              .Message ( "fault is {ex}" , faultReaon )
-                                                              .Write ( ) ;
+                if ( task.Exception != null ) {
+                    var faultReaon = task.Exception.Message ;
+                    new LogBuilder ( Logger )
+                       .LoggerName ( $"{Logger.Name}.{logName}" )
+                       .Level ( LogLevel.Trace )
+                       .Exception ( task.Exception )
+                       .Message ( "fault is {ex}" , faultReaon )
+                       .Write ( ) ;
+                }
             }
             else { Logger.Trace( $"{logName} complete - not faulted" ) ; }
         }

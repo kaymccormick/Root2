@@ -7,6 +7,7 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+// ReSharper disable UnusedVariable
 
 namespace AnalysisFramework
 {
@@ -256,15 +257,13 @@ namespace AnalysisFramework
                                    Tokens = ident.ChildTokens().Select(token => token.ToString())
                                };
                     case SimpleNameSyntax simpleNameSyntax: break;
-                    default :
-                        break ;
                     case NameSyntax nameSyntax: break;
                     case TypeSyntax typeSyntax: break;
 
                 }
 
                 throw new UnsupportedExpressionTypeSyntaxException (
-                                                           $"Unsupported mode type {expressionSyntaxNode?.GetType ( ).FullName} at line {expressionSyntaxNode.GetLocation().GetMappedLineSpan().StartLinePosition.Line +1} {expressionSyntaxNode.GetLocation().ToString (  )}"
+                                                           $"Unsupported mode type {expressionSyntaxNode.GetType ( ).FullName} at line {expressionSyntaxNode.GetLocation().GetMappedLineSpan().StartLinePosition.Line +1} {expressionSyntaxNode.GetLocation()}"
                                                           ) ;
             }
             
@@ -334,7 +333,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntaxException ( isPatternPattern.Kind ( ).ToString().ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntaxException ( isPatternPattern.Kind ( ).ToString() ) ;
         }
 
         private static object TransformPositionalPatternClauseSyntax (
@@ -401,7 +400,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntaxException ( designation.Kind ( ).ToString().ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntaxException ( designation.Kind ( ).ToString() ) ;
         }
 
         /// <summary>
@@ -411,7 +410,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformOperatorToken ( in SyntaxToken condOperatorToken )
         {
-            return condOperatorToken.Kind ( ).ToString().ToString ( ) ;
+            return condOperatorToken.Kind ( ).ToString() ;
         }
 
         /// <summary>
@@ -459,11 +458,6 @@ namespace AnalysisFramework
           , bool                   dispatch = true
         )
         {
-            if ( argType == null )
-            {
-                return null ;
-            }
-
             switch ( argType )
             {
                 case ArrayTypeSyntax arrayTypeSyntax :                   break ;
@@ -487,7 +481,7 @@ namespace AnalysisFramework
                     return new
                            {
                                predefinedTypeSyntax.RawKind
-                             , Kind    = predefinedTypeSyntax.Kind ( ).ToString().ToString ( )
+                             , Kind    = predefinedTypeSyntax.Kind ( ).ToString()
                              , Keyword = TransformKeyword ( predefinedTypeSyntax.Keyword )
                            } ;
                 
@@ -607,7 +601,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformKeyword ( in SyntaxToken keyword )
         {
-            return keyword.Kind ( ).ToString().ToString ( ) ;
+            return keyword.Kind ( ).ToString() ;
         }
 
         /// <summary>
@@ -722,7 +716,7 @@ namespace AnalysisFramework
                 case MemberDeclarationSyntax m: return TransformMemberDeclarationSyntax ( m ) ;
             }
 
-            throw new UnsupportedExpressionTypeSyntaxException ( syntaxNode.Kind ( ).ToString ( ).ToString ( ) ) ;
+            throw new UnsupportedExpressionTypeSyntaxException ( syntaxNode.Kind ( ).ToString ( ) ) ;
         }
 
         private static object TransformExpressionStatementSyntax ( ExpressionStatementSyntax ex )
@@ -780,10 +774,9 @@ namespace AnalysisFramework
                                         .Members.Select ( TransformMemberDeclarationSyntax )
                                         .ToList ( )
                            } ;
-                default : break ;
             }
 
-            throw new UnsupportedExpressionTypeSyntaxException ( arg.Kind ( ).ToString().ToString ( ) ) ;
+            throw new UnsupportedExpressionTypeSyntaxException ( arg.Kind ( ).ToString() ) ;
             
         }
 

@@ -18,14 +18,11 @@ using System.ServiceModel.Discovery ;
 using System.Threading ;
 using System.Timers ;
 using Common.Logging ;
-using KayMcCormick.Dev.DataBindingTraceFilter ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
-using NLog.Config ;
 using NLog.Fluent ;
 using NLog.LogReceiverService ;
-using NLog.Targets ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;
 using LogManager = NLog.LogManager ;
@@ -156,8 +153,6 @@ namespace LeafService
         }
 
         public Thread MyThread { get ; set ; }
-
-        private void MainProc ( object obj ) { Log.Info ( "in main proc" ) ; }
 
         private void EOnEntryWritten ( object sender , EntryWrittenEventArgs e )
         {
