@@ -11,7 +11,7 @@
 #endregion
 using System ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface IProjectBrowserNode : IBrowserNode
     {

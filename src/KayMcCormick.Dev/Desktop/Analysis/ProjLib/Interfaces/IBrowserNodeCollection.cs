@@ -13,7 +13,7 @@ using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface IBrowserNodeCollection : ICollection<IBrowserNode>, INotifyCollectionChanged, INotifyPropertyChanged
     {

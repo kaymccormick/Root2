@@ -10,6 +10,7 @@
 // ---
 #endregion
 using Microsoft.CodeAnalysis.Text ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

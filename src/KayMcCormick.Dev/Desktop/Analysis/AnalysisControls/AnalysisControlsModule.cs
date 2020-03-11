@@ -18,6 +18,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

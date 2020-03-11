@@ -8,6 +8,7 @@ using AnalysisFramework.LogUsage.Interfaces ;
 using JetBrains.Annotations ;
 using NLog ;
 using NLog.Fluent ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

@@ -6,34 +6,8 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using JetBrains.Annotations ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
-    public interface IMruItem
-    {
-        string FilePath { get ; }
-
-        string Name { get ; }
-
-        string Location { get ; }
-
-        FileInfo FileInf { get ; }
-
-        bool Exists { get ; }
-
-        string VerbatimPath { get ; }
-
-        ObservableCollection< IProjectInfo > ProjectCollection { get ; }
-    }
-
-    public interface IProjectInfo : IItemInfo
-    {
-    }
-
-    public interface IItemInfo
-    {
-        string Name { get ; }
-    }
-
     public class MruItem : IMruItem , INotifyPropertyChanged
     {
         private readonly ObservableCollection< IProjectInfo > _projectCollection = new ObservableCollection<IProjectInfo>();

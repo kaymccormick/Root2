@@ -1,4 +1,4 @@
-﻿namespace ProjLib
+﻿namespace ProjLib.Interfaces
 {
     public interface IView1
     {

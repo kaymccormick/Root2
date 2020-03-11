@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using ProjLib;
+using ProjLib.Interfaces ;
 
 namespace ProjInterface
 {

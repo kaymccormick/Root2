@@ -13,6 +13,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

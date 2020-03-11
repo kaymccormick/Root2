@@ -10,6 +10,7 @@ using Section = MigraDoc.DocumentObjectModel.Section ;
 #endif
 using NLog ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

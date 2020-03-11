@@ -11,6 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 using Microsoft.CodeAnalysis ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

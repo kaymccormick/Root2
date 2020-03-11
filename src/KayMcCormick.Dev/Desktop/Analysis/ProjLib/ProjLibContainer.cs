@@ -18,6 +18,7 @@ using Autofac.Integration.Mef ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

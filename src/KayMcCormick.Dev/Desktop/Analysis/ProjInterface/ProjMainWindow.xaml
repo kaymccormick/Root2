@@ -6,9 +6,10 @@
   xmlns:local="clr-namespace:ProjInterface"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
-  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
   xmlns:nLog="clr-namespace:NLog;assembly=NLog"
+  xmlns:anal="http://kaymccormick.com/xaml/analysis"
+  xmlns:interfaces="clr-namespace:ProjLib.Interfaces;assembly=ProjLib"
   Name="mainWindow"
   Title="MainWindow"
   Width="800"
@@ -40,7 +41,7 @@
           <CollectionViewSource x:Key="SolutionInfo"
                           Source="{Binding ElementName=mru,Path=SelectedItem.ProjectCollection}" />
           <DataTemplate x:Key="VsCell"
-                  DataType="projLib:IVsInstance">
+                  DataType="interfaces:IVsInstance">
             <TextBlock>
         <Run Text="{Binding DisplayName}" />
         <Run Text="{Binding Product}" /> (
@@ -48,7 +49,7 @@
             </TextBlock>
           </DataTemplate>
           <DataTemplate x:Key="MruNameTemplate"
-                  DataType="projLib:IMruItem">
+                  DataType="interfaces:IMruItem">
             <DockPanel VerticalAlignment="Stretch"
                  HorizontalAlignment="Stretch">
               <TextBlock Text="{Binding Name}" />
@@ -56,7 +57,7 @@
           </DataTemplate>
           <DataTemplate
       x:Key="MruLocationTemplate"
-      DataType="projLib:IMruItem">
+      DataType="interfaces:IMruItem">
             <TextBlock Text="{Binding Location}" />
           </DataTemplate>
           <Style x:Key="LogStyle" TargetType="ContentPresenter">
@@ -143,8 +144,8 @@
         </StatusBarItem>
     </StatusBar>
     </Border>
-    <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
-    </analysisControls:ProjectBrowser>
+    <anal:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
+    </anal:ProjectBrowser>
     <ListView Name="_eventView" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}">
       <ListView.View>
         <GridView>
@@ -174,7 +175,7 @@
         </GridView>
       </ListView.View>
     </ListView>
-    <analysisControls:MainStatusBar Grid.Row="4" Grid.ColumnSpan="3"
+    <anal:MainStatusBar Grid.Row="4" Grid.ColumnSpan="3"
                            Grid.Column="0" />
     <!-- <GridViewColumn CellTemplate="{StaticResource VsCell}" Header="VS Instance" /> -->
   </Grid>

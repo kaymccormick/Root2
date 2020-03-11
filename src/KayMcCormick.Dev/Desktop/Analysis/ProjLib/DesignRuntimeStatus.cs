@@ -1,3 +1,5 @@
+using ProjLib.Interfaces ;
+
 namespace ProjLib
 {
     public class DesignRuntimeStatus : IRuntimestatus

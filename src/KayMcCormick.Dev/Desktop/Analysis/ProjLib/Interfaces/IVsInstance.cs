@@ -12,7 +12,7 @@
 using System ;
 using System.Collections.Generic ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
 #if VSSETTINGS
     [TypeConverter(typeof(VsInstanceConverter))]

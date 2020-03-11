@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild ;
 using NLog;
 using ProjLib;
+using ProjLib.Interfaces ;
 
 namespace ProjInterface
 {

@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System.Collections.ObjectModel ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

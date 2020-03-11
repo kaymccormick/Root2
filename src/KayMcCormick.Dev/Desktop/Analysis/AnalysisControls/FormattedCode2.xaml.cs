@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 using Color = System.Windows.Media.Color ;
 // ReSharper disable All
 

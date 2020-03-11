@@ -283,21 +283,11 @@
       <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="A0EF6706-7AB1-496D-8BD1-594A25A26E3B">
         <File KeyPath="yes" Id="Xceed.Wpf.AvalonDock.dll" Name="Xceed.Wpf.AvalonDock.dll" Source="$(var.AnalysisControls_TargetDir)Xceed.Wpf.AvalonDock.dll" />
       </Component>
-      <Component Id="MigraDoc.DocumentObjectModel_wpf.dll" Guid="692C0A4A-045E-45DC-BBC9-986AB41F77F5">
-        <File KeyPath="yes" Id="MigraDoc.DocumentObjectModel_wpf.dll" Name="MigraDoc.DocumentObjectModel-wpf.dll" Source="$(var.AnalysisControls_TargetDir)MigraDoc.DocumentObjectModel-wpf.dll" />
-      </Component>
-      <Component Id="MigraDoc.RtfRendering_wpf.dll" Guid="5FA6E7BC-D5B0-4988-842D-BC7584832A90">
-        <File KeyPath="yes" Id="MigraDoc.RtfRendering_wpf.dll" Name="MigraDoc.RtfRendering-wpf.dll" Source="$(var.AnalysisControls_TargetDir)MigraDoc.RtfRendering-wpf.dll" />
-      </Component>
-      <Component Id="PdfSharp_wpf.dll" Guid="4253FA50-81EC-4154-AD5C-C6DC9101EB40">
-        <File KeyPath="yes" Id="PdfSharp_wpf.dll" Name="PdfSharp-wpf.dll" Source="$(var.AnalysisControls_TargetDir)PdfSharp-wpf.dll" />
-      </Component>
-      <Component Id="MigraDoc.Rendering_wpf.dll" Guid="E9A24BC6-C378-4B04-BED8-76EFB1B7CBD3">
-        <File KeyPath="yes" Id="MigraDoc.Rendering_wpf.dll" Name="MigraDoc.Rendering-wpf.dll" Source="$(var.AnalysisControls_TargetDir)MigraDoc.Rendering-wpf.dll" />
-      </Component>
-      <Component Id="PdfSharp.Charting_wpf.dll" Guid="CF5E9462-78B4-48AA-A8A4-3F8190F748A5">
-        <File KeyPath="yes" Id="PdfSharp.Charting_wpf.dll" Name="PdfSharp.Charting-wpf.dll" Source="$(var.AnalysisControls_TargetDir)PdfSharp.Charting-wpf.dll" />
-      </Component>
+      
+      
+      
+      
+      
       
 
       <Component Id="DynamicData.dll" Guid="02BBC51E-4651-4000-88EF-7337447F2594">
@@ -335,6 +325,57 @@
       </Component>
       <Component Id="Topshelf.Common.Logging.dll" Guid="FFC872A7-DE73-422C-9758-C09935D54EBA">
         <File KeyPath="yes" Id="Topshelf.Common.Logging.dll" Name="Topshelf.Common.Logging.dll" Source="$(var.LeafService_TargetDir)Topshelf.Common.Logging.dll" />
+      </Component>
+      <Component Id="Microsoft.Build.Framework.dll" Guid="62f84df5-5dbe-4ac1-8a38-0ef41ca6fdb5">
+        <File Id="Microsoft.Build.Framework.dll" Name="Microsoft.Build.Framework.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.Framework.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.VisualBasic.dll" Guid="f9ee0d3b-854e-43fa-94fd-e4badcf11b8e">
+        <File Id="Microsoft.CodeAnalysis.VisualBasic.dll" Name="Microsoft.CodeAnalysis.VisualBasic.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.CodeAnalysis.VisualBasic.dll" />
+      </Component>
+      <Component Id="Buildalyzer.Workspaces.dll" Guid="6690fd45-e500-4050-b1c1-0ff0d88653c6">
+        <File Id="Buildalyzer.Workspaces.dll" Name="Buildalyzer.Workspaces.dll" Source="$(var.AnalysisControls_TargetDir)Buildalyzer.Workspaces.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.DependencyInjection.dll" Guid="00de8a36-2fe5-4b55-a2cf-599707d1c083">
+        <File Id="Microsoft.Extensions.DependencyInjection.dll" Name="Microsoft.Extensions.DependencyInjection.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Guid="2f0769ad-68bc-4f43-9bbe-7dc85c9f43e5">
+        <File Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Name="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+      </Component>
+      <Component Id="MsBuildPipeLogger.Logger.dll" Guid="38b6918d-d37a-49ed-8113-b232b511dc3b">
+        <File Id="MsBuildPipeLogger.Logger.dll" Name="MsBuildPipeLogger.Logger.dll" Source="$(var.AnalysisControls_TargetDir)MsBuildPipeLogger.Logger.dll" />
+      </Component>
+      <Component Id="System.Reflection.TypeExtensions.dll" Guid="3c3fff6b-5ac5-4b1a-8228-989566e582e8">
+        <File Id="System.Reflection.TypeExtensions.dll" Name="System.Reflection.TypeExtensions.dll" Source="$(var.AnalysisControls_TargetDir)System.Reflection.TypeExtensions.dll" />
+      </Component>
+      <Component Id="MsBuildPipeLogger.Server.dll" Guid="75b337d3-08ce-4d4d-8d51-5169629c5be2">
+        <File Id="MsBuildPipeLogger.Server.dll" Name="MsBuildPipeLogger.Server.dll" Source="$(var.AnalysisControls_TargetDir)MsBuildPipeLogger.Server.dll" />
+      </Component>
+      <Component Id="Buildalyzer.Logger.dll" Guid="cc825fea-4d53-4432-8b04-c9869ae399ce">
+        <File Id="Buildalyzer.Logger.dll" Name="Buildalyzer.Logger.dll" Source="$(var.AnalysisControls_TargetDir)Buildalyzer.Logger.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Options.dll" Guid="051613f3-eba9-4e63-b652-818e21e08056">
+        <File Id="Microsoft.Extensions.Options.dll" Name="Microsoft.Extensions.Options.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Options.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Primitives.dll" Guid="92cef3c7-6297-4c00-a06c-1f6cd3b51a4f">
+        <File Id="Microsoft.Extensions.Primitives.dll" Name="Microsoft.Extensions.Primitives.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Primitives.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.Abstractions.dll" Guid="4d430ec5-d470-46db-933e-6739de7687b3">
+        <File Id="Microsoft.Extensions.Logging.Abstractions.dll" Name="Microsoft.Extensions.Logging.Abstractions.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
+      </Component>
+      <Component Id="Microsoft.Build.Utilities.Core.dll" Guid="cd21965c-2954-4453-9215-bef7d883334f">
+        <File Id="Microsoft.Build.Utilities.Core.dll" Name="Microsoft.Build.Utilities.Core.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.Utilities.Core.dll" />
+      </Component>
+      <Component Id="StructuredLogger.dll" Guid="afbcd727-2750-40e2-b3d9-e1c1afb3f57b">
+        <File Id="StructuredLogger.dll" Name="StructuredLogger.dll" Source="$(var.AnalysisControls_TargetDir)StructuredLogger.dll" />
+      </Component>
+      <Component Id="Buildalyzer.dll" Guid="c301c65d-a191-4faf-bebd-789864cf4c99">
+        <File Id="Buildalyzer.dll" Name="Buildalyzer.dll" Source="$(var.AnalysisControls_TargetDir)Buildalyzer.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.dll" Guid="caa910bf-b605-484d-a1d6-2c844cb0095a">
+        <File Id="Microsoft.Extensions.Logging.dll" Name="Microsoft.Extensions.Logging.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Logging.dll" />
+      </Component>
+      <Component Id="Microsoft.Build.dll" Guid="8a08ac83-555c-4a3c-93ff-8c82f98e90ef">
+        <File Id="Microsoft.Build.dll" Name="Microsoft.Build.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

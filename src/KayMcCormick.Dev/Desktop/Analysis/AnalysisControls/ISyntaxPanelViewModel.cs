@@ -12,6 +12,7 @@
 using System.ComponentModel ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

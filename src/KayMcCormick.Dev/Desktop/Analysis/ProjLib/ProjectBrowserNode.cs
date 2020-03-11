@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

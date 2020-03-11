@@ -22,6 +22,7 @@ using Microsoft.Build.Locator ;
 
 using NLog ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 using Module = Autofac.Module ;
 
 namespace ConsoleApp1

@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface IBrowserNode
     {

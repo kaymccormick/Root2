@@ -85,11 +85,31 @@
     <Compile Include="FilePaths.cs" />
     <Compile Include="FindLogUsages.cs" />
     <Compile Include="GlobalSuppressions2.cs" />
-    <Compile Include="IBrowserNode.cs" />
-    <Compile Include="IBrowserNodeCollection.cs" />
-    <Compile Include="ICodeRenderer.cs" />
-    <Compile Include="IFormattedCode.cs" />
-    <Compile Include="IProjectBrowserNode.cs" />
+    <Compile Include="Interfaces\DetailedOperation.cs" />
+    <Compile Include="Interfaces\IAppState.cs" />
+    <Compile Include="Interfaces\IBrowserNode.cs" />
+    <Compile Include="Interfaces\IBrowserNodeCollection.cs" />
+    <Compile Include="Interfaces\ICodeRenderer.cs" />
+    <Compile Include="Interfaces\IDetailedOperation.cs" />
+    <Compile Include="Interfaces\IFormattedCode.cs" />
+    <Compile Include="Interfaces\IItemInfo.cs" />
+    <Compile Include="Interfaces\IMruItem.cs" />
+    <Compile Include="Interfaces\IPipelineViewModel.cs" />
+    <Compile Include="Interfaces\IProjectBrowserNode.cs" />
+    <Compile Include="Interfaces\IProjectBrowserViewModel.cs" />
+    <Compile Include="Interfaces\IProjectInfo.cs" />
+    <Compile Include="Interfaces\IRuntimestatus.cs" />
+    <Compile Include="Interfaces\ISpanObject.cs" />
+    <Compile Include="Interfaces\ISpanToolTipViewModel.cs" />
+    <Compile Include="Interfaces\ISpanViewModel.cs" />
+    <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="Interfaces\IView1.cs" />
+    <Compile Include="Interfaces\IViewModel.cs" />
+    <Compile Include="Interfaces\IVsInstance.cs" />
+    <Compile Include="Interfaces\IWorkspacesView.cs" />
+    <Compile Include="Interfaces\IWorkspacesViewModel.cs" />
+    <Compile Include="Interfaces\MruItem.cs" />
+    <Compile Include="Interfaces\PipelineViewModel.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
     <Compile Include="PipelineResult.cs" />
@@ -97,23 +117,9 @@
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
-    <Compile Include="IAppState.cs" />
-    <Compile Include="IMruItem.cs" />
     <Compile Include="IMruItems.cs" />
-    <Compile Include="IPipelineViewModel.cs" />
-    <Compile Include="IProjectBrowserViewModel.cs" />
-    <Compile Include="IRuntimestatus.cs" />
-    <Compile Include="ISpanObject.cs" />
-    <Compile Include="ISpanToolTipViewModel.cs" />
-    <Compile Include="ISpanViewModel.cs" />
-    <Compile Include="IView.cs" />
-    <Compile Include="IView1.cs" />
-    <Compile Include="IViewModel.cs" />
     <Compile Include="IVisitor.cs" />
-    <Compile Include="IVsInstance.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
-    <Compile Include="IWorkspacesView.cs" />
-    <Compile Include="IWorkspacesViewModel.cs" />
     <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
@@ -201,5 +207,6 @@
       <Name>AnalysisFramework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -15,6 +15,7 @@ using System.ComponentModel ;
 using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

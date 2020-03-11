@@ -9,12 +9,12 @@
 // 
 // ---
 #endregion
-using System.Threading.Tasks ;
 
+using System.Threading.Tasks ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface IFormattedCode
     {

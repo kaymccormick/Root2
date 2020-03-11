@@ -11,7 +11,7 @@
 #endregion
 using Microsoft.CodeAnalysis ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface ICodeRenderer
     {

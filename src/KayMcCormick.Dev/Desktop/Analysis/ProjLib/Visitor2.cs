@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Fluent ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

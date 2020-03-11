@@ -11,7 +11,7 @@
 #endregion
 using Microsoft.CodeAnalysis.Text ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface ISpanViewModel
     {

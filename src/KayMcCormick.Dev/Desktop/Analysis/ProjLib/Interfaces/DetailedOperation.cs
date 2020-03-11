@@ -1,16 +1,5 @@
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
-    public interface IRuntimestatus
-    {
-        AppStatus Status { get ; }
-        IDetailedOperation CurrentOperation { get ; }
-    }
-
-    public interface IDetailedOperation
-    {
-        string DisplayName { get ; }
-    }
-
     class DetailedOperation : IDetailedOperation
     {
         private string _displayName ;

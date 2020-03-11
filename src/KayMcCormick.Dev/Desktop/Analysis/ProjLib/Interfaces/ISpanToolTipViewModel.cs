@@ -12,7 +12,7 @@
 using System.Collections.Generic ;
 using Microsoft.CodeAnalysis ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface ISpanToolTipViewModel
     {

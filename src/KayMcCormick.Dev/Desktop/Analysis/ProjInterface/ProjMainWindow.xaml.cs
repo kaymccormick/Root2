@@ -34,6 +34,7 @@ using System.Windows.Input;
 using System.Windows.Threading ;
 using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
+using ProjLib.Interfaces ;
 using Task = System.Threading.Tasks.Task ;
 
 namespace ProjInterface

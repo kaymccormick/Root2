@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis ;
 using NLog ;
 using NLog.Layouts ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 using Xunit ;
 using Xunit.Abstractions ;
 

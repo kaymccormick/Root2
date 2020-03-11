@@ -11,6 +11,7 @@
 #endregion
 using Autofac ;
 using NLog ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {

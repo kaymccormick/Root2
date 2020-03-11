@@ -12,14 +12,12 @@
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Threading.Tasks ;
-using AnalysisFramework ;
-using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
     public interface IWorkspacesViewModel : INotifyPropertyChanged , IAppState
     {

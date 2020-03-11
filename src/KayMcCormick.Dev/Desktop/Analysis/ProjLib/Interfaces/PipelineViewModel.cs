@@ -11,14 +11,8 @@
 #endregion
 using JetBrains.Annotations ;
 
-namespace ProjLib
+namespace ProjLib.Interfaces
 {
-    public interface IPipelineViewModel : IViewModel
-    {
-        Pipeline Pipeline { get ; }
-
-    }
-
     [ UsedImplicitly ]
     public class PipelineViewModel : IPipelineViewModel
     {

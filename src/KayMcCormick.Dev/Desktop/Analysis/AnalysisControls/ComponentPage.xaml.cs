@@ -3,6 +3,7 @@ using AnalysisFramework ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using ProjLib ;
+using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

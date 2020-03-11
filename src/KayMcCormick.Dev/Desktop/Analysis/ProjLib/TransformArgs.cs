@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+using ProjLib.Interfaces ;
+
 namespace ProjLib
 {
     public class TransformScope

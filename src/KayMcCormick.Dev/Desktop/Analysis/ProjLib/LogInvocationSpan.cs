@@ -16,6 +16,7 @@ using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
+using ProjLib.Interfaces ;
 
 namespace ProjLib
 {
