@@ -24,6 +24,7 @@ using System.Reactive.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Text ;
 using System.Text.Json ;
+using System.Text.Json.Serialization ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
@@ -194,14 +195,24 @@ namespace ProjInterface
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
             if ( e.OriginalSource is ListView ) {
-      #if ANA      
                 var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
                 var viewCurrentItem = v.View.CurrentItem ;
                 Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
                 Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
+                t.ContinueWith (
+                                task => {
+                                    var jsonSerializerOptions = new JsonSerializerOptions {} ;
+                                    jsonSerializerOptions.Converters.Add (
+                                                                          new
+                                                                              LogInvocationConverter ( )
+                                                                         ) ;
+                                    File.WriteAllText ( "invocations.json" , JsonSerializer
+                                                           .Serialize (
+                                                                       ViewModel.LogInvocations.ToList (  ), jsonSerializerOptions));
+                                }
+                               ) ;
                 TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
                 AddTask ( t, tw ) ;
-#endif
             }
             else
             {
@@ -303,6 +314,42 @@ namespace ProjInterface
         {
             Logger.Info ( "selected {i}" , sender.ToString ( ) ) ;
         }
+    }
+
+    internal class LogInvocationConverter : JsonConverter<ILogInvocation>
+    {
+        #region Overrides of JsonConverter<ILogInvocation>
+        public override ILogInvocation Read (
+            ref Utf8JsonReader    reader
+          , Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return null ;
+        }
+
+        public override void Write (
+            Utf8JsonWriter        writer
+          , ILogInvocation        value
+          , JsonSerializerOptions options
+        )
+        {
+            writer.WriteStartObject();
+            writer.WriteString ( "SourceLocation" , value.SourceLocation ) ;
+            writer.WriteString ( "LoggerType" , value.LoggerType ) ;
+            writer.WriteString ( "MethodName" , value.MethodName ) ;
+            writer.WriteString ( "Code" , value.Code ) ;
+            writer.WriteString("PrecedingCode", value.PrecedingCode);
+            writer.WriteString ( "FollowingCode" , value.FollowingCode ) ;
+            writer.WriteStartArray ( "Arguments" ) ;
+            foreach ( var logInvocationArgument in value.Arguments )
+            {
+                JsonSerializer.Serialize ( writer , logInvocationArgument.Pojo , options ) ;
+            }
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+        }
+        #endregion
     }
 
     internal interface ICompilationView

@@ -3,9 +3,9 @@ using System.Windows.Input ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Threading ;
-#if ANALYSISCONTROLS
+
 using AnalysisControls ;
-#endif
+
 using AnalysisFramework ;
 using NLog ;
 
@@ -16,7 +16,6 @@ namespace ProjInterface
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
     
 
-        #if ANALYSISCONTROLS
         public static void SetupFormattedCode1 (
              ContentControl    w
           , string                sourceText, ISyntaxTreeContext ctx
@@ -127,6 +126,5 @@ namespace ProjInterface
                                           ) ;
             }
         }
-#endif
     }
 }

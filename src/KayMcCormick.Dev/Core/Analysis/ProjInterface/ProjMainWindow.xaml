@@ -8,6 +8,7 @@
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
   xmlns:nLog="clr-namespace:NLog;assembly=NLog"
+  xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls"
   Name="mainWindow"
   Title="MainWindow"
   Width="800"
@@ -109,8 +110,8 @@
     <Border BorderBrush="AntiqueWhite" BorderThickness="10" CornerRadius="4" Grid.Row="1"
             Grid.ColumnSpan="3">
     </Border>
-    <!-- <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0"> -->
-    <!-- </analysisControls:ProjectBrowser> -->
+    <analysisControls:ProjectBrowser Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
+    </analysisControls:ProjectBrowser>
     <ListView Name="_eventView" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}">
       <ListView.View>
         <GridView>

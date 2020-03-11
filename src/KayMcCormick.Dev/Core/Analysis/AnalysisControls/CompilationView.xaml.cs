@@ -2,12 +2,14 @@
 using System.Windows.Input;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
+#if NETFRAMEWORK
 using MigraDoc.DocumentObjectModel ;
-using NLog ;
-using ProjLib ;
 using Document = MigraDoc.DocumentObjectModel.Document ;
 using Paragraph = MigraDoc.DocumentObjectModel.Paragraph ;
 using Section = MigraDoc.DocumentObjectModel.Section ;
+#endif
+using NLog ;
+using ProjLib ;
 
 namespace AnalysisControls
 {
@@ -30,6 +32,7 @@ namespace AnalysisControls
             
             if ( ViewModel.CompilationUnitRootContext != null )
             {
+#if NETFRAMEWORK
                 Document doc = new Document();
                 var section = new Section();
                 var paragraph = new Paragraph();
@@ -46,7 +49,7 @@ namespace AnalysisControls
                                                                                     , @"C:\temp"
                                                                                      ) ;
                 rtfCode.Text = s ;
-
+#endif
                 this.SyntaxPanel.ViewModel.CompilationUnitSyntax =
                     ViewModel.CompilationUnitRootContext.CompilationUnit ;
             }

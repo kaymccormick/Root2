@@ -10,7 +10,8 @@ using System.Runtime.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-
+using Buildalyzer ;
+using Buildalyzer.Workspaces ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 #if  !NETSTANDARD2_0
@@ -20,11 +21,58 @@ using NLog ;
 
 namespace ProjLib
 {
-    static internal class Workspaces
+
+    public interface IWorkspaceManager
+    {
+        Workspace CreateWorkspace(IDictionary<string, string> props);
+        Task OpenSolutionAsync(Workspace workspace, string solutionPath);
+    }
+
+    public class Workspaces
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private IWorkspaceManager _manager;
+        public Workspaces(IWorkspaceManager manager) {
+_manager = manager;
+}
 
-        public static async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] AnalysisRequest req)
+        public TransformBlock<AnalysisRequest, Workspace> InitializeWorkspaceBlock()
+        {
+            var makeWs =
+                new TransformBlock<AnalysisRequest, Workspace>(MakeWorkspaceAsync);
+            return makeWs;
+        }
+        public TransformBlock<AnalysisRequest, Workspace> InitializeWorkspace2Block()
+        {
+            var makeWs =
+                new TransformBlock<AnalysisRequest, Workspace>(MakeWorkspace2Async);
+            return makeWs;
+        }
+
+        public async Task < Workspace > MakeWorkspace2Async ( [ NotNull ] AnalysisRequest req )
+        {
+            try
+            {
+                AnalyzerManager manager = new AnalyzerManager ( req.Info.SolutionPath ) ;
+                AdhocWorkspace workspace = new AdhocWorkspace ( ) ;
+                foreach ( var keyValuePair in manager.Projects )
+                {
+                    Logger.Debug ( keyValuePair.Key ) ;
+                    keyValuePair.Value.Build ( ) ;
+                    keyValuePair.Value.AddToWorkspace ( workspace ) ;
+                }
+
+                return workspace ;
+            }
+            catch ( Exception ex )
+            {
+                Logger.Error ( ex , "here" ) ;
+                throw ;
+            }
+        }
+
+
+        public async Task < Workspace > MakeWorkspaceAsync ( [ NotNull ] AnalysisRequest req)
         {
             if ( req == null )
             {
@@ -47,7 +95,7 @@ namespace ProjLib
                 IDictionary < string , string > props = b.ToImmutable ( ) ;
 
                 #if NETSTANDARD2_0
-                Workspace workspace = null ;
+                Workspace workspace = _manager.CreateWorkspace(props);
 #else
                 MSBuildWorkspace workspace ;
                 try
@@ -172,6 +220,7 @@ namespace ProjLib
 #if !NETSTANDARD2_0                
                 await workspace.OpenSolutionAsync ( solutionPath ).ConfigureAwait ( true ) ;
 #endif
+                await _manager.OpenSolutionAsync ( workspace , solutionPath ) ;
                 // , new Program.ConsoleProgressReporter()
                 // );
                 // if ( ! Errors.IsEmpty )
@@ -186,20 +235,44 @@ namespace ProjLib
 
         public static TransformManyBlock < Workspace , Document > SolutionDocumentsBlock ( )
         {
-            return new TransformManyBlock < Workspace , Document > (
-                                                                    workspace => workspace
-                                                                                .CurrentSolution
-                                                                                .Projects
-                                                                                .SelectMany (
-                                                                                             project
-                                                                                                 => project
-                                                                                                    .Documents
-                                                                                            )
-                                                                   ) ;
+            return new TransformManyBlock < Workspace , Document > ( workspace => workspace
+                                                                                 .CurrentSolution
+                                                                                 .Projects.AsParallel (  ).Where (
+                                                                                                  project
+                                                                                                      => {
+                                                                                                      Logger
+                                                                                                         .Warn (
+                                                                                                                "{project}"
+                                                                                                              , project
+                                                                                                                   .Name
+                                                                                                               ) ;
+                                                                                                      return
+                                                                                                          true ;
+                                                                                                  }
+                                                                                                 )
+                                                                                 .SelectMany (
+                                                                                              project
+                                                                                                  => project
+                                                                                                     .Documents
+                                                                                             )
+                                                                                 .Where (
+                                                                                         document
+                                                                                             => {
+                                                                                             Logger
+                                                                                                .Info (
+                                                                                                       "{document}"
+                                                                                                     , document
+                                                                                                          .Name
+                                                                                                      ) ;
+                                                                                             return
+                                                                                                 true ;
+                                                                                         }
+                                                                                        ) );
+
         }
     }
 
-    internal class UnableToInitializeWorkspace : Exception
+    public class UnableToInitializeWorkspace : Exception
     {
         public UnableToInitializeWorkspace ( ) {
         }

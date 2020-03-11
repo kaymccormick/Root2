@@ -24,9 +24,6 @@ namespace ProjLib
         VisualStudioInstancesCollection VsCollection { get ; } //ObservableCollection<VsInstance> ;
         
 #endif
-        #if !NETSTANDARD2_0
-        MyProjectLoadProgress CurrentProgress { get ; }
-        #endif
         ObservableCollection < ILogInvocation > LogInvocations { get ; }
 
 #if false

@@ -21,7 +21,7 @@ namespace ProjLib
             var projectBrowserNode = new ProjectBrowserNode ( )
                                      {
                                          Name = "LogTest",
-                                         RepositoryUrl = null,
+                                         RepositoryUrl = new Uri ( "none:" ),
                                          SolutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
                                          
             } ;

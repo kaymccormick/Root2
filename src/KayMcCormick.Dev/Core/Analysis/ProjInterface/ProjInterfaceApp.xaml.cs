@@ -230,21 +230,30 @@ private Type[] _optionTypes ;
 #if MSBUILDLOCATOR
             var instances = MSBuildLocator
                            .QueryVisualStudioInstances(
-                                                       new VisualStudioInstanceQueryOptions()
-                                                       {
-                                                           DiscoveryTypes =
-                                                               DiscoveryType.VisualStudioSetup
-                                                       }
-                                                      )
-                           .Where(
-                                  (instance, i)
+                                                      ).ToList();
+            foreach ( var inst in instances )
+            {
+                Logger.Info (
+                             "{name} {type} {msbuildpath} {version} {vspath}"
+                           , inst.Name
+                           , inst.DiscoveryType.ToString ( )
+                           , inst.MSBuildPath
+                           , inst.Version
+                           , inst.VisualStudioRootPath
+                            ) ;
+            }
+        
+            if(instances.Any(
+                                  (instance)
                                       => instance.Version.Major    == 16
                                          && instance.Version.Minor == 4
-                                 );
+                                 )) {
             var visualStudioInstance = instances.First();
+}
             //MSBuildLocator.RegisterInstance(visualStudioInstance);
-            var reg = MSBuildLocator.RegisterDefaults();
-            Logger.Debug("Registering MSBuild  instance {vs} - {path}", reg.Name, reg.MSBuildPath);
+            // var reg = MSBuildLocator.RegisterDefaults();
+            MSBuildLocator.RegisterMSBuildPath(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin");
+            // Logger.Debug("Registering MSBuild  instance {vs} - {path}", reg.Name, reg.MSBuildPath);
 #endif
 #if false
             PresentationTraceSources.Refresh();

@@ -13,18 +13,11 @@ namespace ProjLib
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         
-        public static TransformBlock <AnalysisRequest, Workspace > InitializeWorkspace ( )
-        {
-            var makeWs =
-                new TransformBlock <AnalysisRequest, Workspace > ( Workspaces.MakeWorkspaceAsync ) ;
-            return makeWs ;
-        }
-
         public static TransformManyBlock < Document , ILogInvocation > FindLogUsages ( )
         {
             Logger.Trace ( "Constructing FindUsagesBlock" ) ;
             var findLogUsagesBlock =
-                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions() ) ;
+                new TransformManyBlock < Document , ILogInvocation > ( ProjLib.FindLogUsages.FindUsagesFunc , new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 4 } ) ;
             return findLogUsagesBlock ;
         }
 #if USEMSBUILD
@@ -49,7 +42,7 @@ namespace ProjLib
         #endif
 #endif
 
-        #if !NETSTANDARD2_0
+        #if VERSIONCONTROL
         public static TransformBlock <AnalysisRequest, AnalysisRequest> CloneSource ( )
         {
             return new TransformBlock <AnalysisRequest, AnalysisRequest> ( VersionControl.CloneProjectAsync ) ;

@@ -1,3 +1,4 @@
+using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -10,13 +11,22 @@ namespace ProjLib
 {
     public class Pipeline
     {
+        private Workspaces _workspaces ;
+        
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public IPropagatorBlock <AnalysisRequest, ILogInvocation > PipelineInstance { get ; private set ; }
+        public IPropagatorBlock < AnalysisRequest , ILogInvocation > PipelineInstance
+        {
+            get ;
+            private set ;
+        }
 
         // ReSharper disable once CollectionNeverQueried.Local
         private readonly List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
-        private DataflowLinkOptions _linkOptions = new DataflowLinkOptions { PropagateCompletion = true } ;
+
+        private DataflowLinkOptions _linkOptions =
+            new DataflowLinkOptions { PropagateCompletion = true } ;
+
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
 
         public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
@@ -27,37 +37,39 @@ namespace ProjLib
             set => _linkOptions = value ;
         }
 
-        public IPropagatorBlock<AnalysisRequest, AnalysisRequest> CurrentBlock { get { return _currentBlock ; } set { _currentBlock = value ; } }
-
-        public Pipeline ( )
+        public IPropagatorBlock < AnalysisRequest , AnalysisRequest > CurrentBlock
         {
+            get => _currentBlock ;
+            set => _currentBlock = value ;
+        }
+        public Pipeline( [ NotNull ] Workspaces workspaces) { _workspaces = workspaces ?? throw new ArgumentNullException ( nameof ( workspaces ) );
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
         }
 
         public virtual IPropagatorBlock < AnalysisRequest , ILogInvocation > BuildPipeline ( )
         {
-            
-            var initWorkspace = Register ( DataflowBlocks.InitializeWorkspace ( ) ) ;
+            var initWorkspace = Register ( _workspaces.InitializeWorkspace2Block ( ) ) ;
 
-            IPropagatorBlock<AnalysisRequest, AnalysisRequest> cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
+            var cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
             cur.LinkTo ( initWorkspace , LinkOptions ) ;
 
             var toDocuments = Register ( Workspaces.SolutionDocumentsBlock ( ) ) ;
-            
-            
+
+
             initWorkspace.LinkTo ( toDocuments , LinkOptions ) ;
-            var findLogUsages = Register(DataflowBlocks.FindLogUsages());
+            var findLogUsages = Register ( DataflowBlocks.FindLogUsages ( ) ) ;
             toDocuments.LinkTo ( findLogUsages , LinkOptions ) ;
-            findLogUsages.LinkTo ( Register ( ResultBufferBlock ), LinkOptions ) ;
+            findLogUsages.LinkTo ( Register ( ResultBufferBlock ) , LinkOptions ) ;
 
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
             return PipelineInstance ;
         }
 
-        private T Register <T>( T block ) where T:IDataflowBlock
+        private T Register < T > ( T block )
+            where T : IDataflowBlock
         {
-            _dataflowBlocks.Add ( ( block ) ) ;
+            _dataflowBlocks.Add ( block ) ;
             Continuation ( block , block.ToString ( ) ) ;
             return block ;
         }
@@ -76,7 +88,8 @@ namespace ProjLib
         {
             if ( task.IsFaulted )
             {
-                if ( task.Exception != null ) {
+                if ( task.Exception != null )
+                {
                     var faultReaon = task.Exception.Message ;
                     new LogBuilder ( Logger )
                        .LoggerName ( $"{Logger.Name}.{logName}" )
@@ -86,18 +99,17 @@ namespace ProjLib
                        .Write ( ) ;
                 }
             }
-            else { Logger.Trace( $"{logName} complete - not faulted" ) ; }
+            else { Logger.Trace ( $"{logName} complete - not faulted" ) ; }
         }
 
-        protected virtual IPropagatorBlock <AnalysisRequest, AnalysisRequest> ConfigureInput ( )
+        protected virtual IPropagatorBlock < AnalysisRequest , AnalysisRequest > ConfigureInput ( )
         {
-            
-            var input = new WriteOnceBlock <AnalysisRequest> ( s => s ) ;
+            var input = new WriteOnceBlock < AnalysisRequest > ( s => s ) ;
             Head = input ;
             return input ;
         }
-        
-        public ITargetBlock<AnalysisRequest> Head { get ; set ; }
+
+        public ITargetBlock < AnalysisRequest > Head { get ; set ; }
     }
 
     public class AnalysisRequest
@@ -107,7 +119,7 @@ namespace ProjLib
         public IProjectBrowserNode Info { get => projectInfo ; set => projectInfo = value ; }
     }
 
-    #if !NETSTANDARD2_0
+#if VERSIONCONTROL
     [ UsedImplicitly ]
     class PipelineRemoteSource : Pipeline
     {

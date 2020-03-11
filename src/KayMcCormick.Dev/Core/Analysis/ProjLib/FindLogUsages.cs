@@ -55,7 +55,7 @@ namespace ProjLib
                     var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
                     var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
                     return
-                        from node in root.DescendantNodes ( )//.AsParallel ( )
+                        from node in root.DescendantNodes ( ).AsParallel ( )
                         let t_ = t
                         let t2_ = t2
                         let builderSymbol = logBuilderSymbol

@@ -44,13 +44,11 @@ namespace ProjLib
 #endif
 
         private string                _currentDocumentPath ;
-        #if !NETSTANDARD2_0
-        private MyProjectLoadProgress _currentProgress ;
-#endif
         private string                _currentProject ;
 
         private bool                      _processing ;
         private IProjectBrowserViewModel _projectBrowserViewModel ;
+        private readonly Pipeline _pipeline ;
         private PipelineResult            _pipelineResult ;
         private string _applicationMode = "Runtime mode" ;
         private AdhocWorkspace _workspace ;
@@ -62,12 +60,14 @@ namespace ProjLib
             
             #endif
             IProjectBrowserViewModel projectBrowserViewModel
+            , Pipeline pipeline
         )
         {
-            #if VSSETTINGS
+#if VSSETTINGS
             vsInstanceCollector      = collector ;
 #endif
             _projectBrowserViewModel = projectBrowserViewModel ;
+            _pipeline = pipeline ;
             // _sqlConn = sqlConn ;
             // PipelineViewModel        = pipelineViewModel ;
         }
@@ -90,17 +90,6 @@ namespace ProjLib
         /// <summary>Signals the object that initialization is complete.</summary>
         public void EndInit ( ) { }
 #endif
-        #if !NETSTANDARD2_0
-        public MyProjectLoadProgress CurrentProgress
-        {
-            get => _currentProgress ;
-            set
-            {
-                _currentProgress = value ;
-                OnPropertyChanged ( nameof ( CurrentProgress ) ) ;
-            }
-        }
-#endif
 
     
         public IProjectBrowserViewModel ProjectBrowserViewModel
@@ -115,7 +104,6 @@ namespace ProjLib
             PipelineResult = new PipelineResult(ResultStatus.Pending);
             var actionBlock = new ActionBlock < ILogInvocation > (
                                                                   invocation => {
-                                                                      #if TRACE
                                                                       #if !NETSTANDARD2_0
                                                                       Console.WriteLine (
                                                                                          JsonSerializer
@@ -124,21 +112,21 @@ namespace ProjLib
                                                                                                        )
                                                                                         ) ;
                                                                       #endif
-#endif
+
 
                                                                       LogInvocations.Add (
                                                                                           invocation
                                                                                          ) ;
-#if TRACE
+
                                                                       Logger.Debug(
                                                                                     "{invocation}"
                                                                                   , invocation
                                                                                    ) ;
-#endif
+
                                                                   }
                                                                  ) ;
 
-            var pipeline = new Pipeline();
+            var pipeline = _pipeline ;
             if ( pipeline == null )
             {
 #pragma warning disable CA1303 // Do not pass literals as localized parameters

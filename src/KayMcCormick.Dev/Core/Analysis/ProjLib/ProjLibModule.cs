@@ -26,8 +26,10 @@ namespace ProjLib
             builder.RegisterType<WorkspacesViewModel>()
                    .As<IWorkspacesViewModel>()
                    .InstancePerLifetimeScope();
+builder.RegisterType<Workspaces>().AsSelf();
             builder.RegisterType < ProjectBrowserViewModel > ( )
                    .As < IProjectBrowserViewModel > ( ) ;
+builder.RegisterType<Pipeline>().AsSelf();
 
         }
         #endregion

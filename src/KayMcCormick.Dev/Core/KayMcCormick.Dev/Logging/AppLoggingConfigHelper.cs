@@ -177,7 +177,7 @@ namespace KayMcCormick.Dev.Logging
                 logMethod($"field info is {fieldInfo.DeclaringType} . {fieldInfo.Name}");
                 var cur = fieldInfo.GetValue(null);
                 logMethod($"cur is {cur}");
-                #if NETFRAMEWORK
+#if NETFRAMEWORK
                 if (proxyLogging)
                 {
                     fieldInfo.SetValue(null, proxiedFactory);
@@ -191,7 +191,7 @@ namespace KayMcCormick.Dev.Logging
             return PerformConfiguration(logMethod, proxyLogging, proxiedFactory);
 #else
             return PerformConfiguration(logMethod, false, null);
-            #endif
+#endif
         }
 
         private static LogFactory PerformConfiguration(
@@ -240,18 +240,24 @@ namespace KayMcCormick.Dev.Logging
             }
             receiverAddress = new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/");
             // TODO make this address configurable
-            if(receiverAddress  != null) {
-            ServiceTarget = new LogReceiverWebServiceTarget("log")
+            if ( receiverAddress != null )
             {
-                // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
-                EndpointAddress = receiverAddress.ToString(), ClientId = new SimpleLayout("${processName}"),
-                EndpointConfigurationName = "WSDualHttpBinding_ILogReceiverServer", IncludeEventProperties = true,
-                
-            };
-            var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
+                ServiceTarget = new LogReceiverWebServiceTarget ( "log" )
+                                {
+                                    // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
+                                    EndpointAddress = receiverAddress.ToString ( )
+                                  , ClientId        = new SimpleLayout ( "${processName}" )
+                                  , EndpointConfigurationName =
+                                        "WSDualHttpBinding_ILogReceiverServer"
+                                  , IncludeEventProperties = true
+                                   ,
+                                } ;
+            }
+
+            // var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
-            dict[LogLevel.Debug].Add(wrap);
+            dict[LogLevel.Debug].Add(ServiceTarget);
 #endif
 
             var consoleTarget = new ConsoleTarget("console")
