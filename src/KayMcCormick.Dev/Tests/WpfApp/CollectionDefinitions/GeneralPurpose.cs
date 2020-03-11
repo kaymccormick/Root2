@@ -11,7 +11,6 @@
 #endregion
 
 using JetBrains.Annotations ;
-using  KayMcCormick.Dev.TestLib.Fixtures ;
 using Xunit ;
 
 namespace Tests.CollectionDefinitions

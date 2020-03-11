@@ -9,7 +9,6 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
 using System.Threading ;
 using System.Threading.Tasks ;
@@ -21,6 +20,7 @@ namespace ProjLib
 {
     public class Visitor4 : CSharpSyntaxWalker
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly TaskScheduler          _t ;
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer          _ctl ;
@@ -28,12 +28,12 @@ namespace ProjLib
         private int  _curLine         = - 1 ;
         private bool _isAtStartOfLine = true ;
 #if DEBUG
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 #else
         private static Logger Logger = LogManager.CreateNullLogger();
 #endif
-        private List < double > _lineStart = new List < double > ( ) ;
+        private readonly List < double >  _lineStart = new List < double > ( ) ;
 
 
         public Visitor4 ( TaskScheduler t , SynchronizationContext ctx , ICodeRenderer ctl ) :
@@ -70,8 +70,6 @@ namespace ProjLib
                       ) ;
         }
 
-        public override void DefaultVisit ( SyntaxNode node ) { base.DefaultVisit ( node ) ; }
-
         private void RecordLocation ( Location getLocation , out bool newLine )
         {
             newLine = false ;
@@ -87,11 +85,15 @@ namespace ProjLib
                 {
                     if ( _curLine >= 0 )
                     {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                         Logger.Trace ( "Insert New line {line}" , _curLine ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                     }
                 }
 #if DEBUG
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 Logger.Trace ( "New line {line}" , line ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 #endif
 #if DEBUG
                 Logger.Trace ( $"create new paragraph" ) ;
@@ -197,8 +199,6 @@ namespace ProjLib
                 DoTrivia ( syntaxTrivia ) ;
             }
         }
-
-        public override void VisitTrivia ( SyntaxTrivia trivia ) { base.VisitTrivia ( trivia ) ; }
         #endregion
     }
 }

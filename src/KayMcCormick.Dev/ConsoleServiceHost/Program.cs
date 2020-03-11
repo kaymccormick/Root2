@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel ;
-using System.Text;
-using System.Threading.Tasks;
 using AnalysisServiceLibrary ;
 using KayMcCormick.Dev.Interfaces ;
 
@@ -11,7 +7,7 @@ namespace ConsoleServiceHost
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main( )
         {
             CentralService service = new CentralService();
             ServiceHost host2 = new ServiceHost ( service, new Uri("http://localhost:8737/CentralSvc" )) ;

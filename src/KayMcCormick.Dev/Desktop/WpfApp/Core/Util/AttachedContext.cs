@@ -56,19 +56,14 @@ namespace WpfApp.Core.Util
                 return ;
             }
 
-            if ( ! _contextStack.Any ( ) )
+            if ( _contextStack.Any ( ) )
             {
-                throw new ContextStackException ( "Empty stack - expected at least one element" ) ;
+                if ( _contextStack.Peek ( ).Equals ( _infoContext ) )
+                {
+                    //Assert.True ( ReferenceEquals ( _infoContext , contextStack.First ( ) ) ) ;
+                    _contextStack.Pop ( ) ;
+                }
             }
-
-            //Assert.NotEmpty ( contextStack ) ;
-            if ( ! _contextStack.Peek ( ).Equals ( _infoContext ) )
-            {
-                throw new ContextStackException ( "" ) ;
-            }
-
-            //Assert.True ( ReferenceEquals ( _infoContext , contextStack.First ( ) ) ) ;
-            _contextStack.Pop ( ) ;
         }
     }
 }

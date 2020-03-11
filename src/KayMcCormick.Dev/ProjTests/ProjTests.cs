@@ -56,7 +56,7 @@ namespace ProjTests
     [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
     [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
     [BeforeAfterLogger]
-    public class ProjTests : IClassFixture < LoggingFixture >
+    public sealed class ProjTests : IClassFixture < LoggingFixture >
         , IClassFixture < ProjectFixture >
         , IDisposable
     {
@@ -88,8 +88,7 @@ namespace ProjTests
         private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture    _loggingFixture ;
-        private          SyntaxTree        _testSyntaxTree ;
-        private          CSharpCompilation _compilation ;
+        [ UsedImplicitly ] private readonly ProjectFixture _projectFixture ;
         private List<Action> _finalizers = new List < Action > ();
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
@@ -102,8 +101,13 @@ namespace ProjTests
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output = output ;
             _loggingFixture                              =  loggingFixture ;
+            _projectFixture = projectFixture ;
             //VSI                                          =  projectFixture.I ;
-            loggingFixture.SetOutputHelper ( output , this ) ;
+            if ( loggingFixture != null )
+            {
+                loggingFixture.SetOutputHelper ( output , this ) ;
+            }
+
             _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
         }
 
@@ -511,8 +515,7 @@ namespace ProjTests
 
             var sourceText = LibResources.Program_Parse;
             codeControl.SourceCode = sourceText;
-            var w = new Window();
-            w.Content = codeControl;
+            var w = new Window { Content = codeControl } ;
 
             var context = (ISemanticModelContext)AnalysisService.Parse(sourceText, "test1");
             var syntaxTree = context.CurrentModel.SyntaxTree ;
@@ -536,8 +539,7 @@ namespace ProjTests
         public void TestFormattedCodeControl2()
         {
             var codeControl = new FormattedCode2();
-            var w = new Window();
-            w.Content = codeControl;
+            var w = new Window { Content = codeControl } ;
 
             Task t = new Task ( ( ) => { } ) ;
             w.Closed += ( sender , args ) => {

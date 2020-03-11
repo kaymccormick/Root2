@@ -33,10 +33,6 @@ namespace AnalysisControls
         private Exception currentControlFlowAnalysisException ;
         private ObservableCollection < ISymbol > valueStack = new ObservableCollection < ISymbol > ();
         #region Implementation of ICompilationViewModel
-        public CompilationViewModel (  )
-        {
-        }
-
         public ISemanticModelContext SemanticModelContext { get ; set ; }
 
         public object SelectedItem

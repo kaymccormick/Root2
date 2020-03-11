@@ -66,7 +66,9 @@ namespace Tests.Lib.Fixtures
         /// </summary>
         public Task InitializeAsync ( )
         {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
             _sink.OnMessage ( new DiagnosticMessage ( "Initializing container." ) ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             LifetimeScope = ContainerHelper.SetupContainer(out _, null, null);
             return Task.CompletedTask ;
         }
@@ -84,13 +86,6 @@ namespace Tests.Lib.Fixtures
             return Task.CompletedTask ;
         }
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="request">The resolve request.</param>
-        /// <returns>The component instance.</returns>
-        /// <exception cref="T:Autofac.Core.Registration.ComponentNotRegisteredException" />
-        /// <exception cref="T:Autofac.Core.DependencyResolutionException" />
         public object ResolveComponent ( ResolveRequest request ) { return _container.ResolveComponent ( request ) ; }
 
         /// <summary>

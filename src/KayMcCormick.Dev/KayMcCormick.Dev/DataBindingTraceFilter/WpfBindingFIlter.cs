@@ -54,10 +54,14 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
                 var expr = match.Groups[1].Captures[0].Value;
 
                 var haveIgnore = ignores.Any(s => expr.Contains(s));
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 Logger.Trace(@"{ignore}", haveIgnore);
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                 if (!haveIgnore)
                 {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                     Logger.Debug(@"expr is {expr}", expr);
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                 }
                 return haveIgnore;
             }

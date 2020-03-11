@@ -7,6 +7,7 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+// ReSharper disable UnusedVariable
 
 namespace AnalysisFramework
 {
@@ -256,15 +257,13 @@ namespace AnalysisFramework
                                    Tokens = ident.ChildTokens().Select(token => token.ToString())
                                };
                     case SimpleNameSyntax simpleNameSyntax: break;
-                    default :
-                        break ;
                     case NameSyntax nameSyntax: break;
                     case TypeSyntax typeSyntax: break;
 
                 }
 
                 throw new UnsupportedExpressionTypeSyntaxException (
-                                                           $"Unsupported mode type {expressionSyntaxNode?.GetType ( ).FullName} at line {expressionSyntaxNode.GetLocation().GetMappedLineSpan().StartLinePosition.Line +1} {expressionSyntaxNode.GetLocation().ToString (  )}"
+                                                           $"Unsupported mode type {expressionSyntaxNode.GetType ( ).FullName} at line {expressionSyntaxNode.GetLocation().GetMappedLineSpan().StartLinePosition.Line +1} {expressionSyntaxNode.GetLocation()}"
                                                           ) ;
             }
             
@@ -291,7 +290,7 @@ namespace AnalysisFramework
                            {
                                declarationPatternSyntax.RawKind
                              , Kind = declarationPatternSyntax.Kind ( ).ToString()
-                             , Type = TransformTypeSyntax ( declarationPatternSyntax.Type )
+                             , Type = TransformTypeSyntax(declarationPatternSyntax.Type)
                              , Designation =
                                    TransformVariableDesignation (
                                                                  declarationPatternSyntax
@@ -322,8 +321,8 @@ namespace AnalysisFramework
                                                                          recursivePatternSyntax
                                                                             .PropertyPatternClause
                                                                         )
-                             , Type = TransformTypeSyntax ( recursivePatternSyntax.Type )
-                           } ;
+                             , Type = TransformTypeSyntax(recursivePatternSyntax.Type)
+                    } ;
                 case VarPatternSyntax varPatternSyntax :
                     return new
                            {
@@ -334,7 +333,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntaxException ( isPatternPattern.Kind ( ).ToString().ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntaxException ( isPatternPattern.Kind ( ).ToString() ) ;
         }
 
         private static object TransformPositionalPatternClauseSyntax (
@@ -401,7 +400,7 @@ namespace AnalysisFramework
                            } ;
             }
 
-            return new UnsupportedExpressionTypeSyntaxException ( designation.Kind ( ).ToString().ToString ( ) ) ;
+            return new UnsupportedExpressionTypeSyntaxException ( designation.Kind ( ).ToString() ) ;
         }
 
         /// <summary>
@@ -411,7 +410,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformOperatorToken ( in SyntaxToken condOperatorToken )
         {
-            return condOperatorToken.Kind ( ).ToString().ToString ( ) ;
+            return condOperatorToken.Kind ( ).ToString() ;
         }
 
         /// <summary>
@@ -430,7 +429,7 @@ namespace AnalysisFramework
                    {
                        arg.RawKind
                      , Kind       = arg.Kind ( ).ToString()
-                     , Type       = TransformTypeSyntax ( arg.Type )
+                     , Type       = TransformTypeSyntax(arg.Type)
                      , Identifier = TransformIdentifier ( arg.Identifier )
                    } ;
         }
@@ -452,16 +451,15 @@ namespace AnalysisFramework
         /// Transform TypeSyntax
         /// </summary>
         /// <param name="argType"></param>
-        /// <param name="dispatch"></param>
+        /// 
         /// <returns></returns>
-        public static object TransformTypeSyntax (
-            [ NotNull ] TypeSyntax argType
-          , bool                   dispatch = true
+        public static object TransformTypeSyntax(
+            [NotNull] TypeSyntax argType
         )
         {
             if ( argType == null )
             {
-                return null ;
+                throw new ArgumentNullException ( nameof ( argType ) ) ;
             }
 
             switch ( argType )
@@ -487,7 +485,7 @@ namespace AnalysisFramework
                     return new
                            {
                                predefinedTypeSyntax.RawKind
-                             , Kind    = predefinedTypeSyntax.Kind ( ).ToString().ToString ( )
+                             , Kind    = predefinedTypeSyntax.Kind ( ).ToString()
                              , Keyword = TransformKeyword ( predefinedTypeSyntax.Keyword )
                            } ;
                 
@@ -511,7 +509,7 @@ namespace AnalysisFramework
             switch ( name )
             {
                 case SimpleNameSyntax simple : return TransformSimpleNameSyntax ( simple ) ;
-                default :                      return TransformTypeSyntax ( name , false ) ;
+                default :                      return TransformTypeSyntax(name);
             }
         }
 
@@ -520,8 +518,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="simple"></param>
         /// <returns></returns>
-        public static object TransformSimpleNameSyntax ( SimpleNameSyntax simple )
+        public static object TransformSimpleNameSyntax ( [ NotNull ] SimpleNameSyntax simple )
         {
+            if ( simple == null )
+            {
+                throw new ArgumentNullException ( nameof ( simple ) ) ;
+            }
+
             switch ( simple )
             {
                 case GenericNameSyntax gen :   return TransformGenericNameSyntax ( gen ) ;
@@ -536,8 +539,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static object TransformIdentifierNameSyntax ( IdentifierNameSyntax id )
+        public static object TransformIdentifierNameSyntax ( [ NotNull ] IdentifierNameSyntax id )
         {
+            if ( id == null )
+            {
+                throw new ArgumentNullException ( nameof ( id ) ) ;
+            }
+
             return TransformIdentifier ( id.Identifier ) ;
         }
 
@@ -546,8 +554,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="gen"></param>
         /// <returns></returns>
-        public static object TransformGenericNameSyntax ( GenericNameSyntax gen )
+        public static object TransformGenericNameSyntax ( [ NotNull ] GenericNameSyntax gen )
         {
+            if ( gen == null )
+            {
+                throw new ArgumentNullException ( nameof ( gen ) ) ;
+            }
+
             return new
                    {
                        gen.RawKind
@@ -567,7 +580,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformGenericNameTypeArgument ( TypeSyntax arg )
         {
-            return TransformTypeSyntax ( arg ) ;
+            return TransformTypeSyntax(arg);
         }
 
         /// <summary>
@@ -575,8 +588,13 @@ namespace AnalysisFramework
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public static object TransformStatement ( StatementSyntax arg )
+        public static object TransformStatement ( [ NotNull ] StatementSyntax arg )
         {
+            if ( arg == null )
+            {
+                throw new ArgumentNullException ( nameof ( arg ) ) ;
+            }
+
             return arg.ToString ( ) ;
         }
 
@@ -587,7 +605,7 @@ namespace AnalysisFramework
         /// <returns></returns>
         public static object TransformKeyword ( in SyntaxToken keyword )
         {
-            return keyword.Kind ( ).ToString().ToString ( ) ;
+            return keyword.Kind ( ).ToString() ;
         }
 
         /// <summary>
@@ -702,7 +720,7 @@ namespace AnalysisFramework
                 case MemberDeclarationSyntax m: return TransformMemberDeclarationSyntax ( m ) ;
             }
 
-            throw new UnsupportedExpressionTypeSyntaxException ( syntaxNode.Kind ( ).ToString ( ).ToString ( ) ) ;
+            throw new UnsupportedExpressionTypeSyntaxException ( syntaxNode.Kind ( ).ToString ( ) ) ;
         }
 
         private static object TransformExpressionStatementSyntax ( ExpressionStatementSyntax ex )
@@ -760,10 +778,9 @@ namespace AnalysisFramework
                                         .Members.Select ( TransformMemberDeclarationSyntax )
                                         .ToList ( )
                            } ;
-                default : break ;
             }
 
-            throw new UnsupportedExpressionTypeSyntaxException ( arg.Kind ( ).ToString().ToString ( ) ) ;
+            throw new UnsupportedExpressionTypeSyntaxException ( arg.Kind ( ).ToString() ) ;
             
         }
 

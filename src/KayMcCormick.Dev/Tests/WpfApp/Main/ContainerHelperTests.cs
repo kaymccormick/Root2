@@ -7,8 +7,6 @@ using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-using  KayMcCormick.Dev.TestLib ;
-using  KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog ;
 using Tests.CollectionDefinitions ;
 using Tests.Lib.Fixtures ;
@@ -34,12 +32,20 @@ namespace Tests.Main
         public ContainerHelperTests (
             LoggingFixture        loggingFixture
           , ITestOutputHelper     output
-          , AppContainerFixture   appContainerFixture
+          , [ NotNull ] AppContainerFixture   appContainerFixture
         )
         {
-            loggingFixture.SetOutputHelper ( output ) ;
+            if ( appContainerFixture == null )
+            {
+                throw new ArgumentNullException ( nameof ( appContainerFixture ) ) ;
+            }
 
-            LoggingFixture = loggingFixture ;
+            if ( loggingFixture != null )
+            {
+                loggingFixture.SetOutputHelper ( output ) ;
+
+                LoggingFixture = loggingFixture ;
+            }
 
             Scope  = appContainerFixture.BeginLifetimeScope ( nameof ( ContainerHelperTests ) ) ;
         }

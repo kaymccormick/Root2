@@ -34,7 +34,7 @@ namespace AnalysisControls
             get => compilationUnitSyntax ;
             set
             {
-                if (!object.ReferenceEquals(compilationUnitSyntax, value))
+                if (!ReferenceEquals(compilationUnitSyntax, value))
                 {
                     OnPropertyChanging();
                     compilationUnitSyntax = value;
@@ -48,7 +48,7 @@ namespace AnalysisControls
             get => selectedItem ;
             set
             {
-                if ( ! object.ReferenceEquals ( selectedItem , value ) )
+                if ( ! ReferenceEquals ( selectedItem , value ) )
                 {
                     OnPropertyChanging ( ) ;
                     selectedItem = value ;

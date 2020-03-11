@@ -3,7 +3,6 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:projLib="clr-namespace:ProjLib;assembly=ProjLib"
-  xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
   xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControls">
   <wpf:BaseApp.Resources>

@@ -68,20 +68,10 @@ namespace ProjInterface
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext() ;
-            _factory = new TaskFactory(_taskScheduler);
 
             ViewModel = viewModel ;
             _factory  = new TaskFactory ( _taskScheduler ) ;
-            var actionBlock = new ActionBlock < ILogInvocation > (
-                                                                 invocation
-                                                                     => {
-                                                                     ViewModel
-                                                                        .LogInvocations
-                                                                        .Add (
-                                                                              invocation
-                                                                             ) ;
-                                                                 }, new ExecutionDataflowBlockOptions() { TaskScheduler = _taskScheduler}) ;
-
+            
             var myCacheTarget2 = MyCacheTarget2.GetInstance(1000);
             myCacheTarget2.Cache.SubscribeOn(Scheduler.Default)
                          .Buffer(TimeSpan.FromMilliseconds(100))
@@ -92,7 +82,7 @@ namespace ProjInterface
                                         foreach (var json in infos)
                                         {
                                             var i = JsonSerializer
-                                               .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions{ } ) ;
+                                               .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions ( ) ) ;
                                             foreach ( var p in i.Properties )
                                             {
                                                 var g = ( _eventView.View as GridView ) ;
@@ -143,12 +133,6 @@ namespace ProjInterface
             // ViewModel.BeginInit();
         }
 
-        private ConcurrentQueue < IBoundCommandOperation > opqueue =
-            new ConcurrentQueue < IBoundCommandOperation > ( ) ;
-
-        private ObservableCollection < Task < bool > > waitingTasks =
-            new ObservableCollection < Task < bool > > ( ) ;
-
         private IWorkspacesViewModel _viewModel = null ;
 
         public event RoutedEventHandler TaskCompleted
@@ -170,9 +154,7 @@ namespace ProjInterface
         private ObservableCollection<TaskWrap> _obsTasks = new ObservableCollection < TaskWrap > ();
         private IValueConverter _propConverter = new PropertyConverter() ;
 
-        public ActionBlock < Workspace > WorkspaceActionBlock { get ; private set ; }
-
-        private ITargetBlock < string > DataflowHead { get ; }
+        public ActionBlock < Workspace > WorkspaceActionBlock => null ;
 
         private static bool Fault ( Task task )
         {
@@ -319,7 +301,7 @@ namespace ProjInterface
         )
         {
             LogEventInstance instance = value as LogEventInstance;
-            if ( instance.Properties != null && instance.Properties.TryGetValue ( ( string ) parameter , out var elem ) )
+            if ( instance != null && (instance.Properties != null && instance.Properties.TryGetValue ( ( string ) parameter ?? throw new InvalidOperationException ( ) , out var elem )) )
             {
                 var process = Process ( elem ) ;
                 if(targetType == typeof(string))
@@ -396,7 +378,9 @@ namespace ProjInterface
                         return ex.Message ;
                     }
 
+#pragma warning disable CS0162 // Unreachable code detected
                     return "test" ;
+#pragma warning restore CS0162 // Unreachable code detected
                 case JsonValueKind.Array :     return elem.EnumerateArray ( ).Select ( Process ) ;
                 case JsonValueKind.String :    return elem.GetString ( ) ;
                 case JsonValueKind.Number :    return elem.GetInt32 ( ) ;
@@ -405,8 +389,6 @@ namespace ProjInterface
                 case JsonValueKind.Null :      return null ;
                 default :                      throw new ArgumentOutOfRangeException ( ) ;
             }
-
-            return elem.GetString ( ) ;
         }
 
 

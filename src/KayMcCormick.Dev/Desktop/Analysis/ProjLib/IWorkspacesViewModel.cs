@@ -27,8 +27,6 @@ namespace ProjLib
 
         ObservableCollection < ILogInvocation > LogInvocations { get ; }
 
-        IPipelineViewModel PipelineViewModel { get ; }
-
 #if false
         Task < object > LoadSolutionAsync (
             VsInstance             vsSelectedItem

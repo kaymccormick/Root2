@@ -58,14 +58,18 @@ namespace ProjLib
                     }
 
                     throw new UnableToInitializeWorkspace (
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                                                            "Unable to initialize workspace."
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                                                          , ex
                                                           ) ;
                 }
 
 
                 Logger.Info (
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                              "SkipUnrecognizedProjects is {SkipUnrecognizedProjects}"
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                            , workspace.SkipUnrecognizedProjects
                             ) ;
                 workspace.SkipUnrecognizedProjects = true ;

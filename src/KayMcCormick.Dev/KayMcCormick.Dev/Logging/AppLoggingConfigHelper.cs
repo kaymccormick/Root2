@@ -48,7 +48,9 @@ namespace KayMcCormick.Dev.Logging
 
             if (logReceiverServices.Count == 0)
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 Console.WriteLine("\nNo services are found.");
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                 return false;
             }
             else

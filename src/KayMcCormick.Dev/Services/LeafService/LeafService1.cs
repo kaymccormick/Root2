@@ -18,14 +18,11 @@ using System.ServiceModel.Discovery ;
 using System.Threading ;
 using System.Timers ;
 using Common.Logging ;
-using KayMcCormick.Dev.DataBindingTraceFilter ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
-using NLog.Config ;
 using NLog.Fluent ;
 using NLog.LogReceiverService ;
-using NLog.Targets ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;
 using LogManager = NLog.LogManager ;
@@ -38,8 +35,12 @@ namespace LeafService
         private readonly ILog _commonLogger ;
         private static Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
         private static Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
+#pragma warning disable CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
         private ServiceHost _svcHost ;
+#pragma warning restore CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
+#pragma warning disable CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
         private CentralService _centralService ;
+#pragma warning restore CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
         private Timer _timer ;
         private ServiceHost _svcReceiver ;
 
@@ -157,8 +158,6 @@ namespace LeafService
         }
 
         public Thread MyThread { get ; set ; }
-
-        private void MainProc ( object obj ) { Log.Info ( "in main proc" ) ; }
 
         private void EOnEntryWritten ( object sender , EntryWrittenEventArgs e )
         {

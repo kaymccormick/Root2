@@ -9,11 +9,9 @@
 // 
 // ---
 #endregion
-using System ;
 using System.ComponentModel ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 
@@ -45,12 +43,6 @@ namespace AnalysisFramework
         public LogInvocationArgument ( ) {
         }
 
-        public LogInvocationArgument ( [ NotNull ] ILogInvocation debugInvo , [ NotNull ] ArgumentSyntax syntax ) : this(syntax)
-        {
-            _syntax    = syntax ?? throw new ArgumentNullException ( nameof ( syntax ) ) ;
-
-
-        }
         [JsonIgnore]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public string JSON { get ; set ; }

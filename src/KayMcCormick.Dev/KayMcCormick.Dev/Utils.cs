@@ -47,15 +47,18 @@ namespace KayMcCormick.Dev
                            .Write();
                     }
 
-                    s.WriteLine(e.Message);
-                    var inner = e.InnerException;
-                    var seen = new HashSet<object>();
-                    while (inner != null
-                            && !seen.Contains(inner))
+                    if ( e != null )
                     {
-                        doLog(inner);
-                        seen.Add(inner);
-                        inner = inner.InnerException;
+                        s.WriteLine ( e.Message ) ;
+                        var inner = e.InnerException ;
+                        var seen = new HashSet < object > ( ) ;
+                        while ( inner != null
+                                && ! seen.Contains ( inner ) )
+                        {
+                            doLog ( inner ) ;
+                            seen.Add ( inner ) ;
+                            inner = inner.InnerException ;
+                        }
                     }
                 }
                 catch (Exception ex)

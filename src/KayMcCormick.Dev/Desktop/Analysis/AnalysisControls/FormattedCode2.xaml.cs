@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 using ProjLib ;
 using Color = System.Windows.Media.Color ;
+// ReSharper disable All
 
 namespace AnalysisControls
 {
@@ -70,7 +71,6 @@ namespace AnalysisControls
 
         private void Visit ( )
         {
-            _visitor3.DefaultVisit ( SyntaxTree.GetRoot ( ) ) ;
             // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
             // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
             // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;
@@ -172,9 +172,15 @@ namespace AnalysisControls
     {
         public SColor? fg ;
         public SColor? bg ;
+#pragma warning disable CS0649 // Field 'StyleInfo.italics' is never assigned to, and will always have its default value false
         public bool italics ;
+#pragma warning restore CS0649 // Field 'StyleInfo.italics' is never assigned to, and will always have its default value false
+#pragma warning disable CS0649 // Field 'StyleInfo.bold' is never assigned to, and will always have its default value false
         public bool bold ;
+#pragma warning restore CS0649 // Field 'StyleInfo.bold' is never assigned to, and will always have its default value false
+#pragma warning disable CS0649 // Field 'StyleInfo.underline' is never assigned to, and will always have its default value false
         public bool underline ;
+#pragma warning restore CS0649 // Field 'StyleInfo.underline' is never assigned to, and will always have its default value false
 
         public StyleInfo With ( StyleInfo value )
         {

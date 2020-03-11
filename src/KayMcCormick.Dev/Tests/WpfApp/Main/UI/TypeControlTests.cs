@@ -6,8 +6,6 @@ using System.Windows ;
 using System.Windows.Automation ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-using  KayMcCormick.Dev.TestLib ;
-using  KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog ;
 using Tests.Lib.Utils ;
 using WpfApp ;
@@ -21,7 +19,7 @@ namespace Tests.Main.UI
     ///     Test class for tests of <see cref="TypeControl" />
     /// </summary>
     [ LogTestMethod ] [ BeforeAfterLogger ]
-    public class TypeControlTests : IClassFixture < LoggingFixture >, IDisposable
+    public sealed class TypeControlTests : IClassFixture < LoggingFixture >, IDisposable
     {
         private const string TypeControlName = "typeControl";
         private readonly LoggingFixture _loggingFixture ;
@@ -45,7 +43,9 @@ namespace Tests.Main.UI
         /// <exception cref="AggregateException"></exception>
         // [ WpfFact ]
         [ Trait ( "UITest" , "true" ) ]
+#pragma warning disable CS0628 // 'TypeControlTests.TestTypeControl()': new protected member declared in sealed class
         protected void TestTypeControl ( )
+#pragma warning restore CS0628 // 'TypeControlTests.TestTypeControl()': new protected member declared in sealed class
         {
             
             var controlName = SetupTypeControl ( out var control ) ;

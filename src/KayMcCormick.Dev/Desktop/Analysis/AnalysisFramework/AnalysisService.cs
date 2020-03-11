@@ -73,7 +73,7 @@ namespace AnalysisFramework
                                          , null
                                          , syntaxTree.GetRoot ( )
                                          , new CodeSource ( "memory" )
-                                         , syntaxTree
+                                         , syntaxTree, ""
                                           ) ;
         }
 
@@ -86,7 +86,9 @@ namespace AnalysisFramework
 
             if ( String.IsNullOrWhiteSpace ( code ) )
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new ArgumentOutOfRangeException ( nameof ( code ) , "Empty code supplied" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             }
 
             if ( assemblyName == null )

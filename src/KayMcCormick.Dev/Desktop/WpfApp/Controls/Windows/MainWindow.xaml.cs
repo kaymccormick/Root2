@@ -22,7 +22,6 @@ using NLog.Config ;
 using Vanara.Extensions.Reflection ;
 using WpfApp.Core.Attributes ;
 using WpfApp.Core.Interfaces ;
-using WpfApp.Core.Logging ;
 using WpfApp.Core.Menus ;
 
 namespace WpfApp.Controls.Windows

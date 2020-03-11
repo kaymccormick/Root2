@@ -13,6 +13,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace ProjLib
@@ -49,11 +50,21 @@ namespace ProjLib
         }
 
         public override void Write (
-            Utf8JsonWriter        writer
-          , LogLevel              value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] LogLevel              value
           , JsonSerializerOptions options
         )
         {
+            if ( writer == null )
+            {
+                throw new ArgumentNullException ( nameof ( writer ) ) ;
+            }
+
+            if ( value == null )
+            {
+                throw new ArgumentNullException ( nameof ( value ) ) ;
+            }
+
             writer.WriteStringValue(value.Name);
         }
         #endregion

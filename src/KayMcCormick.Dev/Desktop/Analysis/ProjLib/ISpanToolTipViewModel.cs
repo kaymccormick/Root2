@@ -16,6 +16,7 @@ namespace ProjLib
 {
     public interface ISpanToolTipViewModel
     {
+        // ReSharper disable once UnusedMember.Global
         List < object > Spans { get ; set ; }
 
         Location Location { get ; set ; }

@@ -11,8 +11,6 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
-using Microsoft.VisualStudio.Setup.Configuration ;
 
 namespace ProjLib
 {

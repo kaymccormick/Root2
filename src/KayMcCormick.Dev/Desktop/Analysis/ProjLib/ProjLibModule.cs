@@ -16,11 +16,13 @@ namespace ProjLib
 {
     public class ProjLibModule : Module
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
             Logger.Trace ( "{methodName}" , nameof ( Load ) ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             builder.RegisterType<WorkspacesViewModel>()
                    .As<IWorkspacesViewModel>()
                    .InstancePerLifetimeScope();

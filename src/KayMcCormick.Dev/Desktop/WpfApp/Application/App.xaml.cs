@@ -1,35 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Threading;
-using Autofac;
-using Autofac.Core;
-using Castle.Core.Internal;
-using JetBrains.Annotations;
+﻿using System ;
+using System.Collections.Generic ;
+using System.ComponentModel ;
+using System.Configuration ;
+using System.Diagnostics ;
+using System.Diagnostics.CodeAnalysis ;
+using System.Linq ;
+using System.Reflection ;
+using System.Runtime.CompilerServices ;
+using System.Runtime.ExceptionServices ;
+using System.Threading.Tasks ;
+using System.Windows ;
+using System.Windows.Data ;
+using System.Windows.Input ;
+using System.Windows.Threading ;
+using Autofac ;
+using Autofac.Core ;
+using Castle.Core.Internal ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
-using NLog;
-using NLog.Fluent;
-using Vanara.Extensions.Reflection;
-using WpfApp.Config;
-using WpfApp.Core;
-using WpfApp.Core.Container;
-using WpfApp.Core.Exceptions;
-using WpfApp.Core.Interfaces;
-using WpfApp.Debug;
-using IContainer = Autofac.IContainer;
+using NLog ;
+using NLog.Fluent ;
+using Vanara.Extensions.Reflection ;
+using WpfApp.Config ;
+using WpfApp.Core ;
+using WpfApp.Core.Container ;
+using WpfApp.Core.Exceptions ;
+using WpfApp.Core.Interfaces ;
+using WpfApp.Debug ;
+using IContainer = Autofac.IContainer ;
 
 namespace WpfApp
 {
@@ -75,7 +75,7 @@ namespace WpfApp.Application
             }
 
             DebugLog = DoLogMessage;
-            var folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            
             // DoLogMessage(
             // folderPath
             // );
@@ -199,8 +199,9 @@ namespace WpfApp.Application
         ///     Performs application-defined tasks associated with freeing,
         ///     releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
+
             var cd = AppDomain.CurrentDomain;
             cd.AssemblyLoad -= CurrentDomainOnAssemblyLoad;
             //cd.TypeResolve += CdOnTypeResolve;
@@ -310,7 +311,9 @@ namespace WpfApp.Application
                                          .Property("callerFilePath", callerFilePath)
                                          .Write(
                                                  callerMemberName
+                                                 // ReSharper disable once ExplicitCallerInfoArgument
                                                , callerFilePath
+                                                 // ReSharper disable once ExplicitCallerInfoArgument
                                                , callerLineNumber
                                                 );
                 System.Diagnostics.Debug.WriteLine(message);
@@ -318,12 +321,12 @@ namespace WpfApp.Application
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(
-                                                    $"Received exception trying to log {message}"
-                                                    + (callerMemberName.IsNullOrEmpty()
-                                                            ? ""
-                                                            : $" from {callerMemberName} at {callerFilePath}:{callerLineNumber}: {ex.Message}"
-                                                      )
-                                                   );
+                                                   $"Received exception trying to log {message}"
+                                                   + (callerMemberName.IsNullOrEmpty()
+                                                          ? ""
+                                                          : $" from {callerMemberName} at {callerFilePath}:{callerLineNumber}: {ex.Message}"
+                                                     )
+                                                  );
                 System.Diagnostics.Debug.WriteLine(ex);
             }
         }
@@ -489,8 +492,8 @@ namespace WpfApp.Application
                     if (Logger == null)
                     {
                         System.Diagnostics.Debug.WriteLine(
-                                                            "got a logger but i don't have one yet"
-                                                           );
+                                                           "got a logger but i don't have one yet"
+                                                          );
                     }
                 }
             };
@@ -530,7 +533,7 @@ namespace WpfApp.Application
 
         private void MainWindowLoaded(object o, RoutedEventArgs args)
         {
-            var fe = o as FrameworkElement;
+            var fe = ( FrameworkElement ) o;
             DebugLog(nameof(MainWindowLoaded));
             Props.SetMenuItemListCollectionView(fe, MenuItemListCollectionView);
             DebugLog($"Setting LifetimeScope DependencyProperty to {AppContainer}");

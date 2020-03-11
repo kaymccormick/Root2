@@ -19,7 +19,6 @@ using System.Windows.Media ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
-using ProjLib ;
 
 namespace AnalysisControls
 {
@@ -34,8 +33,6 @@ namespace AnalysisControls
         private Style _curStyle ;
         private Stack < Style > _styles  = new Stack < Style > ();
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private List < double > _lineStart  = new List < double> ();
-        private double _oldLineStart ;
         private bool attached ;
 
         public Visitor3 ( FlowDocument document , MyFlowDocumentScrollViewer flowViewer ):base(SyntaxWalkerDepth.Trivia)
@@ -73,19 +70,6 @@ namespace AnalysisControls
             Logger.Info ( "bounds is {b}" , b ) ;
             var fileLinePositionSpan = node.GetLocation().GetMappedLineSpan() ;
             var x = fileLinePositionSpan.StartLinePosition;
-            if ( x.Line < LineStart.Count )
-            {
-                var begin = LineStart[ x.Line ] ;
-                // Logger.Debug ( "Begin is {begin} for {line}" , begin , x.Line ) ;
-            }
-
-            var y = fileLinePositionSpan.EndLinePosition ;
-            if ( LineStart.Count >= y.Line + 1)
-            {
-                var s = LineStart[ y.Line ] ;
-                // Logger.Debug ( "start for {line} is {s}" , y.Line , s ) ;
-            }
-
             DependencyObject elem = FlowViewer.ScrollViewer ;
             if ( elem != null ) {
                 var count = VisualTreeHelper.GetChildrenCount ( elem ) ;
@@ -105,8 +89,6 @@ namespace AnalysisControls
             var r = _document.TryFindResource ( node.Kind ( ) ) ;
             return r as Style ;
         }
-
-        public override void DefaultVisit ( SyntaxNode node ) { base.DefaultVisit ( node ) ; }
 
         private void RecordLocation(Location getLocation)
         {
@@ -157,7 +139,6 @@ namespace AnalysisControls
                 //_curLine = line;
                 Logger.Warn ( "mark at start of line {offset}" , offset ) ;
                 _isAtStartOfLine = true;
-                LineStart.Add ( _oldLineStart) ;
             }
         }
 
@@ -165,8 +146,6 @@ namespace AnalysisControls
         {
             Logger.Info ( "offset {}" , e.HorizontalOffset ) ;
         }
-
-        public List < double> LineStart { get { return _lineStart ; } }
 
         public override void VisitToken ( SyntaxToken token )
         {

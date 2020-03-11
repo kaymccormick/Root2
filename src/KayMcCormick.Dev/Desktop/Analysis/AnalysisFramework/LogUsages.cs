@@ -1,5 +1,4 @@
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Runtime.Serialization ;
@@ -165,7 +164,9 @@ namespace AnalysisFramework
                                  ) ;
 
                     Logger.Info (
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                                  "symbolinfo is {node}"
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                                , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
@@ -179,7 +180,9 @@ namespace AnalysisFramework
                                  // TODO optmize
                                  && CheckSymbol ( methodSymbol , t ) ;
 #if TRACE
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                     Logger.Debug ( "result is {result}" , result ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 #endif
                     return Tuple.Create(result, methodSymbol, n1);
                 }
@@ -192,10 +195,14 @@ namespace AnalysisFramework
                     return Tuple.Create <bool, IMethodSymbol, SyntaxNode> ( result , null, n1 ) ;
                 }
 
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new Exception ( "Error" ) ;
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 
             }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch ( Exception ex )
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 throw ;
                 // return Tuple.Create ( false , null , node  ) ;
@@ -234,16 +241,13 @@ namespace AnalysisFramework
         internal static ILogInvocation CreateLogInvocation (
             string                           sourceLocation
           , IMethodSymbol                    methodSymbol
-          , LogMessageRepr                   msgVal
           , SyntaxNode                       relevantNode
           , SemanticModel                    semanticModel
           , CompilationUnitSyntax            o
-          , ICodeSource                      codeSource
-          , SyntaxTree                       ivpSyntaxTree
           , IList < ILogInvocationArgument > args
         )
         {
-            return new LogInvocation2(sourceLocation, null, null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName, args);
+            return new LogInvocation2(sourceLocation , null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName, args);
         }
     }
 

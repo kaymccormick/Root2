@@ -3,14 +3,12 @@
 <Wix xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define KayMcCormick.Dev_TargetDir=$(var.KayMcCormick.Dev.TargetDir)?>
   <!-- <?define KmGlobalOutputPath_TargetDir=$(var.KmGlobalOutputPath)?> -->
-  <?define LogService_TargetDir=$(var.LogService.TargetDir)?>
   <?define ProjInterface_TargetDir=$(var.ProjInterface.TargetDir)?>
   <?define ProjLib_TargetDir=$(var.ProjLib.TargetDir)?>
-  <?define WcfService1_TargetDir=$(var.WcfService1.TargetDir)?>
   <?define WpfApp_TargetDir=$(var.WpfApp.TargetDir)?>
   <?define WpfApp2_TargetDir=$(var.WpfApp2.TargetDir)?>
   <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
-  <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define ConsoleServiceHost_TargetDir=$(var.ConsoleServiceHost.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?>
+  <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?><?define LeafService_TargetDir=$(var.LeafService.TargetDir)?>
   <Product Id="*" Name="Kay_McCormick_Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="715179D2-24C8-46D4-A637-03DABC5A52A1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -103,12 +101,8 @@
       <Component Id="KayMcCormick.Dev.dll" Guid="A1193935-56C2-42B1-BA5A-31250517B99C">
         <File KeyPath="yes" Id="KayMcCormick.Dev.dll" Name="KayMcCormick.Dev.dll" Source="$(var.KayMcCormick.Dev_TargetDir)KayMcCormick.Dev.dll" />
       </Component>
-      <Component Id="LogService.exe" Guid="5B6D6E61-7FD9-4B1E-AE4E-9E98DE85D6C2">
-        <File KeyPath="yes" Id="LogService.exe" Name="LogService.exe" Source="$(var.LogService_TargetDir)LogService.exe" />
-      </Component>
-      <Component Id="LogService.exe.config" Guid="5CB9819F-A099-41FC-A61A-0E77BA274080">
-        <File KeyPath="yes" Id="LogService.exe.config" Name="LogService.exe.config" Source="$(var.LogService_TargetDir)LogService.exe.config" />
-      </Component>
+      
+      
 
 
       <Component Id="ProjInterface.exe" Guid="45EF7127-21A1-4BAB-8D1B-1C92543E67BA">
@@ -171,12 +165,8 @@
       
       
       
-      <Component Id="ConsoleServiceHost.exe" Guid="46742595-4B8E-456F-A8B5-577355690991">
-        <File KeyPath="yes" Id="ConsoleServiceHost.exe" Name="ConsoleServiceHost.exe" Source="$(var.ConsoleServiceHost_TargetDir)ConsoleServiceHost.exe" />
-      </Component>
-      <Component Id="ConsoleServiceHost.exe.config" Guid="7A377D6A-F779-4F2B-BE5D-003F0ECD1EE6">
-        <File KeyPath="yes" Id="ConsoleServiceHost.exe.config" Name="ConsoleServiceHost.exe.config" Source="$(var.ConsoleServiceHost_TargetDir)ConsoleServiceHost.exe.config" />
-      </Component>
+      
+      
       <Component Id="AnalysisServiceLibrary.dll" Guid="48CFCE17-428F-4520-A3E6-7A3CDDCD3CC7">
         <File KeyPath="yes" Id="AnalysisServiceLibrary.dll" Name="AnalysisServiceLibrary.dll" Source="$(var.AnalysisServiceLibrary_TargetDir)AnalysisServiceLibrary.dll" />
       </Component>
@@ -283,18 +273,10 @@
       <Component Id="System.Collections.Immutable.dll" Guid="3D2461ED-54B0-4C02-9CB4-823E00E6D6D4">
         <File KeyPath="yes" Id="System.Collections.Immutable.dll" Name="System.Collections.Immutable.dll" Source="$(var.ConsoleApp1_TargetDir)System.Collections.Immutable.dll" />
       </Component>
-      <Component Id="Global.asax" Guid="DCA2BFFE-9D3D-4ECA-B523-79AF13A36E33">
-        <File KeyPath="yes" Id="Global.asax" Name="Global.asax" Source="$(var.KmGlobalOutputPath)web\WcfService1\Global.asax" />
-      </Component>
-      <Component Id="ReceiveLogs.svc" Guid="45747951-6316-4789-B640-727690F9C091">
-        <File KeyPath="yes" Id="ReceiveLogs.svc" Name="ReceiveLogs.svc" Source="$(var.KmGlobalOutputPath)web\WcfService1\ReceiveLogs.svc" />
-      </Component>
-      <Component Id="Service1.svc" Guid="554FD295-5F20-40C0-8832-F0EC071882DA">
-        <File KeyPath="yes" Id="Service1.svc" Name="Service1.svc" Source="$(var.KmGlobalOutputPath)web\WcfService1\Service1.svc" />
-      </Component>
-      <Component Id="Web.config" Guid="8EC904C0-6703-4F4B-BC2B-BD8D4D71FD11">
-        <File KeyPath="yes" Id="Web.config" Name="Web.config" Source="$(var.KmGlobalOutputPath)web\WcfService1\Web.config" />
-      </Component>
+      
+      
+      
+      
       <Component Id="Xceed.Wpf.Toolkit.dll" Guid="E1BACEEC-9336-49F4-9077-FCC7C6386E30">
         <File KeyPath="yes" Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.AnalysisControls_TargetDir)Xceed.Wpf.Toolkit.dll" />
       </Component>
@@ -317,24 +299,7 @@
         <File KeyPath="yes" Id="PdfSharp.Charting_wpf.dll" Name="PdfSharp.Charting-wpf.dll" Source="$(var.AnalysisControls_TargetDir)PdfSharp.Charting-wpf.dll" />
       </Component>
       
-      <Component Id="Ninject.dll" Guid="2F8ADC8B-D80B-482B-8F5F-FDEE84070079">
-        <File KeyPath="yes" Id="Ninject.dll" Name="Ninject.dll" Source="$(var.LogService_TargetDir)Ninject.dll" />
-      </Component>
-      <Component Id="Common.Logging.Core.dll" Guid="F38F6F7C-6F43-4A9C-BBDB-017F30BDC51D">
-        <File KeyPath="yes" Id="Common.Logging.Core.dll" Name="Common.Logging.Core.dll" Source="$(var.LogService_TargetDir)Common.Logging.Core.dll" />
-      </Component>
-      <Component Id="Topshelf.dll" Guid="40B49E1F-10A6-42D5-B8A7-893EAB8FD374">
-        <File KeyPath="yes" Id="Topshelf.dll" Name="Topshelf.dll" Source="$(var.LogService_TargetDir)Topshelf.dll" />
-      </Component>
-      <Component Id="Common.Logging.dll" Guid="C0F6094F-7AA3-45F3-8113-BE4D898F83E6">
-        <File KeyPath="yes" Id="Common.Logging.dll" Name="Common.Logging.dll" Source="$(var.LogService_TargetDir)Common.Logging.dll" />
-      </Component>
-      <Component Id="Topshelf.Common.Logging.dll" Guid="3BF3E80D-CC19-4655-A8C2-9C57B816C9A9">
-        <File KeyPath="yes" Id="Topshelf.Common.Logging.dll" Name="Topshelf.Common.Logging.dll" Source="$(var.LogService_TargetDir)Topshelf.Common.Logging.dll" />
-      </Component>
-      <Component Id="Topshelf.Ninject.dll" Guid="94716C85-82C6-4728-AD7B-24B8808C1658">
-        <File KeyPath="yes" Id="Topshelf.Ninject.dll" Name="Topshelf.Ninject.dll" Source="$(var.LogService_TargetDir)Topshelf.Ninject.dll" />
-      </Component>
+
       <Component Id="DynamicData.dll" Guid="02BBC51E-4651-4000-88EF-7337447F2594">
         <File KeyPath="yes" Id="DynamicData.dll" Name="DynamicData.dll" Source="$(var.WpfApp_TargetDir)DynamicData.dll" />
       </Component>
@@ -347,14 +312,36 @@
       <Component Id="Vanara.Core.dll" Guid="957D0C17-D357-415D-8636-12C3C729AFC5">
         <File KeyPath="yes" Id="Vanara.Core.dll" Name="Vanara.Core.dll" Source="$(var.WpfApp_TargetDir)Vanara.Core.dll" />
       </Component>
+      <Component KeyPath="yes" Id="Microsoft.Build.Locator.dll" Guid="F7FC8BE3-55A7-4172-8338-88A8F2DC7740">
+        <File Id="Microsoft.Build.Locator.dll" Name="Microsoft.Build.Locator.dll" Source="$(var.ConsoleApp1_TargetDir)Microsoft.Build.Locator.dll" />
+      </Component>
+      <Component Id="LeafService.exe" Guid="FAB0C90A-B4BC-4AAB-94A4-85C7C312865E">
+        <File KeyPath="yes" Id="LeafService.exe" Name="LeafService.exe" Source="$(var.LeafService_TargetDir)LeafService.exe" />
+      </Component>
+      <Component Id="LeafService.exe.config" Guid="055427D5-4D21-4BA5-9758-83D3B704730D">
+        <File KeyPath="yes" Id="LeafService.exe.config" Name="LeafService.exe.config" Source="$(var.LeafService_TargetDir)LeafService.exe.config" />
+      </Component>
+      <Component Id="Topshelf.Autofac.dll" Guid="EAD106B4-8A4A-4D02-9E93-7A90538872EE">
+        <File KeyPath="yes" Id="Topshelf.Autofac.dll" Name="Topshelf.Autofac.dll" Source="$(var.LeafService_TargetDir)Topshelf.Autofac.dll" />
+      </Component>
+      <Component Id="Common.Logging.Core.dll" Guid="ACA5DCE0-4466-43A0-BDAC-5F502EAD4C0F">
+        <File KeyPath="yes" Id="Common.Logging.Core.dll" Name="Common.Logging.Core.dll" Source="$(var.LeafService_TargetDir)Common.Logging.Core.dll" />
+      </Component>
+      <Component Id="Topshelf.dll" Guid="2E68AD77-A6AB-4473-9627-A15842199F82">
+        <File KeyPath="yes" Id="Topshelf.dll" Name="Topshelf.dll" Source="$(var.LeafService_TargetDir)Topshelf.dll" />
+      </Component>
+      <Component Id="Common.Logging.dll" Guid="B95E5765-273F-4153-83E1-366E14B334F5">
+        <File KeyPath="yes" Id="Common.Logging.dll" Name="Common.Logging.dll" Source="$(var.LeafService_TargetDir)Common.Logging.dll" />
+      </Component>
+      <Component Id="Topshelf.Common.Logging.dll" Guid="FFC872A7-DE73-422C-9758-C09935D54EBA">
+        <File KeyPath="yes" Id="Topshelf.Common.Logging.dll" Name="Topshelf.Common.Logging.dll" Source="$(var.LeafService_TargetDir)Topshelf.Common.Logging.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
   <Fragment>
     <ComponentGroup Id="_files" Directory="LogReceiverServiceBinDir">
-      <Component Id="bin_WcfService1.dll" Guid="ACBE9251-30A5-43A4-A695-7D585469EBAB">
-        <File KeyPath="yes" Id="bin_WcfService1.dll" Name="WcfService1.dll" Source="$(var.WcfService1_TargetDir)WcfService1.dll" />
-      </Component>
+      
     </ComponentGroup>
   </Fragment>
   <Fragment>

@@ -17,8 +17,9 @@ namespace ProjLib
 {
     public class TokenSpanObject : SpanObject < SyntaxToken >
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly string _instanceRawKind ;
-        private          string _instanceValueText ;
+        private          readonly string _instanceValueText ;
 
         
         public TokenSpanObject ( TextSpan span , SyntaxToken instance ) : base ( span , instance )

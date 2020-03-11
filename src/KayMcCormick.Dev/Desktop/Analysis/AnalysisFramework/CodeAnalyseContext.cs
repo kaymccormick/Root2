@@ -11,7 +11,6 @@
 // ---
 #endregion
 using System ;
-using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
 using System.Text.Json.Serialization ;
@@ -51,9 +50,8 @@ namespace AnalysisFramework
 
         protected SyntaxNode node ;
 
-        private CompilationUnitSyntax _compilationUnit ;
         private readonly SyntaxTree _syntaxTree ;
-        private Lazy < CompilationUnitSyntax > _lazy ;
+        private readonly Lazy < CompilationUnitSyntax > _lazy ;
 
         public delegate ISyntaxTreeContext Factory1(string code , string assemblyName) ;
 
@@ -64,7 +62,8 @@ namespace AnalysisFramework
           , SyntaxNode            node
           , ICodeSource           document
           , SyntaxTree            syntaxTree
-        ) : this()
+           , string assemblyName
+        ) : this( assemblyName )
         {
             _currentModel = currentModel ;
             _statement    = statement ;
@@ -74,17 +73,17 @@ namespace AnalysisFramework
         }
 
         
-        public CodeAnalyseContext ( ICodeSource document ) : this()
+        public CodeAnalyseContext ( ICodeSource document , string assemblyName ) : this( assemblyName )
         {
             Document = document ;
         }
 
-        private CodeAnalyseContext ( )
+        private CodeAnalyseContext ( string assemblyName )
         {
+            _assemblyName = assemblyName ;
             _lazy = new Lazy<CompilationUnitSyntax>(
                                                     ValueFactory
                                                    );
-
         }
 
         public static ISyntaxTreeContext FromSyntaxTree (
@@ -143,6 +142,8 @@ namespace AnalysisFramework
                 return _lazy.Value ;
             }
         }
+
+        public CompilationUnitSyntax Lazy => _lazy.Value ;
 
         private CompilationUnitSyntax ValueFactory ( ) { return _syntaxTree.GetCompilationUnitRoot ( ) ; }
         #endregion

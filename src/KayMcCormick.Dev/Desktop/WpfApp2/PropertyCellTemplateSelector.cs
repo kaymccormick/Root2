@@ -20,7 +20,6 @@ namespace WpfApp2
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataTemplateSelector" /> class.</summary>
         public PropertyCellTemplateSelector (
             LogProperty              property
           , Func < string , object > findResource

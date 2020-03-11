@@ -3,6 +3,9 @@ using KayMcCormick.Dev.Logging;
 using KayMcCormick.Dev.ServiceReference1;
 using NLog;
 using System;
+using System.ServiceModel ;
+using ConfigTest.ServiceReference1 ;
+using NLog.LogReceiverService ;
 using AppInstanceInfoRequest = KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest;
 
 namespace ConfigTest
@@ -12,23 +15,35 @@ namespace ConfigTest
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         static void Main()
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured(
-                                                            Console.WriteLine
-                                                           );
-            Utils.PerformLogConfigDump(Console.Out);
-            Logger.Info("{test}", new Test1() { Test2 = new Test2() { Hello = "derp" } });
-            LogManager.GetCurrentClassLogger().Info("Test log message");
-            using (AppInfoServiceClient client = new AppInfoServiceClient())
-            {
-                var appInstanceInfoResponse =
-                    client.GetAppInstanceInfo(new AppInstanceInfoRequest());
-                var info = appInstanceInfoResponse.Info;
-                Console.WriteLine(info.StartupTime);
+            ServiceReference1.LogReceiverServerClient client1 = new LogReceiverServerClient(new WSDualHttpBinding(), new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/"));
+            var nLogEvent = new NLogEvent ( )
+                            {
+                                Id = 5 , LevelOrdinal = 1 , LoggerOrdinal = 0 , MessageOrdinal = 1
+                            } ;
+            nLogEvent.Values = "0|1" ;
 
-                foreach (var infoLoggerInfo in info.LoggerInfos)
-                {
-                    Console.WriteLine(infoLoggerInfo.TargetName);
-                }
+            client1.ProcessLogMessages ( new NLogEvents ( ) { Events = new[] { nLogEvent } } ) ;
+
+            return ;
+#pragma warning disable CS0162 // Unreachable code detected
+            AppLoggingConfigHelper.EnsureLoggingConfigured(
+#pragma warning restore CS0162 // Unreachable code detected
+                                                                                                                  Console.WriteLine
+                                                                                                                 );
+                                                           Utils.PerformLogConfigDump(Console.Out);
+                                                           Logger.Info("{test}", new Test1() { Test2 = new Test2() { Hello = "derp" } });
+                                                           LogManager.GetCurrentClassLogger().Info("Test log message");
+                                                           using (AppInfoServiceClient client = new AppInfoServiceClient())
+                                                           {
+                                                           var appInstanceInfoResponse =
+                                                           client.GetAppInstanceInfo(new AppInstanceInfoRequest());
+                                                           var info = appInstanceInfoResponse.Info;
+                                                           Console.WriteLine(info.StartupTime);
+
+                                                           foreach (var infoLoggerInfo in info.LoggerInfos)
+                                                           {
+                                                           Console.WriteLine(infoLoggerInfo.TargetName);
+                                                       }
 
                 foreach (var ci in info.ComponentInfos)
                 {

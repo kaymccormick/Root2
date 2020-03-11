@@ -14,14 +14,11 @@ using System.Globalization ;
 using System.Linq ;
 using Autofac ;
 using Autofac.Core ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.TestLib ;
-using  KayMcCormick.Dev.TestLib ;
 using Tests.Lib.Fixtures ;
 using Tests.Lib.Misc ;
 using WpfApp.Core.Converters ;
-using WpfApp.Core.Interfaces ;
 using Xunit ;
 using Xunit.Abstractions ;
 
