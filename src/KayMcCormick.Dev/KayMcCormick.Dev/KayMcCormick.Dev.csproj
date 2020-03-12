@@ -128,6 +128,7 @@
     <Compile Include="InstanceInfo.cs" />
     <Compile Include="Interfaces\IObjectIdProvider.cs" />
     <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
+    <Compile Include="IViewModel.cs" />
     <Compile Include="LogEventInstance.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />

@@ -2,25 +2,22 @@
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
-// ProjLib
+// AnalysisControls
 // NodePanel.cs
 // 
-// 2020-02-27-1:20 AM
+// 2020-03-11-7:23 PM
 // 
 // ---
 #endregion
 using System.Windows.Controls ;
+using AnalysisControls.Interfaces ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Views
 {
     public partial class NodePanel : UserControl, INodePanel
     {
         public NodePanel ( ) {
             InitializeComponent();
         }
-    }
-
-    public interface INodePanel
-    {
     }
 }

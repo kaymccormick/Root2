@@ -4,12 +4,14 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:local="clr-namespace:AnalysisControls"
   Background="DarkCyan"
   xmlns:syntax="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
+  xmlns:local="clr-namespace:AnalysisControls"
+  xmlns:views="clr-namespace:AnalysisControls.Views"
+  xmlns:converters="clr-namespace:AnalysisControls.Converters"
   x:Name="compilationView"
-  x:Class="AnalysisControls.CompilationView"
+  x:Class="AnalysisControls.Views.CompilationView"
   mc:Ignorable="d"
   FontSize="16.0"
   Padding="25"
@@ -127,7 +129,7 @@
               <GroupBox Grid.Column="0" Grid.Row="1"
                         Grid.ColumnSpan="2">
                 <TextBlock
-                  Text="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.GetLeadingTrivia}}" />
+                  Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLeadingTrivia}}" />
               </GroupBox>
             </Grid>
           </DataTemplate>
@@ -141,7 +143,7 @@
       </ResourceDictionary.MergedDictionaries>
       <local:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
       <DataTemplate x:Key="ChildTokens">
-        <ItemsControl ItemsSource="{Binding ConverterParameter={x:Static local:Converter1Param.ChildTokens},Converter={StaticResource Converter3}}"></ItemsControl>
+        <ItemsControl ItemsSource="{Binding ConverterParameter={x:Static converters:SyntaxNodeInfo.ChildTokens},Converter={StaticResource SyntaxNodeConverter}}"></ItemsControl>
       </DataTemplate>
     </ResourceDictionary>
   </Window.Resources>
@@ -185,8 +187,8 @@
         <TabItem.Resources>
           <DataTemplate DataType="{x:Type codeAnalysis:SyntaxNode}">
             <WrapPanel>
-            <TextBlock Text="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/>
-            <ItemsControl ItemsSource="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.ChildNodes}}">
+            <TextBlock Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+            <ItemsControl ItemsSource="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.ChildNodes}}">
               <ItemsControl.Resources>
               </ItemsControl.Resources>
               <ItemsControl.Template>
@@ -203,10 +205,10 @@
             </WrapPanel>
           </DataTemplate>
         </TabItem.Resources>
-        <ItemsControl ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.ChildNodes}}">
+        <ItemsControl ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.ChildNodes}}">
           <ItemsControl.Resources>
             <DataTemplate DataType="codeAnalysis:SyntaxNode">
-              <TextBlock Text="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/>
+              <TextBlock Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
             </DataTemplate>
           </ItemsControl.Resources>
           <ItemsControl.Template>
@@ -224,11 +226,11 @@
           </ItemsControl>
       </TabItem>
       <TabItem Header="Data">
-        <DataGrid ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,ConverterParameter={x:Static local:Converter1Param.DescendantNodesAndSelf},Converter={StaticResource Converter3}}" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding CompilationUnitRootContext.CompilationUnit,ConverterParameter={x:Static converters:SyntaxNodeInfo.DescendantNodesAndSelf},Converter={StaticResource SyntaxNodeConverter}}" AutoGenerateColumns="False">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Kind" Binding="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.Kind}}"/>
-            <DataGridTextColumn Header="Leading Trivia" Binding="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.GetLeadingTrivia}}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Location" Binding="{Binding Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.GetLocation}}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Kind" Binding="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+            <DataGridTextColumn Header="Leading Trivia" Binding="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLeadingTrivia}}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Location" Binding="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLocation}}"></DataGridTextColumn>
             <DataGridTextColumn Header="JSON Transform" Binding="{Binding Converter={StaticResource TransformConverter}}"></DataGridTextColumn>
             <DataGridTemplateColumn Header="Child Tokens" CellTemplate="{StaticResource ChildTokens}"></DataGridTemplateColumn>
           </DataGrid.Columns>
@@ -242,7 +244,7 @@
                           VerticalAlignment="Stretch" />
       </TabItem>
       <TabItem Header="Syntax">
-        <local:SyntaxPanel x:Name="SyntaxPanel" />
+        <views:SyntaxPanel x:Name="SyntaxPanel" />
       </TabItem>
       <TabItem Header="Semantic Model"
                x:Name="SemanticModelTab">
@@ -281,7 +283,7 @@
     <StatusBar Grid.Row="4" Grid.Column="0"
                Grid.ColumnSpan="2" FontSize="18.0">
       <StatusBarItem
-        Content="{Binding SelectedItem,Converter={StaticResource Converter3},ConverterParameter={x:Static local:Converter1Param.GetLocation},Mode=OneWay}" />
+        Content="{Binding SelectedItem,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLocation},Mode=OneWay}" />
     </StatusBar>
   </Grid>
 </Window>

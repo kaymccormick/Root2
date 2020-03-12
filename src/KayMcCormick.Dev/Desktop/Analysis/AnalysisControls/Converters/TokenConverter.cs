@@ -1,14 +1,12 @@
 using System ;
 using System.Globalization ;
-using System.Text.Json ;
 using System.Windows.Data ;
-using AnalysisFramework ;
-using AnalysisFramework.SyntaxTransform ;
 using Microsoft.CodeAnalysis ;
+using NLog ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Converters
 {
-    public class TransformConverter : IValueConverter   
+    public class TokenConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         public object Convert (
@@ -18,18 +16,17 @@ namespace AnalysisControls
           , CultureInfo culture
         )
         {
-         
-            try
+            if ( value is SyntaxToken x )
             {
-                var r = Transforms.TransformSyntaxNode(value as SyntaxNode);
-                return JsonSerializer.Serialize ( r ) ;
-            }
-            catch ( Exception ex )
+                return x.ToFullString() ;
+            } else if ( value is SyntaxTrivia t)
             {
-                return ex.Message ;
+                return t.ToString ( ) ;
             }
+            LogManager.GetCurrentClassLogger().Debug("{t} {x}", value.GetType().FullName, value);
+    
+            return null ;
         }
-
 
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
         #endregion

@@ -1,4 +1,7 @@
-﻿namespace ProjLib.Interfaces
+﻿using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
+
+namespace ProjLib.Interfaces
 {
     public interface IPipelineViewModel : IViewModel
     {

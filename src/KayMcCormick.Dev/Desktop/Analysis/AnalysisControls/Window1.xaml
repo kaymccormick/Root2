@@ -7,6 +7,7 @@
         xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:interfaces="clr-namespace:AnalysisControls.Interfaces"
         mc:Ignorable="d" FontSize="18.0"
         Title="Window1" Height="450" Width="800">
   <Window.Resources>
@@ -24,7 +25,7 @@
       <xcad:LayoutPanel Orientation="Horizontal">
         <xcad:LayoutAnchorablePane DockWidth="200">
 <xcad:LayoutAnchorable>
-  <ListView ItemsSource="{Binding Source={wpf:Resolve local:IApplicationViewModel},Path=SyntaxItems}">
+  <ListView ItemsSource="{Binding Source={wpf:Resolve interfaces:IApplicationViewModel},Path=SyntaxItems}">
     <ListView.View>
       <GridView>
                   <GridViewColumn Header="Kind" DisplayMemberBinding="{Binding Path=SyntaxKind}"></GridViewColumn>

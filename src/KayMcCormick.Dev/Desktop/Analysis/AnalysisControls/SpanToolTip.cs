@@ -12,11 +12,14 @@
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using AnalysisControls.Interfaces ;
+using JetBrains.Annotations ;
 using ProjLib ;
 using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {
+    [ UsedImplicitly ]
     internal class SpanTT : ToolTip
     {
         public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }

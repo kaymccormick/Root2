@@ -9,9 +9,9 @@
 // 
 // ---
 #endregion
-namespace AnalysisControls
+namespace AnalysisControls.Converters
 {
-    public enum Converter1Param
+    public enum SyntaxNodeInfo
     {
         Ancestors
       , AncestorsAndSelf

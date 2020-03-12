@@ -1,18 +1,18 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows ;
+using System.Windows.Input ;
+using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
+using NLog ;
+using ProjLib.Interfaces ;
 #if NETFRAMEWORK
 using MigraDoc.DocumentObjectModel ;
 using Document = MigraDoc.DocumentObjectModel.Document ;
 using Paragraph = MigraDoc.DocumentObjectModel.Paragraph ;
 using Section = MigraDoc.DocumentObjectModel.Section ;
 #endif
-using NLog ;
-using ProjLib ;
-using ProjLib.Interfaces ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Views
 {
     /// <summary>
     /// Interaction logic for CompilationView.xaml

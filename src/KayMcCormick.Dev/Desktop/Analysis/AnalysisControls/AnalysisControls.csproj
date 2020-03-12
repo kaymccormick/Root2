@@ -80,17 +80,31 @@
   <ItemGroup>
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
-    <Compile Include="CodeWindow.cs" />
-    <Compile Include="CompilationView.xaml.cs">
+    <Compile Include="Converters\HierarchyConverter.cs" />
+    <Compile Include="Converters\JsonConverter.cs" />
+    <Compile Include="Converters\LocationConverter.cs" />
+    <Compile Include="Converters\SyntaxNodeInfo.cs" />
+    <Compile Include="Converters\TokenConverter.cs" />
+    <Compile Include="Interfaces\IApplicationViewModel.cs" />
+    <Compile Include="ViewModels\ApplicationViewModel.cs" />
+    <Compile Include="Syntax\AppTypeInfo.cs" />
+    <Compile Include="Syntax\ComponentInfo.cs" />
+    <Compile Include="Views\CompilationView.xaml.cs">
       <DependentUpon>CompilationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CompilationViewModel.cs" />
-    <Compile Include="ComponentPage.xaml.cs">
+    <Compile Include="ViewModels\CompilationViewModel.cs" />
+    <Compile Include="Views\ComponentPage.xaml.cs">
       <DependentUpon>ComponentPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converter1.cs" />
-    <Compile Include="Converter1Param.cs" />
-    <Compile Include="Converter3.cs" />
+    <Compile Include="ViewModels\ComponentViewModel.cs" />
+    <Compile Include="Converters\SyntaxNodeConverter.cs" />
+    <Compile Include="Converters\TransformConverter.cs" />
+    <Compile Include="Interfaces\ICompilationViewModel.cs" />
+    <Compile Include="Interfaces\IComponentViewModel.cs" />
+    <Compile Include="Interfaces\INodePanel.cs" />
+    <Compile Include="Interfaces\ISpanToolTip.cs" />
+    <Compile Include="Interfaces\ISyntaxPanelViewModel.cs" />
+    <Compile Include="NodePanel.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
     </Compile>
@@ -98,12 +112,6 @@
       <DependentUpon>FormattedCode2.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ICompilationViewModel.cs" />
-    <Compile Include="INodePanel.cs" />
-    <Compile Include="ISpanToolTip.cs" />
-    <Compile Include="ISyntaxPanelViewModel.cs" />
-    <Compile Include="JsonConverter.cs" />
-    <Compile Include="LocationConverter.cs" />
     <Compile Include="MainStatusBar.xaml.cs">
       <DependentUpon>MainStatusBar.xaml</DependentUpon>
     </Compile>
@@ -114,21 +122,22 @@
     <Compile Include="SpanToolTip.cs" />
     <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SymbolControl.cs" />
-    <Compile Include="SyntaxPanel.xaml.cs">
-      <DependentUpon>SyntaxPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SyntaxPanelViewModel.cs" />
+    <Compile Include="SyntaxItem.cs" />
+    <Compile Include="ViewModels\SyntaxPanelViewModel.cs" />
+    <Compile Include="Syntax\ITypesViewModel.cs" />
     <Compile Include="TestView1.xaml.cs">
       <DependentUpon>TestView1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Token.cs" />
-    <Compile Include="TokenConverter.cs" />
     <Compile Include="ToolTips.cs" />
-    <Compile Include="TransformConverter.cs" />
-    <Compile Include="Types.xaml.cs">
-      <DependentUpon>Types.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModels\TypesViewModel.cs" />
     <Compile Include="ValueTemplateItemSelector.cs" />
+    <Compile Include="Views\SyntaxPanel.xaml.cs">
+      <DependentUpon>SyntaxPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TypesView.xaml.cs">
+      <DependentUpon>TypesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Visitor3.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
@@ -137,11 +146,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CompilationView.xaml">
+    <Page Include="Views\CompilationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ComponentPage.xaml">
+    <Page Include="Views\ComponentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -181,10 +190,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SyntaxPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Templates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -200,9 +205,13 @@
     <Compile Include="CustomControl1.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Types.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\TypesView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SyntaxPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Window1.xaml">
       <SubType>Designer</SubType>
@@ -233,6 +242,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+      <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
+      <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>
@@ -270,5 +283,6 @@
     <Resource Include="Themes\DataDesignersUI_2405.ico" />
     <Resource Include="Themes\RecordSetDest_201.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

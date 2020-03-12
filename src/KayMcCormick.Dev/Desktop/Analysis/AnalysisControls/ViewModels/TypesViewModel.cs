@@ -1,46 +1,26 @@
-﻿using System ;
+﻿#region header
+// Kay McCormick (mccor)
+// 
+// KayMcCormick.Dev
+// AnalysisControls
+// TypesViewModel.cs
+// 
+// 2020-03-11-7:05 PM
+// 
+// ---
+#endregion
+using System ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
 using System.Linq ;
 using System.Reflection ;
-using System.Text.RegularExpressions ;
-using System.Windows.Controls ;
+using AnalysisControls.Syntax ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
-using ProjLib ;
-using ProjLib.Interfaces ;
 
-namespace AnalysisControls
+namespace AnalysisControls.ViewModels
 {
-    /// <summary>
-    /// Interaction logic for Types.xaml
-    /// </summary>
-    public partial class Types : UserControl , IView < ITypesViewModel > , IView1
-    {
-        private ITypesViewModel _viewModel ;
-
-        public Types ( ITypesViewModel viewModel )
-        {
-            _viewModel = viewModel ;
-            InitializeComponent ( ) ;
-        }
-
-        #region Implementation of IView<ITypesViewModel>
-        public ITypesViewModel ViewModel { get => _viewModel ; set => _viewModel = value ; }
-        #endregion
-
-        #region Implementation of IView1
-        public string ViewTitle => "Types View" ;
-        #endregion
-    }
-
-    public interface ITypesViewModel : IViewModel
-    {
-        AppTypeInfo Root { get ; set ; }
-    }
-
     internal class TypesViewModel : ITypesViewModel
     {
         private AppTypeInfo                       root ;
@@ -137,54 +117,6 @@ namespace AnalysisControls
 
             map[ rootR ] = r ;
             return r ;
-        }
-    }
-
-    public class ComponentInfo
-    {
-        private string      _propertyName ;
-        private AppTypeInfo _typeInfo ;
-        private bool        _isList ;
-        public  string      PropertyName { get => _propertyName ; set => _propertyName = value ; }
-
-        public AppTypeInfo TypeInfo { get => _typeInfo ; set => _typeInfo = value ; }
-
-        public bool IsList { get => _isList ; set => _isList = value ; }
-    }
-
-    public class AppTypeInfo
-    {
-        private Type                   _type ;
-        private string                 _title ;
-        private List < MethodInfo >    _factoryMethods = new List < MethodInfo > ( ) ;
-        private List < ComponentInfo > _components     = new List < ComponentInfo > ( ) ;
-
-        public Type Type
-        {
-            get => _type ;
-            set
-            {
-                _type = value ;
-                var title = _type.Name.Replace ( "Syntax" , "" ) ;
-                Title = Regex.Replace ( title , "([a-z])([A-Z])" , @"$1 $2" ) ;
-            }
-        }
-
-        public string Title { get => _title ; set => _title = value ; }
-
-        public ObservableCollection < AppTypeInfo > SubTypeInfos { get ; } =
-            new ObservableCollection < AppTypeInfo > ( ) ;
-
-        public List < MethodInfo > FactoryMethods
-        {
-            get => _factoryMethods ;
-            set => _factoryMethods = value ;
-        }
-
-        public List < ComponentInfo > Components
-        {
-            get => _components ;
-            set => _components = value ;
         }
     }
 }

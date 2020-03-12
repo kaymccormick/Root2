@@ -11,10 +11,11 @@
 #endregion
 using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
+using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisControls
+namespace AnalysisControls.ViewModels
 {
     class SyntaxPanelViewModel : ISyntaxPanelViewModel
     {

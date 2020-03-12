@@ -61,6 +61,7 @@ namespace Tests.Main.UI
         {
             App app = new App ( null ) ;
             app.InitializeComponent();
+
             object template = app.TryFindResource ( "ValueContentCell" ) ;
             Assert.NotNull ( template ) ;
             Assert.IsType < DataTemplate > ( template ) ;

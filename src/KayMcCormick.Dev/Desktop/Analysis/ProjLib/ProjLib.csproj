@@ -104,7 +104,6 @@
     <Compile Include="Interfaces\ISpanViewModel.cs" />
     <Compile Include="Interfaces\IView.cs" />
     <Compile Include="Interfaces\IView1.cs" />
-    <Compile Include="Interfaces\IViewModel.cs" />
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="Interfaces\IWorkspacesView.cs" />
     <Compile Include="Interfaces\IWorkspacesViewModel.cs" />

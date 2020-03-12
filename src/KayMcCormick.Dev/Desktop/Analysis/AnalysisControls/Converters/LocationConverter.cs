@@ -2,11 +2,10 @@ using System ;
 using System.Globalization ;
 using System.Windows.Data ;
 using Microsoft.CodeAnalysis ;
-using NLog ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Converters
 {
-    public class TokenConverter : IValueConverter
+    public class LocationConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         public object Convert (
@@ -16,15 +15,11 @@ namespace AnalysisControls
           , CultureInfo culture
         )
         {
-            if ( value is SyntaxToken x )
+            if ( value is Location l )
             {
-                return x.ToFullString() ;
-            } else if ( value is SyntaxTrivia t)
-            {
-                return t.ToString ( ) ;
+                return l.GetMappedLineSpan ( ).ToString ( ) ;
             }
-            LogManager.GetCurrentClassLogger().Debug("{t} {x}", value.GetType().FullName, value);
-    
+
             return null ;
         }
 

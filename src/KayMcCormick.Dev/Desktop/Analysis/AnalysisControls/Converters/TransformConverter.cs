@@ -2,10 +2,12 @@ using System ;
 using System.Globalization ;
 using System.Text.Json ;
 using System.Windows.Data ;
+using AnalysisFramework.SyntaxTransform ;
+using Microsoft.CodeAnalysis ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Converters
 {
-    public class JsonConverter : IValueConverter
+    public class TransformConverter : IValueConverter   
     {
         #region Implementation of IValueConverter
         public object Convert (
@@ -15,9 +17,18 @@ namespace AnalysisControls
           , CultureInfo culture
         )
         {
-            var x = JsonSerializer.Deserialize<dynamic> ( value as string ) ;
-            return x ;
+         
+            try
+            {
+                var r = Transforms.TransformSyntaxNode(value as SyntaxNode);
+                return JsonSerializer.Serialize ( r ) ;
+            }
+            catch ( Exception ex )
+            {
+                return ex.Message ;
+            }
         }
+
 
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
         #endregion

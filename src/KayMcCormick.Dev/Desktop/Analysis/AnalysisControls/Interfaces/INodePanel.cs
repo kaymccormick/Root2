@@ -3,15 +3,15 @@
 // 
 // KayMcCormick.Dev
 // ProjLib
-// ISpanToolTip.cs
+// NodePanel.cs
 // 
-// 2020-02-26-11:06 PM
+// 2020-02-27-1:20 AM
 // 
 // ---
 #endregion
-namespace AnalysisControls
+namespace AnalysisControls.Interfaces
 {
-    public interface ISpanToolTip
+    public interface INodePanel
     {
     }
 }

@@ -1,54 +1,17 @@
 using System ;
 using System.Collections ;
-using System.ComponentModel ;
 using System.Globalization ;
 using System.Windows.Data ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-
 using NLog ;
+
 // ReSharper disable All
 
-namespace AnalysisControls
+namespace AnalysisControls.Converters
 {
-    public class Converter2 : TypeConverter
-    {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        #region Overrides of TypeConverter
-        public override bool CanConvertFrom ( ITypeDescriptorContext context , Type sourceType )
-        {
-            Logger.Debug ( "{context}, {sourceType}" , context , sourceType ) ;
-            return base.CanConvertFrom ( context , sourceType ) ;
-        }
-
-        public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
-        {
-            return base.CanConvertTo ( context , destinationType ) ;
-        }
-
-        public override object ConvertFrom (
-            ITypeDescriptorContext context
-          , CultureInfo            culture
-          , object                 value
-        )
-        {
-            return base.ConvertFrom ( context , culture , value ) ;
-        }
-
-        public override object ConvertTo (
-            ITypeDescriptorContext context
-          , CultureInfo            culture
-          , object                 value
-          , Type                   destinationType
-        )
-        {
-            return base.ConvertTo ( context , culture , value , destinationType ) ;
-        }
-        #endregion
-    }
-
-    public class Converter1 : IValueConverter
+    public class HierarchyConverter : IValueConverter
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter

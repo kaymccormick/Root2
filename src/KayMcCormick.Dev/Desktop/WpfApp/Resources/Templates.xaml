@@ -276,7 +276,7 @@
       </ContentControl.ToolTip>
     </ContentControl>
   </DataTemplate>
-  <DataTemplate DataType="{x:Type DataTemplate}">
+    <DataTemplate DataType="{x:Type DataTemplate}">
     <StackPanel Orientation="Horizontal">
       <ContentControl BorderBrush="DarkBlue" Margin="10" Padding="10" Content="{Binding DataType}"/>
       <ContentControl Margin="10" Padding="10" Content="{Binding DataTemplateKey}"/>

@@ -9,6 +9,9 @@
 // 
 // ---
 #endregion
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Interfaces ;
+
 namespace ProjLib.Interfaces
 {
     public interface IProjectBrowserViewModel : IViewModel

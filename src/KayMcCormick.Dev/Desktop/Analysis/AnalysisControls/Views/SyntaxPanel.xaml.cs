@@ -1,15 +1,16 @@
-﻿using System;
+﻿using System ;
 using System.ComponentModel ;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows ;
+using System.Windows.Controls ;
+using System.Windows.Data ;
+using AnalysisControls.Interfaces ;
+using AnalysisControls.ViewModels ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
-using ProjLib ;
 using ProjLib.Interfaces ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Views
 {
     /// <summary>
     /// Interaction logic for SyntaxPanel.xaml

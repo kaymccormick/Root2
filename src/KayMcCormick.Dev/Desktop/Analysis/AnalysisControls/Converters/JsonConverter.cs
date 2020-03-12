@@ -1,11 +1,11 @@
 using System ;
 using System.Globalization ;
+using System.Text.Json ;
 using System.Windows.Data ;
-using Microsoft.CodeAnalysis ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Converters
 {
-    public class LocationConverter : IValueConverter
+    public class JsonConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         public object Convert (
@@ -15,12 +15,8 @@ namespace AnalysisControls
           , CultureInfo culture
         )
         {
-            if ( value is Location l )
-            {
-                return l.GetMappedLineSpan ( ).ToString ( ) ;
-            }
-
-            return null ;
+            var x = JsonSerializer.Deserialize<dynamic> ( value as string ) ;
+            return x ;
         }
 
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }

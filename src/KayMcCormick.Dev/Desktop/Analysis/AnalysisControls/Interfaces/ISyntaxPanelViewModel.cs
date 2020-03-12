@@ -10,11 +10,10 @@
 // ---
 #endregion
 using System.ComponentModel ;
+using KayMcCormick.Dev.Interfaces ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using ProjLib ;
-using ProjLib.Interfaces ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Interfaces
 {
     public interface ISyntaxPanelViewModel : IViewModel, INotifyPropertyChanged, INotifyPropertyChanging
     {
