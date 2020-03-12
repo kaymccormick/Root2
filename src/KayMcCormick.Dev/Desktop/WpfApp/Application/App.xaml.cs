@@ -56,7 +56,8 @@ namespace WpfApp.Application
     /// </summary>
     public sealed partial class App : BaseApp , IDisposable
     {
-        private ObservableCollection < ResourceNodeInfo > _allResourcesCollection ;
+        private ObservableCollection < ResourceNodeInfo > _allResourcesCollection = new ObservableCollection < ResourceNodeInfo > ();
+        private ResourceNodeInfo _appNode ;
 
         /// <summary></summary>
         /// <param name="sender">The sender.</param>
@@ -478,6 +479,10 @@ namespace WpfApp.Application
 
         private void WindowLoaded ( object o , RoutedEventArgs args )
         {
+            if ( _appNode == null )
+            {
+                PopulateResourcesTree();
+            }
             HandleWindow ( o as Window ) ;
             var fe = ( FrameworkElement ) o ;
             DebugLog ( nameof ( WindowLoaded ) ) ;
@@ -487,7 +492,6 @@ namespace WpfApp.Application
                                    fe
                                  , new AssemblyList ( AppDomain.CurrentDomain.GetAssemblies ( ) )
                                   ) ;
-            AttachedProperties.SetLifetimeScope ( fe , Scope ) ;
         }
 
         private void PopulateResourcesTree ( )
@@ -495,26 +499,15 @@ namespace WpfApp.Application
             try
             {
                 var current = ( App ) Current ;
-                var appNode = new ResourceNodeInfo { Key = "Application" , Data = current } ;
+                _appNode = new ResourceNodeInfo { Key = "Application" , Data = current } ;
                 var appResources = new ResourceNodeInfo
                                    {
                                        Key = "Resources" , Data = current.Resources
                                    } ;
-                appNode.Children.Add ( appResources ) ;
+                _appNode.Children.Add ( appResources ) ;
                 AddResourceNodeInfos ( appResources ) ;
-                AllResourcesCollection.Add(appNode ) ;
+                AllResourcesCollection.Add(_appNode ) ;
 
-                foreach ( Window w in current.Windows )
-                {
-                    var winNode = new ResourceNodeInfo
-                                  {
-                                      Key = w.GetType ( ) , Data = new ControlWrap < Window > ( w )
-                                  } ;
-                    appNode.Children.Add ( winNode ) ;
-                    var winRes = new ResourceNodeInfo { Key = "Resources" , Data = w.Resources } ;
-                    winNode.Children.Add ( winRes ) ;
-                    AddResourceNodeInfos ( winRes ) ;
-                }
             }
             catch ( Exception ex )
             {
@@ -550,7 +543,18 @@ namespace WpfApp.Application
             }
         }
 
-        private void HandleWindow ( Window window ) { }
+        private void HandleWindow ( Window w )
+        {
+            var winNode = new ResourceNodeInfo
+                          {
+                              Key  = w.GetType(),
+                              Data = new ControlWrap<Window>(w)
+                          };
+           _appNode.Children.Add(winNode);
+            var winRes = new ResourceNodeInfo { Key = "Resources", Data = w.Resources };
+            winNode.Children.Add(winRes);
+            AddResourceNodeInfos ( winRes ) ;
+        }
 
         private void AddEventListeners ( )
         {

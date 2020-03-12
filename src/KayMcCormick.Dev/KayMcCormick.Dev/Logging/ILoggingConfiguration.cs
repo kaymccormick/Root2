@@ -22,5 +22,8 @@ namespace KayMcCormick.Dev.Logging
         /// 
         /// </summary>
         [UsedImplicitly] bool IsEnabledConsoleTarget { get; }
+        [UsedImplicitly] bool IsEnabledEventLogTarget { get; }
+
+        bool IsEnabledCacheTarget { get ;  }
     }
 }

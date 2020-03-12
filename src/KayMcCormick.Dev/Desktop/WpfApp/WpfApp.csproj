@@ -240,7 +240,6 @@
     <Compile Include="Core\Util\AttachedContext.cs" />
     <Compile Include="Core\Util\ContextStackException.cs" />
     <Compile Include="Core\Util\SerializableDictionary.cs" />
-    <Compile Include="Core\Xaml\LifetimeScopeExtension.cs" />
     <Compile Include="Core\Xaml\ObjectIdExtension.cs" />
     <Compile Include="Core\Converters\AssemblyConverter.cs" />
     <Compile Include="Core\Converters\ComponentLifetimeConverter.cs" />
@@ -264,6 +263,7 @@
     <Compile Include="Core\Model\MethodInvocation.cs" />
     <Compile Include="Core\Model\ResourcesModel.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
+    <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="LogTextWriter.cs" />
     <Compile Include="Resource1.Designer.cs">

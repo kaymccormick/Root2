@@ -3,14 +3,14 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:wpfApp="clr-namespace:WpfApp"
+  xmlns:local="clr-namespace:WpfApp"
   Background="AliceBlue"
   x:Class="WpfApp.Controls.AllResourcesTree"
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <HierarchicalDataTemplate
-      DataType="{x:Type wpfApp:ResourceNodeInfo}"
+      DataType="{x:Type local:ResourceNodeInfo}"
       ItemsSource="{Binding Path=Children}">
       <ContentControl Content="{Binding Key}">
         <ContentControl.ToolTip>
@@ -19,6 +19,8 @@
         </ContentControl.ToolTip>
       </ContentControl>
     </HierarchicalDataTemplate>
+    <local:ResourceTreeViewItemTemplateSelector 
+      x:Key="ResourceTreeViewItemTemplateSelector" />
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
@@ -29,8 +31,8 @@
       <RowDefinition Height="2*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <TreeView Name="tv" Grid.Row="0" Grid.Column="0"
-              ItemsSource="{Binding AllResources, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfApp:MainWindow}}}"
+    <TreeView ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}" Name="tv" Grid.Row="0" Grid.Column="0"
+              ItemsSource="{Binding Source={x:Static Application.Current},Path=AllResourcesCollection}"
               Margin="0,0,0,0.2" />
     <Grid Grid.Column="1" Grid.Row="0"
           DataContext="{Binding ElementName=tv,Path=SelectedItem}">

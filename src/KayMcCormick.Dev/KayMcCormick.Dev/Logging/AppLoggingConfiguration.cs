@@ -19,11 +19,23 @@ namespace KayMcCormick.Dev.Logging
     [UsedImplicitly]
     public class AppLoggingConfiguration : ILoggingConfiguration
     {
+        private static ILoggingConfiguration _default =
+            new AppLoggingConfiguration { IsEnabledConsoleTarget = false , } ;
+
+        private bool _isEnabledEventLogTarget = false ;
+        private bool _isEnabledCacheTarget ;
+
         #region Implementation of ILoggingConfiguration
         /// <summary>
         /// 
         /// </summary>
-        public bool IsEnabledConsoleTarget { get; set; }
+        public bool IsEnabledConsoleTarget { get; set; } 
+
+        public bool IsEnabledEventLogTarget => _isEnabledEventLogTarget ;
+
+        public bool IsEnabledCacheTarget => _isEnabledCacheTarget ;
+
+        public static ILoggingConfiguration Default { get { return _default ; } }
         #endregion
     }
 }

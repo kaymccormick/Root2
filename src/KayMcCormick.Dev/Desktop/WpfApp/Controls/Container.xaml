@@ -7,8 +7,8 @@
              MinWidth="300" MinHeight="200"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:wpfApp="clr-namespace:WpfApp"
-             xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
-             DataContext="{Binding (wpf:AttachedProperties.LifetimeScope)}"
+             xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+             DataContext="{Binding (kmWpf:AttachedProperties.LifetimeScope)}"
              mc:Ignorable="d">
   <UserControl.Resources>
     <CollectionViewSource

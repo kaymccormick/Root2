@@ -32,53 +32,62 @@ namespace LeafService
 {
     internal class LeafService1 : IDisposable
     {
-        private readonly ILog _commonLogger ;
-        private static Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
-        private static Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly ILog   _commonLogger ;
+        private static   Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
+        private static   Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
 #pragma warning disable CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
         private ServiceHost _svcHost ;
 #pragma warning restore CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
 #pragma warning disable CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
         private CentralService _centralService ;
 #pragma warning restore CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
-        private Timer _timer ;
+        private Timer       _timer ;
         private ServiceHost _svcReceiver ;
 
-        public LeafService1 (ILog commonLogger ) { _commonLogger = commonLogger ; }
+        public LeafService1 ( ILog commonLogger ) { _commonLogger = commonLogger ; }
 
         public bool Start ( HostControl hostControl )
         {
             var f = new LogFactory < MyLogger > ( ) ;
-            Trace.Refresh();
-            Trace.Listeners.Add ( new NLogTraceListener ( )
-                                  {
-                                      AutoLoggerName = false, Filter = new LeafServiceTraceFilter (  ),
-                                      Name = "test1", TraceOutputOptions = TraceOptions.Callstack | TraceOptions.LogicalOperationStack,
-                                      LogFactory = f
-                                  } ) ;
+            Trace.Refresh ( ) ;
+            Trace.Listeners.Add (
+                                 new NLogTraceListener ( )
+                                 {
+                                     AutoLoggerName = false
+                                   , Filter         = new LeafServiceTraceFilter ( )
+                                   , Name           = "test1"
+                                   , TraceOutputOptions =
+                                         TraceOptions.Callstack | TraceOptions.LogicalOperationStack
+                                   , LogFactory = f
+                                 }
+                                ) ;
+#if ENABLE_WCF_TARGET
             var svcTarget = AppLoggingConfigHelper.ServiceTarget ;
             if(svcTarget != null) {
                 Logger.Debug("Existing service target endpoing is {endpoingAddress}", svcTarget.EndpointAddress);
                 AppLoggingConfigHelper.RemoveTarget(svcTarget);
             }
+#endif
             Log.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
 
-            Uri baseAddress = new Uri($"http://{System.Net.Dns.GetHostName()}:8737/discovery/scenarios/logreceiver/");
+            var baseAddress = new Uri (
+                                       $"http://{System.Net.Dns.GetHostName ( )}:8737/discovery/scenarios/logreceiver/"
+                                      ) ;
             Logger.Info ( baseAddress ) ;
 
             //Uri baseAddress = new Uri ( $"http://10.25.0.102:8737/leafService/" ) ;
             //Uri receiverUri = new Uri ( baseAddress , "receiver" ) ;
 
-            var svcReceiver = new ServiceHost ( typeof ( LogReceiver ) , baseAddress) ;
+            var svcReceiver = new ServiceHost ( typeof ( LogReceiver ) , baseAddress ) ;
             // Add calculator endpoint
             // svcReceiver.AddServiceEndpoint(typeof(ILogReceiverServer), new WSHttpBinding(), String.Empty);
-            svcReceiver.Faulted += SvcReceiverOnFaulted;
+            svcReceiver.Faulted += SvcReceiverOnFaulted ;
             svcReceiver.UnknownMessageReceived += ( sender , args ) => {
-                _commonLogger.Warn(nameof(svcReceiver.UnknownMessageReceived));
-                _commonLogger.Info($"From: {args.Message.Headers.From}");
-                _commonLogger.Info($"To: {args.Message.Headers.To}");
+                _commonLogger.Warn ( nameof ( svcReceiver.UnknownMessageReceived ) ) ;
+                _commonLogger.Info ( $"From: {args.Message.Headers.From}" ) ;
+                _commonLogger.Info ( $"To: {args.Message.Headers.To}" ) ;
                 _commonLogger.Info ( $"Via: {args.Message.Properties.Via}" ) ;
-                _commonLogger.Info($"Action: {args.Message.Headers.Action}");
+                _commonLogger.Info ( $"Action: {args.Message.Headers.Action}" ) ;
             } ;
             svcReceiver.Opened += ( sender , args )
                 => _commonLogger.Info ( nameof ( svcReceiver.Opened ) ) ;
@@ -87,19 +96,26 @@ namespace LeafService
             // var discoveryBehavior = new ServiceDiscoveryBehavior();
             // svcReceiver.Description.Behaviors.Add(discoveryBehavior);
             // discoveryBehavior.AnnouncementEndpoints.Add(
-                                                        // new UdpAnnouncementEndpoint());
+            // new UdpAnnouncementEndpoint());
             // ** DISCOVERY ** //
             // Add the discovery endpoint that specifies where to publish the services
             // svcReceiver.AddServiceEndpoint(new UdpDiscoveryEndpoint());
-            svcReceiver.Open();
+            svcReceiver.Open ( ) ;
             _svcReceiver = svcReceiver ;
 
 #if true
             _centralService = new CentralService ( ) ;
-            var serviceHost = new ServiceHost ( _centralService , new Uri ( "http://localhost:8737/CentralSvc1" ) );
+            var serviceHost = new ServiceHost (
+                                               _centralService
+                                             , new Uri ( "http://localhost:8737/CentralSvc1" )
+                                              ) ;
 
             // Add calculator endpoint
-            serviceHost.AddServiceEndpoint(typeof(ICentralService), new BasicHttpBinding(), string.Empty);
+            serviceHost.AddServiceEndpoint (
+                                            typeof ( ICentralService )
+                                          , new BasicHttpBinding ( )
+                                          , string.Empty
+                                           ) ;
 
             // ** DISCOVERY ** //
             // Make the service discoverable by adding the discovery behavior
@@ -112,12 +128,12 @@ namespace LeafService
             // Add the discovery endpoint that specifies where to publish the services
             serviceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
 #endif
-           // Open the ServiceHost to create listeners and start listening for messages.
-            serviceHost.Open();
+            // Open the ServiceHost to create listeners and start listening for messages.
+            serviceHost.Open ( ) ;
             serviceHost.Opened += ( sender , args ) => Logger.Info ( "central open" ) ;
 
 
-            _svcHost = serviceHost;
+            _svcHost = serviceHost ;
 #endif
 
 #if USEOWNCONFIG
@@ -135,8 +151,8 @@ namespace LeafService
             conf.AddRuleForAllLevels(console);
             LogManager.Configuration = conf;
 #endif
-            _timer = new Timer ( 60 * 1000 ) { AutoReset = true } ;
-            _timer.Elapsed += TimerOnElapsed;
+            _timer         =  new Timer ( 60 * 1000 ) { AutoReset = true } ;
+            _timer.Elapsed += TimerOnElapsed ;
             _timer.Start ( ) ;
 
             var e = new EventLog ( "Application" ) ;
@@ -218,7 +234,7 @@ namespace LeafService
         public bool Pause ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Pause command received." ) ;
-            _timer.Stop();
+            _timer.Stop ( ) ;
             //TODO: Implement your service start routine.
             return true ;
         }
@@ -227,7 +243,7 @@ namespace LeafService
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Continue command received." ) ;
 
-            _timer.Start();
+            _timer.Start ( ) ;
             return true ;
         }
 
@@ -242,7 +258,7 @@ namespace LeafService
         #region IDisposable
         public void Dispose ( )
         {
-            _timer?.Dispose();
+            _timer?.Dispose ( ) ;
             ( ( IDisposable ) _svcHost )?.Dispose ( ) ;
             _centralService?.Dispose ( ) ;
         }
@@ -268,45 +284,46 @@ namespace LeafService
         #endregion
     }
 
-    [ServiceBehavior(AddressFilterMode = AddressFilterMode.Any)]
+    [ ServiceBehavior ( AddressFilterMode = AddressFilterMode.Any ) ]
     internal class LogReceiver : ILogReceiverServer
     {
         private static ILog CLogger =
             Common.Logging.LogManager.GetLogger ( typeof ( LeafService1 ) ) ;
-        public LogReceiver () { CLogger.Warn ( "In constructor" ) ; }
+
+        public LogReceiver ( ) { CLogger.Warn ( "In constructor" ) ; }
 
         #region Implementation of ILogReceiverServer
         public void ProcessLogMessages ( NLogEvents nevents )
         {
             CLogger.Warn ( $"Received {nevents.Events.Length} events" ) ;
-            var context = OperationContext.Current;
-            var properties = context.IncomingMessageProperties;
+            var context = OperationContext.Current ;
+            var properties = context.IncomingMessageProperties ;
             var endpoint =
-                properties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-            var address = string.Empty;
+                properties[ RemoteEndpointMessageProperty.Name ] as RemoteEndpointMessageProperty ;
+            var address = string.Empty ;
             //http://www.simosh.com/article/ddbggghj-get-client-ip-address-using-wcf-4-5-remoteendpointmessageproperty-in-load-balanc.html
-            if (properties.Keys.Contains(HttpRequestMessageProperty.Name))
+            if ( properties.Keys.Contains ( HttpRequestMessageProperty.Name ) )
             {
-                if (properties[HttpRequestMessageProperty.Name] is HttpRequestMessageProperty
-                        endpointLoadBalancer
-                    && endpointLoadBalancer.Headers["X-Forwarded-For"] != null)
+                if ( properties[ HttpRequestMessageProperty.Name ] is HttpRequestMessageProperty
+                         endpointLoadBalancer
+                     && endpointLoadBalancer.Headers[ "X-Forwarded-For" ] != null )
                 {
-                    address = endpointLoadBalancer.Headers["X-Forwarded-For"];
+                    address = endpointLoadBalancer.Headers[ "X-Forwarded-For" ] ;
                 }
             }
 
-            if (string.IsNullOrEmpty(address))
+            if ( string.IsNullOrEmpty ( address ) )
             {
-                address = endpoint.Address;
+                address = endpoint.Address ;
             }
 
-            var events = nevents.ToEventInfo("Client." + address?.ToString() + ".");
-            Debug.WriteLine("in: {0} {1}", nevents.Events.Length, events.Count);
+            var events = nevents.ToEventInfo ( "Client." + address?.ToString ( ) + "." ) ;
+            Debug.WriteLine ( "in: {0} {1}" , nevents.Events.Length , events.Count ) ;
 
-            foreach (var ev in events)
+            foreach ( var ev in events )
             {
-                var logger = LogManager.GetLogger(ev.LoggerName);
-                logger.Log(ev);
+                var logger = LogManager.GetLogger ( ev.LoggerName ) ;
+                logger.Log ( ev ) ;
             }
         }
         #endregion

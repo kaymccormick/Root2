@@ -1,8 +1,8 @@
 ﻿using System ;
 using System.Xaml ;
 using System.Xaml.Schema ;
+using KayMcCormick.Lib.Wpf ;
 using NLog ;
-using WpfApp.Core.Xaml ;
 
 namespace WpfApp.Core
 {
