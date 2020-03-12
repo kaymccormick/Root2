@@ -48,14 +48,6 @@ steps:
     createLogFile: true
     logFileVerbosity: 'diagnostic'
 
-- task: VSBuild@1
-  inputs:
-    msbuildArgs: "/p:KmGlobalOutputPath=$(KmGlobalOutputPath) -interactive:false"
-    solution: '**/*.wixproj'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-    createLogFile: true
-    logFileVerbosity: 'diagnostic'
   
 - task: ArchiveFiles@2
   inputs:
