@@ -608,8 +608,13 @@ namespace WpfApp.Application
 
         public override IEnumerable < IModule > GetModules ( )
         {
-            yield return new AppBuildModule ( ) ;
-            yield return new WpfAppBuildModule ( ) ;
+            var appBuildModule = new AppBuildModule ( ) ;
+            var a = appBuildModule.GetAssembliesForScanning ( ).ToList() ;
+            a.Add ( typeof ( App ).Assembly ) ;
+            yield return appBuildModule ;
+            var wpfAppBuildModule = new WpfAppBuildModule () ;
+            wpfAppBuildModule.AssembliesForScanning.AddRange ( a ) ;
+            yield return wpfAppBuildModule ;
         }
 
         /// <summary>

@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Generic ;
 using System.Linq ;
 using System.Reflection ;
 using System.Windows ;
@@ -21,18 +22,31 @@ namespace KayMcCormick.Dev
 {
     public class WpfAppBuildModule : Module
     {
-        private static bool _doTraceConditionalRegistration ;
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public static void WindowReg ( ContainerBuilder builder , Assembly[] toScan )
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private                 bool   _doTraceConditionalRegistration ;
+
+        public bool DoTraceConditionalRegistration
         {
-            builder.RegisterAssemblyTypes ( toScan )
+            get => _doTraceConditionalRegistration ;
+            set => _doTraceConditionalRegistration = value ;
+        }
+
+        public List < Assembly > AssembliesForScanning { get ; } = new List < Assembly > ( ) ;
+
+        private void WindowReg ( ContainerBuilder builder , ICollection < Assembly > toScan )
+        {
+            builder.RegisterAssemblyTypes ( toScan.ToArray ( ) )
                    .Where ( MainScanningPredicate )
                    .AsImplementedInterfaces ( ) ;
             builder.RegisterAssemblyTypes ( toScan.ToArray ( ) )
                    .Where (
                            delegate ( Type t ) {
                                var isAssignableFrom = typeof ( Window ).IsAssignableFrom ( t ) ;
-                               TraceConditionalRegistration ( t , typeof ( Window ) , isAssignableFrom ) ;
+                               TraceConditionalRegistration (
+                                                             t
+                                                           , typeof ( Window )
+                                                           , isAssignableFrom
+                                                            ) ;
                                return isAssignableFrom ;
                            }
                           )
@@ -47,8 +61,8 @@ namespace KayMcCormick.Dev
                                           haveLogger.Logger =
                                               args.Context.Resolve < ILogger > (
                                                                                 new TypedParameter (
-                                                                                                    typeof (
-                                                                                                        Type
+                                                                                                    typeof
+                                                                                                    ( Type
                                                                                                     )
                                                                                                   , argsInstance
                                                                                                        .GetType ( )
@@ -58,6 +72,13 @@ namespace KayMcCormick.Dev
                                   }
                                  ) ;
         }
+
+        #region Overrides of Module
+        protected override void Load ( ContainerBuilder builder )
+        {
+            WindowReg ( builder , AssembliesForScanning ) ;
+        }
+        #endregion
 
         private static bool MainScanningPredicate ( Type arg )
         {
@@ -70,7 +91,7 @@ namespace KayMcCormick.Dev
             return r ;
         }
 
-        private static void TraceConditionalRegistration (
+        private  void TraceConditionalRegistration (
             Type type
           , Type type1
           , bool isAssignableFrom
@@ -79,11 +100,9 @@ namespace KayMcCormick.Dev
             if ( DoTraceConditionalRegistration )
             {
                 Logger.Trace (
-                                             $"Conditional registration for {type} is {isAssignableFrom} [{type1}]"
-                                            ) ;
+                              $"Conditional registration for {type} is {isAssignableFrom} [{type1}]"
+                             ) ;
             }
         }
-
-        public static bool DoTraceConditionalRegistration { get { return _doTraceConditionalRegistration ; } set { _doTraceConditionalRegistration = value ; } }
     }
 }
