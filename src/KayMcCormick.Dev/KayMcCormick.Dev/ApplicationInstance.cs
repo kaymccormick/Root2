@@ -108,7 +108,7 @@ namespace KayMcCormick.Dev
             var builder1 = new ContainerBuilder();
             foreach (var module in _modules)
             {
-                _logger.Debug("Registering module {module}", module);
+                _logger.Debug("Registering module {module}", module.ToString());
                 builder1.RegisterModule(module);
             }
 
