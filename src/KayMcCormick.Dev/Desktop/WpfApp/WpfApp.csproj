@@ -101,8 +101,11 @@
     <Compile Include="Config\ConfigTargetAttribute.cs" />
     <Compile Include="Config\ContainerHelperSection.cs" />
     <Compile Include="Config\LoggingSection.cs" />
-    <Compile Include="Controls\AllResourcesControl.xaml.cs">
-      <DependentUpon>AllResourcesControl.xaml</DependentUpon>
+    <Compile Include="Controls\AllResourcesTree.xaml.cs">
+      <DependentUpon>AllResourcesTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AllResources.xaml.cs">
+      <DependentUpon>AllResources.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TypeControl3.xaml.cs">
       <DependentUpon>TypeControl3.xaml</DependentUpon>
@@ -121,8 +124,12 @@
     <Compile Include="Proxy\ProxyUtils.cs" />
     <Compile Include="Core\Attributes\LoggingEntityMetadata.cs" />
     <Compile Include="Core\Attributes\WindowMetadataAttribute.cs" />
-    <Compile Include="Controls\Container.xaml.cs" />
-    <Compile Include="Controls\SystemParametersControl.xaml.cs" />
+    <Compile Include="Controls\Container.xaml.cs">
+      <DependentUpon>Container.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SystemParametersControl.xaml.cs">
+      <DependentUpon>SystemParametersControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TypedService.cs" />
     <Compile Include="DesignData.cs" />
     <Compile Include="Core\Events\AttachedEvents.cs" />
@@ -139,7 +146,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\AllResourcesControl.xaml">
+    <Page Include="Controls\AllResourcesTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\AllResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -265,6 +276,7 @@
     <Compile Include="Core\Model\MenuItemCollection.cs" />
     <Compile Include="Core\Model\MethodInvocation.cs" />
     <Compile Include="Core\Model\ResourcesModel.cs" />
+    <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="LogTextWriter.cs" />
     <Compile Include="Resource1.Designer.cs">

@@ -12,6 +12,7 @@
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
+using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -40,10 +41,13 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( value != null )
             {
-                return value.GetType ( ) ;
+                var convert = value.GetType ( ) ;
+                LogManager.GetCurrentClassLogger ( )
+                          .Info ( "{type}" , convert.GetType ( ).FullName ) ;
+                return convert ;
             }
 
-            throw new NotImplementedException ( ) ;
+            return typeof ( DBNull ) ;
         }
 
         /// <summary>Converts a value. </summary>

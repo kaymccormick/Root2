@@ -292,6 +292,21 @@
       <ContentControl Content="{Binding BasedOn}"/>
     </StackPanel>
   </DataTemplate>
+  <DataTemplate DataType="{x:Type system:RuntimeTypeHandle}">
+    <controls:TypeControl>
+      <wpfApp:Props.RenderedType>
+        <Binding/>
+      </wpfApp:Props.RenderedType></controls:TypeControl>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type Window}">
 
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type Color}">
+    <Rectangle Width="30" Height="30" Stroke="Blue">
+      <Rectangle.Fill>
+        <SolidColorBrush Color="{Binding}"/>
+      </Rectangle.Fill>
+    </Rectangle>
+  </DataTemplate>
 
 </ResourceDictionary>

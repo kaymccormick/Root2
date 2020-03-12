@@ -35,8 +35,8 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <TabControl Visibility="Visible" Grid.Column="0" Grid.Row="0" Style="{StaticResource TabControlStyle1}">
-      <TabItem Header="Tab 1" HorizontalAlignment="Right">
-        <controls:AllResourcesControl/>
+      <TabItem Header="Resources" HorizontalAlignment="Right">
+        <controls:AllResourcesTree/>
       </TabItem>
       <TabItem Header="ResolveServiceList">
         <Grid>
