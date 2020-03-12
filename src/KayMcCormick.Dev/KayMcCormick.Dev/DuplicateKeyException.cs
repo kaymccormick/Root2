@@ -13,7 +13,7 @@
 using System ;
 using System.Runtime.Serialization ;
 
-namespace WpfApp.Core.Exceptions
+namespace KayMcCormick.Dev
 {
     /// <summary></summary>
     /// <seealso cref="System.Exception" />

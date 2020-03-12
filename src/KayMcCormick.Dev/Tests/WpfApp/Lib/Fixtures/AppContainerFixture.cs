@@ -11,16 +11,15 @@
 #endregion
 
 using System ;
-using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using Autofac.Core.Resolving ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using  KayMcCormick.Dev.TestLib ;
 using NLog ;
-using WpfApp.Core.Container ;
 using Xunit ;
 using Xunit.Abstractions ;
 
@@ -28,7 +27,7 @@ namespace Tests.Lib.Fixtures
 {
     /// <summary>Test fixture configured to supply the primary application container from Autofac.</summary>
     /// <seealso cref="Xunit.IAsyncLifetime" />
-    /// <seealso cref="ContainerHelper"/>
+    /// <seealso cref="AppBuildModule"/>
     [UsedImplicitly]
     public class AppContainerFixture : IAsyncLifetime
     {
@@ -69,7 +68,7 @@ namespace Tests.Lib.Fixtures
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
             _sink.OnMessage ( new DiagnosticMessage ( "Initializing container." ) ) ;
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-            LifetimeScope = ContainerHelper.SetupContainer(out _, null, null);
+            LifetimeScope = AppBuildModule.SetupContainer(out _ , null);
             return Task.CompletedTask ;
         }
 

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-using JetBrains.Annotations;
-using NLog;
-using WpfApp.Core.Attributes;
-using WpfApp.Core.Exceptions;
-using WpfApp.Core.Infos;
+﻿using System ;
+using System.Collections.Generic ;
+using System.Diagnostics.CodeAnalysis ;
+using System.Linq ;
+using System.Reflection ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev.Attributes ;
+using NLog ;
 
-namespace WpfApp.Core.Context
+namespace KayMcCormick.Dev
 {
     /// <summary></summary>
     /// <seealso cref="System.Attribute" />

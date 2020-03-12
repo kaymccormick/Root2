@@ -14,7 +14,7 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 
-namespace WpfApp.Core.Infos
+namespace KayMcCormick.Dev
 {
     /// <summary></summary>
     /// <seealso cref="object" />

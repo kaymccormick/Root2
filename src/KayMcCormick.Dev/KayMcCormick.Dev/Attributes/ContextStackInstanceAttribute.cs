@@ -1,6 +1,6 @@
 ﻿using System ;
 
-namespace WpfApp.Core.Attributes
+namespace KayMcCormick.Dev.Attributes
 {
     /// <summary></summary>
     /// <seealso cref="System.Attribute" />

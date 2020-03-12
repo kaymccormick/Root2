@@ -1,7 +1,7 @@
 ﻿using System ;
 using System.Linq ;
 using JetBrains.Annotations ;
-using WpfApp.Core.Infos ;
+using KayMcCormick.Dev ;
 
 namespace WpfApp.Core.Util
 {

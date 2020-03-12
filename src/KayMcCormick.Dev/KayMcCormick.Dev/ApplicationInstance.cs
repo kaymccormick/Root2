@@ -56,7 +56,15 @@ namespace KayMcCormick.Dev
 
             InstanceRunGuid = Guid.NewGuid();
             _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod);
-            
+            GlobalDiagnosticsContext.Set(
+                                         "ExecutionContext"
+                                       , new ExecutionContextImpl
+                                         {
+                                             Application = KayMcCormick.Dev.Logging.Application
+                                                                       .MainApplication
+                                         }
+                                        );
+
             GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);
             
         }

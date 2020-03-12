@@ -107,10 +107,7 @@
     <Compile Include="Controls\TypeControl3.xaml.cs">
       <DependentUpon>TypeControl3.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Core\Attributes\ContextStackInstanceAttribute.cs" />
-    <Compile Include="Core\Container\ContainerHelper.cs" />
-    <Compile Include="Core\Container\ContainerHelperSettings.cs" />
-    <Compile Include="Core\Exceptions\DuplicateKeyException.cs" />
+    <Compile Include="Core\Container\AppBuildModule.cs" />
     <Compile Include="Core\Exceptions\UnhandledException.cs" />
     <Compile Include="Core\Interfaces\IObjectId.cs" />
     <Compile Include="Debug\DebugEventArgs.cs" />
@@ -214,11 +211,8 @@
     <Compile Include="Props.cs" />
     <Compile Include="Core\AssemblyList.cs" />
     <Compile Include="Core\CustomResourceLoader.cs" />
-    <Compile Include="Core\Infos\ContextStack.cs" />
-    <Compile Include="Core\Infos\InfoContext.cs" />
     <Compile Include="Core\Interfaces\IHasId.cs" />
     <Compile Include="Core\Interfaces\IHaveLifetimeScope.cs" />
-    <Compile Include="Core\Interfaces\IHaveLogger.cs" />
     <Compile Include="Core\Interfaces\ILoggerTracker.cs" />
     <Compile Include="Core\Interfaces\IMenuItem.cs" />
     <Compile Include="Core\Interfaces\IMenuItemCollection.cs" />
@@ -240,7 +234,6 @@
     <Compile Include="Core\Util\SerializableDictionary.cs" />
     <Compile Include="Core\Xaml\LifetimeScopeExtension.cs" />
     <Compile Include="Core\Xaml\ObjectIdExtension.cs" />
-    <Compile Include="Core\Context\PushContextAttribute.cs" />
     <Compile Include="Core\Converters\AssemblyConverter.cs" />
     <Compile Include="Core\Converters\ComponentLifetimeConverter.cs" />
     <Compile Include="Core\Converters\InstanceRegistrationConverter.cs" />
@@ -250,10 +243,7 @@
     <Compile Include="Core\Converters\RegistrationSourceConverter.cs" />
     <Compile Include="Core\Converters\ResolveServiceConverter.cs" />
     <Compile Include="Core\Converters\TargetConverter.cs" />
-    <Compile Include="Core\Exceptions\AttributeNotFoundException.cs" />
-    <Compile Include="Core\Exceptions\InfoContextFactoryAttribute.cs" />
     <Compile Include="Core\Logging\AppLogger.cs" />
-    <Compile Include="Core\Logging\LoggerTracker.cs" />
     <Compile Include="Core\Logging\LoggingEntityMetadataAttribute.cs" />
     <Compile Include="Core\Menus\MenuItemContainerStyleSelector.cs" />
     <Compile Include="Core\Menus\MenuMenuItemTemplateSelector.cs" />
@@ -389,6 +379,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Core\Context\" />
+    <Folder Include="Core\Infos\" />
     <Folder Include="Modules\" />
   </ItemGroup>
   <ItemGroup>

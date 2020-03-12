@@ -1,6 +1,7 @@
-﻿using System ;
+﻿
+using System ;
 using Castle.DynamicProxy ;
-using WpfApp.Core.Context ;
+using KayMcCormick.Dev ;
 using WpfApp.Core.Interfaces ;
 
 namespace WpfApp.Proxy

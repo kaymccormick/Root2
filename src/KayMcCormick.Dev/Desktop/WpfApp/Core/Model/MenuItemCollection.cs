@@ -3,6 +3,7 @@ using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.Linq ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using NLog ;
 using WpfApp.Core.Interfaces ;
 using WpfApp.Core.Logging ;

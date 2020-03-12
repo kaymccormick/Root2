@@ -15,6 +15,7 @@ using System.Linq ;
 using System.Reflection ;
 using Autofac ;
 using Autofac.Extras.DynamicProxy ;
+using KayMcCormick.Dev ;
 using NLog ;
 using WpfApp.Core.Container ;
 using WpfApp.Core.Interfaces ;
@@ -42,9 +43,9 @@ namespace WpfApp.Core.Menus
         /// </param>
         protected override void Load ( ContainerBuilder builder )
         {
-            var intercept = ( bool ) builder.Properties[ ContainerHelper.InterceptProperty ] ;
+            var intercept = ( bool ) builder.Properties[ AppBuildModule.InterceptProperty ] ;
             var ass =
-                ( ICollection < Assembly > ) builder.Properties[ ContainerHelper.AssembliesForScanningProperty ] ;
+                ( ICollection < Assembly > ) builder.Properties[ AppBuildModule.AssembliesForScanningProperty ] ;
             if ( ass != null )
             {
                 builder.RegisterAssemblyTypes ( ass.ToArray ( ) )

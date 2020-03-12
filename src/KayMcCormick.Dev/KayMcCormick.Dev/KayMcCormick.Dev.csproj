@@ -102,6 +102,9 @@
     <Compile Include="ApplicationInstanceException.cs" />
     <Compile Include="ApplicationInstanceHost.cs" />
     <Compile Include="AppStartupEventArgs.cs" />
+    <Compile Include="AttributeNotFoundException.cs" />
+    <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
+    <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
     <Compile Include="ClearLoggingRulesAttribute.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
@@ -115,13 +118,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ContextStack.cs" />
     <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
+    <Compile Include="DuplicateKeyException.cs" />
     <Compile Include="EventTimeConverter.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IdGeneratorModule.cs" />
+    <Compile Include="IHaveLogger.cs" />
+    <Compile Include="InfoContext.cs" />
     <Compile Include="Interfaces\ICentralService.cs" />
     <Compile Include="Interfaces\IHaveObjectId.cs" />
     <Compile Include="InfraModule.cs" />
@@ -130,6 +137,7 @@
     <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
     <Compile Include="IViewModel.cs" />
     <Compile Include="LogEventInstance.cs" />
+    <Compile Include="LoggerTracker.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
@@ -151,6 +159,7 @@
     <Compile Include="MyCacheTarget.cs" />
     <Compile Include="MyCacheTarget2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushContextAttribute.cs" />
     <Compile Include="TestLib\BeforeAfterLoggerAttribute.cs" />
     <Compile Include="TestLib\FixtureLogger.cs" />
     <Compile Include="TestLib\Fixtures\GlobalLoggingFixture.cs" />

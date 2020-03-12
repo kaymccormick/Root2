@@ -1,6 +1,6 @@
 ﻿using System ;
 
-namespace WpfApp.Core.Exceptions
+namespace KayMcCormick.Dev.Attributes
 {
     /// <summary></summary>
     /// <seealso cref="System.Attribute" />

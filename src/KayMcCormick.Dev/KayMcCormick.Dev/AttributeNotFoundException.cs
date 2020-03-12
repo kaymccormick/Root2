@@ -2,7 +2,7 @@
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 
-namespace WpfApp.Core.Exceptions
+namespace KayMcCormick.Dev
 {
     /// <summary></summary>
     /// <seealso cref="System.Exception" />

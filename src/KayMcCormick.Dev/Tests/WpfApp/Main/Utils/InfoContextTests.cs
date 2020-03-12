@@ -1,7 +1,6 @@
 ﻿using System.Linq ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.TestLib ;
-
-using WpfApp.Core.Infos ;
 using Xunit ;
 
 namespace Tests.Main.Utils
