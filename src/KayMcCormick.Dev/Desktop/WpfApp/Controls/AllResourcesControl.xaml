@@ -15,14 +15,17 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding Resources, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfApp:MainWindow}}}" Grid.ColumnSpan="2"
+        <ListView ItemsSource="{Binding AllResources, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfApp:MainWindow}}}" Grid.ColumnSpan="2"
                   Margin="0,0,0,0.2">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Key" Width="200" DisplayMemberBinding="{Binding Key}" />
+                  <GridViewColumn DisplayMemberBinding="{Binding ContainingType.FullName}"></GridViewColumn>
+                  <GridViewColumn Header="Key" Width="200" DisplayMemberBinding="{Binding Key}" />
                     <GridViewColumn Width="150" Header="Type"
                                     CellTemplate="{StaticResource ResourceValueCell}" />
                     <GridViewColumn Width="300" Header="Value" DisplayMemberBinding="{Binding Value}" />
+                  <GridViewColumn Width="100" Header="Content" CellTemplate="{StaticResource ValueContentCell}"/>
+                  <GridViewColumn Width="300" Header="Source" DisplayMemberBinding="{Binding Source}" />
                 </GridView>
             </ListView.View>
         </ListView>

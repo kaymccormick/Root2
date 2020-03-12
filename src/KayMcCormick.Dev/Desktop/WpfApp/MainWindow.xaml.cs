@@ -1,10 +1,12 @@
 ﻿using System ;
+using System.Collections.ObjectModel ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Navigation ;
 using KayMcCormick.Lib.Wpf ;
 using NLog ;
+using WpfApp.Application ;
 using WpfApp.Controls ;
 
 namespace WpfApp
@@ -53,7 +55,11 @@ namespace WpfApp
             {
                 // ignored
             }
+
+            
         }
+
+        public ObservableCollection<ResourceInfo> AllResources { get ; } = new ObservableCollection<ResourceInfo>();
 
 
         /// <summary>Gets the type frame.</summary>
@@ -86,6 +92,33 @@ namespace WpfApp
                 typeControl2.SetValue ( Props.RenderedTypeProperty , eParameter ) ;
                 var findName = FindName ( "frame" ) as Frame ;
                 findName?.Navigate ( typeControl2 ) ;
+            }
+        }
+
+
+        private void Registrations_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MainWindow_OnLoaded ( object sender , RoutedEventArgs e )
+        {
+            try
+            {
+                var current = ( App ) System.Windows.Application.Current ;
+
+                
+                ResourcesUtil.AddResourceInfos (
+                                                typeof ( App )
+                                              , current.Resources
+                                              , AllResources
+                                               ) ;
+            
+                ResourcesUtil.CollectResources ( this.GetType ( ) , this , AllResources ) ;
+            }
+            catch ( Exception ex )
+            {
+
             }
         }
     }

@@ -116,9 +116,6 @@
     <Compile Include="Debug\DebugEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="NamespaceDocs.cs" />
-    <Compile Include="NewMainWindow.xaml.cs">
-      <DependentUpon>NewMainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Proxy\InterceptEvents.cs" />
     <Compile Include="Proxy\LoggingInterceptor.cs" />
     <Compile Include="Proxy\ProxyUtils.cs" />
@@ -136,7 +133,6 @@
     <Compile Include="Controls\Windows\AppSettingsWindow.xaml.cs" />
     <Compile Include="Controls\Windows\LogEventInfoCollection.cs" />
     <Compile Include="Controls\Windows\MainWindow.xaml.cs" />
-    <Compile Include="Controls\Windows\NewWindow.xaml.cs" />
     <Compile Include="Controls\Windows\Page1.xaml.cs" />
     <Compile Include="Core\Xaml\AssemblyConverter.cs" />
     <ApplicationDefinition Include="Application\App.xaml">
@@ -285,10 +281,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="NewMainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resources\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -314,10 +306,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Windows\AppSettingsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Windows\NewWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

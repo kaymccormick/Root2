@@ -1,6 +1,9 @@
-﻿using System.Collections ;
+﻿using System ;
+using System.Collections ;
 using System.Collections.ObjectModel ;
 using System.Windows ;
+using JetBrains.Annotations ;
+using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -10,44 +13,93 @@ namespace KayMcCormick.Lib.Wpf
     // ReSharper disable once UnusedType.Global
     public static class ResourcesUtil
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         // ReSharper disable once UnusedMember.Local
-        private static void CollectResources (
-            FrameworkElement                      haveResources
+        public  static void CollectResources (
+            Type                                  ownerType
+          , [ NotNull ] FrameworkElement                      haveResources
           , ObservableCollection < ResourceInfo > resourcesCollection
         )
         {
+            if ( haveResources == null )
+            {
+                throw new ArgumentNullException ( nameof ( haveResources ) ) ;
+            }
+
             var res = haveResources.Resources ;
-            AddResourceInfos ( res , resourcesCollection ) ;
+            AddResourceInfos ( ownerType, res , resourcesCollection ) ;
 
             foreach ( var child in LogicalTreeHelper.GetChildren ( haveResources ) )
             {
                 if ( child is FrameworkElement e )
                 {
-                    CollectResources ( e , resourcesCollection ) ;
+                    CollectResources ( child.GetType (  ) , e, resourcesCollection ) ;
                 }
             }
         }
 
-        private static void AddResourceInfos (
-            ResourceDictionary                    res
-          , ObservableCollection < ResourceInfo > resourcesCollection
+        public static void AddResourceInfos (
+            [ NotNull ] Type                                  type
+          , [ NotNull ] ResourceDictionary                    res
+          , [ NotNull ] ObservableCollection < ResourceInfo > resourcesCollection
+          , ResourceDictionary                    parent = null
         )
         {
-            var resourcesSource = res.Source ;
-            foreach ( DictionaryEntry haveResourcesResource in res )
+            if ( type == null )
             {
-                resourcesCollection.Add (
-                                         new ResourceInfo (
-                                                           resourcesSource
-                                                         , haveResourcesResource.Key
-                                                         , haveResourcesResource.Value
-                                                          )
-                                        ) ;
+                throw new ArgumentNullException ( nameof ( type ) ) ;
             }
 
+            if ( res == null )
+            {
+                throw new ArgumentNullException ( nameof ( res ) ) ;
+            }
+
+            if ( resourcesCollection == null )
+            {
+                throw new ArgumentNullException ( nameof ( resourcesCollection ) ) ;
+            }
+
+            var resourcesSource = res.Source ;
+            
+            // Logger.Info ( "Resources source is {res.Source}, parent is {parent}", res.Source.ToString(), parent.ToString() ) ;
+            foreach ( DictionaryEntry haveResourcesResource in res )
+            {
+                if ( haveResourcesResource.Key != null ) {
+                    if ( haveResourcesResource.Value != null ) {
+                        var resourceInfo = new ResourceInfo (
+                                                             resourcesSource
+                                                           , haveResourcesResource.Key
+                                                           , haveResourcesResource.Value,
+
+                                                             type, parent
+                                                            ) ;
+                        // Logger.Info (
+                                     // "resource has {key} and {value}"
+                                   // , haveResourcesResource.Key
+                                   // , haveResourcesResource.Value
+                                    // ) ;
+                        try
+                        {
+                            resourcesCollection.Add ( resourceInfo ) ;
+                        } catch(Exception ex)
+                        {
+                            }
+                    }
+                }
+            }
+
+            Logger.Info ( "processing meregd dictionaries" ) ;
             foreach ( var r in res.MergedDictionaries )
             {
-                AddResourceInfos ( r , resourcesCollection ) ;
+                if ( r != null )
+                {
+                    AddResourceInfos ( type , r , resourcesCollection , res ) ;
+                }
+                else
+                {
+                    Logger.Warn ( "null element in merged dictionaries" ) ;
+                }
             }
         }
     }

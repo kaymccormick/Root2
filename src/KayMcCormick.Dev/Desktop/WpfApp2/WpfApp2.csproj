@@ -93,9 +93,6 @@
     <Compile Include="TemplatesWindow.xaml.cs">
       <DependentUpon>TemplatesWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="XmlViewer.xaml.cs">
-      <DependentUpon>XmlViewer.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,10 +114,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="TemplatesWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="XmlViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

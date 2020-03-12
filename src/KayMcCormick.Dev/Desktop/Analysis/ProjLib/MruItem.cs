@@ -5,8 +5,9 @@ using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
 using JetBrains.Annotations ;
+using ProjLib.Interfaces ;
 
-namespace ProjLib.Interfaces
+namespace ProjLib
 {
     public class MruItem : IMruItem , INotifyPropertyChanged
     {

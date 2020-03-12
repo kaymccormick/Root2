@@ -12,4 +12,5 @@
     <converters:ResolveServiceConverter x:Key="MyConverter"/>
     <converters:TargetConverter x:Key="TargetConverter"/>
     <wpf:GetTypeConverter x:Key="GetTypeConverter"/>
+    <wpf:XamlXmlDocumentConverter x:Key="XamlXmlDocumentConverter"/>
 </ResourceDictionary>

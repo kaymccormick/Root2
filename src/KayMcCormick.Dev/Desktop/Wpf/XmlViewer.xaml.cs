@@ -3,7 +3,7 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Xml ;
 
-namespace WpfApp2
+namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// Interaction logic for XmlViewer.xaml

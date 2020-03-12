@@ -369,7 +369,7 @@ namespace WpfApp.Application
           , FirstChanceExceptionEventArgs e
         )
         {
-            HandleInnerExceptions ( e ) ;
+            Utils.HandleInnerExceptions ( e.Exception) ;
         }
 
         private void HandleInnerExceptions ( FirstChanceExceptionEventArgs e )
@@ -428,10 +428,10 @@ namespace WpfApp.Application
 
             AppInitialize();
 
-            MainWindow mainWindow;
+            WpfApp.Controls.Windows.MainWindow mainWindow;
             try
             {
-                mainWindow = AppContainer.Resolve<MainWindow>();
+                mainWindow = AppContainer.Resolve<WpfApp.Controls.Windows.MainWindow>();
                 DebugLog($"Received {mainWindow} ");
             }
             catch (Exception ex)
@@ -453,12 +453,11 @@ namespace WpfApp.Application
                 {
                     DebugLog(ex.Message); //?.Error ( ex , ex.Message ) ;
                 }
-#if SHOWWINDOW
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
-#endif
-            }
 
+                var mainWindow2 = new MainWindow();
+                mainWindow2.Show();
+
+            }
 
             Initialized = true;
 

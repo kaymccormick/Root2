@@ -96,6 +96,7 @@
     <Compile Include="Main\MenuHelperTests.cs" />
     <Compile Include="Main\TestProps.cs" />
     <Compile Include="Main\TestUnexpectedItemException.cs" />
+    <Compile Include="Main\UI\ResourceUiTest.cs" />
     <Compile Include="Main\UI\TypeControlTests.cs" />
     <Compile Include="Main\Utils\InfoContextTests.cs" />
     <Compile Include="Main\Utils\PushContextAttributeTests.cs" />

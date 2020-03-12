@@ -76,12 +76,6 @@ namespace AnalysisControls
         public ICompilationViewModel ViewModel { get => viewModel ; set => viewModel = value ; }
         #endregion
 
-        private void tv_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            // var view = ( CollectionViewSource ) TryFindResource ( "Compilation" ) ;
-            // view.View.MoveCurrentTo ( e.NewValue ) ;
-        }
-
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
             ICompilationViewModel tempQualifier = ViewModel ;

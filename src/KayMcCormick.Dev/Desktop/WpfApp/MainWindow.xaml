@@ -9,105 +9,100 @@
         xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
         xmlns:dev1="clr-namespace:KayMcCormick.Dev.Interfaces;assembly=KayMcCormick.Dev"
         MinWidth="800"
+        Loaded="MainWindow_OnLoaded"
         MinHeight="600"
         mc:Ignorable="d" FontSize="20"
         Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
-        <CollectionViewSource x:Key="ResourcesList" Source="{Binding ElementName=mainWindow,Path=ResourcesCollection}" />
+  <Window.Resources>
+    <CollectionViewSource x:Key="ResourcesList" Source="{Binding ElementName=mainWindow,Path=ResourcesCollection}" />
 
-        <wpfApp:ResolveServiceList x:Key="ResolveServices">
-            <xaml:ResolveService ServiceType="{x:Type dev1:IObjectIdProvider}">
-                <wpf:AttachedProperties.LifetimeScope>
-                    <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
-                </wpf:AttachedProperties.LifetimeScope>
-            </xaml:ResolveService>
-        </wpfApp:ResolveServiceList>
-    </Window.Resources>
-    <Grid DataContext="{Binding ElementName=mainWindow, Path=(wpf:AttachedProperties.LifetimeScope)}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Text="{Binding Path=Tag}" />
-            <TextBlock Text="{Binding Source={xaml:LifetimeScope}, Path=Tag}" />
-        </StackPanel>
-        <TabControl Visibility="Visible" Grid.Column="0" Grid.Row="1" Style="{StaticResource TabControlStyle1}">
-            <TabItem Header="Tab 1" HorizontalAlignment="Right">
-                <controls:AllResourcesControl/>
-            </TabItem>
-            <TabItem Header="ResolveServiceList">
-                <Grid>
-                    <ListView ItemsSource="{Binding Source={StaticResource ResolveServices}}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn CellTemplate="{StaticResource CellTemplateType}" />
-                                <GridViewColumn DisplayMemberBinding="{Binding Path=ServiceInstance}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Registrations">
-                <controls:Registrations>
-                    <wpf:AttachedProperties.LifetimeScope>
-                        <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
-                    </wpf:AttachedProperties.LifetimeScope>
-                </controls:Registrations>
-            </TabItem>
-            <TabItem Header="Y">
-                <StackPanel>
-                    <TextBlock Text="{Binding Path=LifetimeScope.Tag}" />
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="X">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <ListView Name="ResolveServicesList"
+    <wpfApp:ResolveServiceList x:Key="ResolveServices">
+      <xaml:ResolveService ServiceType="{x:Type dev1:IObjectIdProvider}">
+        <wpf:AttachedProperties.LifetimeScope>
+          <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
+        </wpf:AttachedProperties.LifetimeScope>
+      </xaml:ResolveService>
+    </wpfApp:ResolveServiceList>
+    <StackPanel x:Key="Object1">
+      <TextBlock Text="{Binding LifetimeScope.Tag}" />
+    </StackPanel>
+  </Window.Resources>
+  <Grid DataContext="{Binding ElementName=mainWindow, Path=(wpf:AttachedProperties.LifetimeScope)}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <TabControl Visibility="Visible" Grid.Column="0" Grid.Row="0" Style="{StaticResource TabControlStyle1}">
+      <TabItem Header="Tab 1" HorizontalAlignment="Right">
+        <controls:AllResourcesControl/>
+      </TabItem>
+      <TabItem Header="ResolveServiceList">
+        <Grid>
+          <ListView ItemsSource="{Binding Source={StaticResource ResolveServices}}">
+            <ListView.View>
+              <GridView>
+                <GridViewColumn CellTemplate="{StaticResource CellTemplateType}" />
+                <GridViewColumn DisplayMemberBinding="{Binding Path=ServiceInstance}" />
+              </GridView>
+            </ListView.View>
+          </ListView>
+        </Grid>
+      </TabItem>
+      <TabItem Header="Registrations">
+        <controls:Registrations Loaded="Registrations_Loaded">
+          <wpf:AttachedProperties.LifetimeScope>
+            <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
+          </wpf:AttachedProperties.LifetimeScope>
+        </controls:Registrations>
+      </TabItem>
+      <TabItem Header="X">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <ListView Name="ResolveServicesList"
                               ItemsSource="{Binding Source={StaticResource ResolveServices}}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Object ID"
+            <ListView.View>
+              <GridView>
+                <GridViewColumn Header="Object ID"
                                                 DisplayMemberBinding="{Binding Source={xaml:ObjectId
                                 LifetimeScope={xaml:LifetimeScope}}}" />
-                                <GridViewColumn Header="Service Type" DisplayMemberBinding="{Binding Path=ServiceType}" />
-                                <GridViewColumn Header="Tag" DisplayMemberBinding="{Binding Path=LifetimeScope.Tag}" />
-                                <GridViewColumn Header="Service Instance"
+                <GridViewColumn Header="Service Type" DisplayMemberBinding="{Binding Path=ServiceType}" />
+                <GridViewColumn Header="Tag" DisplayMemberBinding="{Binding Path=LifetimeScope.Tag}" />
+                <GridViewColumn Header="Service Instance"
                                                 DisplayMemberBinding="{Binding ConverterParameter={xaml:LifetimeScope}, Converter={StaticResource MyConverter}}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <ListView Grid.Row="0" ItemsSource="{Binding ElementName=ResolveServicesList,Path=SelectedItem}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn DisplayMemberBinding="{Binding }" />
-                                <GridViewColumn DisplayMemberBinding="{Binding Instance.Parameters}" />
-                                <GridViewColumn DisplayMemberBinding="{Binding Instance}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Assemblies" />
+              </GridView>
+            </ListView.View>
+          </ListView>
+          <ListView Grid.Row="0" ItemsSource="{Binding ElementName=ResolveServicesList,Path=SelectedItem}">
+            <ListView.View>
+              <GridView>
+                <GridViewColumn DisplayMemberBinding="{Binding }" />
+                <GridViewColumn DisplayMemberBinding="{Binding Instance.Parameters}" />
+                <GridViewColumn DisplayMemberBinding="{Binding Instance}" />
+              </GridView>
+            </ListView.View>
+          </ListView>
+        </Grid>
+      </TabItem>
+      <TabItem Header="Assemblies" />
 
-        </TabControl>
-        <Frame Grid.Row="2" Grid.Column="0"
+    </TabControl>
+    <Frame Visibility="Hidden"  Grid.Row="2" Grid.Column="0"
                BorderBrush="Brown" BorderThickness="3"
                Navigating="Frame_OnNavigating"
                NavigationFailed="Frame_OnNavigationFailed" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                Name="frame" Source="../Controls/TypePage.xaml">
-            <Frame.CommandBindings>
-                <CommandBinding Command="wpfApp:WpfAppCommands.VisitType" Executed="VisitType" />
-            </Frame.CommandBindings>
-            <Frame.RenderTransform>
-                <ScaleTransform ScaleX="2" ScaleY="2" />
-            </Frame.RenderTransform>
-        </Frame>
+      <Frame.CommandBindings>
+        <CommandBinding Command="wpfApp:WpfAppCommands.VisitType" Executed="VisitType" />
+      </Frame.CommandBindings>
+      <Frame.RenderTransform>
+        <ScaleTransform ScaleX="2" ScaleY="2" />
+      </Frame.RenderTransform>
+    </Frame>
 
-    </Grid>
+  </Grid>
 </Window>

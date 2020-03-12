@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp2"
+        xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
         mc:Ignorable="d"
         Title="TemplatesWindow" Height="450" Width="800">
     <Window.Resources>
@@ -19,7 +20,7 @@
         </DataTemplate>
         <DataTemplate x:Key="XamlXmlViewTemplate">
 	        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-	        <local:XmlViewer FontFamily="Fira Code Light" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" XmlDocument="{Binding Path=TemplateXamlXml}"></local:XmlViewer>
+	        <wpf:XmlViewer FontFamily="Fira Code Light" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" XmlDocument="{Binding Path=TemplateXamlXml}"></wpf:XmlViewer>
         </DataTemplate>
 	    <!-- ReSharper disable once Xaml.RedundantResource -->
 	    <x:Array Type="{x:Type local:TemplateInfo}" x:Key="MyDesignResources">

@@ -14,11 +14,12 @@
           HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
         <!-- ReSharper disable once UnusedMember.Global -->
-        <ListView ItemsSource="{Binding Source={StaticResource RegistrationsSource}}" BorderBrush="Violet "
+        <ListView ItemsSource="{Binding Source={StaticResource RegistrationsSource}}" BorderBrush="Blue"
                   BorderThickness="6" Name="ComponentsListView">
             <ListView.View>
                 <GridView>
@@ -33,28 +34,6 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel Grid.Row="2"
-                    DataContext="{Binding Source={StaticResource RegistrationsSource}, Path=CurrentItem,Converter={StaticResource RegistrationSourceConverter}}">
-            <TextBlock />
-            <ListView ItemsSource="{Binding Source={StaticResource RegistrationsSource}, Path=CurrentItem}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=ObjectId}" />
-                        <GridViewColumn Header="Actions">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <ToolBarTray>
-                                        <ToolBar
-                                            ItemsSource="{Binding Converter={StaticResource InstanceRegistrationConverter},ConverterParameter=ToolBar}" />
-                                    </ToolBarTray>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
     </Grid>
 
 

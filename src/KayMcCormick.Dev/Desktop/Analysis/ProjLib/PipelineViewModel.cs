@@ -10,8 +10,9 @@
 // ---
 #endregion
 using JetBrains.Annotations ;
+using ProjLib.Interfaces ;
 
-namespace ProjLib.Interfaces
+namespace ProjLib
 {
     [ UsedImplicitly ]
     public class PipelineViewModel : IPipelineViewModel

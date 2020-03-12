@@ -1,4 +1,6 @@
-namespace ProjLib.Interfaces
+using ProjLib.Interfaces ;
+
+namespace ProjLib
 {
     class DetailedOperation : IDetailedOperation
     {

@@ -12,6 +12,7 @@
 using System.Windows ;
 using System.Windows.Markup ;
 using System.Xml ;
+using KayMcCormick.Lib.Wpf ;
 
 namespace WpfApp2
 {

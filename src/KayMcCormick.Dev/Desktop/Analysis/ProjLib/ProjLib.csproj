@@ -85,7 +85,7 @@
     <Compile Include="FilePaths.cs" />
     <Compile Include="FindLogUsages.cs" />
     <Compile Include="GlobalSuppressions2.cs" />
-    <Compile Include="Interfaces\DetailedOperation.cs" />
+    <Compile Include="DetailedOperation.cs" />
     <Compile Include="Interfaces\IAppState.cs" />
     <Compile Include="Interfaces\IBrowserNode.cs" />
     <Compile Include="Interfaces\IBrowserNodeCollection.cs" />
@@ -108,8 +108,8 @@
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="Interfaces\IWorkspacesView.cs" />
     <Compile Include="Interfaces\IWorkspacesViewModel.cs" />
-    <Compile Include="Interfaces\MruItem.cs" />
-    <Compile Include="Interfaces\PipelineViewModel.cs" />
+    <Compile Include="MruItem.cs" />
+    <Compile Include="PipelineViewModel.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
     <Compile Include="PipelineResult.cs" />

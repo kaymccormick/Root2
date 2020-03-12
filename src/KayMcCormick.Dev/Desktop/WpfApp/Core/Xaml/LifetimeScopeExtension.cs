@@ -40,7 +40,7 @@ namespace WpfApp.Core.Xaml
         {
             // todo fixme
              var haveLifetimeScope = ContainerHelper.CurrentLifetimeScope ;
-            Logger.Info ( "lifetime scope is {lifetimescope}" , haveLifetimeScope ) ;
+            //Logger.Info ( "lifetime scope is {lifetimescope}" , haveLifetimeScope ) ;
             return haveLifetimeScope ;
         }
     }
