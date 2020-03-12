@@ -1,7 +1,7 @@
 ﻿using Autofac ;
 using KayMcCormick.Lib.Wpf ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Views
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
