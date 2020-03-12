@@ -1,10 +1,11 @@
 ﻿using System;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 
 using NLog;
 using NLog.Layouts;
 using WpfApp.Application;
-using WpfApp.Core.Container;
+
 using Xunit;
 using Xunit.Abstractions;
 

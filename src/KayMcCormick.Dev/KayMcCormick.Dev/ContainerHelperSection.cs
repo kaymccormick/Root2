@@ -1,7 +1,7 @@
 ﻿using System.Configuration ;
-using WpfApp.Core.Container ;
+using KayMcCormick.Dev.Attributes ;
 
-namespace WpfApp.Config
+namespace KayMcCormick.Dev
 {
     /// <summary>Configuration section handler for container helper settings.</summary>
     /// <seealso cref="System.Configuration.ConfigurationSection" />

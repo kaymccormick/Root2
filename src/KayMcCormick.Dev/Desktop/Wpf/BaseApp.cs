@@ -29,7 +29,7 @@ namespace KayMcCormick.Lib.Wpf
     public abstract class BaseApp : Application, IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private IComponentContext scope ;
+        private ILifetimeScope scope ;
         private readonly ApplicationInstance appInst ;
 #if COMMANDLINE
         private Type[]                  _optionType ;
@@ -86,7 +86,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        public IComponentContext Scope { get => scope ; set => scope = value ; }
+        public ILifetimeScope Scope { get => scope ; set => scope = value ; }
 
         protected void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
         {

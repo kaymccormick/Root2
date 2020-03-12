@@ -98,9 +98,6 @@
     <Compile Include="Application\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Config\ConfigTargetAttribute.cs" />
-    <Compile Include="Config\ContainerHelperSection.cs" />
-    <Compile Include="Config\LoggingSection.cs" />
     <Compile Include="Controls\AllResourcesTree.xaml.cs">
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
@@ -110,14 +107,14 @@
     <Compile Include="Controls\TypeControl3.xaml.cs">
       <DependentUpon>TypeControl3.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Core\Container\AppBuildModule.cs" />
+    <Compile Include="ControlWrap.cs" />
+    <Compile Include="Core\Container\WpfAppBuildModule.cs" />
     <Compile Include="Core\Exceptions\UnhandledException.cs" />
     <Compile Include="Core\Interfaces\IObjectId.cs" />
     <Compile Include="Debug\DebugEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="NamespaceDocs.cs" />
     <Compile Include="Proxy\InterceptEvents.cs" />
-    <Compile Include="Proxy\LoggingInterceptor.cs" />
     <Compile Include="Proxy\ProxyUtils.cs" />
     <Compile Include="Core\Attributes\LoggingEntityMetadata.cs" />
     <Compile Include="Core\Attributes\WindowMetadataAttribute.cs" />
@@ -391,6 +388,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Config\" />
     <Folder Include="Core\Context\" />
     <Folder Include="Core\Infos\" />
     <Folder Include="Modules\" />

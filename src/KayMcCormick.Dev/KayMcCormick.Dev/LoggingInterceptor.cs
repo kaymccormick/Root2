@@ -1,10 +1,7 @@
-﻿
-using System ;
+﻿using System ;
 using Castle.DynamicProxy ;
-using KayMcCormick.Dev ;
-using WpfApp.Core.Interfaces ;
 
-namespace WpfApp.Proxy
+namespace KayMcCormick.Dev
 {
     /// <summary>DynamicProxy interceptor to inject a logger into classes. TODO refactor.</summary>
     /// <seealso cref="Castle.DynamicProxy.IInterceptor" />

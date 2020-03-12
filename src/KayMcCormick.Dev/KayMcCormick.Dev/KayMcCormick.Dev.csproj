@@ -96,6 +96,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppBuildModule.cs" />
+    <Compile Include="AppBuild\ILoggerTracker.cs" />
     <Compile Include="AppInfoService.cs" />
     <Compile Include="AppInfraException.cs" />
     <Compile Include="ApplicationInstance.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="ApplicationInstanceHost.cs" />
     <Compile Include="AppStartupEventArgs.cs" />
     <Compile Include="AttributeNotFoundException.cs" />
+    <Compile Include="Attributes\ConfigTargetAttribute.cs" />
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
     <Compile Include="ClearLoggingRulesAttribute.cs" />
@@ -118,6 +121,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ContainerHelperSection.cs" />
+    <Compile Include="ContainerHelperSettings.cs" />
     <Compile Include="ContextStack.cs" />
     <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
     <Compile Include="DebugUtils.cs" />
@@ -137,8 +142,12 @@
     <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
     <Compile Include="IViewModel.cs" />
     <Compile Include="LogEventInstance.cs" />
+    <Compile Include="LoggerEventArgs.cs" />
+    <Compile Include="LoggerSettings.cs" />
     <Compile Include="LoggerTracker.cs" />
+    <Compile Include="LoggingInterceptor.cs" />
     <Compile Include="LoggingRuleAttribute.cs" />
+    <Compile Include="LoggingSection.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
@@ -303,6 +312,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Container\" />
+    <Folder Include="Modules\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,5 @@
 ﻿using Autofac ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using Tests.Lib.Misc ;
 
@@ -28,7 +27,6 @@ namespace Tests.Lib.Fixtures
         {
             AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
             var builder = new ContainerBuilder ( ) ;
-            builder.RegisterModule < IdGeneratorModule > ( ) ;
             builder.RegisterType < RandomClass > ( ).As < IRandom > ( ) ;
 
             Container = builder.Build ( ) ;

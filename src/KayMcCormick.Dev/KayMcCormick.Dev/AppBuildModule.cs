@@ -2,23 +2,16 @@ using System ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Reflection ;
-using System.Windows ;
+using System.Runtime.Serialization ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
+using Autofac.Core.Registration ;
 using Autofac.Core.Resolving ;
 using Autofac.Extras.AttributeMetadata ;
-using KayMcCormick.Dev ;
+using KayMcCormick.Dev.AppBuild ;
 using KayMcCormick.Dev.Interfaces ;
-using KayMcCormick.Dev.Logging ;
-#if ENABLE_BUILDERPROXY
-using Castle.DynamicProxy ;
-#endif
 using NLog ;
-using WpfApp.Core.Container ;
-using WpfApp.Core.Interfaces ;
-using WpfApp.Core.Logging ;
-using WpfApp.Proxy ;
 using Module = Autofac.Module ;
 
 namespace KayMcCormick.Dev
@@ -54,8 +47,8 @@ namespace KayMcCormick.Dev
         /// TODO Edit XML Comment Template for SetupContainer
         [ Obsolete ]
         public static ILifetimeScope SetupContainer (
-            out IContainer           container
-          , ContainerHelperSettings  containerHelperSettings
+            out IContainer          container
+          , ContainerHelperSettings containerHelperSettings
         )
         {
             if ( containerHelperSettings != null )
@@ -96,8 +89,8 @@ else
             setupContainer.ChildLifetimeScopeBeginning +=
                 SetupContainerOnChildLifetimeScopeBeginning ;
             #endregion
-            setupContainer.CurrentScopeEnding        += SetupContainerOnCurrentScopeEnding ;
-            setupContainer.ResolveOperationBeginning += SetupContainerOnResolveOperationBeginning ;
+            // setupContainer.CurrentScopeEnding        += SetupContainerOnCurrentScopeEnding ;
+            // setupContainer.ResolveOperationBeginning += SetupContainerOnResolveOperationBeginning ;
 
 
             var beginLifetimeScope = setupContainer.BeginLifetimeScope ( "initial scope" ) ;
@@ -108,7 +101,7 @@ else
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-            List < Assembly > assembliesToScan = null ;
+            ICollection < Assembly > assembliesToScan = null ;
             if ( assembliesToScan == null )
             {
                 assembliesToScan = GetAssembliesForScanningViaTypes ( ) ;
@@ -118,7 +111,7 @@ else
         }
         #endregion
 
-        private  void AppBuild (
+        private void AppBuild (
             IEnumerable < Assembly > assembliesToScan
           , ContainerBuilder         builder
         )
@@ -128,11 +121,10 @@ else
 
             var toScan = assembliesToScan as Assembly[] ?? assembliesToScan.ToArray ( ) ;
 
-
             builder.Properties[ AssembliesForScanningProperty ] = GetAssembliesForScanning ( ) ;
             #region Autofac Modules
             builder.RegisterModule < AttributedMetadataModule > ( ) ;
-            builder.RegisterModule < IdGeneratorModule > ( ) ;
+            builder.RegisterModule < AppBuildModule.IdGeneratorModule > ( ) ;
 #if MENUS_ENABLE
             builder.RegisterModule < > ( ) ;
 #endif
@@ -156,42 +148,7 @@ else
             LogStuff ( ref i ) ;
 
             #region Assembly scanning
-            builder.RegisterAssemblyTypes ( toScan )
-                   .Where ( MainScanningPredicate )
-                   .AsImplementedInterfaces ( ) ;
-            builder.RegisterAssemblyTypes ( toScan.ToArray ( ) )
-                   .Where (
-                           delegate ( Type t ) {
-                               var isAssignableFrom = typeof ( Window ).IsAssignableFrom ( t ) ;
-                               TraceConditionalRegistration (
-                                                             t
-                                                           , typeof ( Window )
-                                                           , isAssignableFrom
-                                                            ) ;
-                               return isAssignableFrom ;
-                           }
-                          )
-                   .AsSelf ( )
-                   .As < Window > ( )
-                   .OnActivating (
-                                  args => {
-                                      var argsInstance = args.Instance ;
-
-                                      if ( argsInstance is IHaveLogger haveLogger )
-                                      {
-                                          haveLogger.Logger =
-                                              args.Context.Resolve < ILogger > (
-                                                                                new TypedParameter (
-                                                                                                    typeof
-                                                                                                    ( Type
-                                                                                                    )
-                                                                                                  , argsInstance
-                                                                                                       .GetType ( )
-                                                                                                   )
-                                                                               ) ;
-                                      }
-                                  }
-                                 ) ;
+            
             #endregion
             #region Interceptors
             if ( DoInterception )
@@ -249,7 +206,7 @@ else
             #endregion
         }
 
-        private  void SetupContainerOnResolveOperationBeginning (
+        private void SetupContainerOnResolveOperationBeginning (
             object                             sender
           , ResolveOperationBeginningEventArgs e
         )
@@ -260,7 +217,7 @@ else
             Logger.Info ( $"{nameof ( SetupContainerOnResolveOperationBeginning )} " ) ;
         }
 
-        private  void ResolveOperationOnInstanceLookupBeginning (
+        private void ResolveOperationOnInstanceLookupBeginning (
             object                           sender
           , InstanceLookupBeginningEventArgs e
         )
@@ -268,7 +225,7 @@ else
             Logger.Info ( $"{nameof ( ResolveOperationOnInstanceLookupBeginning )}" ) ;
         }
 
-        private  void ResolveOperationOnCurrentOperationEnding (
+        private void ResolveOperationOnCurrentOperationEnding (
             object                          sender
           , ResolveOperationEndingEventArgs e
         )
@@ -276,36 +233,11 @@ else
             Logger.Info ( $"{nameof ( ResolveOperationOnCurrentOperationEnding )}" ) ;
         }
 
-        private  bool MainScanningPredicate ( Type arg )
-        {
-            var r = false ; //typeof ( ITabGuest ).IsAssignableFrom ( arg ) ;
-            if ( DoTraceConditionalRegistration )
-            {
-                Logger.Trace ( $"Conditional registration for {arg} is {r}" ) ;
-            }
-
-            return r ;
-        }
-
         /// <summary>Gets or sets a value indicating whether install interceptors for built objects.</summary>
         /// <value>
         ///   <see language="true"/> to perform interception; otherwise, <see language="false"/>.</value>
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public bool DoInterception { get ; set ; } = true ;
-
-        private void TraceConditionalRegistration (
-            Type type
-          , Type type1
-          , bool isAssignableFrom
-        )
-        {
-            if ( DoTraceConditionalRegistration )
-            {
-                Logger.Trace (
-                              $"Conditional registration for {type} is {isAssignableFrom} [{type1}]"
-                             ) ;
-            }
-        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether to trace conditional
@@ -324,13 +256,13 @@ else
         /// </value>
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         // ReSharper disable once UnusedMember.Global
-        public  bool DoProxyBuilder { get ; set ; } = true ;
+        public bool DoProxyBuilder { get ; set ; } = true ;
 
         /// <summary>Gets the assemblies for scanning.</summary>
         /// <returns></returns>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for GetAssembliesForScanning
-        public  ICollection < Assembly > GetAssembliesForScanning ( )
+        public ICollection < Assembly > GetAssembliesForScanning ( )
         {
             if ( GetAssembliesViaReferences )
             {
@@ -468,34 +400,116 @@ else
                 Dump ( componentRegistryRegistration.Target , seenObjects , outFunc ) ;
             }
         }
-    }
-}
 
-namespace WpfApp.Core.Container
-{
-    /// <summary></summary>
-    /// <autogeneratedoc />
-    /// TODO Edit XML Comment Template for ContainerHelperSettings
-    public class ContainerHelperSettings
-    {
-        /// <summary>Gets or sets a value indicating whether [do interception].</summary>
-        /// <value>
-        ///   <see language="1"/> if [do interception]; otherwise, <see language="false"/>.</value>
-        /// <autogeneratedoc />
-        /// TODO Edit XML Comment Template for DoInterception
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public bool DoInterception { get ; set ; }
-
-        /// <summary>Gets or sets a value indicating whether [do trace conditional registration].</summary>
-        /// <value>
-        ///   <see language="1"/> if [do trace conditional registration]; otherwise, <see language="false"/>.</value>
-        /// <autogeneratedoc />
-        /// TODO Edit XML Comment Template for DoTraceConditionalRegistration
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public bool DoTraceConditionalRegistration { get ; set ; }
-
-        public void ApplySettings ( )
+        public class IdGeneratorModule : Module
         {
+            private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+            /// <summary>Gets or sets the default object.</summary>
+            /// <value>The default object.</value>
+            /// <autogeneratedoc />
+            /// TODO Edit XML Comment Template for DefaultObject
+            public DefaultObjectIdProvider DefaultObject { get; set; }
+
+            /// <summary>Gets or sets the generator.</summary>
+            /// <value>The generator.</value>
+            /// <autogeneratedoc />
+            /// TODO Edit XML Comment Template for Generator
+            public ObjectIDGenerator Generator { get; set; }
+
+            /// <summary>Override to add registrations to the container.</summary>
+            /// <remarks>
+            ///     Note that the ContainerBuilder parameter is unique to this module.
+            /// </remarks>
+            /// <param name="builder">
+            ///     The builder through which components can be
+            ///     registered.
+            /// </param>
+            protected override void Load(ContainerBuilder builder)
+            {
+                //var obIdGenerator = new ObjectIDGenerator();
+                Logger.Trace($"Load {nameof( AppBuildModule.IdGeneratorModule)}");
+
+
+                Generator = new ObjectIDGenerator();
+                //builder.RegisterInstance ( generator ).As < ObjectIDGenerator > ( ) ;
+                //			builder.RegisterType < ObjectIDGenerator > ( ).InstancePerLifetimeScope ( ).AsSelf ( ) ;
+                DefaultObject = new DefaultObjectIdProvider(Generator);
+                builder.RegisterInstance(DefaultObject)
+                       .As<IObjectIdProvider>()
+                       .SingleInstance();
+                // builder.RegisterType < DefaultObjectIdProvider > ( )
+                //        .As < IObjectIdProvider > ( )
+                //        .InstancePerLifetimeScope ( ) ;
+            }
+
+
+            /// <summary>
+            ///     Override to attach module-specific functionality to a
+            ///     component registration.
+            /// </summary>
+            /// <remarks>
+            ///     This method will be called for all existing <i>and future</i> component
+            ///     registrations - ordering is not important.
+            /// </remarks>
+            /// <param name="componentRegistry">The component registry.</param>
+            /// <param name="registration">The registration to attach functionality to.</param>
+            protected override void AttachToComponentRegistration(
+                IComponentRegistryBuilder componentRegistry
+              , IComponentRegistration    registration
+            )
+            {
+                if (registration != null)
+                {
+                    registration.Preparing  += RegistrationOnPreparing;
+                    registration.Activating += RegistrationOnActivating;
+                }
+            }
+
+            private void RegistrationOnActivating(object sender, ActivatingEventArgs<object> e)
+            {
+                var inst = e.Instance;
+
+                Logger.Trace(
+                             $"{nameof(RegistrationOnActivating)} {e.Component.DebugFormat()}"
+                            );
+                if (e.Component.Services.Any(
+                                             service =>
+                                             {
+                                                 var typedService = service as TypedService;
+                                                 // Logger.Trace ( typedService ) ;
+                                                 if (typedService == null)
+                                                 {
+                                                     return false;
+                                                 }
+
+                                                 var typedServiceServiceType =
+                                                     typedService.ServiceType;
+                                                 return typedServiceServiceType
+                                                        == typeof(ObjectIDGenerator);
+                                             }
+                                            ))
+                {
+                    Logger.Debug($"Departing {nameof(RegistrationOnActivating)} early.");
+                    return;
+                }
+
+                //var provider = e.Context.Resolve < IObjectIdProvider > ( ) ;
+                var provideObjectInstanceIdentifier =
+                    DefaultObject.ProvideObjectInstanceIdentifier(
+                                                                  inst
+                                                                , e.Component
+                                                                , e.Parameters
+                                                                 );
+                if (inst is IHaveObjectId x)
+                {
+                    x.InstanceObjectId = provideObjectInstanceIdentifier;
+                }
+            }
+
+            private void RegistrationOnPreparing(object sender, PreparingEventArgs e)
+            {
+            }
         }
     }
 }

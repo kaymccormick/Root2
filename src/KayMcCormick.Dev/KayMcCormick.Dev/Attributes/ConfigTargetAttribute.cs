@@ -11,7 +11,7 @@
 #endregion
 using System ;
 
-namespace WpfApp.Config
+namespace KayMcCormick.Dev.Attributes
 {
     /// <summary></summary>
     /// <seealso cref="System.Attribute" />

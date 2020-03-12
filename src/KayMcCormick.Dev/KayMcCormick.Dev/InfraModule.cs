@@ -16,8 +16,6 @@ namespace KayMcCormick.Dev
         /// <param name="builder"></param>
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterModule<IdGeneratorModule>();
-            base.Load(builder);
         }
         #endregion
     }

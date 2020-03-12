@@ -17,7 +17,7 @@ using Autofac ;
 using Autofac.Extras.DynamicProxy ;
 using KayMcCormick.Dev ;
 using NLog ;
-using WpfApp.Core.Container ;
+
 using WpfApp.Core.Interfaces ;
 using WpfApp.Core.Model ;
 using WpfApp.Proxy ;

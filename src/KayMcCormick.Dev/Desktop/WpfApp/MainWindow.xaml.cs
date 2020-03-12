@@ -102,68 +102,8 @@ namespace WpfApp
 
         private void MainWindow_OnLoaded ( object sender , RoutedEventArgs e )
         {
-            PopulateResourcesTree ( ) ;
         }
 
-        private void PopulateResourcesTree ( )
-        {
-            try
-            {
-                var current = ( App ) System.Windows.Application.Current ;
-                var appNode = new ResourceNodeInfo { Key = "Application" , Data = current } ;
-                var appResources = new ResourceNodeInfo
-                                   {
-                                       Key = "Resources" , Data = current.Resources
-                                   } ;
-                appNode.Children.Add ( appResources ) ;
-                AddResourceNodeInfos(appResources);
-                AllResources.Add(appNode);
 
-                foreach ( Window w in current.Windows )
-                {
-                    var winNode = new ResourceNodeInfo { Key = w.GetType ( ) , Data = new ControlWrap<Window>(w) } ;
-                    appNode.Children.Add ( winNode ) ;
-                    var winRes = new ResourceNodeInfo { Key = "Resources" , Data = w.Resources } ;
-                    winNode.Children.Add ( winRes ) ;
-                    AddResourceNodeInfos(winRes);
-                }
-            }
-            catch ( Exception ex )
-            {
-            }
-        }
-
-        private void AddResourceNodeInfos ( ResourceNodeInfo appResources )
-        {
-            var res = ( ResourceDictionary ) appResources.Data ;
-            appResources.SourceUri = res.Source ;
-
-            foreach ( var md in res.MergedDictionaries )
-            {
-                var mdr = new ResourceNodeInfo { Key = md.Source , Data = md } ;
-                AddResourceNodeInfos ( mdr ) ;
-                appResources.Children.Add ( mdr ) ;
-            }
-
-            foreach ( DictionaryEntry haveResourcesResource in res )
-            {
-                if ( haveResourcesResource.Key      != null
-                     && haveResourcesResource.Value != null )
-                {   
-                    var resourceInfo = new ResourceNodeInfo
-                                       {
-                                           Key  = haveResourcesResource.Key
-                                         , Data = haveResourcesResource.Value
-                                       } ;
-                    appResources.Children.Add ( resourceInfo ) ;
-                }
-            }
-        }
-    }
-
-    internal class ControlWrap<T> where T : FrameworkElement
-    {
-        public T Control { get ; }
-        public ControlWrap ( T c ) { Control = c ; }
     }
 }
