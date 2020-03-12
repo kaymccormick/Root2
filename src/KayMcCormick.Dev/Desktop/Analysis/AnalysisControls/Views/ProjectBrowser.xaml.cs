@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls ;
 using System.Windows.Data ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Views
 {
     /// <summary>
     /// Interaction logic for ProjectBrowser.xaml

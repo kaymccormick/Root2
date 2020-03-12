@@ -1,8 +1,7 @@
-﻿using System.Windows.Controls;
-using ProjLib ;
+﻿using System.Windows.Controls ;
 using ProjLib.Interfaces ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Views
 {
     /// <summary>
     /// Interaction logic for TestView1.xaml

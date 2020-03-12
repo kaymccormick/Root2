@@ -40,8 +40,10 @@ namespace KayMcCormick.Dev.Logging
           , JsonSerializerOptions options
         )
         {
+            if ( reader.TokenType != JsonTokenType.StartObject ) throw new JsonException ( ) ;
+
             //var builder = new LogBuilder(null);
-            var info = new LogEventInfo();
+            var info = new LogEventInfo2();
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndObject)
@@ -84,11 +86,14 @@ namespace KayMcCormick.Dev.Logging
 
                         var msg = reader.GetString();
                         info.Message = msg;
-                        // builder      = builder.Message ( msg ) ;
                         break;
+                    case nameof(LogEventInfo.SequenceID): reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.Number )
+                            throw new JsonException ( ) ;
+                        info.SequenceID = reader.GetInt32 ( ) ;
+                        break ;
                     case "Properties":
                         reader.Read();
-#if true
                         while (reader.Read())
                         {
                             if (reader.TokenType == JsonTokenType.EndObject)
@@ -201,95 +206,14 @@ namespace KayMcCormick.Dev.Logging
                                     {
                                         throw new JsonException();
                                     }
-                                    // var del =
-                                    //     typeof ( ReadDelegate ) ; //<> ).MakeGenericType ( type ) ;
-                                    // var converter = options.GetConverter ( type ) ;
-                                    // if ( converter == null )
-                                    // {
-                                    //     throw new JsonException ( ) ;
-                                    // }
-                                    //
-                                    //
-                                    // JsonConverter < object > v1 =
-                                    //     ( JsonConverter < object > ) converter ;
-                                    // var o1 = v1.Read(ref reader, type, options);
-                                    // MethodInfo readMethod1 = null ;
-                                    // foreach ( var methodInfo in converter
-                                    //                            .GetType ( )
-                                    //                            .GetMethods (
-                                    //                                         BindingFlags.Public
-                                    //                                         | BindingFlags.Instance
-                                    //                                        ) )
-                                    // {
-                                    //     Debug.WriteLine ( methodInfo.Name ) ;
-                                    //     if ( methodInfo.Name == "Read" )
-                                    //     {
-                                    //         readMethod1 = methodInfo ;
-                                    //     }
-                                    // }
-                                    //
-                                    // var parameterModifier = new ParameterModifier(3) ;
-                                    // // parameterModifier[ 0 ] = true ;
-                                    // var readMethod = converter.GetType().GetMethod(
-                                    //                                                "Read", BindingFlags.Public | BindingFlags.Instance, new MyBinder(), new Type[]
-                                    //                                                                                                                     {
-                                    //                                                                                                                         typeof ( Utf8JsonReader ).MakeByRefType()
-                                    //                                                                                                                       , typeof ( Type )
-                                    //                                                                                                                       , typeof ( JsonSerializerOptions )
-                                    //                                                                                                                     }, new ParameterModifier[] { parameterModifier }
-                                    //                                               ) ;
-                                    // if(readMethod1 == null)
-                                    // {
-                                    //     throw new JsonException ( ) ;
-                                    //
-                                    // }
-                                    //
-                                    // var d = readMethod.CreateDelegate (
-                                    //                            typeof ( ReadDelegate )
-                                    //                          , converter
-                                    //                           ) ;
-
-                                    // var byRef = typeof ( Utf8JsonReader ).MakeByRefType ( ) ;
-                                    // foreach ( var constructorInfo in byRef.GetConstructors ( ) )
-                                    // {
-                                    // Debug.WriteLine (
-                                    // $"{string.Join ( ", " , constructorInfo.GetParameters ( ).Select ( parameterInfo => parameterInfo.ParameterType.FullName ) )}"
-                                    // ) ;
-                                    // }
-
-                                    // Delegate v =
-                                    // readMethod1.CreateDelegate ( typeof(Delegate), converter ) ;
-                                    // reader.Read ( ) ;
-
-                                    // var result = v.DynamicInvoke (, options ) ;
-                                    // var result = v ( ref reader , type , options ) ;
-                                    // value = result ;
+                                    
                                     value = o1;
                                 }
 
 
                             }
                             info.Properties[curKey] = value;
-
-#else
-                        var properties =
-                            JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (
-                                                                                           ref
-                                                                                           reader
-                                                         , options
-                                                                                          ) ;
-
-
-
-                        foreach ( var keyValuePair in properties )
-                        {
-                            info.Properties[ keyValuePair.Key ] = keyValuePair.Value ;
                         }
-
-                        break ;
-#endif
-                        }
-
                         break;
                 }
             }
@@ -435,5 +359,10 @@ namespace KayMcCormick.Dev.Logging
             writer.WriteEndObject();
         }
         #endregion
+    }
+
+    public class LogEventInfo2 : LogEventInfo
+    {
+        public new int SequenceID { get ; set ; }
     }
 }

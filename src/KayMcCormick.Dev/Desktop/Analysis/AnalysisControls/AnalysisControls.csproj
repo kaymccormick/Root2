@@ -104,7 +104,7 @@
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="Interfaces\ISyntaxPanelViewModel.cs" />
-    <Compile Include="NodePanel.cs" />
+    <Compile Include="Views\NodePanel.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
     </Compile>
@@ -116,7 +116,7 @@
       <DependentUpon>MainStatusBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="MyFlowDocumentScrollViewer.cs" />
-    <Compile Include="ProjectBrowser.xaml.cs">
+    <Compile Include="Views\ProjectBrowser.xaml.cs">
       <DependentUpon>ProjectBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpanToolTip.cs" />
@@ -125,7 +125,7 @@
     <Compile Include="SyntaxItem.cs" />
     <Compile Include="ViewModels\SyntaxPanelViewModel.cs" />
     <Compile Include="Syntax\ITypesViewModel.cs" />
-    <Compile Include="TestView1.xaml.cs">
+    <Compile Include="Views\TestView1.xaml.cs">
       <DependentUpon>TestView1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Token.cs" />
@@ -139,7 +139,7 @@
       <DependentUpon>TypesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Visitor3.cs" />
-    <Compile Include="Window1.xaml.cs">
+    <Compile Include="Views\Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Page Include="AnalysisControls.xaml">
@@ -166,11 +166,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NodePanel.xaml">
+    <Page Include="Views\NodePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ProjectBrowser.xaml">
+    <Page Include="Views\ProjectBrowser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -194,7 +194,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TestView1.xaml">
+    <Page Include="Views\TestView1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,7 +213,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Window1.xaml">
+    <Page Include="Views\Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
