@@ -71,6 +71,7 @@
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />
+    <Compile Include="DataTemplateKeyConverter.cs" />
     <Compile Include="GetTypeConverter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LifetimeScopeExtension.cs" />

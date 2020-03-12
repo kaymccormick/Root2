@@ -1,6 +1,9 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.Configuration ;
 using System.Diagnostics ;
+using System.Linq ;
+using System.Reflection ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
@@ -9,7 +12,11 @@ using CommandLine ;
 using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
+using NLog.Targets ;
+using Application = System.Windows.Application ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -28,7 +35,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public abstract class BaseApp : Application, IDisposable
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        
         private ILifetimeScope scope ;
         private readonly ApplicationInstance appInst ;
 #if COMMANDLINE
@@ -39,6 +46,7 @@ namespace KayMcCormick.Lib.Wpf
             using ( EventLog e = new EventLog ( "Application" ) )
             {
                 e.Source = "Application" ;
+                var configs = ApplyConfiguration();
                 appInst = new ApplicationInstance (
                                                    message => {
                                                        if ( e != null )
@@ -49,8 +57,17 @@ namespace KayMcCormick.Lib.Wpf
                                                                             .Information
                                                                         ) ;
                                                        }
-                                                   }
+                                                   }, configs
                                                   ) ;
+                foreach (var myJsonLayout in LogManager
+                                            .Configuration.AllTargets.OfType<TargetWithLayout>()
+                                            .Select(t => t.Layout)
+                                            .OfType<MyJsonLayout>())
+                {
+                    var options = myJsonLayout.CreateJsonSerializerOptions ( ) ;
+                    options.Converters.Add(new DataTemplateKeyConverter());
+                    myJsonLayout.Options = options ;
+                }
             }
         }
 
@@ -87,6 +104,14 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         public ILifetimeScope Scope { get => scope ; set => scope = value ; }
+
+        protected LogDelegates.LogMethod DebugLog { get ; set ; }
+
+        /// <summary>Gets the configuration settings.</summary>
+        /// <value>The configuration settings.</value>
+        public List < object > ConfigSettings { get ; } = new List < object > ( ) ;
+
+        protected ILogger Logger { get ; set ; }
 
         protected void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
         {
@@ -160,5 +185,82 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
             appInst?.Dispose ( ) ;
         }
         #endregion
+
+        protected List < object > ApplyConfiguration ( )
+        {
+            var config = ConfigurationManager.OpenExeConfiguration ( ConfigurationUserLevel.None ) ;
+            LogDelegates.LogMethod logMethod2 = DebugLog ?? (m => Debug.WriteLine(m));
+            logMethod2?.Invoke( config.FilePath ) ;
+            var type1 = typeof ( ContainerHelperSection ) ;
+
+            try
+            {
+                var sections = config.Sections ;
+                foreach ( ConfigurationSection configSection in sections )
+                {
+                    try
+                    {
+                        var type = configSection.SectionInformation.Type ;
+                        // DoLogMethod ( $"Type is {type}" ) ;
+                        var sectionType = Type.GetType ( type ) ;
+                        if ( sectionType             != null
+                             && sectionType.Assembly == type1.Assembly )
+                        {
+                            logMethod2 ( "Found section " + sectionType.Name ) ;
+                            var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
+                            var configTarget = Activator.CreateInstance ( at.TargetType ) ;
+                            var infos = sectionType
+                                       .GetMembers ( )
+                                       .Select (
+                                                info => Tuple.Create (
+                                                                      info
+                                                                    , info
+                                                                         .GetCustomAttribute <
+                                                                              ConfigurationPropertyAttribute
+                                                                          > ( )
+                                                                     )
+                                               )
+                                       .Where ( tuple => tuple.Item2 != null )
+                                       .ToArray ( ) ;
+                            foreach ( var (item1 , _) in infos )
+                            {
+                                if ( item1.MemberType == MemberTypes.Property )
+                                {
+                                    var attr = at.TargetType.GetProperty ( item1.Name ) ;
+                                    try
+                                    {
+                                        var configVal =
+                                            ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
+                                        if ( attr != null )
+                                        {
+                                            attr.SetValue ( configTarget , configVal ) ;
+                                        }
+                                    }
+                                    catch ( Exception ex )
+                                    {
+                                        logMethod2?.Invoke (
+                                                            $"Unable to set property {attr.Name}: {ex.Message}"
+                                                           ) ;
+                                    }
+                                }
+                            }
+
+
+                            ConfigSettings.Add ( configTarget ) ;
+                        }
+                    }
+                    catch ( Exception ex1 )
+                    {
+                        Logger.Error ( ex1 , ex1.Message ) ;
+                    }
+                }
+            }
+            catch ( Exception ex )
+            {
+                logMethod2 ( ex.Message ) ;
+            }
+
+            return ConfigSettings ;
+        }
     }
 }

@@ -105,10 +105,10 @@
     <Compile Include="ApplicationInstanceHost.cs" />
     <Compile Include="AppStartupEventArgs.cs" />
     <Compile Include="AttributeNotFoundException.cs" />
+    <Compile Include="Attributes\ClearLoggingRulesAttribute.cs" />
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
-    <Compile Include="ClearLoggingRulesAttribute.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\CentralServiceReference\Reference.cs">

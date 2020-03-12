@@ -27,10 +27,18 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         public MyJsonLayout()
         {
-            Options = new JsonSerializerOptions();
-            Options.Converters.Add(new LogEventInfoConverter());
-            Options.Converters.Add(new JsonTypeConverter());
+            var jsonSerializerOptions = CreateJsonSerializerOptions ( ) ;
             //options.Converters.Add ( new DictConverterFactory ( ) ) ;
+            Options = jsonSerializerOptions ;
+        }
+
+        public JsonSerializerOptions CreateJsonSerializerOptions ( )
+        {
+            var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
+            ;
+            jsonSerializerOptions.Converters.Add ( new LogEventInfoConverter ( ) ) ;
+            jsonSerializerOptions.Converters.Add ( new JsonTypeConverter ( ) ) ;
+            return jsonSerializerOptions ;
         }
 
         /// <summary>

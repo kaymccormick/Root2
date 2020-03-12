@@ -10,6 +10,7 @@
 // ---
 #endregion
 using JetBrains.Annotations;
+using NLog ;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -19,23 +20,47 @@ namespace KayMcCormick.Dev.Logging
     [UsedImplicitly]
     public class AppLoggingConfiguration : ILoggingConfiguration
     {
-        private static ILoggingConfiguration _default =
-            new AppLoggingConfiguration { IsEnabledConsoleTarget = false , } ;
+        private static readonly ILoggingConfiguration _default =
+            new AppLoggingConfiguration { IsEnabledConsoleTarget = false , MinLogLevel = LogLevel.Info } ;
 
-        private bool _isEnabledEventLogTarget = false ;
-        private bool _isEnabledCacheTarget ;
+        private bool? _isEnabledEventLogTarget = false ;
+        private bool? _isEnabledCacheTarget ;
+        private LogLevel _minLogLevel ;
+        private string _debuggerTargetName ;
 
         #region Implementation of ILoggingConfiguration
         /// <summary>
         /// 
         /// </summary>
-        public bool IsEnabledConsoleTarget { get; set; } 
+        public bool? IsEnabledConsoleTarget { get; set; } 
 
-        public bool IsEnabledEventLogTarget => _isEnabledEventLogTarget ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? IsEnabledEventLogTarget { get => _isEnabledEventLogTarget ;
+            set => _isEnabledEventLogTarget = value ;
+        }
 
-        public bool IsEnabledCacheTarget => _isEnabledCacheTarget ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? IsEnabledCacheTarget => _isEnabledCacheTarget;
+        public bool? IsEnabledDebuggerTarget { get ; set ; }
 
-        public static ILoggingConfiguration Default { get { return _default ; } }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DebuggerTargetName => _debuggerTargetName ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ CanBeNull ] public LogLevel MinLogLevel { get => _minLogLevel ; set => _minLogLevel = value ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static ILoggingConfiguration Default => _default ;
         #endregion
     }
 }

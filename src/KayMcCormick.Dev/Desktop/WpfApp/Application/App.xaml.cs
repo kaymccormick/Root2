@@ -3,7 +3,6 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Configuration ;
 using System.Diagnostics ;
 using System.Diagnostics.CodeAnalysis ;
 using System.Linq ;
@@ -21,13 +20,11 @@ using Castle.Core.Internal ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.AppBuild ;
-using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
 using NLog ;
 using NLog.Fluent ;
 using Vanara.Extensions.Reflection ;
-using WpfApp.Controls ;
 using WpfApp.Core ;
 using WpfApp.Core.Exceptions ;
 using WpfApp.Core.Interfaces ;
@@ -54,9 +51,13 @@ namespace WpfApp.Application
     /// <summary>
     ///     Interaction logic for App.xaml
     /// </summary>
+    ///
+    [ LoggingRule ( typeof ( ResourceTreeViewItemTemplateSelector ) , nameof ( LogLevel.Debug ) ) ]
     public sealed partial class App : BaseApp , IDisposable
     {
-        private ObservableCollection < ResourceNodeInfo > _allResourcesCollection = new ObservableCollection < ResourceNodeInfo > ();
+        private ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
+            new ObservableCollection < ResourceNodeInfo > ( ) ;
+
         private ResourceNodeInfo _appNode ;
 
         /// <summary></summary>
@@ -80,8 +81,6 @@ namespace WpfApp.Application
                 DebugMessage += debugEventHandler ;
             }
 
-            DebugLog = DoLogMessage ;
-
             // DoLogMessage(
             // folderPath
             // );
@@ -95,7 +94,7 @@ namespace WpfApp.Application
                                                            ) ;
 
             Logger = LogManager.LogFactory.GetCurrentClassLogger < MyLogger > ( ) ;
-            ApplyConfiguration ( ) ;
+            
 
             try
             {
@@ -108,7 +107,7 @@ namespace WpfApp.Application
                 cd.ProcessExit += ( sender , args ) => {
                     var argStr = args == null ? "Args is null" : args.ToString ( ) ;
 
-                    DebugLog ( $"Exiting. args is {argStr}" ) ;
+                    DebugLog ( argStr) ;
                 } ;
                 cd.UnhandledException += OnAppDomainUnhandledException ;
                 cd.ResourceResolve    += CdOnResourceResolve ;
@@ -117,17 +116,19 @@ namespace WpfApp.Application
             }
             catch ( Exception ex )
             {
-                DebugLog ( ex + "exception in constructor" ) ;
+                DebugLog (ex.Message ) ;
             }
         }
 
-        /// <summary>Gets the configuration settings.</summary>
-        /// <value>The configuration settings.</value>
-        public List < object > ConfigSettings { get ; } = new List < object > ( ) ;
+        private void DebugLog (
+            string                      message
+          , [ CallerMemberName ] string callerMemberName = ""
+          , [ CallerFilePath ]   string callerFilePath   = ""
+          , [ CallerLineNumber ] int    callerLineNumber = 0
+        )
+        {
 
-        private ILogger Logger { get ; set ; }
-
-        private LogDelegates.LogMethod2 DebugLog { get ; }
+        }
 
 
         /// <summary>Gets the task completion source.</summary>
@@ -201,84 +202,6 @@ namespace WpfApp.Application
         /// <summary>Event for a debug event.</summary>
         public event EventHandler < DebugEventArgs > DebugMessage ;
 
-        private void ApplyConfiguration ( )
-        {
-            var config = ConfigurationManager.OpenExeConfiguration ( ConfigurationUserLevel.None ) ;
-            DebugLog ( config.FilePath ) ;
-            var type1 = typeof ( ContainerHelperSection ) ;
-
-            try
-            {
-                var sections = config.Sections ;
-                foreach ( ConfigurationSection configSection in sections )
-                {
-                    try
-                    {
-                        var type = configSection.SectionInformation.Type ;
-                        // DoLogMethod ( $"Type is {type}" ) ;
-                        var sectionType = Type.GetType ( type ) ;
-                        if ( sectionType             != null
-                             && sectionType.Assembly == type1.Assembly )
-                        {
-                            DebugLog ( "Found section " + sectionType.Name ) ;
-                            var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
-                            var configTarget = Activator.CreateInstance ( at.TargetType ) ;
-                            var infos = sectionType
-                                       .GetMembers ( )
-                                       .Select (
-                                                info => Tuple.Create (
-                                                                      info
-                                                                    , info
-                                                                         .GetCustomAttribute <
-                                                                              ConfigurationPropertyAttribute
-                                                                          > ( )
-                                                                     )
-                                               )
-                                       .Where ( tuple => tuple.Item2 != null )
-                                       .ToArray ( ) ;
-                            foreach ( var (item1 , _) in infos )
-                            {
-                                if ( item1.MemberType == MemberTypes.Property )
-                                {
-                                    foreach ( var memberInfo in infos )
-                                    {
-                                        var attr = at.TargetType.GetProperty ( item1.Name ) ;
-                                        try
-                                        {
-                                            var configVal =
-                                                ( ( PropertyInfo ) memberInfo.Item1 ).GetValue (
-                                                                                                configSection
-                                                                                               ) ;
-                                            if ( attr != null )
-                                            {
-                                                attr.SetValue ( configTarget , configVal ) ;
-                                            }
-                                        }
-                                        catch ( Exception ex )
-                                        {
-                                            DebugLog?.Invoke (
-                                                              $"Unable to set property {attr.Name}: {ex.Message}"
-                                                             ) ;
-                                        }
-                                    }
-                                }
-                            }
-
-                            ConfigSettings.Add ( configTarget ) ;
-                        }
-                    }
-                    catch ( Exception ex1 )
-                    {
-                        Logger.Error ( ex1 , ex1.Message ) ;
-                    }
-                }
-            }
-            catch ( Exception ex )
-            {
-                DebugLog ( ex.Message ) ;
-            }
-        }
-
         // ReSharper disable once UnusedMember.Local
         private void DoLogMessage (
             string                      message
@@ -318,7 +241,6 @@ namespace WpfApp.Application
 
         private Assembly CdOnResourceResolve ( object sender , ResolveEventArgs args )
         {
-            DebugLog ( $"nameof(CdOnResourceResolve): {args.Name}" ) ;
             return null ;
         }
 
@@ -331,7 +253,7 @@ namespace WpfApp.Application
                                              ) ;
 
             var str = $"{err.Message} Terminating={e.IsTerminating}" ;
-            DebugLog ( str ) ;
+            DebugLog ( str) ;
         }
 
 
@@ -339,8 +261,8 @@ namespace WpfApp.Application
         // ReSharper disable once UnusedParameter.Local
         private Assembly CdOnTypeResolve ( object sender , ResolveEventArgs args )
         {
-            DebugLog ( $"{args.Name}" ) ;
-            DebugLog ( $"Requesting assembly is {args.RequestingAssembly.FullName}" ) ;
+            DebugLog($"{args.Name}");
+            DebugLog($"Requesting assembly is {args.RequestingAssembly.FullName}");
             return null ;
         }
 
@@ -376,12 +298,10 @@ namespace WpfApp.Application
         // ReSharper disable once UnusedMember.Local
         private void OpenWindowExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            DebugLog ( $"{sender} {e.Parameter}" ) ;
         }
 
         private object DispatcherOperationCallback ( object arg )
         {
-            DebugLog ( nameof ( DispatcherOperationCallback ) ) ;
 
             AppInitialize ( ) ;
 
@@ -389,11 +309,10 @@ namespace WpfApp.Application
             try
             {
                 mainWindow = Scope.Resolve < WpfApp.Controls.Windows.MainWindow > ( ) ;
-                DebugLog ( $"Received {mainWindow} " ) ;
             }
             catch ( Exception ex )
             {
-                DebugLog ( "Cant resolve main Window: " + ex.Message ) ;
+                DebugLog (ex.Message ) ;
                 // ReSharper disable once RedundantArgumentDefaultValue
                 ErrorExit ( ExitCode.GeneralError ) ;
                 return null ;
@@ -408,7 +327,7 @@ namespace WpfApp.Application
                 }
                 catch ( Exception ex )
                 {
-                    DebugLog ( ex.Message ) ; //?.Error ( ex , ex.Message ) ;
+                    DebugLog (ex.ToString() ) ; //?.Error ( ex , ex.Message ) ;
                 }
 
                 var mainWindow2 = new MainWindow ( ) ;
@@ -446,11 +365,11 @@ namespace WpfApp.Application
             } ;
 
             Logger = Scope.Resolve < ILogger > (
-                                                       new TypedParameter (
-                                                                           typeof ( Type )
-                                                                         , typeof ( App )
-                                                                          )
-                                                      ) ;
+                                                new TypedParameter (
+                                                                    typeof ( Type )
+                                                                  , typeof ( App )
+                                                                   )
+                                               ) ;
 
 
             if ( Scope.IsRegistered < IMenuItemCollection > ( ) )
@@ -481,13 +400,14 @@ namespace WpfApp.Application
         {
             if ( _appNode == null )
             {
-                PopulateResourcesTree();
+                PopulateResourcesTree ( ) ;
             }
+
             HandleWindow ( o as Window ) ;
             var fe = ( FrameworkElement ) o ;
-            DebugLog ( nameof ( WindowLoaded ) ) ;
+            DebugLog (fe.ToString() ) ;
             Props.SetMenuItemListCollectionView ( fe , MenuItemListCollectionView ) ;
-            DebugLog ( $"Setting LifetimeScope DependencyProperty to {Scope}" ) ;
+            
             Props.SetAssemblyList (
                                    fe
                                  , new AssemblyList ( AppDomain.CurrentDomain.GetAssemblies ( ) )
@@ -506,15 +426,15 @@ namespace WpfApp.Application
                                    } ;
                 _appNode.Children.Add ( appResources ) ;
                 AddResourceNodeInfos ( appResources ) ;
-                AllResourcesCollection.Add(_appNode ) ;
-
+                AllResourcesCollection.Add ( _appNode ) ;
             }
             catch ( Exception ex )
             {
             }
         }
 
-        public ObservableCollection <ResourceNodeInfo> AllResourcesCollection { get { return _allResourcesCollection ; } }
+        public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
+            => _allResourcesCollection ;
 
         private void AddResourceNodeInfos ( ResourceNodeInfo appResources )
         {
@@ -547,12 +467,11 @@ namespace WpfApp.Application
         {
             var winNode = new ResourceNodeInfo
                           {
-                              Key  = w.GetType(),
-                              Data = new ControlWrap<Window>(w)
-                          };
-           _appNode.Children.Add(winNode);
-            var winRes = new ResourceNodeInfo { Key = "Resources", Data = w.Resources };
-            winNode.Children.Add(winRes);
+                              Key = w.GetType ( ) , Data = new ControlWrap < Window > ( w )
+                          } ;
+            _appNode.Children.Add ( winNode ) ;
+            var winRes = new ResourceNodeInfo { Key = "Resources" , Data = w.Resources } ;
+            winNode.Children.Add ( winRes ) ;
             AddResourceNodeInfos ( winRes ) ;
         }
 
@@ -568,7 +487,7 @@ namespace WpfApp.Application
             }
             catch ( Exception ex )
             {
-                DebugLog ( ex.Message ) ;
+                DebugLog (ex.ToString()) ;
             }
         }
 
@@ -593,13 +512,13 @@ namespace WpfApp.Application
         {
             var msg =
                 $"{nameof ( Application_DispatcherUnhandledException )}: {e.Exception.Message}" ;
-            DebugLog ( msg ) ;
+            DebugLog (msg ) ;
             var inner = e.Exception.InnerException ;
             var seen = new HashSet < object > ( ) ;
             while ( inner != null
                     && ! seen.Contains ( inner ) )
             {
-                DebugLog ( inner.Message ) ;
+                DebugLog (inner.Message ) ;
                 seen.Add ( inner ) ;
                 inner = inner.InnerException ;
             }
@@ -607,16 +526,15 @@ namespace WpfApp.Application
 
         private void App_OnExit ( object sender , ExitEventArgs e )
         {
-            DebugLog ( $"Application exiting.  Exit code is {e.ApplicationExitCode}" ) ;
         }
 
         public override IEnumerable < IModule > GetModules ( )
         {
             var appBuildModule = new AppBuildModule ( ) ;
-            var a = appBuildModule.GetAssembliesForScanning ( ).ToList() ;
+            var a = appBuildModule.GetAssembliesForScanning ( ).ToList ( ) ;
             a.Add ( typeof ( App ).Assembly ) ;
             yield return appBuildModule ;
-            var wpfAppBuildModule = new WpfAppBuildModule () ;
+            var wpfAppBuildModule = new WpfAppBuildModule ( ) ;
             wpfAppBuildModule.AssembliesForScanning.AddRange ( a ) ;
             yield return wpfAppBuildModule ;
         }

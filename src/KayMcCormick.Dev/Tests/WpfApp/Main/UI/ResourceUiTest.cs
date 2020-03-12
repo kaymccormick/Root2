@@ -1,5 +1,4 @@
-﻿#region header
-// Kay McCormick (mccor)
+﻿// Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
 // Tests
@@ -8,7 +7,7 @@
 // 2020-03-11-4:43 PM
 // 
 // ---
-#endregion
+
 using System ;
 using System.Collections.Generic ;
 using System.Threading ;
@@ -57,17 +56,17 @@ namespace Tests.Main.UI
         [ Trait ( "UITest" , "true" ) ]
 
         [ WpfFact ]
-        protected void ValueContentCellTest ( )
+        public void ValueContentCellTest ( )
         {
             App app = new App ( null ) ;
             app.InitializeComponent();
 
-            object template = app.TryFindResource ( "ValueContentCell" ) ;
-            Assert.NotNull ( template ) ;
-            Assert.IsType < DataTemplate > ( template ) ;
-            DataTemplate dt = ( DataTemplate ) template ;
-            var d = dt.LoadContent ( ) ;
-            Logger.Info ( $"d is {d.GetType ( )}" ) ;
+            AllResourcesTree tree = new AllResourcesTree();
+            tree.BeginInit();
+            tree.EndInit();
+            Window w = new Window ( ) ;
+            w.Content = tree ;
+            w.ShowDialog ( ) ;
         }
     
 

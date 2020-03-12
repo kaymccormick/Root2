@@ -9,12 +9,12 @@
 // 
 // ---
 #endregion
-using JetBrains.Annotations;
-using NLog;
-using System;
-using System.Linq;
+using System ;
+using System.Linq ;
+using JetBrains.Annotations ;
+using NLog ;
 
-namespace KayMcCormick.Dev
+namespace KayMcCormick.Dev.Attributes
 {
     /// <summary>
     /// 

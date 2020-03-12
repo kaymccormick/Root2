@@ -43,7 +43,7 @@ namespace KayMcCormick.Lib.Wpf
             {
                 var convert = value.GetType ( ) ;
                 LogManager.GetCurrentClassLogger ( )
-                          .Info ( "{type}" , convert.GetType ( ).FullName ) ;
+                          .Debug( "{type}" , convert.GetType ( ).FullName ) ;
                 return convert ;
             }
 

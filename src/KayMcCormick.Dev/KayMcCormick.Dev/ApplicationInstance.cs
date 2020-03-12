@@ -43,8 +43,13 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="logMethod"></param>
-        public ApplicationInstance ( LogDelegates.LogMethod logMethod )
+        public ApplicationInstance ( LogDelegates.LogMethod logMethod, IEnumerable <object> configs = null )
         {
+            if ( configs == null )
+            {
+                configs = Array.Empty < object > ( ) ;
+            }
+
             // The Microsoft.Extensions.DependencyInjection.ServiceCollection
             // has extension methods provided by other .NET Core libraries to
             // regsiter services with DI.
@@ -55,7 +60,9 @@ namespace KayMcCormick.Dev
             serviceCollection.AddLogging();
 
             InstanceRunGuid = Guid.NewGuid();
-            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod);
+            ILoggingConfiguration config =
+                configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
+            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod, config);
             GlobalDiagnosticsContext.Set(
                                          "ExecutionContext"
                                        , new ExecutionContextImpl

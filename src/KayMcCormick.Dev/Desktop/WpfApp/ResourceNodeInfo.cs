@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.Text.Json.Serialization ;
 
 namespace WpfApp
 {
@@ -23,13 +24,14 @@ namespace WpfApp
         private List<ResourceNodeInfo> _children = new List < ResourceNodeInfo > ();
         private Uri                    _sourceUri ;
         private object                 _key ;
-
+        [JsonIgnore]
         public object Data { get { return _data ; } set { _data = value ; } }
-
+        [JsonIgnore]
         public List<ResourceNodeInfo> Children { get { return _children ; } set { _children = value ; } }
 
         public Uri SourceUri { get { return _sourceUri ; } set { _sourceUri = value ; } }
 
+        [JsonIgnore]
         public object Key { get { return _key ; } set { _key = value ; } }
     }
 }

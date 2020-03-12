@@ -264,6 +264,7 @@
     <Compile Include="Core\Model\ResourcesModel.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
+    <Compile Include="ResourceViewItemContainerStyleSelector.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="LogTextWriter.cs" />
     <Compile Include="Resource1.Designer.cs">
