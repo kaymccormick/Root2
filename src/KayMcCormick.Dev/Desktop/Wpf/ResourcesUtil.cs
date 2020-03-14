@@ -82,7 +82,7 @@ namespace KayMcCormick.Lib.Wpf
                         try
                         {
                             resourcesCollection.Add ( resourceInfo ) ;
-                        } catch(Exception ex)
+                        } catch(Exception)
                         {
                             }
                     }

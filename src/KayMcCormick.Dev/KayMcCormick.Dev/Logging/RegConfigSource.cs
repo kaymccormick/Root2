@@ -9,38 +9,8 @@ namespace KayMcCormick.Dev.Logging
         public string PathForLogFile(ILogFileSpecification spec) { return ""; }
     }
 
-    internal interface IConfigSource
-    {
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once UnusedParameter.Global
-        string PathForLogFile(ILogFileSpecification spec);
 
-
-
-    }
-
-    internal interface ILogEntrySpecification
-    {
-        // ReSharper disable once UnusedMember.Global
-        FunctionalArea GetFunctionalArea();
-        // ReSharper disable once UnusedMember.Global
-        CrosscuttingConcern GetCrosscuttingConcern();
-        // ReSharper disable once UnusedMember.Global
-        ExecutionContext GetExecutionContext();
-    }
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext'
-#pragma warning disable IDE1006 // Naming Styles
-    public interface ExecutionContext
-#pragma warning restore IDE1006 // Naming Styles
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext'
-    {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext.Application'
-        // ReSharper disable once UnusedMember.Global
-        Application Application { get; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContext.Application'
-    }
-
+    
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContextImpl'
     // ReSharper disable once UnusedType.Global
     public class ExecutionContextImpl : ExecutionContext
@@ -71,8 +41,6 @@ namespace KayMcCormick.Dev.Logging
 
     internal enum CrosscuttingConcern
     {
-
-
     }
 
     [UsedImplicitly]
@@ -84,8 +52,6 @@ namespace KayMcCormick.Dev.Logging
         [UsedImplicitly] Model,
         [UsedImplicitly] TypeConversion,
         [UsedImplicitly] Xaml,
-
-
 
     }
 }

@@ -7,9 +7,7 @@
   Background="DarkCyan"
   xmlns:syntax="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-  xmlns:local="clr-namespace:AnalysisControls"
-  xmlns:views="clr-namespace:AnalysisControls.Views"
-  xmlns:converters="clr-namespace:AnalysisControls.Converters"
+  xmlns:anal="http://kaymccormick.com/xaml/analysis"
   x:Name="compilationView"
   x:Class="AnalysisControls.Views.CompilationView"
   mc:Ignorable="d"
@@ -129,7 +127,7 @@
               <GroupBox Grid.Column="0" Grid.Row="1"
                         Grid.ColumnSpan="2">
                 <TextBlock
-                  Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLeadingTrivia}}" />
+                  Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static anal:SyntaxNodeInfo.GetLeadingTrivia}}" />
               </GroupBox>
             </Grid>
           </DataTemplate>
@@ -141,7 +139,7 @@
 
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
-      <local:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
+      <anal:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
       <DataTemplate x:Key="ChildTokens">
         <ItemsControl ItemsSource="{Binding ConverterParameter={x:Static converters:SyntaxNodeInfo.ChildTokens},Converter={StaticResource SyntaxNodeConverter}}"></ItemsControl>
       </DataTemplate>
@@ -149,7 +147,7 @@
   </Window.Resources>
   <Window.CommandBindings>
     <CommandBinding
-      Command="local:AnalysisCommands.AnalyzeControlFlow"
+      Command="anal:AnalysisCommands.AnalyzeControlFlow"
       Executed="CommandBinding_OnExecuted" />
     <CommandBinding
       Command="local:AnalysisCommands.GetDeclaredSymbol"
@@ -244,7 +242,7 @@
                           VerticalAlignment="Stretch" />
       </TabItem>
       <TabItem Header="Syntax">
-        <views:SyntaxPanel x:Name="SyntaxPanel" />
+        <anal:SyntaxPanel x:Name="SyntaxPanel" />
       </TabItem>
       <TabItem Header="Semantic Model"
                x:Name="SemanticModelTab">
@@ -283,7 +281,7 @@
     <StatusBar Grid.Row="4" Grid.Column="0"
                Grid.ColumnSpan="2" FontSize="18.0">
       <StatusBarItem
-        Content="{Binding SelectedItem,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLocation},Mode=OneWay}" />
+        Content="{Binding SelectedItem,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static SyntaxNodeInfo.GetLocation},Mode=OneWay}" />
     </StatusBar>
   </Grid>
 </Window>

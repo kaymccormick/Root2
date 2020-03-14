@@ -31,7 +31,7 @@ namespace ProjInterface
     public partial class ProjInterfaceApp : BaseApp
     {
         private readonly List < IModule > appModules = new List < IModule > ( ) ;
-        private static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
+        private new static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
 
 #if COMMANDLINE
 private Type[] _optionTypes ;

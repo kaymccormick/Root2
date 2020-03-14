@@ -6,7 +6,7 @@ namespace KayMcCormick.Dev
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContextImpl'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContextImpl.Application'
-        public Application Application { get; set; }
+        Logging.Application ExecutionContext.Application { get; private set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExecutionContextImpl.Application'
     }
 }

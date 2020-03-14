@@ -1,1 +1,19 @@
-﻿ 
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="4b40c1a7-6c5f-4f4b-98e0-270a59c304d9" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="779b48ff-ae5f-4ce8-9a95-9ee230977fa6" name="AnalysisFramework">
+      <references>
+        <reference Id="0b2dc4e0-1ae5-4d39-8272-0a7513cdc9be" name="AnalysisFramework">
+          <ArtifactNode Label="AnalysisFramework" Category="CodeSchema_Project" Id="(Assembly=../Desktop/Analysis/AnalysisFramework/AnalysisFramework.csproj)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=AnalysisFramework)" Label="AnalysisFramework.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+  </layers>
+</layerModel>

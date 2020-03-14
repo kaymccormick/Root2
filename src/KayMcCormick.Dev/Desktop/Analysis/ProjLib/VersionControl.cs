@@ -1,3 +1,4 @@
+#if VERSIONCONTROL
 using System.IO ;
 using System.Threading.Tasks ;
 using LibGit2Sharp ;
@@ -20,3 +21,4 @@ namespace ProjLib
         }
     }
 }
+#endif

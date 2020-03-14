@@ -23,7 +23,7 @@ namespace KayMcCormick.Lib.Wpf
                 var t = XamlServices.Save ( value ) ;
                 d.LoadXml ( t ) ;
                 return d ;
-            } catch(Exception ex)
+            } catch(Exception )
             {
             }
 
