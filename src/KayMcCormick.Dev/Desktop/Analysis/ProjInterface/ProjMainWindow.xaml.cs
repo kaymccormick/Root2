@@ -221,7 +221,7 @@ namespace ProjInterface
             }
             else
             {
-                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
+                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
                                                                                    path

@@ -53,6 +53,7 @@ namespace ProjInterface
         protected override void Load ( ContainerBuilder builder )
         {
             Logger.Trace("Load");
+            Logger.Warn($"Loading module {typeof(ProjInterfaceModule).AssemblyQualifiedName}");
             builder.RegisterModule<ProjLibModule>();
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
