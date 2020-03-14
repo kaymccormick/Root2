@@ -416,6 +416,11 @@ namespace KayMcCormick.Dev.Logging
             var jsonFileTarget = JsonFileTarget ( ) ;
             dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
 
+            var jsonNetworkTarget = new NetworkTarget ( "jsonNet" ) ;
+            jsonNetworkTarget.Layout = new MyJsonLayout();
+            SetupNetworkTarget(jsonNetworkTarget, "udp://127.0.0.1:5110");
+            t.Add ( jsonNetworkTarget ) ;
+
             var byType = new Dictionary < Type , int > ( ) ;
             var keys = dict.Keys.ToList ( ) ;
             foreach ( var k in keys )
@@ -557,7 +562,8 @@ namespace KayMcCormick.Dev.Logging
                        Address              = new SimpleLayout ( "udp://10.25.0.102:9995" )
                      , IncludeAllProperties = true
                      , IncludeCallSite      = true
-                     , IncludeSourceInfo    = true
+                     , IncludeSourceInfo    = true, IncludeNdlc = true
+                       
                    } ;
         }
 

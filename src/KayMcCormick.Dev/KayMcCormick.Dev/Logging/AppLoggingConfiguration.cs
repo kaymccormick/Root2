@@ -24,7 +24,9 @@ namespace KayMcCormick.Dev.Logging
             new AppLoggingConfiguration { IsEnabledConsoleTarget = false , MinLogLevel = LogLevel.Info } ;
 
         private bool? _isEnabledEventLogTarget = false ;
+#pragma warning disable 649
         private bool? _isEnabledCacheTarget ;
+#pragma warning restore 649
         private LogLevel _minLogLevel ;
         private string _debuggerTargetName ;
 

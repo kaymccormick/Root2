@@ -1,10 +1,12 @@
-﻿using JetBrains.Annotations;
+﻿using System.Threading ;
+using JetBrains.Annotations;
+ 
 
 namespace KayMcCormick.Dev.Logging
 {
     // TODO implement
     // ReSharper disable once UnusedType.Global
-    class RegConfigSource : IConfigSource
+    class RegConfigSource
     {
         public string PathForLogFile(ILogFileSpecification spec) { return ""; }
     }

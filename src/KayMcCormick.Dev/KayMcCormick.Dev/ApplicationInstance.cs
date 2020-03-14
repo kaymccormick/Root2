@@ -43,6 +43,7 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="logMethod"></param>
+        /// <param name="configs"></param>
         public ApplicationInstance ( LogDelegates.LogMethod logMethod, IEnumerable <object> configs = null )
         {
             if ( configs == null )

@@ -148,7 +148,8 @@ namespace KayMcCormick.Dev.Logging
                                             JsonSerializer.Deserialize<JsonElement>(
                                                                                     ref reader
                                                                                   , options
-                                                                                   );
+                                        
+                                                                                  );
                                         dict[key1] = myVal2;
                                     }
 

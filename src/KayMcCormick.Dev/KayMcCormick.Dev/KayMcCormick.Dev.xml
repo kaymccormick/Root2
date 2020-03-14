@@ -289,6 +289,7 @@
             
             </summary>
             <param name="logMethod"></param>
+            <param name="configs"></param>
         </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstance.Initialize">
             <summary>
@@ -922,23 +923,6 @@
             <param name="request"></param>
             <returns></returns>
         </member>
-        <member name="T:KayMcCormick.Dev.Interfaces.CentralService">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:KayMcCormick.Dev.Interfaces.CentralService.RegisterApplicationInstance(KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:KayMcCormick.Dev.Interfaces.CentralService.Dispose">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:KayMcCormick.Dev.Interfaces.RegisterApplicationInstanceRequest">
             <summary>
             
@@ -1280,7 +1264,7 @@
         </member>
         <member name="M:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.EnsureLoggingConfigured(KayMcCormick.Dev.Logging.LogDelegates.LogMethod,KayMcCormick.Dev.Logging.ILoggingConfiguration,System.String)">
             <summary>Ensures the logging configured.</summary>
-            <param name="logMethod">The log method.</param>
+            <param name="slogMethod"></param>
             <param name="config1"></param>
             <param name="callerFilePath">The caller file path.</param>
             <exception cref="T:System.Exception">no config loaded field found</exception>
@@ -2073,27 +2057,6 @@
             
             </summary>
             <param name="out"></param>
-        </member>
-        <member name="T:KayMcCormick.Logging.Common.Properties.Resource">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:KayMcCormick.Logging.Common.Properties.Resource.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:KayMcCormick.Logging.Common.Properties.Resource.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:KayMcCormick.Logging.Common.Properties.Resource.AppLoggingConfigHelper_ConfigureLogging_____Starting_logger_configuration_">
-            <summary>
-              Looks up a localized string similar to *** Starting logger configuration..
-            </summary>
         </member>
     </members>
 </doc>

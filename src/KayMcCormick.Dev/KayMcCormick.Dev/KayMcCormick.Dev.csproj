@@ -100,6 +100,7 @@
     <Compile Include="AppBuild\ILoggerTracker.cs" />
     <Compile Include="AppInfoService.cs" />
     <Compile Include="AppInfraException.cs" />
+    <Compile Include="Application.cs" />
     <Compile Include="ApplicationInstance.cs" />
     <Compile Include="ApplicationInstanceException.cs" />
     <Compile Include="ApplicationInstanceHost.cs" />
@@ -129,7 +130,9 @@
     <Compile Include="DefaultObjectIdProvider.cs" />
     <Compile Include="DuplicateKeyException.cs" />
     <Compile Include="EventTimeConverter.cs" />
+    <Compile Include="ExecutionContextImpl.cs" />
     <Compile Include="ExitCode.cs" />
+    <Compile Include="FunctionalArea.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IdGeneratorModule.cs" />
     <Compile Include="IHaveLogger.cs" />
@@ -151,7 +154,10 @@
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
+    <Compile Include="Logging\ExecutionContext.cs" />
     <Compile Include="Logging\GlobalSuppressions.cs" />
+    <Compile Include="Logging\IConfigSource.cs" />
+    <Compile Include="Logging\ILogEntrySpecification.cs" />
     <Compile Include="Logging\ILoggingConfiguration.cs" />
     <Compile Include="Logging\LogDelegates.cs" />
     <Compile Include="Logging\LogEventInfoConverter.cs" />
@@ -162,7 +168,6 @@
     <Compile Include="Logging\MyJsonLayout.cs" />
     <Compile Include="Logging\MyLogFactory.cs" />
     <Compile Include="Logging\MyLogger.cs" />
-    <Compile Include="Logging\Properties\Resource.Designer.cs" />
     <Compile Include="Logging\RegConfigSource.cs" />
     <Compile Include="LogLevelConverter.cs" />
     <Compile Include="MyCacheTarget.cs" />
@@ -230,9 +235,6 @@
     <PackageReference Include="Xunit">
       <Version>2.4.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Logging\Properties\Resource.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">
