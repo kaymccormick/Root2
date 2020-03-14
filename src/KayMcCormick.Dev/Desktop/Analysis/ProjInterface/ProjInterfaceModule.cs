@@ -21,7 +21,7 @@ using ProjLib.Interfaces ;
 namespace ProjInterface
 {
 #if MSBUILDWORKSPACE
-using Microsoft.CodeAnalysis.MSBuild ;
+    using Microsoft.CodeAnalysis.MSBuild ;
     internal class MSBuildWorkspaceManager : IWorkspaceManager
     {
         public Workspace CreateWorkspace(IDictionary<string, string> props)
@@ -32,7 +32,20 @@ using Microsoft.CodeAnalysis.MSBuild ;
             return ((MSBuildWorkspace)workspace).OpenSolutionAsync(solutionPath);
         }
     }
+#else
+    internal class StubWorkspaceManager : IWorkspaceManager
+    {
+        public Workspace CreateWorkspace(IDictionary<string, string> props)
+        {
+            return null;
+        }
+        public Task OpenSolutionAsync(Workspace workspace, string solutionPath)
+        {
+            return Task.CompletedTask;
+        }
+    }
 #endif
+
     public class ProjInterfaceModule : Module
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -43,6 +56,9 @@ using Microsoft.CodeAnalysis.MSBuild ;
             builder.RegisterModule<ProjLibModule>();
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
+#else
+            builder.RegisterType<StubWorkspaceManager>().As<IWorkspaceManager>();
+
 #endif
             builder.Register (
                               ( context , parameters )

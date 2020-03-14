@@ -18,9 +18,6 @@
     <Setter Property="ContentTemplateSelector" Value="{StaticResource StatusBarItemContentTemplateSelector}"></Setter>
     </Style>
 
-    <DataTemplate x:Key="{x:Type interfaces:IDetailedOperation}"
-    DataType="interfaces:IDetailedOperation">
-    <TextBlock Text="{Binding DisplayName}"></TextBlock>
-    </DataTemplate>
+   
   </wpf:BaseApp.Resources>
 </wpf:BaseApp>

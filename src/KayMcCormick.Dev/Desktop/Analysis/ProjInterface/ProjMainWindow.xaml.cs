@@ -37,6 +37,7 @@ using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using ProjLib.Interfaces ;
 using Task = System.Threading.Tasks.Task ;
+using KayMcCormick.Dev.Logging;
 
 namespace ProjInterface
 {
@@ -78,9 +79,9 @@ namespace ProjInterface
 
             ViewModel = viewModel ;
             _factory  = new TaskFactory ( _taskScheduler ) ;
-            
-            var myCacheTarget2 = MyCacheTarget2.GetInstance(1000);
-            myCacheTarget2.Cache.SubscribeOn(Scheduler.Default)
+
+            var myCacheTarget2 = AppLoggingConfigHelper.CacheTarget2;
+            myCacheTarget2?.Cache.SubscribeOn(Scheduler.Default)
                          .Buffer(TimeSpan.FromMilliseconds(100))
                          .Where(x => x.Any())
                          .ObserveOnDispatcher(DispatcherPriority.Background)

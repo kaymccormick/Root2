@@ -95,6 +95,7 @@ namespace KayMcCormick.Dev.Logging
         private static LogFactory _factory ;
         private static string _eventLogTargetName ;
         private static string _consoleTargetName ;
+        private static MyCacheTarget2 _cacheTarget2;
 
         /// <summary>
         /// 
@@ -279,8 +280,8 @@ namespace KayMcCormick.Dev.Logging
             {
                 var cacheTarget = new MyCacheTarget ( ) ;
                 dict[ LogLevel.Debug ].Add ( cacheTarget ) ;
-                var cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
-                dict[ LogLevel.Debug ].Add ( cacheTarget2 ) ;
+                _cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
+                dict[ LogLevel.Debug ].Add ( _cacheTarget2 ) ;
             }
             #endregion
             #region NLogViewer Target
@@ -358,6 +359,8 @@ namespace KayMcCormick.Dev.Logging
         public static string ConsoleTargetName { get { return _consoleTargetName ; } set { _consoleTargetName = value ; } }
 
         public static string EventLogTargetName { get { return _eventLogTargetName ; } set { _eventLogTargetName = value ; } }
+
+        public static MyCacheTarget2 CacheTarget2 { get => _cacheTarget2; set => _cacheTarget2 = value; }
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {
