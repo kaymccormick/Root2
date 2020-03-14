@@ -411,6 +411,7 @@
     <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\InfoContext.cs" />
     <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\InfraModule.cs" />
     <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\InstanceInfo.cs" />
+    <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\Interfaces\CentralService.cs" />
     <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\Interfaces\ICentralService.cs" />
     <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\Interfaces\IHaveObjectId.cs" />
     <Compile Include="KayMcCormick.Dev\KayMcCormick.Dev\Interfaces\IObjectIdProvider.cs" />
