@@ -467,7 +467,7 @@ namespace KayMcCormick.Dev.Logging
 
         private static ChainsawTarget CreateChainsawTarget ( )
         {
-            var chainsawTarget = new ChainsawTarget ( ) ;
+            var chainsawTarget = new ChainsawTarget ( ) { Layout = _xmlEventLayout };
             var PublicHostAddress = PublicFacingHostAddress ;
             SetupNetworkTarget ( chainsawTarget , $"udp://{PublicHostAddress}4445" ) ;
             return chainsawTarget ;
