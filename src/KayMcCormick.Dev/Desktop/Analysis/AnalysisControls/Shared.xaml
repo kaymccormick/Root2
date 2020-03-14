@@ -1,11 +1,12 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:AnalysisControls"
-                    xmlns:converters="clr-namespace:AnalysisControls.Converters">
-  <converters:HierarchyConverter x:Key="HierarchyConverter"></converters:HierarchyConverter>
-  <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"></converters:SyntaxNodeConverter>
-  <converters:TokenConverter x:Key="TokenConverter"></converters:TokenConverter>
-  <converters:LocationConverter x:Key="LocationConverter"></converters:LocationConverter>
-  <converters:TransformConverter x:Key="TransformConverter"></converters:TransformConverter>
-  <converters:JsonConverter x:Key="JsonConverter"/>
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:converters="clr-namespace:AnalysisControls.Converters">
+  <converters:HierarchyConverter 
+    x:Key="HierarchyConverter" />
+<converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
+<converters:TokenConverter x:Key="TokenConverter" />
+<converters:LocationConverter x:Key="LocationConverter"></converters:LocationConverter>
+<converters:TransformConverter x:Key="TransformConverter"></converters:TransformConverter>
+<converters:JsonConverter x:Key="JsonConverter" />
 </ResourceDictionary>

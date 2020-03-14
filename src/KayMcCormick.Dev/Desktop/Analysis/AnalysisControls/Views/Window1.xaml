@@ -1,4 +1,4 @@
-﻿<kayWpfLib:AppWindow
+﻿<wpf:AppWindow
     xmlns:kayWpfLib="http://kaymccormick.com/xaml/wpflib" x:Class="AnalysisControls.Views.Window1"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,10 +7,13 @@
 
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
+        xmlns:analysisControls="clr-namespace:AnalysisControls"
+        xmlns:interfaces="clr-namespace:AnalysisControls.Interfaces"
         mc:Ignorable="d" FontSize="18.0"
         Title="Window1" Height="450" Width="800">
-  <kayWpfLib:AppWindow.Resources>
-    <DataTemplate DataType="{x:Type SyntaxItem}">
+  <wpf:AppWindow.Resources>
+    <DataTemplate DataType="{x:Type analysisControls:SyntaxItem}">
       <StackPanel Orientation="Horizontal">
         <TextBlock Text="{Binding SyntaxKind}"/>
         <TextBlock Text="{Binding Token}"/>
@@ -18,13 +21,13 @@
       <xctk:ColorPicker/>
       </StackPanel>
     </DataTemplate>
-  </kayWpfLib:AppWindow.Resources>
+  </wpf:AppWindow.Resources>
   <xcad:DockingManager AllowMixedOrientation="True">
     <xcad:LayoutRoot x:Name="_layoutRoot">
       <xcad:LayoutPanel Orientation="Horizontal">
         <xcad:LayoutAnchorablePane DockWidth="200">
 <xcad:LayoutAnchorable>
-  <ListView ItemsSource="{Binding Source={kayWpfLib:Resolve interfaces:IApplicationViewModel},Path=SyntaxItems}">
+  <ListView ItemsSource="{Binding Source={wpf:Resolve interfaces:IApplicationViewModel},Path=SyntaxItems}">
     <ListView.View>
       <GridView>
                   <GridViewColumn Header="Kind" DisplayMemberBinding="{Binding Path=SyntaxKind}"></GridViewColumn>
@@ -37,4 +40,4 @@
         </xcad:LayoutPanel>
     </xcad:LayoutRoot>
       </xcad:DockingManager>
-</kayWpfLib:AppWindow>
+</wpf:AppWindow>

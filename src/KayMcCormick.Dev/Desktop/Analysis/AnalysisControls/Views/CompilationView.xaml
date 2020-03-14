@@ -7,7 +7,9 @@
   Background="DarkCyan"
   xmlns:syntax="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-  xmlns:anal="http://kaymccormick.com/xaml/analysis"
+  xmlns:converters="clr-namespace:AnalysisControls.Converters"
+  xmlns:analysisControls="clr-namespace:AnalysisControls"
+  xmlns:views="clr-namespace:AnalysisControls.Views"
   x:Name="compilationView"
   x:Class="AnalysisControls.Views.CompilationView"
   mc:Ignorable="d"
@@ -18,7 +20,7 @@
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="AnalysisControls.xaml" />
+        <ResourceDictionary Source="../AnalysisControls.xaml" />
         <ResourceDictionary>
 
           <DataTemplate
@@ -127,7 +129,7 @@
               <GroupBox Grid.Column="0" Grid.Row="1"
                         Grid.ColumnSpan="2">
                 <TextBlock
-                  Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static anal:SyntaxNodeInfo.GetLeadingTrivia}}" />
+                  Text="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLeadingTrivia}}" />
               </GroupBox>
             </Grid>
           </DataTemplate>
@@ -139,7 +141,7 @@
 
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
-      <anal:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
+      <analysisControls:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
       <DataTemplate x:Key="ChildTokens">
         <ItemsControl ItemsSource="{Binding ConverterParameter={x:Static converters:SyntaxNodeInfo.ChildTokens},Converter={StaticResource SyntaxNodeConverter}}"></ItemsControl>
       </DataTemplate>
@@ -147,10 +149,10 @@
   </Window.Resources>
   <Window.CommandBindings>
     <CommandBinding
-      Command="anal:AnalysisCommands.AnalyzeControlFlow"
+      Command="analysisControls:AnalysisCommands.AnalyzeControlFlow"
       Executed="CommandBinding_OnExecuted" />
     <CommandBinding
-      Command="local:AnalysisCommands.GetDeclaredSymbol"
+      Command="analysisControls:AnalysisCommands.GetDeclaredSymbol"
       Executed="CommandBinding_OnExecuted2" />
   </Window.CommandBindings>
   <Grid Margin="10">
@@ -168,11 +170,11 @@
     <ToolBarTray>
       <ToolBar Height="40" Band="1" BandIndex="1">
         <Button
-          Command="local:AnalysisCommands.AnalyzeControlFlow">
+          Command="analysisControls:AnalysisCommands.AnalyzeControlFlow">
           <Image Source="Themes/RecordSetDest_201.ico" />
         </Button>
         <Button
-          Command="local:AnalysisCommands.GetDeclaredSymbol">
+          Command="analysisControls:AnalysisCommands.GetDeclaredSymbol">
           <Image Source="Themes/RecordSetDest_201.ico" />
         </Button>
         <TextBox Width="150" />
@@ -242,7 +244,7 @@
                           VerticalAlignment="Stretch" />
       </TabItem>
       <TabItem Header="Syntax">
-        <anal:SyntaxPanel x:Name="SyntaxPanel" />
+        <views:SyntaxPanel x:Name="SyntaxPanel" />
       </TabItem>
       <TabItem Header="Semantic Model"
                x:Name="SemanticModelTab">
@@ -281,7 +283,7 @@
     <StatusBar Grid.Row="4" Grid.Column="0"
                Grid.ColumnSpan="2" FontSize="18.0">
       <StatusBarItem
-        Content="{Binding SelectedItem,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static SyntaxNodeInfo.GetLocation},Mode=OneWay}" />
+        Content="{Binding SelectedItem,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLocation},Mode=OneWay}" />
     </StatusBar>
   </Grid>
 </Window>

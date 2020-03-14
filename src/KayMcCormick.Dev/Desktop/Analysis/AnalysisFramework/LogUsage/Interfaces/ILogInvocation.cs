@@ -10,8 +10,9 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using AnalysisFramework.LogUsage.Interfaces ;
 
-namespace AnalysisFramework.LogUsage.Interfaces
+namespace AnalysisFramework.Interfaces
 {
     public interface ILogInvocation
     {

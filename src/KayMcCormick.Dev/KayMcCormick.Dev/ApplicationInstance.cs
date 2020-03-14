@@ -66,10 +66,10 @@ namespace KayMcCormick.Dev
             GlobalDiagnosticsContext.Set(
                                          "ExecutionContext"
                                        , new ExecutionContextImpl
-                                         {
-                                             Application = KayMcCormick.Dev.Logging.Application
+                                         (
+                                          KayMcCormick.Dev.Logging.Application
                                                                        .MainApplication
-                                         }
+                                         )
                                         );
 
             GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);

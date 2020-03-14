@@ -10,6 +10,7 @@
 // ---
 #endregion
 using AnalysisFramework ;
+using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using Autofac ;

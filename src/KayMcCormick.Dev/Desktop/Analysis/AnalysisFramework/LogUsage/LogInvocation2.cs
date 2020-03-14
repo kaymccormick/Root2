@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage.Interfaces ;
 
 namespace AnalysisFramework.LogUsage

@@ -219,7 +219,7 @@ _manager = manager;
                 // Attach progress reporter so we print projects as they are loaded.
                 //workspace.Services.GetService < IOptionervice > ( ) ;
                 //workspace.Options.WithChangedOption(new OptionKey(), ))
-#if !NETSTANDARD2_0                
+#if ROSLYNMSBUILD   
                 await workspace.OpenSolutionAsync ( solutionPath ).ConfigureAwait ( true ) ;
 #endif
                 await _manager.OpenSolutionAsync ( workspace , solutionPath ) ;

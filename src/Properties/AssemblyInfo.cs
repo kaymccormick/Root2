@@ -9,13 +9,24 @@ using System.Windows.Markup;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: XmlnsDefinition("http://kaymccormick.com/xaml/analysis", "AnalysisControls")]
-[assembly: XmlnsDefinition("http://kaymccormick.com/xaml/analysis", "AnalysisControls.Views")]
-[assembly: XmlnsDefinition("http://kaymccormick.com/xaml/analysis", "AnalysisControls.Converters")]
-[assembly: XmlnsPrefix("http://kaymccormick.com/xaml/analysis", "anal")]
+[assembly: XmlnsPrefix( "http://kaymccormick.com/xaml/analysis", "anal")]
+
+[assembly: XmlnsDefinition( "http://kaymccormick.com/xaml/analysisViews", "AnalysisControls.Views")]
+[assembly: XmlnsPrefix( "http://kaymccormick.com/xaml/analysisViews", "analViews")]
+
+[assembly: XmlnsDefinition("http://kaymccormick.com/xaml/analysisConv", "AnalysisControls.Converters")]
+[assembly: XmlnsPrefix( "http://kaymccormick.com/xaml/analysisConv", "analConv")]
+
 [assembly: XmlnsDefinition("http://kaymccormick.com/xaml/proj", "ProjInterface")]
 [assembly: XmlnsPrefix("http://kaymccormick.com/xaml/proj", "proj")]
-[assembly: XmlnsDefinition("http://kaymccormick.com/xaml/analysisfw", "AnalysisFramework")]
-[assembly: XmlnsPrefix("http://kaymccormick.com/xaml/analysisfw", "analfw")]
+
+[assembly: XmlnsDefinition( "http://kaymccormick.com/xaml/analysisfw", "AnalysisFramework")]
+[assembly: XmlnsPrefix( "http://kaymccormick.com/xaml/analysisfw", "analfw")]
+
+[assembly: XmlnsDefinition( "http://kaymccormick.com/xaml/analysis/framework/interfaces", "AnalysisFramework.Interfaces")]
+[assembly: XmlnsPrefix("http://kaymccormick.com/xaml/analysis/framework/interfaces", "analysisFrameworkInterface")]
+[assembly: XmlnsDefinition( "http://kaymccormick.com/xaml/logusage", "AnalysisFramework.LogUsage")]
+[assembly: XmlnsPrefix( "http://kaymccormick.com/xaml/logusge", "logUsage")]
 
 [assembly: XmlnsDefinition("http://kaymccormick.com/xaml/projLib", "ProjLib")]
 [assembly: XmlnsPrefix("http://kaymccormick.com/xaml/projLib", "projLib")]

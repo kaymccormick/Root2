@@ -32,6 +32,7 @@ using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
+using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using ProjLib.Interfaces ;

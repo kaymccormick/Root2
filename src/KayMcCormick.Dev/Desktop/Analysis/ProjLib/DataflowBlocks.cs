@@ -1,7 +1,5 @@
 using System.Threading.Tasks.Dataflow ;
-using AnalysisFramework ;
-using AnalysisFramework.LogUsage ;
-using AnalysisFramework.LogUsage.Interfaces ;
+using AnalysisFramework.Interfaces ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 #if NUGET

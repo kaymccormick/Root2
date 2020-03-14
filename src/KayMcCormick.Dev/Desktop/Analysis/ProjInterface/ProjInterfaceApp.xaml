@@ -1,16 +1,19 @@
-﻿<kayWpfLib:BaseApp
+﻿<wpf:BaseApp
     xmlns:kayWpfLib="http://kaymccormick.com/xaml/wpflib"
   x:Class="ProjInterface.ProjInterfaceApp"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:anal="http://kaymccormick.com/xaml/analysis">
+  xmlns:anal="http://kaymccormick.com/xaml/analysis"
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
+  xmlns:analysisControls="clr-namespace:AnalysisControls"
+  xmlns:interfaces="clr-namespace:ProjLib.Interfaces">
 
-    <kayWpfLib:BaseApp.Resources>
+    <wpf:BaseApp.Resources>
     <Style TargetType="Menu">
       <Setter Property="FontFamily" Value="Leelawadee"/>
       <Setter Property="FontSize" Value="24.0"/>
     </Style>
-    <anal:StatusBarItemContentTemplateSelector x:Key="StatusBarItemContentTemplateSelector" />
+    <analysisControls:StatusBarItemContentTemplateSelector x:Key="StatusBarItemContentTemplateSelector" />
     <Style TargetType="StatusBarItem">
     <Setter Property="ContentTemplateSelector" Value="{StaticResource StatusBarItemContentTemplateSelector}"></Setter>
     </Style>
@@ -19,5 +22,5 @@
     DataType="interfaces:IDetailedOperation">
     <TextBlock Text="{Binding DisplayName}"></TextBlock>
     </DataTemplate>
-  </kayWpfLib:BaseApp.Resources>
-</kayWpfLib:BaseApp>
+  </wpf:BaseApp.Resources>
+</wpf:BaseApp>

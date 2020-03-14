@@ -3,6 +3,7 @@ using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework ;
+using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using JetBrains.Annotations ;
