@@ -107,7 +107,7 @@ namespace WpfApp.Application
                 cd.ProcessExit += ( sender , args ) => {
                     var argStr = args == null ? "Args is null" : args.ToString ( ) ;
 
-                    DebugLog ( argStr) ;
+                    DebugLog?.Invoke ( argStr) ;
                 } ;
                 cd.UnhandledException += OnAppDomainUnhandledException ;
                 cd.ResourceResolve    += CdOnResourceResolve ;
@@ -119,18 +119,7 @@ namespace WpfApp.Application
                 DebugLog (ex.Message ) ;
             }
         }
-
-        private void DebugLog (
-            string                      message
-          , [ CallerMemberName ] string callerMemberName = ""
-          , [ CallerFilePath ]   string callerFilePath   = ""
-          , [ CallerLineNumber ] int    callerLineNumber = 0
-        )
-        {
-
-        }
-
-
+        
         /// <summary>Gets the task completion source.</summary>
         /// <value>The TCS.</value>
         public TaskCompletionSource < int > TCS { get ; }
@@ -405,7 +394,7 @@ namespace WpfApp.Application
 
             HandleWindow ( o as Window ) ;
             var fe = ( FrameworkElement ) o ;
-            DebugLog (fe.ToString() ) ;
+            DebugLog?.Invoke (fe.ToString() ) ;
             Props.SetMenuItemListCollectionView ( fe , MenuItemListCollectionView ) ;
             
             Props.SetAssemblyList (
@@ -428,7 +417,9 @@ namespace WpfApp.Application
                 AddResourceNodeInfos ( appResources ) ;
                 AllResourcesCollection.Add ( _appNode ) ;
             }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch ( Exception ex )
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
             }
         }

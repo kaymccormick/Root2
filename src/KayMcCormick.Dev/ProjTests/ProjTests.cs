@@ -27,8 +27,6 @@ using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-
-using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Layouts ;
@@ -62,29 +60,6 @@ namespace ProjTests
         , IClassFixture < ProjectFixture >
         , IDisposable
     {
-
-        public CSharpCompilation CreateCompilation ( SyntaxTree syntaxTree , string assemblyName )
-        {
-            var compilation = CSharpCompilation.Create ( assemblyName )
-                .AddReferences (
-                                MetadataReference.CreateFromFile (
-                                                                  typeof
-                                                                  ( string
-                                                                    ).Assembly
-                                                                  .Location
-                                                                  )
-                                , MetadataReference.CreateFromFile (
-                                                                    typeof
-                                                                    ( Logger
-                                                                      ).Assembly
-                                                                    .Location
-                                                                    )
-                                )
-                .AddSyntaxTrees ( syntaxTree ) ;
-            return compilation ;
-        }
-
-
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -209,10 +184,10 @@ namespace ProjTests
                        );
             MSBuildLocator.RegisterInstance(instances.First());
 #endif
-            using ( var appinst = new ApplicationInstance ( _output.WriteLine ) )
+            using ( var appInst = new ApplicationInstance ( _output.WriteLine ) )
             {
-                appinst.AddModule ( new ProjLibModule ( ) ) ;
-                var scope = appinst.GetLifetimeScope ( ) ;
+                appInst.AddModule ( new ProjLibModule ( ) ) ;
+                var scope = appInst.GetLifetimeScope ( ) ;
                 var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
                 viewModel.AnalyzeCommand(viewModel.ProjectBrowserViewModel.RootCollection.OfType<IProjectBrowserNode>().First());
 #if false
@@ -297,7 +272,6 @@ namespace ProjTests
                 }
             }
         }
-        public List<Action> Finalizers { get { return _finalizers ; } set { _finalizers = value ; } }
 
         //        public //VisualStudioInstance VSI { get ; set ; }
 

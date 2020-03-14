@@ -41,7 +41,9 @@ namespace Tests.Lib.Fixtures
         /// </summary>
         public ContainerFixture ( )
         {
+#pragma warning disable CS0612 // 'AppBuildModule.SetupContainer(out IContainer, ContainerHelperSettings)' is obsolete
             _container    = AppBuildModule.SetupContainer ( out _ , null ) ;
+#pragma warning restore CS0612 // 'AppBuildModule.SetupContainer(out IContainer, ContainerHelperSettings)' is obsolete
             LifetimeScope = _container.BeginLifetimeScope ( ) ;
         }
 
