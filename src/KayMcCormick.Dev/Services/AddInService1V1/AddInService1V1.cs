@@ -16,6 +16,8 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Xml ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Logging ;
+using NLog ;
 using ServiceAddIn1 ;
 
 namespace AddInService1V1
@@ -29,11 +31,16 @@ namespace AddInService1V1
     [ UsedImplicitly ]
     public class AddInService1V1 : IService1
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private Thread _thread ;
         #region Implementation of IService1
         public bool Start ( )
         {
+            AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
+            Logger.Debug("Here");
+            Console.WriteLine ( "in start" ) ;
             _thread = new Thread ( ThreadProc ) ;
+            _thread.Start();
             return true ;
         }
 

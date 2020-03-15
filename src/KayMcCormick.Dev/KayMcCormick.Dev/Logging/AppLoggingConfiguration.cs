@@ -27,6 +27,8 @@ namespace KayMcCormick.Dev.Logging
         private bool? _isEnabledCacheTarget ;
         private LogLevel _minLogLevel ;
         private string _debuggerTargetName ;
+        private int ? _nLogViewerPort ;
+        private int ? _chainsawPort ;
 
         #region Implementation of ILoggingConfiguration
         /// <summary>
@@ -55,6 +57,16 @@ namespace KayMcCormick.Dev.Logging
         /// 
         /// </summary>
         public string DebuggerTargetName => _debuggerTargetName ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int ? NLogViewerPort { get => _nLogViewerPort ; set => _nLogViewerPort = value ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int? ChainsawPort { get => _chainsawPort ; set => _chainsawPort = value ; }
 
         /// <summary>
         /// 

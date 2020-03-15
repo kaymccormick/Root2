@@ -1448,6 +1448,16 @@
             
             </summary>
         </member>
+        <member name="P:KayMcCormick.Dev.Logging.AppLoggingConfiguration.NLogViewerPort">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Logging.AppLoggingConfiguration.ChainsawPort">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:KayMcCormick.Dev.Logging.AppLoggingConfiguration.MinLogLevel">
             <summary>
             

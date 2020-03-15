@@ -45,5 +45,9 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// </summary>
         string DebuggerTargetName { get ; }
+
+        int? NLogViewerPort { get ; }
+
+        int? ChainsawPort { get ;  }
     }
 }

@@ -65,6 +65,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+      <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
+      <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceAddIn1\Service1AddInView.csproj">
       <Project>{F2F394BF-088C-4ED4-8610-C96ABA021DD1}</Project>
       <Name>Service1AddInView</Name>
@@ -75,8 +79,14 @@
     <PackageReference Include="JetBrains.Annotations">
       <Version>2019.1.3</Version>
     </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.7.0-rc1</Version>
+    </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Extensions">
+      <Version>4.5.3</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

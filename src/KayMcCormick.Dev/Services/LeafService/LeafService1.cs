@@ -49,6 +49,7 @@ namespace LeafService
 #pragma warning restore CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
         private ServiceHost _svcReceiver ;
         private Timer       _timer ;
+        private List <IService1> _services = new List < IService1 > ();
 
         public LeafService1 ( ILog commonLogger ) { _commonLogger = commonLogger ; }
 
@@ -67,7 +68,7 @@ namespace LeafService
         // ReSharper disable once UnusedParameter.Global
         public bool Start ( HostControl hostControl )
         {
-            InitializeAddin ( out var service1 ) ;
+            InitializeAddin ( ) ;
 
 
             var f = new LogFactory < MyLogger > ( ) ;
@@ -204,7 +205,7 @@ namespace LeafService
 #endif
         }
 
-        private void InitializeAddin ( out IService1 service1 )
+        private void InitializeAddin ( )
         {
             var baseDir = Environment.CurrentDirectory ;
             var pipelineDir = "Pipeline" ;
@@ -216,9 +217,16 @@ namespace LeafService
             }
 
             var tokens = AddInStore.FindAddIns ( typeof ( IService1 ) , root ) ;
-            var token = tokens.First ( ) ;
-            service1 = token.Activate < IService1 > ( AddInSecurityLevel.FullTrust ) ;
-            Initiate ( service1 ) ;
+            _commonLogger.Debug ( $"add ins count {tokens.Count}" ) ;
+            foreach ( var addInToken in tokens )
+            {
+                IService1 service1 = addInToken.Activate < IService1 > ( AddInSecurityLevel.FullTrust ) ;
+                _services.Add ( service1 ) ;
+                service1.Start ( ) ;
+
+            }
+
+            
         }
 
         private void Initiate ( IService1 service1 ) { service1.PerformFunc1 ( ) ; }

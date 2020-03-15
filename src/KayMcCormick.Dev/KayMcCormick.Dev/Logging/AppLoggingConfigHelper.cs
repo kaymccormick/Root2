@@ -84,6 +84,7 @@ namespace KayMcCormick.Dev.Logging
         private const string JsonTargetName              = "json_out" ;
         private const string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
         private const string PublicFacingHostAddress     = "xx1.mynetgear.com:" ;
+        private static int _nLogViewerPort = 9995;
 
         // ReSharper disable once InconsistentNaming
         [ SuppressMessage ( "Microsoft.Performance" , "CA1823:AvoidUnusedPrivateFields" ) ]
@@ -96,6 +97,7 @@ namespace KayMcCormick.Dev.Logging
         private static string _eventLogTargetName ;
         private static string _consoleTargetName ;
         private static Target _serviceTarget ;
+        private static int _chainsawPort = 4445 ;
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
@@ -290,9 +292,14 @@ namespace KayMcCormick.Dev.Logging
             #endregion
             #region Chainsaw Target
 
+            if ( config1.ChainsawPort.HasValue )
+            {
+                _chainsawPort = config1.ChainsawPort.Value ;
+            }
+
             var chainsawTarget = new ChainsawTarget ( ) ;
             var PublicHostAddress = PublicFacingHostAddress ;
-            SetupNetworkTarget ( chainsawTarget , $"udp://{PublicHostAddress}4445" ) ;
+            SetupNetworkTarget ( chainsawTarget , $"udp://{PublicHostAddress}{_chainsawPort}" ) ;
             t.Add ( chainsawTarget ) ;
             #endregion
             t.Add ( MyFileTarget ( ) ) ;
@@ -362,6 +369,8 @@ namespace KayMcCormick.Dev.Logging
 
         public static Target ServiceTarget { get { return _serviceTarget ; } set { _serviceTarget = value ; } }
 
+        public static int NLogViewerPort { get => _nLogViewerPort; set => _nLogViewerPort = value; }
+
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {
             var x = new EventLogTarget ( eventLogTargetName ) { Source = "Application Error" } ;
@@ -404,9 +413,10 @@ namespace KayMcCormick.Dev.Logging
 
         private static NLogViewerTarget Viewer ( string name = null )
         {
+            var s = _nLogViewerPort;
             return new NLogViewerTarget ( name )
                    {
-                       Address              = new SimpleLayout ( "udp://10.25.0.102:9995" )
+                       Address              = new SimpleLayout ( $"udp://10.25.0.102:{s}" )
                      , IncludeAllProperties = true
                      , IncludeCallSite      = true
                      , IncludeSourceInfo    = true

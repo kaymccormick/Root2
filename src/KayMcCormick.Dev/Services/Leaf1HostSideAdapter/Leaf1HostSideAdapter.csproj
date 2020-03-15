@@ -4,6 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\service\$(Configuration)\$(Platform)\Pipeline\HostSideAdapters\</OutputPath>
     <ProjectGuid>{04F7D174-201A-40B9-BA19-204499F38091}</ProjectGuid>
@@ -83,6 +84,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+      <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
+      <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Leaf1Contract\Leaf1Contract.csproj">
       <Project>{E631F2A3-FE02-451A-A298-B72EA0935329}</Project>
       <Name>Leaf1Contract</Name>
@@ -93,6 +98,11 @@
       <Name>Leaf1HVA</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NLog">
+      <Version>4.7.0-rc1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

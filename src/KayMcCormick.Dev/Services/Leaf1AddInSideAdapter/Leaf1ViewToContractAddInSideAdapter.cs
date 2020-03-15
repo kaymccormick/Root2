@@ -4,7 +4,9 @@ using System.Collections.Generic ;
 using System.Linq ;
 using System.Text ;
 using System.Threading.Tasks ;
+using KayMcCormick.Dev.Logging ;
 using Leaf1Contract ;
+using NLog ;
 using ServiceAddIn1 ;
 
 namespace Leaf1AddInSideAdapter
@@ -13,10 +15,12 @@ namespace Leaf1AddInSideAdapter
     public class Leaf1ViewToContractAddInSideAdapter : ContractBase , IService1Contract
     {
         private readonly IService1 _contract;
+        private ILogger _logger ;
 
         public Leaf1ViewToContractAddInSideAdapter ( IService1 leaf1 ) : base ( )
         {
             _contract = leaf1 ;
+            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
         }
 
         #region Implementation of IService1Contract
