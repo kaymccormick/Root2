@@ -98,6 +98,8 @@ namespace KayMcCormick.Dev.Logging
         private static string _consoleTargetName ;
         private static Target _serviceTarget ;
         private static int _chainsawPort = 4445 ;
+        private static MyCacheTarget _cacheTarget ;
+        private static MyCacheTarget2 _cacheTarget2 ;
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
@@ -272,10 +274,10 @@ namespace KayMcCormick.Dev.Logging
             #region Cache Target
             if ( config1.IsEnabledCacheTarget.GetValueOrDefault() )
             {
-                var cacheTarget = new MyCacheTarget ( ) ;
-                dict[ LogLevel.Debug ].Add ( cacheTarget ) ;
-                var cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
-                dict[ LogLevel.Debug ].Add ( cacheTarget2 ) ;
+                _cacheTarget = new MyCacheTarget ( ) ;
+                dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
+                _cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
+                dict[ LogLevel.Debug ].Add ( _cacheTarget2 ) ;
             }
             #endregion
             #region NLogViewer Target
@@ -370,6 +372,9 @@ namespace KayMcCormick.Dev.Logging
         public static Target ServiceTarget { get { return _serviceTarget ; } set { _serviceTarget = value ; } }
 
         public static int NLogViewerPort { get => _nLogViewerPort; set => _nLogViewerPort = value; }
+        public static MyCacheTarget2 CacheTarget2 => _cacheTarget2 ;
+
+        public static MyCacheTarget CacheTarget => _cacheTarget ;
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {

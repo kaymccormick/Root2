@@ -34,6 +34,7 @@ using System.Windows.Input;
 using System.Windows.Threading ;
 using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
+using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;
 using Task = System.Threading.Tasks.Task ;
 
@@ -77,51 +78,52 @@ namespace ProjInterface
 
             ViewModel = viewModel ;
             _factory  = new TaskFactory ( _taskScheduler ) ;
-            
-            var myCacheTarget2 = MyCacheTarget2.GetInstance(1000);
-            myCacheTarget2.Cache.SubscribeOn(Scheduler.Default)
-                         .Buffer(TimeSpan.FromMilliseconds(100))
-                         .Where(x => x.Any())
-                         .ObserveOnDispatcher(DispatcherPriority.Background)
-                         .Subscribe(
-                                    infos => {
-                                        foreach (var json in infos)
-                                        {
-                                            var i = JsonSerializer
-                                               .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions ( ) ) ;
-                                            if ( i.Properties != null )
-                                            {
-                                                foreach ( var p in i.Properties )
-                                                {
-                                                    var g = ( _eventView.View as GridView ) ;
-                                                    if ( ! PropertiesColumns.ContainsKey ( p.Key ) )
-                                                    {
-                                                        var gridViewColumn = new GridViewColumn ( )
-                                                                             {
-                                                                                 Header = p.Key
-                                                                               , DisplayMemberBinding
-                                                                                     = new
-                                                                                       Binding ( )
-                                                                                       {
-                                                                                           Converter
-                                                                                               = _propConverter
-                                                                                         , ConverterParameter
-                                                                                               = p
-                                                                                                  .Key
-                                                                                       }
-                                                                             } ;
-                                                        PropertiesColumns[ p.Key ] =
-                                                            gridViewColumn ;
-                                                        g.Columns.Add ( gridViewColumn ) ;
-                                                        //               _eventView.UpdateLayout();
-                                                    }
-                                                }
-                                            }
 
-                                            ViewModel.Events.Add(i);
-                                        }
-                                    }
-                                   );
+            var myCacheTarget2 = AppLoggingConfigHelper.CacheTarget2 ;
+            myCacheTarget2?.Cache.SubscribeOn(Scheduler.Default)
+                          .Buffer(TimeSpan.FromMilliseconds(100))
+                          .Where(x => x.Any())
+                          .ObserveOnDispatcher(DispatcherPriority.Background)
+                          .Subscribe(
+                                     infos => {
+                                         foreach (var json in infos)
+                                         {
+
+                                             var i = JsonSerializer
+                                                .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions ( ) ) ;
+                                             if ( i.Properties != null )
+                                             {
+                                                 foreach ( var p in i.Properties )
+                                                 {
+                                                     var g = ( _eventView.View as GridView ) ;
+                                                     if ( ! PropertiesColumns.ContainsKey ( p.Key ) )
+                                                     {
+                                                         var gridViewColumn = new GridViewColumn ( )
+                                                                              {
+                                                                                  Header = p.Key
+                                                                                , DisplayMemberBinding
+                                                                                      = new
+                                                                                        Binding ( )
+                                                                                        {
+                                                                                            Converter
+                                                                                                = _propConverter
+                                                                                          , ConverterParameter
+                                                                                                = p
+                                                                                                   .Key
+                                                                                        }
+                                                                              } ;
+                                                         PropertiesColumns[ p.Key ] =
+                                                             gridViewColumn ;
+                                                         g.Columns.Add ( gridViewColumn ) ;
+                                                         //               _eventView.UpdateLayout();
+                                                     }
+                                                 }
+                                             }
+
+                                             ViewModel.Events.Add(i);
+                                         }
+                                     }
+                                    );
 
 
             var myCacheTarget = MyCacheTarget.GetInstance(1000);
