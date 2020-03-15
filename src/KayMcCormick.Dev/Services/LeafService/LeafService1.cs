@@ -10,8 +10,11 @@
 // ---
 #endregion
 using System ;
+using System.AddIn.Hosting ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
+using System.IO ;
+using System.Linq ;
 using System.ServiceModel ;
 using System.ServiceModel.Channels ;
 using System.ServiceModel.Discovery ;
@@ -20,6 +23,7 @@ using System.Timers ;
 using Common.Logging ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
+using LeafHVA1 ;
 using NLog ;
 using NLog.Fluent ;
 using NLog.LogReceiverService ;
@@ -48,6 +52,21 @@ namespace LeafService
 
         public bool Start ( HostControl hostControl )
         {
+            string baseDir = Environment.CurrentDirectory ;
+            string pipelineDir = "Pipeline" ;
+            var root = Path.Combine ( baseDir , pipelineDir ) ;
+            var warnings = AddInStore.Update ( root ) ;
+            foreach ( var warning in warnings )
+            {
+                Logger.Warn ( warning ) ;
+
+            }
+            
+            var tokens = AddInStore.FindAddIns ( typeof ( IService1 ) , root ) ;
+            var token = tokens.First ( ) ;
+            var service1 = token.Activate < IService1 > ( AddInSecurityLevel.FullTrust ) ;
+            Initiate ( service1 ) ;
+
             var f = new LogFactory < MyLogger > ( ) ;
             Trace.Refresh ( ) ;
             Trace.Listeners.Add (
@@ -163,6 +182,11 @@ namespace LeafService
             // MyThread.Start ( true ) ;
             //TODO: Implement your service start routine.
             return true ;
+        }
+
+        private void Initiate ( IService1 service1 )
+        {
+            service1.PerformFunc1();
         }
 
         private void SvcReceiverOnFaulted ( object sender , EventArgs e )

@@ -4,20 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
-    <OutputPath>$(KmGlobalOutputPath)\service\$(Configuration)\$(Platform)\</OutputPath>
-    <ProjectGuid>{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>LeafService</RootNamespace>
-    <AssemblyName>LeafService</AssemblyName>
+    <OutputPath>$(KmGlobalOutputPath)\service\$(Configuration)\$(Platform)\Pipeline\HostSideAdapters\</OutputPath>
+    <ProjectGuid>{04F7D174-201A-40B9-BA19-204499F38091}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Leaf1HostSideAdapter</RootNamespace>
+    <AssemblyName>Leaf1HostSideAdapter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
@@ -41,7 +38,6 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DefineConstants>TRACE</DefineConstants>
@@ -51,7 +47,6 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -61,7 +56,6 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>TRACE</DefineConstants>
@@ -71,15 +65,12 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.AddIn" />
     <Reference Include="System.AddIn.Contract" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,50 +79,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="LeafService1.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Leaf1ContractToViewHostSideAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Include="..\..\DependencyValidation1\DependencyValidation1.layerdiagram">
-      <Link>DependencyValidation1.layerdiagram</Link>
-      <Visible>False</Visible>
-    </AdditionalFiles>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Autofac.Extras.FileSystemRegistration">
-      <Version>1.0.0-pre-03</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-      <Version>2.9.8</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.DependencyValidation.Analyzers">
-      <Version>0.10.0</Version>
-    </PackageReference>
-    <PackageReference Include="Topshelf">
-      <Version>4.2.1.218-develop</Version>
-    </PackageReference>
-    <PackageReference Include="Topshelf.Autofac">
-      <Version>4.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Topshelf.Common.Logging">
-      <Version>4.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="TopShelf.ServiceInstaller">
-      <Version>4.2.1.218-develop</Version>
-    </PackageReference>
-    <PackageReference Include="Topshelf.WebApi">
-      <Version>0.4.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
-      <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
-      <Name>KayMcCormick.Dev</Name>
+    <ProjectReference Include="..\Leaf1Contract\Leaf1Contract.csproj">
+      <Project>{E631F2A3-FE02-451A-A298-B72EA0935329}</Project>
+      <Name>Leaf1Contract</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\LeafHVA1\Leaf1HVA.csproj">
       <Project>{B57CF9DF-0446-40A7-AABA-1140FD3B5C79}</Project>
