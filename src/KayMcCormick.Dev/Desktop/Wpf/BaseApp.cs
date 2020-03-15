@@ -145,7 +145,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             foreach ( var module in GetModules ( ) )
             {
-                Logger.Debug ( "Adding module {module}" , module .ToString()) ;
+                Logger?.Debug ( "Adding module {module}" , module .ToString()) ;
                 appInst.AddModule(module);
             }
             appInst.Initialize ( ) ;

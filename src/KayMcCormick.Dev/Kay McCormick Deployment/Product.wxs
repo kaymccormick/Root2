@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <Wix xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define KayMcCormick.Dev_TargetDir=$(var.KayMcCormick.Dev.TargetDir)?>
   <!-- <?define KmGlobalOutputPath_TargetDir=$(var.KmGlobalOutputPath)?> -->
@@ -11,7 +10,6 @@
   <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?><?define LeafService_TargetDir=$(var.LeafService.TargetDir)?><?define Leaf1AddInSideAdapter_TargetDir=$(var.Leaf1AddInSideAdapter.TargetDir)?><?define Leaf1Contract_TargetDir=$(var.Leaf1Contract.TargetDir)?><?define Leaf1HVA_TargetDir=$(var.Leaf1HVA.TargetDir)?><?define Service1AddInView_TargetDir=$(var.Service1AddInView.TargetDir)?>
   <Product Id="*" Name="Kay_McCormick_Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="715179D2-24C8-46D4-A637-03DABC5A52A1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
-
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="ProductFeature" Title="Kay_McCormick_Deployment" Level="1">
@@ -21,7 +19,6 @@
       <ComponentGroupRef Id="lib_win32_x64_files" />
     </Feature>
   </Product>
-
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
@@ -29,6 +26,7 @@
           <Directory Id="LogReceiverServiceDirectory" Name="WcfLogReceiver">
             <Directory Id="LogReceiverServiceBinDir" Name="bin" />
           </Directory>
+<Directory Id="LeafServiceDirectory" Name="LeafService"/>
           <Directory Id="lib" Name="lib">
             <Directory Id="lib_win32" Name="win32">
               <Directory Id="lib_win32_x86" Name="x86" />
@@ -87,11 +85,9 @@
           </Directory>
           <Directory Id="bin" Name="bin" />
         </Directory>
-
       </Directory>
     </Directory>
   </Fragment>
-
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
@@ -103,8 +99,6 @@
       </Component>
       
       
-
-
       <Component Id="ProjInterface.exe" Guid="45EF7127-21A1-4BAB-8D1B-1C92543E67BA">
         <File KeyPath="yes" Id="ProjInterface.exe" Name="ProjInterface.exe" Source="$(var.ProjInterface_TargetDir)ProjInterface.exe" />
       </Component>
@@ -129,8 +123,6 @@
       <Component Id="KayMcCormick.Lib.Wpf.dll" Guid="F78EC651-F4BD-4078-A1D4-C00BDD04A452">
         <File KeyPath="yes" Id="KayMcCormick.Lib.Wpf.dll" Name="KayMcCormick.Lib.Wpf.dll" Source="$(var.KayMcCormick.Lib.Wpf_TargetDir)KayMcCormick.Lib.Wpf.dll" />
       </Component>
-
-
       <Component Id="AnalysisControls.dll" Guid="E66B8682-4F7E-40C0-B423-77EA453ACE69">
         <File KeyPath="yes" Id="AnalysisControls.dll" Name="AnalysisControls.dll" Source="$(var.AnalysisControls_TargetDir)AnalysisControls.dll" />
       </Component>
@@ -255,7 +247,6 @@
       
       
       
-
       
       
       <Component Id="Autofac.Extras.AttributeMetadata.dll" Guid="44D90832-6CB7-49DD-8756-5960828AAA78">
@@ -287,55 +278,51 @@
       
       
       
-      <Component Id="Microsoft.Extensions.DependencyInjection.dll" Guid="00de8a36-2fe5-4b55-a2cf-599707d1c083">
-        <File Id="Microsoft.Extensions.DependencyInjection.dll" Name="Microsoft.Extensions.DependencyInjection.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
+      <Component Id="Microsoft.Extensions.DependencyInjection.dll" Guid="00DE8A36-2FE5-4B55-A2CF-599707D1C083">
+        <File KeyPath="yes" Id="Microsoft.Extensions.DependencyInjection.dll" Name="Microsoft.Extensions.DependencyInjection.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
       </Component>
-      <Component Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Guid="2f0769ad-68bc-4f43-9bbe-7dc85c9f43e5">
-        <File Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Name="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+      <Component Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Guid="2F0769AD-68BC-4F43-9BBE-7DC85C9F43E5">
+        <File KeyPath="yes" Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Name="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
       </Component>
       
-      
-      
-      
-      <Component Id="Microsoft.Extensions.Options.dll" Guid="051613f3-eba9-4e63-b652-818e21e08056">
-        <File Id="Microsoft.Extensions.Options.dll" Name="Microsoft.Extensions.Options.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Options.dll" />
+      <Component Id="Microsoft.Extensions.Options.dll" Guid="051613F3-EBA9-4E63-B652-818E21E08056">
+        <File KeyPath="yes" Id="Microsoft.Extensions.Options.dll" Name="Microsoft.Extensions.Options.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Options.dll" />
       </Component>
-      <Component Id="Microsoft.Extensions.Primitives.dll" Guid="92cef3c7-6297-4c00-a06c-1f6cd3b51a4f">
-        <File Id="Microsoft.Extensions.Primitives.dll" Name="Microsoft.Extensions.Primitives.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Primitives.dll" />
+      <Component Id="Microsoft.Extensions.Primitives.dll" Guid="92CEF3C7-6297-4C00-A06C-1F6CD3B51A4F">
+        <File KeyPath="yes" Id="Microsoft.Extensions.Primitives.dll" Name="Microsoft.Extensions.Primitives.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Primitives.dll" />
       </Component>
-      <Component Id="Microsoft.Extensions.Logging.Abstractions.dll" Guid="4d430ec5-d470-46db-933e-6739de7687b3">
-        <File Id="Microsoft.Extensions.Logging.Abstractions.dll" Name="Microsoft.Extensions.Logging.Abstractions.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
+      <Component Id="Microsoft.Extensions.Logging.Abstractions.dll" Guid="4D430EC5-D470-46DB-933E-6739DE7687B3">
+        <File KeyPath="yes" Id="Microsoft.Extensions.Logging.Abstractions.dll" Name="Microsoft.Extensions.Logging.Abstractions.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
       </Component>
-      <Component Id="Microsoft.Build.Utilities.Core.dll" Guid="cd21965c-2954-4453-9215-bef7d883334f">
-        <File Id="Microsoft.Build.Utilities.Core.dll" Name="Microsoft.Build.Utilities.Core.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.Utilities.Core.dll" />
+      <Component Id="Microsoft.Build.Utilities.Core.dll" Guid="CD21965C-2954-4453-9215-BEF7D883334F">
+        <File KeyPath="yes" Id="Microsoft.Build.Utilities.Core.dll" Name="Microsoft.Build.Utilities.Core.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.Utilities.Core.dll" />
       </Component>
-      <Component Id="StructuredLogger.dll" Guid="afbcd727-2750-40e2-b3d9-e1c1afb3f57b">
-        <File Id="StructuredLogger.dll" Name="StructuredLogger.dll" Source="$(var.AnalysisControls_TargetDir)StructuredLogger.dll" />
+      <Component Id="StructuredLogger.dll" Guid="AFBCD727-2750-40E2-B3D9-E1C1AFB3F57B">
+        <File KeyPath="yes" Id="StructuredLogger.dll" Name="StructuredLogger.dll" Source="$(var.AnalysisControls_TargetDir)StructuredLogger.dll" />
       </Component>
-      <Component Id="Buildalyzer.dll" Guid="c301c65d-a191-4faf-bebd-789864cf4c99">
-        <File Id="Buildalyzer.dll" Name="Buildalyzer.dll" Source="$(var.AnalysisControls_TargetDir)Buildalyzer.dll" />
+      <Component Id="Buildalyzer.dll" Guid="C301C65D-A191-4FAF-BEBD-789864CF4C99">
+        <File KeyPath="yes" Id="Buildalyzer.dll" Name="Buildalyzer.dll" Source="$(var.AnalysisControls_TargetDir)Buildalyzer.dll" />
       </Component>
-      <Component Id="Microsoft.Extensions.Logging.dll" Guid="caa910bf-b605-484d-a1d6-2c844cb0095a">
-        <File Id="Microsoft.Extensions.Logging.dll" Name="Microsoft.Extensions.Logging.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Logging.dll" />
+      <Component Id="Microsoft.Extensions.Logging.dll" Guid="CAA910BF-B605-484D-A1D6-2C844CB0095A">
+        <File KeyPath="yes" Id="Microsoft.Extensions.Logging.dll" Name="Microsoft.Extensions.Logging.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.Logging.dll" />
       </Component>
-      <Component Id="Microsoft.Build.dll" Guid="8a08ac83-555c-4a3c-93ff-8c82f98e90ef">
-        <File Id="Microsoft.Build.dll" Name="Microsoft.Build.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.dll" />
+      <Component Id="Microsoft.Build.dll" Guid="8A08AC83-555C-4A3C-93FF-8C82F98E90EF">
+        <File KeyPath="yes" Id="Microsoft.Build.dll" Name="Microsoft.Build.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Build.dll" />
       </Component>
-      <Component Id="Leaf1AddInSideAdapter.dll" Guid="02e39d50-de16-473b-bfb8-50914ec56d6d">
-        <File Id="Leaf1AddInSideAdapter.dll" Name="Leaf1AddInSideAdapter.dll" Source="$(var.Leaf1AddInSideAdapter_TargetDir)Leaf1AddInSideAdapter.dll" />
+      <Component Id="Leaf1AddInSideAdapter.dll" Guid="02E39D50-DE16-473B-BFB8-50914EC56D6D">
+        <File KeyPath="yes" Id="Leaf1AddInSideAdapter.dll" Name="Leaf1AddInSideAdapter.dll" Source="$(var.Leaf1AddInSideAdapter_TargetDir)Leaf1AddInSideAdapter.dll" />
       </Component>
-      <Component Id="Leaf1Contract.dll" Guid="36958e61-bf93-467a-b455-82058bfd37e9">
-        <File Id="Leaf1Contract.dll" Name="Leaf1Contract.dll" Source="$(var.Leaf1Contract_TargetDir)Leaf1Contract.dll" />
+      <Component Id="Leaf1Contract.dll" Guid="36958E61-BF93-467A-B455-82058BFD37E9">
+        <File KeyPath="yes" Id="Leaf1Contract.dll" Name="Leaf1Contract.dll" Source="$(var.Leaf1Contract_TargetDir)Leaf1Contract.dll" />
       </Component>
-      <Component Id="LeafHVA1.dll" Guid="470ebe62-5ddf-4bd4-9965-3eb69b9c705c">
-        <File Id="LeafHVA1.dll" Name="LeafHVA1.dll" Source="$(var.Leaf1HVA_TargetDir)LeafHVA1.dll" />
+      <Component Id="LeafHVA1.dll" Guid="470EBE62-5DDF-4BD4-9965-3EB69B9C705C">
+        <File KeyPath="yes" Id="LeafHVA1.dll" Name="LeafHVA1.dll" Source="$(var.Leaf1HVA_TargetDir)LeafHVA1.dll" />
       </Component>
-      <Component Id="ServiceAddIn1.dll" Guid="382d5648-1ae3-4f9f-b3ba-7c456aade45e">
-        <File Id="ServiceAddIn1.dll" Name="ServiceAddIn1.dll" Source="$(var.Service1AddInView_TargetDir)ServiceAddIn1.dll" />
+      <Component Id="ServiceAddIn1.dll" Guid="382D5648-1AE3-4F9F-B3BA-7C456AADE45E">
+        <File KeyPath="yes" Id="ServiceAddIn1.dll" Name="ServiceAddIn1.dll" Source="$(var.Service1AddInView_TargetDir)ServiceAddIn1.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
-
   <Fragment>
     <ComponentGroup Id="_files" Directory="LogReceiverServiceBinDir">
       
