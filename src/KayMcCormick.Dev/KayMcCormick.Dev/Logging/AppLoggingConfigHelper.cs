@@ -100,6 +100,7 @@ namespace KayMcCormick.Dev.Logging
         private static int _chainsawPort = 4445 ;
         private static MyCacheTarget _cacheTarget ;
         private static MyCacheTarget2 _cacheTarget2 ;
+        private static LogDelegates.LogMethod _oldLogMethod ;
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
@@ -516,6 +517,9 @@ namespace KayMcCormick.Dev.Logging
                 logMethod = DoLogMessage ;
             }
 
+            _oldLogMethod = logMethod ;
+            logMethod = message
+                => _oldLogMethod ( Process.GetCurrentProcess ( ).ProcessName + ":" + message ) ;
             logMethod (
                        $"[time {_numTimesConfigured.Value}]\t{nameof ( EnsureLoggingConfigured )} called from {callerFilePath}"
                       ) ;
@@ -707,7 +711,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="minLevel"></param>
         // ReSharper disable once RedundantNameQualifier
         // ReSharper disable once UnusedMember.Global
-        public static void AddTarget ( NLog.Targets.Target target , LogLevel minLevel )
+        public static void AddTarget ( NLog.Targets.Target target , LogLevel minLevel, bool addRules = true )
         {
             if ( minLevel == null )
             {
@@ -716,9 +720,13 @@ namespace KayMcCormick.Dev.Logging
 
             LogManager.Configuration.AddTarget ( target ) ;
 
-            LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
+            if ( addRules )
+            {
+                LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
+                LogManager.LogFactory.ReconfigExistingLoggers();
+            }
 
-            LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
+            
         }
 
         /// <summary>Removes a target by name from the current NLog configuration.</summary>

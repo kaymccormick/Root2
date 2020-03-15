@@ -16,11 +16,13 @@ using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
+using System.Runtime.Serialization ;
 using System.ServiceModel ;
 using System.ServiceModel.Channels ;
 using System.Threading ;
 using System.Timers ;
 using Common.Logging ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using LeafHVA1 ;
@@ -216,6 +218,15 @@ namespace LeafService
                 Logger.Warn ( warning ) ;
             }
 
+            // if ( warnings.Any())
+            // {
+                
+                // var message = string.Join("\n", warnings) ;
+                // Logger.Fatal ( message ) ;
+                // _commonLogger.Fatal(message);
+                // throw new AddInException (message);
+            // }
+
             var tokens = AddInStore.FindAddIns ( typeof ( IService1 ) , root ) ;
             _commonLogger.Debug ( $"add ins count {tokens.Count}" ) ;
             foreach ( var addInToken in tokens )
@@ -294,6 +305,10 @@ namespace LeafService
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Stop command received." ) ;
 
+            foreach ( var service1 in _services )
+            {
+                service1.Stop ( ) ;
+            }
             //TODO: Implement your service stop routine.
             return true ;
         }
@@ -321,9 +336,31 @@ namespace LeafService
         public bool Shutdown ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Shutdown command received." ) ;
+            foreach (var service1 in _services)
+            {
+                service1.Shutdown();
+            }
 
             //TODO: Implement your service stop routine.
             return true ;
+        }
+    }
+
+    public class AddInException : Exception
+    {
+        public AddInException ( ) {
+        }
+
+        public AddInException ( string message ) : base ( message )
+        {
+        }
+
+        public AddInException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected AddInException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 

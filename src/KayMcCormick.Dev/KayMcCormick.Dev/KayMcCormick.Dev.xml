@@ -1351,7 +1351,7 @@
             <param name="collect"></param>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.AddTarget(NLog.Targets.Target,NLog.LogLevel)">
+        <member name="M:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.AddTarget(NLog.Targets.Target,NLog.LogLevel,System.Boolean)">
             <summary>Adds the supplied target to the current NLog configuration.</summary>
             <param name="target">The target.</param>
             <param name="minLevel"></param>

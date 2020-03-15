@@ -9,6 +9,9 @@ using KayMcCormick.Dev.Logging ;
 using Leaf1Contract ;
 using LeafHVA1 ;
 using NLog ;
+using NLog.Config ;
+using NLog.Layouts ;
+using NLog.Targets ;
 
 namespace Leaf1HostSideAdapter
 {
@@ -18,6 +21,7 @@ namespace Leaf1HostSideAdapter
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly IService1Contract _service1Contract;
         private          ContractHandle    _handle;
+        private string loggerName = typeof(Leaf1ContractToViewHostSideAdapter).FullName ;
 
         public Leaf1ContractToViewHostSideAdapter(IService1Contract service1Contract)
         {
@@ -34,7 +38,17 @@ namespace Leaf1HostSideAdapter
 
         public bool Start ( )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured ( message => { }, new AppLoggingConfiguration() { MinLogLevel = LogLevel.Trace, NLogViewerPort = 1233, ChainsawPort = 4111 } ) ;
+            ChainsawTarget target = new ChainsawTarget ( "new" )
+                                    {
+                                        Address = new SimpleLayout ( "udp://10.25.0.102:4111" )
+                                    } ;
+            AppLoggingConfigHelper.AddTarget ( target , LogLevel.Trace , false ) ;
+            AppLoggingConfigHelper.AddRule (
+                                            new LoggingRule ( loggerName , LogLevel.Trace , target )
+                                           ) ;
+            LogManager.ReconfigExistingLoggers();
+            // AppLoggingConfigHelper.EnsureLoggingConfigured ( message => {Console.WriteLine(message); }, new AppLoggingConfiguration() { MinLogLevel = LogLevel.Trace, NLogViewerPort = 12333, ChainsawPort = 4111 } ) ;
+            Logger = LogManager.GetLogger ( loggerName ) ;
             Logger.Debug ( "start" ) ;
             return _service1Contract.Start ( ) ;
         }

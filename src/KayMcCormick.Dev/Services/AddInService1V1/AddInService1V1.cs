@@ -36,7 +36,7 @@ namespace AddInService1V1
         #region Implementation of IService1
         public bool Start ( )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
+            AppLoggingConfigHelper.EnsureLoggingConfigured (message => Console.WriteLine(message), new AppLoggingConfiguration(){ChainsawPort = 12333 } ) ;
             Logger.Debug("Here");
             Console.WriteLine ( "in start" ) ;
             _thread = new Thread ( ThreadProc ) ;
@@ -46,6 +46,7 @@ namespace AddInService1V1
 
         private static async Task Run ( )
         {
+            Logger.Warn ( "I am here" ) ;
             var @out = new StreamWriter ( "out.txt" ) ;
             var options = new JsonSerializerOptions ( ) ;
             options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
@@ -240,13 +241,23 @@ namespace AddInService1V1
             }
         }
 
-        public bool Stop ( ) { return false ; }
+        public bool Stop ( )
+        {
+            _thread?.Abort();
+            _thread = null ;
+            return true ;
+        }
 
         public bool Pause ( ) { return false ; }
 
         public bool Continue ( ) { return false ; }
 
-        public bool Shutdown ( ) { return false ; }
+        public bool Shutdown ( )
+        {
+            _thread?.Abort();
+            _thread = null;
+            return true;
+        }
 
         public void PerformFunc1 ( ) { Console.WriteLine ( "hello" ) ; }
     }
