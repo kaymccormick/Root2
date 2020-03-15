@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
-    <OutputPath>$(KmGlobalOutputPath)\service\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
+    <OutputPath>$(KmGlobalOutputPath)\service\$(Configuration)\$(Platform)\</OutputPath>
     <ProjectGuid>{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>LeafService</RootNamespace>
@@ -75,6 +75,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.AddIn" />
+    <Reference Include="System.AddIn.Contract" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Discovery" />
@@ -99,6 +101,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac.Extras.FileSystemRegistration">
+      <Version>1.0.0-pre-03</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>2.9.8</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -127,6 +132,11 @@
     <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LeafHVA1\Leaf1HVA.csproj">
+      <Project>{B57CF9DF-0446-40A7-AABA-1140FD3B5C79}</Project>
+      <Name>Leaf1HVA</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

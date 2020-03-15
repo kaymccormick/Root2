@@ -99,6 +99,10 @@ else
         }
 
         #region Overrides of Module
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void Load ( ContainerBuilder builder )
         {
             ICollection < Assembly > assembliesToScan = null ;
@@ -401,6 +405,9 @@ else
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class IdGeneratorModule : Module
         {
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
