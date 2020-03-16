@@ -20,7 +20,7 @@ namespace AnalysisControls.Converters
 {
     public class SyntaxNodeConverter : IValueConverter
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
         public object Convert (
             object      value

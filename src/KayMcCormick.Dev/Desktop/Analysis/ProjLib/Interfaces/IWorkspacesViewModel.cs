@@ -12,7 +12,7 @@
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Threading.Tasks ;
-using AnalysisFramework.LogUsage.Interfaces ;
+using AnalysisFramework.Interfaces ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using NLog ;

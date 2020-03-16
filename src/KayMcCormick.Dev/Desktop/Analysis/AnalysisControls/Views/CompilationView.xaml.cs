@@ -5,7 +5,7 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 using ProjLib.Interfaces ;
-#if NETFRAMEWORK
+#if MIGRADOC
 using MigraDoc.DocumentObjectModel ;
 using Document = MigraDoc.DocumentObjectModel.Document ;
 using Paragraph = MigraDoc.DocumentObjectModel.Paragraph ;
@@ -33,7 +33,7 @@ namespace AnalysisControls.Views
             
             if ( ViewModel.CompilationUnitRootContext != null )
             {
-#if NETFRAMEWORK
+#if MIGRADOC
                 Document doc = new Document();
                 var section = new Section();
                 var paragraph = new Paragraph();

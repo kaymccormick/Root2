@@ -31,9 +31,7 @@ namespace ProjInterface
     public partial class ProjInterfaceApp : BaseApp
     {
         private readonly List < IModule > appModules = new List < IModule > ( ) ;
-#pragma warning disable CS0108 // 'ProjInterfaceApp.Logger' hides inherited member 'BaseApp.Logger'. Use the new keyword if hiding was intended.
-        private static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
-#pragma warning restore CS0108 // 'ProjInterfaceApp.Logger' hides inherited member 'BaseApp.Logger'. Use the new keyword if hiding was intended.
+        private new static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
 
 #if COMMANDLINE
 private Type[] _optionTypes ;

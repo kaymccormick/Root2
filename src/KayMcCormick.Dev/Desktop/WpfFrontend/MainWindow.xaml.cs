@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ProjInterface
+namespace WpfFrontend
 {
     /// <summary>
-    /// Interaction logic for AdhocWorkspace.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class AdhocWorkspace : Window
+    public partial class MainWindow : Window
     {
-        public AdhocWorkspace()
+        public MainWindow()
         {
             InitializeComponent();
         }

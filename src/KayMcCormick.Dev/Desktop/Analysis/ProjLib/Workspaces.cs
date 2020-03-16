@@ -14,7 +14,7 @@ using Buildalyzer ;
 using Buildalyzer.Workspaces ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
-#if  !NETSTANDARD2_0
+#if ROSLYNMSBUILD
 using Microsoft.CodeAnalysis.MSBuild ;
 #endif
 using NLog ;
@@ -96,7 +96,7 @@ _manager = manager;
                 b[ "SkipGetTargetFrameworkProperties" ] = "true" ;
                 IDictionary < string , string > props = b.ToImmutable ( ) ;
 
-                #if NETSTANDARD2_0
+                #if !ROSLYNMSBUILD
                 Workspace workspace = _manager.CreateWorkspace(props);
 #else
                 MSBuildWorkspace workspace ;
@@ -219,7 +219,7 @@ _manager = manager;
                 // Attach progress reporter so we print projects as they are loaded.
                 //workspace.Services.GetService < IOptionervice > ( ) ;
                 //workspace.Options.WithChangedOption(new OptionKey(), ))
-#if !NETSTANDARD2_0                
+#if ROSLYNMSBUILD   
                 await workspace.OpenSolutionAsync ( solutionPath ).ConfigureAwait ( true ) ;
 #endif
                 await _manager.OpenSolutionAsync ( workspace , solutionPath ) ;

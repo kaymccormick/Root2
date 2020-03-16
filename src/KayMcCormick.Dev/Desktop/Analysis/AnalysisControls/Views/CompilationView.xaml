@@ -7,9 +7,9 @@
   Background="DarkCyan"
   xmlns:syntax="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-  xmlns:local="clr-namespace:AnalysisControls"
-  xmlns:views="clr-namespace:AnalysisControls.Views"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
+  xmlns:analysisControls="clr-namespace:AnalysisControls"
+  xmlns:views="clr-namespace:AnalysisControls.Views"
   x:Name="compilationView"
   x:Class="AnalysisControls.Views.CompilationView"
   mc:Ignorable="d"
@@ -20,7 +20,7 @@
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="AnalysisControls.xaml" />
+        <ResourceDictionary Source="../AnalysisControls.xaml" />
         <ResourceDictionary>
 
           <DataTemplate
@@ -141,7 +141,7 @@
 
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
-      <local:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
+      <analysisControls:ValueTemplateItemSelector x:Key="ValueTemplateItemSelector" />
       <DataTemplate x:Key="ChildTokens">
         <ItemsControl ItemsSource="{Binding ConverterParameter={x:Static converters:SyntaxNodeInfo.ChildTokens},Converter={StaticResource SyntaxNodeConverter}}"></ItemsControl>
       </DataTemplate>
@@ -149,10 +149,10 @@
   </Window.Resources>
   <Window.CommandBindings>
     <CommandBinding
-      Command="local:AnalysisCommands.AnalyzeControlFlow"
+      Command="analysisControls:AnalysisCommands.AnalyzeControlFlow"
       Executed="CommandBinding_OnExecuted" />
     <CommandBinding
-      Command="local:AnalysisCommands.GetDeclaredSymbol"
+      Command="analysisControls:AnalysisCommands.GetDeclaredSymbol"
       Executed="CommandBinding_OnExecuted2" />
   </Window.CommandBindings>
   <Grid Margin="10">
@@ -170,11 +170,11 @@
     <ToolBarTray>
       <ToolBar Height="40" Band="1" BandIndex="1">
         <Button
-          Command="local:AnalysisCommands.AnalyzeControlFlow">
+          Command="analysisControls:AnalysisCommands.AnalyzeControlFlow">
           <Image Source="Themes/RecordSetDest_201.ico" />
         </Button>
         <Button
-          Command="local:AnalysisCommands.GetDeclaredSymbol">
+          Command="analysisControls:AnalysisCommands.GetDeclaredSymbol">
           <Image Source="Themes/RecordSetDest_201.ico" />
         </Button>
         <TextBox Width="150" />

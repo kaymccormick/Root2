@@ -1,0 +1,540 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F0063577-4A6F-4D9A-93D4-836AD135BA42}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>KayMcCormick.Dev</RootNamespace>
+    <AssemblyName>WpfClient1</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFRAMEWORK</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ProjInterface.ProjInterfaceApp</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Discovery" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\AnalysisControls.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\FormattedCode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\FormattedCode2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\MainStatusBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Shared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\SpanToolTip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Templates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\CompilationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\ComponentPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\NodePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\ProjectBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\SyntaxPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\TestView1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\TypesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\AnalysisControls\Views\Window1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\ProjInterface\AdhocWorkspaceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\ProjInterface\AnalyzeResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\ProjInterface\MSBuild.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <ApplicationDefinition Include=".\Desktop\Analysis\ProjInterface\ProjInterfaceApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include=".\Desktop\Analysis\ProjInterface\ProjMainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Analysis\ProjInterface\VsInstancePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include=".\Desktop\Wpf\XmlViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\AnalysisCommands.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\AnalysisControlsModule.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\HierarchyConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\JsonConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\LocationConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\SyntaxNodeConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\SyntaxNodeInfo.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\TokenConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Converters\TransformConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\CustomControl1.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\FormattedCode.xaml.cs">
+      <DependentUpon>FormattedCode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\FormattedCode2.xaml.cs">
+      <DependentUpon>FormattedCode2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\GlobalSuppressions.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Interfaces\IApplicationViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Interfaces\ICompilationViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Interfaces\IComponentViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Interfaces\INodePanel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Interfaces\ISpanToolTip.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Interfaces\ISyntaxPanelViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\MainStatusBar.xaml.cs">
+      <DependentUpon>MainStatusBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\MyFlowDocumentScrollViewer.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\SpanToolTip.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\StatusBarItemContentTemplateSelector.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\SymbolControl.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\SyntaxItem.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Syntax\AppTypeInfo.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Syntax\ComponentInfo.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Syntax\ITypesViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Token.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ToolTips.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ValueTemplateItemSelector.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ViewModels\ApplicationViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ViewModels\CompilationViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ViewModels\ComponentViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ViewModels\SyntaxPanelViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\ViewModels\TypesViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\CompilationView.xaml.cs">
+      <DependentUpon>CompilationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\ComponentPage.xaml.cs">
+      <DependentUpon>ComponentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\NodePanel.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\ProjectBrowser.xaml.cs">
+      <DependentUpon>ProjectBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\SyntaxPanel.xaml.cs">
+      <DependentUpon>SyntaxPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\TestView1.xaml.cs">
+      <DependentUpon>TestView1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\TypesView.xaml.cs">
+      <DependentUpon>TypesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Views\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\AnalysisControls\Visitor3.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\AnalysisService.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\CodeAnalyseContext.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\CodeSource.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\Ext.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\GlobalSuppressions.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\ICodeAnalyseContext.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\ICodeSource.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\ISemanticModelContext.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\ISyntaxTreeContext.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\Interfaces\ILogInvocation.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\Interfaces\ILogInvocationArgument.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\InvocationParams.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\LogInvocation2.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\LogInvocationArgument.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\LogMessageRepr.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\LogUsages.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\MissingTypeException.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\NoMessageParameterException.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\LogUsage\RefactorLogUsage.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\SyntaxTransform\PocoSyntaxToken.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\SyntaxTransform\PojoClassDeclarationSyntax.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\SyntaxTransform\PojoCompilationUnit.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\SyntaxTransform\TransformNode.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\SyntaxTransform\Transforms.cs" />
+    <Compile Include=".\Desktop\Analysis\AnalysisFramework\SyntaxTransform\UnsupportedExpressionTypeSyntaxException.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\AdhocWorkspace.xaml.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\AnalyzeResults.xaml.cs">
+      <DependentUpon>AnalyzeResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\ProjInterface\BreakTraceListener.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\GlobalSuppressions.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\ICommandSpec.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\MruBackground.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\MSBuild.xaml.cs">
+      <DependentUpon>MSBuild.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\ProjInterface\ProjCommands.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\ProjInterfaceApp.xaml.cs">
+      <DependentUpon>ProjInterfaceApp.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\ProjInterface\ProjInterfaceModule.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\ProjMainWindow.xaml.cs">
+      <DependentUpon>ProjMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\ProjInterface\ProjUtils.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\Resources.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjInterface\VsInstancePanel.xaml.cs">
+      <DependentUpon>VsInstancePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\Desktop\Analysis\ProjInterface\WorkspaceTable.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ActiveSpans.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\AnalyzeException.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\AppProjectInfo.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\AppStatus.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\BrowserNode.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\BrowserNodeCollection.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\BuildResults.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\BuildTool.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\CommandException.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\DataflowBlocks.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\DesignRuntimeStatus.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\DetailedOperation.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Ext.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\FailedBuildException.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\FilePaths.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\FindLogUsages.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\GlobalSuppressions.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\GlobalSuppressions2.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\IMruItems.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IAppState.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IBrowserNode.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IBrowserNodeCollection.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\ICodeRenderer.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IDetailedOperation.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IFormattedCode.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IItemInfo.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IMruItem.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IPipelineViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IProjectBrowserNode.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IProjectBrowserViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IProjectInfo.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IRuntimestatus.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\ISpanObject.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\ISpanToolTipViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\ISpanViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IView.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IView1.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IVsInstance.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IWorkspacesView.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Interfaces\IWorkspacesViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\IVisitor.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\IVsInstanceCollector.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\LibResources.Designer.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\LogInvocationAnnotationHandler.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\LogInvocationSpan.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\MostRecentlyUsedAdapater.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\MruItem.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\MruItemProvider.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\MyLogger.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\MyLogger2.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Pipeline.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\PipelineResult.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\PipelineViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ProjectBrowserNode.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ProjectBrowserViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ProjectHandler.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ProjLibContainer.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ProjLibModule.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\ResultStatus.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\SpanObject.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\SpanToolTipViewModel.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\SyntaxNodeSpanObject.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\TokenSpanObject.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\TransformArgs.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\TriviaSpanObject.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VersionControl.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Visitor2.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Visitor4.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VisitorStub.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VisualStudioInstancesCollection.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VsCollector.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VsInstance.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VsInstanceCollector.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\VsInstanceConverter.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\Workspaces.cs" />
+    <Compile Include=".\Desktop\Analysis\ProjLib\WorkspacesViewModel.cs" />
+    <Compile Include=".\Desktop\Wpf\AppWindow.cs" />
+    <Compile Include=".\Desktop\Wpf\AttachedProperties.cs" />
+    <Compile Include=".\Desktop\Wpf\BaseApp.cs" />
+    <Compile Include=".\Desktop\Wpf\DataTemplateKeyConverter.cs" />
+    <Compile Include=".\Desktop\Wpf\GetTypeConverter.cs" />
+    <Compile Include=".\Desktop\Wpf\GlobalSuppressions.cs" />
+    <Compile Include=".\Desktop\Wpf\LifetimeScopeExtension.cs" />
+    <Compile Include=".\Desktop\Wpf\ResolveExtension.cs" />
+    <Compile Include=".\Desktop\Wpf\ResourceInfo.cs" />
+    <Compile Include=".\Desktop\Wpf\ResourcesUtil.cs" />
+    <Compile Include=".\Desktop\Wpf\XamlXmlDocumentConverter.cs" />
+    <Compile Include=".\Desktop\Wpf\XmlViewer.xaml.cs">
+      <DependentUpon>XmlViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include=".\KayMcCormick.Dev\AppBuildModule.cs" />
+    <Compile Include=".\KayMcCormick.Dev\AppBuild\ILoggerTracker.cs" />
+    <Compile Include=".\KayMcCormick.Dev\AppInfoService.cs" />
+    <Compile Include=".\KayMcCormick.Dev\AppInfraException.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Application.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ApplicationInstance.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ApplicationInstanceException.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ApplicationInstanceHost.cs" />
+    <Compile Include=".\KayMcCormick.Dev\AppStartupEventArgs.cs" />
+    <Compile Include=".\KayMcCormick.Dev\AttributeNotFoundException.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Attributes\ClearLoggingRulesAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Attributes\ConfigTargetAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Attributes\ContextStackInstanceAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Attributes\InfoContextFactoryAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ComponentInfo.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Configuration.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ContainerHelperSection.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ContainerHelperSettings.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ContextStack.cs" />
+    <Compile Include=".\KayMcCormick.Dev\DataBindingTraceFilter\WpfBindingFIlter.cs" />
+    <Compile Include=".\KayMcCormick.Dev\DebugUtils.cs" />
+    <Compile Include=".\KayMcCormick.Dev\DefaultObjectIdProvider.cs" />
+    <Compile Include=".\KayMcCormick.Dev\DuplicateKeyException.cs" />
+    <Compile Include=".\KayMcCormick.Dev\EventTimeConverter.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ExecutionContextImpl.cs" />
+    <Compile Include=".\KayMcCormick.Dev\ExitCode.cs" />
+    <Compile Include=".\KayMcCormick.Dev\FunctionalArea.cs" />
+    <Compile Include=".\KayMcCormick.Dev\GlobalSuppressions.cs" />
+    <Compile Include=".\KayMcCormick.Dev\IdGeneratorModule.cs" />
+    <Compile Include=".\KayMcCormick.Dev\IHaveLogger.cs" />
+    <Compile Include=".\KayMcCormick.Dev\InfoContext.cs" />
+    <Compile Include=".\KayMcCormick.Dev\InfraModule.cs" />
+    <Compile Include=".\KayMcCormick.Dev\InstanceInfo.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Interfaces\CentralService.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Interfaces\ICentralService.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Interfaces\IHaveObjectId.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Interfaces\IObjectIdProvider.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Interfaces\RegisterApplicationInstanceResponse.cs" />
+    <Compile Include=".\KayMcCormick.Dev\IViewModel.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LogEventInstance.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LoggerEventArgs.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LoggerSettings.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LoggerTracker.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LoggingInterceptor.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LoggingRuleAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LoggingSection.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\AppLoggingConfiguration.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\CodeConfiguration.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\ExecutionContext.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\GlobalSuppressions.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\IConfigSource.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\ILogEntrySpecification.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\ILoggingConfiguration.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\LogDelegates.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\LogEventInfoConverter.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\LogFactoryInterceptor.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\LoggerFactoryHook.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\LoggerInterceptor.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\LoggerProxyHelper.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\MyJsonLayout.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\MyLogFactory.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\MyLogger.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Logging\RegConfigSource.cs" />
+    <Compile Include=".\KayMcCormick.Dev\LogLevelConverter.cs" />
+    <Compile Include=".\KayMcCormick.Dev\MyCacheTarget.cs" />
+    <Compile Include=".\KayMcCormick.Dev\MyCacheTarget2.cs" />
+    <Compile Include=".\KayMcCormick.Dev\PushContextAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\BeforeAfterLoggerAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\FixtureLogger.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\Fixtures\GlobalLoggingFixture.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\Fixtures\LoggingFixture.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\Lifecycle.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\Logging\XunitSinkTarget.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\Logging\XunitTarget.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\LogHelper.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\LogTestMethodAttribute.cs" />
+    <Compile Include=".\KayMcCormick.Dev\TestLib\TestMethodLifecycle.cs" />
+    <Compile Include=".\KayMcCormick.Dev\UnableToRegisterObjectIdException.cs" />
+    <Compile Include=".\KayMcCormick.Dev\Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include=".\Desktop\Analysis\ProjLib\LibResources.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include=".\KayMcCormick.Dev\Logging\ClassDiagram1.cd" />
+    <None Include=".\KayMcCormick.Dev\WCF.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include=".\Desktop\Analysis\AnalysisControls\Themes\DataDesignersUI_2400.ico" />
+    <Resource Include=".\Desktop\Analysis\AnalysisControls\Themes\DataDesignersUI_2405.ico" />
+    <Resource Include=".\Desktop\Analysis\AnalysisControls\Themes\RecordSetDest_201.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac">
+      <Version>5.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection">
+      <Version>6.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Autofac.Extras.AttributeMetadata">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Autofac.Extras.DynamicProxy">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Buildalyzer.Workspaces">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="DynamicData">
+      <Version>6.14.8</Version>
+    </PackageReference>
+    <PackageReference Include="JetBrains.Annotations">
+      <Version>2019.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="MessageTemplates">
+      <Version>1.0.0-rc-00275</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+      <Version>3.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <Version>3.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.6.8</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>4.7.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Dataflow">
+      <Version>4.11.0</Version>
+    </PackageReference>
+    <PackageReference Include="Xceed.Products.Wpf.Toolkit.AvalonDock">
+      <Version>4.0.20076.12200</Version>
+    </PackageReference>
+    <PackageReference Include="xunit">
+      <Version>2.4.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".\Desktop\Analysis\AnalysisFramework\Connected Services\" />
+    <Folder Include=".\KayMcCormick.Dev\Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -33,5 +33,11 @@
       <DependentUpon>DependencyValidation1.layerdiagram</DependentUpon>
     </Validate>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Desktop\Analysis\AnalysisFramework\AnalysisFramework.csproj">
+      <Name>AnalysisFramework</Name>
+      <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

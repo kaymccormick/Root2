@@ -1,7 +1,9 @@
 /* test 123 */
 
-#if NETFRAMEWORK
-using Castle.DynamicProxy ;
+#if ENABLE_PROXYLOG
+using Castle.DynamicProxy;
+#endif
+#if ENABLE_WCF_TARGET
 using System.ServiceModel.Discovery ;
 #endif
 using JetBrains.Annotations ;
@@ -10,16 +12,16 @@ using NLog.Common ;
 using NLog.Config ;
 using NLog.Layouts ;
 using NLog.Targets ;
-using NLog.Targets.Wrappers ;
 using System ; /* test 123 */
 /* test 123 */
 using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
 /* test 123 */
 using System.Diagnostics ;
 using System.Diagnostics.CodeAnalysis ;
 using System.IO ;
 using System.Linq ;
+using System.Net ;
+using System.Net.Sockets ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
@@ -28,14 +30,16 @@ using System.Text ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
-#if NETFRAMEWORK
+using NLog.Internal.Fakeables ;
+using NLog.LayoutRenderers ;
+#if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
 #endif
 using JsonAttribute = NLog.Layouts.JsonAttribute ;
 
 namespace KayMcCormick.Dev.Logging
 {
-#if NETFRAMEWORK
+#if NETFRAMEWORK && ENABLE_WCF_TARGET
     internal class Client
     {
         public static EndpointAddress serviceAddress ;
@@ -86,6 +90,9 @@ namespace KayMcCormick.Dev.Logging
         private const string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
         private const string PublicFacingHostAddress     = "xx1.mynetgear.com:" ;
         private static int _nLogViewerPort = 9995;
+        private const int    DefaultProtoLogUdpPort      = 4445 ;
+        private const string EnvVarName_MINLOGLEVEL      = "MINLOGLEVEL" ;
+        private const string DefaultEventLogTargetName   = "eventLogTarget" ;
 
         // ReSharper disable once InconsistentNaming
         [ SuppressMessage ( "Microsoft.Performance" , "CA1823:AvoidUnusedPrivateFields" ) ]
@@ -104,6 +111,49 @@ namespace KayMcCormick.Dev.Logging
         private static LogDelegates.LogMethod _oldLogMethod ;
         private static Dictionary < LogLevel , List < Target > > _dict ;
         private static bool _loggingConfigured ;
+        private static          LogLevel       _minLogLevel ;
+        private static          ChainsawTarget _chainsawTarget ;
+        private static readonly int            _protoLogPort      = DefaultProtoLogUdpPort ;
+        private static readonly IPAddress      _protoLogIpAddress = IPAddress.Broadcast ;
+
+        private static readonly IPEndPoint _ipEndPoint =
+            new IPEndPoint ( _protoLogIpAddress , _protoLogPort ) ;
+
+        private static readonly UdpClient _udpClient = CreateUdpClient ( ) ;
+
+        private static UdpClient CreateUdpClient ( )
+        {
+            return new UdpClient
+                   {
+                       EnableBroadcast = true
+                     , Client =
+                           new Socket (
+                                       SocketType.Dgram
+                                     , ProtocolType.Udp
+                                      )
+                           {
+                               EnableBroadcast = true
+                             , DualMode        = true
+                           }
+                   } ;
+        }
+
+        private static readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer =
+            new MyLog4JXmlEventLayoutRenderer ( ) ;
+
+        private static readonly Layout _xmlEventLayout =
+            new MyLayout ( _xmlEventLayoutRenderer ) ;
+
+        private static readonly LogDelegates.LogMethod  _protoLogDelegate = ProtoLogMessage ;
+        private static readonly ProtoLogger             _protoLogger      = new ProtoLogger ( ) ;
+        private static readonly Action < LogEventInfo > _protoLogAction   = _protoLogger.LogAction ;
+
+#if ENABLE_WCF_TARGET
+        /// <summary>
+        /// 
+        /// </summary>
+        public static LogReceiverWebServiceTarget ServiceTarget { get; private set; }
+#endif
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
@@ -136,6 +186,7 @@ namespace KayMcCormick.Dev.Logging
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
+        [ SuppressMessage ( "ReSharper" , "UnusedParameter.Global" ) ]
         internal static LogFactory ConfigureLogging (
             LogDelegates.LogMethod logMethod
           , bool                   proxyLogging = false
@@ -146,6 +197,8 @@ namespace KayMcCormick.Dev.Logging
             {
                 config1 = AppLoggingConfiguration.Default ;
             }
+
+            ApplyConfiguration ( config1 ) ;
 
             InternalLogging ( ) ;
 
@@ -189,8 +242,15 @@ namespace KayMcCormick.Dev.Logging
 #if ENABLE_PROXYLOG
             return PerformConfiguration(logMethod, proxyLogging, proxiedFactory);
 #else
-            return PerformConfiguration ( logMethod , false , null , config1) ;
+            return PerformConfiguration ( logMethod , false , null , config1 ) ;
 #endif
+        }
+
+        [ SuppressMessage ( "ReSharper" , "UnusedParameter.Local" ) ]
+        private static void ApplyConfiguration ( ILoggingConfiguration config1 )
+        {
+            _eventLogTargetName = DefaultEventLogTargetName ;
+            _consoleTargetName  = "consoleTarget" ;
         }
 
         private static LogFactory PerformConfiguration (
@@ -207,16 +267,54 @@ namespace KayMcCormick.Dev.Logging
                                                             level => level
                                                           , level => new List < Target > ( )
                                                            ) ;
-            var minLevel = config1.MinLogLevel ?? LogLevel.Trace;
-            if ( ! _dict.ContainsKey ( minLevel ) )
+            logMethod (
+                       $"Log Levels\tName\tOrdinal:\n{string.Join ( ",\n" , dict.Keys.Select ( level => $"\t\t{level.Name}\t({level.Ordinal})" ) )}"
+                      ) ;
+            _minLogLevel = config1.MinLogLevel ;
+
+            var envVarName = EnvVarName_MINLOGLEVEL ;
+            var env = Environment.GetEnvironmentVariable ( envVarName ) ;
+            if ( env != null )
             {
-                throw new LogConfigurationException (
-                                                     $"dict does not contain key{config1.MinLogLevel}"
-                                                    ) ;
+                logMethod (
+                           $"Detected environment variable {envVarName} with value {env}. Attempting to set minimum log level."
+                          ) ;
+                LogLevel level = null ;
+                try
+                {
+                    level = env.Any ( c => ! char.IsDigit ( c ) )
+                                ? LogLevel.FromString ( env )
+                                : LogLevel.FromOrdinal ( int.Parse ( env ) ) ;
+                }
+                catch ( ArgumentException ex )
+                {
+                    logMethod ( $"Unable to determine specified log level: {ex.Message}" ) ;
+                }
+
+                if ( level != null )
+                {
+                    logMethod (
+                               $"Setting minimum log level from environment variable {envVarName} to {level}"
+                              ) ;
+                    _minLogLevel = level ;
+                }
             }
-            var t = _dict[minLevel];
-            var errorTargets = minLevel <= LogLevel.Error ? _dict[LogLevel.Error] : null ;
-            
+
+            if ( _minLogLevel != null )
+            {
+                logMethod (
+                           $"Using supplied minimum log level of {_minLogLevel} from application configuration or environment variable source."
+                          ) ;
+                if ( _minLogLevel == LogLevel.Off )
+                {
+                    logMethod ( "Supplied value will suppress logging." ) ;
+                }
+            }
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var t = dict[ _minLogLevel ] ;
+            var errorTargets = _minLogLevel <= LogLevel.Error ? dict[ LogLevel.Error ] : null ;
+
             var disabledLogTargets =
                 Environment.GetEnvironmentVariable ( DisableLogTargetsEnvVarName ) ;
             HashSet < string > disabled ;
@@ -231,9 +329,10 @@ namespace KayMcCormick.Dev.Logging
                 disabled = new HashSet < string > ( ) ;
             }
 
-            if ( config1.IsEnabledEventLogTarget.GetValueOrDefault()) {
+            if ( config1.IsEnabledEventLogTarget.GetValueOrDefault ( ) )
+            {
                 var x = EventLogTarget ( EventLogTargetName ) ;
-                errorTargets.Add ( x ) ;
+                errorTargets?.Add ( x ) ;
             }
 
 #if ENABLE_WCF_TARGET
@@ -255,11 +354,11 @@ namespace KayMcCormick.Dev.Logging
             {
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
                                     EndpointAddress = receiverAddress.ToString ( )
-                          , ClientId = new SimpleLayout ( "${processName}" )
-                          , EndpointConfigurationName =
+          , ClientId = new SimpleLayout ( "${processName}" )
+          , EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
-                          , IncludeEventProperties = true
-                               ,
+          , IncludeEventProperties = true
+                       ,
                                 } ;
             }
                 
@@ -270,7 +369,9 @@ namespace KayMcCormick.Dev.Logging
 #endif
 
 
-            if ( config1.IsEnabledConsoleTarget.HasValue && config1.IsEnabledConsoleTarget.Value && !disabled.Contains(ConsoleTargetName))
+            if ( config1.IsEnabledConsoleTarget.HasValue
+                 && config1.IsEnabledConsoleTarget.Value
+                 && ! disabled.Contains ( ConsoleTargetName ) )
             {
                 var consoleTarget = new ConsoleTarget ( ConsoleTargetName )
                                     {
@@ -282,8 +383,15 @@ namespace KayMcCormick.Dev.Logging
             }
 
 
+            var xmlTarget = new FileTarget ( "xmlFile" )
+                            {
+                                FileName = new SimpleLayout ( @"c:\data\logs\xmllog.log" )
+                              , Layout   = _xmlEventLayout
+                            } ;
+            t.Add ( xmlTarget ) ;
+
             #region Cache Target
-            if ( config1.IsEnabledCacheTarget.GetValueOrDefault() )
+            if ( config1.IsEnabledCacheTarget.GetValueOrDefault ( ) )
             {
                 _cacheTarget = new MyCacheTarget ( ) ;
                 _dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
@@ -296,35 +404,32 @@ namespace KayMcCormick.Dev.Logging
             t.Add ( viewer ) ;
             #endregion
             #region Debugger Target
-            if ( config1.IsEnabledDebuggerTarget.GetValueOrDefault() && !disabled.Contains(config1.DebuggerTargetName))
+            if ( config1.IsEnabledDebuggerTarget.GetValueOrDefault ( )
+                 && ! disabled.Contains ( config1.DebuggerTargetName ) )
             {
                 var debuggerTarget =
-                new DebuggerTarget(config1.DebuggerTargetName) { Layout = new SimpleLayout("${message}") };
-                t.Add(debuggerTarget);
+                    new DebuggerTarget ( config1.DebuggerTargetName )
+                    {
+                        Layout = new SimpleLayout ( "${message}" )
+                    } ;
+                t.Add ( debuggerTarget ) ;
             }
             #endregion
             #region Chainsaw Target
-
-            if ( config1.ChainsawPort.HasValue )
-            {
-                _chainsawPort = config1.ChainsawPort.Value ;
-            }
-
-            var chainsawTarget = new ChainsawTarget ( ) ;
-            var PublicHostAddress = PublicFacingHostAddress ;
-            SetupNetworkTarget ( chainsawTarget , $"udp://{PublicHostAddress}{_chainsawPort}" ) ;
+            _chainsawTarget = CreateChainsawTarget ( ) ;
+            var chainsawTarget = _chainsawTarget ;
             t.Add ( chainsawTarget ) ;
             #endregion
             t.Add ( MyFileTarget ( ) ) ;
-                var jsonFileTarget = JsonFileTarget ( ) ;
-                _dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
+            var jsonFileTarget = JsonFileTarget ( ) ;
+            dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
 
             var byType = new Dictionary < Type , int > ( ) ;
             var keys = _dict.Keys.ToList ( ) ;
             foreach ( var k in keys )
             {
-                var v = _dict[ k ] ;
-                _dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
+                var v = dict[ k ].Where ( target => target != null ) ;
+                dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
                              .ToList ( ) ;
             }
 
@@ -340,13 +445,23 @@ namespace KayMcCormick.Dev.Logging
                     target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
 
+                logMethod (
+                           $"Adding log target {target.Name} of type {target.GetType ( ).AssemblyQualifiedName}"
+                          ) ;
                 lConf.AddTarget ( target ) ;
             }
 
-            foreach ( var result in _dict.Select (pair =>  LoggingRule(pair, minLevel, config1) ) )
+            foreach ( var result in dict.Select (
+                                                 pair => LoggingRule (
+                                                                      pair
+                                                                    , _minLogLevel
+                                                                    , config1
+                                                                     )
+                                                ) )
             {
                 foreach ( var loggingRule in result )
                 {
+                    logMethod ( $"Adding loging rule {loggingRule}" ) ;
                     lConf.LoggingRules.Add ( loggingRule ) ;
                 }
 
@@ -359,42 +474,48 @@ namespace KayMcCormick.Dev.Logging
             return useFactory ;
         }
 
-        private static IEnumerable<LoggingRule> LoggingRule (
+        private static ChainsawTarget CreateChainsawTarget ( )
+        {
+            var chainsawTarget = new ChainsawTarget ( ) { Layout = _xmlEventLayout };
+            var PublicHostAddress = PublicFacingHostAddress ;
+            SetupNetworkTarget ( chainsawTarget , $"udp://{PublicHostAddress}4445" ) ;
+            return chainsawTarget ;
+        }
+
+        [ SuppressMessage (
+                              "Style"
+                            , "IDE0060:Remove unused parameter"
+                            , Justification = "<Pending>"
+                          ) ]
+        [ SuppressMessage ( "ReSharper" , "UnusedParameter.Local" ) ]
+        private static IEnumerable < LoggingRule > LoggingRule (
             KeyValuePair < LogLevel , List < Target > > pair
           , LogLevel                                    config1MinLogLevel
           , ILoggingConfiguration                       config1
         )
         {
-
-            return pair.Value.Select(target => new LoggingRule("*", config1MinLogLevel <= pair.Key ? pair.Key : config1MinLogLevel, target));
+            return pair.Value.Select (
+                                      target => new LoggingRule (
+                                                                 "*"
+                                                               , config1MinLogLevel <= pair.Key
+                                                                     ? pair.Key
+                                                                     : config1MinLogLevel
+                                                               , target
+                                                                )
+                                     ) ;
         }
 
-        /// <summary>Gets or sets the name of the console target.</summary>
-        /// <value>The name of the console target.</value>
-        /// <autogeneratedoc />
-        /// TODO Edit XML Comment Template for ConsoleTargetName
-        public static string ConsoleTargetName { get { return _consoleTargetName ; } set { _consoleTargetName = value ; } }
+        public static string ConsoleTargetName => _consoleTargetName ;
 
-        /// <summary>Gets or sets the name of the event log target.</summary>
-        /// <value>The name of the event log target.</value>
-        /// <autogeneratedoc />
-        /// TODO Edit XML Comment Template for EventLogTargetName
-        public static string EventLogTargetName { get => _eventLogTargetName ; set { _eventLogTargetName = value ; } }
+        public static string EventLogTargetName => _eventLogTargetName ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static Target ServiceTarget { get { return _serviceTarget ; } set { _serviceTarget = value ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public static MyCacheTarget2 CacheTarget2 => _cacheTarget2 ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static MyCacheTarget CacheTarget => _cacheTarget ;
+        public static UdpClient UdpClient => _udpClient ;
+
+        public static IPEndPoint IpEndPoint => _ipEndPoint ;
+
+        public static Layout XmlEventLayout => _xmlEventLayout ;
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {
@@ -402,6 +523,8 @@ namespace KayMcCormick.Dev.Logging
             return x ;
         }
 
+        // TODO never used??
+        [ SuppressMessage ( "ReSharper" , "UnusedMember.Local" ) ]
         private static IEnumerable < LoggingRule > LoggingRule (
             KeyValuePair < LogLevel , List < Target > > arg
         )
@@ -504,7 +627,7 @@ namespace KayMcCormick.Dev.Logging
         }
 
         /// <summary>Ensures the logging configured.</summary>
-        /// <param name="logMethod">The log method.</param>
+        /// <param name="slogMethod"></param>
         /// <param name="config1"></param>
         /// <param name="callerFilePath">The caller file path.</param>
         /// <exception cref="Exception">no config loaded field found</exception>
@@ -517,11 +640,13 @@ namespace KayMcCormick.Dev.Logging
                           ) ]
         [ SuppressMessage ( "ReSharper" , "UnusedParameter.Global" ) ]
         public static ILogger EnsureLoggingConfigured (
-            LogDelegates.LogMethod    logMethod      = null
+            LogDelegates.LogMethod    slogMethod     = null
           , ILoggingConfiguration     config1        = null
           , [ CallerFilePath ] string callerFilePath = null
         )
         {
+            var logMethod =
+                slogMethod != null ? slogMethod + _protoLogDelegate : _protoLogDelegate ;
             if ( ! _numTimesConfigured.HasValue )
             {
                 _numTimesConfigured = 1 ;
@@ -610,6 +735,17 @@ namespace KayMcCormick.Dev.Logging
 
             DumpPossibleConfig ( LogManager.Configuration ) ;
             return _factory.GetLogger ( "DefaultLogger" ) ;
+        }
+
+        private static void ProtoLogMessage ( string message )
+        {
+            _protoLogAction (
+                             LogEventInfo.Create (
+                                                  LogLevel.Warn
+                                                , typeof ( AppLoggingConfigHelper ).FullName
+                                                , message
+                                                 )
+                            ) ;
         }
 
         /// <summary>
@@ -885,6 +1021,91 @@ namespace KayMcCormick.Dev.Logging
         protected LogConfigurationException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
         {
         }
+    }
+
+    internal class MyLog4JXmlEventLayoutRenderer : Log4JXmlEventLayoutRenderer
+    {
+        public MyLog4JXmlEventLayoutRenderer ( ) { SetupXmlEventLayoutRenderer ( this ) ; }
+
+        public MyLog4JXmlEventLayoutRenderer ( IAppDomain appDomain ) : base ( appDomain )
+        {
+            SetupXmlEventLayoutRenderer ( this ) ;
+        }
+
+        public static void SetupXmlEventLayoutRenderer ( Log4JXmlEventLayoutRenderer x )
+        {
+            x.IncludeAllProperties = true ;
+            x.IncludeCallSite      = true ;
+            x.IncludeMdlc          = true ;
+            x.IncludeSourceInfo    = true ;
+            x.IncludeNLogData      = true ;
+            x.IncludeNdlc          = true ;
+            x.IndentXml            = true ;
+        }
+    }
+
+    internal class ProtoLogger
+    {
+        private readonly Func < LogEventInfo , byte[] > _getBytes ;
+        private readonly UdpClient                      _udpClient ;
+        private readonly IPEndPoint                     _ipEndPoint ;
+        private readonly Layout                         _layout ;
+
+        public ProtoLogger ( )
+        {
+            _udpClient  = AppLoggingConfigHelper.UdpClient ;
+            _ipEndPoint = AppLoggingConfigHelper.IpEndPoint ;
+            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
+            _getBytes   = DefaultGetBytes ;
+        }
+
+        private byte[] DefaultGetBytes ( LogEventInfo arg )
+        {
+            var encoding = Encoding.UTF8 ;
+            return encoding.GetBytes ( _layout.Render ( arg ) ) ;
+        }
+
+        [ SuppressMessage ( "ReSharper" , "UnusedMember.Global" ) ]
+        public ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
+        {
+            _udpClient  = udpClient ;
+            _ipEndPoint = ipEndPoint ;
+            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
+            _getBytes   = DefaultGetBytes ;
+        }
+
+        public void LogAction ( LogEventInfo info )
+        {
+            var bytes = _getBytes ( info ) ;
+            var nBytes = bytes.Length ;
+            _udpClient.Send ( bytes , nBytes , _ipEndPoint ) ;
+        }
+
+        private class MyChainsawTarget : ChainsawTarget
+        {
+            protected override void InitializeTarget ( )
+            {
+                Console.WriteLine ( $"Initializing target {nameof ( MyChainsawTarget )}" ) ;
+                Debug.WriteLine ( $"Initializing target {nameof ( MyChainsawTarget )}" ) ;
+                base.InitializeTarget ( ) ;
+            }
+
+            public MyChainsawTarget ( ) { }
+
+            public MyChainsawTarget ( string name ) : base ( name ) { }
+        }
+    }
+
+    internal class MyLayout : Layout
+    {
+        private readonly LayoutRenderer _layoutRenderer ;
+        public MyLayout ( LayoutRenderer layoutRenderer ) { _layoutRenderer = layoutRenderer ; }
+        #region Overrides of Layout
+        protected override string GetFormattedMessage ( LogEventInfo logEvent )
+        {
+            return _layoutRenderer.Render ( logEvent ) ;
+        }
+        #endregion
     }
 
     /// <summary>

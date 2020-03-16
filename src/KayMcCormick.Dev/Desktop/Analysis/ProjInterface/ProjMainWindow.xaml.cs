@@ -32,11 +32,13 @@ using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
+using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;
 using Task = System.Threading.Tasks.Task ;
+using KayMcCormick.Dev.Logging;
 
 namespace ProjInterface
 {
@@ -221,7 +223,7 @@ namespace ProjInterface
             }
             else
             {
-                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
+                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
                                                                                    path
