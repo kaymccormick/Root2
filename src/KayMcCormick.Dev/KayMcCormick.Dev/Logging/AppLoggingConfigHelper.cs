@@ -105,7 +105,7 @@ namespace KayMcCormick.Dev.Logging
         private static string _eventLogTargetName ;
         private static string _consoleTargetName ;
         private static Target _serviceTarget ;
-        private static int _chainsawPort = 4445 ;
+        private static int _chainsawPort = 4446 ;
         private static MyCacheTarget _cacheTarget ;
         private static MyCacheTarget2 _cacheTarget2 ;
         private static LogDelegates.LogMethod _oldLogMethod ;
@@ -147,6 +147,8 @@ namespace KayMcCormick.Dev.Logging
         private static readonly LogDelegates.LogMethod  _protoLogDelegate = ProtoLogMessage ;
         private static readonly ProtoLogger             _protoLogger      = new ProtoLogger ( ) ;
         private static readonly Action < LogEventInfo > _protoLogAction   = _protoLogger.LogAction ;
+        //private static string _chainsawHost = PublicFacingHostAddress;
+        private static string _chainsawHost = "10.25.0.102" ;
 
 
         /// <summary>
@@ -308,6 +310,11 @@ namespace KayMcCormick.Dev.Logging
                 {
                     logMethod ( "Supplied value will suppress logging." ) ;
                 }
+            }
+
+            if(_minLogLevel == null)
+            {
+                _minLogLevel = LogLevel.Trace;
             }
 
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -476,8 +483,8 @@ namespace KayMcCormick.Dev.Logging
         private static ChainsawTarget CreateChainsawTarget ( )
         {
             var chainsawTarget = new ChainsawTarget ( ) { Layout = _xmlEventLayout };
-            var PublicHostAddress = PublicFacingHostAddress ;
-            SetupNetworkTarget ( chainsawTarget , $"udp://{PublicHostAddress}4445" ) ;
+            var s = _chainsawPort.ToString ( ) ;
+            SetupNetworkTarget ( chainsawTarget , $"udp://{_chainsawHost}:{s}" ) ;
             return chainsawTarget ;
         }
 
@@ -515,6 +522,8 @@ namespace KayMcCormick.Dev.Logging
         public static IPEndPoint IpEndPoint => _ipEndPoint ;
 
         public static Layout XmlEventLayout => _xmlEventLayout ;
+
+        public static LogDelegates.LogMethod ProtoLogDelegate => _protoLogDelegate ;
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {

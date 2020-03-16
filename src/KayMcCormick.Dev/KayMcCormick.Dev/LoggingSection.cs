@@ -32,5 +32,7 @@ namespace KayMcCormick.Dev
                 this[ nameof ( MinLogLevel ) ] = level ;
             }
         }
+
+        [ConfigurationProperty("")]
     }
 }
