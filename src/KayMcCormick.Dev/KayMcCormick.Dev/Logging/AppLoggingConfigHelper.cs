@@ -148,12 +148,11 @@ namespace KayMcCormick.Dev.Logging
         private static readonly ProtoLogger             _protoLogger      = new ProtoLogger ( ) ;
         private static readonly Action < LogEventInfo > _protoLogAction   = _protoLogger.LogAction ;
 
-#if ENABLE_WCF_TARGET
+
         /// <summary>
         /// 
         /// </summary>
-        public static LogReceiverWebServiceTarget ServiceTarget { get; private set; }
-#endif
+        public static Target ServiceTarget { get; private set; }
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
@@ -268,7 +267,7 @@ namespace KayMcCormick.Dev.Logging
                                                           , level => new List < Target > ( )
                                                            ) ;
             logMethod (
-                       $"Log Levels\tName\tOrdinal:\n{string.Join ( ",\n" , dict.Keys.Select ( level => $"\t\t{level.Name}\t({level.Ordinal})" ) )}"
+                       $"Log Levels\tName\tOrdinal:\n{string.Join ( ",\n" , _dict.Keys.Select ( level => $"\t\t{level.Name}\t({level.Ordinal})" ) )}"
                       ) ;
             _minLogLevel = config1.MinLogLevel ;
 
@@ -312,8 +311,8 @@ namespace KayMcCormick.Dev.Logging
             }
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            var t = dict[ _minLogLevel ] ;
-            var errorTargets = _minLogLevel <= LogLevel.Error ? dict[ LogLevel.Error ] : null ;
+            var t = _dict[ _minLogLevel ] ;
+            var errorTargets = _minLogLevel <= LogLevel.Error ? _dict[ LogLevel.Error ] : null ;
 
             var disabledLogTargets =
                 Environment.GetEnvironmentVariable ( DisableLogTargetsEnvVarName ) ;
@@ -365,7 +364,7 @@ namespace KayMcCormick.Dev.Logging
             // var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
-            dict[LogLevel.Debug].Add(ServiceTarget);
+            _dict[LogLevel.Debug].Add(ServiceTarget);
 #endif
 
 
@@ -422,14 +421,14 @@ namespace KayMcCormick.Dev.Logging
             #endregion
             t.Add ( MyFileTarget ( ) ) ;
             var jsonFileTarget = JsonFileTarget ( ) ;
-            dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
+            _dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
 
             var byType = new Dictionary < Type , int > ( ) ;
             var keys = _dict.Keys.ToList ( ) ;
             foreach ( var k in keys )
             {
-                var v = dict[ k ].Where ( target => target != null ) ;
-                dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
+                var v = _dict[ k ].Where ( target => target != null ) ;
+                _dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
                              .ToList ( ) ;
             }
 
@@ -451,7 +450,7 @@ namespace KayMcCormick.Dev.Logging
                 lConf.AddTarget ( target ) ;
             }
 
-            foreach ( var result in dict.Select (
+            foreach ( var result in _dict.Select (
                                                  pair => LoggingRule (
                                                                       pair
                                                                     , _minLogLevel

@@ -25,6 +25,7 @@ using Common.Logging ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.ServiceImpl ;
 using LeafHVA1 ;
 using NLog ;
 using NLog.Fluent ;

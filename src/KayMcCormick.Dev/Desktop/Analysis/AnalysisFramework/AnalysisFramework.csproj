@@ -86,7 +86,7 @@
     <Compile Include="ICodeSource.cs" />
     <Compile Include="ISemanticModelContext.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
-    <Compile Include="LogUsage\Interfaces\ILogInvocation.cs" />
+    <Compile Include="Interfaces\ILogInvocation.cs" />
     <Compile Include="LogUsage\Interfaces\ILogInvocationArgument.cs" />
     <Compile Include="LogUsage\LogInvocation2.cs" />
     <Compile Include="LogUsage\InvocationParams.cs" />
