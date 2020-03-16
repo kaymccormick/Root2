@@ -45,6 +45,7 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    [TitleMetadata("Main window")]
     public partial class ProjMainWindow : AppWindow
       , IView < IWorkspacesViewModel >
       , IView1

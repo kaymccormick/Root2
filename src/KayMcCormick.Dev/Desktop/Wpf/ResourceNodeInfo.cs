@@ -13,7 +13,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Text.Json.Serialization ;
 
-namespace WpfApp
+namespace KayMcCormick.Lib.Wpf
 {
     public class ResourceNodeInfo
     {

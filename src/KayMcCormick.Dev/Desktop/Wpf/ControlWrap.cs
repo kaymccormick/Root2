@@ -11,9 +11,9 @@
 #endregion
 using System.Windows ;
 
-namespace WpfApp
+namespace KayMcCormick.Lib.Wpf
 {
-    internal class ControlWrap<T> where T : FrameworkElement
+    public class ControlWrap<T> where T : FrameworkElement
     {
         public T Control { get ; }
         public ControlWrap ( T c ) { Control = c ; }

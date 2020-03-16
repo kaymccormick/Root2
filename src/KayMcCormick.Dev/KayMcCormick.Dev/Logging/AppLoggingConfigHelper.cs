@@ -144,6 +144,7 @@ namespace KayMcCormick.Dev.Logging
         private static readonly Layout _xmlEventLayout =
             new MyLayout ( _xmlEventLayoutRenderer ) ;
 
+        private static NetworkTarget jsonNetworkTarget ;
         private static readonly LogDelegates.LogMethod  _protoLogDelegate = ProtoLogMessage ;
         private static readonly ProtoLogger             _protoLogger      = new ProtoLogger ( ) ;
         private static readonly Action < LogEventInfo > _protoLogAction   = _protoLogger.LogAction ;
@@ -241,7 +242,7 @@ namespace KayMcCormick.Dev.Logging
             }
 
 #if ENABLE_PROXYLOG
-            return PerformConfiguration(logMethod, proxyLogging, proxiedFactory);
+            return PerformConfiguration(logMethod, proxyLogging, proxiedFactory, config1);
 #else
             return PerformConfiguration ( logMethod , false , null , config1 ) ;
 #endif
@@ -388,6 +389,12 @@ namespace KayMcCormick.Dev.Logging
                 _dict[ LogLevel.Warn ].Add ( consoleTarget ) ;
             }
 
+            jsonNetworkTarget = new NetworkTarget ( "jsonNetworkTarget" )
+                                {
+                                    Address = "udp://10.25.0.102:4477"
+                                  , Layout  = new MyJsonLayout ( )
+                                } ;
+            t.Add ( jsonNetworkTarget ) ;
 
             var xmlTarget = new FileTarget ( "xmlFile" )
                             {
@@ -736,7 +743,7 @@ namespace KayMcCormick.Dev.Logging
 
                 if ( doConfig )
                 {
-                    var factory = ConfigureLogging ( logMethod , false , config1 ) ;
+                    var factory = ConfigureLogging ( logMethod , true , config1 ) ;
                     _factory = factory ;
                 }
             }

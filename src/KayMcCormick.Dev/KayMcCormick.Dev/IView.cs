@@ -1,4 +1,4 @@
-﻿namespace ProjLib.Interfaces
+﻿namespace KayMcCormick.Dev
 {
     public interface IView < out T >
     {

@@ -10,6 +10,7 @@ using System.Configuration ;
 using System.Diagnostics ;
 using System.Linq;
 using System.Reflection ;
+using Autofac.Extras.AttributeMetadata ;
 using KayMcCormick.Dev.Attributes ;
 using Microsoft.Extensions.DependencyInjection ;
 
@@ -115,6 +116,7 @@ namespace KayMcCormick.Dev
         private IContainer BuildContainer()
         {
             var builder1 = new ContainerBuilder();
+            builder1.RegisterModule < AttributedMetadataModule > ( ) ;
             foreach (var module in _modules)
             {
                 _logger.Debug("Registering module {module}", module.ToString());

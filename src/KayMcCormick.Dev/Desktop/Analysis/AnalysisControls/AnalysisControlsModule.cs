@@ -21,7 +21,7 @@ using ProjLib.Interfaces ;
 namespace AnalysisControls
 {
     // made internal 3/11
-    internal class AnalysisControlsModule : Module
+    public class AnalysisControlsModule : Module
     {
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )

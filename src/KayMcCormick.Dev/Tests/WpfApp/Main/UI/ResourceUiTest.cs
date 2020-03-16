@@ -17,6 +17,7 @@ using System.Windows.Automation ;
 using System.Windows.Markup ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
+using KayMcCormick.Lib.Wpf ;
 using NLog ;
 using Tests.Lib.Utils ;
 using WpfApp ;

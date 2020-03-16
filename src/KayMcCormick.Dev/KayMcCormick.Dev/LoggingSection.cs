@@ -33,6 +33,6 @@ namespace KayMcCormick.Dev
             }
         }
 
-        [ConfigurationProperty("")]
+    
     }
 }

@@ -6,6 +6,8 @@ using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
+using AnalysisControls ;
+using AnalysisControls.Interfaces ;
 using AnalysisFramework.SyntaxTransform ;
 using Autofac ;
 using Autofac.Core ;
@@ -133,7 +135,7 @@ private Type[] _optionTypes ;
             }
 #endif
 
-            var windowType = typeof ( ProjMainWindow ) ;
+            var windowType = typeof ( Window1 ) ;
             try
             {
                 var mainWindow = ( Window ) lifetimeScope.Resolve ( windowType ) ;

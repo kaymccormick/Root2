@@ -36,7 +36,7 @@
     </Grid.RowDefinitions>
     <TabControl Visibility="Visible" Grid.Column="0" Grid.Row="0" Style="{StaticResource TabControlStyle1}">
       <TabItem Header="Resources" HorizontalAlignment="Right">
-        <controls:AllResourcesTree/>
+        <wpf:AllResourcesTree/>
       </TabItem>
       <TabItem Header="ResolveServiceList">
         <Grid>

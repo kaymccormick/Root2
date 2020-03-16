@@ -98,16 +98,12 @@
     <Compile Include="Application\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AllResourcesTree.xaml.cs">
-      <DependentUpon>AllResourcesTree.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\AllResources.xaml.cs">
       <DependentUpon>AllResources.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TypeControl3.xaml.cs">
       <DependentUpon>TypeControl3.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ControlWrap.cs" />
     <Compile Include="Core\Container\WpfAppBuildModule.cs" />
     <Compile Include="Core\Exceptions\UnhandledException.cs" />
     <Compile Include="Core\Interfaces\IObjectId.cs" />
@@ -140,10 +136,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\AllResourcesTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\AllResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -262,9 +254,6 @@
     <Compile Include="Core\Model\MenuItemCollection.cs" />
     <Compile Include="Core\Model\MethodInvocation.cs" />
     <Compile Include="Core\Model\ResourcesModel.cs" />
-    <Compile Include="ResourceNodeInfo.cs" />
-    <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
-    <Compile Include="ResourceViewItemContainerStyleSelector.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="LogTextWriter.cs" />
     <Compile Include="Resource1.Designer.cs">

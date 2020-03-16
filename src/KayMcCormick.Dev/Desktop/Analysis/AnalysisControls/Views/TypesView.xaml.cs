@@ -1,5 +1,7 @@
 ﻿using System.Windows.Controls ;
 using AnalysisControls.Syntax ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf ;
 using ProjLib.Interfaces ;
 
 namespace AnalysisControls.Views
@@ -7,6 +9,7 @@ namespace AnalysisControls.Views
     /// <summary>
     /// Interaction logic for Types.xaml
     /// </summary>
+    [TitleMetadata("Types view")]
     public partial class TypesView : UserControl , IView < ITypesViewModel > , IView1
     {
         private ITypesViewModel _viewModel ;
