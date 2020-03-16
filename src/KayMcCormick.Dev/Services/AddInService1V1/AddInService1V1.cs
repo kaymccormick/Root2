@@ -31,13 +31,34 @@ namespace AddInService1V1
     [ UsedImplicitly ]
     public class AddInService1V1 : IService1
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static Logger Logger = LogManager.CreateNullLogger() ;
         private Thread _thread ;
         #region Implementation of IService1
+        public AddInService1V1 ( )
+        {
+        }
+
         public bool Start ( )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured (message => Console.WriteLine(message), new AppLoggingConfiguration(){ChainsawPort = 12333 } ) ;
-            Logger.Debug("Here");
+            try
+            {
+                AppLoggingConfigHelper.Shutdown();
+                AppLoggingConfigHelper.EnsureLoggingConfigured(
+                                                               message
+                                                                   => Console.WriteLine(message)
+                                                             , new AppLoggingConfiguration()
+                                                               {
+                                                                   ChainsawPort = 4111
+                                                               }
+                                                              );
+                Logger = LogManager.GetCurrentClassLogger();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            Logger?.Debug("Here");
             Console.WriteLine ( "in start" ) ;
             _thread = new Thread ( ThreadProc ) ;
             _thread.Start();

@@ -20,7 +20,7 @@ namespace Leaf1AddInSideAdapter
         public Leaf1ViewToContractAddInSideAdapter ( IService1 leaf1 ) : base ( )
         {
             _contract = leaf1 ;
-            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
+//            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;
         }
 
         #region Implementation of IService1Contract

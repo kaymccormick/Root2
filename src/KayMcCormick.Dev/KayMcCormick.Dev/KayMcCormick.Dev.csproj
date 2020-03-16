@@ -159,6 +159,7 @@
     <Compile Include="Logging\LoggerFactoryHook.cs" />
     <Compile Include="Logging\LoggerInterceptor.cs" />
     <Compile Include="Logging\LoggerProxyHelper.cs" />
+    <Compile Include="Logging\LogHelper.cs" />
     <Compile Include="Logging\MyJsonLayout.cs" />
     <Compile Include="Logging\MyLogFactory.cs" />
     <Compile Include="Logging\MyLogger.cs" />

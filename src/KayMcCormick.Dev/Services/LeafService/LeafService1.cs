@@ -231,7 +231,7 @@ namespace LeafService
             _commonLogger.Debug ( $"add ins count {tokens.Count}" ) ;
             foreach ( var addInToken in tokens )
             {
-                IService1 service1 = addInToken.Activate < IService1 > ( AddInSecurityLevel.FullTrust ) ;
+                IService1 service1 = addInToken.Activate < IService1 > ( AddInSecurityLevel.FullTrust) ;
                 _services.Add ( service1 ) ;
                 service1.Start ( ) ;
 

@@ -22,6 +22,7 @@ using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
 using System.ServiceModel ;
 using System.Text ;
 using System.Text.Json ;
@@ -101,6 +102,8 @@ namespace KayMcCormick.Dev.Logging
         private static MyCacheTarget _cacheTarget ;
         private static MyCacheTarget2 _cacheTarget2 ;
         private static LogDelegates.LogMethod _oldLogMethod ;
+        private static Dictionary < LogLevel , List < Target > > _dict ;
+        private static bool _loggingConfigured ;
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
@@ -200,12 +203,19 @@ namespace KayMcCormick.Dev.Logging
             var useFactory = proxyLogging ? proxiedFactory : LogManager.LogFactory ;
             var lConf = new CodeConfiguration ( useFactory ) ;
 
-            var dict = LogLevel.AllLoggingLevels.ToDictionary (
-                                                               level => level
-                                                             , level => new List < Target > ( )
-                                                              ) ;
-            var t = dict[config1.MinLogLevel];
-            var errorTargets = config1.MinLogLevel <= LogLevel.Error ? dict[LogLevel.Error] : null ;
+            _dict = LogLevel.AllLoggingLevels.ToDictionary (
+                                                            level => level
+                                                          , level => new List < Target > ( )
+                                                           ) ;
+            var minLevel = config1.MinLogLevel ?? LogLevel.Trace;
+            if ( ! _dict.ContainsKey ( minLevel ) )
+            {
+                throw new LogConfigurationException (
+                                                     $"dict does not contain key{config1.MinLogLevel}"
+                                                    ) ;
+            }
+            var t = _dict[minLevel];
+            var errorTargets = minLevel <= LogLevel.Error ? _dict[LogLevel.Error] : null ;
             
             var disabledLogTargets =
                 Environment.GetEnvironmentVariable ( DisableLogTargetsEnvVarName ) ;
@@ -268,7 +278,7 @@ namespace KayMcCormick.Dev.Logging
                                       , Layout =
                                             new SimpleLayout ( "${level} ${message} ${logger}" )
                                     } ;
-                dict[ LogLevel.Warn ].Add ( consoleTarget ) ;
+                _dict[ LogLevel.Warn ].Add ( consoleTarget ) ;
             }
 
 
@@ -276,9 +286,9 @@ namespace KayMcCormick.Dev.Logging
             if ( config1.IsEnabledCacheTarget.GetValueOrDefault() )
             {
                 _cacheTarget = new MyCacheTarget ( ) ;
-                dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
+                _dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
                 _cacheTarget2 = new MyCacheTarget2 ( ) { Layout = SetupJsonLayout ( ) } ;
-                dict[ LogLevel.Debug ].Add ( _cacheTarget2 ) ;
+                _dict[ LogLevel.Debug ].Add ( _cacheTarget2 ) ;
             }
             #endregion
             #region NLogViewer Target
@@ -307,18 +317,18 @@ namespace KayMcCormick.Dev.Logging
             #endregion
             t.Add ( MyFileTarget ( ) ) ;
                 var jsonFileTarget = JsonFileTarget ( ) ;
-                dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
+                _dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
 
             var byType = new Dictionary < Type , int > ( ) ;
-            var keys = dict.Keys.ToList ( ) ;
+            var keys = _dict.Keys.ToList ( ) ;
             foreach ( var k in keys )
             {
-                var v = dict[ k ] ;
-                dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
+                var v = _dict[ k ] ;
+                _dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
                              .ToList ( ) ;
             }
 
-            foreach ( var target in dict.SelectMany ( pair => pair.Value ) )
+            foreach ( var target in _dict.SelectMany ( pair => pair.Value ) )
             {
                 var type = target.GetType ( ) ;
                 byType.TryGetValue ( type , out var count ) ;
@@ -333,7 +343,7 @@ namespace KayMcCormick.Dev.Logging
                 lConf.AddTarget ( target ) ;
             }
 
-            foreach ( var result in dict.Select (pair =>  LoggingRule(pair, config1.MinLogLevel, config1) ) )
+            foreach ( var result in _dict.Select (pair =>  LoggingRule(pair, minLevel, config1) ) )
             {
                 foreach ( var loggingRule in result )
                 {
@@ -345,6 +355,7 @@ namespace KayMcCormick.Dev.Logging
 
             LogManager.Configuration = lConf ;
             Logger                   = LogManager.GetCurrentClassLogger ( ) ;
+            _loggingConfigured = true ;
             return useFactory ;
         }
 
@@ -370,11 +381,19 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for EventLogTargetName
         public static string EventLogTargetName { get => _eventLogTargetName ; set { _eventLogTargetName = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Target ServiceTarget { get { return _serviceTarget ; } set { _serviceTarget = value ; } }
 
-        public static int NLogViewerPort { get => _nLogViewerPort; set => _nLogViewerPort = value; }
+        /// <summary>
+        /// 
+        /// </summary>
         public static MyCacheTarget2 CacheTarget2 => _cacheTarget2 ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static MyCacheTarget CacheTarget => _cacheTarget ;
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
@@ -818,6 +837,53 @@ namespace KayMcCormick.Dev.Logging
         public static void AddRule ( LoggingRule rule2 )
         {
             LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void Shutdown ( )
+        {
+            if ( ! _loggingConfigured )
+            {
+                return ;
+            }
+            _numTimesConfigured = null ;
+            if ( _dict != null )
+            {
+                foreach ( var target in _dict.Where ( pair => pair.Value != null )
+                                             .SelectMany ( pair => pair.Value )
+                                             .Where ( target => target != null ) )
+                {
+                    target.Dispose ( ) ;
+                    LogManager.Configuration.RemoveTarget ( target.Name ) ;
+                }
+            }
+
+            LogManager.Configuration.LoggingRules.Clear();
+            LogManager.ReconfigExistingLoggers();
+            LogManager.Shutdown();
+        }
+
+
+    
+    }
+
+    public class LogConfigurationException : Exception
+    {
+        public LogConfigurationException ( ) {
+        }
+
+        public LogConfigurationException ( string message ) : base ( message )
+        {
+        }
+
+        public LogConfigurationException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected LogConfigurationException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 
