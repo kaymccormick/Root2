@@ -6,13 +6,13 @@
 trigger:
   branches:
     include:
-    - master
-    - installer
+    - addin
   paths:
     include:
     - '*'
     exclude:
     - azure-pipelines-1.yml
+    - azure-pipelines.yml
     - azure-pipelines-1.yml
     - azure-pipelines-1-exo.yml
 
