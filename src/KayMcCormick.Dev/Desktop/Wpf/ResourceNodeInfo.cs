@@ -33,5 +33,9 @@ namespace KayMcCormick.Lib.Wpf
 
         [JsonIgnore]
         public object Key { get { return _key ; } set { _key = value ; } }
+
+        public object TemplateKey { get => _templateKey ; set => _templateKey = value ; }
+
+        private object _templateKey ;
     }
 }

@@ -108,7 +108,8 @@ namespace KayMcCormick.Lib.Wpf
             var winNode = new ResourceNodeInfo
                           {
                               Key  = w.GetType(),
-                              Data = new ControlWrap<Window>(w)
+                              Data = new ControlWrap<Window>(w),
+                              TemplateKey = "WindowTemplate"
                           };
             _appNode.Children.Add(winNode);
             var winRes = new ResourceNodeInfo { Key = "Resources", Data = w.Resources };

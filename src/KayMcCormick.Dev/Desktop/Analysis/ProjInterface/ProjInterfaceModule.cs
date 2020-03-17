@@ -79,7 +79,7 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IView1 > ( ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
-
+            
         }
 #endregion
     }

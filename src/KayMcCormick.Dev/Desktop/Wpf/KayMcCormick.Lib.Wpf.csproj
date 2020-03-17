@@ -82,6 +82,7 @@
     <Compile Include="LifetimeScopeExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveExtension.cs" />
+    <Compile Include="ResourceDetailTemplateSelector.cs" />
     <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="ResourcesUtil.cs" />

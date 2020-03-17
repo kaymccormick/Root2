@@ -256,6 +256,9 @@
         </ContentControl.ToolTip>
       </ContentControl>
     </HierarchicalDataTemplate>
+    <DataTemplate x:Key="WindowTemplate">
+      <Image Source="{Binding Path=Image}"/>
+    </DataTemplate>
     <wpf:ResourceTreeViewItemTemplateSelector 
       x:Key="ResourceTreeViewItemTemplateSelector" />
     <wpf:ResourceViewItemContainerStyleSelector
@@ -266,6 +269,8 @@
       <Setter Property="Control.Margin" Value="1"/>
       <Setter Property="Control.Padding" Value="2"/>
     </Style>
+    <wpf:ResourceDetailTemplateSelector
+      x:Key="ResourceDetailTemplateSelector" />
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
@@ -308,7 +313,7 @@
         <TextBlock Margin="0,0,20,0" Text="Value Type" Grid.Row="2" Grid.Column="0"/>
         <ContentControl Grid.Row="2" Grid.Column="1" Content="{Binding Data,Converter={StaticResource GetTypeConverter}}"/>
         <TextBlock Margin="0,0,20,0" Text="Value" Grid.Row="3" Grid.Column="0"/>
-        <ContentControl Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
+        <ContentControl ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"  Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
 </Grid>
     </Grid>
     <Grid Grid.Row="1" Grid.Column="0">
