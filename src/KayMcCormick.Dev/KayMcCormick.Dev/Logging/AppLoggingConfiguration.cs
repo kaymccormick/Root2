@@ -79,7 +79,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// 
         /// </summary>
-        [ CanBeNull ] public LogLevel MinLogLevel { get => _minLogLevel ; set => _minLogLevel = value ; }
+        public LogLevel MinLogLevel { get => _minLogLevel ; set => _minLogLevel = value ; }
 
         /// <summary>
         /// 

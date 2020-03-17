@@ -10,7 +10,7 @@ namespace KayMcCormick.Lib.Wpf
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
             FrameworkElement fe = (FrameworkElement)container;
-            if ( item is ControlWrap < Window > cw )
+            if ( item is ControlWrap < Window > )
             {
                 return fe.TryFindResource("WindowTemplate") as DataTemplate;
             }

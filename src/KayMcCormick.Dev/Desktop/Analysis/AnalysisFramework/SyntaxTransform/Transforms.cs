@@ -1,5 +1,6 @@
 using System ;
 using System.Diagnostics ;
+using System.Diagnostics.CodeAnalysis ;
 using System.Linq ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
@@ -11,6 +12,7 @@ namespace AnalysisFramework.SyntaxTransform
     /// <summary>
     /// Transforms for Code Analysis nodes.
     /// </summary>
+    [ SuppressMessage ( "ReSharper" , "UnusedVariable" ) ]
     public static class Transforms
     {
         /// <summary>Transforms the expr.</summary>
@@ -622,6 +624,7 @@ namespace AnalysisFramework.SyntaxTransform
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         public static object TransformMethodSymbol ( [ NotNull ] IMethodSymbol method )
         {
             if ( method == null )
@@ -695,7 +698,7 @@ namespace AnalysisFramework.SyntaxTransform
                                                                         )
                                                         .ToList ( )
                                                   , comp.AttributeLists.Select (
-                                                                                TransformAttributeListSybtax
+                                                                                TransformAttributeListSyntax
                                                                                )
                                                         .ToList ( )
                                                   , comp.Members.Select ( TransformMemberDeclarationSyntax )
@@ -1292,7 +1295,7 @@ namespace AnalysisFramework.SyntaxTransform
             throw new UnsupportedExpressionTypeSyntaxException(token.Kind (  ).ToString());
         }
 
-        private static object TransformAttributeListSybtax ( AttributeListSyntax arg )
+        private static object TransformAttributeListSyntax ( AttributeListSyntax arg )
         {
             return new
                    {

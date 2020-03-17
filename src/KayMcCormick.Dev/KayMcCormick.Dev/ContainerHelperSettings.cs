@@ -26,6 +26,9 @@ namespace KayMcCormick.Dev
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool DoTraceConditionalRegistration { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ApplySettings ( )
         {
         }

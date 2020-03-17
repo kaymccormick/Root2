@@ -35,10 +35,6 @@ namespace AddInService1V1
         private static Logger Logger = LogManager.CreateNullLogger() ;
         private Thread _thread ;
         #region Implementation of IService1
-        public AddInService1V1 ( )
-        {
-        }
-
         public bool Start ( )
         {
             try
@@ -125,13 +121,14 @@ namespace AddInService1V1
                  ,         conn
                           ) ;
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         private static void setupTask (
-            Task < UdpReceiveResult >[]          tasks
+            IList < Task < UdpReceiveResult > > tasks
           , int                                  i1
-          , UdpClient[]                          clients
-          , ConfiguredTaskAwaitable < object >[] continued
+          , IReadOnlyList < UdpClient > clients
+          , IList < ConfiguredTaskAwaitable < object > > continued
           , StreamWriter                         @out
           , JsonSerializerOptions                options
           , SqlConnection                        conn
@@ -156,7 +153,7 @@ namespace AddInService1V1
 
         private static void HandleResult (
             UdpReceiveResult      result
-          , StreamWriter          @out
+          , TextWriter          @out
           , JsonSerializerOptions options
           , SqlConnection         conn
         )
@@ -171,7 +168,7 @@ namespace AddInService1V1
             {
                 if ( s[ 0 ] == '{' )
                 {
-                    HandleJson ( options , conn , s , null ) ;
+                    HandleJson ( options , conn , s ) ;
 
                     return ;
                 }
@@ -202,8 +199,8 @@ namespace AddInService1V1
                                              , xmlParserContext
                                               ) ;
 
-                var tableName = "xmllog" ;
-                var columnName = "data" ;
+                const string tableName = "xmllog" ;
+                const string columnName = "data" ;
                 var sql = "INSERT INTO " + tableName + " (" + columnName + ") VALUES (@xml)" ;
                 var cmd = conn.CreateCommand ( ) ;
                 cmd.CommandText = sql ;
@@ -225,12 +222,11 @@ namespace AddInService1V1
             JsonSerializerOptions options
           , SqlConnection         conn
           , string                s
-          , XmlReader             reader
         )
         {
-            var i = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
-            var tableName = "jsonlog" ;
-            var columnName = "jsondata" ;
+            LogEventInstance i = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
+            const string tableName = "jsonlog" ;
+            const string columnName = "jsondata" ;
             var sql = "INSERT INTO " + tableName + " (" + columnName + ") VALUES (@data)" ;
             var cmd = conn.CreateCommand ( ) ;
             cmd.CommandText = sql ;
@@ -265,12 +261,16 @@ namespace AddInService1V1
                 {
                     if ( task.Status == TaskStatus.Faulted )
                     {
-                        Logger.Fatal ( task.Exception.GetBaseException ( ).ToString ( ) ) ;
+                        if ( task.Exception != null )
+                        {
+                            Logger.Fatal ( task.Exception.GetBaseException ( ).ToString ( ) ) ;
+                        }
                     }
                     task = Run ( ) ;
                 }
                 spin.SpinOnce();
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         public bool Stop ( )

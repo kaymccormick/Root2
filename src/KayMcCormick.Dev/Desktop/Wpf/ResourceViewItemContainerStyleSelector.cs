@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of StyleSelector
         public override Style SelectStyle ( object item , DependencyObject container )
         {
-            if(item is ResourceNodeInfo i)
+            if(item is ResourceNodeInfo)
             {
                 var tryFindResource = ((FrameworkElement)container).TryFindResource("DefaultResourceNodeInfoStyle") ;
                 return tryFindResource as Style;

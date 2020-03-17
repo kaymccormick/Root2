@@ -32,10 +32,14 @@ namespace KayMcCormick.Dev.Logging
             Options = jsonSerializerOptions ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public JsonSerializerOptions CreateJsonSerializerOptions ( )
         {
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
-            ;
+            
             jsonSerializerOptions.Converters.Add ( new LogEventInfoConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonTypeConverter ( ) ) ;
             return jsonSerializerOptions ;

@@ -23,8 +23,13 @@ namespace AnalysisControls.Converters
             {
                 return t.ToString ( ) ;
             }
-            LogManager.GetCurrentClassLogger().Debug("{t} {x}", value.GetType().FullName, value);
-    
+
+            if ( value != null )
+            {
+                LogManager.GetCurrentClassLogger ( )
+                          .Debug ( "{t} {x}" , value.GetType ( ).FullName , value ) ;
+            }
+
             return null ;
         }
 

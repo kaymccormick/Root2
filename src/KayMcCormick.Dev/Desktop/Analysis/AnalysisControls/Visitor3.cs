@@ -142,7 +142,7 @@ namespace AnalysisControls
             }
         }
 
-        private void ScrollViewerOnScrollChanged ( object sender , ScrollChangedEventArgs e )
+        private static void ScrollViewerOnScrollChanged ( object sender , ScrollChangedEventArgs e )
         {
             Logger.Info ( "offset {}" , e.HorizontalOffset ) ;
         }

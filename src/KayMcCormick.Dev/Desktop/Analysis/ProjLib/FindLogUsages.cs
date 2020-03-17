@@ -41,7 +41,6 @@ namespace ProjLib
                     {
                         return Array.Empty < ILogInvocation > ( ) ;
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
-                        throw new MissingTypeException ( "nlog" ) ;
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
                     }
 
@@ -50,7 +49,6 @@ namespace ProjLib
                     {
                         return Array.Empty < ILogInvocation > ( ) ;
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
-                        throw new MissingTypeException ( "nlog" ) ;
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
                     }
 

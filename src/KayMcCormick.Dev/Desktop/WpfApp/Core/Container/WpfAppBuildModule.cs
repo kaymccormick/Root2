@@ -15,10 +15,11 @@ using System.Linq ;
 using System.Reflection ;
 using System.Windows ;
 using Autofac ;
+using KayMcCormick.Dev ;
 using NLog ;
 using Module = Autofac.Module ;
 
-namespace KayMcCormick.Dev
+namespace WpfApp.Core.Container
 {
     public class WpfAppBuildModule : Module
     {

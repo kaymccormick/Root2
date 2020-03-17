@@ -17,9 +17,6 @@ namespace KayMcCormick.Lib.Wpf
 {
     public class ResourceNodeInfo
     {
-        public ResourceNodeInfo ( ) {
-        }
-
         private object                 _data ;
         private List<ResourceNodeInfo> _children = new List < ResourceNodeInfo > ();
         private Uri                    _sourceUri ;

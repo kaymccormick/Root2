@@ -12,7 +12,6 @@
 using Common.Logging ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.ServiceImpl ;
 using LeafHVA1 ;
 using NLog ;
 using NLog.Fluent ;
@@ -30,6 +29,7 @@ using System.ServiceModel.Channels ;
 using System.Threading ;
 using System.Timers ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.ServiceImpl ;
 using NLog.LogReceiverService ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;
@@ -99,7 +99,7 @@ namespace LeafService
                 AppLoggingConfigHelper.RemoveTarget ( svcTarget ) ;
             }
 
-            Log.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
+            Logger.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
 
             InitializeWfcServices ( ) ;
 
@@ -211,7 +211,7 @@ namespace LeafService
         private void InitializeAddin ( )
         {
             var baseDir = Environment.CurrentDirectory ;
-            var pipelineDir = "Pipeline" ;
+            const string pipelineDir = "Pipeline" ;
             var root = Path.Combine ( baseDir , pipelineDir ) ;
             var warnings = AddInStore.Update ( root ) ;
             Logger.Info ( "pipeline directory is {dir}" , root ) ;
@@ -383,6 +383,7 @@ namespace LeafService
         {
             var typ = e.Entry.EntryType ;
             var level = LogLevel.Info ;
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch ( typ )
             {
                 case EventLogEntryType.Error :

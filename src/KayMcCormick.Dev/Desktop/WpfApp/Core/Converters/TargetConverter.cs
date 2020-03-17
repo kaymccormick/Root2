@@ -170,7 +170,7 @@ namespace WpfApp.Core.Converters
         ///     A converted value. If the method returns <see langword="null" />, the
         ///     valid null value is used.
         /// </returns>
-        public object ConvertBack (
+        public static object ConvertBack (
             // ReSharper disable twice UnusedParameter.Global
             object value
           , Type   targetType

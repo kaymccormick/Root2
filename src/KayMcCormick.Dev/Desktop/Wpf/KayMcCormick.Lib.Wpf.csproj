@@ -71,6 +71,7 @@
     <Compile Include="AllResourcesTree.xaml.cs">
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AllResourcesTreeViewModel.cs" />
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />

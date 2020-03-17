@@ -4,8 +4,6 @@ using ProjLib.Interfaces ;
 
 namespace AnalysisControls.Views
 {
-    /// <summary>
-    /// Interaction logic for TestView1.xaml
     [TitleMetadata("TEst View 1")]
     public partial class TestView1 : UserControl, IView1
     {

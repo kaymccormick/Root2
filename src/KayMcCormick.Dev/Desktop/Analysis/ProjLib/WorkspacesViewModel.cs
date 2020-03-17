@@ -9,7 +9,6 @@
 // 
 // ---
 #endregion
-using AnalysisFramework ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 using System ;
@@ -23,8 +22,6 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisFramework.Interfaces ;
-using AnalysisFramework.LogUsage ;
-using AnalysisFramework.LogUsage.Interfaces ;
 using KayMcCormick.Dev ;
 using ProjLib.Interfaces ;
 using JetBrains.Annotations;

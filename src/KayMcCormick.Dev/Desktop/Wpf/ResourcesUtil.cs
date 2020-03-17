@@ -84,7 +84,8 @@ namespace KayMcCormick.Lib.Wpf
                             resourcesCollection.Add ( resourceInfo ) ;
                         } catch(Exception)
                         {
-                            }
+                            throw ;
+                        }
                     }
                 }
             }

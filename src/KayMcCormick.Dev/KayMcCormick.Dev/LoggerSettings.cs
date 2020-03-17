@@ -66,8 +66,14 @@ namespace KayMcCormick.Dev
         /// TODO Edit XML Comment Template for DebuggerTargetName
         public string DebuggerTargetName { get => _debuggerTargetName ; set => _debuggerTargetName = value ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int ? NLogViewerPort { get => _nLogViewerPort ; set => _nLogViewerPort = value ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int ? ChainsawPort { get => _chainsawPort ; set => _chainsawPort = value ; }
         #endregion
     }

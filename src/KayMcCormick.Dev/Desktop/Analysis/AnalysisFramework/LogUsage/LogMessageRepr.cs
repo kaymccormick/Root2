@@ -18,8 +18,6 @@ namespace AnalysisFramework.LogUsage
 {
     internal class LogMessageRepr
     {
-        private readonly string _message ;
-
         public LogMessageRepr ( bool isMessageTemplate , object constantMessage )
         {
             IsMessageTemplate = isMessageTemplate ;
@@ -30,7 +28,6 @@ namespace AnalysisFramework.LogUsage
             }
         }
 
-        public LogMessageRepr ( string message ) { _message = message ; }
         public LogMessageRepr ( ) { }
 
         public MessageTemplate MessageTemplate { get ; set ; }

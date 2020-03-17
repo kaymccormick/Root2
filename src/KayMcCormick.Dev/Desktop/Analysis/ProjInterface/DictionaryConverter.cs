@@ -18,7 +18,7 @@ namespace ProjInterface
         {
             if ( value is IDictionary d )
             {
-                if ( d.Contains ( parameter ) )
+                if ( parameter != null && d.Contains ( parameter ) )
                 {
                     return d[ parameter ] ;
                 }

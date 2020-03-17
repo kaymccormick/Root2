@@ -20,6 +20,6 @@ namespace AnalysisControls
 
         public SyntaxKind SyntaxKind { get ; set ; }
 
-        public SyntaxToken ? Token { get { return _token ; } set { _token = value ; } }
+        public SyntaxToken ? Token { get => _token ; set => _token = value ; }
     }
 }

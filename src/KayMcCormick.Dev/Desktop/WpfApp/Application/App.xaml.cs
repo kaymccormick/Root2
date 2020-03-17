@@ -26,6 +26,7 @@ using NLog ;
 using NLog.Fluent ;
 using Vanara.Extensions.Reflection ;
 using WpfApp.Core ;
+using WpfApp.Core.Container ;
 using WpfApp.Core.Exceptions ;
 using WpfApp.Core.Interfaces ;
 using WpfApp.Debug ;
@@ -228,7 +229,7 @@ namespace WpfApp.Application
             }
         }
 
-        private Assembly CdOnResourceResolve ( object sender , ResolveEventArgs args )
+        private static Assembly CdOnResourceResolve ( object sender , ResolveEventArgs args )
         {
             return null ;
         }
@@ -421,8 +422,10 @@ namespace WpfApp.Application
             catch ( Exception ex )
 #pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
+                throw;
             }
         }
+        
 
         public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
             => _allResourcesCollection ;

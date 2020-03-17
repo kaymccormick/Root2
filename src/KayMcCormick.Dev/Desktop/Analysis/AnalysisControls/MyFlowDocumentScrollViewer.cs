@@ -66,6 +66,7 @@ namespace AnalysisControls
                     {
                         if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
                         {
+                            // ReSharper disable once AssignNullToNotNullAttribute
                             obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
                         }
                         else

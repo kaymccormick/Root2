@@ -11,9 +11,8 @@ namespace AnalysisControls
         {
             if ( item is ISymbol )
             {
-                var tryFindResource = ( container as FrameworkElement ).TryFindResource ( typeof ( ISymbol ) ) ;
-                return tryFindResource as
-                           DataTemplate ;
+                var tryFindResource = ( ( FrameworkElement ) container ).TryFindResource ( typeof ( ISymbol ) ) ;
+                return ( DataTemplate ) tryFindResource ;
             }
             return base.SelectTemplate ( item , container ) ;
         }

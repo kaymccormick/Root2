@@ -1,5 +1,4 @@
 ﻿#if ANALYSISCONTROLS
-using AnalysisControls ;
 #endif
 using AnalysisFramework ;
 using Autofac ;
@@ -8,7 +7,6 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis;
 using NLog ;
-using ProjLib ;
 using System ;
 using System.Collections ;
 using System.Collections.Concurrent ;
@@ -33,12 +31,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
 using AnalysisFramework.Interfaces ;
-using AnalysisFramework.LogUsage ;
-using AnalysisFramework.LogUsage.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;
 using Task = System.Threading.Tasks.Task ;
-using KayMcCormick.Dev.Logging;
 
 namespace ProjInterface
 {
@@ -54,6 +49,7 @@ namespace ProjInterface
     {
         private readonly ILifetimeScope _scope ;
         private static readonly Logger      Logger = LogManager.GetCurrentClassLogger ( ) ;
+        // ReSharper disable once NotAccessedField.Local
         private                 TaskFactory _factory ;
 
         public IWorkspacesViewModel ViewModel
@@ -117,7 +113,11 @@ namespace ProjInterface
                                                                               } ;
                                                          PropertiesColumns[ p.Key ] =
                                                              gridViewColumn ;
-                                                         g.Columns.Add ( gridViewColumn ) ;
+                                                         if ( g != null )
+                                                         {
+                                                             g.Columns.Add ( gridViewColumn ) ;
+                                                         }
+
                                                          //               _eventView.UpdateLayout();
                                                      }
                                                  }
@@ -181,7 +181,11 @@ namespace ProjInterface
 
         private static bool Fault ( Task task )
         {
-            Logger.Error ( task.Exception , "faulted: {msg}" , task.Exception.ToString ( ) ) ;
+            if ( task.Exception != null )
+            {
+                Logger.Error ( task.Exception , "faulted: {msg}" , task.Exception.ToString ( ) ) ;
+            }
+
             return false ;
         }
 
@@ -204,27 +208,29 @@ namespace ProjInterface
         {
             if ( e.OriginalSource is ListView ) {
                 var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
-                var viewCurrentItem = v.View.CurrentItem ;
-                Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
-                Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
-                t.ContinueWith (
-                                task => {
-                                    var jsonSerializerOptions = new JsonSerializerOptions {} ;
-                                    jsonSerializerOptions.Converters.Add (
-                                                                          new
-                                                                              LogInvocationConverter ( )
-                                                                         ) ;
-                                    File.WriteAllText ( "invocations.json" , JsonSerializer
-                                                           .Serialize (
-                                                                       ViewModel.LogInvocations.ToList (  ), jsonSerializerOptions));
-                                }
-                               ) ;
-                TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
-                AddTask ( t, tw ) ;
+                if ( v != null ) {
+                    var viewCurrentItem = v.View.CurrentItem ;
+                    Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
+                    Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
+                    t.ContinueWith (
+                                    task => {
+                                        var jsonSerializerOptions = new JsonSerializerOptions {} ;
+                                        jsonSerializerOptions.Converters.Add (
+                                                                              new
+                                                                                  LogInvocationConverter ( )
+                                                                             ) ;
+                                        File.WriteAllText ( "invocations.json" , JsonSerializer
+                                                               .Serialize (
+                                                                           ViewModel.LogInvocations.ToList (  ), jsonSerializerOptions));
+                                    }
+                                   ) ;
+                    TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
+                    AddTask ( t, tw ) ;
+                }
             }
             else
             {
-                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
+                const string path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
                                                                                    path
@@ -266,7 +272,11 @@ namespace ProjInterface
             _obsTasks.Add(tw);
             task.ContinueWith (
                                delegate ( Task t ) {
-                                   tw.Status = t.Status.ToString() ;
+                                   if ( tw != null )
+                                   {
+                                       tw.Status = t.Status.ToString ( ) ;
+                                   }
+
                                    //ObsTasks.Remove ( t ) ;
                                }, _taskScheduler
                               ) ;
@@ -435,7 +445,7 @@ namespace ProjInterface
                         {
                             if ( dd.ContainsKey ( q.Name ) )
                             {
-                                Debug.WriteLine ( "Uh oh key exists " + q.Name ) ;
+                                System.Diagnostics.Debug.WriteLine ( "Uh oh key exists " + q.Name ) ;
                             }
                             else
                             {

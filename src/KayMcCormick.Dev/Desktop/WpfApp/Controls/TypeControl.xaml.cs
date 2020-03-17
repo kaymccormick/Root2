@@ -230,7 +230,7 @@ namespace WpfApp.Controls
             //old.AddChild ( tb ) ;
         }
 
-        private object ToolTipContent ( Type myType , StackPanel pp = null )
+        private static object ToolTipContent ( Type myType , StackPanel pp = null )
         {
             var provider = new CSharpCodeProvider ( ) ;
             var codeTypeReference = new CodeTypeReference ( myType ) ;

@@ -130,7 +130,7 @@ namespace Tests.Main.Converters
         }
 
         private static IComponentRegistration FindTypedService (
-            IComponentRegistration[] regsAry
+            IEnumerable < IComponentRegistration > regsAry
           , Type                     serviceType
         )
         {

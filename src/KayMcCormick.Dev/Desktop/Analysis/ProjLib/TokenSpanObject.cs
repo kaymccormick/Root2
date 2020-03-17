@@ -19,6 +19,7 @@ namespace ProjLib
     {
         // ReSharper disable once NotAccessedField.Local
         private readonly string _instanceRawKind ;
+        // ReSharper disable once NotAccessedField.Local
         private          readonly string _instanceValueText ;
 
         

@@ -40,6 +40,7 @@ namespace LeafService
 
         private void Run ( )
         {
+            // ReSharper disable once UnusedVariable
             ILog logger = Common.Logging.LogManager.GetLogger < Program > ( ) ;
             AppDomain.CurrentDomain.FirstChanceException += ( sender , args )
                 => Utils.HandleInnerExceptions (

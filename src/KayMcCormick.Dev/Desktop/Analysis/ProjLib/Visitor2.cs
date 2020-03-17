@@ -82,8 +82,11 @@ namespace ProjLib
                         {
 
                             var syntaxToken = child.AsToken ( ) ;
-                            var model1 = _mFunc ( syntaxToken ) ;
-                            ActiveSpans.AddSpan(syntaxToken, syntaxToken.Span, model1);
+                            if ( _mFunc != null ) {
+                                var model1 = _mFunc ( syntaxToken ) ;
+                                ActiveSpans.AddSpan(syntaxToken, syntaxToken.Span, model1);
+                            }
+
                             this.VisitToken ( syntaxToken ) ;
                             ActiveSpans.RemoveAll(syntaxToken);
                         }

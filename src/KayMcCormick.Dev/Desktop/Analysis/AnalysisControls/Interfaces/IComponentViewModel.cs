@@ -10,6 +10,7 @@
 // ---
 #endregion
 using AnalysisFramework ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Interfaces ;
 using Microsoft.CodeAnalysis ;
 

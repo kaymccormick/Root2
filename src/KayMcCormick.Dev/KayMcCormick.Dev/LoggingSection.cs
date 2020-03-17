@@ -20,6 +20,9 @@ namespace KayMcCormick.Dev
         [ConfigurationProperty("IsEnabledConsoleTarget", DefaultValue = false, IsRequired = false, IsKey = false)]
         public bool? IsEnabledConsoleTarget { get => (bool?)this[nameof(IsEnabledConsoleTarget)]; set => this[nameof(IsEnabledConsoleTarget)] = value; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ConfigurationProperty( "MinLogLevel", DefaultValue = "Trace", IsRequired = false, IsKey = false)]
         public LogLevel MinLogLevel
         {
