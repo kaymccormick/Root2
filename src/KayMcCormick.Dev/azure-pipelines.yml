@@ -17,7 +17,6 @@ trigger:
 
 pool:
   name: exo
-  demands: ServiceAccount
 
 variables:
   solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
