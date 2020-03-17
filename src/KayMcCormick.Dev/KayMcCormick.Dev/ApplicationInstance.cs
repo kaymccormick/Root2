@@ -64,6 +64,17 @@ namespace KayMcCormick.Dev
             InstanceRunGuid = Guid.NewGuid();
             ILoggingConfiguration config =
                 configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
+
+            LogManager.EnableLogging();
+            if ( LogManager.IsLoggingEnabled ( ) )
+            {
+                Debug.WriteLine ( "logging enableD" ) ;
+            }
+            foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+            {
+                Debug.WriteLine ( configurationAllTarget ) ;
+            }
+
             _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod, config);
             GlobalDiagnosticsContext.Set(
                                          "ExecutionContext"

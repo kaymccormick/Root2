@@ -14,6 +14,7 @@ using System.Diagnostics ;
 using System.Runtime.InteropServices ;
 using System.Threading.Tasks ;
 using System.Windows.Interop ;
+using KayMcCormick.Lib.Wpf ;
 
 namespace ProjInterface
 {
@@ -21,11 +22,12 @@ namespace ProjInterface
     /// Interaction logic for Window1.xaml
     /// </summary>
     ///
-    public class Shell : HwndHost
+    public class Shell : HwndHost, IView1
     {
         IntPtr hwndControl;
         IntPtr hwndHost;
         int    hostHeight, hostWidth;
+        private string _viewTitle = "ConEmu shell" ;
 
         #region Overrides of HwndHost
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
@@ -84,5 +86,9 @@ namespace ProjInterface
             LB_GETTEXT      = 0x00000189,
             LB_DELETESTRING = 0x00000182,
             LB_GETCOUNT     = 0x0000018B;
+
+        #region Implementation of IView1
+        public string ViewTitle { get => _viewTitle ; set => _viewTitle = value ; }
+        #endregion
     }
 }

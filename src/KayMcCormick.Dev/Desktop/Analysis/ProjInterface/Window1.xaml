@@ -20,6 +20,14 @@
     <CommandBinding Command="Open" Executed="CommandBinding_OnExecuted"></CommandBinding>
   </kmWpf:AppWindow.CommandBindings>
   <xcad:DockingManager AllowMixedOrientation="True">
+    <xcad:DockingManager.DocumentHeaderTemplate>
+    <DataTemplate>
+      <StackPanel Orientation="Horizontal">
+        <Image Source="{Binding IconSource}" Margin="0,0,4,0"/>
+        <TextBlock Text="{Binding Title}" />
+      </StackPanel>
+    </DataTemplate>
+    </xcad:DockingManager.DocumentHeaderTemplate>
     <xcad:LayoutRoot><xcad:LayoutPanel Orientation="Horizontal">
       <xcad:LayoutAnchorablePane DockWidth="400">
         <xcad:LayoutAnchorable>
@@ -32,7 +40,7 @@
       </xcad:LayoutAnchorablePane>
       <xcad:LayoutDocumentPaneGroup>
         <xcad:LayoutDocumentPane x:Name="docpane">
-          <xcad:LayoutDocument>
+          <xcad:LayoutDocument Title="ConEmu Shell">
             <local:Shell></local:Shell>
           </xcad:LayoutDocument>
         </xcad:LayoutDocumentPane>

@@ -16,6 +16,10 @@ namespace ConfigTest
 
         private static void Main ( )
         {
+            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+{
+Console.WriteLine(a.GetName());
+}
             // ServiceReference1.LogReceiverServerClient client1 = new LogReceiverServerClient(new WSDualHttpBinding(), new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/"));
             // var nLogEvent = new NLogEvent ( )
             //                 {

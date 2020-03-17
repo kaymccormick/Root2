@@ -32,6 +32,9 @@ namespace ProjInterface
 {
     public partial class ProjInterfaceApp : BaseApp
     {
+        static ProjInterfaceApp()
+        {
+        }
         private readonly List < IModule > appModules = new List < IModule > ( ) ;
         private new static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -42,7 +45,7 @@ private Type[] _optionTypes ;
         public ProjInterfaceApp ( )
 
         {
-            PresentationTraceSources.Refresh();
+            //PresentationTraceSources.Refresh();
             foreach (var myJsonLayout in LogManager
                                         .Configuration.AllTargets.OfType<TargetWithLayout>()
                                         .Select(t => t.Layout)

@@ -53,8 +53,8 @@ namespace ProjInterface
                     w.Show();
                 } else if ( val is Control c )
                 {
-                    LayoutDocument doc = new LayoutDocument();
-                    doc.Content = c ;
+                    LayoutDocument doc = new LayoutDocument { Content = c } ;
+                    doc.Title = val.ViewTitle ;
                     docpane.Children.Add ( doc ) ;
                 }
             }
