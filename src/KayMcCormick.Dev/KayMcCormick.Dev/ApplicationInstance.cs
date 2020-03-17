@@ -232,6 +232,12 @@ namespace KayMcCormick.Dev
 #endif
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logMethod2"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         protected List<object> LoadConfiguration( [ NotNull ] LogDelegates.LogMethod logMethod2)
         {
             if ( logMethod2 == null )
@@ -289,7 +295,7 @@ namespace KayMcCormick.Dev
                                     catch (Exception ex)
                                     {
                                         logMethod2?.Invoke(
-                                                            $"Unable to set property {attr.Name}: {ex.Message}"
+                                                            $"Unable to set property {item1.Name}: {ex.Message}"
                                                            );
                                     }
                                 }

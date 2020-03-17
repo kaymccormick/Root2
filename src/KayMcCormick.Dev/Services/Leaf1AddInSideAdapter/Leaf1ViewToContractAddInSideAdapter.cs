@@ -15,7 +15,9 @@ namespace Leaf1AddInSideAdapter
     public class Leaf1ViewToContractAddInSideAdapter : ContractBase , IService1Contract
     {
         private readonly IService1 _contract;
+#pragma warning disable 169
         private ILogger _logger ;
+#pragma warning restore 169
 
         public Leaf1ViewToContractAddInSideAdapter ( IService1 leaf1 ) : base ( )
         {

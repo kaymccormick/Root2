@@ -21,6 +21,7 @@ namespace AnalysisControls
         private readonly string   _text ;
         // ReSharper disable once NotAccessedField.Local
         private readonly bool _newLine ;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Typeface _typeface ;
         private FormattedText _formattedText ;
         private Size _desiredSize ;

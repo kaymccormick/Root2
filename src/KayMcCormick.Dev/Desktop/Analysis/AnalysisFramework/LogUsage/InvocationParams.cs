@@ -84,6 +84,7 @@ namespace AnalysisFramework.LogUsage
                  && MethodSymbol != null
                  && MethodSymbol.Parameters.Any ( ) )
             {
+                // ReSharper disable once RedundantAssignment
                 exceptionArg = LogUsages.IsException (
                                                       NamedTypeSymbol
                                                     , MethodSymbol.Parameters.First ( ).Type

@@ -125,6 +125,7 @@ namespace AddInService1V1
                  ,         conn
                           ) ;
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         private static void setupTask (
@@ -265,12 +266,16 @@ namespace AddInService1V1
                 {
                     if ( task.Status == TaskStatus.Faulted )
                     {
-                        Logger.Fatal ( task.Exception.GetBaseException ( ).ToString ( ) ) ;
+                        if ( task.Exception != null )
+                        {
+                            Logger.Fatal ( task.Exception.GetBaseException ( ).ToString ( ) ) ;
+                        }
                     }
                     task = Run ( ) ;
                 }
                 spin.SpinOnce();
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         public bool Stop ( )

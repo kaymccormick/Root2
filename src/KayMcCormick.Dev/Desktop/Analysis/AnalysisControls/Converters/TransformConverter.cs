@@ -20,8 +20,10 @@ namespace AnalysisControls.Converters
          
             try
             {
-                var r = Transforms.TransformSyntaxNode(value as SyntaxNode);
-                return JsonSerializer.Serialize ( r ) ;
+                if ( value != null ) {
+                    var r = Transforms.TransformSyntaxNode(( SyntaxNode ) value);
+                    return JsonSerializer.Serialize ( r ) ;
+                }
             }
             catch ( Exception ex )
             {

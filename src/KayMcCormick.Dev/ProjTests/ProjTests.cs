@@ -66,7 +66,6 @@ namespace ProjTests
         private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture    _loggingFixture ;
         [ UsedImplicitly ] private readonly ProjectFixture _projectFixture ;
-        private List<Action> _finalizers = new List < Action > ();
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
@@ -589,17 +588,7 @@ namespace ProjTests
         {
             // _loggingFixture?.Dispose ( ) ;
 
-            foreach ( var finalizer in _finalizers )
-            {
-                try
-                {
-                    finalizer ( ) ;
-                }
-                catch ( Exception ex )
-                {
-                    Logger.Error ( ex , ex.ToString ( ) ) ;
-                }
-            }
+
             _loggingFixture.SetOutputHelper(null);
         }
 

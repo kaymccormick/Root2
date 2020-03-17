@@ -25,6 +25,7 @@ namespace KayMcCormick.Lib.Wpf
                 return d ;
             } catch(Exception )
             {
+                throw ;
             }
 
             return d ;

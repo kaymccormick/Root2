@@ -272,18 +272,20 @@ namespace WpfApp.Proxy
         private static string MethodSpec ( IInvocation invocation )
         {
             var declType = invocation.Method.DeclaringType ;
-            var formatTyp = FormatTyp ( declType ) ;
-            var type = invocation.TargetType ;
-            var typ = FormatTyp ( type ) ;
+            if ( declType != null ) {
+                var formatTyp = FormatTyp ( declType ) ;
+                var type = invocation.TargetType ;
+                var typ = FormatTyp ( type ) ;
 
-            var m = " " + invocation.Method.Name ;
-            if ( invocation.Method.IsSpecialName
-                 && invocation.Method.Name.StartsWith ( "get_" , StringComparison.InvariantCulture) )
-            {
-                m = $"𝜙 {invocation.Method.Name.Substring ( 4 )}" ;
+                var m = " " + invocation.Method.Name ;
+                if ( invocation.Method.IsSpecialName
+                     && invocation.Method.Name.StartsWith ( "get_" , StringComparison.InvariantCulture) )
+                {
+                    m = $"𝜙 {invocation.Method.Name.Substring ( 4 )}" ;
+                }
+
+                return ( declType == type ? $"{formatTyp,33}" : $"{formatTyp,16} {typ,16}" ) + " " + m ;
             }
-
-            return ( declType == type ? $"{formatTyp,33}" : $"{formatTyp,16} {typ,16}" ) + " " + m ;
         }
 
         /// <summary>Intercepts the specified invocation.</summary>
@@ -466,7 +468,7 @@ namespace WpfApp.Proxy
                                     foreach ( var constructorInfo in r.GetType ( ).GetConstructors ( ) )
                                     {
                                         writeLine (
-                                                   FormatTyp ( constructorInfo.DeclaringType )
+                                                   FormatTyp ( constructorInfo.DeclaringType ?? throw new InvalidOperationException ( ) )
                                                    + " ( "
                                                    + string.Join (
                                                                   " , "

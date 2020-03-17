@@ -43,6 +43,8 @@ namespace ProjLib
 #pragma warning disable CS0169 // The field 'LogInvocationSpan._getResource' is never used
         private Func < object , object > _getResource ;
 #pragma warning restore CS0169 // The field 'LogInvocationSpan._getResource' is never used
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private string                   _displayString ;
     }
 }

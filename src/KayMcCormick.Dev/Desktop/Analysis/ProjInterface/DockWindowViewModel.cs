@@ -13,6 +13,7 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using Autofac.Features.Metadata ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Lib.Wpf ;
 

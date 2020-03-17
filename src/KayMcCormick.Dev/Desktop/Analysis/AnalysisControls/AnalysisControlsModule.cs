@@ -14,6 +14,7 @@ using AnalysisControls.Interfaces ;
 using AnalysisControls.ViewModels ;
 using AnalysisControls.Views ;
 using Autofac ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Lib.Wpf ;
 using ProjLib.Interfaces ;

@@ -38,36 +38,37 @@ namespace KayMcCormick.Lib.Wpf
         
         private ILifetimeScope scope ;
         private readonly ApplicationInstance appInst ;
+        private EventLog _eventLog ;
 #if COMMANDLINE
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
-        protected BaseApp ( ) {
-            using ( EventLog e = new EventLog ( "Application" ) )
+        protected BaseApp ( )
+        {
+            _eventLog = new EventLog ( "Application" ) ;
+            _eventLog.Source = "Application" ;
+            var configs = ApplyConfiguration ( ) ;
+            appInst = new ApplicationInstance (
+                                               message => {
+                                                   if ( _eventLog != null )
+                                                   {
+                                                       _eventLog.WriteEntry (
+                                                                             message
+                                                                           , EventLogEntryType
+                                                                                .Information
+                                                                            ) ;
+                                                   }
+                                               }
+                                             , configs
+                                              ) ;
+            foreach ( var myJsonLayout in LogManager
+                                         .Configuration.AllTargets.OfType < TargetWithLayout > ( )
+                                         .Select ( t => t.Layout )
+                                         .OfType < MyJsonLayout > ( ) )
             {
-                e.Source = "Application" ;
-                var configs = ApplyConfiguration();
-                appInst = new ApplicationInstance (
-                                                   message => {
-                                                       if ( e != null )
-                                                       {
-                                                           e.WriteEntry (
-                                                                         message
-                                                                       , EventLogEntryType
-                                                                            .Information
-                                                                        ) ;
-                                                       }
-                                                   }, configs
-                                                  ) ;
-                foreach (var myJsonLayout in LogManager
-                                            .Configuration.AllTargets.OfType<TargetWithLayout>()
-                                            .Select(t => t.Layout)
-                                            .OfType<MyJsonLayout>())
-                {
-                    var options = myJsonLayout.CreateJsonSerializerOptions ( ) ;
-                    options.Converters.Add(new DataTemplateKeyConverter());
-                    myJsonLayout.Options = options ;
-                }
+                var options = myJsonLayout.CreateJsonSerializerOptions ( ) ;
+                options.Converters.Add ( new DataTemplateKeyConverter ( ) ) ;
+                myJsonLayout.Options = options ;
             }
         }
 
@@ -137,7 +138,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             base.OnExit ( e ) ;
             appInst.Dispose();
-
+            _eventLog?.Dispose();
 
         }
 

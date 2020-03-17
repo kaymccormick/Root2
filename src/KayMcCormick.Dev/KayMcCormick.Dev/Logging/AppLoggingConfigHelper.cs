@@ -28,12 +28,10 @@ using System.Runtime.InteropServices ;
 using System.Runtime.Serialization ;
 using System.Security ;
 using System.Security.Permissions ;
-using System.ServiceModel ;
 using System.Text ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
-using Castle.Core.Internal ;
 using NLog.Internal.Fakeables ;
 using NLog.LayoutRenderers ;
 #if ENABLE_WCF_TARGET
@@ -160,6 +158,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public static Target ServiceTarget { get ; private set ; }
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
@@ -557,18 +556,39 @@ namespace KayMcCormick.Dev.Logging
                                      ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static string ConsoleTargetName => _consoleTargetName ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static string EventLogTargetName => _eventLogTargetName ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static MyCacheTarget2 CacheTarget2 => _cacheTarget2 ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static UdpClient UdpClient => _udpClient ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static IPEndPoint IpEndPoint => _ipEndPoint ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Layout XmlEventLayout => _xmlEventLayout ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static LogDelegates.LogMethod ProtoLogDelegate => _protoLogDelegate ;
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
@@ -773,7 +793,6 @@ namespace KayMcCormick.Dev.Logging
                 ProtoLogDelegate ( ex.ToString ( ) ) ;
             }
 
-            ;
             return null ;
         }
 
@@ -1114,12 +1133,27 @@ namespace KayMcCormick.Dev.Logging
         private static extern void OutputDebugString ( string lpOutputString ) ;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogConfigurationException : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public LogConfigurationException ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public LogConfigurationException ( string message ) : base ( message ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public LogConfigurationException ( string message , Exception innerException ) : base (
                                                                                                message
                                                                                              , innerException
@@ -1127,6 +1161,11 @@ namespace KayMcCormick.Dev.Logging
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected LogConfigurationException (
             [ NotNull ] SerializationInfo info
           , StreamingContext              context

@@ -16,7 +16,13 @@ namespace AnalysisControls.Views
         private void Selector_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
         {
             var v =TryFindResource("Root") as CollectionViewSource;
-            v.View.MoveCurrentTo ( e.AddedItems[ 0 ] ) ;
+            if ( v != null )
+            {
+                if ( v.View != null )
+                {
+                    v.View.MoveCurrentTo ( e.AddedItems[ 0 ] ) ;
+                }
+            }
         }
     }
 }

@@ -12,7 +12,6 @@
 using Common.Logging ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.ServiceImpl ;
 using LeafHVA1 ;
 using NLog ;
 using NLog.Fluent ;
@@ -30,6 +29,7 @@ using System.ServiceModel.Channels ;
 using System.Threading ;
 using System.Timers ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.ServiceImpl ;
 using NLog.LogReceiverService ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;

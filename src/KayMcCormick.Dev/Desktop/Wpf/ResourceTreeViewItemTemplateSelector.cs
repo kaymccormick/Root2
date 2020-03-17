@@ -33,7 +33,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
 
                 var dt = dType.GetInterfaces ( )
-                              .Select ( x => Tuple.Create < Type , FrameworkElement , object > ( x , fe , fe.TryFindResource ( x ) ) )
+                              .Select ( x => Tuple.Create ( x , fe , fe.TryFindResource ( x ) ) )
                               .Where ( Predicate )
                               .Select ( tuple => tuple.Item3 )
                               .OfType < DataTemplate > ( )

@@ -65,6 +65,7 @@ namespace ProjLib
             KeyValuePair < object , IDictionary < object , ISpanViewModel > > item
         )
         {
+            // ReSharper disable once AssignNullToNotNullAttribute
             return _dictionaryImplementation.Remove ( item ) ;
         }
 
@@ -109,7 +110,11 @@ namespace ProjLib
                 this[ node ] = x ;
             }
 
-            x[ key ] = spanObject ;
+            if ( x != null )
+            {
+                x[ key ] = spanObject ;
+            }
+
             if(!_dict2.TryGetValue(key, out var xx))
             {
                 _dict2[ key ] = xx = new Dictionary < object , ISpanViewModel > ();

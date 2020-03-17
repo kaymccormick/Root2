@@ -410,7 +410,7 @@ else
         /// </summary>
         public class IdGeneratorModule : Module
         {
-            private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+            private new static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
             /// <summary>Gets or sets the default object.</summary>
             /// <value>The default object.</value>

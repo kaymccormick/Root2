@@ -59,7 +59,7 @@ namespace Tests.Main.UI
         [ WpfFact ]
         public void ValueContentCellTest ( )
         {
-            App app = new App ( null ) ;
+            App app = new App ( ) ;
             app.InitializeComponent();
 
             AllResourcesTree tree = new AllResourcesTree(new AllResourcesTreeViewModel());
