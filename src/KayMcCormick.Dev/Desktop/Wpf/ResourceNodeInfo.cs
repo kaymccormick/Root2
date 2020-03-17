@@ -13,7 +13,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Text.Json.Serialization ;
 
-namespace WpfApp
+namespace KayMcCormick.Lib.Wpf
 {
     public class ResourceNodeInfo
     {
@@ -33,5 +33,9 @@ namespace WpfApp
 
         [JsonIgnore]
         public object Key { get { return _key ; } set { _key = value ; } }
+
+        public object TemplateKey { get => _templateKey ; set => _templateKey = value ; }
+
+        private object _templateKey ;
     }
 }

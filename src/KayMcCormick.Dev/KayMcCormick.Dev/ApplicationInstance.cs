@@ -6,7 +6,12 @@ using KayMcCormick.Dev.Logging;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Configuration ;
+using System.Diagnostics ;
 using System.Linq;
+using System.Reflection ;
+using Autofac.Extras.AttributeMetadata ;
+using KayMcCormick.Dev.Attributes ;
 using Microsoft.Extensions.DependencyInjection ;
 
 namespace KayMcCormick.Dev
@@ -50,19 +55,27 @@ namespace KayMcCormick.Dev
             {
                 configs = Array.Empty < object > ( ) ;
             }
-
-            // The Microsoft.Extensions.DependencyInjection.ServiceCollection
-            // has extension methods provided by other .NET Core libraries to
-            // regsiter services with DI.
             var serviceCollection = new ServiceCollection();
 
-            // The Microsoft.Extensions.Logging package provides this one-liner
-            // to add logging services.
             serviceCollection.AddLogging();
+
+            var loadedConfigs = LoadConfiguration (AppLoggingConfigHelper.ProtoLogDelegate ) ;
+            configs = configs.Append ( loadedConfigs ) ;
 
             InstanceRunGuid = Guid.NewGuid();
             ILoggingConfiguration config =
                 configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
+
+            LogManager.EnableLogging();
+            if ( LogManager.IsLoggingEnabled ( ) )
+            {
+                Debug.WriteLine ( "logging enableD" ) ;
+            }
+            foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+            {
+                Debug.WriteLine ( configurationAllTarget ) ;
+            }
+
             _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod, config);
             GlobalDiagnosticsContext.Set(
                                          "ExecutionContext"
@@ -74,7 +87,8 @@ namespace KayMcCormick.Dev
                                         );
 
             GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);
-            
+            _logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
+
         }
 
         /// <summary>
@@ -114,6 +128,7 @@ namespace KayMcCormick.Dev
         private IContainer BuildContainer()
         {
             var builder1 = new ContainerBuilder();
+            builder1.RegisterModule < AttributedMetadataModule > ( ) ;
             foreach (var module in _modules)
             {
                 _logger.Debug("Registering module {module}", module.ToString());
@@ -217,6 +232,90 @@ namespace KayMcCormick.Dev
             AppLoggingConfigHelper.ServiceTarget?.Dispose();
 #endif
         }
+
+        protected List<object> LoadConfiguration( [ NotNull ] LogDelegates.LogMethod logMethod2)
+        {
+            if ( logMethod2 == null )
+            {
+                throw new ArgumentNullException ( nameof ( logMethod2 ) ) ;
+            }
+
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            
+            logMethod2?.Invoke($"Using {config.FilePath} for configuration");
+            var type1 = typeof(ContainerHelperSection);
+
+            try
+            {
+                var sections = config.Sections;
+                foreach (ConfigurationSection configSection in sections)
+                {
+                    try
+                    {
+                        var type = configSection.SectionInformation.Type;
+                        var sectionType = Type.GetType(type);
+                        if (sectionType != null
+                             && sectionType.Assembly == type1.Assembly)
+                        {
+                            logMethod2("Found section " + sectionType.Name);
+                            var at = sectionType.GetCustomAttribute<ConfigTargetAttribute>();
+                            var configTarget = Activator.CreateInstance(at.TargetType);
+                            var infos = sectionType
+                                       .GetMembers()
+                                       .Select(
+                                                info => Tuple.Create(
+                                                                      info
+                                                                    , info
+                                                                         .GetCustomAttribute<
+                                                                              ConfigurationPropertyAttribute
+                                                                          >()
+                                                                     )
+                                               )
+                                       .Where(tuple => tuple.Item2 != null)
+                                       .ToArray();
+                            foreach (var (item1, _) in infos)
+                            {
+                                if (item1.MemberType == MemberTypes.Property)
+                                {
+                                    var attr = at.TargetType.GetProperty(item1.Name);
+                                    try
+                                    {
+                                        var configVal =
+                                            ((PropertyInfo)item1).GetValue(configSection);
+                                        if (attr != null)
+                                        {
+                                            attr.SetValue(configTarget, configVal);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        logMethod2?.Invoke(
+                                                            $"Unable to set property {attr.Name}: {ex.Message}"
+                                                           );
+                                    }
+                                }
+                            }
+
+
+                            ConfigSettings.Add(configTarget);
+                        }
+                    }
+                    catch (Exception ex1)
+                    {
+                        Logger.Error(ex1, ex1.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logMethod2(ex.Message);
+            }
+
+            return ConfigSettings;
+        }
+
+        private List<object> ConfigSettings { get; } = new List<object>();
+
         #region IDisposable
         /// <summary>
         /// 

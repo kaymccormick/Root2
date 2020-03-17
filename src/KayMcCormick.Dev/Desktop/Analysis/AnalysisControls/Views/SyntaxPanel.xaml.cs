@@ -5,6 +5,8 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using AnalysisControls.Interfaces ;
 using AnalysisControls.ViewModels ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -15,6 +17,7 @@ namespace AnalysisControls.Views
     /// <summary>
     /// Interaction logic for SyntaxPanel.xaml
     /// </summary>
+    [TitleMetadata("Syntax panel")]
     public partial class SyntaxPanel : UserControl, IView <ISyntaxPanelViewModel>, IView1
     {
         private ISyntaxPanelViewModel viewModel = new SyntaxPanelViewModel();

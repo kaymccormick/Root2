@@ -36,7 +36,6 @@
     </Grid.RowDefinitions>
     <TabControl Visibility="Visible" Grid.Column="0" Grid.Row="0" Style="{StaticResource TabControlStyle1}">
       <TabItem Header="Resources" HorizontalAlignment="Right">
-        <controls:AllResourcesTree/>
       </TabItem>
       <TabItem Header="ResolveServiceList">
         <Grid>
@@ -52,9 +51,6 @@
       </TabItem>
       <TabItem Header="Registrations">
         <controls:Registrations Loaded="Registrations_Loaded">
-          <wpf:AttachedProperties.LifetimeScope>
-            <Binding ElementName="mainWindow" Path="(wpf:AttachedProperties.LifetimeScope)" />
-          </wpf:AttachedProperties.LifetimeScope>
         </controls:Registrations>
       </TabItem>
       <TabItem Header="X">

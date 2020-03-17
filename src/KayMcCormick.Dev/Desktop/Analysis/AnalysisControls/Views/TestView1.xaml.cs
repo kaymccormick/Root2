@@ -1,11 +1,12 @@
 ﻿using System.Windows.Controls ;
+using KayMcCormick.Lib.Wpf ;
 using ProjLib.Interfaces ;
 
 namespace AnalysisControls.Views
 {
     /// <summary>
     /// Interaction logic for TestView1.xaml
-    /// </summary>
+    [TitleMetadata("TEst View 1")]
     public partial class TestView1 : UserControl, IView1
     {
         private string _viewTitle = "Test View 1";

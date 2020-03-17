@@ -2,6 +2,8 @@
 using System.Windows.Input ;
 using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 using ProjLib.Interfaces ;
@@ -17,6 +19,7 @@ namespace AnalysisControls.Views
     /// <summary>
     /// Interaction logic for CompilationView.xaml
     /// </summary>
+    [TitleMetadata("Compilation View")]
     public partial class CompilationView : Window, IView <ICompilationViewModel>, IView1
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

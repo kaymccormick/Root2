@@ -503,6 +503,10 @@ namespace WpfApp.Application
         {
             var msg =
                 $"{nameof ( Application_DispatcherUnhandledException )}: {e.Exception.Message}" ;
+            if ( DebugLog == null )
+            {
+                DebugLog = message => System.Diagnostics.Debug.WriteLine ( message ) ;
+            }
             DebugLog (msg ) ;
             var inner = e.Exception.InnerException ;
             var seen = new HashSet < object > ( ) ;

@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev
 {
@@ -51,6 +52,7 @@ namespace KayMcCormick.Dev
         [UsedImplicitly]
         public static MyCacheTarget2 GetInstance(int defaultMaxCount)
         {
+            
             var target =
                 (MyCacheTarget2)LogManager.Configuration.AllTargets.FirstOrDefault(
                                                                                       t => t is

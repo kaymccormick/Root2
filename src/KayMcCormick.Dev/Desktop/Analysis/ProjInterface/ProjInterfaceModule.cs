@@ -11,7 +11,9 @@
 #endregion
 using System.Collections.Generic;
 using System.Threading.Tasks ;
+using System.Windows.Controls ;
 using Autofac;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis;
 
 using NLog;
@@ -61,6 +63,7 @@ namespace ProjInterface
             builder.RegisterType<StubWorkspaceManager>().As<IWorkspaceManager>();
 
 #endif
+            builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
             builder.Register (
                               ( context , parameters )
                                   => new ProjMainWindow (
@@ -70,6 +73,13 @@ namespace ProjInterface
                                                         )
                              )
                    .AsSelf ( ) ;
+            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
+            builder.RegisterType < AllResourcesTree > ( )
+                   .As < UserControl > ( )
+                   .AsSelf ( )
+                   .As < IView1 > ( ) ;
+            builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
+            
         }
 #endregion
     }

@@ -44,7 +44,7 @@ namespace KayMcCormick.Dev.Logging
         /// </remarks>
         public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
         {
-            // _useLogMethod ( $"Unproxyable: {memberInfo.Name}" );
+            _useLogMethod ( $"Unproxyable: {memberInfo.Name}" );
         }
 
         /// <summary>

@@ -6,6 +6,8 @@ using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
+using AnalysisControls ;
+using AnalysisControls.Interfaces ;
 using AnalysisFramework.SyntaxTransform ;
 using Autofac ;
 using Autofac.Core ;
@@ -30,6 +32,9 @@ namespace ProjInterface
 {
     public partial class ProjInterfaceApp : BaseApp
     {
+        static ProjInterfaceApp()
+        {
+        }
         private readonly List < IModule > appModules = new List < IModule > ( ) ;
         private new static readonly Logger           Logger     = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -40,7 +45,7 @@ private Type[] _optionTypes ;
         public ProjInterfaceApp ( )
 
         {
-            PresentationTraceSources.Refresh();
+            //PresentationTraceSources.Refresh();
             foreach (var myJsonLayout in LogManager
                                         .Configuration.AllTargets.OfType<TargetWithLayout>()
                                         .Select(t => t.Layout)
@@ -133,7 +138,7 @@ private Type[] _optionTypes ;
             }
 #endif
 
-            var windowType = typeof ( ProjMainWindow ) ;
+            var windowType = typeof ( Window1 ) ;
             try
             {
                 var mainWindow = ( Window ) lifetimeScope.Resolve ( windowType ) ;

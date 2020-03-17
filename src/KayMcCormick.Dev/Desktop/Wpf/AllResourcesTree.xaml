@@ -3,9 +3,11 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:local="clr-namespace:WpfApp"
+  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
   Background="AliceBlue"
-  x:Class="WpfApp.Controls.AllResourcesTree"
+  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
+  x:Class="KayMcCormick.Lib.Wpf.AllResourcesTree"
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
@@ -245,7 +247,7 @@
       </TextBlock>
     </HierarchicalDataTemplate>
     <HierarchicalDataTemplate
-      DataType="{x:Type local:ResourceNodeInfo}"
+      DataType="{x:Type wpf:ResourceNodeInfo}"
       ItemsSource="{Binding Path=Children}">
       <ContentControl Content="{Binding Key}">
         <ContentControl.ToolTip>
@@ -254,9 +256,12 @@
         </ContentControl.ToolTip>
       </ContentControl>
     </HierarchicalDataTemplate>
-    <local:ResourceTreeViewItemTemplateSelector 
+    <DataTemplate x:Key="WindowTemplate">
+      <Image Source="{Binding Path=Image}"/>
+    </DataTemplate>
+    <wpf:ResourceTreeViewItemTemplateSelector 
       x:Key="ResourceTreeViewItemTemplateSelector" />
-    <local:ResourceViewItemContainerStyleSelector
+    <wpf:ResourceViewItemContainerStyleSelector
       x:Key="ResourcereeViewItemContainerStyleSelector" />
     <Style x:Key="DefaultResourceNodeInfoStyle" BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="TreeViewItem">
       <Setter Property="Control.BorderBrush" Value="Green"/>
@@ -264,6 +269,8 @@
       <Setter Property="Control.Margin" Value="1"/>
       <Setter Property="Control.Padding" Value="2"/>
     </Style>
+    <wpf:ResourceDetailTemplateSelector
+      x:Key="ResourceDetailTemplateSelector" />
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
@@ -275,7 +282,7 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <TreeView ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}" ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}" Name="tv" Grid.Row="0" Grid.Column="0"
-              ItemsSource="{Binding Source={x:Static Application.Current},Path=AllResourcesCollection}"
+              ItemsSource="{Binding Path=AllResourcesCollection}"
               Margin="0,0,0,0.2"/>
 
     <Grid Grid.Column="1" Grid.Row="0"
@@ -306,7 +313,7 @@
         <TextBlock Margin="0,0,20,0" Text="Value Type" Grid.Row="2" Grid.Column="0"/>
         <ContentControl Grid.Row="2" Grid.Column="1" Content="{Binding Data,Converter={StaticResource GetTypeConverter}}"/>
         <TextBlock Margin="0,0,20,0" Text="Value" Grid.Row="3" Grid.Column="0"/>
-        <ContentControl Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
+        <ContentControl ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"  Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
 </Grid>
     </Grid>
     <Grid Grid.Row="1" Grid.Column="0">

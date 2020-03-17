@@ -1,4 +1,4 @@
-﻿namespace ProjLib.Interfaces
+﻿namespace KayMcCormick.Lib.Wpf
 {
     public interface IView1
     {

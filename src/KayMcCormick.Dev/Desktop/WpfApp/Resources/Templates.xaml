@@ -254,7 +254,7 @@
     <controls:TypeControl MinWidth="200"
                           Target="{Binding ElementName=frame}">
       <wpfApp:Props.RenderedType>
-        <Binding Path="." />
+        <Binding/>
       </wpfApp:Props.RenderedType>
     </controls:TypeControl>
   </DataTemplate>

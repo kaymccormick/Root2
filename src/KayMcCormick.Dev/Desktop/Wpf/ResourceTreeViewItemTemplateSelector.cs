@@ -4,7 +4,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using NLog ;
 
-namespace WpfApp
+namespace KayMcCormick.Lib.Wpf
 {
     public class ResourceTreeViewItemTemplateSelector : DataTemplateSelector
 
@@ -33,7 +33,7 @@ namespace WpfApp
                 }
 
                 var dt = dType.GetInterfaces ( )
-                              .Select ( x => Tuple.Create ( x , fe , fe.TryFindResource ( x ) ) )
+                              .Select ( x => Tuple.Create < Type , FrameworkElement , object > ( x , fe , fe.TryFindResource ( x ) ) )
                               .Where ( Predicate )
                               .Select ( tuple => tuple.Item3 )
                               .OfType < DataTemplate > ( )
