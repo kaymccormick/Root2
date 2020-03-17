@@ -376,7 +376,7 @@ namespace LeafService
         {
             Logger.Debug ( "Timer elapsed" ) ;
             var proc = Process.GetProcessById ( _addInProcess.ProcessId ) ;
-            Logger.Warn ( "proc is {proc}" ) ;
+            Logger.Warn ( "proc is {proc}", proc ) ;
         }
 
         private void EOnEntryWritten ( object sender , EntryWrittenEventArgs e )
