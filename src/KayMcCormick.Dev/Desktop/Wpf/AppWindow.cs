@@ -5,10 +5,10 @@ namespace KayMcCormick.Lib.Wpf
 {
     public class AppWindow : Window
     {
-        public AppWindow ( ) {
+        protected AppWindow ( ) {
         }
 
-        public AppWindow (ILifetimeScope lifetimeScope )
+        protected AppWindow (ILifetimeScope lifetimeScope )
         {
             SetValue ( AttachedProperties.LifetimeScopeProperty , lifetimeScope ) ;
         }

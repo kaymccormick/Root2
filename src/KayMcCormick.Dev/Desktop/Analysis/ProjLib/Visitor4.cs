@@ -29,7 +29,7 @@ namespace ProjLib
         private int  _curLine         = - 1 ;
         private bool _isAtStartOfLine = true ;
 #if DEBUG
-        private readonly static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 #else
         private static Logger Logger = LogManager.CreateNullLogger();

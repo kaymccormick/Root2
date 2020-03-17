@@ -410,6 +410,7 @@ else
         /// </summary>
         public class IdGeneratorModule : Module
         {
+            // ReSharper disable once MemberHidesStaticFromOuterClass
             private new static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
             /// <summary>Gets or sets the default object.</summary>

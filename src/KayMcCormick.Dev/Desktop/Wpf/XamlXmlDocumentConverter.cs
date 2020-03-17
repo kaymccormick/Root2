@@ -27,8 +27,6 @@ namespace KayMcCormick.Lib.Wpf
             {
                 throw ;
             }
-
-            return d ;
         }
 
 

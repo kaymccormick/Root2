@@ -10,7 +10,6 @@ namespace KayMcCormick.Lib.Wpf
 
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        public ResourceTreeViewItemTemplateSelector ( ) { }
 
         #region Overrides of DataTemplateSelector
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
@@ -18,8 +17,7 @@ namespace KayMcCormick.Lib.Wpf
             Logger.Debug ( "item is {item}" , item ) ;
             var fe = ( FrameworkElement ) container ;
 
-            var node = item as ResourceNodeInfo ;
-            if ( node != null )
+            if ( item is ResourceNodeInfo node )
             {
                 var dType = node.Data.GetType ( ) ;
                 var dataTemplateKey = new DataTemplateKey(dType) ;
@@ -50,7 +48,7 @@ namespace KayMcCormick.Lib.Wpf
             return dt2 ;
         }
 
-        private bool Predicate(Tuple<Type, FrameworkElement, object> arg)
+        private static bool Predicate(Tuple<Type, FrameworkElement, object> arg)
         {
             var (item1 , item2 , item3) = arg ;
             Logger.Debug ( "{type} {fe} {resource}" , item1 , item2.ToString() , item3?.ToString ( ) ) ;

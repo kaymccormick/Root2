@@ -56,7 +56,7 @@ namespace KayMcCormick.Lib.Wpf
         public ObservableCollection<ResourceNodeInfo> AllResourcesCollection
             => _allResourcesCollection;
 
-        private void AddResourceNodeInfos(ResourceNodeInfo appResources)
+        private static void AddResourceNodeInfos(ResourceNodeInfo appResources)
         {
             var res = (ResourceDictionary)appResources.Data;
             appResources.SourceUri = res.Source;

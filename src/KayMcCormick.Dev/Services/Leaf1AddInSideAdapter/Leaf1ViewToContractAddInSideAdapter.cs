@@ -19,7 +19,7 @@ namespace Leaf1AddInSideAdapter
         private ILogger _logger ;
 #pragma warning restore 169
 
-        public Leaf1ViewToContractAddInSideAdapter ( IService1 leaf1 ) : base ( )
+        public Leaf1ViewToContractAddInSideAdapter ( IService1 leaf1 )
         {
             _contract = leaf1 ;
 //            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( ) ;

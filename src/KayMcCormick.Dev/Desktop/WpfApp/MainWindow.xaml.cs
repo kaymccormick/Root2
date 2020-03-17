@@ -83,6 +83,7 @@ namespace WpfApp
 
         }
 
+        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
         public ObservableCollection < ResourceNodeInfo > AllResources { get ; } =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 

@@ -230,7 +230,7 @@ namespace ProjInterface
             }
             else
             {
-                var path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
+                const string path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
                                                                                    path
@@ -445,7 +445,7 @@ namespace ProjInterface
                         {
                             if ( dd.ContainsKey ( q.Name ) )
                             {
-                                Debug.WriteLine ( "Uh oh key exists " + q.Name ) ;
+                                System.Diagnostics.Debug.WriteLine ( "Uh oh key exists " + q.Name ) ;
                             }
                             else
                             {

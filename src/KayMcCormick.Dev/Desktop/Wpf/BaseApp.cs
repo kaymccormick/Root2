@@ -114,7 +114,7 @@ namespace KayMcCormick.Lib.Wpf
 
         protected ILogger Logger { get ; set ; }
 
-        protected void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
+        protected static void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
         {
             var code = Convert.ChangeType ( exitCode , exitCode.GetTypeCode ( ) ) ;
             if ( code != null )
@@ -187,7 +187,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         }
         #endregion
 
-        protected List < object > ApplyConfiguration ( )
+        protected IEnumerable < object > ApplyConfiguration ( )
         {
             var config = ConfigurationManager.OpenExeConfiguration ( ConfigurationUserLevel.None ) ;
             LogDelegates.LogMethod logMethod2 = DebugLog ?? (m => Debug.WriteLine(m));

@@ -98,12 +98,12 @@ namespace AnalysisFramework.LogUsage
         public const            string LoggerClassName     = "Logger";
         private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName;
 
-        public static readonly string
-            ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
+        public const string ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
 
         private const string NLogNamespace = "NLog" ;
 
 
+        // ReSharper disable once SuggestBaseTypeForParameter
         private static bool CheckSymbol ( IMethodSymbol methSym , params INamedTypeSymbol[] t1 )
         {
             var cType = methSym.ContainingType ;
@@ -111,6 +111,7 @@ namespace AnalysisFramework.LogUsage
         }
 
         private static bool CheckTypeSymbol (
+            // ReSharper disable once SuggestBaseTypeForParameter
             INamedTypeSymbol          cType
           , params INamedTypeSymbol[] t1
         )

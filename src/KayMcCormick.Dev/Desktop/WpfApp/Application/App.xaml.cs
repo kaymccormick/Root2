@@ -229,7 +229,7 @@ namespace WpfApp.Application
             }
         }
 
-        private Assembly CdOnResourceResolve ( object sender , ResolveEventArgs args )
+        private static Assembly CdOnResourceResolve ( object sender , ResolveEventArgs args )
         {
             return null ;
         }

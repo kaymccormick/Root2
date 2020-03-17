@@ -15,8 +15,7 @@ namespace AnalysisControls.Views
 
         private void Selector_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
         {
-            var v =TryFindResource("Root") as CollectionViewSource;
-            if ( v != null )
+            if ( TryFindResource("Root") is CollectionViewSource v )
             {
                 if ( v.View != null )
                 {

@@ -153,7 +153,7 @@ namespace Tests.Main
         private void CheckDependencyProperty(
             DependencyProperty prop
           , FieldInfo fieldInfo
-          , List<PropInfo> props
+          , ICollection < PropInfo > props
           , object value
         )
         {

@@ -32,7 +32,6 @@ namespace AnalysisControls.Converters
             if ( value == null )
             {
                 return null ;
-                throw new ArgumentNullException ( nameof ( value ) ) ;
             }
 
             Logger.Debug (

@@ -5,17 +5,16 @@ using NLog ;
 
 namespace AnalysisControls
 {
-    static internal class ToolTips
+    internal static class ToolTips
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public static UIElement MakeToolTipContent ( object resource )
         {
-            var displayString = "" ;
+            var displayString = String.Empty ;
             var textBlock = new TextBlock ( ) { Text = displayString } ;
 
-            var contentPresenter = new ContentControl ( ) ;
-            contentPresenter.Content = resource ;
+            var contentPresenter = new ContentControl { Content = resource } ;
             logger
                       .Info (
                              "Resource is {Resource}{t}"

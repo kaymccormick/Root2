@@ -13,15 +13,7 @@ namespace ProjLib
 
         public static DesignRuntimeStatus Instance
         {
-            get
-            {
-                if ( _instance == null )
-                {
-                    _instance = new DesignRuntimeStatus ( ) ;
-                }
-
-                return _instance ;
-            }
+            get { return _instance ?? ( _instance = new DesignRuntimeStatus ( ) ) ; }
         }
 
         private AppStatus _status ;

@@ -24,7 +24,7 @@ namespace ProjInterface
         )
         {
             IMruItem item = ( IMruItem ) value ;
-            if ( item.Exists )
+            if ( item != null && item.Exists )
             {
                 return Brushes.Aquamarine ;
             }

@@ -129,7 +129,7 @@ namespace AnalysisControls.Views
             
         }
 
-        private string DebugRepr ( object viewCurrentItem )
+        private static string DebugRepr ( object viewCurrentItem )
         {
             string reprVal;
             if (viewCurrentItem is SyntaxNode sn)

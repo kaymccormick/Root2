@@ -141,7 +141,7 @@ namespace KayMcCormick.Dev
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void DebugServices(IContainer c)
+        private void DebugServices(IComponentContext c)
         {
             foreach (var componentRegistryRegistration in c.ComponentRegistry.Registrations)
             {
