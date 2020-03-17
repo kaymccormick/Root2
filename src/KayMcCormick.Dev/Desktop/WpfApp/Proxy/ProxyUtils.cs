@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if false
+#region header
 // Kay McCormick (mccor)
 // 
 // PsProject
@@ -814,3 +815,4 @@ namespace WpfApp.Proxy
         public MethodInfo Info { get ; }
     }
 }
+#endif

@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using NLog;
 
 namespace KayMcCormick.Dev
 {

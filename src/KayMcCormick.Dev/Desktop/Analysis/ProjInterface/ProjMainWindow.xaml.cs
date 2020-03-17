@@ -13,7 +13,6 @@ using System.Collections.Concurrent ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Globalization ;
 using System.IO ;
 using System.Linq;
@@ -24,12 +23,12 @@ using System.Text ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading ;
+using AnalysisControls.Views ;
 using AnalysisFramework.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;
@@ -156,7 +155,7 @@ namespace ProjInterface
             // ViewModel.BeginInit();
         }
 
-        private IWorkspacesViewModel _viewModel = null ;
+        private IWorkspacesViewModel _viewModel ;
 
         public event RoutedEventHandler TaskCompleted
         {
@@ -177,28 +176,6 @@ namespace ProjInterface
         private ObservableCollection<TaskWrap> _obsTasks = new ObservableCollection < TaskWrap > ();
         private IValueConverter _propConverter = new PropertyConverter() ;
 
-        public ActionBlock < Workspace > WorkspaceActionBlock => null ;
-
-        private static bool Fault ( Task task )
-        {
-            if ( task.Exception != null )
-            {
-                Logger.Error ( task.Exception , "faulted: {msg}" , task.Exception.ToString ( ) ) ;
-            }
-
-            return false ;
-        }
-
-        private void ContinuationFunction ( Task task )
-        {
-            if ( task.IsFaulted )
-            {
-                Logger.Error ( task.Exception , "Faulted" ) ;
-
-            }
-            else { Logger.Info ( "successful" ) ; }
-        }
-
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
 
@@ -206,10 +183,20 @@ namespace ProjInterface
 
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            if ( e.OriginalSource is ListView ) {
-                var v = _projectBrowser.TryFindResource ( "Root" ) as CollectionViewSource ;
+            ProjectBrowser projectBrowser = ( ProjectBrowser ) FindName ( "_projectBrowser" ) ;
+            if ( e.OriginalSource is ListView )
+            {
+                var v = CollectionViewSource.GetDefaultView (
+                                                             projectBrowser.ViewModel.RootCollection
+                                                            ) ;
+                if ( v == null )
+                {
+                    throw new ArgumentNullException (
+                                                     nameof ( CollectionViewSource.GetDefaultView )
+                                                    ) ;
+                }
                 if ( v != null ) {
-                    var viewCurrentItem = v.View.CurrentItem ;
+                    var viewCurrentItem = v.CurrentItem ;
                     Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
                     Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
                     t.ContinueWith (
@@ -224,13 +211,14 @@ namespace ProjInterface
                                                                            ViewModel.LogInvocations.ToList (  ), jsonSerializerOptions));
                                     }
                                    ) ;
-                    TaskWrap tw = new TaskWrap ( t , "Analyze Command" ) ;
+                    var tw = new TaskWrap ( t , "Analyze Command" ) ;
                     AddTask ( t, tw ) ;
                 }
             }
             else
             {
-                const string path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
+
+            const string path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
                                                                  File.ReadAllText (
                                                                                    path
@@ -318,7 +306,7 @@ namespace ProjInterface
             }
         }
 
-        #region Implementation of IView1
+#region Implementation of IView1
         public string ViewTitle => "Main View" ;
 
         public ObservableCollection < TaskWrap > ObsTasks
@@ -326,7 +314,7 @@ namespace ProjInterface
             get => _obsTasks ;
             set => _obsTasks = value ;
         }
-        #endregion
+#endregion
 
         private void _projectBrowser_OnSelected ( object sender , RoutedEventArgs e )
         {
@@ -336,7 +324,7 @@ namespace ProjInterface
 
     internal class LogInvocationConverter : JsonConverter<ILogInvocation>
     {
-        #region Overrides of JsonConverter<ILogInvocation>
+#region Overrides of JsonConverter<ILogInvocation>
         public override ILogInvocation Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -367,7 +355,7 @@ namespace ProjInterface
             writer.WriteEndArray();
             writer.WriteEndObject();
         }
-        #endregion
+#endregion
     }
 
     internal interface ICompilationView
@@ -377,7 +365,7 @@ namespace ProjInterface
 
     internal class PropertyConverter : IValueConverter
     {
-        #region Implementation of IValueConverter
+#region Implementation of IValueConverter
         public object Convert (
             object      value
           , Type        targetType
@@ -478,7 +466,7 @@ namespace ProjInterface
 
 
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
-        #endregion
+#endregion
     }
 
     public class TaskWrap : INotifyPropertyChanged

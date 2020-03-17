@@ -9,8 +9,6 @@
 // 
 // ---
 #endregion
-using System.Configuration ;
-using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
 

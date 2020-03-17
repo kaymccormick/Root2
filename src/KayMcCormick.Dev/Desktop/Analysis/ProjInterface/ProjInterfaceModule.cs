@@ -74,6 +74,7 @@ namespace ProjInterface
                              )
                    .AsSelf ( ) ;
             builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
+            builder.RegisterType<ProjMainWindow>().AsSelf().As<IView1>();
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )

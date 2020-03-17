@@ -144,8 +144,7 @@
         </StatusBarItem>
     </StatusBar>
     </Border>
-    <views1:ProjectBrowser x:Name="_projectBrowser" Grid.Row="2" Grid.Column="0">
-    </views1:ProjectBrowser>
+    <ContentControl Content="{kmWpf:ResolveUiComponent views1:ProjectBrowser,Name=_projectBrowser}" Grid.Row="2" Grid.Column="0"/>
     <ListView Name="_eventView" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Visible" ItemsSource="{Binding Events}">
       <ListView.View>
         <GridView>

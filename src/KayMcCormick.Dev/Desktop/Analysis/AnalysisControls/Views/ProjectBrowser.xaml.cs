@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls ;
+﻿using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
+using ProjLib.Interfaces;
+using System.Windows.Controls ;
 using System.Windows.Data ;
 
 namespace AnalysisControls.Views
@@ -6,12 +9,20 @@ namespace AnalysisControls.Views
     /// <summary>
     /// Interaction logic for ProjectBrowser.xaml
     /// </summary>
-    public partial class ProjectBrowser : UserControl
+    [TitleMetadata("Project Browser")]
+    public partial class ProjectBrowser : UserControl, IView1, IView<IProjectBrowserViewModel>
     {
-        public ProjectBrowser()
+        private IProjectBrowserViewModel _viewModel;
+
+        public ProjectBrowser(IProjectBrowserViewModel viewModel)
         {
             InitializeComponent();
+            _viewModel = viewModel;
         }
+
+        public string ViewTitle => "Project Browser";
+
+        public IProjectBrowserViewModel ViewModel => _viewModel;
 
         private void Selector_OnSelectionChanged ( object sender , SelectionChangedEventArgs e )
         {

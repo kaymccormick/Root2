@@ -13,6 +13,7 @@ namespace KayMcCormick.Dev
         /// TODO Edit XML Comment Template for Intercept
         public void Intercept ( IInvocation invocation )
         {
+            // ReSharper disable once UnusedVariable
             var customAttributes = Attribute.GetCustomAttributes (
                                                                   invocation
                                                                      .GetConcreteMethodInvocationTarget ( )

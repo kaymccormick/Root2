@@ -137,7 +137,7 @@ namespace AnalysisFramework.LogUsage
 #if TRACE
                     if ( arg1sym != null )
                     {
-                        Logger.Trace ( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym ) ;
+                        Logger.Trace ( "{type} {symb}" , arg1sym.GetType ( ) , arg1sym?.ToDisplayString() ) ;
                     }
 #endif
 

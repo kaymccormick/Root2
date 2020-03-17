@@ -1,8 +1,6 @@
 #if ENABLE_BUILDERPROXY
 using Castle.DynamicProxy ;
 #endif
-using Module = Autofac.Module ;
-
 namespace KayMcCormick.Dev
 {
     /// <summary></summary>

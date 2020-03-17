@@ -37,12 +37,14 @@ namespace Tests.Main
         public void TestApplyConfiguration()
         {
             Logger.Error("woot");
-            using var app = new App();
-            Assert.NotNull(app);
-            Assert.Collection(
-                               app.ConfigSettings
-                             , o => Assert.IsType<ContainerHelperSettings>(o)
-                              );
+            using (var app = new App())
+            {
+                Assert.NotNull(app);
+                Assert.Collection(
+                                   app.ConfigSettings
+                                 , o => Assert.IsType<ContainerHelperSettings>(o)
+                                  );
+            }
         }
 
 

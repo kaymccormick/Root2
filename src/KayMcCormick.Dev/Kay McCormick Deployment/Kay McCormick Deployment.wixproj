@@ -156,6 +156,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\Services\Leaf1HostSideAdapter\Leaf1HostSideAdapter.csproj">
+      <Name>Leaf1HostSideAdapter</Name>
+      <Project>{04f7d174-201a-40b9-ba19-204499f38091}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\Services\LeafHVA1\Leaf1HVA.csproj">
       <Name>Leaf1HVA</Name>
       <Project>{b57cf9df-0446-40a7-aaba-1140fd3b5c79}</Project>
@@ -168,9 +176,10 @@
       <Name>LeafService</Name>
       <Project>{0f1983a4-f3a8-4340-8f91-1fea45b798fb}</Project>
       <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+      <DoNotHarvest>
+      </DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Symbols;Sources;Content;Satellites;Documents</RefProjectOutputGroups>
+      <RefTargetDir>LeafServiceDirectory</RefTargetDir>
     </ProjectReference>
     <ProjectReference Include="..\Services\ServiceAddIn1\Service1AddInView.csproj">
       <Name>Service1AddInView</Name>
@@ -182,6 +191,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixIIsExtension">
       <HintPath>$(WixExtDir)\WixIIsExtension.dll</HintPath>
       <Name>WixIIsExtension</Name>

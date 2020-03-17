@@ -36,7 +36,10 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public ILogger Logger => _logger ;
+        public ILogger Logger
+        {
+            get { return _logger ; }
+        }
 
         /// <summary>
         /// 
@@ -239,7 +242,7 @@ namespace KayMcCormick.Dev
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        protected List<object> LoadConfiguration( [ NotNull ] LogDelegates.LogMethod logMethod2)
+        private List<object> LoadConfiguration( [ NotNull ] LogDelegates.LogMethod logMethod2)
         {
             if ( logMethod2 == null )
             {
@@ -248,7 +251,7 @@ namespace KayMcCormick.Dev
 
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             
-            logMethod2?.Invoke($"Using {config.FilePath} for configuration");
+            logMethod2($"Using {config.FilePath} for configuration");
             var type1 = typeof(ContainerHelperSection);
 
             try
@@ -295,9 +298,9 @@ namespace KayMcCormick.Dev
                                     }
                                     catch (Exception ex)
                                     {
-                                        logMethod2?.Invoke(
-                                                            $"Unable to set property {item1.Name}: {ex.Message}"
-                                                           );
+                                        logMethod2(
+                                                   $"Unable to set property {item1.Name}: {ex.Message}"
+                                                  );
                                     }
                                 }
                             }
