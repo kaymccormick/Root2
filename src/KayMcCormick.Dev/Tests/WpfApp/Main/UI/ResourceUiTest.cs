@@ -62,7 +62,7 @@ namespace Tests.Main.UI
             App app = new App ( null ) ;
             app.InitializeComponent();
 
-            AllResourcesTree tree = new AllResourcesTree();
+            AllResourcesTree tree = new AllResourcesTree(new AllResourcesTreeViewModel());
             tree.BeginInit();
             tree.EndInit();
             Window w = new Window ( ) ;

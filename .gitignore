@@ -45,3 +45,4 @@ TestResult.xml
 /src/KayMcCormick.Dev/zzzz
 /test/Debug/x86/ProjTests
 /test/Debug/x86/Tests
+/build.old/test/Debug/x86/Tests

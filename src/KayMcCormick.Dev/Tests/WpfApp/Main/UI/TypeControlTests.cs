@@ -41,10 +41,10 @@ namespace Tests.Main.UI
         ///     Test Type Control
         /// </summary>
         /// <exception cref="AggregateException"></exception>
-        // [ WpfFact ]
+        [ WpfFact ]
         [ Trait ( "UITest" , "true" ) ]
 #pragma warning disable CS0628 // 'TypeControlTests.TestTypeControl()': new protected member declared in sealed class
-        protected void TestTypeControl ( )
+        public void TestTypeControl ( )
 #pragma warning restore CS0628 // 'TypeControlTests.TestTypeControl()': new protected member declared in sealed class
         {
             
@@ -296,7 +296,7 @@ namespace Tests.Main.UI
                 try
                 {
                     Logger.Debug( "Window loaded." ) ;
-                    throw new TestException ( ) ;
+                    source.TrySetResult ( new Result ( null , true ) ) ;
                 }
                 catch ( Exception ex )
                 {

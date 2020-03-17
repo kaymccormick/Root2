@@ -16,7 +16,7 @@ using NLog.Targets ;
 namespace Leaf1HostSideAdapter
 {
     [HostAdapter]
-    public class Leaf1ContractToViewHostSideAdapter : IService1
+    public class Leaf1ContractToViewHostSideAdapter : IService1, IDisposable
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly IService1Contract _service1Contract;
@@ -62,5 +62,11 @@ namespace Leaf1HostSideAdapter
         public bool Shutdown ( ) { return _service1Contract.Shutdown ( ) ; }
 
 
+        #region IDisposable
+        public void Dispose ( )
+        {
+            _handle?.Dispose ( ) ;
+        }
+        #endregion
     }
 }

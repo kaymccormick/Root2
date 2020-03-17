@@ -1,24 +1,25 @@
-﻿using System ;
-using System.AddIn ;
-using System.Collections.Generic ;
-using System.Data ;
-using System.Data.SqlClient ;
-using System.Data.SqlTypes ;
-using System.IO ;
-using System.Linq ;
-using System.Net ;
-using System.Net.Sockets ;
-using System.Runtime.CompilerServices ;
-using System.Text ;
-using System.Text.Json ;
-using System.Text.Json.Serialization ;
-using System.Threading ;
-using System.Threading.Tasks ;
-using System.Xml ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev.Logging ;
-using NLog ;
-using ServiceAddIn1 ;
+﻿using JetBrains.Annotations;
+using KayMcCormick.Dev.Logging;
+using NLog;
+using ServiceAddIn1;
+using System;
+using System.AddIn;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace AddInService1V1
 {
@@ -43,19 +44,25 @@ namespace AddInService1V1
             try
             {
                 AppLoggingConfigHelper.Shutdown();
-                AppLoggingConfigHelper.EnsureLoggingConfigured(
-                                                               message
-                                                                   => Console.WriteLine(message)
-                                                             , new AppLoggingConfiguration()
-                                                               {
-                                                                   ChainsawPort = 4111
-                                                               }
-                                                              );
+                var logger_ = AppLoggingConfigHelper.EnsureLoggingConfigured(
+                                                                                             message
+                                                                                                 => Console.WriteLine(message)
+                                                                                           , new AppLoggingConfiguration()
+                                                                                             {
+                                                                                                 ChainsawPort = 4111
+                                                                                             }
+                                                                                            ) ;
+                if ( logger_ == null )
+                {
+                    throw new InvalidOperationException ( "" ) ;
+                }
                 Logger = LogManager.GetCurrentClassLogger();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                //AppLoggingConfigHelper.ProtoLogDelegate ( ex.Message ) ;
+                //return true;
+                throw new InvalidOperationException("Unable to initialize: " + ex.Message, ex ) ;
             }
 
             Logger?.Debug("Here");
@@ -68,15 +75,15 @@ namespace AddInService1V1
         private static async Task Run ( )
         {
             Logger.Warn ( "I am here" ) ;
-            var @out = new StreamWriter ( "out.txt" ) ;
             var options = new JsonSerializerOptions ( ) ;
             options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
 
             var b = new SqlConnectionStringBuilder
                     {
-                        DataSource         = @".\sql2017"
+                        DataSource         = @"127.0.0.1\sql2017"
                       , InitialCatalog     = "ProjLob"
                       , IntegratedSecurity = true
+
                     } ;
             var c = b.ConnectionString ;
             var conn = new SqlConnection ( c ) ;
@@ -94,7 +101,7 @@ namespace AddInService1V1
                          , i1
                          , clients
                          , continued
-                 ,         @out
+                 ,         null
                  ,         options
                  ,         conn
                           ) ;
@@ -113,7 +120,7 @@ namespace AddInService1V1
                          , i2
                          , clients
                          , continued
-                 ,         @out
+                 ,         null
                  ,         options
                  ,         conn
                           ) ;
@@ -157,8 +164,8 @@ namespace AddInService1V1
             var resultBuffer = result.Buffer ;
 
             var s = Encoding.UTF8.GetString ( resultBuffer ) ;
-            @out.WriteLine ( s ) ;
-            @out.Flush ( ) ;
+            @out?.WriteLine ( s ) ;
+            @out?.Flush ( ) ;
             Console.WriteLine ( "----\n" + s + "\n----\n" ) ;
             try
             {
@@ -256,6 +263,10 @@ namespace AddInService1V1
                      || task.Status == TaskStatus.Faulted
                      || task.Status == TaskStatus.RanToCompletion )
                 {
+                    if ( task.Status == TaskStatus.Faulted )
+                    {
+                        Logger.Fatal ( task.Exception.GetBaseException ( ).ToString ( ) ) ;
+                    }
                     task = Run ( ) ;
                 }
                 spin.SpinOnce();
@@ -281,6 +292,25 @@ namespace AddInService1V1
         }
 
         public void PerformFunc1 ( ) { Console.WriteLine ( "hello" ) ; }
+    }
+
+    [Serializable]
+    public class UnableToInitializeException : Exception
+    {
+        public UnableToInitializeException ( ) {
+        }
+
+        public UnableToInitializeException ( string message ) : base ( message )
+        {
+        }
+
+        public UnableToInitializeException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected UnableToInitializeException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
+        }
     }
 }
 

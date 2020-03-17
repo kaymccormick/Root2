@@ -1,7 +1,7 @@
 /* test 123 */
 
 #if ENABLE_PROXYLOG
-using Castle.DynamicProxy;
+using Castle.DynamicProxy ;
 #endif
 #if ENABLE_WCF_TARGET
 using System.ServiceModel.Discovery ;
@@ -24,12 +24,16 @@ using System.Net ;
 using System.Net.Sockets ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.InteropServices ;
 using System.Runtime.Serialization ;
+using System.Security ;
+using System.Security.Permissions ;
 using System.ServiceModel ;
 using System.Text ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
+using Castle.Core.Internal ;
 using NLog.Internal.Fakeables ;
 using NLog.LayoutRenderers ;
 #if ENABLE_WCF_TARGET
@@ -86,13 +90,13 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for StringWriter
         public static StringWriter Writer { get ; set ; }
 
-        private const string JsonTargetName              = "json_out" ;
-        private const string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
-        private const string PublicFacingHostAddress     = "xx1.mynetgear.com:" ;
-        private static int _nLogViewerPort = 9995;
-        private const int    DefaultProtoLogUdpPort      = 4445 ;
-        private const string EnvVarName_MINLOGLEVEL      = "MINLOGLEVEL" ;
-        private const string DefaultEventLogTargetName   = "eventLogTarget" ;
+        private const  string JsonTargetName              = "json_out" ;
+        private const  string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
+        private const  string PublicFacingHostAddress     = "xx1.mynetgear.com:" ;
+        private static int    _nLogViewerPort             = 9995 ;
+        private const  int    DefaultProtoLogUdpPort      = 4445 ;
+        private const  string EnvVarName_MINLOGLEVEL      = "MINLOGLEVEL" ;
+        private const  string DefaultEventLogTargetName   = "eventLogTarget" ;
 
         // ReSharper disable once InconsistentNaming
         [ SuppressMessage ( "Microsoft.Performance" , "CA1823:AvoidUnusedPrivateFields" ) ]
@@ -101,20 +105,24 @@ namespace KayMcCormick.Dev.Logging
         [ ThreadStatic ]
         private static int ? _numTimesConfigured ;
 
-        private static LogFactory _factory ;
-        private static string _eventLogTargetName ;
-        private static string _consoleTargetName ;
-        private static Target _serviceTarget ;
-        private static int _chainsawPort = 4446 ;
-        private static MyCacheTarget _cacheTarget ;
-        private static MyCacheTarget2 _cacheTarget2 ;
-        private static LogDelegates.LogMethod _oldLogMethod ;
+        private static LogFactory                                _factory ;
+        private static string                                    _eventLogTargetName ;
+        private static string                                    _consoleTargetName ;
+        private static Target                                    _serviceTarget ;
+        private static int                                       _chainsawPort = 4446 ;
+        private static MyCacheTarget                             _cacheTarget ;
+        private static MyCacheTarget2                            _cacheTarget2 ;
+        private static LogDelegates.LogMethod                    _oldLogMethod ;
         private static Dictionary < LogLevel , List < Target > > _dict ;
-        private static bool _loggingConfigured ;
-        private static          LogLevel       _minLogLevel ;
-        private static          ChainsawTarget _chainsawTarget ;
-        private static readonly int            _protoLogPort      = DefaultProtoLogUdpPort ;
-        private static readonly IPAddress      _protoLogIpAddress = IPAddress.Broadcast ;
+        private static bool                                      _loggingConfigured ;
+        private static LogLevel                                  _minLogLevel ;
+        private static ChainsawTarget                            _chainsawTarget ;
+
+        private static readonly int _protoLogPort =
+            DefaultProtoLogUdpPort ;
+
+        private static readonly IPAddress _protoLogIpAddress =
+            IPAddress.Broadcast ;
 
         private static readonly IPEndPoint _ipEndPoint =
             new IPEndPoint ( _protoLogIpAddress , _protoLogPort ) ;
@@ -127,13 +135,9 @@ namespace KayMcCormick.Dev.Logging
                    {
                        EnableBroadcast = true
                      , Client =
-                           new Socket (
-                                       SocketType.Dgram
-                                     , ProtocolType.Udp
-                                      )
+                           new Socket ( SocketType.Dgram , ProtocolType.Udp )
                            {
-                               EnableBroadcast = true
-                             , DualMode        = true
+                               EnableBroadcast = true , DualMode = true
                            }
                    } ;
         }
@@ -141,13 +145,14 @@ namespace KayMcCormick.Dev.Logging
         private static readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer =
             new MyLog4JXmlEventLayoutRenderer ( ) ;
 
-        private static readonly Layout _xmlEventLayout =
-            new MyLayout ( _xmlEventLayoutRenderer ) ;
+        private static readonly Layout _xmlEventLayout = new MyLayout ( _xmlEventLayoutRenderer ) ;
 
-        private static NetworkTarget jsonNetworkTarget ;
-        private static readonly LogDelegates.LogMethod  _protoLogDelegate = ProtoLogMessage ;
-        private static readonly ProtoLogger             _protoLogger      = new ProtoLogger ( ) ;
-        private static readonly Action < LogEventInfo > _protoLogAction   = _protoLogger.LogAction ;
+        private static          NetworkTarget          jsonNetworkTarget ;
+        private static readonly LogDelegates.LogMethod _protoLogDelegate = ProtoLogMessage ;
+        private static readonly ProtoLogger            _protoLogger      = new ProtoLogger ( ) ;
+
+        private static readonly Action < LogEventInfo > _protoLogAction = _protoLogger.LogAction ;
+
         //private static string _chainsawHost = PublicFacingHostAddress;
         private static string _chainsawHost = "10.25.0.102" ;
 
@@ -155,21 +160,21 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// 
         /// </summary>
-        public static Target ServiceTarget { get; private set; }
+        public static Target ServiceTarget { get ; private set ; }
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
         ///   <see language="true"/> if [logging is configured]; otherwise, <see language="false"/>.</value>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for LoggingIsConfigured
-        public static bool LoggingIsConfigured { get ; set ; }
+        public static bool ? LoggingIsConfigured { get ; set ; }
 
         /// <summary>Gets or sets a value indicating whether [dump existing configuration].</summary>
         /// <value>
         ///   <see language="true"/> if [dump existing configuration]; otherwise, <see language="false"/>.</value>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for DumpExistingConfig
-        public static bool DumpExistingConfig { get ; } = true ;
+        public static bool DumpExistingConfig { get ; } = false ;
 
 
         /// <summary>Gets or sets a value indicating whether [force code configuration].</summary>
@@ -211,16 +216,17 @@ namespace KayMcCormick.Dev.Logging
             }
 
 #if ENABLE_PROXYLOG
-            LogFactory proxiedFactory = null;
-            if (proxyLogging)
+            LogFactory proxiedFactory = null ;
+            if ( proxyLogging )
             {
-                var proxyGenerator = new ProxyGenerator();
-                var loggerProxyHelper = new LoggerProxyHelper(proxyGenerator, DoLogMessage);
-                var logFactory = new MyLogFactory(DoLogMessage);
-                var lConfLogFactory = loggerProxyHelper.CreateLogFactory(logFactory);
-                proxiedFactory = lConfLogFactory;
+                var proxyGenerator = new ProxyGenerator ( ) ;
+                var loggerProxyHelper = new LoggerProxyHelper ( proxyGenerator , DoLogMessage ) ;
+                var logFactory = new MyLogFactory ( DoLogMessage ) ;
+                var lConfLogFactory = loggerProxyHelper.CreateLogFactory ( logFactory ) ;
+                proxiedFactory = lConfLogFactory ;
             }
 #endif
+            #if FIELD_ACCESS
             var fieldInfo = typeof ( LogManager ).GetField (
                                                             "factory"
                                                           , BindingFlags.Static
@@ -232,17 +238,17 @@ namespace KayMcCormick.Dev.Logging
                 var cur = fieldInfo.GetValue ( null ) ;
                 logMethod ( $"cur is {cur}" ) ;
 #if ENABLE_PROXYLOG
-                if (proxyLogging)
+                if ( proxyLogging )
                 {
-                    fieldInfo.SetValue(null, proxiedFactory);
-                    var newVal = fieldInfo.GetValue(null);
-                    logMethod($"New Value = {newVal}");
+                    fieldInfo.SetValue ( null , proxiedFactory ) ;
+                    var newVal = fieldInfo.GetValue ( null ) ;
+                    logMethod ( $"New Value = {newVal}" ) ;
                 }
 #endif
             }
-
+            #endif
 #if ENABLE_PROXYLOG
-            return PerformConfiguration(logMethod, proxyLogging, proxiedFactory, config1);
+            return PerformConfiguration ( logMethod , proxyLogging , proxiedFactory , config1 ) ;
 #else
             return PerformConfiguration ( logMethod , false , null , config1 ) ;
 #endif
@@ -262,9 +268,19 @@ namespace KayMcCormick.Dev.Logging
           , ILoggingConfiguration  config1
         )
         {
-            var useFactory = proxyLogging ? proxiedFactory : LogManager.LogFactory ;
-            var lConf = new CodeConfiguration ( useFactory ) ;
+            LogFactory useFactory ;
+            if ( proxyLogging )
+            {
+                useFactory = proxiedFactory ;
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine ( "Using stock logfactory" ) ;
+                useFactory = LogManager.LogFactory ;
+            }
 
+            var lConf = new CodeConfiguration ( useFactory ) ;
+            LogManager.ThrowExceptions = true ;
             _dict = LogLevel.AllLoggingLevels.ToDictionary (
                                                             level => level
                                                           , level => new List < Target > ( )
@@ -313,9 +329,9 @@ namespace KayMcCormick.Dev.Logging
                 }
             }
 
-            if(_minLogLevel == null)
+            if ( _minLogLevel == null )
             {
-                _minLogLevel = LogLevel.Trace;
+                _minLogLevel = LogLevel.Trace ;
             }
 
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -361,11 +377,11 @@ namespace KayMcCormick.Dev.Logging
             {
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
                                     EndpointAddress = receiverAddress.ToString ( )
-          , ClientId = new SimpleLayout ( "${processName}" )
-          , EndpointConfigurationName =
+      , ClientId = new SimpleLayout ( "${processName}" )
+      , EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
-          , IncludeEventProperties = true
-                       ,
+      , IncludeEventProperties = true
+                     ,
                                 } ;
             }
                 
@@ -389,12 +405,13 @@ namespace KayMcCormick.Dev.Logging
                 _dict[ LogLevel.Warn ].Add ( consoleTarget ) ;
             }
 
-            jsonNetworkTarget = new NetworkTarget ( "jsonNetworkTarget" )
-                                {
-                                    Address = "udp://10.25.0.102:4477"
-                                  , Layout  = new MyJsonLayout ( )
-                                } ;
-            t.Add ( jsonNetworkTarget ) ;
+            // ConfigurationItemFactory.Default = new ConfigurationItemFactory();
+            // jsonNetworkTarget = new NetworkTarget ( "jsonNetworkTarget" )
+                                // {
+                                    // Address = "udp://10.25.0.102:4477"
+                                  // , Layout  = new MyJsonLayout ( )
+                                // } ;
+            // t.Add ( jsonNetworkTarget ) ;
 
             var xmlTarget = new FileTarget ( "xmlFile" )
                             {
@@ -443,7 +460,7 @@ namespace KayMcCormick.Dev.Logging
             {
                 var v = _dict[ k ].Where ( target => target != null ) ;
                 _dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
-                             .ToList ( ) ;
+                              .ToList ( ) ;
             }
 
             foreach ( var target in _dict.SelectMany ( pair => pair.Value ) )
@@ -465,12 +482,12 @@ namespace KayMcCormick.Dev.Logging
             }
 
             foreach ( var result in _dict.Select (
-                                                 pair => LoggingRule (
-                                                                      pair
-                                                                    , _minLogLevel
-                                                                    , config1
-                                                                     )
-                                                ) )
+                                                  pair => LoggingRule (
+                                                                       pair
+                                                                     , _minLogLevel
+                                                                     , config1
+                                                                      )
+                                                 ) )
             {
                 foreach ( var loggingRule in result )
                 {
@@ -481,15 +498,25 @@ namespace KayMcCormick.Dev.Logging
                 // ((List<LoggingRule>lConf.LoggingRules)).AddRange ( result ) ;
             }
 
-            LogManager.Configuration = lConf ;
-            Logger                   = LogManager.GetCurrentClassLogger ( ) ;
-            _loggingConfigured = true ;
-            return useFactory ;
+            try
+            {
+                LogManager.Configuration = lConf ;
+                Logger                   = LogManager.GetCurrentClassLogger ( ) ;
+                _loggingConfigured       = true ;
+                System.Diagnostics.Debug.WriteLine($"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}");
+                Logger.Info ( "test 123" ) ;
+                return useFactory;
+            } catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                throw ;
+            }
+
         }
 
         private static ChainsawTarget CreateChainsawTarget ( )
         {
-            var chainsawTarget = new ChainsawTarget ( ) { Layout = _xmlEventLayout };
+            var chainsawTarget = new ChainsawTarget ( ) { Layout = _xmlEventLayout } ;
             var s = _chainsawPort.ToString ( ) ;
             SetupNetworkTarget ( chainsawTarget , $"udp://{_chainsawHost}:{s}" ) ;
             return chainsawTarget ;
@@ -555,6 +582,7 @@ namespace KayMcCormick.Dev.Logging
 
         private static void InternalLogging ( )
         {
+            return ;
             InternalLogger.LogLevel = LogLevel.Debug ;
 
             var id = Process.GetCurrentProcess ( ).Id ;
@@ -576,7 +604,7 @@ namespace KayMcCormick.Dev.Logging
 
         private static NLogViewerTarget Viewer ( string name = null )
         {
-            var s = _nLogViewerPort;
+            var s = _nLogViewerPort ;
             return new NLogViewerTarget ( name )
                    {
                        Address              = new SimpleLayout ( $"udp://10.25.0.102:{s}" )
@@ -595,8 +623,11 @@ namespace KayMcCormick.Dev.Logging
             var f = new FileTarget ( JsonTargetName )
                     {
                         FileName = Layout.FromString ( @"c:\data\logs\${processName}.json" )
-                      , Layout   = new MyJsonLayout ( )
-                    } ;
+                       // ,
+                        // Layout = new MyJsonLayout()
+                       ,
+                        Layout = SetupJsonLayout()
+            } ;
 
             return f ;
         }
@@ -660,79 +691,48 @@ namespace KayMcCormick.Dev.Logging
           , [ CallerFilePath ] string callerFilePath = null
         )
         {
-            var logMethod =
-                slogMethod != null ? slogMethod + _protoLogDelegate : _protoLogDelegate ;
-            if ( ! _numTimesConfigured.HasValue )
+            try
             {
-                _numTimesConfigured = 1 ;
-            }
-            else
-            {
-                _numTimesConfigured += 1 ;
-            }
-
-            if ( logMethod == null )
-            {
-                logMethod = DoLogMessage ;
-            }
-
-            _oldLogMethod = logMethod ;
-            logMethod = message
-                => _oldLogMethod ( Process.GetCurrentProcess ( ).ProcessName + ":" + message ) ;
-            logMethod (
-                       $"[time {_numTimesConfigured.Value}]\t{nameof ( EnsureLoggingConfigured )} called from {callerFilePath}"
-                      ) ;
-
-
-            var fieldInfo2 = LogManager.LogFactory.GetType ( )
-                                       .GetField (
-                                                  "_config"
-                                                , BindingFlags.Instance | BindingFlags.NonPublic
-                                                 ) ;
-
-            if ( fieldInfo2 == null )
-            {
-                System.Diagnostics.Debug.WriteLine (
-                                                    "no field _configLoaded for "
-                                                    + LogManager.LogFactory
-                                                   ) ;
-                // throw new Exception ( Resources.AppLoggingConfigHelper_EnsureLoggingConfigured_no_config_loaded_field_found ) ;
-            }
-
-            if ( fieldInfo2 != null )
-            {
-                var config = fieldInfo2.GetValue ( LogManager.LogFactory ) ;
-
-                //LogManager.ThrowConfigExceptions = true;
-                //LogManager.ThrowExceptions = true;
-                var fieldInfo = LogManager.LogFactory.GetType ( )
-                                          .GetField (
-                                                     "_configLoaded"
-                                                   , BindingFlags.Instance | BindingFlags.NonPublic
-                                                    ) ;
-
-                bool configLoaded ;
-                if ( fieldInfo == null )
+                var logMethod = slogMethod != null
+                                    ? slogMethod + _protoLogDelegate
+                                    : _protoLogDelegate ;
+                if ( ! _numTimesConfigured.HasValue )
                 {
-                    configLoaded = config != null ;
-
-                    System.Diagnostics.Debug.WriteLine (
-                                                        "no field _configLoaded for "
-                                                        + LogManager.LogFactory
-                                                       ) ;
-                    // throw new Exception ( "no config loaded field found" ) ;
+                    _numTimesConfigured = 1 ;
                 }
                 else
                 {
-                    configLoaded = ( bool ) fieldInfo.GetValue ( LogManager.LogFactory ) ;
+                    _numTimesConfigured += 1 ;
                 }
 
-                LoggingIsConfigured = configLoaded ;
-                var isMyConfig =
-                    ! configLoaded || LogManager.Configuration is CodeConfiguration ;
-                var doConfig = ! LoggingIsConfigured || ForceCodeConfig && ! isMyConfig ;
+                if ( logMethod == null )
+                {
+                    logMethod = DoLogMessage ;
+                }
+
+                _oldLogMethod = logMethod ;
+                logMethod     = message => _oldLogMethod ( message ) ;
                 logMethod (
-                           $"{nameof ( LoggingIsConfigured )} = {LoggingIsConfigured}; {nameof ( ForceCodeConfig )} = {ForceCodeConfig}; {nameof ( isMyConfig )} = {isMyConfig});"
+                           $"[time {_numTimesConfigured.Value}]\t{nameof ( EnsureLoggingConfigured )} called from {callerFilePath}"
+                          ) ;
+
+
+                bool checkExistingConfig = false ;
+                var isMyConfig = false ;
+                var doConfig = true ;
+                if ( checkExistingConfig )
+                {
+                    bool ? configLoaded = GetConfigLoaded ( ) ;
+
+                    isMyConfig = ! configLoaded.GetValueOrDefault ( )
+                                     || LogManager.Configuration is CodeConfiguration ;
+
+                    doConfig = !LoggingIsConfigured.GetValueOrDefault()
+                                   || ForceCodeConfig && !isMyConfig;
+                }
+
+                logMethod (
+                           $"{nameof(DumpExistingConfig)} = {DumpExistingConfig}; {nameof(doConfig)} = {doConfig}; {nameof ( LoggingIsConfigured )} = {LoggingIsConfigured}; {nameof ( ForceCodeConfig )} = {ForceCodeConfig}; {nameof ( isMyConfig )} = {isMyConfig});"
                           ) ;
                 if ( DumpExistingConfig )
                 {
@@ -743,13 +743,89 @@ namespace KayMcCormick.Dev.Logging
 
                 if ( doConfig )
                 {
+                    logMethod ( "About to configure logging" ) ;
                     var factory = ConfigureLogging ( logMethod , true , config1 ) ;
                     _factory = factory ;
                 }
+
+
+                // DumpPossibleConfig ( LogManager.Configuration ) ;
+                return _factory.GetLogger ( "DefaultLogger" ) ;
+            }
+            catch ( SecurityException ex )
+            {
+                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                ProtoLogDelegate ( ex.ToString ( ) ) ;
             }
 
-            DumpPossibleConfig ( LogManager.Configuration ) ;
-            return _factory.GetLogger ( "DefaultLogger" ) ;
+            ;
+            return null ;
+        }
+
+        private static bool ? GetConfigLoaded ( )
+        {
+            return null ;
+            var perm = new ReflectionPermission(ReflectionPermissionFlag.RestrictedMemberAccess);
+            perm.Demand();
+            try
+            {
+
+                var fieldInfo2 = LogManager.LogFactory.GetType ( )
+                                           .GetField (
+                                                      "_config"
+                                                    , BindingFlags.Instance | BindingFlags.NonPublic
+                                                     ) ;
+
+                if ( fieldInfo2 == null )
+                {
+                    System.Diagnostics.Debug.WriteLine (
+                                                        "no field _configLoaded for "
+                                                        + LogManager.LogFactory
+                                                       ) ;
+                    // throw new Exception ( Resources.AppLoggingConfigHelper_EnsureLoggingConfigured_no_config_loaded_field_found ) ;
+                }
+
+                bool ? configLoaded = null ;
+                if ( fieldInfo2 != null )
+                {
+                    var config = fieldInfo2.GetValue ( LogManager.LogFactory ) ;
+
+                    //LogManager.ThrowConfigExceptions = true;
+                    //LogManager.ThrowExceptions = true;
+                    var fieldInfo = LogManager.LogFactory.GetType ( )
+                                              .GetField (
+                                                         "_configLoaded"
+                                                       , BindingFlags.Instance
+                                                         | BindingFlags.NonPublic
+                                                        ) ;
+
+
+                    if ( fieldInfo == null )
+                    {
+                        configLoaded = config != null ;
+
+                        System.Diagnostics.Debug.WriteLine (
+                                                            "no field _configLoaded for "
+                                                            + LogManager.LogFactory
+                                                           ) ;
+                        // throw new Exception ( "no config loaded field found" ) ;
+                    }
+                    else
+                    {
+                        configLoaded = ( bool ) fieldInfo.GetValue ( LogManager.LogFactory ) ;
+                    }
+
+                    LoggingIsConfigured = configLoaded ;
+                }
+
+                return configLoaded ;
+            }
+            catch ( SecurityException ex )
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+
+            return null ;
         }
 
         private static void ProtoLogMessage ( string message )
@@ -881,7 +957,11 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="minLevel"></param>
         // ReSharper disable once RedundantNameQualifier
         // ReSharper disable once UnusedMember.Global
-        public static void AddTarget ( NLog.Targets.Target target , LogLevel minLevel, bool addRules = true )
+        public static void AddTarget (
+            NLog.Targets.Target target
+          , LogLevel            minLevel
+          , bool                addRules = true
+        )
         {
             if ( minLevel == null )
             {
@@ -893,10 +973,8 @@ namespace KayMcCormick.Dev.Logging
             if ( addRules )
             {
                 LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
-                LogManager.LogFactory.ReconfigExistingLoggers();
+                LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
             }
-
-            
         }
 
         /// <summary>Removes a target by name from the current NLog configuration.</summary>
@@ -999,6 +1077,7 @@ namespace KayMcCormick.Dev.Logging
             {
                 return ;
             }
+
             _numTimesConfigured = null ;
             if ( _dict != null )
             {
@@ -1011,29 +1090,32 @@ namespace KayMcCormick.Dev.Logging
                 }
             }
 
-            LogManager.Configuration.LoggingRules.Clear();
-            LogManager.ReconfigExistingLoggers();
-            LogManager.Shutdown();
+            LogManager.Configuration.LoggingRules.Clear ( ) ;
+            LogManager.ReconfigExistingLoggers ( ) ;
+            LogManager.Shutdown ( ) ;
         }
 
-
-    
+        [ DllImport ( "kernel32.dll" ) ]
+        private static extern void OutputDebugString ( string lpOutputString ) ;
     }
 
     public class LogConfigurationException : Exception
     {
-        public LogConfigurationException ( ) {
-        }
+        public LogConfigurationException ( ) { }
 
-        public LogConfigurationException ( string message ) : base ( message )
+        public LogConfigurationException ( string message ) : base ( message ) { }
+
+        public LogConfigurationException ( string message , Exception innerException ) : base (
+                                                                                               message
+                                                                                             , innerException
+                                                                                              )
         {
         }
 
-        public LogConfigurationException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected LogConfigurationException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected LogConfigurationException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
         }
     }
@@ -1051,10 +1133,10 @@ namespace KayMcCormick.Dev.Logging
         {
             x.IncludeAllProperties = true ;
             x.IncludeCallSite      = true ;
-            x.IncludeMdlc          = true ;
+            //x.IncludeMdlc          = true ;
             x.IncludeSourceInfo    = true ;
             x.IncludeNLogData      = true ;
-            x.IncludeNdlc          = true ;
+            //x.IncludeNdlc          = true ;
             x.IndentXml            = true ;
         }
     }

@@ -99,7 +99,7 @@ namespace LeafService
 
         private void HandleException ( Exception obj )
         {
-            Logger.Fatal ( obj , "Fatal exception starting/configuring TopShelf: {ex}" , obj ) ;
+            Logger.Fatal ( obj , "Fatal exception starting/configuring TopShelf: {ex}" , obj.ToString() ) ;
         }
 
         private void ConfigureService ( ServiceConfigurator < LeafService1 > sc )
