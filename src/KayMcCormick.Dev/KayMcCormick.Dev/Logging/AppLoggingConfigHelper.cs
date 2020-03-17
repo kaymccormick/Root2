@@ -25,7 +25,6 @@ using System.Net.Sockets ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.InteropServices ;
-using System.Runtime.Serialization ;
 using System.Security ;
 using System.Security.Permissions ;
 using System.Text ;
@@ -1137,47 +1136,6 @@ namespace KayMcCormick.Dev.Logging
 
         [ DllImport ( "kernel32.dll" ) ]
         private static extern void OutputDebugString ( string lpOutputString ) ;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class LogConfigurationException : Exception
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public LogConfigurationException ( ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        public LogConfigurationException ( string message ) : base ( message ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public LogConfigurationException ( string message , Exception innerException ) : base (
-                                                                                               message
-                                                                                             , innerException
-                                                                                              )
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected LogConfigurationException (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
-        {
-        }
     }
 
     internal class MyLog4JXmlEventLayoutRenderer : Log4JXmlEventLayoutRenderer

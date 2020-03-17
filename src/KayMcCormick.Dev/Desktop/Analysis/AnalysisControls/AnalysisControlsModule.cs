@@ -17,7 +17,6 @@ using Autofac ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Lib.Wpf ;
-using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {

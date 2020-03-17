@@ -1,5 +1,4 @@
-﻿using System.Threading ;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
  
 
 namespace KayMcCormick.Dev.Logging

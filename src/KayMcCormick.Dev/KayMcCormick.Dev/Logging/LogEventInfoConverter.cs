@@ -369,15 +369,4 @@ namespace KayMcCormick.Dev.Logging
         }
         #endregion
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class LogEventInfo2 : LogEventInfo
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public new int SequenceID { get ; set ; }
-    }
 }

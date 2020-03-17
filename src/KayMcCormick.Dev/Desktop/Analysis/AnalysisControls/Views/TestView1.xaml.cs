@@ -1,10 +1,11 @@
 ﻿using System.Windows.Controls ;
+using JetBrains.Annotations ;
 using KayMcCormick.Lib.Wpf ;
-using ProjLib.Interfaces ;
 
 namespace AnalysisControls.Views
 {
     [TitleMetadata("TEst View 1")]
+    [ UsedImplicitly ]
     public partial class TestView1 : UserControl, IView1
     {
         private string _viewTitle = "Test View 1";

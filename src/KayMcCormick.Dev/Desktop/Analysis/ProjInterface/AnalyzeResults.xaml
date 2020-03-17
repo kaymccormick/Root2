@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:interfaces="clr-namespace:AnalysisFramework.Interfaces"
+        xmlns:interfaces1="clr-namespace:AnalysisFramework.Interfaces;assembly=AnalysisFramework"
 
         mc:Ignorable="d"
         DataContext="{Binding ElementName=results, Path=ViewModel}"
@@ -11,14 +11,14 @@
 <Window.Resources>
   <CollectionViewSource x:Key="logs"
                         Source="{Binding Path=LogInvocations}" />
-  <DataTemplate x:Key="CodeTemplate" DataType="interfaces:ILogInvocation" >
+  <DataTemplate x:Key="CodeTemplate" DataType="interfaces1:ILogInvocation" >
     <StackPanel>
       <TextBlock Text="{Binding PrecedingCode}"/>
         <TextBlock Background="Yellow" Foreground="Black" Text="{Binding Code}"/>
       <TextBlock Text="{Binding FollowingCode}"/>
 </StackPanel>
     </DataTemplate>
-  <DataTemplate x:Key="FCodeTemplate" DataType="interfaces:ILogInvocation" >
+  <DataTemplate x:Key="FCodeTemplate" DataType="interfaces1:ILogInvocation" >
     <TextBlock/>
   </DataTemplate>
 </Window.Resources>

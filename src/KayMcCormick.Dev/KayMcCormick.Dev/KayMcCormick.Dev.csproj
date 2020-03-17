@@ -167,7 +167,9 @@
     <Compile Include="Logging\IConfigSource.cs" />
     <Compile Include="Logging\ILogEntrySpecification.cs" />
     <Compile Include="Logging\ILoggingConfiguration.cs" />
+    <Compile Include="Logging\LogConfigurationException.cs" />
     <Compile Include="Logging\LogDelegates.cs" />
+    <Compile Include="Logging\LogEventInfo2.cs" />
     <Compile Include="Logging\LogEventInfoConverter.cs" />
     <Compile Include="Logging\LogFactoryInterceptor.cs" />
     <Compile Include="Logging\LoggerFactoryHook.cs" />

@@ -1,7 +1,7 @@
 ﻿namespace KayMcCormick.Dev
 {
     /// <summary>
-    /// Enumeration of applications in suite. Used for logging and identification.
+    /// 
     /// </summary>
     public enum Application
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Application'
