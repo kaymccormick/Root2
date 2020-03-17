@@ -24,6 +24,7 @@ namespace AnalysisControls.Converters
                     var r = Transforms.TransformSyntaxNode(( SyntaxNode ) value);
                     return JsonSerializer.Serialize ( r ) ;
                 }
+return null;
             }
             catch ( Exception ex )
             {

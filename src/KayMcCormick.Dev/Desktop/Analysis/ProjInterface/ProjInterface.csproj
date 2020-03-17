@@ -92,7 +92,6 @@
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="DockWindowViewModel.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ICommandSpec.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="Shell.cs" />

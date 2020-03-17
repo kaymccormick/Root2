@@ -286,6 +286,7 @@ namespace WpfApp.Proxy
 
                 return ( declType == type ? $"{formatTyp,33}" : $"{formatTyp,16} {typ,16}" ) + " " + m ;
             }
+            return null;
         }
 
         /// <summary>Intercepts the specified invocation.</summary>
