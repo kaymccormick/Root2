@@ -8,6 +8,9 @@
                  xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
                  xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
                  xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
+                 Opacity="0.0"
+                 Background="White"
+                 WindowStyle="None"
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
                  mc:Ignorable="d"
                  Title="Window1" Height="450" Width="800">
@@ -137,7 +140,7 @@
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type TextBox}">
             <Border x:Name="Border"
-                    Padding="2"
+                    Padding="0"
                     BorderThickness="1">
               <Border.Background>
                 <SolidColorBrush
@@ -564,10 +567,10 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type Thumb}">
-            <Border CornerRadius="2"
+            <Border CornerRadius="1"
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="1" />
+                    BorderThickness="0.5" />
           </ControlTemplate>
         </Setter.Value>
       </Setter>
@@ -576,17 +579,18 @@
     <ControlTemplate x:Key="VerticalScrollBar"
                      TargetType="{x:Type ScrollBar}">
       <Grid>
+        
         <Grid.RowDefinitions>
-          <RowDefinition MaxHeight="18" />
+          <RowDefinition MaxHeight="12" />
           <RowDefinition Height="0.00001*" />
-          <RowDefinition MaxHeight="18" />
+          <RowDefinition MaxHeight="12" />
         </Grid.RowDefinitions>
         <Border Grid.RowSpan="3"
                 CornerRadius="2"
                 Background="#F0F0F0" />
         <RepeatButton Grid.Row="0"
                       Style="{StaticResource ScrollBarLineButton}"
-                      Height="18"
+                      Height="12"
                       Command="ScrollBar.LineUpCommand"
                       Content="M 0 4 L 8 4 L 4 0 Z" />
         <Track x:Name="PART_Track"
@@ -644,7 +648,7 @@
         </Track>
         <RepeatButton Grid.Row="2"
                       Style="{StaticResource ScrollBarLineButton}"
-                      Height="18"
+                      Height="12"
                       Command="ScrollBar.LineDownCommand"
                       Content="M 0 0 L 4 4 L 8 0 Z" />
       </Grid>
@@ -652,18 +656,19 @@
 
     <ControlTemplate x:Key="HorizontalScrollBar"
                      TargetType="{x:Type ScrollBar}">
+      
       <Grid>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition MaxWidth="18" />
+          <ColumnDefinition MaxWidth="12" />
           <ColumnDefinition Width="0.00001*" />
-          <ColumnDefinition MaxWidth="18" />
+          <ColumnDefinition MaxWidth="12" />
         </Grid.ColumnDefinitions>
         <Border Grid.ColumnSpan="3"
-                CornerRadius="2"
+                CornerRadius="1"
                 Background="#F0F0F0" />
         <RepeatButton Grid.Column="0"
                       Style="{StaticResource ScrollBarLineButton}"
-                      Width="18"
+                      Width="12"
                       Command="ScrollBar.LineLeftCommand"
                       Content="M 4 0 L 4 8 L 0 4 Z" />
         <Track x:Name="PART_Track"
@@ -676,7 +681,7 @@
           </Track.DecreaseRepeatButton>
           <Track.Thumb>
             <Thumb Style="{StaticResource ScrollBarThumb}"
-                   Margin="0,1,0,1">
+                   Margin="0,0.5,0,0.5">
 
               <Thumb.BorderBrush>
 
@@ -722,7 +727,7 @@
         </Track>
         <RepeatButton Grid.Column="2"
                       Style="{StaticResource ScrollBarLineButton}"
-                      Width="18"
+                      Width="12"
                       Command="ScrollBar.LineRightCommand"
                       Content="M 0 0 L 4 4 L 0 8 Z" />
       </Grid>
@@ -740,14 +745,14 @@
           <Setter Property="Width"
                   Value="Auto" />
           <Setter Property="Height"
-                  Value="18" />
+                  Value="12" />
           <Setter Property="Template"
                   Value="{StaticResource HorizontalScrollBar}" />
         </Trigger>
         <Trigger Property="Orientation"
                  Value="Vertical">
           <Setter Property="Width"
-                  Value="18" />
+                  Value="12" />
           <Setter Property="Height"
                   Value="Auto" />
           <Setter Property="Template"
@@ -790,7 +795,7 @@
       <xcad:DockingManager.DocumentHeaderTemplate>
         <DataTemplate
           DataType="{x:Type xcad:LayoutDocument}">
-          <StackPanel Orientation="Horizontal">
+          <StackPanel Opacity="1.0" Orientation="Horizontal">
             <Image Source="{Binding IconSource}"
                    Margin="0,0,4,0" />
             <TextBlock Text="{Binding Title}" />
@@ -803,7 +808,7 @@
             <xcad:LayoutAnchorable Title="Files"
                                    IconSource="Assets/imageres_162.ico"
                                    ContentId="fileBrowser">
-              <Grid>
+              <Grid Opacity="1.0">
                 <Grid.RowDefinitions>
                   <RowDefinition Height="Auto" />
                   <RowDefinition Height="*" />

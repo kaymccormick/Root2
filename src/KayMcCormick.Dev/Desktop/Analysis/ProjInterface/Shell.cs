@@ -46,6 +46,7 @@ namespace ProjInterface
                                       (IntPtr)HOST_ID,
                                       IntPtr.Zero,
                                       0);
+#if true
             Task.Run(
                      () => {
                          var insidewndX = "-insidewnd 0x" + hwndHost.ToString("X") + @" -loadcfgfile c:\temp\config.xml";
@@ -55,6 +56,7 @@ namespace ProjInterface
                                              );
                      }
                     );
+#endif
             return new HandleRef(this, hwndHost);
 
         }
@@ -68,7 +70,7 @@ namespace ProjInterface
             WS_BORDER  = 0x00800000;
 
         protected override void DestroyWindowCore(HandleRef hwnd) { }
-        #endregion
+#endregion
         [DllImport( "user32.dll", EntryPoint = "CreateWindowEx", CharSet = CharSet.Unicode)]
         internal static extern IntPtr CreateWindowEx(int                                      dwExStyle,
                                                      string                                   lpszClassName,
@@ -90,8 +92,8 @@ namespace ProjInterface
             LB_DELETESTRING = 0x00000182,
             LB_GETCOUNT     = 0x0000018B;
 
-        #region Implementation of IView1
+#region Implementation of IView1
         public string ViewTitle { get => _viewTitle ; set => _viewTitle = value ; }
-        #endregion
+#endregion
     }
 }
