@@ -107,6 +107,17 @@ namespace ProjInterface
         {
             if ( appExplorerItem.IsDirectory )
             {
+                var exts = new[] { new { ext = ".sln" }, new { ext = "csproj" } };
+
+                var r =
+                    from child in Children
+                    let item = ( AppExplorerItem ) child
+                    join x in exts on item.Extension equals x.ext
+                    select item ;
+                if ( r.Any ( ) )
+                {
+                    return IconsSource.ProjectDirectoryIcon ;
+                }
                 return IconsSource.DirectoryIcon ;
             }
             else

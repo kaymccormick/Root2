@@ -246,5 +246,8 @@
   <ItemGroup>
     <Resource Include="Assets\compstui_64067.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\msvbprj_4519.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

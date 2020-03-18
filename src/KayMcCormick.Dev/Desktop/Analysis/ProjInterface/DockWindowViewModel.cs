@@ -123,6 +123,8 @@ namespace ProjInterface
     {
         ImageSource DirectoryIcon { get ; set ; }
 
+        ImageSource ProjectDirectoryIcon { get ; set ; }
+
         ImageSource GetIconForFileExtension ( object extension ) ;
     }
 }

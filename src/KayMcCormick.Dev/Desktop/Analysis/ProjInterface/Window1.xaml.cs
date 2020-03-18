@@ -81,6 +81,11 @@ namespace ProjInterface
 
 //            MessageBox.Show ( e.Parameter.ToString ( ) ) ;
         }
+
+        private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
     }
 
     public static class InputBindingsManager
