@@ -16,9 +16,11 @@ using System.ComponentModel ;
 using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
+using System.Windows.Controls ;
 using System.Windows.Media ;
 using ExplorerCtrl ;
 using JetBrains.Annotations ;
+using Microsoft.VisualStudio.Imaging ;
 using RefreshEventArgs = ExplorerCtrl.RefreshEventArgs ;
 
 namespace ProjInterface
@@ -39,18 +41,21 @@ namespace ProjInterface
         private IDictionary _iconsResources ;
         private object _extension ;
         private IIconsSource _iconsSource ;
+        private Image _iconImage ;
+        private bool _isHidden ;
+        private FileAttributes _fileAttributes ;
 
         public AppExplorerItem ( string inputPath , IIconsSource iconsSource )
         {
             this._inputPath = inputPath;
             _iconsSource = iconsSource ;
-            FileAttributes f = File.GetAttributes ( inputPath ) ;
+            _fileAttributes = File.GetAttributes ( inputPath ) ;
             FileInfo fi = new FileInfo(inputPath);
-            if ( ( f & FileAttributes.Directory ) == FileAttributes.Directory )
+            if ( ( _fileAttributes & FileAttributes.Directory ) == FileAttributes.Directory )
             {
                 IsDirectory = true ;
-                Children = Directory.EnumerateFileSystemEntries( inputPath )
-                                    .Select ( s => new AppExplorerItem ( s, _iconsSource ) ) ;
+                Children = Directory.EnumerateFileSystemEntries( inputPath ).Where(s => !s.StartsWith("."))
+                                    .Select ( s => new AppExplorerItem ( s, _iconsSource ) ).Where(item => !item.IsHidden) ;
                 HasChildren = Children.Any ( ) ;
                 Type        = ExplorerItemType.Directory ;
             }
@@ -68,6 +73,10 @@ namespace ProjInterface
             FullName = fi.FullName ;
 
         }
+
+        // ReSharper disable once ArrangeAccessorOwnerBody
+        public bool IsHidden => (_fileAttributes & FileAttributes.Hidden) == FileAttributes.Hidden ;
+
         #region Implementation of IExplorerItem
         public void Push ( Stream stream , string path ) { }
 
@@ -93,37 +102,83 @@ namespace ProjInterface
             {
                 if ( _icon == null )
                 {
-                    _icon = GetIconForExplorerItem ( this ) ;
+                    _icon = GetIconImageSourceForExplorerItem ( this ) ;
                 }
-                return _icon;
-            }
-            set
-            {
-                _icon = value ;
+
+                return _icon ;
             }
         }
 
-        private ImageSource GetIconForExplorerItem ( AppExplorerItem appExplorerItem )
+        private ImageSource GetIconImageSourceForExplorerItem ( AppExplorerItem appExplorerItem )
         {
-            if ( appExplorerItem.IsDirectory )
+            if (appExplorerItem.IsDirectory)
             {
                 var exts = new[] { new { ext = ".sln" }, new { ext = "csproj" } };
 
                 var r =
-                    from child in Children
-                    let item = ( AppExplorerItem ) child
+                    from child in appExplorerItem.Children
+                    let item = (AppExplorerItem)child
                     join x in exts on item.Extension equals x.ext
-                    select item ;
-                if ( r.Any ( ) )
+                    select item;
+                if (r.Any())
                 {
-                    return IconsSource.ProjectDirectoryIcon ;
+                    return IconsSource.ProjectDirectoryIconImageSsource;
                 }
-                return IconsSource.DirectoryIcon ;
+
+                return IconsSource.DirectoryIconImageSource;
             }
             else
             {
                 return IconsSource.GetIconForFileExtension ( appExplorerItem.Extension ) ;
             }
+
+        }
+
+        public Image IconImage
+        {
+            get
+            {
+                if ( _iconImage == null )
+                {
+                    _iconImage = GetIconImageForExplorerItem ( this ) ;
+                }
+                return _iconImage ;
+            }
+            set
+            {
+                _iconImage = value ;
+            }
+        }
+
+        private Image GetIconImageForExplorerItem ( AppExplorerItem appExplorerItem )
+        {
+                if (appExplorerItem.IsDirectory)
+                {
+                    var exts = new[] { new { ext = ".sln" }, new { ext = "csproj" } };
+
+                    var r =
+                        from child in appExplorerItem.Children
+                        let item = (AppExplorerItem)child
+                        join x in exts on item.Extension equals x.ext
+                        select item;
+                    if (r.Any())
+                    {
+                        return IconsSource.ProjectDirectoryIcon;
+                    }
+
+                    return IconsSource.DirectoryIcon ;
+                }
+                else
+                {
+                    return new Image
+                           {
+                               Source = IconsSource.GetIconForFileExtension (
+                                                                             appExplorerItem
+                                                                                .Extension
+                                                                            )
+                           } ;
+                }
+                
         }
 
         public IIconsSource IconsSource { get { return _iconsSource ; } set { _iconsSource = value ; } }

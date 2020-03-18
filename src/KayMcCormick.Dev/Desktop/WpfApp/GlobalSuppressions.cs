@@ -232,3 +232,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'ResourceViewItemContainerStyleSelector' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:WpfApp.ResourceViewItemContainerStyleSelector")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'TestO' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:WpfApp.TestO")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'WpfAppCommands' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:WpfApp.WpfAppCommands")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:WpfApp.Core.Container.WpfAppBuildModule")]

@@ -21,3 +21,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'LeafServiceTraceFilter' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.LeafServiceTraceFilter")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'LogReceiver' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.LogReceiver")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'Program' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.Program")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.AddInException")]

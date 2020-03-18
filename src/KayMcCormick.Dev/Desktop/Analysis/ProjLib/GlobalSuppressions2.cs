@@ -177,3 +177,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'Visitor4' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Visitor4")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'Workspaces' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Workspaces")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'WorkspacesViewModel' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.WorkspacesViewModel")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Interfaces.ILogUsageAnalysisViewModel")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Interfaces.LogInvocationCollection")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Interfaces.LogUsageAnalysisViewModel")]

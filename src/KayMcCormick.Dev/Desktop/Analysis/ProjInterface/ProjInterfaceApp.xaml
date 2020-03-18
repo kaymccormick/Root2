@@ -9,7 +9,9 @@
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
   xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
-  xmlns:projInterface="clr-namespace:ProjInterface">
+  xmlns:projInterface="clr-namespace:ProjInterface"
+  xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+  xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging">
 
   <kmWpf:BaseApp.Resources>
 
@@ -311,9 +313,23 @@
     </Style>
     <BitmapImage UriSource="Assets/shell32_329.ico"
                  x:Key="PowerOffImage" />
+    <BitmapImage UriSource="Assets/LaunchSamplingTargets/2x/Artboard 1xhdpi.png" x:Key="FilesIcon_"/>
+    <BitmapImage UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png" x:Key="FilesIcon"/>
     <collections:Hashtable x:Key="IconsResources">
-      <BitmapImage UriSource="Assets/imageres_162.ico"
-                   x:Key="{x:Type io:Directory}" />
+      <BitmapImage UriSource="Assets/FolderClosed_16x.png" x:Key="{x:Type io:Directory}"/>
+      <BitmapImage UriSource="Assets/CSSourceFile_16x.png" x:Key=".cs"/>
+      <BitmapImage UriSource="Assets/Application_16x.png" x:Key=".exe"/>
+      <BitmapImage UriSource="Assets/BatchFile_16x.png" x:Key=".bat"/>
+      <BitmapImage UriSource="Assets/CFile_16x.png" x:Key=".c"/>
+      <BitmapImage UriSource="Assets/CPPHeaderFile_16x.png" x:Key=".h"/>
+      <BitmapImage UriSource="Assets/HTMLFile_16x.png" x:Key=".html"/>
+      <BitmapImage UriSource="Assets/PowerShellFile_16x.png" x:Key=".ps1"/>
+      <BitmapImage UriSource="Assets/Image_16x.png" x:Key=".png"/>
+      <BitmapImage UriSource="Assets/Image_16x.png" x:Key=".jpg"/>
+      <BitmapImage UriSource="Assets/MarkupWPF_16x.png" x:Key=".xaml"/>
+      <BitmapImage UriSource="Assets/MarkupXML_16x.png" x:Key=".xml"/>
+      <BitmapImage UriSource="Assets/Log_16x.png" x:Key=".log"/>
+      <BitmapImage UriSource="Assets/Document.ico" x:Key="{x:Type io:File}"/>
       <BitmapImage UriSource="Assets/Blend_6826.ico"
                    x:Key=".sln" />
     </collections:Hashtable>

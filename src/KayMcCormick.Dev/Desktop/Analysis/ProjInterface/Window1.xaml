@@ -10,6 +10,7 @@
                  xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
                  mc:Ignorable="d"
+                 FontSize="14.0"
                  Title="Window1" Height="450" Width="800">
   <kmWpf:AppWindow.CommandBindings>
     <CommandBinding Command="Open"
@@ -20,6 +21,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="15" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
@@ -52,45 +54,59 @@
         <Canvas Width="60" VerticalAlignment="Stretch" Background="{x:Null}"></Canvas>
       </ToolBar>
     </ToolBarTray>
-    <xcad:DockingManager Grid.Row="2" Grid.Column="0"
+    <xcad:DockingManager Grid.Row="3" Grid.Column="0"
                          AllowMixedOrientation="True">
+      <xcad:DockingManager.DocumentPaneControlStyle>
+        <Style TargetType="{x:Type xcad:LayoutDocumentPaneControl}">
+          <Setter Property="Margin" Value="20,10,20,0"/>
+        </Style>
+      </xcad:DockingManager.DocumentPaneControlStyle>
+      <xcad:DockingManager.AnchorableHeaderTemplate>
+        <DataTemplate DataType="{x:Type xcad:LayoutAnchorable}">
+          <StackPanel Orientation="Horizontal">
+          <Image Margin="4,8,8,2"  Source="{Binding IconSource}"></Image>
+        <TextBlock Text="{Binding Title}"></TextBlock>
+          </StackPanel>
+        </DataTemplate>
+      </xcad:DockingManager.AnchorableHeaderTemplate>
       <xcad:DockingManager.DocumentHeaderTemplate>
         <DataTemplate
           DataType="{x:Type xcad:LayoutDocument}">
           <StackPanel Opacity="1.0"
                       Orientation="Horizontal">
             <Image Source="{Binding IconSource}"
-                   Margin="0,0,4,0" />
-            <TextBlock Text="{Binding Title}" />
+                   Margin="6,4,4,0" />
+            <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
           </StackPanel>
         </DataTemplate>
       </xcad:DockingManager.DocumentHeaderTemplate>
       <xcad:LayoutRoot>
         <xcad:LayoutPanel Orientation="Horizontal">
           <xcad:LayoutAnchorablePane DockWidth="300">
-            <xcad:LayoutAnchorable Title="Files"
-                                   IconSource="Assets/imageres_162.ico"
-                                   ContentId="fileBrowser">
-              <Grid Opacity="1.0">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" x:Name="pathTextBox"
-                         Margin="3"
-                         Text="{Binding ElementName=explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                         local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
-                <Explorer
-                  ItemsSource="{Binding RootCollection}"
-                  Grid.Row="1" x:Name="explorer"
-                  Margin="3,0,3,0"
-                  ItemContextMenu="{StaticResource itemContextMenu}"
-                  ListContextMenu="{StaticResource listContextMenu}" />
-              </Grid>
-            </xcad:LayoutAnchorable>
+
           </xcad:LayoutAnchorablePane>
           <xcad:LayoutDocumentPaneGroup>
             <xcad:LayoutDocumentPane x:Name="docpane">
+              <xcad:LayoutAnchorable Title="Files"
+                                     IconSource="{StaticResource FilesIcon}"
+                                     ContentId="fileBrowser">
+                <Grid Opacity="1.0">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                  </Grid.RowDefinitions>
+                  <TextBox Grid.Row="0" x:Name="pathTextBox"
+                           Margin="3"
+                           Text="{Binding ElementName=explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                           local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                  <Explorer
+                    ItemsSource="{Binding RootCollection}"
+                    Grid.Row="1" x:Name="explorer"
+                    Margin="3,0,3,0"
+                    ItemContextMenu="{StaticResource itemContextMenu}"
+                    ListContextMenu="{StaticResource listContextMenu}" />
+                </Grid>
+              </xcad:LayoutAnchorable>
             </xcad:LayoutDocumentPane>
           </xcad:LayoutDocumentPaneGroup>
         </xcad:LayoutPanel>
@@ -112,7 +128,7 @@
         </xcad:LayoutRoot.LeftSide>
       </xcad:LayoutRoot>
     </xcad:DockingManager>
-    <StatusBar Grid.Row="3" Grid.Column="0">
+    <StatusBar Grid.Row="4" Grid.Column="0">
       <StatusBarItem Content="Ready" />
     </StatusBar>
   </Grid>
