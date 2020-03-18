@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input ;
 
-namespace WpfApp
+namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>Static class containing <see cref="RoutedUICommand"/> instances for the application.</summary>
     public static class WpfAppCommands

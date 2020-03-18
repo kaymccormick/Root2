@@ -4,6 +4,7 @@ using System.Linq ;
 using System.Windows ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
+using KayMcCormick.Lib.Wpf ;
 using NLog ;
 using WpfApp.Core.Interfaces ;
 

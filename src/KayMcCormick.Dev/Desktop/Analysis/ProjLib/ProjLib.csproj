@@ -93,6 +93,7 @@
     <Compile Include="Interfaces\IDetailedOperation.cs" />
     <Compile Include="Interfaces\IFormattedCode.cs" />
     <Compile Include="Interfaces\IItemInfo.cs" />
+    <Compile Include="Interfaces\ILogUsageAnalysisViewModel.cs" />
     <Compile Include="Interfaces\IMruItem.cs" />
     <Compile Include="Interfaces\IPipelineViewModel.cs" />
     <Compile Include="Interfaces\IProjectBrowserNode.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="Interfaces\IWorkspacesView.cs" />
     <Compile Include="Interfaces\IWorkspacesViewModel.cs" />
+    <Compile Include="Interfaces\LogInvocationCollection.cs" />
     <Compile Include="MruItem.cs" />
     <Compile Include="PipelineViewModel.cs" />
     <Compile Include="MyLogger.cs" />

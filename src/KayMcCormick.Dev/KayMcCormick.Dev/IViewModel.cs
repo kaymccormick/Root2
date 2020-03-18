@@ -16,5 +16,11 @@ namespace KayMcCormick.Dev
     /// TODO Edit XML Comment Template for IViewModel
     public interface IViewModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resourceKey"></param>
+        /// <returns></returns>
+        //object TryFindResource ( object resourceKey ) ;
     }
 }

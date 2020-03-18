@@ -6,6 +6,7 @@
              xmlns:wpfApp="clr-namespace:WpfApp"
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
              xmlns:controls="clr-namespace:WpfApp.Controls"
+             xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
@@ -18,7 +19,7 @@
         </DataTemplate>
     </UserControl.Resources>
     <UserControl.CommandBindings>
-        <CommandBinding Command="wpfApp:WpfAppCommands.LoadAssemblyList"
+        <CommandBinding Command="kmWpf:WpfAppCommands.LoadAssemblyList"
                         Executed="LoadAssemblyList" CanExecute="CanLoadAssemblyList" />
     </UserControl.CommandBindings>
     <Grid>
@@ -34,7 +35,7 @@
         </Grid.RowDefinitions>
         <ToolBarTray>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Load" Command="wpfApp:WpfAppCommands.LoadAssemblyList" />
+                <Button Content="Load" Command="kmWpf:WpfAppCommands.LoadAssemblyList" />
             </ToolBar>
         </ToolBarTray>
         <ListBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"

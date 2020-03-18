@@ -4,6 +4,7 @@ using System.Globalization ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using Autofac.Features.Metadata ;
+using KayMcCormick.Lib.Wpf ;
 using WpfApp.Core.Model ;
 
 

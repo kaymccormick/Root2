@@ -217,7 +217,6 @@ namespace AnalysisFramework.LogUsage
                                                                sourceLocation
                                                              , methodSymbol
                                                              , relevantNode
-                                                             , semanticModel
                                                              , null
                                                               ) ;
                 var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;

@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections.Generic;
 using System.Threading.Tasks ;
 using System.Windows.Controls ;
@@ -63,6 +64,7 @@ namespace ProjInterface
             builder.RegisterType<StubWorkspaceManager>().As<IWorkspaceManager>();
 
 #endif
+            LogRegistration ( typeof ( Window1 ) ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
             builder.Register (
                               ( context , parameters )
@@ -80,8 +82,16 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IView1 > ( ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
-            
+            builder.RegisterType < LogUsageAnalysisViewModel > ( )
+                   .As < ILogUsageAnalysisViewModel > ( ) ;
+
         }
-#endregion
+
+        private void LogRegistration ( Type type )
+        {
+            string @as = String.Empty ;
+            Logger.Trace ( $"Registering type {type.FullName} as {@as}" ) ;
+        }
+        #endregion
     }
 }

@@ -88,6 +88,7 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppExplorerItem.cs" />
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="DockWindowViewModel.cs" />
@@ -95,6 +96,8 @@
       <DependentUpon>FileBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="JsonSyntaxTokenConverter.cs" />
+    <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="Shell.cs" />
@@ -203,6 +206,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\WpfExplorer\Explorer\Explorer.csproj">
+      <Project>{03FB5D97-71E4-4304-B52F-6836605398B5}</Project>
+      <Name>Explorer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
@@ -223,6 +230,21 @@
       <Project>{558E1C70-3D0F-4124-B115-91C35FE19379}</Project>
       <Name>ProjLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\imageres_162.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Blend_6826.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\shell32_329.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\shell32_253.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\compstui_64067.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

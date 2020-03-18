@@ -12,43 +12,20 @@
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Threading.Tasks ;
-using AnalysisFramework.Interfaces ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 
 namespace ProjLib.Interfaces
 {
-    public interface IWorkspacesViewModel : INotifyPropertyChanged , IAppState
+    public interface IWorkspacesViewModel : INotifyPropertyChanged , IAppState , ILogUsageAnalysisViewModel
     {
-        #if VSSETTINGS
-        VisualStudioInstancesCollection VsCollection { get ; } //ObservableCollection<VsInstance> ;
-        
-#endif
-        ObservableCollection < ILogInvocation > LogInvocations { get ; }
-
-#if false
-        Task < object > LoadSolutionAsync (
-            VsInstance             vsSelectedItem
-          , IMruItem               sender2SelectedItem
-          , TaskFactory            factory
-          , SynchronizationContext current
-        ) ;
-#endif
-
         IProjectBrowserViewModel ProjectBrowserViewModel { get ; }
 
-        PipelineResult PipelineResult { get ; set ; }
-
-        Task AnalyzeCommand (
-           object                  viewCurrentItem
-        ) ;
         string ApplicationMode { get ; }
 
         AdhocWorkspace Workspace { get ; set ; }
 
-        ObservableCollection < LogEventInfo > EventInfos { get ;  }
-
-        ObservableCollection<LogEventInstance> Events { get ; }
+        ObservableCollection < LogEventInfo > EventInfos { get ; }
     }
 }

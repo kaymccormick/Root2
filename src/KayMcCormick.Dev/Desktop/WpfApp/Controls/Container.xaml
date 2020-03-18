@@ -31,10 +31,10 @@
     </Grid.RowDefinitions>
       <Grid.CommandBindings>
         <CommandBinding
-          Command="wpfApp:WpfAppCommands.Load"
+          Command="kmWpf:WpfAppCommands.Load"
           Executed="LoadInstance" />
         <CommandBinding
-          Command="wpfApp:WpfAppCommands.Metadata"
+          Command="kmWpf:WpfAppCommands.Metadata"
           Executed="Metadata" />
       </Grid.CommandBindings>
     <CheckBox Grid.Column="0" Grid.Row="0" Checked="InstancesOnly_OnChecked"
@@ -89,10 +89,10 @@
           DataContext="{Binding ComponentRegistry.Registrations}">
           <DockPanel.CommandBindings>
             <CommandBinding
-              Command="wpfApp:WpfAppCommands.Load"
+              Command="kmWpf:WpfAppCommands.Load"
               Executed="LoadInstance" />
             <CommandBinding
-              Command="wpfApp:WpfAppCommands.Metadata"
+              Command="kmWpf:WpfAppCommands.Metadata"
               Executed="Metadata" />
           </DockPanel.CommandBindings>
           <DockPanel.Resources>

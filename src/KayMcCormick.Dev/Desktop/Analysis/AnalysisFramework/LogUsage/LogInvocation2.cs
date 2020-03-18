@@ -23,6 +23,7 @@ namespace AnalysisFramework.LogUsage
         private string _loggerType ;
         private string _methodName ;
         private string _methodDisplayName ;
+        private readonly object _transformedRelevantNode ;
         private IList < ILogInvocationArgument > _arguments = new List < ILogInvocationArgument > ();
         #region Implementation of ILogInvocation
         public LogInvocation2 (
@@ -33,6 +34,7 @@ namespace AnalysisFramework.LogUsage
           , string loggerType
           , string methodName
           , string methodDisplayName
+          , object transformedRelevantNode
         )
         {
             _sourceLocation = sourceLocation ;
@@ -42,6 +44,7 @@ namespace AnalysisFramework.LogUsage
             _loggerType = loggerType ;
             _methodName = methodName ;
             _methodDisplayName = methodDisplayName ;
+            _transformedRelevantNode = transformedRelevantNode ;
         }
 
         public string SourceLocation { get => _sourceLocation ; set => _sourceLocation = value ; }
@@ -59,6 +62,8 @@ namespace AnalysisFramework.LogUsage
         public string MethodDisplayName { get => _methodDisplayName ; set => _methodDisplayName = value ; }
 
         public IList < ILogInvocationArgument > Arguments { get => _arguments ; set => _arguments = value ; }
+
+        public object TransformedRelevantNode { get { return _transformedRelevantNode ; } }
         #endregion
 
         public override string ToString ( )

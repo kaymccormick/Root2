@@ -92,6 +92,7 @@
     <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
     <Compile Include="ResourceViewItemContainerStyleSelector.cs" />
     <Compile Include="TitleMetadataAttribute.cs" />
+    <Compile Include="WpfAppCommands.cs" />
     <Compile Include="XamlXmlDocumentConverter.cs" />
     <Compile Include="XmlViewer.xaml.cs">
       <DependentUpon>XmlViewer.xaml</DependentUpon>

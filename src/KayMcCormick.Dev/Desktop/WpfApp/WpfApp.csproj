@@ -254,7 +254,6 @@
     <Compile Include="Core\Model\MenuItemCollection.cs" />
     <Compile Include="Core\Model\MethodInvocation.cs" />
     <Compile Include="Core\Model\ResourcesModel.cs" />
-    <Compile Include="WpfAppCommands.cs" />
     <Compile Include="LogTextWriter.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>

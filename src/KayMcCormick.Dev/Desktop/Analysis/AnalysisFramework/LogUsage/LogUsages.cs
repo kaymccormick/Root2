@@ -2,6 +2,7 @@ using System ;
 using System.Linq ;
 using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage.Interfaces ;
+using AnalysisFramework.SyntaxTransform ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -17,9 +18,9 @@ namespace AnalysisFramework.LogUsage
 #if false
         public static IEnumerable < ILogInvocation > FindLogUsages (
             ICodeSource           document1
-      , CompilationUnitSyntax currentRoot
-      , SemanticModel         currentModel
-      , SyntaxTree            syntaxTree
+  , CompilationUnitSyntax currentRoot
+  , SemanticModel         currentModel
+  , SyntaxTree            syntaxTree
         )
         {
             var comp = currentModel.Compilation ;
@@ -49,7 +50,8 @@ namespace AnalysisFramework.LogUsage
                       || node.GetLeadingTrivia ( )
                              .Any (
                                    trivia => {
-                                       var b = trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia ;
+                                       var b =
+ trivia.Kind ( ) == SyntaxKind.SingleLineCommentTrivia ;
                                        var contains = trivia.ToString ( ).Contains ( "doprocess" ) ;
                                        return b && contains ;
                                    }
@@ -80,23 +82,24 @@ namespace AnalysisFramework.LogUsage
                 where @out.Item1
                 select (new InvocationParms (
                                                                                document1
-                                                                         , syntaxTree
-                                                                         , currentModel
-                                                                         , statement
-                                                                         , @out
-                                                                         , ExceptionType
+                                                                     , syntaxTree
+                                                                     , currentModel
+                                                                     , statement
+                                                                     , @out
+                                                                     , ExceptionType
                                                                               ).ProcessInvocation());
                                                          
         }
 #endif
-        public const string LogBuilderClassName     = "LogBuilder";
+        public const string LogBuilderClassName     = "LogBuilder" ;
         public const string LogBuilderNamespaceName = NLogNamespace + ".Fluent" ;
 
         public const string LogBuilderClassFullName =
             LogBuilderNamespaceName + "." + LogBuilderClassName ;
-        public const            string ILoggerClassName    = "ILogger";
-        public const            string LoggerClassName     = "Logger";
-        private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName;
+
+        public const            string ILoggerClassName    = "ILogger" ;
+        public const            string LoggerClassName     = "Logger" ;
+        private static readonly string LoggerClassFullName = NLogNamespace + '.' + LoggerClassName ;
 
         public const string ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
 
@@ -185,21 +188,20 @@ namespace AnalysisFramework.LogUsage
                     Logger.Debug ( "result is {result}" , result ) ;
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
 #endif
-                    return Tuple.Create(result, methodSymbol, n1);
+                    return Tuple.Create ( result , methodSymbol , n1 ) ;
                 }
-                else if (n1 is ObjectCreationExpressionSyntax o)
+                else if ( n1 is ObjectCreationExpressionSyntax o )
                 {
-                    var symbolInfo = currentModel.GetSymbolInfo(o.Type);
-                    var typeSymbol = symbolInfo.Symbol as INamedTypeSymbol;
-                    var result = 
-                        CheckTypeSymbol(typeSymbol, t);
-                    return Tuple.Create <bool, IMethodSymbol, SyntaxNode> ( result , null, n1 ) ;
+                    var symbolInfo = currentModel.GetSymbolInfo ( o.Type ) ;
+                    var typeSymbol = symbolInfo.Symbol as INamedTypeSymbol ;
+                    var result = CheckTypeSymbol ( typeSymbol , t ) ;
+                    return Tuple
+                       .Create < bool , IMethodSymbol , SyntaxNode > ( result , null , n1 ) ;
                 }
 
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 throw new Exception ( "Error" ) ;
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch ( Exception ex )
@@ -210,25 +212,26 @@ namespace AnalysisFramework.LogUsage
             }
         }
 
-        public static INamedTypeSymbol GetILoggerSymbol( [ NotNull ] SemanticModel model)
+        public static INamedTypeSymbol GetILoggerSymbol ( [ NotNull ] SemanticModel model )
         {
             if ( model == null )
             {
                 throw new ArgumentNullException ( nameof ( model ) ) ;
             }
 
-            return model.Compilation.GetTypeByMetadataName(ILoggerClassFullName);
+            return model.Compilation.GetTypeByMetadataName ( ILoggerClassFullName ) ;
         }
 
-        public static INamedTypeSymbol GetLogBuilderSymbol( [ NotNull ] SemanticModel model)
+        public static INamedTypeSymbol GetLogBuilderSymbol ( [ NotNull ] SemanticModel model )
         {
             if ( model == null )
             {
                 throw new ArgumentNullException ( nameof ( model ) ) ;
             }
 
-            return model.Compilation.GetTypeByMetadataName(LogBuilderClassFullName);
+            return model.Compilation.GetTypeByMetadataName ( LogBuilderClassFullName ) ;
         }
+
         public static INamedTypeSymbol GetNLogSymbol ( [ NotNull ] SemanticModel model )
         {
             if ( model == null )
@@ -243,12 +246,22 @@ namespace AnalysisFramework.LogUsage
             string                sourceLocation
           , IMethodSymbol         methodSymbol
           , SyntaxNode            relevantNode
-          , SemanticModel         semanticModel
           , CompilationUnitSyntax o
-
         )
         {
-            return new LogInvocation2(sourceLocation , null, null, null, methodSymbol.ContainingType.MetadataName, methodSymbol.MetadataName, methodSymbol.ContainingType.MetadataName + "." + methodSymbol.MetadataName);
+            var t = Transforms.TransformSyntaxNode ( relevantNode ) ;
+            return new LogInvocation2 (
+                                       sourceLocation
+                                     , null
+                                     , null
+                                     , null
+                                     , methodSymbol.ContainingType.MetadataName
+                                     , methodSymbol.MetadataName
+                                     , methodSymbol.ContainingType.MetadataName
+                                       + "."
+                                       + methodSymbol.MetadataName
+                                      , t
+                                      ) ;
         }
     }
 }

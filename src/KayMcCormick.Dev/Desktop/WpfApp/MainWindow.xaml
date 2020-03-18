@@ -93,7 +93,7 @@
                NavigationFailed="Frame_OnNavigationFailed" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                Name="frame" Source="../Controls/TypePage.xaml">
       <Frame.CommandBindings>
-        <CommandBinding Command="wpfApp:WpfAppCommands.VisitType" Executed="VisitType" />
+        <CommandBinding Command="wpf:WpfAppCommands.VisitType" Executed="VisitType" />
       </Frame.CommandBindings>
       <Frame.RenderTransform>
         <ScaleTransform ScaleX="2" ScaleY="2" />

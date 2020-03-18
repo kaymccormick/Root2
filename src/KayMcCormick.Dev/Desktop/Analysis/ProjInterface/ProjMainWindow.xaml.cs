@@ -5,7 +5,7 @@ using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis ;
 using NLog ;
 using System ;
 using System.Collections ;
@@ -15,21 +15,19 @@ using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Globalization ;
 using System.IO ;
-using System.Linq;
+using System.Linq ;
 using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Text ;
 using System.Text.Json ;
-using System.Text.Json.Serialization ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Data;
-using System.Windows.Input;
+using System.Windows.Data ;
+using System.Windows.Input ;
 using System.Windows.Threading ;
 using AnalysisControls.Views ;
-using AnalysisFramework.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;
 using Task = System.Threading.Tasks.Task ;
@@ -39,21 +37,22 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    [TitleMetadata("Main window")]
+    [ TitleMetadata ( "Main window" ) ]
     public partial class ProjMainWindow : AppWindow
       , IView < IWorkspacesViewModel >
       , IView1
       , IWorkspacesView
       , INotifyPropertyChanged
     {
-        private readonly ILifetimeScope _scope ;
-        private static readonly Logger      Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly        ILifetimeScope _scope ;
+        private static readonly Logger         Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         // ReSharper disable once NotAccessedField.Local
-        private                 TaskFactory _factory ;
+        private TaskFactory _factory ;
 
         public IWorkspacesViewModel ViewModel
         {
-            get => _viewModel ;
+            get { return _viewModel ; }
             set
             {
                 _viewModel = value ;
@@ -61,89 +60,94 @@ namespace ProjInterface
             }
         }
 
-        public ProjMainWindow ( ) : base(null)
+        public ProjMainWindow ( ) : base ( null )
         {
             InitializeComponent ( ) ;
             _factory = new TaskFactory ( TaskScheduler.FromCurrentSynchronizationContext ( ) ) ;
         }
 
-        public ProjMainWindow(IWorkspacesViewModel viewModel, ILifetimeScope scope)
+        public ProjMainWindow ( IWorkspacesViewModel viewModel , ILifetimeScope scope )
         {
             _scope = scope ;
-            SetValue(AttachedProperties.LifetimeScopeProperty, scope);
-            InitializeComponent();
-            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext() ;
+            SetValue ( AttachedProperties.LifetimeScopeProperty , scope ) ;
+            InitializeComponent ( ) ;
+            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext ( ) ;
 
             ViewModel = viewModel ;
             _factory  = new TaskFactory ( _taskScheduler ) ;
 
             var myCacheTarget2 = AppLoggingConfigHelper.CacheTarget2 ;
-            myCacheTarget2?.Cache.SubscribeOn(Scheduler.Default)
-                          .Buffer(TimeSpan.FromMilliseconds(100))
-                          .Where(x => x.Any())
-                          .ObserveOnDispatcher(DispatcherPriority.Background)
-                          .Subscribe(
+            myCacheTarget2?.Cache.SubscribeOn ( Scheduler.Default )
+                           .Buffer ( TimeSpan.FromMilliseconds ( 100 ) )
+                           .Where ( x => x.Any ( ) )
+                           .ObserveOnDispatcher ( DispatcherPriority.Background )
+                           .Subscribe (
+                                       infos => {
+                                           foreach ( var json in infos )
+                                           {
+                                               var i = JsonSerializer
+                                                  .Deserialize < LogEventInstance > (
+                                                                                     json
+                                                                                   , new
+                                                                                         JsonSerializerOptions ( )
+                                                                                    ) ;
+                                               if ( i.Properties != null )
+                                               {
+                                                   foreach ( var p in i.Properties )
+                                                   {
+                                                       var g = _eventView.View as GridView ;
+                                                       if ( ! PropertiesColumns.ContainsKey (
+                                                                                             p.Key
+                                                                                            ) )
+                                                       {
+                                                           var gridViewColumn =
+                                                               new GridViewColumn ( )
+                                                               {
+                                                                   Header = p.Key
+                                                                 , DisplayMemberBinding =
+                                                                       new Binding ( )
+                                                                       {
+                                                                           Converter =
+                                                                               _propConverter
+                                                                         , ConverterParameter =
+                                                                               p.Key
+                                                                       }
+                                                               } ;
+                                                           PropertiesColumns[ p.Key ] =
+                                                               gridViewColumn ;
+                                                           if ( g != null )
+                                                           {
+                                                               g.Columns.Add ( gridViewColumn ) ;
+                                                           }
+
+                                                           //               _eventView.UpdateLayout();
+                                                       }
+                                                   }
+                                               }
+
+                                               ViewModel.Events.Add ( i ) ;
+                                           }
+                                       }
+                                      ) ;
+
+
+            var myCacheTarget = MyCacheTarget.GetInstance ( 1000 ) ;
+            myCacheTarget.Cache.SubscribeOn ( Scheduler.Default )
+                         .Buffer ( TimeSpan.FromMilliseconds ( 100 ) )
+                         .Where ( x => x.Any ( ) )
+                         .ObserveOnDispatcher ( DispatcherPriority.Background )
+                         .Subscribe (
                                      infos => {
-                                         foreach (var json in infos)
+                                         foreach ( var logEventInfo in infos )
                                          {
-
-                                             var i = JsonSerializer
-                                                .Deserialize < LogEventInstance > ( json, new JsonSerializerOptions ( ) ) ;
-                                             if ( i.Properties != null )
-                                             {
-                                                 foreach ( var p in i.Properties )
-                                                 {
-                                                     var g = ( _eventView.View as GridView ) ;
-                                                     if ( ! PropertiesColumns.ContainsKey ( p.Key ) )
-                                                     {
-                                                         var gridViewColumn = new GridViewColumn ( )
-                                                                              {
-                                                                                  Header = p.Key
-                                                                                , DisplayMemberBinding
-                                                                                      = new
-                                                                                        Binding ( )
-                                                                                        {
-                                                                                            Converter
-                                                                                                = _propConverter
-                                                                                          , ConverterParameter
-                                                                                                = p
-                                                                                                   .Key
-                                                                                        }
-                                                                              } ;
-                                                         PropertiesColumns[ p.Key ] =
-                                                             gridViewColumn ;
-                                                         if ( g != null )
-                                                         {
-                                                             g.Columns.Add ( gridViewColumn ) ;
-                                                         }
-
-                                                         //               _eventView.UpdateLayout();
-                                                     }
-                                                 }
-                                             }
-
-                                             ViewModel.Events.Add(i);
+                                             ViewModel.EventInfos.Add ( logEventInfo ) ;
                                          }
                                      }
-                                    );
-
-
-            var myCacheTarget = MyCacheTarget.GetInstance(1000);
-            myCacheTarget.Cache.SubscribeOn(Scheduler.Default)
-                         .Buffer(TimeSpan.FromMilliseconds(100))
-                         .Where(x => x.Any())
-                         .ObserveOnDispatcher(DispatcherPriority.Background)
-                         .Subscribe(
-                                    infos => {
-                                        foreach (var logEventInfo in infos)
-                                        {
-                                            ViewModel.EventInfos.Add ( logEventInfo ) ;
-                                        }
-                                    }
-                                   );
+                                    ) ;
         }
 
-        public Dictionary<string, GridViewColumn> PropertiesColumns { get ; set ; } = new Dictionary<string, GridViewColumn>();
+        public Dictionary < string , GridViewColumn > PropertiesColumns { get ; set ; } =
+            new Dictionary < string , GridViewColumn > ( ) ;
 
 
         protected override void OnInitialized ( EventArgs e )
@@ -159,8 +163,8 @@ namespace ProjInterface
 
         public event RoutedEventHandler TaskCompleted
         {
-            add => AddHandler ( TaskCompleteEvent , value ) ;
-            remove => RemoveHandler ( TaskCompleteEvent , value ) ;
+            add { AddHandler ( TaskCompleteEvent , value ) ; }
+            remove { RemoveHandler ( TaskCompleteEvent , value ) ; }
         }
 
         public static RoutedEvent TaskCompleteEvent =
@@ -171,74 +175,96 @@ namespace ProjInterface
                                             , typeof ( ProjMainWindow )
                                              ) ;
 
-        private ConcurrentBag <Task> _tasks = new ConcurrentBag < Task > ();
-        private TaskScheduler _taskScheduler ;
-        private ObservableCollection<TaskWrap> _obsTasks = new ObservableCollection < TaskWrap > ();
-        private IValueConverter _propConverter = new PropertyConverter() ;
+        private ConcurrentBag < Task > _tasks = new ConcurrentBag < Task > ( ) ;
+        private TaskScheduler          _taskScheduler ;
 
-        private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
+        private ObservableCollection < TaskWrap > _obsTasks =
+            new ObservableCollection < TaskWrap > ( ) ;
+
+        private IValueConverter _propConverter = new PropertyConverter ( ) ;
+
+        private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e ) { }
+
+        private async void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-
-        }
-
-        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
-        {
-            ProjectBrowser projectBrowser = ( ProjectBrowser ) FindName ( "_projectBrowser" ) ;
+            
             if ( e.OriginalSource is ListView )
             {
+                var projectBrowser = (ProjectBrowser)FindName("_projectBrowser");
+                if ( projectBrowser == null )
+                {
+                    return ;
+                }
                 var v = CollectionViewSource.GetDefaultView (
                                                              projectBrowser.ViewModel.RootCollection
                                                             ) ;
                 if ( v == null )
                 {
-                    throw new ArgumentNullException (
-                                                     nameof ( CollectionViewSource.GetDefaultView )
-                                                    ) ;
+                    throw new InvalidOperationException (
+                                                         "Unable to retrieve default view for project browser."
+                                                        ) ;
                 }
-                if ( v != null ) {
-                    var viewCurrentItem = v.CurrentItem ;
-                    Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
-                    Task t = ViewModel.AnalyzeCommand ( viewCurrentItem ) ;
-                    t.ContinueWith (
-                                    task => {
-                                        var jsonSerializerOptions = new JsonSerializerOptions {} ;
-                                        jsonSerializerOptions.Converters.Add (
-                                                                              new
-                                                                                  LogInvocationConverter ( )
-                                                                             ) ;
-                                        File.WriteAllText ( "invocations.json" , JsonSerializer
-                                                               .Serialize (
-                                                                           ViewModel.LogInvocations.ToList (  ), jsonSerializerOptions));
-                                    }
-                                   ) ;
-                    var tw = new TaskWrap ( t , "Analyze Command" ) ;
-                    AddTask ( t, tw ) ;
-                }
+
+                var viewCurrentItem = v.CurrentItem ;
+                Logger.Debug ( "Running analysis on {project}" , viewCurrentItem ) ;
+                await ViewModel.AnalyzeCommand ( viewCurrentItem ).ConfigureAwait(true);
+                var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
+                jsonSerializerOptions.Converters.Add ( new LogInvocationConverter ( ) ) ;
+                File.WriteAllText (
+                                   "invocations.json"
+                                 , JsonSerializer.Serialize (
+                                                             ViewModel.LogInvocations.ToList ( )
+                                                           , jsonSerializerOptions
+                                                            )
+                                  ) ;
             }
             else
             {
-
-            const string path = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
+                const string path =
+                    @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\KayMcCormick.Dev\Logging\AppLoggingConfigHelper.cs" ;
                 ISemanticModelContext c = AnalysisService.Parse (
-                                                                 File.ReadAllText (
-                                                                                   path
-                                                                                  ), "test"
+                                                                 File.ReadAllText ( path )
+                                                               , "test"
                                                                 ) ;
-                ViewModel.Workspace = new AdhocWorkspace();
-                
-                var projectId = ProjectId.CreateNewId("Test") ;
-                ViewModel.Workspace.AddProject(ProjectInfo.Create(projectId, VersionStamp.Create(), "test project", "tesst", LanguageNames.CSharp));
-                  ViewModel.Workspace.AddDocument(DocumentInfo.Create(DocumentId.CreateNewId(projectId, "test"), "test", null, SourceCodeKind.Regular, new FileTextLoader(path, Encoding.UTF8), path));
-                  ViewModel.Workspace.CurrentSolution.Projects.First ( )
-                           .Documents.First ( )
-                           .GetSemanticModelAsync ( )
-                           .ContinueWith (
-                                          ( task  ) => {
-                                              var w = _scope.Resolve < ICompilationView > (
+                ViewModel.Workspace = new AdhocWorkspace ( ) ;
+
+                var projectId = ProjectId.CreateNewId ( "Test" ) ;
+                ViewModel.Workspace.AddProject (
+                                                ProjectInfo.Create (
+                                                                    projectId
+                                                                  , VersionStamp.Create ( )
+                                                                  , "test project"
+                                                                  , "tesst"
+                                                                  , LanguageNames.CSharp
+                                                                   )
+                                               ) ;
+                ViewModel.Workspace.AddDocument (
+                                                 DocumentInfo.Create (
+                                                                      DocumentId.CreateNewId (
+                                                                                              projectId
+                                                                                            , "test"
+                                                                                             )
+                                                                    , "test"
+                                                                    , null
+                                                                    , SourceCodeKind.Regular
+                                                                    , new FileTextLoader (
+                                                                                          path
+                                                                                        , Encoding
+                                                                                             .UTF8
+                                                                                         )
+                                                                    , path
+                                                                     )
+                                                ) ;
+                ViewModel.Workspace.CurrentSolution.Projects.First ( )
+                         .Documents.First ( )
+                         .GetSemanticModelAsync ( )
+                         .ContinueWith (
+                                        ( task ) => {
+                                            var w = _scope.Resolve < ICompilationView > (
                                                                                          new
                                                                                              TypedParameter (
                                                                                                              typeof
-                                                                                                                 ( ICodeAnalyseContext
+                                                                                                             ( ICodeAnalyseContext
                                                                                                              )
                                                                                                            , new
                                                                                                                  CodeAnalyseContext2 (
@@ -247,17 +273,17 @@ namespace ProjInterface
                                                                                                                                      )
                                                                                                             )
                                                                                         ) ;
-                                              w.Show ( ) ;
-                                          }, TaskScheduler.FromCurrentSynchronizationContext()
-                                         ) ;
-
+                                            w.Show ( ) ;
+                                        }
+                                      , TaskScheduler.FromCurrentSynchronizationContext ( )
+                                       ) ;
             }
         }
 
         private void AddTask ( Task task , TaskWrap tw )
         {
-            Logger.Trace ( "Adding task {desc}", tw?.Desc ?? "null" ) ;
-            _obsTasks.Add(tw);
+            Logger.Trace ( "Adding task {desc}" , tw?.Desc ?? "null" ) ;
+            _obsTasks.Add ( tw ) ;
             task.ContinueWith (
                                delegate ( Task t ) {
                                    if ( tw != null )
@@ -266,7 +292,8 @@ namespace ProjInterface
                                    }
 
                                    //ObsTasks.Remove ( t ) ;
-                               }, _taskScheduler
+                               }
+                             , _taskScheduler
                               ) ;
             _tasks.Add ( task ) ;
         }
@@ -287,75 +314,38 @@ namespace ProjInterface
             switch ( e.PropertyName )
             {
                 case "StackTrace" :
-                case "MessageTemplateParameters":
-                case "HasStackTrace":
-                case "UserStackFrame":
-                case "UserStackFrameNumber":
-                case "CallerClassName":
-                case "CallerMemberName":
-                case "CallerFilePath":
-                case "CallerLineNumber":
-                case "LoggerShortName":
-                case "MessageFormatter":
-                case "Message":
-                    case "HasProperties":
+                case "MessageTemplateParameters" :
+                case "HasStackTrace" :
+                case "UserStackFrame" :
+                case "UserStackFrameNumber" :
+                case "CallerClassName" :
+                case "CallerMemberName" :
+                case "CallerFilePath" :
+                case "CallerLineNumber" :
+                case "LoggerShortName" :
+                case "MessageFormatter" :
+                case "Message" :
+                case "HasProperties" :
 
                     e.Cancel = true ;
                     break ;
-                
             }
         }
 
-#region Implementation of IView1
-        public string ViewTitle => "Main View" ;
+        #region Implementation of IView1
+        public string ViewTitle { get { return "Main View" ; } }
 
         public ObservableCollection < TaskWrap > ObsTasks
         {
-            get => _obsTasks ;
-            set => _obsTasks = value ;
+            get { return _obsTasks ; }
+            set { _obsTasks = value ; }
         }
-#endregion
+        #endregion
 
         private void _projectBrowser_OnSelected ( object sender , RoutedEventArgs e )
         {
             Logger.Info ( "selected {i}" , sender.ToString ( ) ) ;
         }
-    }
-
-    internal class LogInvocationConverter : JsonConverter<ILogInvocation>
-    {
-#region Overrides of JsonConverter<ILogInvocation>
-        public override ILogInvocation Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , ILogInvocation        value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject();
-            writer.WriteString ( "SourceLocation" , value.SourceLocation ) ;
-            writer.WriteString ( "LoggerType" , value.LoggerType ) ;
-            writer.WriteString ( "MethodName" , value.MethodName ) ;
-            writer.WriteString ( "Code" , value.Code ) ;
-            writer.WriteString("PrecedingCode", value.PrecedingCode);
-            writer.WriteString ( "FollowingCode" , value.FollowingCode ) ;
-            writer.WriteStartArray ( "Arguments" ) ;
-            foreach ( var logInvocationArgument in value.Arguments )
-            {
-                JsonSerializer.Serialize ( writer , logInvocationArgument.Pojo , options ) ;
-            }
-            writer.WriteEndArray();
-            writer.WriteEndObject();
-        }
-#endregion
     }
 
     internal interface ICompilationView
@@ -365,7 +355,7 @@ namespace ProjInterface
 
     internal class PropertyConverter : IValueConverter
     {
-#region Implementation of IValueConverter
+        #region Implementation of IValueConverter
         public object Convert (
             object      value
           , Type        targetType
@@ -373,11 +363,17 @@ namespace ProjInterface
           , CultureInfo culture
         )
         {
-            LogEventInstance instance = value as LogEventInstance;
-            if ( instance != null && (instance.Properties != null && instance.Properties.TryGetValue ( ( string ) parameter ?? throw new InvalidOperationException ( ) , out var elem )) )
+            var instance = value as LogEventInstance ;
+            if ( instance               != null
+                 && instance.Properties != null
+                 && instance.Properties.TryGetValue (
+                                                     ( string ) parameter
+                                                     ?? throw new InvalidOperationException ( )
+                                                   , out var elem
+                                                    ) )
             {
-                var process = Process ( (JsonElement )elem) ;
-                if(targetType == typeof(string))
+                var process = Process ( ( JsonElement ) elem ) ;
+                if ( targetType == typeof ( string ) )
                 {
                     var convertToString = ConvertToString ( process ) ;
                     if ( convertToString.Length > 80 )
@@ -387,6 +383,7 @@ namespace ProjInterface
 
                     return convertToString ;
                 }
+
                 return process ;
             }
 
@@ -395,9 +392,9 @@ namespace ProjInterface
 
         private string ConvertToString ( object process )
         {
-            if(process is IDictionary d)
+            if ( process is IDictionary d )
             {
-                List <string> strings = new List < string > ();
+                var strings = new List < string > ( ) ;
                 foreach ( var dKey in d.Keys )
                 {
                     strings.Add ( dKey + ": " + ConvertToString ( d[ dKey ] ) ) ;
@@ -405,19 +402,20 @@ namespace ProjInterface
 
                 return string.Join ( ", " , strings ) ;
             }
-            if (process is IEnumerable  ie && process.GetType() != typeof(string))
+
+            if ( process is IEnumerable ie
+                 && process.GetType ( ) != typeof ( string ) )
             {
-                List<string> strings = new List<string>();
-                foreach (var dKey in ie)
+                var strings = new List < string > ( ) ;
+                foreach ( var dKey in ie )
                 {
                     strings.Add ( ConvertToString ( dKey ) ) ;
                 }
 
-                return string.Join(", ", strings);
+                return string.Join ( ", " , strings ) ;
             }
 
             return process.ToString ( ) ;
-
         }
 
         private object Process ( JsonElement elem )
@@ -428,12 +426,14 @@ namespace ProjInterface
                 case JsonValueKind.Object :
                     try
                     {
-                        Dictionary<string, object> dd = new Dictionary < string , object > ();
+                        var dd = new Dictionary < string , object > ( ) ;
                         foreach ( var q in elem.EnumerateObject ( ) )
                         {
                             if ( dd.ContainsKey ( q.Name ) )
                             {
-                                System.Diagnostics.Debug.WriteLine ( "Uh oh key exists " + q.Name ) ;
+                                System.Diagnostics.Debug.WriteLine (
+                                                                    "Uh oh key exists " + q.Name
+                                                                   ) ;
                             }
                             else
                             {
@@ -444,7 +444,6 @@ namespace ProjInterface
                         return dd ;
                         // .ToDictionary ( property => property.Name , property
                         // => Process ( property.Value )) ;
-
                     }
                     catch ( Exception ex )
                     {
@@ -454,19 +453,27 @@ namespace ProjInterface
 #pragma warning disable CS0162 // Unreachable code detected
                     return "test" ;
 #pragma warning restore CS0162 // Unreachable code detected
-                case JsonValueKind.Array :     return elem.EnumerateArray ( ).Select ( Process ) ;
-                case JsonValueKind.String :    return elem.GetString ( ) ;
-                case JsonValueKind.Number :    return elem.GetInt32 ( ) ;
-                case JsonValueKind.True :      return true ;
-                case JsonValueKind.False :     return false ;
-                case JsonValueKind.Null :      return null ;
-                default :                      throw new ArgumentOutOfRangeException ( ) ;
+                case JsonValueKind.Array :  return elem.EnumerateArray ( ).Select ( Process ) ;
+                case JsonValueKind.String : return elem.GetString ( ) ;
+                case JsonValueKind.Number : return elem.GetInt32 ( ) ;
+                case JsonValueKind.True :   return true ;
+                case JsonValueKind.False :  return false ;
+                case JsonValueKind.Null :   return null ;
+                default :                   throw new ArgumentOutOfRangeException ( ) ;
             }
         }
 
 
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
-#endregion
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
+        #endregion
     }
 
     public class TaskWrap : INotifyPropertyChanged
@@ -479,12 +486,12 @@ namespace ProjInterface
 
         public string Status
         {
-            get => _status ;
+            get { return _status ; }
             set
             {
                 _status = value ;
-                OnPropertyChanged();
-                OnPropertyChanged("Task");
+                OnPropertyChanged ( ) ;
+                OnPropertyChanged ( "Task" ) ;
             }
         }
 

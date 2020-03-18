@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpfApp="clr-namespace:WpfApp"
              xmlns:model="clr-namespace:WpfApp.Core.Model"
+             xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
              mc:Ignorable="d"
              d:DesignHeight="150" d:DesignWidth="225">
     <UserControl.Resources>
@@ -59,7 +60,7 @@
         <Canvas Grid.Column="0" Grid.Row="0">
             <Border>
                 <WrapPanel>
-                    <Button Content="{Binding Name}" Command="wpfApp:WpfAppCommands.VisitType"
+                    <Button Content="{Binding Name}" Command="kmWpf:WpfAppCommands.VisitType"
                             CommandParameter="{Binding}" />
                 </WrapPanel>
             </Border>

@@ -6,6 +6,7 @@ using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
+using System.Windows.Threading ;
 using AnalysisControls ;
 using AnalysisControls.Interfaces ;
 using AnalysisFramework.SyntaxTransform ;
@@ -18,7 +19,6 @@ using CommandLine.Text ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 #if MSBUILDLOCATOR
@@ -26,6 +26,7 @@ using Microsoft.Build.Locator ;
 #endif
 using NLog ;
 using NLog.Targets ;
+using Application = KayMcCormick.Dev.Application ;
 using JsonConverter = System.Text.Json.Serialization.JsonConverter ;
 
 namespace ProjInterface
@@ -204,30 +205,18 @@ protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
             }
 }
 #endif
-    }
-
-    public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
-    {
-        #region Overrides of JsonConverter<SyntaxToken>
-        public override SyntaxToken Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
+        private void ProjInterfaceApp_OnDispatcherUnhandledException (
+            object                                sender
+          , DispatcherUnhandledExceptionEventArgs e
         )
         {
-            return default ;
+            Xceed.Wpf.Toolkit.MessageBox m = new Xceed.Wpf.Toolkit.MessageBox();
+            m.Text = e.Exception.Message ;
+            m.ShowDialog ( ) ;
+            System.Windows.Application.Current.Shutdown ( ) ;
         }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , SyntaxToken           value
-          , JsonSerializerOptions options
-        )
-        {
-            
-        }
-        #endregion
     }
+
     public class JsonSyntaxNodeConverter : JsonConverterFactory
     {
         #region Overrides of JsonConverter

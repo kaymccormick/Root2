@@ -31,5 +31,7 @@ namespace AnalysisFramework.Interfaces
         string MethodDisplayName { get ; }
 
         IList < ILogInvocationArgument > Arguments { get ; }
+
+        object TransformedRelevantNode { get ; }
     }
 }
