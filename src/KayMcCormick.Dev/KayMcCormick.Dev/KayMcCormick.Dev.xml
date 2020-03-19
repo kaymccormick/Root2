@@ -951,6 +951,23 @@
             <summary>Returns a string that represents the current object.</summary>
             <returns>A string that represents the current object.</returns>
         </member>
+        <member name="T:KayMcCormick.Dev.IocModule">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.IocModule.DoLoad(Autofac.ContainerBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="builder"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.IocModule.LogRegistration(System.Object[])">
+            <summary>
+            
+            </summary>
+            <param name="p"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.ServiceImpl.CentralService">
             <summary>
             

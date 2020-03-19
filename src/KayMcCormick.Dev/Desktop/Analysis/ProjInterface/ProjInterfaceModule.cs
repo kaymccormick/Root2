@@ -10,15 +10,17 @@
 // ---
 #endregion
 using System ;
-using System.Collections.Generic;
+using System.Collections ;
+using System.Collections.Generic ;
+using System.Linq ;
 using System.Threading.Tasks ;
 using System.Windows.Controls ;
-using Autofac;
+using Autofac ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.CodeAnalysis;
-
-using NLog;
-using ProjLib;
+using Microsoft.CodeAnalysis ;
+using NLog ;
+using ProjLib ;
 using ProjLib.Interfaces ;
 
 namespace ProjInterface
@@ -38,60 +40,76 @@ namespace ProjInterface
 #else
     internal class StubWorkspaceManager : IWorkspaceManager
     {
-        public Workspace CreateWorkspace(IDictionary<string, string> props)
+        public Workspace CreateWorkspace ( IDictionary < string , string > props ) { return null ; }
+
+        public Task OpenSolutionAsync ( Workspace workspace , string solutionPath )
         {
-            return null;
-        }
-        public Task OpenSolutionAsync(Workspace workspace, string solutionPath)
-        {
-            return Task.CompletedTask;
+            return Task.CompletedTask ;
         }
     }
 #endif
 
-    public class ProjInterfaceModule : Module
+    public class ProjInterfaceModule : IocModule
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-#region Overrides of Module
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-            Logger.Trace("Load");
-            Logger.Warn($"Loading module {typeof(ProjInterfaceModule).AssemblyQualifiedName}");
-            builder.RegisterModule<ProjLibModule>();
+            DoLoad ( builder ) ;
+        }
+        #endregion
+
+        public override void DoLoad ( ContainerBuilder builder)
+        {
+            Logger.Trace ( "Load" ) ;
+            Logger.Warn (
+                         $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
+                        ) ;
+            builder.RegisterModule < ProjLibModule > ( ) ;
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
 #else
-            builder.RegisterType<StubWorkspaceManager>().As<IWorkspaceManager>();
+            builder.RegisterType < StubWorkspaceManager > ( ).As < IWorkspaceManager > ( ) ;
 
 #endif
-            LogRegistration ( typeof ( Window1 ) ) ;
+            LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
+            LogRegistration ( typeof ( ProjMainWindow ) , "AsSelf" ) ;
             builder.Register (
-                              ( context , parameters )
-                                  => new ProjMainWindow (
-                                                         context
-                                                            .Resolve < IWorkspacesViewModel > ( )
-                                                       , context.Resolve < ILifetimeScope > ( )
-                                                        )
+                              ( context , parameters ) => new ProjMainWindow (
+                                                                              context
+                                                                                 .Resolve <
+                                                                                      IWorkspacesViewModel
+                                                                                  > ( )
+                                                                            , context
+                                                                                 .Resolve <
+                                                                                      ILifetimeScope
+                                                                                  > ( )
+                                                                             )
                              )
                    .AsSelf ( ) ;
+            LogRegistration ( typeof ( DockWindowViewModel ) , "AsSelf" ) ;
             builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
-            builder.RegisterType<ProjMainWindow>().AsSelf().As<IView1>();
+            LogRegistration ( typeof ( ProjMainWindow ) , "AsSelf" , typeof ( IView1 ) ) ;
+            builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ).As < IView1 > ( ) ;
+            LogRegistration (
+                             typeof ( AllResourcesTree )
+                           , typeof ( UserControl )
+                           , "AsSelf"
+                           , typeof ( IView1 )
+                            ) ;
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
                    .As < IView1 > ( ) ;
+            LogRegistration ( typeof ( AllResourcesTreeViewModel ) , "AsSelf" ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
+            LogRegistration (
+                             typeof ( LogUsageAnalysisViewModel )
+                           , typeof ( ILogUsageAnalysisViewModel )
+                            ) ;
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
-
         }
-
-        private void LogRegistration ( Type type )
-        {
-            string @as = String.Empty ;
-            Logger.Trace ( $"Registering type {type.FullName} as {@as}" ) ;
-        }
-        #endregion
     }
 }

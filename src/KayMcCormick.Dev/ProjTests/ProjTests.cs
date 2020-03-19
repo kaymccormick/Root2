@@ -21,6 +21,7 @@ using System.Windows ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
+using Autofac.Core.Registration ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
@@ -28,6 +29,7 @@ using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Moq ;
 using NLog ;
 using NLog.Layouts ;
 using ProjInterface ;
@@ -40,14 +42,13 @@ using LogLevel = NLog.LogLevel ;
 
 namespace ProjTests
 {
-
-    [CollectionDefinition( "GeneralPurpose")]
-    [UsedImplicitly]
-    public class GeneralPurpose : ICollectionFixture<GlobalLoggingFixture>
+    [ CollectionDefinition ( "GeneralPurpose" ) ]
+    [ UsedImplicitly ]
+    public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
     {
     }
 
-    [Collection ( "GeneralPurpose" ) ]
+    [ Collection ( "GeneralPurpose" ) ]
     [ ClearLoggingRules ]
 #if VSSETTINGS
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
@@ -55,42 +56,47 @@ namespace ProjTests
     [ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
     [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
     [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
-    [BeforeAfterLogger]
+    [ BeforeAfterLogger ]
     public sealed class ProjTests : IClassFixture < LoggingFixture >
-        , IClassFixture < ProjectFixture >
-        , IDisposable
+      , IClassFixture < ProjectFixture >
+      , IDisposable
     {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
-        private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private readonly ITestOutputHelper _output ;
-        private readonly LoggingFixture    _loggingFixture ;
-        [ UsedImplicitly ] private readonly ProjectFixture _projectFixture ;
+        private static readonly Logger Logger =
+            LogManager.GetCurrentClassLogger ( ) ;
+
+        private readonly                    ITestOutputHelper _output ;
+        private readonly                    LoggingFixture    _loggingFixture ;
+        [ UsedImplicitly ] private readonly ProjectFixture    _projectFixture ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
-                          ITestOutputHelper output
-                          , LoggingFixture    loggingFixture
-                          , ProjectFixture    projectFixture
-                          )
+            ITestOutputHelper output
+          , LoggingFixture    loggingFixture
+          , ProjectFixture    projectFixture
+        )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
-            _output = output ;
+            _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
-            _projectFixture = projectFixture ;
+            _projectFixture                              =  projectFixture ;
             //VSI                                          =  projectFixture.I ;
-            if ( loggingFixture != null )
-            {
-                loggingFixture.SetOutputHelper ( output , this ) ;
-            }
+            loggingFixture?.SetOutputHelper ( output , this ) ;
 
             _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
         }
 
-        [Fact]
-        public void remote1 ( )
+        [ Fact ]
+        public void TestModule1 ( )
         {
+            var module = new ProjInterfaceModule();
+
+            var mock = new Mock < ContainerBuilder> ( ) ;
+            mock.Setup ( cb => module.DoLoad(cb, null));
+            
         }
+
         [ WpfFact ]
         public void TestViewModel1 ( )
         {
@@ -108,8 +114,8 @@ namespace ProjTests
                                      foreach ( var enumerateFileSystemEntry in Directory
                                                .EnumerateFileSystemEntries (
                                                                             tempDir
-                                                                            , "*"
-                                                                            , SearchOption.AllDirectories
+                                                                        , "*"
+                                                                        , SearchOption.AllDirectories
                                                                             ) )
                                      {
                                          if ( File.Exists ( enumerateFileSystemEntry ) )
@@ -118,7 +124,8 @@ namespace ProjTests
                                              {
                                                  File.SetAttributes(enumerateFileSystemEntry, FileAttributes.Normal);
 
-                                                 var fileInfo = new FileInfo(enumerateFileSystemEntry) ;
+                                                 var fileInfo =
+ new FileInfo(enumerateFileSystemEntry) ;
                                                  fileInfo.Delete();
                                                  // File.Delete ( enumerateFileSystemEntry ) ;
                                              }
@@ -136,9 +143,9 @@ namespace ProjTests
             cloneOptions.OnCheckoutProgress = ( path , steps , totalSteps )
                 => Logger.Debug (
                                  "Checkout progress: {path} ( {steps} / {totalSteps} )"
-                                 , path
-                                 , steps
-                                 , totalSteps
+                             , path
+                             , steps
+                             , totalSteps
                                  ) ;
             cloneOptions.RepositoryOperationStarting = context => {
                 Logger.Info ( "{a} {b}" , context.ParentRepositoryPath , context.RemoteUrl ) ;
@@ -158,14 +165,14 @@ namespace ProjTests
 
             Repository.Clone (
                               "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
-                              , cloneDir
+                          , cloneDir
                               /*      , cloneOptions*/
                               ) ;
             var dd = new DirectoryInfo ( cloneDir ) ;
             var f = Directory.EnumerateFiles (
                                               cloneDir
-                                              , "KayMcCormick.dev.sln"
-                                              , SearchOption.AllDirectories
+                                          , "KayMcCormick.dev.sln"
+                                          , SearchOption.AllDirectories
                                               )
                 .ToList ( ) ;
             Assert.NotEmpty ( f ) ;
@@ -188,9 +195,14 @@ namespace ProjTests
                 appInst.AddModule ( new ProjLibModule ( ) ) ;
                 var scope = appInst.GetLifetimeScope ( ) ;
                 var viewModel = scope.Resolve < IWorkspacesViewModel > ( ) ;
-                viewModel.AnalyzeCommand(viewModel.ProjectBrowserViewModel.RootCollection.OfType<IProjectBrowserNode>().First());
+                viewModel.AnalyzeCommand (
+                                          viewModel.ProjectBrowserViewModel.RootCollection
+                                                   .OfType < IProjectBrowserNode > ( )
+                                                   .First ( )
+                                         ) ;
 #if false
-                var vsInstance = viewModel.VsCollection.First (instance => instance.InstallationVersion.StartsWith("16.4.")) ;
+                var vsInstance =
+ viewModel.VsCollection.First (instance => instance.InstallationVersion.StartsWith("16.4.")) ;
                 var mruItem = vsInstance.MruItems.Skip ( 1 ).First ( item => item.Exists ) ;
                 Assert.NotNull ( viewModel.PipelineViewModel.Pipeline ) ;
                 var i = MSBuildLocator
@@ -199,7 +211,7 @@ namespace ProjTests
                                                  {
                                                      DiscoveryTypes =
                                                      DiscoveryType.VisualStudioSetup
-                                                     , WorkingDirectory = @"c:\\temp\work1"
+                                                 , WorkingDirectory = @"c:\\temp\work1"
                                                  }
                                                  )
                     .Where (
@@ -228,8 +240,8 @@ namespace ProjTests
                                                                                                        Logger
                                                                                                        .Fatal ( task
                                                                                                                 .Exception
-                                                                                                                , "Faulted with {ex}"
-                                                                                                                , task
+                                                                                                            , "Faulted with {ex}"
+                                                                                                            , task
                                                                                                                 .Exception
                                                                                                                 ) ;
                                                                                                    }
@@ -240,21 +252,25 @@ namespace ProjTests
             }
         }
 
-        [Fact]
+        [ Fact ]
         public void DeserializeLog ( )
         {
-            var ctx = (ICompilationUnitRootContext)AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
-            LogEventInfo info1 = LogEventInfo.Create(LogLevel.Debug, "test", "test");
+            var ctx = ( ICompilationUnitRootContext ) AnalysisService.Parse (
+                                                                             LibResources
+                                                                                .Program_Parse
+                                                                           , "test"
+                                                                            ) ;
+            var info1 = LogEventInfo.Create ( LogLevel.Debug , "test" , "test" ) ;
             info1.Properties[ "node" ] = ctx.CompilationUnit ;
 
-            JsonSerializerOptions options = new JsonSerializerOptions();
-            options.Converters.Add ( new LogEventInfoConverter ( ));
-            options.Converters.Add (new JsonSyntaxNodeConverter()) ;
+            var options = new JsonSerializerOptions ( ) ;
+            options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
+            options.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
 
             var json = JsonSerializer.Serialize ( info1 , options ) ;
             Logger.Info ( json ) ;
             var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
-            Assert.Equal(info1.CallerClassName, info2.CallerClassName);
+            Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
 
 
             var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
@@ -262,8 +278,8 @@ namespace ProjTests
             {
                 var line = t.ReadLine ( ) ;
 
-                LogEventInfo info = JsonSerializer.Deserialize < LogEventInfo > ( line, options ) ;
-                Logger.Debug(info.FormattedMessage);
+                var info = JsonSerializer.Deserialize < LogEventInfo > ( line , options ) ;
+                Logger.Debug ( info.FormattedMessage ) ;
                 foreach ( var keyValuePair in info.Properties )
                 {
                     Logger.Debug ( keyValuePair.Key ) ;
@@ -294,8 +310,8 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-                              , document.Name
-                              , document.SourceCodeKind
+                          , document.Name
+                          , document.SourceCodeKind
                               ) ;
             } ;
             await v.ProcessAsync ( ) ;
@@ -322,8 +338,8 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-                              , document.Name
-                              , document.SourceCodeKind
+                          , document.Name
+                          , document.SourceCodeKind
                               ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
@@ -335,9 +351,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                             , yy.Item1
-                             , yy.Item2
-                             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+                         , yy.Item1
+                         , yy.Item2
+                         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
 
@@ -345,9 +361,9 @@ namespace ProjTests
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-                              , inv.SourceLocation
-                              , inv.MethodSymbol.Name
-                              , inv.Msgval
+                          , inv.SourceLocation
+                          , inv.MethodSymbol.Name
+                          , inv.Msgval
                               ) ;
             }
         }
@@ -361,9 +377,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-                                     , string         proj
-                                     , string         doc
-                                     , ILifetimeScope scope
+                                 , string         proj
+                                 , string         doc
+                                 , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -396,9 +412,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                             , yy.Item1
-                             , yy.Item2
-                             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+                         , yy.Item1
+                         , yy.Item2
+                         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
         }
@@ -435,9 +451,9 @@ namespace ProjTests
         }
 #endif
         private void CurrentDomainOnFirstChanceException (
-                                                          object                        sender
-                                                          , FirstChanceExceptionEventArgs e
-                                                          )
+            object                        sender
+          , FirstChanceExceptionEventArgs e
+        )
         {
             HandleInnerExceptions ( e ) ;
         }
@@ -483,62 +499,61 @@ namespace ProjTests
         }
 
         [ WpfFact ]
-        public void TestFormattedCodeControl()
+        public void TestFormattedCodeControl ( )
         {
-            var codeControl = new FormattedCode();
+            var codeControl = new FormattedCode ( ) ;
             //FormattdCode1.SetValue(ComboBox.Edit.Editable)
 
-            var sourceText = LibResources.Program_Parse;
-            codeControl.SourceCode = sourceText;
+            var sourceText = LibResources.Program_Parse ;
+            codeControl.SourceCode = sourceText ;
             var w = new Window { Content = codeControl } ;
 
-            var context = (ISemanticModelContext)AnalysisService.Parse(sourceText, "test1");
+            var context = ( ISemanticModelContext ) AnalysisService.Parse ( sourceText , "test1" ) ;
             var syntaxTree = context.CurrentModel.SyntaxTree ;
             var model = context.CurrentModel ;
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
-            Logger.Info("Context is {Context}", context);
-            codeControl.SyntaxTree            = syntaxTree;
-            codeControl.Model                 = model;
-            codeControl.CompilationUnitSyntax = compilationUnitSyntax;
-            codeControl.Refresh();
+            Logger.Info ( "Context is {Context}" , context ) ;
+            codeControl.SyntaxTree            = syntaxTree ;
+            codeControl.Model                 = model ;
+            codeControl.CompilationUnitSyntax = compilationUnitSyntax ;
+            codeControl.Refresh ( ) ;
 
             // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
             // File.WriteAllText ( @"c:\data\out.xaml", argument1 ) ;
             // Logger.Info ( "xaml = {xaml}" , argument1 ) ;
             // var tree = Transforms.TransformTree ( context.SyntaxTree ) ;
             // Logger.Info ( "Tree is {tree}" , tree ) ;
-            w.ShowDialog();
+            w.ShowDialog ( ) ;
         }
 
-        [WpfFact]
-        public void TestFormattedCodeControl2()
+        [ WpfFact ]
+        public void TestFormattedCodeControl2 ( )
         {
-            var codeControl = new FormattedCode2();
+            var codeControl = new FormattedCode2 ( ) ;
             var w = new Window { Content = codeControl } ;
 
-            Task t = new Task ( ( ) => { } ) ;
+            var t = new Task ( ( ) => { } ) ;
             w.Closed += ( sender , args ) => {
                 t.Start ( ) ;
             } ;
             //FormattdCode1.SetValue(ComboBox.Edit.Editable)
 
-            var sourceText = LibResources.Program_Parse;
-            codeControl.SourceCode = sourceText;
+            var sourceText = LibResources.Program_Parse ;
+            codeControl.SourceCode = sourceText ;
 
-            var context = (ISemanticModelContext)AnalysisService.Parse(sourceText, "test1");
-            var syntaxTree = context.CurrentModel.SyntaxTree;
-            var model = context.CurrentModel;
-            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot();
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            var context = ( ISemanticModelContext ) AnalysisService.Parse ( sourceText , "test1" ) ;
+            var syntaxTree = context.CurrentModel.SyntaxTree ;
+            var model = context.CurrentModel ;
+            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
+            var tcs = new TaskCompletionSource < bool > ( ) ;
             Task.Run ( ( ) => codeControl.Refresh ( ) )
                 .ContinueWith (
                                task => {
                                    tcs.SetResult ( true ) ;
-
                                }
                               ) ;
 
-            w.Show();
+            w.Show ( ) ;
             tcs.Task.Wait ( ) ;
 
             // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
@@ -546,16 +561,20 @@ namespace ProjTests
             // Logger.Info ( "xaml = {xaml}" , argument1 ) ;
             // var tree = Transforms.TransformTree ( context.SyntaxTree ) ;
             // Logger.Info ( "Tree is {tree}" , tree ) ;
-
         }
+
         [ WpfFact ]
         public void TestCommand ( )
         {
-            var transform = new TransformScope ( LibResources.Program_Parse , new FormattedCode ( ) , new Visitor2 ( ) ) ;
+            var transform = new TransformScope (
+                                                LibResources.Program_Parse
+                                              , new FormattedCode ( )
+                                              , new Visitor2 ( )
+                                               ) ;
             Logger.Info ( "Transform is {transform}" , transform ) ;
             var w = new Window ( ) { } ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
-            var fmt = transform.FormattedCodeControl as IFormattedCode;
+            var fmt = transform.FormattedCodeControl as IFormattedCode ;
             fmt.SourceCode = transform.SourceCode ;
             w.Content      = fmt ;
         }
@@ -571,15 +590,15 @@ namespace ProjTests
         public void TestRewrite ( )
         {
             var ctx = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
-            var comp = ctx.CompilationUnit;
-            var tree = ctx.CurrentModel.SyntaxTree;
-            var codeAnalyseContext = AnalysisService.Parse(LibResources.Program_Parse, "test");
+            var comp = ctx.CompilationUnit ;
+            var tree = ctx.CurrentModel.SyntaxTree ;
+            var codeAnalyseContext = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
             // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
             // var s = new StringWriter ( ) ;
             // using ( var fileStream = File.OpenWrite ( @"out.cs" ) )
             // {
-                // syntaxNode.WriteTo ( new StreamWriter ( fileStream ) ) ;
-                // s.Close ( ) ;
+            // syntaxNode.WriteTo ( new StreamWriter ( fileStream ) ) ;
+            // s.Close ( ) ;
             // }
         }
 
@@ -589,7 +608,7 @@ namespace ProjTests
             // _loggingFixture?.Dispose ( ) ;
 
 
-            _loggingFixture.SetOutputHelper(null);
+            _loggingFixture.SetOutputHelper ( null ) ;
         }
 
         [ WpfFact ]

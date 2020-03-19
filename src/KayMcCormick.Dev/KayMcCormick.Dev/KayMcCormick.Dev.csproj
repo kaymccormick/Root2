@@ -143,6 +143,7 @@
     <Compile Include="IdGeneratorModule.cs" />
     <Compile Include="IHaveLogger.cs" />
     <Compile Include="InfoContext.cs" />
+    <Compile Include="IocModule.cs" />
     <Compile Include="ServiceImpl\CentralService.cs" />
     <Compile Include="Interfaces\ICentralService.cs" />
     <Compile Include="Interfaces\IHaveObjectId.cs" />
