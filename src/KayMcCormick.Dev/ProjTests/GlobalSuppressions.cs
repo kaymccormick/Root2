@@ -16,3 +16,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'GeneralPurpose' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:ProjTests.GeneralPurpose")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'ProjectFixture' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:ProjTests.ProjectFixture")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'ProjTests' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:ProjTests.ProjTests")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:ProjTests.ProjTests.TestResourcesTree1")]

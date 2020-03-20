@@ -28,10 +28,7 @@ using System.Runtime.InteropServices ;
 using System.Security ;
 using System.Security.Permissions ;
 using System.Text ;
-using System.Text.Json ;
-using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
-using NLog.Internal.Fakeables ;
 using NLog.LayoutRenderers ;
 #if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
@@ -115,11 +112,9 @@ namespace KayMcCormick.Dev.Logging
         private static LogLevel                                  _minLogLevel ;
         private static ChainsawTarget                            _chainsawTarget ;
 
-        private static readonly int _protoLogPort =
-            DefaultProtoLogUdpPort ;
+        private static readonly int _protoLogPort = DefaultProtoLogUdpPort ;
 
-        private static readonly IPAddress _protoLogIpAddress =
-            IPAddress.Broadcast ;
+        private static readonly IPAddress _protoLogIpAddress = IPAddress.Broadcast ;
 
         private static readonly IPEndPoint _ipEndPoint =
             new IPEndPoint ( _protoLogIpAddress , _protoLogPort ) ;
@@ -151,7 +146,9 @@ namespace KayMcCormick.Dev.Logging
         private static readonly Action < LogEventInfo > _protoLogAction = _protoLogger.LogAction ;
 
         //private static string _chainsawHost = PublicFacingHostAddress;
-        private static string _chainsawHost = "10.25.0.102" ;
+        private static string _chainsawHost         = "10.25.0.102" ;
+        private static string _disableLoggingEnvVar = "DISABLE_LOGGING" ;
+        private static bool   _performant ;
 
 
         /// <summary>
@@ -198,6 +195,13 @@ namespace KayMcCormick.Dev.Logging
           , ILoggingConfiguration  config1      = null
         )
         {
+            if ( Environment.GetEnvironmentVariable ( _disableLoggingEnvVar ) != null )
+            {
+                logMethod ( "Disabling logging completely" ) ;
+                LogManager.Configuration = new CodeConfiguration ( ) ;
+                return LogManager.LogFactory ;
+            }
+
             if ( config1 == null )
             {
                 config1 = AppLoggingConfiguration.Default ;
@@ -205,13 +209,11 @@ namespace KayMcCormick.Dev.Logging
 
             ApplyConfiguration ( config1 ) ;
 
-            InternalLogging ( ) ;
-
-            if ( Environment.GetEnvironmentVariable ( "DISABLE_LOGGING" ) != null )
+            if ( ! Performant )
             {
-                LogManager.Configuration = new CodeConfiguration ( ) ;
-                return LogManager.LogFactory ;
+                InternalLogging ( ) ;
             }
+
 
 #if ENABLE_PROXYLOG
             LogFactory proxiedFactory = null ;
@@ -224,10 +226,10 @@ namespace KayMcCormick.Dev.Logging
                 proxiedFactory = lConfLogFactory ;
             }
 #endif
-            #if FIELD_ACCESS
+#if FIELD_ACCESS
             var fieldInfo = typeof ( LogManager ).GetField (
                                                             "factory"
-                                                          , BindingFlags.Static
+                                                      , BindingFlags.Static
                                                             | BindingFlags.NonPublic
                                                            ) ;
             if ( fieldInfo != null )
@@ -244,7 +246,7 @@ namespace KayMcCormick.Dev.Logging
                 }
 #endif
             }
-            #endif
+#endif
 #if ENABLE_PROXYLOG
             return PerformConfiguration ( logMethod , proxyLogging , proxiedFactory , config1 ) ;
 #else
@@ -378,11 +380,11 @@ namespace KayMcCormick.Dev.Logging
             {
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
                                     EndpointAddress = receiverAddress.ToString ( )
-      , ClientId = new SimpleLayout ( "${processName}" )
-      , EndpointConfigurationName =
+  , ClientId = new SimpleLayout ( "${processName}" )
+  , EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
-      , IncludeEventProperties = true
-                     ,
+  , IncludeEventProperties = true
+                   ,
                                 } ;
             }
                 
@@ -408,10 +410,10 @@ namespace KayMcCormick.Dev.Logging
 
             // ConfigurationItemFactory.Default = new ConfigurationItemFactory();
             // jsonNetworkTarget = new NetworkTarget ( "jsonNetworkTarget" )
-                                // {
-                                    // Address = "udp://10.25.0.102:4477"
-                                  // , Layout  = new MyJsonLayout ( )
-                                // } ;
+            // {
+            // Address = "udp://10.25.0.102:4477"
+            // , Layout  = new MyJsonLayout ( )
+            // } ;
             // t.Add ( jsonNetworkTarget ) ;
 
             var xmlTarget = new FileTarget ( "xmlFile" )
@@ -456,8 +458,8 @@ namespace KayMcCormick.Dev.Logging
             _dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
 
             var jsonNetworkTarget = new NetworkTarget ( "jsonNet" ) ;
-            jsonNetworkTarget.Layout = new MyJsonLayout();
-            SetupNetworkTarget(jsonNetworkTarget, "udp://127.0.0.1:5110");
+            jsonNetworkTarget.Layout = new MyJsonLayout ( ) ;
+            SetupNetworkTarget ( jsonNetworkTarget , "udp://127.0.0.1:5110" ) ;
             t.Add ( jsonNetworkTarget ) ;
 
             var byType = new Dictionary < Type , int > ( ) ;
@@ -476,7 +478,8 @@ namespace KayMcCormick.Dev.Logging
                 count          += 1 ;
                 byType[ type ] =  count ;
 
-                if ( target.Name == null ||usedNames.Contains(target.Name) )
+                if ( target.Name == null
+                     || usedNames.Contains ( target.Name ) )
                 {
                     target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
@@ -508,7 +511,8 @@ namespace KayMcCormick.Dev.Logging
             {
                 lConf.AddTarget ( oldTarget ) ;
             }
-            foreach(var oldRule in oldRules)
+
+            foreach ( var oldRule in oldRules )
             {
                 lConf.LoggingRules.Add ( oldRule ) ;
             }
@@ -518,15 +522,17 @@ namespace KayMcCormick.Dev.Logging
                 LogManager.Configuration = lConf ;
                 Logger                   = LogManager.GetCurrentClassLogger ( ) ;
                 _loggingConfigured       = true ;
-                System.Diagnostics.Debug.WriteLine($"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}");
+                System.Diagnostics.Debug.WriteLine (
+                                                    $"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}"
+                                                   ) ;
                 Logger.Info ( "test 123" ) ;
-                return useFactory;
-            } catch(Exception ex)
+                return useFactory ;
+            }
+            catch ( Exception ex )
             {
                 System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
                 throw ;
             }
-
         }
 
         private static ChainsawTarget CreateChainsawTarget ( )
@@ -563,37 +569,45 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// 
         /// </summary>
-        public static string ConsoleTargetName => _consoleTargetName ;
+        public static string ConsoleTargetName { get { return _consoleTargetName ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public static string EventLogTargetName => _eventLogTargetName ;
+        public static string EventLogTargetName { get { return _eventLogTargetName ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public static MyCacheTarget2 CacheTarget2 => _cacheTarget2 ;
+        public static MyCacheTarget2 CacheTarget2 { get { return _cacheTarget2 ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public static UdpClient UdpClient => _udpClient ;
+        public static UdpClient UdpClient { get { return _udpClient ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public static IPEndPoint IpEndPoint => _ipEndPoint ;
+        public static IPEndPoint IpEndPoint { get { return _ipEndPoint ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public static Layout XmlEventLayout => _xmlEventLayout ;
+        public static Layout XmlEventLayout { get { return _xmlEventLayout ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public static LogDelegates.LogMethod ProtoLogDelegate => _protoLogDelegate ;
+        public static LogDelegates.LogMethod ProtoLogDelegate { get { return _protoLogDelegate ; } }
+
+        public static string DisableLoggingEnvVar
+        {
+            get { return _disableLoggingEnvVar ; }
+            set { _disableLoggingEnvVar = value ; }
+        }
+
+        public static bool Performant { get { return _performant ; } set { _performant = value ; } }
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {
@@ -646,8 +660,8 @@ namespace KayMcCormick.Dev.Logging
                        Address              = new SimpleLayout ( $"udp://10.25.0.102:{s}" )
                      , IncludeAllProperties = true
                      , IncludeCallSite      = true
-                     , IncludeSourceInfo    = true, IncludeNdlc = true
-                       
+                     , IncludeSourceInfo    = true
+                     , IncludeNdlc          = true
                    } ;
         }
 
@@ -660,11 +674,10 @@ namespace KayMcCormick.Dev.Logging
             var f = new FileTarget ( JsonTargetName )
                     {
                         FileName = Layout.FromString ( @"c:\data\logs\${processName}.json" )
-                       // ,
+                        // ,
                         // Layout = new MyJsonLayout()
-                       ,
-                        Layout = new MyJsonLayout()
-            } ;
+                      , Layout = new MyJsonLayout ( )
+                    } ;
 
             return f ;
         }
@@ -754,31 +767,30 @@ namespace KayMcCormick.Dev.Logging
                           ) ;
 
 
-                bool checkExistingConfig = false ;
+                var checkExistingConfig = false ;
                 var isMyConfig = false ;
                 var doConfig = true ;
                 if ( checkExistingConfig )
                 {
-                    bool ? configLoaded = GetConfigLoaded ( ) ;
+                    var configLoaded = GetConfigLoaded ( ) ;
 
                     isMyConfig = ! configLoaded.GetValueOrDefault ( )
-                                     || LogManager.Configuration is CodeConfiguration ;
+                                 || LogManager.Configuration is CodeConfiguration ;
 
-                    doConfig = !LoggingIsConfigured.GetValueOrDefault()
-                                   || ForceCodeConfig && !isMyConfig;
+                    doConfig = ! LoggingIsConfigured.GetValueOrDefault ( )
+                               || ForceCodeConfig && ! isMyConfig ;
                 }
 
                 logMethod (
-                           $"{nameof(DumpExistingConfig)} = {DumpExistingConfig}; {nameof(doConfig)} = {doConfig}; {nameof ( LoggingIsConfigured )} = {LoggingIsConfigured}; {nameof ( ForceCodeConfig )} = {ForceCodeConfig}; {nameof ( isMyConfig )} = {isMyConfig});"
+                           $"{nameof ( DumpExistingConfig )} = {DumpExistingConfig}; {nameof ( doConfig )} = {doConfig}; {nameof ( LoggingIsConfigured )} = {LoggingIsConfigured}; {nameof ( ForceCodeConfig )} = {ForceCodeConfig}; {nameof ( isMyConfig )} = {isMyConfig});"
                           ) ;
-                if ( DumpExistingConfig )
+                if ( ! Performant && DumpExistingConfig )
                 {
                     void Collect ( string s ) { System.Diagnostics.Debug.WriteLine ( s ) ; }
 
-                    StringWriter x = new StringWriter();
-                    Utils.PerformLogConfigDump(x);
+                    var x = new StringWriter ( ) ;
+                    Utils.PerformLogConfigDump ( x ) ;
                     Collect ( x.ToString ( ) ) ;
-
                 }
 
                 if ( doConfig )
@@ -804,11 +816,11 @@ namespace KayMcCormick.Dev.Logging
         private static bool ? GetConfigLoaded ( )
         {
             return null ;
-            var perm = new ReflectionPermission(ReflectionPermissionFlag.RestrictedMemberAccess);
-            perm.Demand();
+            var perm =
+                new ReflectionPermission ( ReflectionPermissionFlag.RestrictedMemberAccess ) ;
+            perm.Demand ( ) ;
             try
             {
-
                 var fieldInfo2 = LogManager.LogFactory.GetType ( )
                                            .GetField (
                                                       "_config"
@@ -861,7 +873,7 @@ namespace KayMcCormick.Dev.Logging
             }
             catch ( SecurityException ex )
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
             }
 
             return null ;
@@ -996,11 +1008,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="minLevel"></param>
         // ReSharper disable once RedundantNameQualifier
         // ReSharper disable once UnusedMember.Global
-        public static void AddTarget (
-            NLog.Targets.Target target
-          , LogLevel            minLevel
-          , bool                addRules = true
-        )
+        public static void AddTarget ( Target target , LogLevel minLevel , bool addRules = true )
         {
             if ( minLevel == null )
             {
@@ -1136,234 +1144,5 @@ namespace KayMcCormick.Dev.Logging
 
         [ DllImport ( "kernel32.dll" ) ]
         private static extern void OutputDebugString ( string lpOutputString ) ;
-    }
-
-    internal class MyLog4JXmlEventLayoutRenderer : Log4JXmlEventLayoutRenderer
-    {
-        public MyLog4JXmlEventLayoutRenderer ( ) { SetupXmlEventLayoutRenderer ( this ) ; }
-
-        public MyLog4JXmlEventLayoutRenderer ( IAppDomain appDomain ) : base ( appDomain )
-        {
-            SetupXmlEventLayoutRenderer ( this ) ;
-        }
-
-        public static void SetupXmlEventLayoutRenderer ( Log4JXmlEventLayoutRenderer x )
-        {
-            x.IncludeAllProperties = true ;
-            x.IncludeCallSite      = true ;
-            //x.IncludeMdlc          = true ;
-            x.IncludeSourceInfo    = true ;
-            x.IncludeNLogData      = true ;
-            //x.IncludeNdlc          = true ;
-            x.IndentXml            = true ;
-        }
-    }
-
-    internal class ProtoLogger
-    {
-        private readonly Func < LogEventInfo , byte[] > _getBytes ;
-        private readonly UdpClient                      _udpClient ;
-        private readonly IPEndPoint                     _ipEndPoint ;
-        private readonly Layout                         _layout ;
-
-        public ProtoLogger ( )
-        {
-            _udpClient  = AppLoggingConfigHelper.UdpClient ;
-            _ipEndPoint = AppLoggingConfigHelper.IpEndPoint ;
-            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
-            _getBytes   = DefaultGetBytes ;
-        }
-
-        private byte[] DefaultGetBytes ( LogEventInfo arg )
-        {
-            var encoding = Encoding.UTF8 ;
-            return encoding.GetBytes ( _layout.Render ( arg ) ) ;
-        }
-
-        [ SuppressMessage ( "ReSharper" , "UnusedMember.Global" ) ]
-        public ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
-        {
-            _udpClient  = udpClient ;
-            _ipEndPoint = ipEndPoint ;
-            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
-            _getBytes   = DefaultGetBytes ;
-        }
-
-        public void LogAction ( LogEventInfo info )
-        {
-            var bytes = _getBytes ( info ) ;
-            var nBytes = bytes.Length ;
-            _udpClient.Send ( bytes , nBytes , _ipEndPoint ) ;
-        }
-
-        private class MyChainsawTarget : ChainsawTarget
-        {
-            protected override void InitializeTarget ( )
-            {
-                Console.WriteLine ( $"Initializing target {nameof ( MyChainsawTarget )}" ) ;
-                Debug.WriteLine ( $"Initializing target {nameof ( MyChainsawTarget )}" ) ;
-                base.InitializeTarget ( ) ;
-            }
-
-            public MyChainsawTarget ( ) { }
-
-            public MyChainsawTarget ( string name ) : base ( name ) { }
-        }
-    }
-
-    internal class MyLayout : Layout
-    {
-        private readonly LayoutRenderer _layoutRenderer ;
-        public MyLayout ( LayoutRenderer layoutRenderer ) { _layoutRenderer = layoutRenderer ; }
-        #region Overrides of Layout
-        protected override string GetFormattedMessage ( LogEventInfo logEvent )
-        {
-            return _layoutRenderer.Render ( logEvent ) ;
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class JsonTypeConverter : JsonConverter < Type >
-    {
-        #region Overrides of JsonConverter<Type>
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override Type Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="value"></param>
-        /// <param name="options"></param>
-        public override void Write (
-            [ NotNull ] Utf8JsonWriter writer
-          , [ NotNull ] Type           value
-          , JsonSerializerOptions      options
-        )
-        {
-            if ( writer == null )
-            {
-                throw new ArgumentNullException ( nameof ( writer ) ) ;
-            }
-
-            if ( value == null )
-            {
-                throw new ArgumentNullException ( nameof ( value ) ) ;
-            }
-
-            writer.WriteStringValue ( value.FullName ) ;
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    // ReSharper disable once UnusedType.Global
-    public class DictConverterFactory : JsonConverterFactory
-    {
-        #region Overrides of JsonConverter
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <returns></returns>
-        public override bool CanConvert ( Type typeToConvert )
-        {
-            if ( typeToConvert == typeof ( IDictionary < object , object > ) )
-            {
-                return true ;
-            }
-
-            return false ;
-        }
-        #endregion
-        #region Overrides of JsonConverterFactory
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override JsonConverter CreateConverter (
-            Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return new Inner ( ) ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private class Inner : JsonConverter < IDictionary < object , object > >
-        {
-            #region Overrides of JsonConverter<IDictionary<object,object>>
-            public override IDictionary < object , object > Read (
-                ref Utf8JsonReader    reader
-              , Type                  typeToConvert
-              , JsonSerializerOptions options
-            )
-            {
-                IDictionary < object , object > dict = new Dictionary < object , object > ( ) ;
-                while ( reader.Read ( ) )
-                {
-                    if ( reader.TokenType == JsonTokenType.EndObject )
-                    {
-                        return dict ;
-                    }
-
-                    if ( reader.TokenType != JsonTokenType.PropertyName )
-                    {
-                        throw new JsonException ( ) ;
-                    }
-
-                    var propertyName = reader.GetString ( ) ;
-                    var value = JsonSerializer.Deserialize < object > ( ref reader , options ) ;
-                    dict[ propertyName ] = value ;
-                }
-
-                return dict ;
-            }
-
-            public override void Write (
-                Utf8JsonWriter                  writer
-              , IDictionary < object , object > value
-              , JsonSerializerOptions           options
-            )
-            {
-                writer.WriteStartObject ( ) ;
-                foreach ( var keyValuePair in value )
-                {
-                    writer.WritePropertyName ( keyValuePair.Key.ToString ( ) ) ;
-                    JsonSerializer.Serialize (
-                                              writer
-                                            , keyValuePair.Value
-                                            , keyValuePair.Value.GetType ( )
-                                            , options
-                                             ) ;
-                }
-
-                writer.WriteEndObject ( ) ;
-            }
-            #endregion
-        }
-        #endregion
     }
 }

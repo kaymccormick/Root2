@@ -144,6 +144,11 @@
     <Compile Include="IHaveLogger.cs" />
     <Compile Include="InfoContext.cs" />
     <Compile Include="IocModule.cs" />
+    <Compile Include="Logging\DictConverterFactory.cs" />
+    <Compile Include="Logging\JsonTypeConverter.cs" />
+    <Compile Include="Logging\MyLayout.cs" />
+    <Compile Include="Logging\MyLog4JXmlEventLayoutRenderer.cs" />
+    <Compile Include="Logging\ProtoLogger.cs" />
     <Compile Include="ServiceImpl\CentralService.cs" />
     <Compile Include="Interfaces\ICentralService.cs" />
     <Compile Include="Interfaces\IHaveObjectId.cs" />

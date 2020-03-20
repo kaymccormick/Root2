@@ -22,6 +22,8 @@ namespace KayMcCormick.Dev
     [UsedImplicitly]
     public sealed class ApplicationInstance : IDisposable
     {
+        private readonly bool _disableLogging ;
+        private readonly bool _disableServiceHost ;
         private readonly ILogger _logger;
         private ILifetimeScope lifetimeScope;
         private readonly List<IModule> _modules = new List<IModule>();
@@ -52,46 +54,62 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="logMethod"></param>
         /// <param name="configs"></param>
-        public ApplicationInstance ( LogDelegates.LogMethod logMethod, IEnumerable <object> configs = null )
+        /// <param name="disableLogging"></param>
+        public ApplicationInstance (
+            LogDelegates.LogMethod logMethod
+          , IEnumerable < object > configs = null
+          , bool                   disableLogging = false
+            , bool disableRuntimeConfiguration = false, bool disableServiceHost = false
+        )
         {
+            _disableLogging = disableLogging ;
+            _disableServiceHost = disableServiceHost ;
             if ( configs == null )
             {
                 configs = Array.Empty < object > ( ) ;
             }
             var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddLogging();
-
-            var loadedConfigs = LoadConfiguration (AppLoggingConfigHelper.ProtoLogDelegate ) ;
-            configs = configs.Append ( loadedConfigs ) ;
-
             InstanceRunGuid = Guid.NewGuid();
-            ILoggingConfiguration config =
-                configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
 
-            LogManager.EnableLogging();
-            if ( LogManager.IsLoggingEnabled ( ) )
+            if ( ! disableRuntimeConfiguration )
             {
-                Debug.WriteLine ( "logging enableD" ) ;
-            }
-            foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
-            {
-                Debug.WriteLine ( configurationAllTarget ) ;
+                var loadedConfigs = LoadConfiguration ( AppLoggingConfigHelper.ProtoLogDelegate ) ;
+                configs = configs.Append ( loadedConfigs ) ;
             }
 
-            _logger = AppLoggingConfigHelper.EnsureLoggingConfigured(logMethod, config);
-            GlobalDiagnosticsContext.Set(
-                                         "ExecutionContext"
-                                       , new ExecutionContextImpl
-                                         (
-                                          KayMcCormick.Dev.Logging.Application
-                                                                       .MainApplication
-                                         )
-                                        );
+            if ( !disableLogging )
+            {
+                serviceCollection.AddLogging ( ) ;
+                ILoggingConfiguration config =
+                    configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
+                LogManager.EnableLogging ( ) ;
+                if ( LogManager.IsLoggingEnabled ( ) )
+                {
+                    Debug.WriteLine ( "logging enableD" ) ;
+                }
 
-            GlobalDiagnosticsContext.Set("RunId", InstanceRunGuid);
-            _logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
+                foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+                {
+                    Debug.WriteLine ( configurationAllTarget ) ;
+                }
 
+                _logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( logMethod , config ) ;
+                GlobalDiagnosticsContext.Set (
+                                              "ExecutionContext"
+                                            , new ExecutionContextImpl (
+                                                                        KayMcCormick
+                                                                           .Dev.Logging.Application
+                                                                           .MainApplication
+                                                                       )
+                                             ) ;
+
+                GlobalDiagnosticsContext.Set ( "RunId" , InstanceRunGuid ) ;
+                _logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
+            }
+            else
+            {
+                _logger = LogManager.CreateNullLogger ( ) ;
+            }
         }
 
         /// <summary>
@@ -211,8 +229,12 @@ namespace KayMcCormick.Dev
             // {
             //     throw new ApplicationInstanceException ( "lifetime scope not initialized" ) ;
             // }
-            _host = new ApplicationInstanceHost(_container);
-            _host.HostOpen();
+            if ( ! _disableServiceHost )
+            {
+                _host = new ApplicationInstanceHost ( _container ) ;
+                _host.HostOpen ( ) ;
+            }
+
             OnAppStartup(new AppStartupEventArgs());
         }
         /// <summary>
@@ -231,7 +253,7 @@ namespace KayMcCormick.Dev
         // ReSharper disable once UnusedMember.Global
         public void Shutdown()
         {
-#if NETSTANDARD
+#if NETSTANDARD || NETFRAMEWORK
             AppLoggingConfigHelper.ServiceTarget?.Dispose();
 #endif
         }

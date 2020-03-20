@@ -11,7 +11,6 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
@@ -20,12 +19,10 @@ using System.Runtime.Serialization ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Windows ;
-using System.Windows.Controls ;
 using System.Windows.Markup ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
-using Autofac.Core.Registration ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
@@ -68,8 +65,10 @@ namespace ProjTests
     {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        private static Logger Logger          = LogManager.CreateNullLogger ( ) ;
+        private static bool   _disableLogging = true ;
+
+        static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
         private readonly                    ITestOutputHelper _output ;
         private readonly                    LoggingFixture    _loggingFixture ;
@@ -86,29 +85,80 @@ namespace ProjTests
             _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             _projectFixture                              =  projectFixture ;
-            //VSI                                          =  projectFixture.I ;
-            loggingFixture?.SetOutputHelper ( output , this ) ;
+            //VSI
+            //=  projectFixture.I ;
+            if ( ! _disableLogging )
+            {
+                loggingFixture?.SetOutputHelper ( output , this ) ;
 
-            _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
+                _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
+            }
         }
 
+        [ WpfFact ]
+        public void TestResourcesTree1 ( )
+        {
+            using (var app = CreateProjInterfaceApp() )
+            {
+                app.InitializeComponent ( ) ;
+                app.TestMode = true ;
+                app.TestCallback = ( app2 , lifetimeScope ) => {
+                    var model = new AllResourcesTreeViewModel ( ) ;
+                    var tree = new AllResourcesTree ( model ) ;
+                    var tv = tree.tv ;
+                    var childcount = CountChildren ( tv ) ;
+                    Logger.Info ( "Child count is {childCount}" , childcount ) ;
+                    Window w = new AppWindow ( lifetimeScope ) ;
+                    w.Content = tree ;
+                    w.Show ( ) ;
+
+                    model.AllResourcesCollection.First ( ).IsExpanded = true ;
+                    Logger.Info ( "Child count is {childCount}" , childcount ) ;
+
+                    return true ;
+                    //DumpTree(app, tree, model.AllResourcesCollection);
+                } ;
+                app.Run ( ) ;
+            }
+        }
+
+        private static ProjInterfaceApp CreateProjInterfaceApp ( )
+        {
+            var app = new ProjInterfaceApp ( true , true ) ;
+            return app ;
+        }
+
+        private int CountChildren ( DependencyObject tv )
+        {
+            Logger.Info ( "{type}" , tv.GetType ( ) ) ;
+            var count = 1 ;
+            foreach ( var child in LogicalTreeHelper.GetChildren ( tv ) )
+            {
+                count += CountChildren ( ( DependencyObject ) child ) ;
+            }
+
+            return count ;
+        }
+
+        public void TestResourcesTree ( ) { }
 
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
-            ProjInterfaceApp app = new ProjInterfaceApp();
-            app.InitializeComponent();
-            app.TestMode = true ;
-            app.TestCallback = ( app2 ) => {
-                AllResourcesTreeViewModel model = new AllResourcesTreeViewModel();
-                AllResourcesTree tree = new AllResourcesTree(model);
+            using ( var app = CreateProjInterfaceApp ( ) )
+            {
+                app.InitializeComponent ( ) ;
+                app.TestMode = true ;
+                app.TestCallback = ( app2 , lifetimeScope ) => {
+                    var model = new AllResourcesTreeViewModel ( ) ;
+                    var tree = new AllResourcesTree ( model ) ;
 
-                DumpTree(app, tree, model.AllResourcesCollection);
+                    DumpTree ( app , tree , model.AllResourcesCollection ) ;
+                    return true ;
+                } ;
+                app.Run ( ) ;
 
-            };
-            app.Run ( ) ;
-            
-            
+            }
         }
 
         private void DumpTree (
@@ -118,7 +168,7 @@ namespace ProjTests
           , int                              depth = 0
         )
         {
-            foreach (var resourceNodeInfo in modelAllResourcesCollection)
+            foreach ( var resourceNodeInfo in modelAllResourcesCollection )
             {
                 try
                 {
@@ -138,26 +188,32 @@ namespace ProjTests
                 {
                     Logger.Error ( ex , ex.Message ) ;
                 }
-                ResourceDetailTemplateSelector selector = new ResourceDetailTemplateSelector();
-                var dt = selector.SelectTemplate ( resourceNodeInfo.Data, tree) ;
+
+                var selector = new ResourceDetailTemplateSelector ( ) ;
+                var dt = selector.SelectTemplate ( resourceNodeInfo.Data , tree ) ;
                 if ( dt != null )
                 {
                     var xaml = XamlWriter.Save ( dt ) ;
-                    Debug.WriteLine( xaml ) ;
+                    Debug.WriteLine ( xaml ) ;
                 }
-                Logger.Info("{x}{key} = {data}", string.Concat(Enumerable.Repeat("  ", depth)),  resourceNodeInfo.Key, resourceNodeInfo.Data);
-                DumpTree (app, tree, resourceNodeInfo.Children , depth + 1 ) ;
+
+                Logger.Info (
+                             "{x}{key} = {data}"
+                           , string.Concat ( Enumerable.Repeat ( "  " , depth ) )
+                           , resourceNodeInfo.Key
+                           , resourceNodeInfo.Data
+                            ) ;
+                DumpTree ( app , tree , resourceNodeInfo.Children , depth + 1 ) ;
             }
         }
 
         [ Fact ]
         public void TestModule1 ( )
         {
-            var module = new ProjInterfaceModule();
+            var module = new ProjInterfaceModule ( ) ;
 
-            var mock = new Mock < ContainerBuilder> ( ) ;
-            mock.Setup ( cb => module.DoLoad(cb));
-            
+            var mock = new Mock < ContainerBuilder > ( ) ;
+            mock.Setup ( cb => module.DoLoad ( cb ) ) ;
         }
 
         [ WpfFact ]
@@ -177,8 +233,8 @@ namespace ProjTests
                                      foreach ( var enumerateFileSystemEntry in Directory
                                                .EnumerateFileSystemEntries (
                                                                             tempDir
-                                                                        , "*"
-                                                                        , SearchOption.AllDirectories
+                                                                , "*"
+                                                                , SearchOption.AllDirectories
                                                                             ) )
                                      {
                                          if ( File.Exists ( enumerateFileSystemEntry ) )
@@ -206,9 +262,9 @@ namespace ProjTests
             cloneOptions.OnCheckoutProgress = ( path , steps , totalSteps )
                 => Logger.Debug (
                                  "Checkout progress: {path} ( {steps} / {totalSteps} )"
-                             , path
-                             , steps
-                             , totalSteps
+                     , path
+                     , steps
+                     , totalSteps
                                  ) ;
             cloneOptions.RepositoryOperationStarting = context => {
                 Logger.Info ( "{a} {b}" , context.ParentRepositoryPath , context.RemoteUrl ) ;
@@ -228,14 +284,14 @@ namespace ProjTests
 
             Repository.Clone (
                               "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
-                          , cloneDir
+                  , cloneDir
                               /*      , cloneOptions*/
                               ) ;
             var dd = new DirectoryInfo ( cloneDir ) ;
             var f = Directory.EnumerateFiles (
                                               cloneDir
-                                          , "KayMcCormick.dev.sln"
-                                          , SearchOption.AllDirectories
+                                  , "KayMcCormick.dev.sln"
+                                  , SearchOption.AllDirectories
                                               )
                 .ToList ( ) ;
             Assert.NotEmpty ( f ) ;
@@ -274,7 +330,7 @@ namespace ProjTests
                                                  {
                                                      DiscoveryTypes =
                                                      DiscoveryType.VisualStudioSetup
-                                                 , WorkingDirectory = @"c:\\temp\work1"
+                                         , WorkingDirectory = @"c:\\temp\work1"
                                                  }
                                                  )
                     .Where (
@@ -303,8 +359,8 @@ namespace ProjTests
                                                                                                        Logger
                                                                                                        .Fatal ( task
                                                                                                                 .Exception
-                                                                                                            , "Faulted with {ex}"
-                                                                                                            , task
+                                                                                                    , "Faulted with {ex}"
+                                                                                                    , task
                                                                                                                 .Exception
                                                                                                                 ) ;
                                                                                                    }
@@ -339,33 +395,36 @@ namespace ProjTests
             }
             catch ( JsonException x )
             {
-                string substring = "";
+                var substring = "" ;
                 if ( x.BytePositionInLine.HasValue )
                 {
                     try
                     {
                         var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
-                        if (eBytePositionInLine < 0) eBytePositionInLine = 0;
+                        if ( eBytePositionInLine < 0 )
+                        {
+                            eBytePositionInLine = 0 ;
+                        }
+
                         var length = 32 ;
                         var endIndex = eBytePositionInLine + length ;
-                        if ( endIndex >= json.Length ) endIndex = json.Length ;
-                        length = endIndex - eBytePositionInLine ;
-                        substring = json.Substring (
-                                                    eBytePositionInLine
-                                                  , length
-                                                   ) ;
+                        if ( endIndex >= json.Length )
+                        {
+                            endIndex = json.Length ;
+                        }
+
+                        length    = endIndex - eBytePositionInLine ;
+                        substring = json.Substring ( eBytePositionInLine , length ) ;
                     }
-                    catch ( ArgumentOutOfRangeException  )
+                    catch ( ArgumentOutOfRangeException )
                     {
                         substring = json ;
                     }
 
-                    Logger.Warn (
-                                 "Start of problem is {problem}"
-                               , substring
-                                ) ;
+                    Logger.Warn ( "Start of problem is {problem}" , substring ) ;
                 }
-                throw new UnableToDeserializeLogEventInfo(substring, x);
+
+                throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
             }
 
             //Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
@@ -384,16 +443,24 @@ namespace ProjTests
                 }
                 catch ( JsonException x )
                 {
-                    string substring = "" ;
+                    var substring = "" ;
                     if ( x.BytePositionInLine.HasValue )
                     {
                         try
                         {
                             var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
-                            if ( eBytePositionInLine < 0 ) eBytePositionInLine = 0 ;
+                            if ( eBytePositionInLine < 0 )
+                            {
+                                eBytePositionInLine = 0 ;
+                            }
+
                             var length = 32 ;
                             var endIndex = eBytePositionInLine + length ;
-                            if ( endIndex >= line.Length ) endIndex = line.Length ;
+                            if ( endIndex >= line.Length )
+                            {
+                                endIndex = line.Length ;
+                            }
+
                             length    = endIndex - eBytePositionInLine ;
                             substring = line.Substring ( eBytePositionInLine , length ) ;
                         }
@@ -402,7 +469,11 @@ namespace ProjTests
                             substring = line ;
                         }
 
-                        Logger.Warn ( "Start of problem is line {lineno} {problem}" , lineno, substring ) ;
+                        Logger.Warn (
+                                     "Start of problem is line {lineno} {problem}"
+                                   , lineno
+                                   , substring
+                                    ) ;
                     }
 
                     throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
@@ -412,7 +483,7 @@ namespace ProjTests
                 foreach ( var keyValuePair in info.Properties )
                 {
                     Logger.Debug ( keyValuePair.Key ) ;
-                    Logger.Debug ( keyValuePair.Value.ToString() ) ;
+                    Logger.Debug ( keyValuePair.Value.ToString ( ) ) ;
                 }
             }
         }
@@ -439,8 +510,8 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-                          , document.Name
-                          , document.SourceCodeKind
+                  , document.Name
+                  , document.SourceCodeKind
                               ) ;
             } ;
             await v.ProcessAsync ( ) ;
@@ -467,8 +538,8 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-                          , document.Name
-                          , document.SourceCodeKind
+                  , document.Name
+                  , document.SourceCodeKind
                               ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
@@ -480,9 +551,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                         , yy.Item1
-                         , yy.Item2
-                         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+                 , yy.Item1
+                 , yy.Item2
+                 , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
 
@@ -490,9 +561,9 @@ namespace ProjTests
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-                          , inv.SourceLocation
-                          , inv.MethodSymbol.Name
-                          , inv.Msgval
+                  , inv.SourceLocation
+                  , inv.MethodSymbol.Name
+                  , inv.Msgval
                               ) ;
             }
         }
@@ -506,9 +577,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-                                 , string         proj
-                                 , string         doc
-                                 , ILifetimeScope scope
+                         , string         proj
+                         , string         doc
+                         , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -541,9 +612,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                         , yy.Item1
-                         , yy.Item2
-                         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+                 , yy.Item1
+                 , yy.Item2
+                 , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
         }
@@ -735,9 +806,11 @@ namespace ProjTests
         public void Dispose ( )
         {
             // _loggingFixture?.Dispose ( ) ;
-
-
-            _loggingFixture.SetOutputHelper ( null ) ;
+            AppDomain.CurrentDomain.FirstChanceException -= CurrentDomainOnFirstChanceException ;
+            if ( ! _disableLogging )
+            {
+                _loggingFixture.SetOutputHelper ( null ) ;
+            }
         }
 
         [ WpfFact ]
@@ -746,18 +819,19 @@ namespace ProjTests
 
     public class UnableToDeserializeLogEventInfo : Exception
     {
-        public UnableToDeserializeLogEventInfo ( ) {
-        }
+        public UnableToDeserializeLogEventInfo ( ) { }
 
-        public UnableToDeserializeLogEventInfo ( string message ) : base ( message )
+        public UnableToDeserializeLogEventInfo ( string message ) : base ( message ) { }
+
+        public UnableToDeserializeLogEventInfo ( string message , Exception innerException ) :
+            base ( message , innerException )
         {
         }
 
-        public UnableToDeserializeLogEventInfo ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected UnableToDeserializeLogEventInfo ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected UnableToDeserializeLogEventInfo (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
         }
     }

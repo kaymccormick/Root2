@@ -1,9 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.Configuration ;
 using System.Diagnostics ;
 using System.Linq ;
-using System.Reflection ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
@@ -12,7 +10,6 @@ using CommandLine ;
 using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
 using NLog.Targets ;
@@ -35,7 +32,8 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public abstract class BaseApp : Application, IDisposable
     {
-        
+        private readonly bool _disableLogging ;
+
         private ILifetimeScope scope ;
         private readonly ApplicationInstance appInst ;
         private EventLog _eventLog ;
@@ -43,11 +41,16 @@ namespace KayMcCormick.Lib.Wpf
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
-        protected BaseApp ( )
+        protected BaseApp ( ) : this ( false, false, false )
         {
+
+        }
+        protected BaseApp ( bool disableLogging, bool disableRuntimeConfiguration, bool disableServiceHost = false)
+        {
+            _disableLogging = disableLogging ;
             _eventLog = new EventLog ( "Application" ) ;
             _eventLog.Source = "Application" ;
-            var configs = ApplyConfiguration ( ) ;
+//            var configs = ApplyConfiguration ( ) ;
             appInst = new ApplicationInstance (
                                                message => {
                                                    if ( _eventLog != null )
@@ -59,7 +62,7 @@ namespace KayMcCormick.Lib.Wpf
                                                                             ) ;
                                                    }
                                                }
-                                             , configs
+                                             , null, disableLogging,disableRuntimeConfiguration, disableServiceHost
                                               ) ;
             foreach ( var myJsonLayout in LogManager
                                          .Configuration.AllTargets.OfType < TargetWithLayout > ( )
@@ -186,82 +189,5 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
             appInst?.Dispose ( ) ;
         }
         #endregion
-
-        protected IEnumerable < object > ApplyConfiguration ( )
-        {
-            var config = ConfigurationManager.OpenExeConfiguration ( ConfigurationUserLevel.None ) ;
-            LogDelegates.LogMethod logMethod2 = DebugLog ?? (m => Debug.WriteLine(m));
-            logMethod2?.Invoke( config.FilePath ) ;
-            var type1 = typeof ( ContainerHelperSection ) ;
-
-            try
-            {
-                var sections = config.Sections ;
-                foreach ( ConfigurationSection configSection in sections )
-                {
-                    try
-                    {
-                        var type = configSection.SectionInformation.Type ;
-                        // DoLogMethod ( $"Type is {type}" ) ;
-                        var sectionType = Type.GetType ( type ) ;
-                        if ( sectionType             != null
-                             && sectionType.Assembly == type1.Assembly )
-                        {
-                            logMethod2 ( "Found section " + sectionType.Name ) ;
-                            var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
-                            var configTarget = Activator.CreateInstance ( at.TargetType ) ;
-                            var infos = sectionType
-                                       .GetMembers ( )
-                                       .Select (
-                                                info => Tuple.Create (
-                                                                      info
-                                                                    , info
-                                                                         .GetCustomAttribute <
-                                                                              ConfigurationPropertyAttribute
-                                                                          > ( )
-                                                                     )
-                                               )
-                                       .Where ( tuple => tuple.Item2 != null )
-                                       .ToArray ( ) ;
-                            foreach ( var (item1 , _) in infos )
-                            {
-                                if ( item1.MemberType == MemberTypes.Property )
-                                {
-                                    var attr = at.TargetType.GetProperty ( item1.Name ) ;
-                                    try
-                                    {
-                                        var configVal =
-                                            ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
-                                        if ( attr != null )
-                                        {
-                                            attr.SetValue ( configTarget , configVal ) ;
-                                        }
-                                    }
-                                    catch ( Exception ex )
-                                    {
-                                        logMethod2?.Invoke (
-                                                            $"Unable to set property {attr.Name}: {ex.Message}"
-                                                           ) ;
-                                    }
-                                }
-                            }
-
-
-                            ConfigSettings.Add ( configTarget ) ;
-                        }
-                    }
-                    catch ( Exception ex1 )
-                    {
-                        Logger.Error ( ex1 , ex1.Message ) ;
-                    }
-                }
-            }
-            catch ( Exception ex )
-            {
-                logMethod2 ( ex.Message ) ;
-            }
-
-            return ConfigSettings ;
-        }
     }
 }

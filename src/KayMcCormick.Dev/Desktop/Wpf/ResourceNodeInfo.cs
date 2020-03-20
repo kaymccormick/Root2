@@ -11,11 +11,14 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
+using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    public class ResourceNodeInfo
+    public class ResourceNodeInfo : INotifyPropertyChanged
     {
         private object                 _data ;
         private List<ResourceNodeInfo> _children = new List < ResourceNodeInfo > ();
@@ -43,6 +46,25 @@ namespace KayMcCormick.Lib.Wpf
         
         private bool? _internalIsExpanded ;
 
-        public bool IsExpanded { get { return _internalIsExpanded.GetValueOrDefault() ; } set { _internalIsExpanded = value ; } }
+        public bool IsExpanded
+        {
+            get
+            {
+                return _internalIsExpanded.GetValueOrDefault ( ) ;
+            }
+            set
+            {
+                _internalIsExpanded = value ;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
     }
 }

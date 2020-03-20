@@ -74,7 +74,7 @@ namespace WpfApp.Application
 
         /// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
         /// <param name="debugEventHandler">The debug event handler.</param>
-        public App ( EventHandler < DebugEventArgs > debugEventHandler = null )
+        public App ( EventHandler < DebugEventArgs > debugEventHandler = null ) : base ( )
         {
             //MappedDiagnosticsLogicalContext.
             if ( debugEventHandler != null )

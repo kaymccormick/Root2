@@ -130,6 +130,7 @@
             Grid.Row="0" Grid.Column="0"
             Grid.RowSpan="2">
       <wpf:TreeView1 x:Name="tv"
+                     x:FieldModifier="public"
                      VerticalAlignment="Stretch"
                      ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}"
                      ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}"
