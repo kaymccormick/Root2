@@ -19,9 +19,11 @@ using Autofac ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.Identity.Client ;
 using NLog ;
 using ProjLib ;
 using ProjLib.Interfaces ;
+using Logger = NLog.Logger ;
 
 namespace ProjInterface
 {
@@ -53,13 +55,10 @@ namespace ProjInterface
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of Module
-        protected override void Load ( ContainerBuilder builder )
-        {
-            DoLoad ( builder ) ;
-        }
+        protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
         #endregion
 
-        public override void DoLoad ( ContainerBuilder builder)
+        public override void DoLoad ( ContainerBuilder builder )
         {
             Logger.Trace ( "Load" ) ;
             Logger.Warn (
@@ -112,9 +111,35 @@ namespace ProjInterface
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             LogRegistration ( typeof ( IconsSource ) , typeof ( IIconsSource ) ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
-         //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
-         builder.RegisterType < FileSystemExplorerItemProvider > ( )
-                .As < IExplorerItemProvider > ( ) ;
+            //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
+            builder.RegisterType < FileSystemExplorerItemProvider > ( )
+                   .As < IExplorerItemProvider > ( ) ;
+
+            builder.Register (
+                              ( context , p ) => {
+                                  var a = PublicClientApplicationBuilder
+                                         .CreateWithApplicationOptions (
+                                                                        new
+                                                                        PublicClientApplicationOptions
+                                                                        {
+                                                                            ClientId =
+                                                                                p.TypedAs < Guid
+                                                                                  > ( )
+                                                                                 .ToString ( )
+                                                                          , RedirectUri =
+                                                                                "myapp://auth"
+                                                                        }
+                                                                       )
+                                         .WithAuthority (
+                                                         AadAuthorityAudience
+                                                            .AzureAdAndPersonalMicrosoftAccount
+                                                        )
+                                         .Build ( ) ;
+                                  TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
+                                  return a ;
+                              }
+                             )
+                   .As < IPublicClientApplication > ( ) ;
         }
     }
 }

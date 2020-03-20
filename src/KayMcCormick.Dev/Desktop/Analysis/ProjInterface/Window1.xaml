@@ -13,7 +13,7 @@
   <kmWpf:AppWindow.Resources>
     <ControlTemplate x:Key="ControlTemplate1">
       <Border BorderThickness="5" BorderBrush="Red">
-        <ContentPresenter/>
+        <ContentPresenter />
       </Border>
     </ControlTemplate>
     <DataTemplate x:Key="DataTemplate1">
@@ -58,6 +58,8 @@
     </ControlTemplate>
   </kmWpf:AppWindow.Resources>
   <kmWpf:AppWindow.CommandBindings>
+    <CommandBinding Command="kmWpf:WpfAppCommands.LoginAD"
+                    Executed="CommandBinding_OnExecuted3" />
     <CommandBinding Command="Open"
                     Executed="CommandBinding_OnExecuted" />
     <CommandBinding
@@ -101,18 +103,20 @@
           </Image>
 
         </Button>
+        <Button Command="kmWpf:WpfAppCommands.LoginAD"
+                Content="Login" IsEnabled="{Binding CanLogin}" />
         <Canvas Width="60" VerticalAlignment="Stretch"
                 Background="{x:Null}" />
       </ToolBar>
     </ToolBarTray>
     <avalondock:DockingManager Grid.Row="3" Grid.Column="0"
-                         AllowMixedOrientation="True"
-                         
-                         AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
-                         IconContentTemplate="{DynamicResource DataTemplate1}"
-                         DocumentTitleTemplate="{DynamicResource DataTemplate2}"
-                         DocumentPaneMenuItemHeaderTemplate="{DynamicResource DataTemplate3}"
-                         AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}">
+                               AllowMixedOrientation="True"
+
+                               AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
+                               IconContentTemplate="{DynamicResource DataTemplate1}"
+                               DocumentTitleTemplate="{DynamicResource DataTemplate2}"
+                               DocumentPaneMenuItemHeaderTemplate="{DynamicResource DataTemplate3}"
+                               AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}">
       <avalondock:DockingManager.DocumentHeaderTemplate>
         <DataTemplate
           DataType="{x:Type avalondock:LayoutDocument}">
@@ -131,8 +135,8 @@
           <avalondock:LayoutDocumentPaneGroup>
             <avalondock:LayoutDocumentPane x:Name="docpane">
               <avalondock:LayoutAnchorable Title="Files"
-                                     IconSource="{StaticResource FilesIcon}"
-                                     ContentId="fileBrowser">
+                                           IconSource="{StaticResource FilesIcon}"
+                                           ContentId="fileBrowser">
                 <Grid Opacity="1.0">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -157,7 +161,8 @@
         <avalondock:LayoutRoot.LeftSide>
           <avalondock:LayoutAnchorSide>
             <avalondock:LayoutAnchorGroup>
-              <avalondock:LayoutAnchorable Title="Components">
+              <avalondock:LayoutAnchorable
+                Title="Components">
                 <ListBox Name="viewList"
                          ItemsSource="{Binding Path=Views}"
                          ItemTemplate="{StaticResource Template1}">
@@ -173,7 +178,11 @@
       </avalondock:LayoutRoot>
     </avalondock:DockingManager>
     <StatusBar Grid.Row="4" Grid.Column="0">
-      <StatusBarItem Content="Ready" />
+      <StatusBarItem VerticalAlignment="Stretch">
+        <TextBlock BaselineOffset="-10" VerticalAlignment="Bottom">Ready</TextBlock></StatusBarItem>
+      <StatusBarItem VerticalAlignment="Stretch">
+        <TextBlock FontSize="12pt" FontWeight="Bold" Text="{Binding Account.Username}"  VerticalAlignment="Bottom"/>
+        </StatusBarItem>
     </StatusBar>
   </Grid>
 </kmWpf:AppWindow>

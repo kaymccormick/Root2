@@ -70,7 +70,7 @@ namespace ProjInterface
         {
             _scope = scope ;
 #pragma warning disable WPF0014 // SetValue must use registered type.
-            SetValue( AttachedProperties.LifetimeScopeProperty , _sco3ope );
+            SetValue( AttachedProperties.LifetimeScopeProperty , _scope );
 #pragma warning restore WPF0014 // SetValue must use registered type.
             InitializeComponent ( ) ;
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext ( ) ;

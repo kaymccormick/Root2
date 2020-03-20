@@ -33,14 +33,14 @@ namespace ProjInterface
         }
 
         #region Overrides of FrameworkElement
-        public override void OnApplyTemplate ( )
+        public override async void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
             if (_viewModel != null)
             {
                 _viewModel.ResourcesElement = this;
+                await _viewModel.LoginSilentAsync ( ).ConfigureAwait ( true ) ;
             }
-
         }
         #endregion
         #region Implementation of IView1
@@ -82,6 +82,11 @@ namespace ProjInterface
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private async void CommandBinding_OnExecuted3 ( object sender , ExecutedRoutedEventArgs e )
+        {
+            await ViewModel.Login ( ) ;
         }
     }
 

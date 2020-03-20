@@ -118,6 +118,12 @@
                   <VisualState x:Name="Normal" />
                   <VisualState x:Name="Pressed" />
                   <VisualState x:Name="MouseOver">
+                    <Storyboard>
+                      <DoubleAnimation From="1.0" To="0.0"
+                                       Duration="0:0:0.3"
+                                       Storyboard.TargetName="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                       Storyboard.TargetProperty="Opacity" />
+                    </Storyboard>
                   </VisualState>
                   <VisualState x:Name="Disabled" />
                 </VisualStateGroup>
@@ -242,12 +248,13 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type ToolBar}">
-            <Border x:Name="Border" 
+            <Border x:Name="Border"
                     CornerRadius="6"
                     BorderThickness="3"
                     Background="Thistle">
               <Border.BorderBrush>
-                <SolidColorBrush Color="HotPink" Opacity=".4"></SolidColorBrush>
+                <SolidColorBrush Color="HotPink"
+                                 Opacity=".4" />
               </Border.BorderBrush>
 
               <DockPanel>
@@ -317,28 +324,47 @@
     </Style>
     <BitmapImage UriSource="Assets/shell32_329.ico"
                  x:Key="PowerOffImage" />
-    <BitmapImage UriSource="Assets/LaunchSamplingTargets/2x/Artboard 1xhdpi.png" x:Key="FilesIcon_"/>
-    <BitmapImage UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png" x:Key="FilesIcon"/>
+    <BitmapImage
+      UriSource="Assets/LaunchSamplingTargets/2x/Artboard 1xhdpi.png"
+      x:Key="FilesIcon_" />
+    <BitmapImage
+      UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png"
+      x:Key="FilesIcon" />
     <collections:Hashtable x:Key="IconsResources">
-      <BitmapImage UriSource="Assets/FolderClosed_16x.png" x:Key="{x:Type io:Directory}"/>
-      <BitmapImage UriSource="Assets/CSSourceFile_16x.png" x:Key=".cs"/>
-      <BitmapImage UriSource="Assets/Application_16x.png" x:Key=".exe"/>
-      <BitmapImage UriSource="Assets/BatchFile_16x.png" x:Key=".bat"/>
-      <BitmapImage UriSource="Assets/CFile_16x.png" x:Key=".c"/>
-      <BitmapImage UriSource="Assets/CPPHeaderFile_16x.png" x:Key=".h"/>
-      <BitmapImage UriSource="Assets/HTMLFile_16x.png" x:Key=".html"/>
-      <BitmapImage UriSource="Assets/PowerShellFile_16x.png" x:Key=".ps1"/>
-      <BitmapImage UriSource="Assets/Image_16x.png" x:Key=".png"/>
-      <BitmapImage UriSource="Assets/Image_16x.png" x:Key=".jpg"/>
-      <BitmapImage UriSource="Assets/MarkupWPF_16x.png" x:Key=".xaml"/>
-      <BitmapImage UriSource="Assets/MarkupXML_16x.png" x:Key=".xml"/>
-      <BitmapImage UriSource="Assets/Log_16x.png" x:Key=".log"/>
-      <BitmapImage UriSource="Assets/Document.ico" x:Key="{x:Type io:File}"/>
+      <BitmapImage UriSource="Assets/FolderClosed_16x.png"
+                   x:Key="{x:Type io:Directory}" />
+      <BitmapImage UriSource="Assets/CSSourceFile_16x.png"
+                   x:Key=".cs" />
+      <BitmapImage UriSource="Assets/Application_16x.png"
+                   x:Key=".exe" />
+      <BitmapImage UriSource="Assets/BatchFile_16x.png"
+                   x:Key=".bat" />
+      <BitmapImage UriSource="Assets/CFile_16x.png"
+                   x:Key=".c" />
+      <BitmapImage UriSource="Assets/CPPHeaderFile_16x.png"
+                   x:Key=".h" />
+      <BitmapImage UriSource="Assets/HTMLFile_16x.png"
+                   x:Key=".html" />
+      <BitmapImage
+        UriSource="Assets/PowerShellFile_16x.png"
+        x:Key=".ps1" />
+      <BitmapImage UriSource="Assets/Image_16x.png"
+                   x:Key=".png" />
+      <BitmapImage UriSource="Assets/Image_16x.png"
+                   x:Key=".jpg" />
+      <BitmapImage UriSource="Assets/MarkupWPF_16x.png"
+                   x:Key=".xaml" />
+      <BitmapImage UriSource="Assets/MarkupXML_16x.png"
+                   x:Key=".xml" />
+      <BitmapImage UriSource="Assets/Log_16x.png"
+                   x:Key=".log" />
+      <BitmapImage UriSource="Assets/Document.ico"
+                   x:Key="{x:Type io:File}" />
       <BitmapImage UriSource="Assets/Blend_6826.ico"
                    x:Key=".sln" />
     </collections:Hashtable>
     <ContextMenu x:Key="itemContextMenu">
-      <MenuItem Header="Open" IsEnabled="{Binding CanOpen}"/>
+      <MenuItem Header="Open" IsEnabled="{Binding CanOpen}" />
       <MenuItem Header="Delete"
                 IsEnabled="{Binding CanDelete}" />
       <MenuItem Header="Rename"
@@ -350,7 +376,7 @@
       <MenuItem Header="New Link"
                 IsEnabled="{Binding CanCreateLink}" />
     </ContextMenu>
-    
+
     <projInterface:DictionaryConverter
       x:Key="DictionaryConverter" />
     <DataTemplate x:Key="Template1">

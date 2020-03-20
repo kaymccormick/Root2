@@ -56,5 +56,13 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary><see cref="RoutedUICommand"/> to visit the selected type.</summary>
         public static readonly RoutedUICommand VisitType =
             new RoutedUICommand ( "VisitType" , nameof ( VisitType ) , typeof ( WpfAppCommands ) ) ;
+
+        public static readonly RoutedUICommand LoginAD =
+            new RoutedUICommand(
+                                "Login to 365"
+                              , nameof(LoginAD)
+                              , typeof(WpfAppCommands)
+                               );
+
     }
 }
