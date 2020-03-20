@@ -32,10 +32,9 @@
             <TextBlock Text="Application" />
           </DataTemplate>
 
-          <Style TargetType="{x:Type wpf:TreeViewItem1}">
+          <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
           </Style>
-
 
           <DataTemplate DataType="{x:Type FontFamily}" x:Key="PreviewFontFamily">
             <TextBlock FontFamily="{Binding}" FontSize="24.0" Text="{Binding FamilyNames[en-US]}"/>

@@ -277,6 +277,14 @@ namespace KayMcCormick.Dev.Logging
                         info.ProcessId = reader.GetInt32 ( ) ;
 
                         break ;
+                    case "ExceptionString": reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.String )
+                        {
+                            throw new JsonException();
+                        }
+
+                        info.ExceptionString = reader.GetString ( ) ;
+                        break ;
                     case "ManagedThreadId": reader.Read ( ) ;
                         if ( reader.TokenType != JsonTokenType.Number )
                         {

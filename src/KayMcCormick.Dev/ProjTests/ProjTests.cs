@@ -142,8 +142,6 @@ namespace ProjTests
             return count ;
         }
 
-        public void TestResourcesTree ( ) { }
-
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
@@ -273,7 +271,7 @@ namespace ProjTests
 
             //Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
 
-            var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
+            var t = File.OpenText ( @"C:\data\logs\ProjInterface.json.test" ) ;
             var lineno = 0 ;
             while ( ! t.EndOfStream )
             {

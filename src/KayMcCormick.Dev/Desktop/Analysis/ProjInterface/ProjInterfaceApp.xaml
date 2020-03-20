@@ -117,8 +117,9 @@
                 <VisualStateGroup x:Name="CommonStates">
                   <VisualState x:Name="Normal" />
                   <VisualState x:Name="Pressed" />
-                  <VisualState x:Name="MouseOver"/>
-                    <VisualState x:Name="Disabled" />
+                  <VisualState x:Name="MouseOver">
+                  </VisualState>
+                  <VisualState x:Name="Disabled" />
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="CheckStates">
                   <VisualState x:Name="Checked" />
@@ -241,10 +242,13 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type ToolBar}">
-            <Border x:Name="Border"
-                    CornerRadius="2"
-                    BorderThickness="1"
+            <Border x:Name="Border" 
+                    CornerRadius="6"
+                    BorderThickness="3"
                     Background="Thistle">
+              <Border.BorderBrush>
+                <SolidColorBrush Color="HotPink" Opacity=".4"></SolidColorBrush>
+              </Border.BorderBrush>
 
               <DockPanel>
                 <ToggleButton DockPanel.Dock="Right"
@@ -334,6 +338,7 @@
                    x:Key=".sln" />
     </collections:Hashtable>
     <ContextMenu x:Key="itemContextMenu">
+      <MenuItem Header="Open" IsEnabled="{Binding CanOpen}"/>
       <MenuItem Header="Delete"
                 IsEnabled="{Binding CanDelete}" />
       <MenuItem Header="Rename"

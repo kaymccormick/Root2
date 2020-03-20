@@ -208,6 +208,7 @@ namespace ProjInterface
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
+        public bool CanOpen { get ; } = true ;
         #region Implementation of INotifyPropertyChanged
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {

@@ -3,6 +3,7 @@ using System.ComponentModel ;
 using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -10,12 +11,27 @@ namespace KayMcCormick.Lib.Wpf
     public class ResourceTreeViewItemTemplateSelector : DataTemplateSelector
 
     {
+#if TRACE_TEMPLATES
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#else
+        private static Logger Logger = LogManager.CreateNullLogger();
+#endif
+
 
         #region Overrides of DataTemplateSelector
-        public override DataTemplate SelectTemplate ( object item , DependencyObject container )
+        public override DataTemplate SelectTemplate ( object item , [ NotNull ] DependencyObject container )
         {
-            Logger.Debug ( "item is {item}" , item ) ;
+            if ( container == null )
+            {
+                throw new ArgumentNullException ( nameof ( container ) ) ;
+            }
+
+#pragma warning disable CA1305 // Specify IFormatProvider
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+            Logger.Debug ( "item is {item}" , item );
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
+#pragma warning restore CA1305 // Specify IFormatProvider
+
             var fe = ( FrameworkElement ) container ;
 
             if ( item is ResourceNodeInfo node )
@@ -81,6 +97,6 @@ namespace KayMcCormick.Lib.Wpf
             
             return true ;
         }
-        #endregion
+#endregion
     }
 }

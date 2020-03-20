@@ -1881,6 +1881,11 @@
             
             </summary>
         </member>
+        <member name="P:KayMcCormick.Dev.LogEventInstance.ExceptionString">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:KayMcCormick.Dev.LogEventInstance.AddUnknown(System.String,System.Text.Json.JsonElement@)">
             <summary>
             
