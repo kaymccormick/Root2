@@ -1,87 +1,61 @@
-﻿using Autofac;
-using Autofac.Core;
-using Autofac.Features.Decorators;
-using JetBrains.Annotations;
-using KayMcCormick.Dev.Logging;
-using NLog;
-using System;
-using System.Collections.Generic;
+﻿using System ;
+using System.Collections ;
+using System.Collections.Generic ;
 using System.Configuration ;
 using System.Diagnostics ;
-using System.Linq;
+using System.Linq ;
 using System.Reflection ;
+using Autofac ;
+using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
+using Autofac.Features.Decorators ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Logging ;
 using Microsoft.Extensions.DependencyInjection ;
+using NLog ;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
-    /// 
     /// </summary>
-    [UsedImplicitly]
-    public sealed class ApplicationInstance : IDisposable
+    [ UsedImplicitly ]
+    public class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
-        private readonly bool _disableLogging ;
-        private readonly bool _disableServiceHost ;
-        private readonly ILogger _logger;
-        private ILifetimeScope lifetimeScope;
-        private readonly List<IModule> _modules = new List<IModule>();
-        private IContainer _container;
-        private ApplicationInstanceHost _host;
+        private readonly bool                    _disableLogging ;
+        private readonly bool                    _disableServiceHost ;
+        private readonly List < IModule >        _modules = new List < IModule > ( ) ;
+        private          IContainer              _container ;
+        private          ApplicationInstanceHost _host ;
+        private          ILifetimeScope          _lifetimeScope ;
 
         /// <summary>
-        /// 
-        /// </summary>
-        public Guid InstanceRunGuid { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ILogger Logger
-        {
-            get { return _logger ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        // ReSharper disable once EventNeverSubscribedTo.Global
-        public event EventHandler<AppStartupEventArgs> AppStartup;
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="logMethod"></param>
         /// <param name="configs"></param>
         /// <param name="disableLogging"></param>
+        /// <param name="disableRuntimeConfiguration"></param>
+        /// <param name="disableServiceHost"></param>
         public ApplicationInstance (
             LogDelegates.LogMethod logMethod
-          , IEnumerable < object > configs = null
-          , bool                   disableLogging = false
-            , bool disableRuntimeConfiguration = false, bool disableServiceHost = false
-        )
-        {
-            _disableLogging = disableLogging ;
-            _disableServiceHost = disableServiceHost ;
-            if ( configs == null )
-            {
-                configs = Array.Empty < object > ( ) ;
-            }
-            var serviceCollection = new ServiceCollection();
-            InstanceRunGuid = Guid.NewGuid();
+          , IEnumerable            configs                     = null
+          , bool                   disableLogging              = false
+          , bool                   disableRuntimeConfiguration = false
+          , bool                   disableServiceHost          = false
+        ) : base ( logMethod )
 
+        {
+            var serviceCollection = new ServiceCollection ( ) ;
             if ( ! disableRuntimeConfiguration )
             {
                 var loadedConfigs = LoadConfiguration ( AppLoggingConfigHelper.ProtoLogDelegate ) ;
-                configs = configs.Append ( loadedConfigs ) ;
+                configs = configs != null ? ((IEnumerable <object>)configs).Append ( loadedConfigs ) : loadedConfigs ;
             }
 
-            if ( !disableLogging )
+            if ( ! disableLogging )
             {
                 serviceCollection.AddLogging ( ) ;
-                ILoggingConfiguration config =
-                    configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
+                var config = configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
                 LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
                 {
@@ -93,270 +67,266 @@ namespace KayMcCormick.Dev
                     Debug.WriteLine ( configurationAllTarget ) ;
                 }
 
-                _logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( logMethod , config ) ;
+                Logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( logMethod , config ) ;
                 GlobalDiagnosticsContext.Set (
                                               "ExecutionContext"
                                             , new ExecutionContextImpl (
-                                                                        KayMcCormick
-                                                                           .Dev.Logging.Application
-                                                                           .MainApplication
+                                                                        Logging.Application
+                                                                               .MainApplication
                                                                        )
                                              ) ;
 
                 GlobalDiagnosticsContext.Set ( "RunId" , InstanceRunGuid ) ;
-                _logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
+                Logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
             }
             else
             {
-                _logger = LogManager.CreateNullLogger ( ) ;
+                Logger = LogManager.CreateNullLogger ( ) ;
             }
         }
 
         /// <summary>
+        /// </summary>
+        public ILogger Logger { get ; }
+
+        /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public void Initialize() { _container = BuildContainer(); }
+        public override void Dispose ( )
+        {
+            _host?.Dispose ( ) ;
+            _lifetimeScope?.Dispose ( ) ;
+            _container?.Dispose ( ) ;
+        }
+
+        #region Overrides of ApplicationInstanceBase
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Initialize ( )
+        {
+            base.Initialize ( ) ;
+            _container = BuildContainer ( ) ;
+        }
+        #endregion
+
+        /// <summary>
+        /// </summary>
+        // ReSharper disable once EventNeverSubscribedTo.Global
+        public override event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="appModule"></param>
-        // ReSharper disable once UnusedMember.Global
-        public void AddModule(IModule appModule) => _modules.Add(appModule);
+        public override void AddModule ( IModule appModule )
+        {
+            _modules.Add(appModule);
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [UsedImplicitly]
-        public ILifetimeScope GetLifetimeScope()
+        public override ILifetimeScope GetLifetimeScope ( )
         {
-            if (lifetimeScope != null)
+            if ( _lifetimeScope != null )
             {
-                return lifetimeScope;
+                return _lifetimeScope ;
             }
 
-            if (_container == null)
+            if ( _container == null )
             {
-                _container = BuildContainer();
+                _container = BuildContainer ( ) ;
             }
 
-            lifetimeScope = _container.BeginLifetimeScope();
-            return _container.BeginLifetimeScope();
-        }
-
-        private IContainer BuildContainer()
-        {
-            var builder1 = new ContainerBuilder();
-            builder1.RegisterModule < AttributedMetadataModule > ( ) ;
-            foreach (var module in _modules)
-            {
-                _logger.Debug("Registering module {module}", module.ToString());
-                builder1.RegisterModule(module);
-            }
-
-            var c
-                = builder1.Build();
-            //            DebugServices ( c ) ;
-            return c;
-        }
-
-        // ReSharper disable once UnusedMember.Local
-        private void DebugServices(IComponentContext c)
-        {
-            foreach (var componentRegistryRegistration in c.ComponentRegistry.Registrations)
-            {
-                _logger.Debug(
-                                  "services: {services}"
-                                , string.Join(
-                                              ", "
-                                            , componentRegistryRegistration.Services.Select(
-                                                                                            service =>
-                                                                                            {
-                                                                                                switch (
-                                                                                                    service)
-                                                                                                {
-                                                                                                    case
-                                                                                                        KeyedService
-                                                                                                        _
-                                                                                                        :
-                                                                                                        break;
-                                                                                                    case
-                                                                                                        TypedService
-                                                                                                        typedService
-                                                                                                        :
-                                                                                                        return
-                                                                                                            typedService
-                                                                                                               .ServiceType
-                                                                                                               .FullName;
-                                                                                                    case
-                                                                                                        UniqueService
-                                                                                                        _
-                                                                                                        :
-                                                                                                        break;
-                                                                                                    case
-                                                                                                        DecoratorService
-                                                                                                        _
-                                                                                                        :
-                                                                                                        break;
-                                                                                                    default:
-                                                                                                        throw
-                                                                                                            new
-                                                                                                                ArgumentOutOfRangeException(
-                                                                                                                                            nameof
-                                                                                                                                            (service
-                                                                                                                                            )
-                                                                                                                                           );
-                                                                                                }
-
-                                                                                                return service
-                                                                                                   .Description;
-                                                                                            }
-                                                                                           )
-                                             )
-                                 );
-            }
+            _lifetimeScope = _container.BeginLifetimeScope ( ) ;
+            return _container.BeginLifetimeScope ( ) ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        [UsedImplicitly]
-        public void Startup()
+        /// <returns></returns>
+        protected override IContainer BuildContainer ( )
         {
-            // if ( lifetimeScope == null )
-            // {
-            //     throw new ApplicationInstanceException ( "lifetime scope not initialized" ) ;
-            // }
+            var builder = new ContainerBuilder ( ) ;
+            builder.RegisterModule < AttributedMetadataModule > ( ) ;
+            foreach ( var module in _modules )
+            {
+                Logger.Debug ( "Registering module {module}" , module.ToString ( ) ) ;
+                builder.RegisterModule ( module ) ;
+            }
+
+            return builder.Build ( ) ;
+        }
+
+        /// <summary>
+        /// </summary>
+        public override void Startup ( )
+        {
             if ( ! _disableServiceHost )
             {
                 _host = new ApplicationInstanceHost ( _container ) ;
                 _host.HostOpen ( ) ;
             }
 
-            OnAppStartup(new AppStartupEventArgs());
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        private void OnAppStartup(AppStartupEventArgs e)
-        {
-            AppStartup?.Invoke(this, e);
+            base.Startup ( ) ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        ///  todo call from wpf
-        // ReSharper disable once UnusedMember.Global
-        public void Shutdown()
+        public override void Shutdown ( )
         {
+            base.Shutdown ( ) ;
 #if NETSTANDARD || NETFRAMEWORK
-            AppLoggingConfigHelper.ServiceTarget?.Dispose();
+            AppLoggingConfigHelper.ServiceTarget?.Dispose ( ) ;
 #endif
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        private List<object> LoadConfiguration( [ NotNull ] LogDelegates.LogMethod logMethod2)
+        protected override IEnumerable LoadConfiguration ( LogDelegates.LogMethod logMethod2 )
         {
             if ( logMethod2 == null )
             {
                 throw new ArgumentNullException ( nameof ( logMethod2 ) ) ;
             }
 
-            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            
-            logMethod2($"Using {config.FilePath} for configuration");
-            var type1 = typeof(ContainerHelperSection);
+            var config = ConfigurationManager.OpenExeConfiguration ( ConfigurationUserLevel.None ) ;
+
+            logMethod2 ( $"Using {config.FilePath} for configuration" ) ;
+            var type1 = typeof ( ContainerHelperSection ) ;
 
             try
             {
-                var sections = config.Sections;
-                foreach (ConfigurationSection configSection in sections)
+                var sections = config.Sections ;
+                foreach ( ConfigurationSection configSection in sections )
                 {
                     try
                     {
-                        var type = configSection.SectionInformation.Type;
-                        var sectionType = Type.GetType(type);
-                        if (sectionType != null
-                             && sectionType.Assembly == type1.Assembly)
+                        var type = configSection.SectionInformation.Type ;
+                        var sectionType = Type.GetType ( type ) ;
+                        if ( sectionType             != null
+                             && sectionType.Assembly == type1.Assembly )
                         {
-                            logMethod2("Found section " + sectionType.Name);
-                            var at = sectionType.GetCustomAttribute<ConfigTargetAttribute>();
-                            var configTarget = Activator.CreateInstance(at.TargetType);
+                            logMethod2 ( "Found section " + sectionType.Name ) ;
+                            var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
+                            var configTarget = Activator.CreateInstance ( at.TargetType ) ;
                             var infos = sectionType
-                                       .GetMembers()
-                                       .Select(
-                                                info => Tuple.Create(
+                                       .GetMembers ( )
+                                       .Select (
+                                                info => Tuple.Create (
                                                                       info
                                                                     , info
-                                                                         .GetCustomAttribute<
+                                                                         .GetCustomAttribute <
                                                                               ConfigurationPropertyAttribute
-                                                                          >()
+                                                                          > ( )
                                                                      )
                                                )
-                                       .Where(tuple => tuple.Item2 != null)
-                                       .ToArray();
-                            foreach (var (item1, _) in infos)
+                                       .Where ( tuple => tuple.Item2 != null )
+                                       .ToArray ( ) ;
+                            foreach ( var (item1 , _) in infos )
                             {
-                                if (item1.MemberType == MemberTypes.Property)
+                                if ( item1.MemberType == MemberTypes.Property )
                                 {
-                                    var attr = at.TargetType.GetProperty(item1.Name);
+                                    var attr = at.TargetType.GetProperty ( item1.Name ) ;
                                     try
                                     {
                                         var configVal =
-                                            ((PropertyInfo)item1).GetValue(configSection);
-                                        if (attr != null)
+                                            ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
+                                        if ( attr != null )
                                         {
-                                            attr.SetValue(configTarget, configVal);
+                                            attr.SetValue ( configTarget , configVal ) ;
                                         }
                                     }
-                                    catch (Exception ex)
+                                    catch ( Exception ex )
                                     {
-                                        logMethod2(
-                                                   $"Unable to set property {item1.Name}: {ex.Message}"
-                                                  );
+                                        logMethod2 (
+                                                    $"Unable to set property {item1.Name}: {ex.Message}"
+                                                   ) ;
                                     }
                                 }
                             }
 
 
-                            ConfigSettings.Add(configTarget);
+                            ConfigSettings.Add ( configTarget ) ;
                         }
                     }
-                    catch (Exception ex1)
+                    catch ( Exception ex1 )
                     {
-                        Logger.Error(ex1, ex1.Message);
+                        Logger.Error ( ex1 , ex1.Message ) ;
                     }
                 }
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                logMethod2(ex.Message);
+                logMethod2 ( ex.Message ) ;
             }
 
-            return ConfigSettings;
+            return ConfigSettings ;
         }
 
-        private List<object> ConfigSettings { get; } = new List<object>();
+        // ReSharper disable once UnusedMember.Local
+        private void DebugServices ( IComponentContext c )
+        {
+            foreach ( var componentRegistryRegistration in c.ComponentRegistry.Registrations )
+            {
+                Logger.Debug (
+                              "services: {services}"
+                            , string.Join (
+                                           ", "
+                                         , componentRegistryRegistration.Services.Select (
+                                                                                          service
+                                                                                              => {
+                                                                                              switch
+                                                                                              ( service
+                                                                                              )
+                                                                                              {
+                                                                                                  case
+                                                                                                      KeyedService
+                                                                                                      _ :
+                                                                                                      break ;
+                                                                                                  case
+                                                                                                      TypedService
+                                                                                                      typedService
+                                                                                                      :
+                                                                                                      return
+                                                                                                          typedService
+                                                                                                             .ServiceType
+                                                                                                             .FullName ;
+                                                                                                  case
+                                                                                                      UniqueService
+                                                                                                      _ :
+                                                                                                      break ;
+                                                                                                  case
+                                                                                                      DecoratorService
+                                                                                                      _ :
+                                                                                                      break ;
+                                                                                                  default
+                                                                                                      :
+                                                                                                      throw
+                                                                                                          new
+                                                                                                              ArgumentOutOfRangeException (
+                                                                                                                                           nameof
+                                                                                                                                           ( service
+                                                                                                                                           )
+                                                                                                                                          ) ;
+                                                                                              }
+
+                                                                                              return
+                                                                                                  service
+                                                                                                     .Description ;
+                                                                                          }
+                                                                                         )
+                                          )
+                             ) ;
+            }
+        }
 
         #region IDisposable
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-            _host?.Dispose();
-            lifetimeScope?.Dispose();
-            _container?.Dispose();
-        }
         #endregion
     }
 }

@@ -117,9 +117,6 @@
     <Compile Include="Controls\Container.xaml.cs">
       <DependentUpon>Container.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SystemParametersControl.xaml.cs">
-      <DependentUpon>SystemParametersControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\TypedService.cs" />
     <Compile Include="DesignData.cs" />
     <Compile Include="Core\Events\AttachedEvents.cs" />
@@ -285,10 +282,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\SystemParametersControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\TypeBrowserPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -371,9 +364,6 @@
     </PackageReference>
     <PackageReference Include="Vanara.Core">
       <Version>3.2.1</Version>
-    </PackageReference>
-    <PackageReference Include="Xceed.Products.Wpf.Toolkit.AvalonDock">
-      <Version>4.0.20076.12200</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

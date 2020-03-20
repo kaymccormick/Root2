@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:WpfApp.Controls"
+        xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
         mc:Ignorable="d"
         Title="Application Settings" Height="450" Width="800">
     <DockPanel>
         <TabControl>
             <TabItem Header="System Parameters">
-                <controls:SystemParametersControl />
+                <kmWpf:SystemParametersControl />
             </TabItem>
         </TabControl>
     </DockPanel>

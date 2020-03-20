@@ -122,9 +122,10 @@ namespace ProjTests
             }
         }
 
-        private static ProjInterfaceApp CreateProjInterfaceApp ( )
+        private ProjInterfaceApp CreateProjInterfaceApp ( )
         {
-            var app = new ProjInterfaceApp ( true , true ) ;
+            var testAppInstance = new TestApplicationInstance(_output.WriteLine);
+            var app = new ProjInterfaceApp ( testAppInstance ) ;
             return app ;
         }
 

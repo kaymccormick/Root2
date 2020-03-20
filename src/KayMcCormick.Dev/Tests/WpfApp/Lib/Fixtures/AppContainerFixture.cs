@@ -34,7 +34,7 @@ namespace Tests.Lib.Fixtures
         // ReSharper disable once InternalOrPrivateMemberNotDocumented
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly ApplicationInstance _applicationInstance ;
+        private readonly ApplicationInstanceBase _applicationInstance ;
         private ILifetimeScope _lifetimeScope ;
 
         /// <summary>

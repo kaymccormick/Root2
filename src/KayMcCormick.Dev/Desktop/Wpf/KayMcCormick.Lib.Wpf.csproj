@@ -95,6 +95,10 @@
     <Compile Include="ResourceTemplateSelector.cs" />
     <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
     <Compile Include="ResourceViewItemContainerStyleSelector.cs" />
+    <Compile Include="SysProp.cs" />
+    <Compile Include="SystemParametersControl.xaml.cs">
+      <DependentUpon>SystemParametersControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TitleMetadataAttribute.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="XamlXmlDocumentConverter.cs" />
@@ -113,6 +117,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit">
+      <Version>3.8.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>2.9.8</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -132,6 +139,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ResourcesMisc.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SystemParametersControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

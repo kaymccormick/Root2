@@ -30,6 +30,11 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
           , LogLevel          minLogLevel = null
         )
         {
+            if ( _disableLogging )
+            {
+                return ;
+            }
+
             if ( _xunitTarget != null )
             {
                 AppLoggingConfigHelper.RemoveTarget ( _xunitTarget ) ;
@@ -104,8 +109,14 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         // ReSharper disable once UnusedMember.Global
         public Layout Layout
         {
-            get { return _xunitTarget.Layout ; }
-            set { _xunitTarget.Layout = value ; }
+            get { return _xunitTarget?.Layout ; }
+            set
+            {
+                if ( _xunitTarget != null )
+                {
+                    _xunitTarget.Layout = value ;
+                }
+            }
         }
 
         /// <summary>
@@ -117,6 +128,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
             if ( Environment.GetEnvironmentVariable ( "DISABLE_TEST_LOGGING" ) != null )
             {
                 _disableLogging = true ;
+                return ;
             }
 
             var disabled = _disableLogging ? " Logging disabled." : string.Empty ;

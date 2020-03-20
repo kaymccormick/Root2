@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
@@ -45,13 +46,14 @@ namespace ProjInterface
 private Type[] _optionTypes ;
         private Options _options ;
 #endif
-        public ProjInterfaceApp ( ) : this ( false , false , false ) { }
+        public ProjInterfaceApp ( ) : this ( null , false , false , false ) { }
 
         public ProjInterfaceApp (
-            bool disableLogging
-          , bool disableRuntimeConfiguration
-          , bool disableServiceHost = false
-        ) : base ( disableLogging , disableRuntimeConfiguration , disableServiceHost )
+            ApplicationInstanceBase applicationInstance = null
+          , bool                disableLogging      = false
+          , bool                disableRuntimeConfiguration = false
+          , bool                disableServiceHost = false
+        ) : base ( applicationInstance, disableLogging , disableRuntimeConfiguration , disableServiceHost )
 
         {
             _disableLogging = disableLogging ;
@@ -82,11 +84,11 @@ private Type[] _optionTypes ;
             {
                 Logger.Info (
                              "{name} {type} {msbuildpath} {version} {vspath}"
-                           , inst.Name
-                           , inst.DiscoveryType.ToString ( )
-                           , inst.MSBuildPath
-                           , inst.Version
-                           , inst.VisualStudioRootPath
+                   , inst.Name
+                   , inst.DiscoveryType.ToString ( )
+                   , inst.MSBuildPath
+                   , inst.Version
+                   , inst.VisualStudioRootPath
                             ) ;
             }
 
@@ -280,9 +282,8 @@ protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
                 return ;
             }
 
-            var m = new Xceed.Wpf.Toolkit.MessageBox ( ) ;
-            m.Text = e.Exception.Message ;
-            m.ShowDialog ( ) ;
+            Debug.WriteLine ( e.ToString ( ) ) ;
+            MessageBox.Show ( e.Exception.Message , "Error" ) ;
             Current.Shutdown ( ) ;
         }
     }

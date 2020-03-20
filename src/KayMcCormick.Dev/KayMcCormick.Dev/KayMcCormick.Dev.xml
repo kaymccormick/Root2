@@ -282,35 +282,33 @@
         </member>
         <member name="T:KayMcCormick.Dev.ApplicationInstance">
             <summary>
-            
             </summary>
         </member>
-        <member name="P:KayMcCormick.Dev.ApplicationInstance.InstanceRunGuid">
+        <member name="M:KayMcCormick.Dev.ApplicationInstance.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod,System.Collections.IEnumerable,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            </summary>
+            <param name="logMethod"></param>
+            <param name="configs"></param>
+            <param name="disableLogging"></param>
+            <param name="disableRuntimeConfiguration"></param>
+            <param name="disableServiceHost"></param>
+        </member>
+        <member name="P:KayMcCormick.Dev.ApplicationInstance.Logger">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstance.Dispose">
             <summary>
             
             </summary>
         </member>
-        <member name="P:KayMcCormick.Dev.ApplicationInstance.Logger">
+        <member name="M:KayMcCormick.Dev.ApplicationInstance.Initialize">
             <summary>
             
             </summary>
         </member>
         <member name="E:KayMcCormick.Dev.ApplicationInstance.AppStartup">
             <summary>
-            
-            </summary>
-        </member>
-        <member name="M:KayMcCormick.Dev.ApplicationInstance.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod,System.Collections.Generic.IEnumerable{System.Object},System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="logMethod"></param>
-            <param name="configs"></param>
-            <param name="disableLogging"></param>
-        </member>
-        <member name="M:KayMcCormick.Dev.ApplicationInstance.Initialize">
-            <summary>
-            
             </summary>
         </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstance.AddModule(Autofac.Core.IModule)">
@@ -325,34 +323,87 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstance.BuildContainer">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstance.Startup">
             <summary>
-            
             </summary>
-        </member>
-        <member name="M:KayMcCormick.Dev.ApplicationInstance.OnAppStartup(KayMcCormick.Dev.AppStartupEventArgs)">
-            <summary>
-            
-            </summary>
-            <param name="e"></param>
         </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstance.Shutdown">
             <summary>
-            
             </summary>
-             todo call from wpf
         </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstance.LoadConfiguration(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
             <summary>
-            
             </summary>
             <param name="logMethod2"></param>
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:KayMcCormick.Dev.ApplicationInstance.Dispose">
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
             <summary>
-            
+            </summary>
+            <param name="logMethod"></param>
+            <param name="configs"></param>
+            <param name="disableLogging"></param>
+        </member>
+        <member name="P:KayMcCormick.Dev.ApplicationInstanceBase.InstanceRunGuid">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.ApplicationInstanceBase.ConfigSettings">
+            <summary>
+            </summary>
+        </member>
+        <member name="E:KayMcCormick.Dev.ApplicationInstanceBase.AppStartup">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.Initialize">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.AddModule(Autofac.Core.IModule)">
+            <summary>
+            </summary>
+            <param name="appModule"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.GetLifetimeScope">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.BuildContainer">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.Startup">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.OnAppStartup(KayMcCormick.Dev.AppStartupEventArgs)">
+            <summary>
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.Shutdown">
+            <summary>
+            </summary>
+            todo call from wpf
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.LoadConfiguration(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
+            <summary>
+            </summary>
+            <param name="logMethod2"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.Dispose">
+            <summary>
             </summary>
         </member>
         <member name="T:KayMcCormick.Dev.ApplicationInstanceException">
@@ -2173,6 +2224,41 @@
                 This method is called before the test method is executed.
             </summary>
             <param name="methodUnderTest">The method under test</param>
+        </member>
+        <member name="T:KayMcCormick.Dev.TestApplicationInstance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.TestApplicationInstance.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
+            <summary>
+            
+            </summary>
+            <param name="logMethod"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.TestApplicationInstance.AddModule(Autofac.Core.IModule)">
+            <summary>
+            
+            </summary>
+            <param name="appModule"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.TestApplicationInstance.BuildContainer">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.TestApplicationInstance.LoadConfiguration(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
+            <summary>
+            
+            </summary>
+            <param name="logMethod2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.TestApplicationInstance.Dispose">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:KayMcCormick.Dev.TestLib.BeforeAfterLoggerAttribute">
             <summary></summary>

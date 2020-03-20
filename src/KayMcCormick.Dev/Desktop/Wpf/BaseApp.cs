@@ -30,40 +30,58 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public abstract class BaseApp : Application, IDisposable
+    public abstract class BaseApp : Application , IDisposable
     {
         private readonly bool _disableLogging ;
 
-        private ILifetimeScope scope ;
-        private readonly ApplicationInstance appInst ;
-        private EventLog _eventLog ;
+        private          ILifetimeScope      scope ;
+        private readonly ApplicationInstanceBase _applicationInstance ;
+        private          EventLog            _eventLog ;
+        private          ApplicationInstanceBase _createdAppInstance ;
 #if COMMANDLINE
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
-        protected BaseApp ( ) : this ( false, false, false )
-        {
+        protected BaseApp ( ) : this ( null, false , false , false ) { }
 
-        }
-        protected BaseApp ( bool disableLogging, bool disableRuntimeConfiguration, bool disableServiceHost = false)
+        protected BaseApp (
+            ApplicationInstanceBase applicationInstance = null
+          , bool                disableLogging      = false
+          , bool                disableRuntimeConfiguration = false
+          , bool                disableServiceHost = false
+        )
         {
             _disableLogging = disableLogging ;
-            _eventLog = new EventLog ( "Application" ) ;
-            _eventLog.Source = "Application" ;
-//            var configs = ApplyConfiguration ( ) ;
-            appInst = new ApplicationInstance (
-                                               message => {
-                                                   if ( _eventLog != null )
-                                                   {
-                                                       _eventLog.WriteEntry (
-                                                                             message
-                                                                           , EventLogEntryType
-                                                                                .Information
-                                                                            ) ;
-                                                   }
-                                               }
-                                             , null, disableLogging,disableRuntimeConfiguration, disableServiceHost
-                                              ) ;
+            _eventLog       = new EventLog ( "Application" ) { Source = "Application" } ;
+            //            var configs = ApplyConfiguration ( ) ;
+            if ( applicationInstance != null )
+            {
+                _applicationInstance = applicationInstance ;
+            }
+            else
+            {
+                _applicationInstance = _createdAppInstance = new ApplicationInstance (
+                                                                                      message => {
+                                                                                          if (
+                                                                                              _eventLog
+                                                                                              != null
+                                                                                          )
+                                                                                          {
+                                                                                              _eventLog
+                                                                                                 .WriteEntry (
+                                                                                                              message
+                                                                                                            , EventLogEntryType
+                                                                                                                 .Information
+                                                                                                             ) ;
+                                                                                          }
+                                                                                      }
+                                                                                    , null
+                                                                                    , disableLogging
+                                                                                    , disableRuntimeConfiguration
+                                                                                    , disableServiceHost
+                                                                                     ) ;
+            }
+
             foreach ( var myJsonLayout in LogManager
                                          .Configuration.AllTargets.OfType < TargetWithLayout > ( )
                                          .Select ( t => t.Layout )
@@ -107,7 +125,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        public ILifetimeScope Scope { get => scope ; set => scope = value ; }
+        public ILifetimeScope Scope { get { return scope ; } set { scope = value ; } }
 
         protected LogDelegates.LogMethod DebugLog { get ; set ; }
 
@@ -135,26 +153,30 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        public virtual IEnumerable < IModule > GetModules ( ) { return Array.Empty < IModule > ( ) ; }
+        public virtual IEnumerable < IModule > GetModules ( )
+        {
+            return Array.Empty < IModule > ( ) ;
+        }
+
         #region Overrides of Application
         protected override void OnExit ( ExitEventArgs e )
         {
             base.OnExit ( e ) ;
-            appInst.Dispose();
-            _eventLog?.Dispose();
-
+            _createdAppInstance.Dispose ( ) ;
+            _eventLog?.Dispose ( ) ;
         }
 
         protected override void OnStartup ( StartupEventArgs e )
         {
             foreach ( var module in GetModules ( ) )
             {
-                Logger?.Debug ( "Adding module {module}" , module .ToString()) ;
-                appInst.AddModule(module);
+                Logger?.Debug ( "Adding module {module}" , module.ToString ( ) ) ;
+                _applicationInstance.AddModule ( module ) ;
             }
-            appInst.Initialize ( ) ;
-            appInst.Startup();
-            Scope = appInst.GetLifetimeScope ( ) ;
+
+            _applicationInstance.Initialize ( ) ;
+            _applicationInstance.Startup ( ) ;
+            Scope = _applicationInstance.GetLifetimeScope ( ) ;
             base.OnStartup ( e ) ;
 #if COMMANDLINE
             var optionTypes = OptionTypes ;
@@ -170,7 +192,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
 
-
 #if COMMANDLINE
 protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
@@ -184,10 +205,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         #endregion
 
         #region IDisposable
-        public virtual void Dispose ( )
-        {
-            appInst?.Dispose ( ) ;
-        }
+        public virtual void Dispose ( ) { _applicationInstance?.Dispose ( ) ; }
         #endregion
     }
 }

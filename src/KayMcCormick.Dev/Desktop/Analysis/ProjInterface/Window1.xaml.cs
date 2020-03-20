@@ -1,23 +1,14 @@
 ﻿using System ;
-using System.Collections.Generic ;
-using System.Linq ;
-using System.Text ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
-using System.Windows.Documents ;
 using System.Windows.Input ;
-using System.Windows.Media ;
-using System.Windows.Media.Imaging ;
-using System.Windows.Shapes ;
 using Autofac ;
 using Autofac.Features.Metadata ;
+using AvalonDock.Layout ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.Build.Logging.StructuredLogger ;
 using NLog ;
-using ProjLib.Interfaces ;
-using Xceed.Wpf.AvalonDock.Layout ;
 
 namespace ProjInterface
 {
