@@ -63,8 +63,14 @@ namespace KayMcCormick.Dev.TestLib
             LogManager.LogFactory.ThrowExceptions = true ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static bool Executed { get { return _executed ; } set { _executed = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static bool DisableLogging
         {
             get { return _disableLogging ; }

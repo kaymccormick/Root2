@@ -131,8 +131,14 @@ namespace KayMcCormick.Dev
         /// </summary>
         public string Message { get { return _message ; } set { _message = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IDictionary <string, object> GDC { get { return _gdc ; } set { _gdc = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IDictionary <string, object> MDLC { get { return _mdlc ; } set { _mdlc = value ; } }
 
         /// <summary>

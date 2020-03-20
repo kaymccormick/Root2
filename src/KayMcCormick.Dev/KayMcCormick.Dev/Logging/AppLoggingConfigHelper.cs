@@ -601,12 +601,18 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         public static LogDelegates.LogMethod ProtoLogDelegate { get { return _protoLogDelegate ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static string DisableLoggingEnvVar
         {
             get { return _disableLoggingEnvVar ; }
             set { _disableLoggingEnvVar = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static bool Performant { get { return _performant ; } set { _performant = value ; } }
 
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )

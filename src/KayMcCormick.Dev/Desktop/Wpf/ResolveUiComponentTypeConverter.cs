@@ -23,7 +23,8 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of TypeConverter
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
-            return destinationType == typeof(InstanceDescriptor) || base.CanConvertTo(context, destinationType); 
+            return destinationType == typeof ( InstanceDescriptor )
+                   || base.CanConvertTo ( context , destinationType ) ;
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
@@ -34,22 +35,38 @@ namespace KayMcCormick.Lib.Wpf
           , Type                   destinationType
         )
         {
-            if (!(destinationType == typeof(InstanceDescriptor)))
-                return base.ConvertTo(context, culture, value, destinationType);
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
+            if ( ! ( destinationType == typeof ( InstanceDescriptor ) ) )
+            {
+                return base.ConvertTo ( context , culture , value , destinationType ) ;
+            }
+
+            if ( value == null )
+            {
+                throw new ArgumentNullException ( nameof ( value ) ) ;
+            }
+
             if ( ! ( value is ResolveUiComponentExtension extension ) )
+            {
                 throw new ArgumentException (
                                              $"{nameof ( value )} must be of type ResolveExtension"
                                            , nameof ( value )
                                             ) ;
-            return (object)new InstanceDescriptor((MemberInfo)typeof(ResolveUiComponentExtension).GetConstructor(new Type[1]
-                                                                                                      {
-                                                                                                          typeof (object)
-                                                                                                      }), (ICollection)new object[1]
-                                                                                                                       {
-                                                                                                                           extension.ComponentType
-                                                                                                                       });
+            }
+
+            return ( object ) new InstanceDescriptor (
+                                                      ( MemberInfo )
+                                                      typeof ( ResolveUiComponentExtension )
+                                                         .GetConstructor (
+                                                                          new Type[ 1 ]
+                                                                          {
+                                                                              typeof ( object )
+                                                                          }
+                                                                         )
+                                                    , ( ICollection ) new object[ 1 ]
+                                                                      {
+                                                                          extension.ComponentType
+                                                                      }
+                                                     ) ;
         }
         #endregion
     }

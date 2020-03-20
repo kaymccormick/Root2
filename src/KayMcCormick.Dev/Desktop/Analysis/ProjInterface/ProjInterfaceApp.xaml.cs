@@ -54,7 +54,7 @@ private Type[] _optionTypes ;
                 , disableLogging
                 , disableRuntimeConfiguration
                 , disableServiceHost
-                  , new IModule[] { new ProjInterfaceModule(), new AnalysisControlsModule() }
+                , new IModule[] { new ProjInterfaceModule ( ) , new AnalysisControlsModule ( ) }
                  )
 
         {
@@ -86,11 +86,11 @@ private Type[] _optionTypes ;
             {
                 Logger.Info (
                              "{name} {type} {msbuildpath} {version} {vspath}"
-           , inst.Name
-           , inst.DiscoveryType.ToString ( )
-           , inst.MSBuildPath
-           , inst.Version
-           , inst.VisualStudioRootPath
+       , inst.Name
+       , inst.DiscoveryType.ToString ( )
+       , inst.MSBuildPath
+       , inst.Version
+       , inst.VisualStudioRootPath
                             ) ;
             }
 

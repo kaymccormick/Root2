@@ -72,8 +72,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service1AddInView", "Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Explorer", "..\WpfExplorer\Explorer\Explorer.csproj", "{03FB5D97-71E4-4304-B52F-6836605398B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xunit.StaFact", "..\..\..\Xunit.StaFact\src\Xunit.StaFact\Xunit.StaFact.csproj", "{299731FB-464D-4AEC-860F-EF3BFF63EE17}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -248,14 +246,6 @@ Global
 		{03FB5D97-71E4-4304-B52F-6836605398B5}.Release|x64.Build.0 = Release|x64
 		{03FB5D97-71E4-4304-B52F-6836605398B5}.Release|x86.ActiveCfg = Release|x86
 		{03FB5D97-71E4-4304-B52F-6836605398B5}.Release|x86.Build.0 = Release|x86
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Debug|x64.Build.0 = Debug|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Debug|x86.Build.0 = Debug|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Release|x64.ActiveCfg = Release|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Release|x64.Build.0 = Release|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Release|x86.ActiveCfg = Release|Any CPU
-		{299731FB-464D-4AEC-860F-EF3BFF63EE17}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

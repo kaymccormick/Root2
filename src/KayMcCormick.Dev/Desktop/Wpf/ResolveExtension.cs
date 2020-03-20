@@ -12,16 +12,15 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    [TypeConverter(typeof(ResolveTypeConverter))]
-    [MarkupExtensionReturnType( typeof(object))]
+    [ TypeConverter ( typeof ( ResolveTypeConverter ) ) ]
+    [ MarkupExtensionReturnType ( typeof ( object ) ) ]
     public class ResolveExtension : MarkupExtension
     {
         private Type _componentType ;
 
-        public ResolveExtension ( ) {
-        }
+        public ResolveExtension ( ) { }
 
-        public ResolveExtension (Type componentType ) { _componentType = componentType ; }
+        public ResolveExtension ( Type componentType ) { _componentType = componentType ; }
 
         public Type ComponentType
         {
@@ -30,7 +29,7 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Overrides of MarkupExtension
-        public override object 
+        public override object
             // ReSharper disable once AnnotationRedundancyInHierarchy
             ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
@@ -57,7 +56,8 @@ namespace KayMcCormick.Lib.Wpf
                                                           ) ;
                 }
             }
-            if(scope == null)
+
+            if ( scope == null )
             {
                 var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
                 if ( svc != null )
@@ -71,7 +71,6 @@ namespace KayMcCormick.Lib.Wpf
                                                               ) ;
                     }
                 }
-
             }
 
             if ( scope != null )
@@ -82,7 +81,6 @@ namespace KayMcCormick.Lib.Wpf
             {
                 throw new Exception ( "No lifetime scope" ) ;
             }
-
         }
         #endregion
     }
@@ -92,7 +90,8 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of TypeConverter
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
-            return destinationType == typeof(InstanceDescriptor) || base.CanConvertTo(context, destinationType); 
+            return destinationType == typeof ( InstanceDescriptor )
+                   || base.CanConvertTo ( context , destinationType ) ;
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
@@ -103,22 +102,38 @@ namespace KayMcCormick.Lib.Wpf
           , Type                   destinationType
         )
         {
-            if (!(destinationType == typeof(InstanceDescriptor)))
-                return base.ConvertTo(context, culture, value, destinationType);
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
+            if ( ! ( destinationType == typeof ( InstanceDescriptor ) ) )
+            {
+                return base.ConvertTo ( context , culture , value , destinationType ) ;
+            }
+
+            if ( value == null )
+            {
+                throw new ArgumentNullException ( nameof ( value ) ) ;
+            }
+
             if ( ! ( value is ResolveExtension resolveExtension ) )
+            {
                 throw new ArgumentException (
                                              $"{nameof ( value )} must be of type ResolveExtension"
                                            , nameof ( value )
                                             ) ;
-            return (object)new InstanceDescriptor((MemberInfo)typeof(ResolveExtension).GetConstructor(new Type[1]
-                                                                                                              {
-                                                                                                                  typeof (object)
-                                                                                                              }), (ICollection)new object[1]
-                                                                                                                               {
-                                                                                                                                   resolveExtension.ComponentType
-                                                                                                                               });
+            }
+
+            return ( object ) new InstanceDescriptor (
+                                                      ( MemberInfo ) typeof ( ResolveExtension )
+                                                         .GetConstructor (
+                                                                          new Type[ 1 ]
+                                                                          {
+                                                                              typeof ( object )
+                                                                          }
+                                                                         )
+                                                    , ( ICollection ) new object[ 1 ]
+                                                                      {
+                                                                          resolveExtension
+                                                                             .ComponentType
+                                                                      }
+                                                     ) ;
         }
         #endregion
     }

@@ -34,30 +34,28 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( item == null )
             {
-                Logger.Warn(
-                                                           "Selecting detail template for NuLL item"
-                                                          );
+                Logger.Warn ( "Selecting detail template for NuLL item" ) ;
             }
             else
             {
                 Logger.Debug (
-                                                             "Selecting detail template for {item} {itemType}"
-                                                           , item.ToString()
-                                                           , item.GetType ( )
-                                                            ) ;
+                              "Selecting detail template for {item} {itemType}"
+                            , item.ToString ( )
+                            , item.GetType ( )
+                             ) ;
             }
 
-            FrameworkElement fe = (FrameworkElement)container;
+            var fe = ( FrameworkElement ) container ;
             object resourceKey = null ;
             DataTemplate returnVal = null ;
 
-            List<object> resourceKeys = new   List < object > ();
+            var resourceKeys = new List < object > ( ) ;
             if ( item is ControlWrap < Window > )
             {
                 resourceKeys.Add ( "WindowTemplate" ) ;
-
             }
-            if ( item is ResourceNodeInfo r)
+
+            if ( item is ResourceNodeInfo r )
             {
                 if ( r.TemplateKey != null )
                 {
@@ -65,25 +63,34 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            if(item != null)
-                resourceKeys.Add ( $"{TemplatePartName}{item.GetType ( ).Name.Replace ( "." , "_" )}" ) ;
-            if (resourceKeys.Any())
+            if ( item != null )
             {
+                resourceKeys.Add (
+                                  $"{TemplatePartName}{item.GetType ( ).Name.Replace ( "." , "_" )}"
+                                 ) ;
+            }
 
+            if ( resourceKeys.Any ( ) )
+            {
                 returnVal = resourceKeys
-                           .Select < object , DataTemplate > ( ( k ) => TryFindDataTemplate ( fe , k ) )
+                           .Select < object , DataTemplate > (
+                                                              ( k ) => TryFindDataTemplate (
+                                                                                            fe
+                                                                                          , k
+                                                                                           )
+                                                             )
                            .FirstOrDefault ( template => template != null ) ;
                 if ( returnVal != null )
                 {
                     Logger.Debug ( "OBtained template" ) ;
                     Debug.WriteLine ( XamlWriter.Save ( returnVal ) ) ;
                 }
-
             }
+
             if ( returnVal == null )
             {
                 Logger.Info ( "Calling base method for template" ) ;
-                returnVal = base.SelectTemplate(item, container);
+                returnVal = base.SelectTemplate ( item , container ) ;
                 if ( returnVal != null )
                 {
                     Logger.Info ( "Got template from base method" ) ;
@@ -100,12 +107,12 @@ namespace KayMcCormick.Lib.Wpf
         public virtual string TemplatePartName { get ; set ; }
 
 
-        private DataTemplate TryFindDataTemplate ( FrameworkElement fe, object resourceKey )
+        private DataTemplate TryFindDataTemplate ( FrameworkElement fe , object resourceKey )
         {
             Logger.Debug (
-                                                         "Trying to find data template with resource key {resourceKey}"
-                                                       , resourceKey
-                                                        ) ;
+                          "Trying to find data template with resource key {resourceKey}"
+                        , resourceKey
+                         ) ;
             var resource = fe.TryFindResource ( resourceKey ) ;
             if ( resource != null )
             {
