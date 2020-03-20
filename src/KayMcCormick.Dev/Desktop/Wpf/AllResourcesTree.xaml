@@ -11,293 +11,109 @@
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="ResourcesTemplates.xaml" />
+        <ResourceDictionary Source="ResourcesMisc.xaml" />
+        <ResourceDictionary>
 
-    <Style x:Key="{x:Type TreeView}"
-       TargetType="TreeView">
-      <Setter Property="OverridesDefaultStyle"
-          Value="True" />
-      <Setter Property="SnapsToDevicePixels"
-          Value="True" />
-      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-          Value="Auto" />
-      <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-          Value="Auto" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="TreeView">
-            <Border Name="Border"
-                CornerRadius="1"
-                BorderThickness="1">
-              <Border.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
-              </Border.BorderBrush>
-              <Border.Background>
-                <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
-              </Border.Background>
-              <ScrollViewer Focusable="False"
-                        CanContentScroll="False"
-                        Padding="4">
-                <ItemsPresenter />
-              </ScrollViewer>
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
+          <wpf:ResourceDetailTemplateSelector
+            x:Key="ResourceDetailTemplateSelector" />
+          <wpf:ResourcePreviewTemplateSelector
+            x:Key="ResourcePreviewTemplateSelector" />
 
-    <Style x:Key="ExpandCollapseToggleStyle"
-       TargetType="ToggleButton">
-      <Setter Property="Focusable"
-          Value="False" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="ToggleButton">
-            <Grid Width="15"
-              Height="13"
-              Background="Transparent">
-              <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup x:Name="CheckStates">
-                  <VisualState x:Name="Checked">
-                    <Storyboard>
-                      <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                                 Storyboard.TargetName="Collapsed">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                            Value="{x:Static Visibility.Hidden}" />
-                      </ObjectAnimationUsingKeyFrames>
-                      <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                                 Storyboard.TargetName="Expanded">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                            Value="{x:Static Visibility.Visible}" />
-                      </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                  </VisualState>
-                  <VisualState x:Name="Unchecked" />
-                  <VisualState x:Name="Indeterminate" />
-                </VisualStateGroup>
-              </VisualStateManager.VisualStateGroups>
-              <Path x:Name="Collapsed"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Margin="1,1,1,1"
-                Data="M 4 0 L 8 4 L 4 8 Z">
-                <Path.Fill>
-                  <SolidColorBrush Color="{DynamicResource GlyphColor}" />
-                </Path.Fill>
-              </Path>
-              <Path x:Name="Expanded"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Margin="1,1,1,1"
-                Data="M 0 4 L 8 4 L 4 8 Z"
-                Visibility="Hidden">
-                <Path.Fill>
-                  <SolidColorBrush Color="{DynamicResource GlyphColor}" />
-                </Path.Fill>
-              </Path>
-            </Grid>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="TreeViewItemFocusVisual">
-      <Setter Property="Control.Template">
-        <Setter.Value>
-          <ControlTemplate>
-            <Border>
-              <Rectangle Margin="0,0,0,0"
-                     StrokeThickness="5"
-                     Stroke="Black"
-                     StrokeDashArray="1 2"
-                     Opacity="0" />
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="{x:Type TreeViewItem}"
-       TargetType="{x:Type TreeViewItem}">
-      <Setter Property="Background"
-          Value="Transparent" />
-      <Setter Property="HorizontalContentAlignment"
-          Value="{Binding Path=HorizontalContentAlignment,
-    RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
-      <Setter Property="VerticalContentAlignment"
-          Value="{Binding Path=VerticalContentAlignment,
-    RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
-      <Setter Property="Padding"
-          Value="1,0,0,0" />
-      <Setter Property="Foreground"
-          Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-      <Setter Property="FocusVisualStyle"
-          Value="{StaticResource TreeViewItemFocusVisual}" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type TreeViewItem}">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="19"
-                                  Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-              </Grid.RowDefinitions>
-              <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup x:Name="SelectionStates">
-                  <VisualState x:Name="Selected">
-                    <Storyboard>
-                      <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd"
-                                                    Storyboard.TargetProperty="(Panel.Background).
-                    (SolidColorBrush.Color)"
-                      >
-                        <EasingColorKeyFrame KeyTime="0"
-                                             Value="{StaticResource SelectedBackgroundColor}" />
-                      </ColorAnimationUsingKeyFrames>
-                    </Storyboard>
-                  </VisualState>
-                  <VisualState x:Name="Unselected" />
-                  <VisualState x:Name="SelectedInactive">
-                    <Storyboard>
-                      <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd"
-                                                    Storyboard.TargetProperty="(Panel.Background).
-                    (SolidColorBrush.Color)">
-                        <EasingColorKeyFrame KeyTime="0"
-                                             Value="{StaticResource SelectedUnfocusedColor}" />
-                      </ColorAnimationUsingKeyFrames>
-                    </Storyboard>
-                  </VisualState>
-                </VisualStateGroup>
-                <VisualStateGroup x:Name="ExpansionStates">
-                  <VisualState x:Name="Expanded">
-                    <Storyboard>
-                      <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                                     Storyboard.TargetName="ItemsHost">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                Value="{x:Static Visibility.Visible}" />
-                      </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                  </VisualState>
-                  <VisualState x:Name="Collapsed" />
-                </VisualStateGroup>
-              </VisualStateManager.VisualStateGroups>
-              <ToggleButton x:Name="Expander"
-                            Style="{StaticResource ExpandCollapseToggleStyle}"
-                            ClickMode="Press"
-                            IsChecked="{Binding IsExpanded, 
-            RelativeSource={RelativeSource TemplatedParent}}"/>
-              <Border x:Name="Bd"
-                      Grid.Column="1"
-                      Background="{TemplateBinding Background}"
-                      BorderBrush="{TemplateBinding BorderBrush}"
-                      BorderThickness="{TemplateBinding BorderThickness}"
-                      Padding="{TemplateBinding Padding}">
-                <ContentPresenter x:Name="PART_Header"
-                                  ContentSource="Header"
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-              </Border>
-              <ItemsPresenter x:Name="ItemsHost"
-                              Grid.Row="1"
-                              Grid.Column="1"
-                              Grid.ColumnSpan="2"
-                              Visibility="Collapsed" />
-            </Grid>
+          <DataTemplate DataType="{x:Type ImageSource}"
+                        x:Key="DetailImageSource">
+            <Image Source="{Binding}" />
+          </DataTemplate>
 
-            <ControlTemplate.Triggers>
-              <Trigger Property="HasItems"
-                   Value="false">
-                <Setter TargetName="Expander"
-                    Property="Visibility"
-                    Value="Hidden" />
-              </Trigger>
-              <MultiTrigger>
-                <MultiTrigger.Conditions>
-                  <Condition Property="HasHeader"
-                         Value="false" />
-                  <Condition Property="Width"
-                         Value="Auto" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="PART_Header"
-                    Property="MinWidth"
-                    Value="75" />
-              </MultiTrigger>
-              <MultiTrigger>
-                <MultiTrigger.Conditions>
-                  <Condition Property="HasHeader"
-                         Value="false" />
-                  <Condition Property="Height"
-                         Value="Auto" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="PART_Header"
-                    Property="MinHeight"
-                    Value="19" />
-              </MultiTrigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
+          <DataTemplate DataType="{x:Type Application}">
+            <TextBlock Text="Application" />
+          </DataTemplate>
 
-    <DataTemplate DataType="{x:Type ImageSource}">
-      <Image Source="{Binding}"></Image>
-    </DataTemplate>
+          <Style TargetType="{x:Type wpf:TreeViewItem1}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+          </Style>
 
-    <DataTemplate DataType="{x:Type Application}">
-      <TextBlock Text="Application"></TextBlock>
-    </DataTemplate>
-    <wpf:KeyConverter x:Key="KeyConverter" />
-    <DataTemplate DataType="{x:Type Color}">
-      <Rectangle MinWidth="25" MinHeight="25">
-        <Rectangle.Fill>
-          <SolidColorBrush Color="{Binding}"/>
-        </Rectangle.Fill>
-      </Rectangle>
-    </DataTemplate>
-    <HierarchicalDataTemplate DataType="{x:Type Color}">
-      <TextBlock Margin="10,0,10,0" IsEnabled="False"  Text="{Binding Key,Converter={StaticResource KeyConverter}}">
-        <TextBlock.Background>
-          <SolidColorBrush Color="{Binding Data}"/>
-        </TextBlock.Background>
-      </TextBlock>
-    </HierarchicalDataTemplate>
-    <HierarchicalDataTemplate
-      DataType="{x:Type Style}"
-      ItemsSource="{Binding Path=Children}"
-      >
-      <ContentControl Content="{Binding Key}">
-        <ContentControl.ToolTip>
-          <Binding Path="Key"
-                   Converter="{StaticResource GetTypeConverter}" />
-        </ContentControl.ToolTip>
-      </ContentControl>
-    </HierarchicalDataTemplate>
 
-    <HierarchicalDataTemplate
-      DataType="{x:Type wpf:ResourceNodeInfo}"
-      ItemsSource="{Binding Path=Children}">
-      <ContentControl Content="{Binding Key}">
-        <ContentControl.ToolTip>
-          <Binding Path="Key"
-                   Converter="{StaticResource GetTypeConverter}" />
-        </ContentControl.ToolTip>
-      </ContentControl>
-    </HierarchicalDataTemplate>
-    <DataTemplate x:Key="WindowTemplate">
-      <Image Source="{Binding Path=Image}"/>
-    </DataTemplate>
-    <wpf:ResourceTreeViewItemTemplateSelector 
-      x:Key="ResourceTreeViewItemTemplateSelector" />
-    <wpf:ResourceViewItemContainerStyleSelector
-      x:Key="ResourcereeViewItemContainerStyleSelector" />
-    <Style x:Key="DefaultResourceNodeInfoStyle" BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="TreeViewItem">
-      <Setter Property="Control.BorderBrush" Value="Green"/>
-      <Setter Property="Background" Value="Aquamarine"></Setter>
-      <Setter Property="Control.Margin" Value="1"/>
-      <Setter Property="Control.Padding" Value="2"/>
-    </Style>
-    <wpf:ResourceDetailTemplateSelector
-      x:Key="ResourceDetailTemplateSelector" />
+          <DataTemplate DataType="{x:Type FontFamily}" x:Key="PreviewFontFamily">
+            <TextBlock FontFamily="{Binding}" FontSize="24.0" Text="{Binding FamilyNames[en-US]}"/>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type Color}"
+                        x:Key="DetailColor">
+            <Rectangle MinWidth="25" MinHeight="25">
+              <Rectangle.Fill>
+                <SolidColorBrush Color="{Binding}" />
+              </Rectangle.Fill>
+            </Rectangle>
+          </DataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type Color}">
+            <TextBlock Margin="10,0,10,0" IsEnabled="False"
+                       Text="{Binding Key,Converter={StaticResource KeyConverter}}">
+              <TextBlock.Background>
+                <SolidColorBrush Color="{Binding Data}" />
+              </TextBlock.Background>
+            </TextBlock>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type ImageSource}">
+            <WrapPanel>
+              <Image MaxHeight="32" Source="{Binding Data}" />
+              <TextBlock VerticalAlignment="Center"
+                         Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
+            </WrapPanel>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type BitmapImage}">
+            <WrapPanel>
+              <Image MaxHeight="32" Source="{Binding Data}" />
+              <TextBlock VerticalAlignment="Center"
+                         Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
+            </WrapPanel>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type Style}"
+            ItemsSource="{Binding Path=Children}">
+            <ContentControl Content="{Binding Key}">
+              <ContentControl.ToolTip>
+                <Binding Path="Key"
+                         Converter="{StaticResource GetTypeConverter}" />
+              </ContentControl.ToolTip>
+            </ContentControl>
+          </HierarchicalDataTemplate>
+
+          <HierarchicalDataTemplate
+            DataType="{x:Type wpf:ResourceNodeInfo}"
+            ItemsSource="{Binding Path=Children}">
+            <ContentControl Content="{Binding Key}">
+              <ContentControl.ToolTip>
+                <Binding Path="Key"
+                         Converter="{StaticResource GetTypeConverter}" />
+              </ContentControl.ToolTip>
+            </ContentControl>
+          </HierarchicalDataTemplate>
+          <DataTemplate x:Key="WindowTemplate">
+            <Image Source="{Binding Path=Image}" />
+          </DataTemplate>
+          <wpf:ResourceTreeViewItemTemplateSelector
+            x:Key="ResourceTreeViewItemTemplateSelector" />
+          <wpf:ResourceViewItemContainerStyleSelector
+            x:Key="ResourcereeViewItemContainerStyleSelector" />
+          <Style x:Key="DefaultResourceNodeInfoStyle"
+                 BasedOn="{StaticResource {x:Type TreeViewItem}}"
+                 TargetType="TreeViewItem">
+            <Setter Property="Control.BorderBrush"
+                    Value="Green" />
+            <Setter Property="Background"
+                    Value="Aquamarine" />
+            <Setter Property="Control.Margin" Value="1" />
+            <Setter Property="Control.Padding" Value="2" />
+          </Style>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
@@ -307,10 +123,19 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="2*" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <wpf:TreeView1 x:Name="tv" ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}" ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}" Grid.Row="0" Grid.Column="0"
-              ItemsSource="{Binding Path=AllResourcesCollection}"
-              Margin="0,0,0,0.2"/>
+    <Border Padding="7" BorderBrush="DarkKhaki"
+            BorderThickness="6" CornerRadius="15"
+            Grid.Row="0" Grid.Column="0"
+            Grid.RowSpan="2">
+      <wpf:TreeView1 x:Name="tv"
+                     VerticalAlignment="Stretch"
+                     ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}"
+                     ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}"
+                     ItemsSource="{Binding Path=AllResourcesCollection}"
+                     Margin="0,0,0,0.2" />
+    </Border>
 
     <Grid Grid.Column="1" Grid.Row="0"
           DataContext="{Binding ElementName=tv,Path=SelectedItem}">
@@ -327,23 +152,38 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Margin="0,0,20,0" Text="Key Type" Grid.Row="0" Grid.Column="0"/>
-        <ContentControl Grid.Row="0" Grid.Column="1" Content="{Binding Key,Converter={StaticResource GetTypeConverter}}"/>
-        <TextBlock Margin="0,0,20,0" Text="Key" Grid.Row="1" Grid.Column="0"/>
-        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding Key}"/>
-        <TextBlock Margin="0,0,20,0" Text="Value Type" Grid.Row="2" Grid.Column="0"/>
-        <ContentControl Grid.Row="2" Grid.Column="1" Content="{Binding Data,Converter={StaticResource GetTypeConverter}}"/>
-        <TextBlock Margin="0,0,20,0" Text="Value" Grid.Row="3" Grid.Column="0"/>
-        <ContentControl x:FieldModifier="public" x:Name="details" ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"  Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
-</Grid>
+        <TextBlock Margin="0,0,20,0" Text="Key Type"
+                   Grid.Row="0" Grid.Column="0" />
+        <ContentControl Grid.Row="0" Grid.Column="1"
+                        Content="{Binding Key,Converter={StaticResource GetTypeConverter}}" />
+        <TextBlock Margin="0,0,20,0" Text="Key"
+                   Grid.Row="1" Grid.Column="0" />
+        <ContentControl Grid.Row="1" Grid.Column="1"
+                        Content="{Binding Key}" />
+        <TextBlock Margin="0,0,20,0" Text="Value Type"
+                   Grid.Row="2" Grid.Column="0" />
+        <ContentControl Grid.Row="2" Grid.Column="1"
+                        Content="{Binding Data,Converter={StaticResource GetTypeConverter}}" />
+        <TextBlock Margin="0,0,20,0" Text="Value"
+                   Grid.Row="3" Grid.Column="0" />
+        <ContentControl x:FieldModifier="public"
+                        x:Name="details"
+                        ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
+                        Grid.Row="3" Grid.Column="1"
+                        Content="{Binding Data}" />
+        <ContentControl Grid.Row="4" Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
+                        Content="{Binding Data}" />
+      </Grid>
     </Grid>
-    <Grid Grid.Row="1" Grid.Column="0">
+    <Grid Grid.Row="2" Grid.Column="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
         <RowDefinition Height="*" />

@@ -101,6 +101,7 @@ namespace KayMcCormick.Lib.Wpf
                     if ( haveResourcesResource.Value is Style sty)
                     {
                         var settersNode = CreateResourceNodeInfo ( "Setters" ) ;
+                        settersNode.IsExpanded = true ;
                         foreach ( var setter in sty.Setters)
                         {
                             ResourceNodeInfo setterNode = null ;

@@ -90,7 +90,9 @@
     <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceKeyWrapper.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
+    <Compile Include="ResourcePreviewTemplateSelector.cs" />
     <Compile Include="ResourcesUtil.cs" />
+    <Compile Include="ResourceTemplateSelector.cs" />
     <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
     <Compile Include="ResourceViewItemContainerStyleSelector.cs" />
     <Compile Include="TitleMetadataAttribute.cs" />
@@ -122,6 +124,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AllResourcesTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ResourcesTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ResourcesMisc.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

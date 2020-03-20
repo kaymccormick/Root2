@@ -39,5 +39,10 @@ namespace KayMcCormick.Lib.Wpf
         {
             return $"{nameof ( _data )}: {_data}, {nameof ( _key )}: {_key}" ;
         }
+
+        
+        private bool? _internalIsExpanded ;
+
+        public bool IsExpanded { get { return _internalIsExpanded.GetValueOrDefault() ; } set { _internalIsExpanded = value ; } }
     }
 }
