@@ -99,6 +99,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HashtableConverter.cs" />
     <Compile Include="IconsSource.cs" />
+    <Compile Include="IExplorerItemProvider.cs" />
     <Compile Include="IIconsSource.cs" />
     <Compile Include="JsonBrushConverter.cs" />
     <Compile Include="JsonConverterImage.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="ShellExplorerItem.cs" />
+    <Compile Include="ShellExplorerItemProvider.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>

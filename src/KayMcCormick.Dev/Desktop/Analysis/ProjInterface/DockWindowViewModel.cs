@@ -18,8 +18,6 @@ using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
-using System.Windows.Controls ;
-using System.Windows.Media ;
 using Autofac.Features.Metadata ;
 using DynamicData ;
 using ExplorerCtrl ;
@@ -36,6 +34,7 @@ namespace ProjInterface
 
         private readonly IEnumerable < Meta < Lazy < IView1 > > > _views ;
         private readonly IIconsSource                             _iconsSource ;
+        private readonly IEnumerable < IExplorerItemProvider > _providers ;
         private          string                                   _defaultInputPath ;
         private          FrameworkElement                         _resourcesElement ;
         private          IDictionary                              _iconsResources ;
@@ -43,10 +42,12 @@ namespace ProjInterface
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IView1 > > > views
           , IIconsSource                             iconsSource
+            , IEnumerable <IExplorerItemProvider> providers
         )
         {
             _views       = views ;
             _iconsSource = iconsSource ;
+            _providers = providers ;
             DefaultInputPath = Path.Combine (
                                              Environment.GetFolderPath (
                                                                         Environment
@@ -55,11 +56,13 @@ namespace ProjInterface
                                                                        )
                                            , @"source\repos"
                                             ) ;
+            foreach ( var explorerItemProvider in providers )
+            {
+
+            }
         }
 
         public IEnumerable < Meta < Lazy < IView1 > > > Views { get { return _views ; } }
-
-        public IExplorerItem Item { get ; set ; }
 
         public ObservableCollection < IExplorerItem > RootCollection
         {
@@ -74,8 +77,8 @@ namespace ProjInterface
                 _resourcesElement = value ;
                 if ( _resourcesElement != null )
                 {
-                    Item = new AppExplorerItem ( DefaultInputPath , this ) ;
-                    RootCollection.AddRange ( Item.Children.Where ( item => item.IsDirectory ) ) ;
+                    var item = new AppExplorerItem ( DefaultInputPath , _iconsSource ) ;
+                    RootCollection.AddRange ( item.Children.Where ( item1 => item1.IsDirectory ) ) ;
                     _iconsResources =
                         _resourcesElement.TryFindResource ( "IconsResources" ) as IDictionary ;
                 }

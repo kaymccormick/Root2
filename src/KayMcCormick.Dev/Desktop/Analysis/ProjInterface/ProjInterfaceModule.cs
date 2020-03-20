@@ -112,6 +112,7 @@ namespace ProjInterface
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             LogRegistration ( typeof ( IconsSource ) , typeof ( IIconsSource ) ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
+            builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
         }
     }
 }

@@ -22,25 +22,25 @@ namespace ProjInterface
         #region Implementation of IExplorerItem
         public abstract event EventHandler < RefreshEventArgs > Refresh ;
 
-        public abstract string Name { get ; set ; }
+        public abstract string Name { get ; }
 
-        public abstract string FullName { get ; set ; }
+        public abstract string FullName { get ; }
 
-        public abstract string Link { get ; set ; }
+        public abstract string Link { get ; }
 
-        public abstract long Size { get ; set ; }
+        public abstract long Size { get ; }
 
-        public abstract DateTime ? Date { get ; set ; }
+        public abstract DateTime ? Date { get ; }
 
-        public abstract ExplorerItemType Type { get ; set ; }
+        public abstract ExplorerItemType Type { get ; }
 
-        public abstract ImageSource Icon { get ; set ; }
+        public abstract ImageSource Icon { get ; }
 
-        public abstract bool IsDirectory { get ; set ; }
+        public abstract bool IsDirectory { get ; }
 
-        public abstract bool HasChildren { get ; set ; }
+        public abstract bool HasChildren { get ; }
 
-        public abstract IEnumerable < IExplorerItem > Children { get ; set ; }
+        public abstract IEnumerable < IExplorerItem > Children { get ; }
 
         public abstract void Push ( Stream stream , string path ) ;
         public abstract void Pull ( string path , Stream stream ) ;
