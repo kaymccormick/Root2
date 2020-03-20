@@ -9,9 +9,11 @@
 // 
 // ---
 #endregion
+using System.Collections.Generic ;
+
 namespace ProjInterface
 {
     public interface IExplorerItemProvider {
-
+        IEnumerable < AppExplorerItem > GetRootItems ( ) ;
     }
 }

@@ -24,11 +24,13 @@ using ExplorerCtrl ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using NLog ;
 
 namespace ProjInterface
 {
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly ObservableCollection < IExplorerItem > _rootCollection =
             new ObservableCollection < IExplorerItem > ( ) ;
 
@@ -58,7 +60,16 @@ namespace ProjInterface
                                             ) ;
             foreach ( var explorerItemProvider in providers )
             {
-
+                IEnumerable<AppExplorerItem> items = explorerItemProvider.GetRootItems ( ) ;
+                foreach ( var item in items )
+                {
+                    if ( item.IsDirectory )
+                    {
+                        Logger.Info ( "{item} is directory" , item.FullName ) ;
+                    }
+                    RootCollection.Add(item);
+                }
+                
             }
         }
 
@@ -77,10 +88,10 @@ namespace ProjInterface
                 _resourcesElement = value ;
                 if ( _resourcesElement != null )
                 {
-                    var item = new AppExplorerItem ( DefaultInputPath , _iconsSource ) ;
-                    RootCollection.AddRange ( item.Children.Where ( item1 => item1.IsDirectory ) ) ;
-                    _iconsResources =
-                        _resourcesElement.TryFindResource ( "IconsResources" ) as IDictionary ;
+                    // var item = new FileSystemAppExplorerItem ( DefaultInputPath , _iconsSource ) ;
+                    // RootCollection.AddRange ( item.Children.Where ( item1 => item1.IsDirectory ) ) ;
+                    // _iconsResources =
+                    //     _resourcesElement.TryFindResource ( "IconsResources" ) as IDictionary ;
                 }
             }
         }

@@ -88,14 +88,15 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="AppExplorerItem.cs" />
-    <Compile Include="AppExplorerItemBase.cs" />
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="DockWindowViewModel.cs" />
     <Compile Include="FileBrowser.xaml.cs">
       <DependentUpon>FileBrowser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileSystemExplorerItemProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HashtableConverter.cs" />
     <Compile Include="IconsSource.cs" />

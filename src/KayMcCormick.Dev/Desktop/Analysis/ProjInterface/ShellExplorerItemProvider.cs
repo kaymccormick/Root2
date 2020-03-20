@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System.Collections.Generic ;
 using Vanara.Windows.Shell ;
 
 namespace ProjInterface
@@ -16,18 +17,16 @@ namespace ProjInterface
     public sealed class ShellExplorerItemProvider : IExplorerItemProvider
     {
         private ShellFolder _desktop ;
+        private ShellExplorerItem _rootItem ;
 
         public ShellExplorerItemProvider ( )
         {
             _desktop = ShellFolder.Desktop ;
-            ShellExplorerItem item = new ShellExplorerItem(_desktop);
-            foreach ( var shellItem in _desktop.EnumerateChildren (
-                                                                   FolderItemFilter.Folders
-                                                                   | FolderItemFilter.NonFolders
-                                                                  ) )
-            {
-                
-            }
+            _rootItem = new ShellExplorerItem(_desktop) ;
         }
+
+        #region Implementation of IExplorerItemProvider
+        public IEnumerable < AppExplorerItem > GetRootItems ( ) { yield return _rootItem; }
+        #endregion
     }
 }
