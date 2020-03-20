@@ -153,6 +153,11 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
+        public string ExceptionString { get { return _exceptionString ; } set { _exceptionString = value ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="field"></param>
         /// <param name="elem"></param>
         // ReSharper disable once UnusedMember.Global
@@ -181,6 +186,6 @@ namespace KayMcCormick.Dev
         private int _callerLineNumber ;
         private string _callerFilePath ;
         private string _callerMemberName ;
-         
+        private string _exceptionString ;
     }
 }

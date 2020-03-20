@@ -8,7 +8,11 @@ namespace KayMcCormick.Lib.Wpf
 {
     public class KeyConverter : IValueConverter
     {
+#if TRACE_TEMPLATES
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#else
+        private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
+#endif
         #region Implementation of IValueConverter
         public object Convert (
             object      value
@@ -39,6 +43,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
-        #endregion
+#endregion
     }
 }

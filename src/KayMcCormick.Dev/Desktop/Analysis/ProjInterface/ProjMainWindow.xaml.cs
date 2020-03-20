@@ -69,7 +69,9 @@ namespace ProjInterface
         public ProjMainWindow ( IWorkspacesViewModel viewModel , ILifetimeScope scope )
         {
             _scope = scope ;
-            SetValue ( AttachedProperties.LifetimeScopeProperty , scope ) ;
+#pragma warning disable WPF0014 // SetValue must use registered type.
+            SetValue( AttachedProperties.LifetimeScopeProperty , _sco3ope );
+#pragma warning restore WPF0014 // SetValue must use registered type.
             InitializeComponent ( ) ;
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext ( ) ;
 

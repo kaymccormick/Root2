@@ -397,10 +397,11 @@ namespace KayMcCormick.Lib.Wpf
         #endregion
     }
 
+#if CUSTOM_TREEVIEW
     public class TreeView1 : TreeView
     {
-        #region Overrides of TreeView
-        #region Overrides of ItemsControl
+    #region Overrides of TreeView
+    #region Overrides of ItemsControl
         protected override DependencyObject GetContainerForItemOverride ( )
         {
             return ( DependencyObject ) new TreeViewItem1 ( ) ;
@@ -423,15 +424,19 @@ namespace KayMcCormick.Lib.Wpf
             (element as TreeViewItem1).Tag = item;
             base.PrepareContainerForItemOverride ( element , item ) ;
         }
-        #endregion
+    #endregion
 
         protected override bool ExpandSubtree ( TreeViewItem container )
         {
             Debug.WriteLine ( $"{GetType ( ).FullName}:{nameof ( ExpandSubtree )}" ) ;
             return base.ExpandSubtree ( container ) ;
         }
-        #endregion
+    #endregion
     }
+#else
+    public class TreeView1 : TreeView {
+    }
+#endif
 
     /// <summary>
     /// Control for displaying all known resources to the application.
@@ -443,7 +448,7 @@ namespace KayMcCormick.Lib.Wpf
     {
         private static readonly Logger Logger     = LogManager.GetCurrentClassLogger ( ) ;
         private                 string _viewTitle = "Resources Explorer" ;
-        #region Overrides of ContentControl
+#region Overrides of ContentControl
         public override bool ShouldSerializeContent ( )
         {
             Logger.Warn ( nameof ( ShouldSerializeContent ) ) ;
@@ -504,8 +509,8 @@ namespace KayMcCormick.Lib.Wpf
 
             base.OnContentStringFormatChanged ( oldContentStringFormat , newContentStringFormat ) ;
         }
-        #endregion
-        #region Overrides of Control
+#endregion
+#region Overrides of Control
         protected override void OnTemplateChanged (
             ControlTemplate oldTemplate
           , ControlTemplate newTemplate
@@ -525,8 +530,8 @@ namespace KayMcCormick.Lib.Wpf
         {
             return base.ArrangeOverride ( arrangeBounds ) ;
         }
-        #endregion
-        #region Overrides of FrameworkElement
+#endregion
+#region Overrides of FrameworkElement
         protected override void OnStyleChanged ( Style oldStyle , Style newStyle )
         {
             base.OnStyleChanged ( oldStyle , newStyle ) ;
@@ -576,8 +581,8 @@ namespace KayMcCormick.Lib.Wpf
         public override void EndInit ( ) { base.EndInit ( ) ; }
 
         protected override void OnInitialized ( EventArgs e ) { base.OnInitialized ( e ) ; }
-        #endregion
-        #region Overrides of UIElement
+#endregion
+#region Overrides of UIElement
         protected override void OnRender ( DrawingContext drawingContext )
         {
             base.OnRender ( drawingContext ) ;
@@ -594,8 +599,8 @@ namespace KayMcCormick.Lib.Wpf
         {
             return base.HitTestCore ( hitTestParameters ) ;
         }
-        #endregion
-        #region Overrides of Visual
+#endregion
+#region Overrides of Visual
         protected override void OnVisualChildrenChanged (
             DependencyObject visualAdded
           , DependencyObject visualRemoved
@@ -608,13 +613,13 @@ namespace KayMcCormick.Lib.Wpf
         {
             base.OnDpiChanged ( oldDpi , newDpi ) ;
         }
-        #endregion
-        #region Overrides of DependencyObject
+#endregion
+#region Overrides of DependencyObject
         protected override bool ShouldSerializeProperty ( DependencyProperty dp )
         {
             return base.ShouldSerializeProperty ( dp ) ;
         }
-        #endregion
+#endregion
         private AllResourcesTreeViewModel _viewModel ;
 
         /// <summary>Parameterless constructor.</summary>
@@ -627,16 +632,16 @@ namespace KayMcCormick.Lib.Wpf
             InitializeComponent ( ) ;
         }
 
-        #region Implementation of IView1
+#region Implementation of IView1
         public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
-        #endregion
+#endregion
 
-        #region Implementation of IView<out AllResourcesTreeViewModel>
+#region Implementation of IView<out AllResourcesTreeViewModel>
         public AllResourcesTreeViewModel ViewModel
         {
             get { return _viewModel ; }
             set { _viewModel = value ; }
         }
-        #endregion
+#endregion
     }
 }

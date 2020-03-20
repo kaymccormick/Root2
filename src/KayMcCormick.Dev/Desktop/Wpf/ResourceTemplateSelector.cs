@@ -19,9 +19,16 @@ using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+#pragma warning disable DV2002 // Unmapped types
     public class ResourceTemplateSelector : DataTemplateSelector
+#pragma warning restore DV2002 // Unmapped types
     {
+#if TRACE_TEMPLATES
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#else
+        private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
+#endif
+
 
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
