@@ -343,6 +343,11 @@
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="T:KayMcCormick.Dev.ApplicationInstanceBase">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:KayMcCormick.Dev.ApplicationInstanceBase.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod)">
             <summary>
             </summary>

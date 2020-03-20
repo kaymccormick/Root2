@@ -1,13 +1,9 @@
 ﻿using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
 using System.Text.Json ;
-using System.Text.Json.Serialization ;
 using System.Windows ;
-using System.Windows.Markup ;
-using System.Windows.Media ;
 using System.Windows.Threading ;
 using AnalysisControls ;
 using AnalysisControls.Interfaces ;
@@ -49,11 +45,17 @@ private Type[] _optionTypes ;
         public ProjInterfaceApp ( ) : this ( null , false , false , false ) { }
 
         public ProjInterfaceApp (
-            ApplicationInstanceBase applicationInstance = null
-          , bool                disableLogging      = false
-          , bool                disableRuntimeConfiguration = false
-          , bool                disableServiceHost = false
-        ) : base ( applicationInstance, disableLogging , disableRuntimeConfiguration , disableServiceHost )
+            ApplicationInstanceBase applicationInstance         = null
+          , bool                    disableLogging              = false
+          , bool                    disableRuntimeConfiguration = false
+          , bool                    disableServiceHost          = false
+        ) : base (
+                  applicationInstance
+                , disableLogging
+                , disableRuntimeConfiguration
+                , disableServiceHost
+                  , new IModule[] { new ProjInterfaceModule(), new AnalysisControlsModule() }
+                 )
 
         {
             _disableLogging = disableLogging ;
@@ -84,11 +86,11 @@ private Type[] _optionTypes ;
             {
                 Logger.Info (
                              "{name} {type} {msbuildpath} {version} {vspath}"
-                   , inst.Name
-                   , inst.DiscoveryType.ToString ( )
-                   , inst.MSBuildPath
-                   , inst.Version
-                   , inst.VisualStudioRootPath
+           , inst.Name
+           , inst.DiscoveryType.ToString ( )
+           , inst.MSBuildPath
+           , inst.Version
+           , inst.VisualStudioRootPath
                             ) ;
             }
 
@@ -150,15 +152,11 @@ private Type[] _optionTypes ;
         }
 
 
-        public override IEnumerable < IModule > GetModules ( ) { return appModules ; }
+        protected override IEnumerable < IModule > GetModules ( ) { return appModules ; }
 
 
         protected override void OnStartup ( StartupEventArgs e )
         {
-            appModules.Add ( new ProjInterfaceModule ( ) ) ;
-#if ANALYSISCONTROLS
-            appModules.Add ( new AnalysisControlsModule ( ) ) ;
-#endif
 #if DEBUG
             var start = DateTime.Now ;
 #endif
@@ -212,7 +210,11 @@ private Type[] _optionTypes ;
                 {
                     Logger.Error ( ex , ex.ToString ( ) ) ;
                     Utils.HandleInnerExceptions ( ex ) ;
-                    MessageBox.Show ( ex.Message , "Error" ) ;
+                    if ( ! TestMode )
+                    {
+                        MessageBox.Show ( ex.Message , "Error" ) ;
+                    }
+
                     Shutdown ( ( int ) ExitCode.ExceptionalError ) ;
                 }
             }
@@ -283,274 +285,15 @@ protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
             }
 
             Debug.WriteLine ( e.ToString ( ) ) ;
-            MessageBox.Show ( e.Exception.Message , "Error" ) ;
+            if ( ! TestMode )
+            {
+                MessageBox.Show ( e.Exception.Message , "Error" ) ;
+            }
+
             Current.Shutdown ( ) ;
         }
     }
 
-    public class JsonBrushConverter : JsonConverterFactory
-    {
-        #region Overrides of JsonConverter
-        public override bool CanConvert ( Type typeToConvert )
-        {
-            if ( typeof ( Brush ).IsAssignableFrom ( typeToConvert ) )
-            {
-                return true ;
-            }
-
-            return false ;
-        }
-        #endregion
-        #region Overrides of JsonConverterFactory
-        public override JsonConverter CreateConverter (
-            Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return new JsonBrushConverter1 ( typeToConvert , options ) ;
-        }
-
-        public class JsonBrushConverter1 : JsonConverter < Brush >
-        {
-            public JsonBrushConverter1 ( Type typeToConvert , JsonSerializerOptions options ) { }
-            #region Overrides of JsonConverter<Brush>
-            public override Brush Read (
-                ref Utf8JsonReader    reader
-              , Type                  typeToConvert
-              , JsonSerializerOptions options
-            )
-            {
-                return null ;
-            }
-
-            public override void Write (
-                Utf8JsonWriter        writer
-              , Brush                 value
-              , JsonSerializerOptions options
-            )
-            {
-                var xaml = XamlWriter.Save ( value ) ;
-                writer.WriteStartObject ( ) ;
-                writer.WriteString ( "Xaml" , xaml ) ;
-                writer.WriteEndObject ( ) ;
-            }
-            #endregion
-        }
-        #endregion
-    }
-
-    public class JsonResourceKeyWrapperConverterFactory : JsonConverterFactory
-    {
-        #region Overrides of JsonConverter
-        public override bool CanConvert ( Type typeToConvert )
-        {
-            if ( typeof ( IResourceKeyWrapper1 ).IsAssignableFrom ( typeToConvert ) )
-            {
-                return true ;
-            }
-
-            return false ;
-        }
-        #endregion
-        #region Overrides of JsonConverterFactory
-        public override JsonConverter CreateConverter (
-            Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return new JsonResourceKeyWrapaperConverter ( typeToConvert , options ) ;
-        }
-
-        public class JsonResourceKeyWrapaperConverter : JsonConverter < IResourceKeyWrapper1 >
-        {
-            public JsonResourceKeyWrapaperConverter (
-                Type                  typeToConvert
-              , JsonSerializerOptions options
-            )
-            {
-            }
-
-            #region Overrides of JsonConverter<IResourceKeyWrapper1>
-            public override IResourceKeyWrapper1 Read (
-                ref Utf8JsonReader    reader
-              , Type                  typeToConvert
-              , JsonSerializerOptions options
-            )
-            {
-                return null ;
-            }
-
-            public override void Write (
-                Utf8JsonWriter        writer
-              , IResourceKeyWrapper1  value
-              , JsonSerializerOptions options
-            )
-            {
-                writer.WriteStringValue ( value.ResourceKeyObject.ToString ( ) ) ;
-            }
-            #endregion
-        }
-        #endregion
-    }
-
-
-    public class JsonSolidColorBrushConverter : JsonConverter < SolidColorBrush >
-    {
-        #region Overrides of JsonConverter<SolidColorBrush>
-        public override SolidColorBrush Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , SolidColorBrush       value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            writer.WriteString ( "Color" , value.Color.ToString ( ) ) ;
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
-
-    public class JsonFontFamilyConverter : JsonConverter < FontFamily >
-    {
-        #region Overrides of JsonConverter<FontFamily>
-        public override FontFamily Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , FontFamily            value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            writer.WriteString (
-                                "FamilyName"
-                              , value.FamilyNames[ XmlLanguage.GetLanguage ( "en-US" ) ]
-                               ) ;
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
-
-    public class JsonDependencyPropertyConverter : JsonConverter < DependencyProperty >
-    {
-        #region Overrides of JsonConverter<DependencyProperty>
-        public override DependencyProperty Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , DependencyProperty    value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            writer.WriteString ( "DependencyPropertyName" , value.Name ) ;
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
-
-    public class HashtableConverter : JsonConverter < Hashtable >
-    {
-        #region Overrides of JsonConverter<Hashtable>
-        public override Hashtable Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , Hashtable             value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            foreach ( var q in value.Keys )
-            {
-                writer.WritePropertyName ( q.ToString ( ) ) ;
-                JsonSerializer.Serialize ( writer , value[ q ] , options ) ;
-            }
-
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
-
-    public class ProjInterfaceAppConverter : JsonConverter < ProjInterfaceApp >
-    {
-        #region Overrides of JsonConverter<ProjInterfaceApp>
-        public override ProjInterfaceApp Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , ProjInterfaceApp      value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            writer.WriteString ( "ApplicationType" , value.GetType ( ).FullName ) ;
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
-
-    public class JsonConverterResourceDictionary : JsonConverter < ResourceDictionary >
-    {
-        #region Overrides of JsonConverter<ResourceDictionary>
-        public override ResourceDictionary Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
-
-        public override void Write (
-            Utf8JsonWriter        writer
-          , ResourceDictionary    value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            writer.WriteString ( "Source" , value.Source?.ToString ( ) ?? "" ) ;
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
 
 #if COMMANDLINE
     public class Options : BaseOptions

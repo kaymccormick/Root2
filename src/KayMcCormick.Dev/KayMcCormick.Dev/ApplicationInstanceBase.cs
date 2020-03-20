@@ -19,6 +19,9 @@ using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ApplicationInstanceBase
     {
         /// <summary>

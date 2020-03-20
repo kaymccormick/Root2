@@ -1,15 +1,15 @@
 ﻿#region header
 // Kay McCormick (mccor)
 // 
-// FileFinder3
-// WpfApp1Tests3
-// ContainerFixture.cs
+// KayMcCormick.Dev
+// Tests
+// AppContainerFixture2.cs
 // 
-// 2020-01-19-5:59 PM
+// 2020-03-20-2:08 AM
 // 
 // ---
 #endregion
-
+using System ;
 using System.Threading.Tasks ;
 using Autofac ;
 using JetBrains.Annotations ;
@@ -18,8 +18,9 @@ using KayMcCormick.Dev.TestLib ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
+using Xunit.Sdk ;
 
-namespace Tests.Lib.Fixtures
+namespace ProjTests
 {
     /// <summary>Test fixture configured to supply the primary application container from Autofac.</summary>
     /// <seealso cref="Xunit.IAsyncLifetime" />
@@ -37,7 +38,7 @@ namespace Tests.Lib.Fixtures
         private          ILifetimeScope          _lifetimeScope ;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="System.Object" />
+        ///     Initializes a new instance of the <see cref="object" />
         ///     class.
         /// </summary>
         public AppContainerFixture ( IMessageSink sink )
@@ -65,7 +66,7 @@ namespace Tests.Lib.Fixtures
 
         /// <summary>
         ///     Called when an object is no longer needed. Called just before
-        ///     <see cref="System.IDisposable.Dispose"/>
+        ///     <see cref="System.IDisposable.Dispose()"/>
         ///     if the class also implements that.
         /// </summary>
         public Task DisposeAsync ( )

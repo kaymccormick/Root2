@@ -96,11 +96,19 @@
       <DependentUpon>FileBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HashtableConverter.cs" />
+    <Compile Include="JsonBrushConverter.cs" />
     <Compile Include="JsonConverterImage.cs" />
+    <Compile Include="JsonConverterResourceDictionary.cs" />
+    <Compile Include="JsonDependencyPropertyConverter.cs" />
+    <Compile Include="JsonFontFamilyConverter.cs" />
+    <Compile Include="JsonResourceKeyWrapperConverterFactory.cs" />
+    <Compile Include="JsonSolidColorBrushConverter.cs" />
     <Compile Include="JsonSyntaxNodeConverter.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="MruBackground.cs" />
+    <Compile Include="ProjInterfaceAppConverter.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Window1.xaml.cs">

@@ -12,7 +12,7 @@ namespace WpfApp2
     public partial class App : BaseApp
     {
         #region Overrides of BaseApp
-        public override IEnumerable < IModule > GetModules ( ) { yield break ; }
+        protected override IEnumerable < IModule > GetModules ( ) { yield break ; }
         #if COMMANDLINE
         protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
 #endif

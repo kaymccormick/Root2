@@ -526,7 +526,7 @@ namespace WpfApp.Application
         {
         }
 
-        public override IEnumerable < IModule > GetModules ( )
+        protected override IEnumerable < IModule > GetModules ( )
         {
             var appBuildModule = new AppBuildModule ( ) ;
             var a = appBuildModule.GetAssembliesForScanning ( ).ToList ( ) ;

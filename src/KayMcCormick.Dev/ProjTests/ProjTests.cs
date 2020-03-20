@@ -46,7 +46,7 @@ namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
     [ UsedImplicitly ]
-    public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
+    public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >, ICollectionFixture <AppFixture>
     {
     }
 
@@ -73,18 +73,23 @@ namespace ProjTests
         private readonly                    ITestOutputHelper _output ;
         private readonly                    LoggingFixture    _loggingFixture ;
         [ UsedImplicitly ] private readonly ProjectFixture    _projectFixture ;
+        private readonly AppFixture _appFixture ;
+        private ILifetimeScope _testScope ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
             ITestOutputHelper output
           , LoggingFixture    loggingFixture
           , ProjectFixture    projectFixture
+            , AppFixture appFixture
         )
         {
+            
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             _projectFixture                              =  projectFixture ;
+            _appFixture = appFixture ;
             //VSI
             //=  projectFixture.I ;
             if ( ! _disableLogging )
@@ -98,10 +103,8 @@ namespace ProjTests
         [ WpfFact ]
         public void TestResourcesTree1 ( )
         {
-            using (var app = CreateProjInterfaceApp() )
+            using ( var app = CreateProjInterfaceApp ( ) )
             {
-                app.InitializeComponent ( ) ;
-                app.TestMode = true ;
                 app.TestCallback = ( app2 , lifetimeScope ) => {
                     var model = new AllResourcesTreeViewModel ( ) ;
                     var tree = new AllResourcesTree ( model ) ;
@@ -124,9 +127,7 @@ namespace ProjTests
 
         private ProjInterfaceApp CreateProjInterfaceApp ( )
         {
-            var testAppInstance = new TestApplicationInstance(_output.WriteLine);
-            var app = new ProjInterfaceApp ( testAppInstance ) ;
-            return app ;
+            return _appFixture.InterfaceApp ;
         }
 
         private int CountChildren ( DependencyObject tv )
@@ -148,8 +149,6 @@ namespace ProjTests
         {
             using ( var app = CreateProjInterfaceApp ( ) )
             {
-                app.InitializeComponent ( ) ;
-                app.TestMode = true ;
                 app.TestCallback = ( app2 , lifetimeScope ) => {
                     var model = new AllResourcesTreeViewModel ( ) ;
                     var tree = new AllResourcesTree ( model ) ;
@@ -158,7 +157,6 @@ namespace ProjTests
                     return true ;
                 } ;
                 app.Run ( ) ;
-
             }
         }
 
@@ -234,8 +232,8 @@ namespace ProjTests
                                      foreach ( var enumerateFileSystemEntry in Directory
                                                .EnumerateFileSystemEntries (
                                                                             tempDir
-                                                                , "*"
-                                                                , SearchOption.AllDirectories
+                                                            , "*"
+                                                            , SearchOption.AllDirectories
                                                                             ) )
                                      {
                                          if ( File.Exists ( enumerateFileSystemEntry ) )
@@ -263,9 +261,9 @@ namespace ProjTests
             cloneOptions.OnCheckoutProgress = ( path , steps , totalSteps )
                 => Logger.Debug (
                                  "Checkout progress: {path} ( {steps} / {totalSteps} )"
-                     , path
-                     , steps
-                     , totalSteps
+                 , path
+                 , steps
+                 , totalSteps
                                  ) ;
             cloneOptions.RepositoryOperationStarting = context => {
                 Logger.Info ( "{a} {b}" , context.ParentRepositoryPath , context.RemoteUrl ) ;
@@ -285,14 +283,14 @@ namespace ProjTests
 
             Repository.Clone (
                               "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
-                  , cloneDir
+              , cloneDir
                               /*      , cloneOptions*/
                               ) ;
             var dd = new DirectoryInfo ( cloneDir ) ;
             var f = Directory.EnumerateFiles (
                                               cloneDir
-                                  , "KayMcCormick.dev.sln"
-                                  , SearchOption.AllDirectories
+                              , "KayMcCormick.dev.sln"
+                              , SearchOption.AllDirectories
                                               )
                 .ToList ( ) ;
             Assert.NotEmpty ( f ) ;
@@ -331,7 +329,7 @@ namespace ProjTests
                                                  {
                                                      DiscoveryTypes =
                                                      DiscoveryType.VisualStudioSetup
-                                         , WorkingDirectory = @"c:\\temp\work1"
+                                     , WorkingDirectory = @"c:\\temp\work1"
                                                  }
                                                  )
                     .Where (
@@ -360,8 +358,8 @@ namespace ProjTests
                                                                                                        Logger
                                                                                                        .Fatal ( task
                                                                                                                 .Exception
-                                                                                                    , "Faulted with {ex}"
-                                                                                                    , task
+                                                                                                , "Faulted with {ex}"
+                                                                                                , task
                                                                                                                 .Exception
                                                                                                                 ) ;
                                                                                                    }
@@ -511,8 +509,8 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-                  , document.Name
-                  , document.SourceCodeKind
+              , document.Name
+              , document.SourceCodeKind
                               ) ;
             } ;
             await v.ProcessAsync ( ) ;
@@ -539,8 +537,8 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-                  , document.Name
-                  , document.SourceCodeKind
+              , document.Name
+              , document.SourceCodeKind
                               ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
@@ -552,9 +550,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                 , yy.Item1
-                 , yy.Item2
-                 , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+             , yy.Item1
+             , yy.Item2
+             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
 
@@ -562,9 +560,9 @@ namespace ProjTests
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-                  , inv.SourceLocation
-                  , inv.MethodSymbol.Name
-                  , inv.Msgval
+              , inv.SourceLocation
+              , inv.MethodSymbol.Name
+              , inv.Msgval
                               ) ;
             }
         }
@@ -578,9 +576,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-                         , string         proj
-                         , string         doc
-                         , ILifetimeScope scope
+                     , string         proj
+                     , string         doc
+                     , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -613,9 +611,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-                 , yy.Item1
-                 , yy.Item2
-                 , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+             , yy.Item1
+             , yy.Item2
+             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
         }
