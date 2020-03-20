@@ -28,6 +28,7 @@ steps:
 - checkout: self
   submodules: true
   persistCredentials: true
+  clean: true
 
 - task: NuGetToolInstaller@1
 
