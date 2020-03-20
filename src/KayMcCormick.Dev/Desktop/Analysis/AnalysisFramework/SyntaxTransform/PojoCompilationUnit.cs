@@ -6,6 +6,9 @@ namespace AnalysisFramework.SyntaxTransform
 {
     public class PojoCompilationUnit
     {
+        public PojoCompilationUnit ( ) {
+        }
+
         public List < object > Usings { get ; }
 
         public List < object > ExternAliases { get ; }

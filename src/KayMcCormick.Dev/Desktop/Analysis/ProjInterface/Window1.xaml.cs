@@ -15,6 +15,7 @@ using Autofac.Features.Metadata ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.Build.Logging.StructuredLogger ;
+using NLog ;
 using ProjLib.Interfaces ;
 using Xceed.Wpf.AvalonDock.Layout ;
 
@@ -26,6 +27,7 @@ namespace ProjInterface
         private string              _viewTitle = "window 1" ;
         private DockWindowViewModel _viewModel ;
 
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public Window1 ( ) { InitializeComponent ( ) ; }
 
         public Window1 ( ILifetimeScope lifetimeScope , DockWindowViewModel viewModel ) :
@@ -64,6 +66,7 @@ namespace ProjInterface
 
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
+            Logger.Warn ( nameof ( CommandBinding_OnExecuted ) ) ;
             if ( e.Parameter is Meta < Lazy < IView1 > > meta )
             {
                 var val = meta.Value.Value ;

@@ -11,8 +11,11 @@
 #endregion
 using System ;
 using System.Collections ;
+using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.Windows ;
+using System.Windows.Controls ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -56,16 +59,16 @@ namespace KayMcCormick.Lib.Wpf
         public ObservableCollection<ResourceNodeInfo> AllResourcesCollection
             => _allResourcesCollection;
 
-        private static void AddResourceNodeInfos(ResourceNodeInfo appResources)
+        private static void AddResourceNodeInfos(ResourceNodeInfo resNode)
         {
-            var res = (ResourceDictionary)appResources.Data;
-            appResources.SourceUri = res.Source;
+            var res = (ResourceDictionary)resNode.Data;
+            resNode.SourceUri = res.Source;
 
             foreach (var md in res.MergedDictionaries)
             {
                 var mdr = new ResourceNodeInfo { Key = md.Source, Data = md };
                 AddResourceNodeInfos(mdr);
-                appResources.Children.Add(mdr);
+                resNode.Children.Add(mdr);
             }
 
             foreach (DictionaryEntry haveResourcesResource in res)
@@ -73,15 +76,97 @@ namespace KayMcCormick.Lib.Wpf
                 if (haveResourcesResource.Key      != null
                     && haveResourcesResource.Value != null)
                 {
-                    var resourceInfo = new ResourceNodeInfo
-                                       {
-                                           Key = haveResourcesResource.Key
-                                          ,
-                                           Data = haveResourcesResource.Value
-                                       };
-                    appResources.Children.Add(resourceInfo);
+                    ResourceNodeInfo resourceInfo;
+                    var key = haveResourcesResource.Key;
+                    if ( key is ResourceKey rkey )
+                    {
+                        switch (rkey)
+                        {
+                            case ComponentResourceKey componentResourceKey :
+                                break;
+
+                            case ItemContainerTemplateKey itemContainerTemplateKey : break ;
+                            case DataTemplateKey dataTemplateKey : break ;
+                            case TemplateKey templateKey : break ;
+                            default :
+                                key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
+                                break;
+                        }
+
+                        
+                    }
+
+                    resourceInfo = CreateResourceNodeInfo ( key , haveResourcesResource.Value ) ;
+                    resNode.Children.Add(resourceInfo);
+                    if ( haveResourcesResource.Value is Style sty)
+                    {
+                        var settersNode = CreateResourceNodeInfo ( "Setters" ) ;
+                        foreach ( var setter in sty.Setters)
+                        {
+                            ResourceNodeInfo setterNode = null ;
+                            switch ( setter )
+                            {
+                                case EventSetter eventSetter : break ;
+                                case Setter setter1 :
+                                    setterNode = CreateResourceNodeInfo ( setter1.Property , setter1.Value ) ;
+                                    break ;
+                                default : throw new ArgumentOutOfRangeException ( nameof ( setter ) ) ;
+                            }
+
+                            if ( setterNode != null )
+                            {
+                                settersNode.Children.Add ( setterNode ) ;
+                            }
+                        }
+
+                        resourceInfo.Children.Add ( settersNode ) ;
+
+                    }
+                    if ( haveResourcesResource.Value is IDictionary dict )
+                    {
+                        foreach ( var key2 in dict.Keys )
+                        {
+                            var childNode = CreateResourceNodeInfo ( key2 , dict[ key2] ) ;
+                            resourceInfo.Children.Add(childNode);
+                        }
+                    }
+                    else
+                    {
+
+                        if ( haveResourcesResource.Value is IEnumerable enumerable
+                             && haveResourcesResource.Value.GetType ( ) != typeof ( string ) )
+                        {
+                            foreach ( var child in enumerable )
+                            {
+                                var childNode = CreateResourceNodeInfo ( child , null ) ;
+                                resourceInfo.Children.Add ( childNode ) ;
+                            }
+                        }
+                    }
                 }
             }
+        }
+
+        private static ResourceNodeInfo CreateResourceNodeInfo ( object child, object data= null )
+        {
+            if ( data == null )
+            {
+                data = child ;
+            }
+
+            object wrapped = WrapValue ( data ) ;
+            return new ResourceNodeInfo { Key = child , Data = wrapped ?? data} ;
+        }
+
+        private static object WrapValue ( object data )
+        {
+            object wrapped = null ;
+            if (data is UIElement uie)
+            {
+                wrapped = new ControlWrap < UIElement > ( uie ) ;
+            }
+
+            return wrapped ;
         }
 
         private void HandleWindow(Window w)

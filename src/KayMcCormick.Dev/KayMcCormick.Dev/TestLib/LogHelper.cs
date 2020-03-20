@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using NLog ;
 
 namespace KayMcCormick.Dev.TestLib
 {
@@ -11,16 +12,24 @@ namespace KayMcCormick.Dev.TestLib
     /// TODO Edit XML Comment Template for LogHelper
     public static class LogHelper
     {
+        private static bool _executed ;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="param1"></param>
         public static void EnsureLoggingConfigured(LogDelegates.LogMethod param1 = null)
         {
+            if ( Executed ) return ;
+            Executed = true ;
             Environment.SetEnvironmentVariable("DISABLE_LOG_TARGETS", (Environment.GetEnvironmentVariable("DISABLE_LOG_TARGETS") ?? "") + ";log");
 
             AppLoggingConfigHelper.EnsureLoggingConfigured(param1);
+            LogManager.LogFactory.ThrowExceptions = true ;
         }
+
+        public static bool Executed { get { return _executed ; } set { _executed = value ; } }
+
         /// <summary>Supplied structured logging properties for a particular test method indicated by method.. Supplied properties "TestMethodName", "TestClass",</summary>
         /// <param name="method">The method.</param>
         /// <param name="stage">The stage.</param>

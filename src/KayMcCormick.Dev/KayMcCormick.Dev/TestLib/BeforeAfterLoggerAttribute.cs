@@ -51,16 +51,17 @@ namespace KayMcCormick.Dev.TestLib
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void Before([NotNull] MethodInfo methodUnderTest)
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured();
+//            AppLoggingConfigHelper.EnsureLoggingConfigured();
             TestFileTarget = new FileTarget(Name);
             var fileTarget = TestFileTarget;
             fileTarget.FileName = Layout.FromString(
-                                                     "test-"
+                                                     @"c:\data\logs\test-"
                                                      + methodUnderTest.DeclaringType
                                                      + "."
                                                      + methodUnderTest.Name
                                                      + ".txt"
                                                     );
+            System.Diagnostics.Debug.WriteLine ( fileTarget.FileName ) ;
             LogManager.LogFactory.Configuration.AddTarget(fileTarget);
             var loggingRule = new LoggingRule("*", LogLevel.Trace, fileTarget);
             TestLoggingRule = loggingRule;

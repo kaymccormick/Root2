@@ -34,5 +34,10 @@ namespace KayMcCormick.Lib.Wpf
         public object TemplateKey { get => _templateKey ; set => _templateKey = value ; }
 
         private object _templateKey ;
+
+        public override string ToString ( )
+        {
+            return $"{nameof ( _data )}: {_data}, {nameof ( _key )}: {_key}" ;
+        }
     }
 }

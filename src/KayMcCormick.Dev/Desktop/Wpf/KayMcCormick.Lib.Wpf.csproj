@@ -80,6 +80,7 @@
     <Compile Include="GetTypeConverter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IView1.cs" />
+    <Compile Include="KeyConverter.cs" />
     <Compile Include="LifetimeScopeExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveExtension.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="ResolveUiComponentTypeConverter.cs" />
     <Compile Include="ResourceDetailTemplateSelector.cs" />
     <Compile Include="ResourceInfo.cs" />
+    <Compile Include="ResourceKeyWrapper.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="ResourcesUtil.cs" />
     <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />

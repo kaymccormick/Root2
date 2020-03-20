@@ -23,7 +23,7 @@ namespace KayMcCormick.Dev.Logging
     /// <summary>
     /// 
     /// </summary>
-    public class LogEventInfoConverter : JsonConverter < LogEventInfo >
+    public class JsonConverterLogEventInfo : JsonConverter < LogEventInfo >
     {
         #region Overrides of JsonConverter<LogEventInfo>
         /// <summary>
@@ -46,7 +46,7 @@ namespace KayMcCormick.Dev.Logging
             }
 
             //var builder = new LogBuilder(null);
-            var info = new LogEventInfo2 ( ) ;
+            var info = new LogEventInstance( ) ;
             while ( reader.Read ( ) )
             {
                 if ( reader.TokenType == JsonTokenType.EndObject )
@@ -69,7 +69,7 @@ namespace KayMcCormick.Dev.Logging
                             throw new JsonException ( ) ;
                         }
 
-                        info.Level = LogLevel.FromOrdinal ( reader.GetInt32 ( ) ) ;
+                        info.Level = reader.GetInt32 ( ) ;
                         break ;
                     case nameof ( LogEventInfo.LoggerName ) :
                         reader.Read ( ) ;
@@ -88,8 +88,18 @@ namespace KayMcCormick.Dev.Logging
                         }
 
                         var msg = reader.GetString ( ) ;
-                        info.Message = msg ;
+                        info.FormattedMessage = msg ;
                         break ;
+                    case "Message":
+                        reader.Read();
+                        if (reader.TokenType != JsonTokenType.String)
+                        {
+                            throw new JsonException();
+                        }
+
+                        var msg2 = reader.GetString();
+                        info.Message = msg2;
+                        break;
                     case nameof ( LogEventInfo.SequenceID ) :
                         reader.Read ( ) ;
                         if ( reader.TokenType != JsonTokenType.Number )
@@ -216,6 +226,9 @@ namespace KayMcCormick.Dev.Logging
                                     }
 
                                     value = o1 ;
+                                    // reader.Read ( ) ;
+                                    // if(reader.TokenType != JsonTokenType.EndObject)
+                                        // throw new JsonException();
                                 }
                             }
 
@@ -223,10 +236,124 @@ namespace KayMcCormick.Dev.Logging
                         }
 
                         break ;
+                    case "CallerClassName":
+                        reader.Read();
+                        if (reader.TokenType != JsonTokenType.String && reader.TokenType != JsonTokenType.Null)
+                            throw new JsonException();
+
+                        info.CallerClassName = reader.GetString();
+                        break;
+                    case "CallerFilePath":
+                        reader.Read();
+                        if (reader.TokenType != JsonTokenType.String && reader.TokenType != JsonTokenType.Null)
+                            throw new JsonException();
+
+                        info.CallerFilePath = reader.GetString();
+                        break;
+                    case "CallerMemberName":
+                        reader.Read();
+                        if (reader.TokenType != JsonTokenType.String && reader.TokenType != JsonTokenType.Null)
+                            throw new JsonException();
+
+                        info.CallerMemberName = reader.GetString();
+                        break;
+                    case "CallerLineNumber": reader.Read ( ) ;
+                        if ( reader.TokenType    != JsonTokenType.Number
+                             && reader.TokenType != JsonTokenType.Null )
+                        {
+                            throw new JsonException();
+                        }
+
+                        if (  reader.TokenType != JsonTokenType.Null )
+                        {
+                            info.CallerLineNumber = reader.GetInt32 ( ) ;
+                        }
+
+                        break ;
+                    case "ProcessId":
+                        reader.Read ( ) ;
+                        if(reader.TokenType != JsonTokenType.Number)
+                            throw new JsonException();
+                        info.ProcessId = reader.GetInt32 ( ) ;
+
+                        break ;
+                    case "ManagedThreadId": reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.Number )
+                        {
+                            throw new JsonException();
+                        }
+
+                        info.ManagedThreadId = reader.GetInt32 ( ) ;
+                        break ;
+                    case "ThreadName": reader.Read ( ) ;
+                        if ( reader.TokenType != JsonTokenType.String )
+                        {
+                            throw new JsonException();
+                        }
+
+                        info.ThreadName = reader.GetString ( ) ;
+                        break ;
+                    case "CurrentTaskId":
+                        reader.Read ( ) ;
+                        if (reader.TokenType != JsonTokenType.Number && reader.TokenType != JsonTokenType.Null)
+                        {
+                            throw new JsonException();
+                        }
+
+                        info.CurrentTaskId = reader.GetInt32 ( ) ;
+                        break ;
+                    case "TimeStamp": reader.Read ( ) ;
+                        var v  =
+                            JsonSerializer.Deserialize<DateTime>(
+                                                                    ref reader
+                                                                  , options
+                                                                   );
+                        info.TimeStamp = v ;
+                        break ;
+
+
+                    /*
+                     * {"Level":1,"SequenceID":69,"LoggerName":"test","CallerClassName":null,"ProcessId":5944,
+                     * "ManagedThreadId":15,"ThreadName":"Thread22",
+                     * "CurrentTaskId":1,
+                     * "Message":"test",
+                     * "TimeStamp":"2020-03-19T07:30:58.2107828-07:00","FormattedMessage":"test","Properties":{"node":{"JsonConverter":true,"Type":"Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax, Microsoft.CodeAnalysis.CSharp, Version=3.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35","Value":{"Usings":[{"RawKind":8843,"Kind":"UsingDirective","Alias":null,"Name":{"RawKind":8508,"Kind":"IdentifierToken","Value":"System"}},{"RawKind":8843,"Kind":"UsingDirective","Alias":null,"Name":{"RawKind":8617,"Kind":"QualifiedName","Left":{"RawKind":8617,"Kind":"QualifiedName","Left":{"RawKind":8508,"Kind":"IdentifierToken","Value":"System"},"Right":{"RawKind":8508,"Kind":"IdentifierToken","Value":"Collections"}},"Right":{"RawKind":8508,"Kind":"IdentifierToken","Value":"Generic"}}},{"RawKind":8843,"Kind":"UsingDirective","Alias":null,"Name":{"RawKind":8617,"Kind":"QualifiedName","Left":{"RawKind":8508,"Kind":"IdentifierToken","Value":"System"},"Right":{"RawKind":8508,"Kind":"IdentifierToken","Value":"Linq"}}},{"RawKind":8843,"Kind":"UsingDirective","Alias":null,"Name":{"RawKind":8617,"Kind":"QualifiedName","Left":{"RawKind":8508,"Kind":"IdentifierToken","Value":"System"},"Right":{"RawKind":8508,"Kind":"IdentifierToken","Value":"Text"}}},{"RawKind":8843,"Kind":"UsingDirective","Alias":null,"Name":{"RawKind":8617,"Kind":"QualifiedName","Left":{"RawKind":8617,"Kind":"QualifiedName","Left":{"RawKind":8508,"Kind":"IdentifierToken","Value":"System"},"Right":{"RawKind":8508,"Kind":"IdentifierToken","Value":"Threading"}},"Right":{"RawKind":8508,"Kind":"IdentifierToken","Value":"Tasks"}}},{"RawKind":8843,"Kind":"UsingDirective","Alias":null,"Name":{"RawKind":8508,"Kind":"IdentifierToken","Value":"NLog"}}],"ExternAliases":[],"AttributeLists":[],"Members":[{"RawKind":8842,"Kind":"NamespaceDeclaration","Members":[{"Identifier":{"Kind":"IdentifierToken","RawKind":8508,"Value":"Program"},"Members":[{"RawKind":8873},{"Statements":["Action\u003Cstring\u003E xx = Logger.Info;","xx(\u0022hi\u0022);","Logger.Debug ( $\u0022Hello {1}\u0022 ) ;","try {\r\n                string xxx = null;\r\n                var q = xxx.ToString();\r\n            } catch(Exception ex) {\r\n                Logger.Info(ex, ex.Message);\r\n            }","var x = Logger;","x.Info(\u0022hello {test} {ab}\u0022, 123, 45);"]}]}]}]}}},"GDC":{},"MDLC":{}}
+                     */
+                    case "GDC":
+
+                        var gdc =
+                            JsonSerializer.Deserialize < Dictionary < string , object > > (
+                                                                                           ref
+                                                                                           reader
+                                                                                         , options
+                                                                                          ) ;
+                        foreach ( var keyValuePair in gdc )
+                        {
+                            info.GDC[ keyValuePair.Key ] = gdc.Values ;
+                        }
+
+                        break ;
+                    case "MDLC":
+
+                        var mdlc =
+                            JsonSerializer.Deserialize<Dictionary<string, object>>(
+                                                                                   ref
+                                                                                   reader
+                                                                                 , options
+                                                                                  );
+                        foreach (var keyValuePair in mdlc)
+                        {
+                            info.MDLC[keyValuePair.Key] = mdlc.Values;
+                        }
+
+                        break;
+
                 }
             }
 
-            return info ;
+            var logEventInfo = new LogEventInfo ( ) ;
+            logEventInfo.Properties[ "LogEventInstance" ] = info ;
+            return logEventInfo ;
         }
 
         /// <summary>

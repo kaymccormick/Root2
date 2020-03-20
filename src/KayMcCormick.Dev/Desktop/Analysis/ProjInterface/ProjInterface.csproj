@@ -96,6 +96,8 @@
       <DependentUpon>FileBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="JsonConverterImage.cs" />
+    <Compile Include="JsonSyntaxNodeConverter.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="MruBackground.cs" />
@@ -202,13 +204,13 @@
       <Version>16.5.29903.111</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Imaging">
-      <Version>14.3.25407</Version>
+      <Version>16.5.29903.186</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime">
       <Version>14.3.26930</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Utilities">
-      <Version>16.4.29519.181</Version>
+      <Version>16.5.29903.186</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Win32.Primitives">
       <Version>4.3.0</Version>

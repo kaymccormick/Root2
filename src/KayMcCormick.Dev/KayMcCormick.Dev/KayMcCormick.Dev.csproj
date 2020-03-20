@@ -171,7 +171,7 @@
     <Compile Include="Logging\LogConfigurationException.cs" />
     <Compile Include="Logging\LogDelegates.cs" />
     <Compile Include="Logging\LogEventInfo2.cs" />
-    <Compile Include="Logging\LogEventInfoConverter.cs" />
+    <Compile Include="Logging\JsonConverterLogEventInfo.cs" />
     <Compile Include="Logging\LogFactoryInterceptor.cs" />
     <Compile Include="Logging\LoggerFactoryHook.cs" />
     <Compile Include="Logging\LoggerInterceptor.cs" />

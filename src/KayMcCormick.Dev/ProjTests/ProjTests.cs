@@ -11,13 +11,17 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Runtime.ExceptionServices ;
+using System.Runtime.Serialization ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Windows ;
+using System.Windows.Controls ;
+using System.Windows.Markup ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
@@ -28,6 +32,7 @@ using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Moq ;
 using NLog ;
@@ -87,13 +92,71 @@ namespace ProjTests
             _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
         }
 
+
+        [ WpfFact ]
+        public void TestResourcesModel ( )
+        {
+            ProjInterfaceApp app = new ProjInterfaceApp();
+            app.InitializeComponent();
+            app.TestMode = true ;
+            app.TestCallback = ( app2 ) => {
+                AllResourcesTreeViewModel model = new AllResourcesTreeViewModel();
+                AllResourcesTree tree = new AllResourcesTree(model);
+
+                DumpTree(app, tree, model.AllResourcesCollection);
+
+            };
+            app.Run ( ) ;
+            
+            
+        }
+
+        private void DumpTree (
+            ProjInterfaceApp                 app
+          , AllResourcesTree                 tree
+          , IEnumerable < ResourceNodeInfo > modelAllResourcesCollection
+          , int                              depth = 0
+        )
+        {
+            foreach (var resourceNodeInfo in modelAllResourcesCollection)
+            {
+                try
+                {
+                    var json1 = JsonSerializer.Serialize (
+                                                          resourceNodeInfo.Key
+                                                        , app.AppJsonSerializerOptions
+                                                         ) ;
+
+                    Logger.Debug ( json1 ) ;
+                    var json2 = JsonSerializer.Serialize (
+                                                          resourceNodeInfo.Data
+                                                        , app.AppJsonSerializerOptions
+                                                         ) ;
+                    Logger.Debug ( json2 ) ;
+                }
+                catch ( Exception ex )
+                {
+                    Logger.Error ( ex , ex.Message ) ;
+                }
+                ResourceDetailTemplateSelector selector = new ResourceDetailTemplateSelector();
+                var dt = selector.SelectTemplate ( resourceNodeInfo.Data, tree) ;
+                if ( dt != null )
+                {
+                    var xaml = XamlWriter.Save ( dt ) ;
+                    Debug.WriteLine( xaml ) ;
+                }
+                Logger.Info("{x}{key} = {data}", string.Concat(Enumerable.Repeat("  ", depth)),  resourceNodeInfo.Key, resourceNodeInfo.Data);
+                DumpTree (app, tree, resourceNodeInfo.Children , depth + 1 ) ;
+            }
+        }
+
         [ Fact ]
         public void TestModule1 ( )
         {
             var module = new ProjInterfaceModule();
 
             var mock = new Mock < ContainerBuilder> ( ) ;
-            mock.Setup ( cb => module.DoLoad(cb, null));
+            mock.Setup ( cb => module.DoLoad(cb));
             
         }
 
@@ -264,26 +327,92 @@ namespace ProjTests
             info1.Properties[ "node" ] = ctx.CompilationUnit ;
 
             var options = new JsonSerializerOptions ( ) ;
-            options.Converters.Add ( new LogEventInfoConverter ( ) ) ;
+            options.Converters.Add ( new JsonConverterLogEventInfo ( ) ) ;
             options.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
 
             var json = JsonSerializer.Serialize ( info1 , options ) ;
             Logger.Info ( json ) ;
-            var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
-            Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
+            LogEventInfo info2 ;
+            try
+            {
+                info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
+            }
+            catch ( JsonException x )
+            {
+                string substring = "";
+                if ( x.BytePositionInLine.HasValue )
+                {
+                    try
+                    {
+                        var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
+                        if (eBytePositionInLine < 0) eBytePositionInLine = 0;
+                        var length = 32 ;
+                        var endIndex = eBytePositionInLine + length ;
+                        if ( endIndex >= json.Length ) endIndex = json.Length ;
+                        length = endIndex - eBytePositionInLine ;
+                        substring = json.Substring (
+                                                    eBytePositionInLine
+                                                  , length
+                                                   ) ;
+                    }
+                    catch ( ArgumentOutOfRangeException  )
+                    {
+                        substring = json ;
+                    }
 
+                    Logger.Warn (
+                                 "Start of problem is {problem}"
+                               , substring
+                                ) ;
+                }
+                throw new UnableToDeserializeLogEventInfo(substring, x);
+            }
+
+            //Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
 
             var t = File.OpenText ( @"C:\data\logs\ProjInterface.json" ) ;
+            var lineno = 0 ;
             while ( ! t.EndOfStream )
             {
+                lineno += 1 ;
                 var line = t.ReadLine ( ) ;
 
-                var info = JsonSerializer.Deserialize < LogEventInfo > ( line , options ) ;
+                LogEventInfo info ;
+                try
+                {
+                    info = JsonSerializer.Deserialize < LogEventInfo > ( line , options ) ;
+                }
+                catch ( JsonException x )
+                {
+                    string substring = "" ;
+                    if ( x.BytePositionInLine.HasValue )
+                    {
+                        try
+                        {
+                            var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
+                            if ( eBytePositionInLine < 0 ) eBytePositionInLine = 0 ;
+                            var length = 32 ;
+                            var endIndex = eBytePositionInLine + length ;
+                            if ( endIndex >= line.Length ) endIndex = line.Length ;
+                            length    = endIndex - eBytePositionInLine ;
+                            substring = line.Substring ( eBytePositionInLine , length ) ;
+                        }
+                        catch ( ArgumentOutOfRangeException )
+                        {
+                            substring = line ;
+                        }
+
+                        Logger.Warn ( "Start of problem is line {lineno} {problem}" , lineno, substring ) ;
+                    }
+
+                    throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
+                }
+
                 Logger.Debug ( info.FormattedMessage ) ;
                 foreach ( var keyValuePair in info.Properties )
                 {
                     Logger.Debug ( keyValuePair.Key ) ;
-                    Logger.Debug ( keyValuePair.Value ) ;
+                    Logger.Debug ( keyValuePair.Value.ToString() ) ;
                 }
             }
         }
@@ -613,5 +742,23 @@ namespace ProjTests
 
         [ WpfFact ]
         public void FormattdCode1 ( ) { }
+    }
+
+    public class UnableToDeserializeLogEventInfo : Exception
+    {
+        public UnableToDeserializeLogEventInfo ( ) {
+        }
+
+        public UnableToDeserializeLogEventInfo ( string message ) : base ( message )
+        {
+        }
+
+        public UnableToDeserializeLogEventInfo ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected UnableToDeserializeLogEventInfo ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
+        }
     }
 }

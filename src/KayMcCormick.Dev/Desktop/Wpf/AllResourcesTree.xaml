@@ -239,13 +239,40 @@
       </Setter>
     </Style>
 
+    <DataTemplate DataType="{x:Type ImageSource}">
+      <Image Source="{Binding}"></Image>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type Application}">
+      <TextBlock Text="Application"></TextBlock>
+    </DataTemplate>
+    <wpf:KeyConverter x:Key="KeyConverter" />
+    <DataTemplate DataType="{x:Type Color}">
+      <Rectangle MinWidth="25" MinHeight="25">
+        <Rectangle.Fill>
+          <SolidColorBrush Color="{Binding}"/>
+        </Rectangle.Fill>
+      </Rectangle>
+    </DataTemplate>
     <HierarchicalDataTemplate DataType="{x:Type Color}">
-      <TextBlock Margin="10,0,10,0" IsEnabled="False"  Text="{Binding Key}">
+      <TextBlock Margin="10,0,10,0" IsEnabled="False"  Text="{Binding Key,Converter={StaticResource KeyConverter}}">
         <TextBlock.Background>
-          <SolidColorBrush Color="{Binding Value}"/>
+          <SolidColorBrush Color="{Binding Data}"/>
         </TextBlock.Background>
       </TextBlock>
     </HierarchicalDataTemplate>
+    <HierarchicalDataTemplate
+      DataType="{x:Type Style}"
+      ItemsSource="{Binding Path=Children}"
+      >
+      <ContentControl Content="{Binding Key}">
+        <ContentControl.ToolTip>
+          <Binding Path="Key"
+                   Converter="{StaticResource GetTypeConverter}" />
+        </ContentControl.ToolTip>
+      </ContentControl>
+    </HierarchicalDataTemplate>
+
     <HierarchicalDataTemplate
       DataType="{x:Type wpf:ResourceNodeInfo}"
       ItemsSource="{Binding Path=Children}">
@@ -281,7 +308,7 @@
       <RowDefinition Height="2*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <TreeView ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}" ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}" Name="tv" Grid.Row="0" Grid.Column="0"
+    <wpf:TreeView1 x:Name="tv" ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}" ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}" Grid.Row="0" Grid.Column="0"
               ItemsSource="{Binding Path=AllResourcesCollection}"
               Margin="0,0,0,0.2"/>
 
@@ -313,7 +340,7 @@
         <TextBlock Margin="0,0,20,0" Text="Value Type" Grid.Row="2" Grid.Column="0"/>
         <ContentControl Grid.Row="2" Grid.Column="1" Content="{Binding Data,Converter={StaticResource GetTypeConverter}}"/>
         <TextBlock Margin="0,0,20,0" Text="Value" Grid.Row="3" Grid.Column="0"/>
-        <ContentControl ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"  Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
+        <ContentControl x:FieldModifier="public" x:Name="details" ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"  Grid.Row="3" Grid.Column="1" Content="{Binding Data}"/>
 </Grid>
     </Grid>
     <Grid Grid.Row="1" Grid.Column="0">

@@ -281,7 +281,7 @@ namespace KayMcCormick.Dev.Logging
             }
 
             var lConf = new CodeConfiguration ( useFactory ) ;
-            LogManager.ThrowExceptions = true ;
+            //LogManager.ThrowExceptions = true ;
             _dict = LogLevel.AllLoggingLevels.ToDictionary (
                                                             level => level
                                                           , level => new List < Target > ( )
@@ -663,7 +663,7 @@ namespace KayMcCormick.Dev.Logging
                        // ,
                         // Layout = new MyJsonLayout()
                        ,
-                        Layout = SetupJsonLayout()
+                        Layout = new MyJsonLayout()
             } ;
 
             return f ;
