@@ -3,6 +3,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
+using System.Windows.Interop ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
@@ -25,8 +26,10 @@ namespace ProjInterface
             base ( lifetimeScope )
         {
             ViewModel = viewModel ;
-
-            InitializeComponent ( ) ;
+            var wih = new WindowInteropHelper(this);
+            IntPtr hWnd = wih.Handle;
+            viewModel.SethWnd(hWnd);
+            InitializeComponent( ) ;
         }
 
         #region Overrides of FrameworkElement
@@ -73,7 +76,7 @@ namespace ProjInterface
                 }
             }
 
-//            MessageBox.Show ( e.Parameter.ToString ( ) ) ;
+            //            MessageBox.Show ( e.Parameter.ToString ( ) ) ;
         }
 
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )

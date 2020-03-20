@@ -103,7 +103,7 @@ namespace KayMcCormick.Dev.Logging
         private static string                                    _eventLogTargetName ;
         private static string                                    _consoleTargetName ;
         private static Target                                    _serviceTarget ;
-        private static int                                       _chainsawPort = 4446 ;
+        private static int                                       _chainsawPort = 4445 ;
         private static MyCacheTarget                             _cacheTarget ;
         private static MyCacheTarget2                            _cacheTarget2 ;
         private static LogDelegates.LogMethod                    _oldLogMethod ;

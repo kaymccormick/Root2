@@ -127,14 +127,14 @@ namespace ProjInterface
                     select item ;
                 if ( r.Any ( ) )
                 {
-                    return IconsSource.ProjectDirectoryIconImageSource ;
+                    return IconsSource?.ProjectDirectoryIconImageSource ;
                 }
 
-                return IconsSource.DirectoryIconImageSource ;
+                return IconsSource?.DirectoryIconImageSource ;
             }
             else
             {
-                return IconsSource.GetIconForFileExtension ( fileSystemAppExplorerItem.Extension ) ;
+                return IconsSource?.GetIconForFileExtension ( fileSystemAppExplorerItem.Extension ) ;
             }
         }
 

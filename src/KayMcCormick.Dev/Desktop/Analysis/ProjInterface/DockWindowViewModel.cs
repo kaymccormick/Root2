@@ -40,36 +40,38 @@ namespace ProjInterface
         private          string                                   _defaultInputPath ;
         private          FrameworkElement                         _resourcesElement ;
         private          IDictionary                              _iconsResources ;
+        private IntPtr _hWnd ;
 
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IView1 > > > views
           , IIconsSource                             iconsSource
-            , IEnumerable <IExplorerItemProvider> providers
+          , IEnumerable < IExplorerItemProvider >    providers
         )
         {
+            Logger.Debug ( "Constructor" ) ;
             _views       = views ;
             _iconsSource = iconsSource ;
-            _providers = providers ;
-            DefaultInputPath = Path.Combine (
-                                             Environment.GetFolderPath (
-                                                                        Environment
-                                                                           .SpecialFolder
-                                                                           .UserProfile
-                                                                       )
-                                           , @"source\repos"
-                                            ) ;
-            foreach ( var explorerItemProvider in providers )
+            _providers   = providers ;
+
+
+            foreach ( var explorerItemProvider in _providers )
             {
-                IEnumerable<AppExplorerItem> items = explorerItemProvider.GetRootItems ( ) ;
+                if ( explorerItemProvider is ITakesHwnd h )
+                {
+                    h.SetHwnd ( _hWnd ) ;
+                }
+
+                IEnumerable < AppExplorerItem > items = explorerItemProvider.GetRootItems ( ) ;
                 foreach ( var item in items )
                 {
                     if ( item.IsDirectory )
                     {
                         Logger.Info ( "{item} is directory" , item.FullName ) ;
                     }
-                    RootCollection.Add(item);
+
+                    RootCollection.Add ( item ) ;
                 }
-                
+
             }
         }
 
@@ -103,6 +105,18 @@ namespace ProjInterface
             set { _defaultInputPath = value ; }
         }
 
+        public IntPtr GethWnd()
+        {
+            return _hWnd;
+        }
+
+        public void SethWnd(IntPtr value)
+        {
+            _hWnd = value;
+            
+
+            }
+
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
@@ -110,5 +124,10 @@ namespace ProjInterface
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    public interface ITakesHwnd
+    {
+        void SetHwnd ( IntPtr hWnd ) ;
     }
 }

@@ -29,7 +29,7 @@ namespace KayMcCormick.Lib.Wpf
         public ControlWrap ( T c ) { Control = c ; }
 
         [JsonIgnore]
-        public BitmapSource Image
+        public ImageSource Image
         {
             get
             {
