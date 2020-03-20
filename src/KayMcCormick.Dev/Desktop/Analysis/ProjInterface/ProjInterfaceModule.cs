@@ -110,6 +110,8 @@ namespace ProjInterface
                             ) ;
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
+            LogRegistration ( typeof ( IconsSource ) , typeof ( IIconsSource ) ) ;
+            builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
         }
     }
 }

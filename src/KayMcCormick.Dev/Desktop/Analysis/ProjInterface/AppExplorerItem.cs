@@ -20,12 +20,11 @@ using System.Windows.Controls ;
 using System.Windows.Media ;
 using ExplorerCtrl ;
 using JetBrains.Annotations ;
-using Microsoft.VisualStudio.Imaging ;
 using RefreshEventArgs = ExplorerCtrl.RefreshEventArgs ;
 
 namespace ProjInterface
 {
-    public class AppExplorerItem : IExplorerItem, INotifyPropertyChanged
+    public class AppExplorerItem : AppExplorerItemBase , INotifyPropertyChanged
     {
         private string                        _name ;
         private string                        _fullName ;
@@ -37,45 +36,47 @@ namespace ProjInterface
         private bool                          _isDirectory ;
         private bool                          _hasChildren ;
         private IEnumerable < IExplorerItem > _children ;
-        private string _inputPath;
-        private IDictionary _iconsResources ;
-        private object _extension ;
-        private IIconsSource _iconsSource ;
-        private Image _iconImage ;
-        private bool _isHidden ;
-        private FileAttributes _fileAttributes ;
+        private string                        _inputPath ;
+        private IDictionary                   _iconsResources ;
+        private object                        _extension ;
+        private IIconsSource                  _iconsSource ;
+        private Image                         _iconImage ;
+        private bool                          _isHidden ;
+        private FileAttributes                _fileAttributes ;
 
         public AppExplorerItem ( string inputPath , IIconsSource iconsSource )
         {
-            this._inputPath = inputPath;
-            _iconsSource = iconsSource ;
+            _inputPath      = inputPath ;
+            _iconsSource    = iconsSource ;
             _fileAttributes = File.GetAttributes ( inputPath ) ;
-            FileInfo fi = new FileInfo(inputPath);
+            var fi = new FileInfo ( inputPath ) ;
             if ( ( _fileAttributes & FileAttributes.Directory ) == FileAttributes.Directory )
             {
                 IsDirectory = true ;
-                Children = Directory.EnumerateFileSystemEntries( inputPath ).Where(s => !s.StartsWith("."))
-                                    .Select ( s => new AppExplorerItem ( s, _iconsSource ) ).Where(item => !item.IsHidden) ;
+                Children = Directory.EnumerateFileSystemEntries ( inputPath )
+                                    .Where ( s => ! s.StartsWith ( "." ) )
+                                    .Select ( s => new AppExplorerItem ( s , _iconsSource ) )
+                                    .Where ( item => ! item.IsHidden ) ;
                 HasChildren = Children.Any ( ) ;
                 Type        = ExplorerItemType.Directory ;
             }
             else
             {
-                Type = ExplorerItemType.File ;
+                Type        = ExplorerItemType.File ;
                 HasChildren = false ;
-                Size = fi.Length;
-                Extension = fi.Extension ;
+                Size        = fi.Length ;
+                Extension   = fi.Extension ;
             }
 
             Date = fi.LastWriteTime ;
-            
-            Name = fi.Name ;
-            FullName = fi.FullName ;
 
+            Name     = fi.Name ;
+            FullName = fi.FullName ;
         }
 
         // ReSharper disable once ArrangeAccessorOwnerBody
-        public bool IsHidden => (_fileAttributes & FileAttributes.Hidden) == FileAttributes.Hidden ;
+        public bool IsHidden
+            => ( _fileAttributes & FileAttributes.Hidden ) == FileAttributes.Hidden ;
 
         #region Implementation of IExplorerItem
         public void Push ( Stream stream , string path ) { }
@@ -111,27 +112,26 @@ namespace ProjInterface
 
         private ImageSource GetIconImageSourceForExplorerItem ( AppExplorerItem appExplorerItem )
         {
-            if (appExplorerItem.IsDirectory)
+            if ( appExplorerItem.IsDirectory )
             {
-                var exts = new[] { new { ext = ".sln" }, new { ext = "csproj" } };
+                var exts = new[] { new { ext = ".sln" } , new { ext = "csproj" } } ;
 
                 var r =
                     from child in appExplorerItem.Children
-                    let item = (AppExplorerItem)child
+                    let item = ( AppExplorerItem ) child
                     join x in exts on item.Extension equals x.ext
-                    select item;
-                if (r.Any())
+                    select item ;
+                if ( r.Any ( ) )
                 {
-                    return IconsSource.ProjectDirectoryIconImageSsource;
+                    return IconsSource.ProjectDirectoryIconImageSource ;
                 }
 
-                return IconsSource.DirectoryIconImageSource;
+                return IconsSource.DirectoryIconImageSource ;
             }
             else
             {
                 return IconsSource.GetIconForFileExtension ( appExplorerItem.Extension ) ;
             }
-
         }
 
         public Image IconImage
@@ -142,46 +142,46 @@ namespace ProjInterface
                 {
                     _iconImage = GetIconImageForExplorerItem ( this ) ;
                 }
+
                 return _iconImage ;
             }
-            set
-            {
-                _iconImage = value ;
-            }
+            set { _iconImage = value ; }
         }
 
         private Image GetIconImageForExplorerItem ( AppExplorerItem appExplorerItem )
         {
-                if (appExplorerItem.IsDirectory)
-                {
-                    var exts = new[] { new { ext = ".sln" }, new { ext = "csproj" } };
+            if ( appExplorerItem.IsDirectory )
+            {
+                var exts = new[] { new { ext = ".sln" } , new { ext = "csproj" } } ;
 
-                    var r =
-                        from child in appExplorerItem.Children
-                        let item = (AppExplorerItem)child
-                        join x in exts on item.Extension equals x.ext
-                        select item;
-                    if (r.Any())
-                    {
-                        return IconsSource.ProjectDirectoryIcon;
-                    }
-
-                    return IconsSource.DirectoryIcon ;
-                }
-                else
+                var r =
+                    from child in appExplorerItem.Children
+                    let item = ( AppExplorerItem ) child
+                    join x in exts on item.Extension equals x.ext
+                    select item ;
+                if ( r.Any ( ) )
                 {
-                    return new Image
-                           {
-                               Source = IconsSource.GetIconForFileExtension (
-                                                                             appExplorerItem
-                                                                                .Extension
-                                                                            )
-                           } ;
+                    return IconsSource.ProjectDirectoryIcon ;
                 }
-                
+
+                return IconsSource.DirectoryIcon ;
+            }
+            else
+            {
+                return new Image
+                       {
+                           Source = IconsSource.GetIconForFileExtension (
+                                                                         appExplorerItem.Extension
+                                                                        )
+                       } ;
+            }
         }
 
-        public IIconsSource IconsSource { get { return _iconsSource ; } set { _iconsSource = value ; } }
+        public IIconsSource IconsSource
+        {
+            get { return _iconsSource ; }
+            set { _iconsSource = value ; }
+        }
 
         public object Extension { get { return _extension ; } set { _extension = value ; } }
 
@@ -189,15 +189,16 @@ namespace ProjInterface
 
         public bool HasChildren { get { return _hasChildren ; } set { _hasChildren = value ; } }
 
-        public IEnumerable < IExplorerItem > Children { get { return _children ; } set { _children = value ; } }
+        public IEnumerable < IExplorerItem > Children
+        {
+            get { return _children ; }
+            set { _children = value ; }
+        }
 
         public IDictionary IconsResources
         {
             get { return _iconsResources ; }
-            set
-            {
-                _iconsResources = value ;
-            }
+            set { _iconsResources = value ; }
         }
 
         public event EventHandler < RefreshEventArgs > Refresh ;

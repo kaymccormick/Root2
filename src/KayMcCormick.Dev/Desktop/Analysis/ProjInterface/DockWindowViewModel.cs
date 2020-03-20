@@ -29,24 +29,24 @@ using KayMcCormick.Lib.Wpf ;
 
 namespace ProjInterface
 {
-    public sealed class DockWindowViewModel : IViewModel , IIconsSource , INotifyPropertyChanged
+    public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
         private readonly ObservableCollection < IExplorerItem > _rootCollection =
             new ObservableCollection < IExplorerItem > ( ) ;
 
-        
         private readonly IEnumerable < Meta < Lazy < IView1 > > > _views ;
+        private readonly IIconsSource                             _iconsSource ;
         private          string                                   _defaultInputPath ;
-        private          ImageSource                              _directoryIconImageSource ;
-        private          IDictionary                              _iconsResources ;
-        private          Image                                    _projectDirectoryIcon ;
         private          FrameworkElement                         _resourcesElement ;
+        private          IDictionary                              _iconsResources ;
 
-        public DockWindowViewModel ( IEnumerable < Meta < Lazy < IView1 > > > views )
+        public DockWindowViewModel (
+            IEnumerable < Meta < Lazy < IView1 > > > views
+          , IIconsSource                             iconsSource
+        )
         {
-            // This or your preferred way of querying for Visual Studio services
-            // IVsImageService2 imageService = (IVsImageService2)Package.GetGlobalService(typeof(SVsImageService));
-            _views = views ;
+            _views       = views ;
+            _iconsSource = iconsSource ;
             DefaultInputPath = Path.Combine (
                                              Environment.GetFolderPath (
                                                                         Environment
@@ -82,26 +82,6 @@ namespace ProjInterface
             }
         }
 
-        public IDictionary IconsResources
-        {
-            get { return _iconsResources ; }
-            set
-            {
-                if ( _iconsResources != value )
-                {
-                    _iconsResources = value ;
-                }
-
-                if ( _iconsResources != null )
-                {
-                    DirectoryIcon = new Image
-                                    {
-                                        Source =
-                                            ( ImageSource ) _iconsResources[ typeof ( Directory ) ]
-                                    } ;
-                }
-            }
-        }
 
         public string DefaultInputPath
         {
@@ -111,79 +91,10 @@ namespace ProjInterface
 
         public event PropertyChangedEventHandler PropertyChanged ;
 
-        #region Implementation of IViewModel
-        public object TryFindResource ( object resourceKey )
-        {
-            return _resourcesElement.TryFindResource ( resourceKey ) ;
-        }
-        #endregion
-
         [ NotifyPropertyChangedInvocator ]
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-
-        #region Implementation of IIconsSource
-        public Image ProjectDirectoryIcon
-        {
-            get
-            {
-                if ( _projectDirectoryIcon == null
-                     && IconsResources.Contains ( nameof ( ProjectDirectoryIcon ) ) )
-                {
-                    var resource = IconsResources[ nameof ( ProjectDirectoryIcon ) ] ;
-                    var imageSource = ( ImageSource ) resource ;
-                    ProjectDirectoryIconImageSsource = imageSource ;
-                    _projectDirectoryIcon            = new Image { Source = imageSource } ;
-                }
-
-                return _projectDirectoryIcon ;
-            }
-            set { _projectDirectoryIcon = value ; }
-        }
-
-        public ImageSource DirectoryIconImageSource
-        {
-            get
-            {
-                if(_directoryIconImageSource == null)
-                {
-                    _directoryIconImageSource =
-                        ( ImageSource ) IconsResources[ typeof ( Directory ) ] ;
-                }
-                return _directoryIconImageSource ;
-            }
-            set { _directoryIconImageSource = value ; }
-        }
-
-        public ImageSource ProjectDirectoryIconImageSsource { get ; set ; }
-
-        public ImageSource GetIconForFileExtension ( object extension )
-        {
-            if ( IconsResources != null
-                 && IconsResources.Contains ( extension ) )
-            {
-                return ( ImageSource ) IconsResources[ extension ] ;
-            }
-
-            return ( ImageSource ) IconsResources[ typeof ( File ) ] ;
-        }
-
-        public Image DirectoryIcon { get ; set ; }
-        #endregion
-    }
-
-    public interface IIconsSource
-    {
-        Image DirectoryIcon { get ; set ; }
-
-        Image ProjectDirectoryIcon { get ; set ; }
-
-        ImageSource DirectoryIconImageSource { get ; set ; }
-
-        ImageSource ProjectDirectoryIconImageSsource { get ; set ; }
-
-        ImageSource GetIconForFileExtension ( object extension ) ;
     }
 }
