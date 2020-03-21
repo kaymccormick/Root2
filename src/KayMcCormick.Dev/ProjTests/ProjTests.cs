@@ -49,7 +49,8 @@ namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
     [ UsedImplicitly ]
-    public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >, ICollectionFixture <AppFixture>
+    public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
+      , ICollectionFixture < AppFixture >
     {
     }
 
@@ -76,25 +77,23 @@ namespace ProjTests
         private readonly                    ITestOutputHelper _output ;
         private readonly                    LoggingFixture    _loggingFixture ;
         [ UsedImplicitly ] private readonly ProjectFixture    _projectFixture ;
-        private readonly AppFixture _appFixture ;
-        private ILifetimeScope _testScope ;
+        private readonly                    AppFixture        _appFixture ;
+        private                             ILifetimeScope    _testScope ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
             ITestOutputHelper output
           , LoggingFixture    loggingFixture
           , ProjectFixture    projectFixture
-            , AppFixture appFixture
+          , AppFixture        appFixture
         )
         {
-            
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             _projectFixture                              =  projectFixture ;
-            _appFixture = appFixture ;
-            //VSI
-            //=  projectFixture.I ;
+            _appFixture                                  =  appFixture ;
+
             if ( ! _disableLogging )
             {
                 loggingFixture?.SetOutputHelper ( output , this ) ;
@@ -102,32 +101,32 @@ namespace ProjTests
                 _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
             }
         }
-        [Fact]
-        public void Test1()
+
+        [ Fact ]
+        public void Test1 ( )
         {
-            ClientContext clientContext = new ClientContext(
-                                                     "https://satoridev.sharepoint.com/sites/Dev/SitePages/DevHome.aspx"
-                                                    );
+            var clientContext = new ClientContext (
+                                                   "https://satoridev.sharepoint.com/sites/Dev/SitePages/DevHome.aspx"
+                                                  ) ;
 
             clientContext.AuthenticationMode = ClientAuthenticationMode.Default ;
             clientContext.Credentials = new NetworkCredential (
                                                                "110102a3-a114-4204-a2b9-16419682bc0c"
                                                              , "frvewVuRhCJTZleUy0CiHo4FUYXsp3xjn6xBIkpNhwk="
                                                               ) ;
-            Web oWebsite = clientContext.Web;
-            clientContext.Load(oWebsite);
-            clientContext.ExecuteQuery();
+            var oWebsite = clientContext.Web ;
+            clientContext.Load ( oWebsite ) ;
+            clientContext.ExecuteQuery ( ) ;
             // WebCollection w = client.Web.Webs;
             // foreach ( var web in w )
             // {
             //     _output.WriteLine(string.Join ( ", " , web.Folders.Select ( ( folder , i ) => folder.Name ) ) );
             // }
-            _output.WriteLine("Title: {0} Created: {1}", oWebsite.Title, oWebsite.Created);
-
+            _output.WriteLine ( "Title: {0} Created: {1}" , oWebsite.Title , oWebsite.Created ) ;
         }
 
 
-        [WpfFact ]
+        [ WpfFact ]
         public void TestResourcesTree1 ( )
         {
             using ( var app = CreateProjInterfaceApp ( ) )
@@ -152,10 +151,7 @@ namespace ProjTests
             }
         }
 
-        private ProjInterfaceApp CreateProjInterfaceApp ( )
-        {
-            return _appFixture.InterfaceApp ;
-        }
+        private ProjInterfaceApp CreateProjInterfaceApp ( ) { return _appFixture.InterfaceApp ; }
 
         private int CountChildren ( DependencyObject tv )
         {
@@ -379,8 +375,8 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-              , document.Name
-              , document.SourceCodeKind
+          , document.Name
+          , document.SourceCodeKind
                               ) ;
             } ;
             await v.ProcessAsync ( ) ;
@@ -407,8 +403,8 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-              , document.Name
-              , document.SourceCodeKind
+          , document.Name
+          , document.SourceCodeKind
                               ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
@@ -420,9 +416,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-             , yy.Item1
-             , yy.Item2
-             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+         , yy.Item1
+         , yy.Item2
+         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
 
@@ -430,9 +426,9 @@ namespace ProjTests
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-              , inv.SourceLocation
-              , inv.MethodSymbol.Name
-              , inv.Msgval
+          , inv.SourceLocation
+          , inv.MethodSymbol.Name
+          , inv.Msgval
                               ) ;
             }
         }
@@ -446,9 +442,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-                     , string         proj
-                     , string         doc
-                     , ILifetimeScope scope
+                 , string         proj
+                 , string         doc
+                 , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -481,9 +477,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-             , yy.Item1
-             , yy.Item2
-             , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+         , yy.Item1
+         , yy.Item2
+         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
         }

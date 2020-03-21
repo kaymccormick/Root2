@@ -42,8 +42,8 @@ namespace KayMcCormick.Lib.Wpf
             if ( value != null )
             {
                 var convert = value.GetType ( ) ;
-                LogManager.GetCurrentClassLogger ( )
-                          .Debug( "{type}" , convert.GetType ( ).FullName ) ;
+                // LogManager.GetCurrentClassLogger ( )
+                          // .Debug( "{type}" , convert.GetType ( ).FullName ) ;
                 return convert ;
             }
 

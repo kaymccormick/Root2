@@ -113,6 +113,7 @@
     <Compile Include="JSON\JsonSyntaxNodeConverter.cs" />
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
     <Compile Include="LogEventInstanceCollection.cs" />
+    <Compile Include="LogViewerConfig.cs" />
     <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="LogListener.cs" />

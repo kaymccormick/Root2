@@ -49,12 +49,12 @@
           </DataTemplate>
           <HierarchicalDataTemplate
             DataType="{x:Type Color}">
-            <TextBlock Margin="10,0,10,0" IsEnabled="False"
-                       Text="{Binding Key,Converter={StaticResource KeyConverter}}">
-              <TextBlock.Background>
+            <Border Margin="10,0,10,0" IsEnabled="False">
+              <Border.Background>
                 <SolidColorBrush Color="{Binding Data}" />
-              </TextBlock.Background>
-            </TextBlock>
+              </Border.Background>
+              <TextBlock Margin="10"  Padding="6" Background="White" Text="{Binding Key,Converter={StaticResource KeyConverter}}"/>
+            </Border>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
             DataType="{x:Type ImageSource}">

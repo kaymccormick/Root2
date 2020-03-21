@@ -16,54 +16,29 @@ namespace ProjInterface
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    [TitleMetadata("Log Viewer")]
-    public partial class LogViewerControl : UserControl, INotifyPropertyChanged, IView1
+    [ TitleMetadata ( "Log Viewer" ) ]
+    public partial class LogViewerControl : UserControl , INotifyPropertyChanged , IView1
     {
-        private ICollectionView _defView ;
-        private string _viewTitle ;
+        private readonly LogViewerConfig _config ;
+        private          ICollectionView _defView ;
+        private          string          _viewTitle ;
 
-        public LogViewerControl()
+        public LogViewerControl ( ) { InitializeComponent ( ) ; }
+
+        public LogViewerControl ( [ NotNull ] LogViewerConfig config )
         {
-            InitializeComponent();
-            this.Loaded += OnLoaded;
-                // < DataGrid Visibility = "Hidden" Name = "dg"  ItemsSource = "{Binding LogEntries}" AutoGeneratingColumn = "Dg_OnAutoGeneratingColumn" Sorting = "Dg_OnSorting" CanUserAddRows = "False" CanUserReorderColumns = "True" CanUserDeleteRows = "False" CanUserResizeColumns = "True"  CanUserSortColumns = "True" CanUserResizeRows = "True" IsReadOnly = "True" Grid.Column = "1" / >
-                // var view = (CollectionViewSource)TryFindResource("EntriesCollectionView");
-            // System.Diagnostics.Debug.WriteLine(view?.GetType());
-            // PropertyGroupDescription groupDescription = new PropertyGroupDescription();
-            // groupDescription.PropertyName = "LoggerName";
-// BindingOperations.CollectionViewRegistering += CVR;
-            
-            // if(view.View != null)
-// {
-// view.View.GroupDescriptions.Add(groupDescription);
-// }
+            _config = config ?? throw new ArgumentNullException ( nameof ( config ) ) ;
+            InitializeComponent ( ) ;
         }
 
         public ICollectionView DefView
         {
-            get => _defView ;
+            get { return _defView ; }
             set
             {
                 _defView = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
-        }
-
-        private void OnLoaded ( object sender , RoutedEventArgs e )
-        {
-            Debug.WriteLine(DataContext);
-            
-            Debug.WriteLine(_defView);
-            PropertyGroupDescription groupDescription = new PropertyGroupDescription();
-            groupDescription.PropertyName = "LoggerName";
-            DefView = CollectionViewSource.GetDefaultView(lv.ItemsSource);
-            if(DefView == null)
-            {
-                return;
-            }
-            DefView.GroupDescriptions.Add ( groupDescription ) ;
-            DefView.CollectionChanged += DefViewOnCollectionChanged;
-            
         }
 
         private void DefViewOnCollectionChanged (
@@ -78,27 +53,38 @@ namespace ProjInterface
         protected override void OnInitialized ( EventArgs e )
         {
             base.OnInitialized ( e ) ;
-            lv.SelectionChanged += LvOnSelectionChanged;
-            
+            lv.SelectionChanged += LvOnSelectionChanged ;
         }
 
-        private void LvOnSelectionChanged ( object sender , SelectionChangedEventArgs e )
-        {
-        }
-    
+        private void LvOnSelectionChanged ( object sender , SelectionChangedEventArgs e ) { }
         #endregion
         #region Overrides of FrameworkElement
-        public override void OnApplyTemplate ( ) { base.OnApplyTemplate ( ) ; }
+        public override void OnApplyTemplate ( )
+        {
+            base.OnApplyTemplate ( ) ;
+            Debug.WriteLine ( DataContext ) ;
+            Debug.WriteLine ( _defView ) ;
+            var groupDescription = new PropertyGroupDescription { PropertyName = "LoggerName" } ;
+            DefView = CollectionViewSource.GetDefaultView ( lv.ItemsSource ) ;
+            if ( DefView == null )
+            {
+                return ;
+            }
+
+            DefView.GroupDescriptions.Add ( groupDescription ) ;
+            DefView.CollectionChanged += DefViewOnCollectionChanged ;
+        }
         #endregion
 
         private void CVR ( object sender , CollectionViewRegisteringEventArgs e )
         {
-            PropertyGroupDescription groupDescription = new PropertyGroupDescription ( ) ;
+            var groupDescription = new PropertyGroupDescription ( ) ;
             if ( ! e.CollectionView.CanGroup )
             {
                 return ;
             }
-            Debug.WriteLine(e.CollectionView.GetType());
+
+            Debug.WriteLine ( e.CollectionView.GetType ( ) ) ;
             Debug.WriteLine ( e.CollectionView.Count ) ;
             if ( ! ( e.CollectionView is ListCollectionView l )
                  || l.ItemProperties == null )
@@ -115,12 +101,16 @@ namespace ProjInterface
                                  + "\t"
                                  + itemPropertyInfo.Descriptor
                                 ) ;
-                if ( itemPropertyInfo.Descriptor is System.ComponentModel.PropertyDescriptor r )
+                if ( itemPropertyInfo.Descriptor is PropertyDescriptor r )
                 {
-                    Debug.WriteLine(r.ComponentType);
-                    if ( r.ComponentType != typeof ( LogEventInstance ) ) return ;
+                    Debug.WriteLine ( r.ComponentType ) ;
+                    if ( r.ComponentType != typeof ( LogEventInstance ) )
+                    {
+                        return ;
+                    }
                 }
             }
+
             var p = l.ItemProperties.FirstOrDefault ( info => info.Name == "LoggerName" ) ;
             if ( p == null )
             {
@@ -129,7 +119,6 @@ namespace ProjInterface
 
             groupDescription.PropertyName = "LoggerName" ;
             e.CollectionView.GroupDescriptions.Add ( groupDescription ) ;
-
         }
 
         private void Dg_OnAutoGeneratingColumn (
@@ -137,19 +126,19 @@ namespace ProjInterface
           , DataGridAutoGeneratingColumnEventArgs e
         )
         {
-            if (e.PropertyName == "Properties")
+            if ( e.PropertyName == "Properties" )
             {
-                var dataGridTemplateColumn = new DataGridTemplateColumn();
-                dataGridTemplateColumn.Header       = "Properties";
-                dataGridTemplateColumn.CellTemplate = (DataTemplate)TryFindResource("PropertiesTemplate");
-                e.Column                            = dataGridTemplateColumn;
+                var dataGridTemplateColumn = new DataGridTemplateColumn ( ) ;
+                dataGridTemplateColumn.Header = "Properties" ;
+                dataGridTemplateColumn.CellTemplate =
+                    ( DataTemplate ) TryFindResource ( "PropertiesTemplate" ) ;
+                e.Column = dataGridTemplateColumn ;
             }
-
         }
 
         private void Dg_OnSorting ( object sender , DataGridSortingEventArgs e )
         {
-            e.Handled = true;
+            e.Handled = true ;
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;
@@ -157,7 +146,7 @@ namespace ProjInterface
         [ NotifyPropertyChangedInvocator ]
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;  
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
         #region Implementation of IView1

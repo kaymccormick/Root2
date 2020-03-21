@@ -1,4 +1,5 @@
 ﻿using System ;
+using System.Diagnostics ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
@@ -13,32 +14,33 @@ using NLog ;
 
 namespace ProjInterface
 {
-    [ TitleMetadata ( "Window 1" ) ]
+    [ TitleMetadata ( "Docking window" ) ]
     public partial class Window1 : AppWindow , IView1 , IView < DockWindowViewModel >
     {
-        private string              _viewTitle = "window 1" ;
+        private string              _viewTitle = "Docking window" ;
         private DockWindowViewModel _viewModel ;
 
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         public Window1 ( ) { InitializeComponent ( ) ; }
 
         public Window1 ( ILifetimeScope lifetimeScope , DockWindowViewModel viewModel ) :
             base ( lifetimeScope )
         {
             ViewModel = viewModel ;
-            var wih = new WindowInteropHelper(this);
-            IntPtr hWnd = wih.Handle;
-            viewModel.SethWnd(hWnd);
-            InitializeComponent( ) ;
+            var wih = new WindowInteropHelper ( this ) ;
+            var hWnd = wih.Handle ;
+            viewModel.SethWnd ( hWnd ) ;
+            InitializeComponent ( ) ;
         }
 
         #region Overrides of FrameworkElement
         public override async void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
-            if (_viewModel != null)
+            if ( _viewModel != null )
             {
-                _viewModel.ResourcesElement = this;
+                _viewModel.ResourcesElement = this ;
                 await _viewModel.LoginSilentAsync ( ).ConfigureAwait ( true ) ;
             }
         }
@@ -51,10 +53,7 @@ namespace ProjInterface
         public DockWindowViewModel ViewModel
         {
             get { return _viewModel ; }
-            set
-            {
-                _viewModel = value ;
-            }
+            set { _viewModel = value ; }
         }
         #endregion
 
@@ -63,33 +62,36 @@ namespace ProjInterface
             Logger.Warn ( nameof ( CommandBinding_OnExecuted ) ) ;
             if ( e.Parameter is Meta < Lazy < IView1 > > meta )
             {
-                var val = meta.Value.Value ;
-                if ( val is Window w )
+                try
                 {
-                    w.Show ( ) ;
+                    var val = meta.Value.Value ;
+                    if ( val is Window w )
+                    {
+                        w.Show ( ) ;
+                    }
+                    else if ( val is Control c )
+                    {
+                        var doc = new LayoutDocument { Content = c } ;
+                        doc.Title = val.ViewTitle ;
+                        docpane.Children.Add ( doc ) ;
+                    }
                 }
-                else if ( val is Control c )
+                catch ( Exception ex )
                 {
-                    var doc = new LayoutDocument { Content = c } ;
-                    doc.Title = val.ViewTitle ;
-                    docpane.Children.Add ( doc ) ;
+                    Debug.WriteLine ( ex.ToString ( ) ) ;
                 }
             }
-
-            //            MessageBox.Show ( e.Parameter.ToString ( ) ) ;
         }
 
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
-            System.Windows.Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown ( ) ;
         }
 
         private async void CommandBinding_OnExecuted3 ( object sender , ExecutedRoutedEventArgs e )
         {
             await ViewModel.Login ( ) ;
         }
-
-
     }
 
     public static class InputBindingsManager

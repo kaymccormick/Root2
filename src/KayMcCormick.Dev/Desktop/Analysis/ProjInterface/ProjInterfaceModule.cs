@@ -174,7 +174,7 @@ namespace ProjInterface
             builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As<IView1> (  ) ;
             builder.RegisterType<LogViewerControl>().AsSelf().As<IView1>();
             builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
-
+            builder.Register((c, p) => new LogViewerConfig(p.TypedAs<ushort>())).AsSelf (  );
         }
     }
 }
