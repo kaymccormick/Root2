@@ -78,7 +78,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="keypair.snk" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

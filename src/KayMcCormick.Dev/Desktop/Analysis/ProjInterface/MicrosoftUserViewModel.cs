@@ -89,7 +89,6 @@ namespace ProjInterface
             Account     = result.Account ;
             return true ;
         }
-        ;
 
         public IAccount Account
         {

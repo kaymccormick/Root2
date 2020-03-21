@@ -58,8 +58,6 @@
     </ControlTemplate>
   </kmWpf:AppWindow.Resources>
   <kmWpf:AppWindow.CommandBindings>
-    <CommandBinding Command="kmWpf:WpfAppCommands.LoginAD"
-                    Executed="CommandBinding_OnExecuted3" />
     <CommandBinding Command="Open"
                     Executed="CommandBinding_OnExecuted" />
     <CommandBinding
