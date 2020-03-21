@@ -88,6 +88,7 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InputBindingsManager.cs" />
     <Compile Include="LogViewerAppViewModel.cs" />
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="AppExplorerItem.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
     <Compile Include="LogEventInstanceCollection.cs" />
     <Compile Include="LogViewerConfig.cs" />
+    <Compile Include="MicrosoftUserViewModel.cs" />
     <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="LogListener.cs" />

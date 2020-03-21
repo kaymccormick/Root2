@@ -57,18 +57,14 @@ namespace ProjInterface
             IEnumerable < Meta < Lazy < IView1 > > > views
           , IIconsSource                             iconsSource
           , IEnumerable < IExplorerItemProvider >    providers
-          , Func < Guid , IPublicClientApplication > publicClientFunc
-          , Func < string , GraphServiceClient >     graphFunc
         )
 
         {
+
             Logger.Debug ( "Constructor" ) ;
             _views       = views ;
             _iconsSource = iconsSource ;
             _providers   = providers ;
-            _graphFunc   = graphFunc ;
-            _publicClient =
-                publicClientFunc ( Guid.Parse ( "73d9e90c-5cd2-4fd7-9e36-4faab9404a7c" ) ) ;
 
             foreach ( var explorerItemProvider in _providers )
             {
@@ -90,23 +86,6 @@ namespace ProjInterface
             }
         }
 
-        public IAccount Account
-        {
-            get { return _account ; }
-            private set
-            {
-                if ( Equals ( value , _account ) )
-                {
-                    return ;
-                }
-
-                _account = value ;
-
-                OnPropertyChanged ( ) ;
-            }
-        }
-
-        public bool CanLogin { get { return Account == null ; } }
 
         public IEnumerable < Meta < Lazy < IView1 > > > Views { get { return _views ; } }
 
@@ -121,13 +100,6 @@ namespace ProjInterface
             set
             {
                 _resourcesElement = value ;
-                if ( _resourcesElement != null )
-                {
-                    // var item = new FileSystemAppExplorerItem ( DefaultInputPath , _iconsSource ) ;
-                    // RootCollection.AddRange ( item.Children.Where ( item1 => item1.IsDirectory ) ) ;
-                    // _iconsResources =
-                    //     _resourcesElement.TryFindResource ( "IconsResources" ) as IDictionary ;
-                }
             }
         }
 
@@ -138,27 +110,8 @@ namespace ProjInterface
             set { _defaultInputPath = value ; }
         }
 
-        public GraphServiceClient GraphClient
-        {
-            get { return _graphClient ; }
-            set
-            {
-                if ( Equals ( value , _graphClient ) ) return ;
-                _graphClient = value ;
-                OnPropertyChanged ( ) ;
-                Request1 ( ) ;
-            }
-        }
-
-        public void Test1 ( )
-        {
-            ClientContext client = new ClientContext (
-                                                      "https://satoridev.sharepoint.com/sites/Dev/SitePages/DevHome.aspx"
-                                                     ) ;
-            WebCollection w = client.Web.Webs ;
-
-
-        }
+        
+        
         public async Task Request1 ( )
 
         {
@@ -172,51 +125,6 @@ namespace ProjInterface
             }
         }
         public event PropertyChangedEventHandler PropertyChanged ;
-
-        public async Task Login ( )
-        {
-            var scopes = new[] { "user.read.all" , "group.read.all", "contacts.read" } ;
-
-            var app = _publicClient ;
-            var accounts = await app.GetAccountsAsync ( ) ;
-            AuthenticationResult result ;
-            try
-            {
-                result = await app.AcquireTokenSilent ( scopes , accounts.FirstOrDefault ( ) )
-                                  .ExecuteAsync ( ) ;
-            }
-            catch ( MsalUiRequiredException )
-            {
-                result = await app.AcquireTokenInteractive ( scopes ).ExecuteAsync ( ) ;
-            }
-
-            GraphClient = _graphFunc(result.AccessToken);
-            Account = result.Account ;
-        }
-
-        public async Task < bool > LoginSilentAsync ( )
-        {
-            var app = _publicClient ;
-            var accounts = await app.GetAccountsAsync ( ) ;
-            var account = accounts.FirstOrDefault ( ) ;
-
-            var scopes = new[] { "user.read.all" , "group.read.all" } ;
-
-            // if the app manages is at most one account  
-            AuthenticationResult result ;
-            try
-            {
-                result = await app.AcquireTokenSilent ( scopes , account ).ExecuteAsync ( ) ;
-            }
-            catch ( MsalUiRequiredException ex )
-            {
-                return false ;
-            }
-
-            GraphClient = _graphFunc ( result.AccessToken ) ;
-            Account      = result.Account ;
-            return true ;
-        }
 
         public IntPtr GethWnd ( ) { return _hWnd ; }
 

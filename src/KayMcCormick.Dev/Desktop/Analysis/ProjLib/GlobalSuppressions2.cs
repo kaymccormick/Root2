@@ -180,3 +180,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Interfaces.ILogUsageAnalysisViewModel")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Interfaces.LogInvocationCollection")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:ProjLib.Interfaces.LogUsageAnalysisViewModel")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:ProjLib.LogInvocationSpan.#ctor(Microsoft.CodeAnalysis.Text.TextSpan,AnalysisFramework.Interfaces.ILogInvocation)")]

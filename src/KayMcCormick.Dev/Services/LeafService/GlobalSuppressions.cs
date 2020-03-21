@@ -22,3 +22,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'LogReceiver' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.LogReceiver")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Build", "DV2002:Class 'Program' is not mapped to any Dependency Validation diagram.", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.Program")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Architecture", "DV2002:Unmapped types", Justification = "<Pending>", Scope = "type", Target = "~T:LeafService.AddInException")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:LeafService.LeafService1.InitializeAddin")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>", Scope = "member", Target = "~M:LeafService.LeafService1.InitializeAddin")]
