@@ -3,7 +3,7 @@
 // 
 // LogViewer1
 // LogViewer1
-// LoggerInfo.cs
+// ViewerLoggerInfo.cs
 // 
 // 2020-03-16-1:29 AM
 // 
@@ -12,21 +12,21 @@
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 
-namespace LogViewer1
+namespace ProjInterface
 {
-    public class LoggerInfo
+    public class ViewerLoggerInfo
     {
         private bool isExpanded = true ;
 
-        private ObservableCollection<LoggerInfo> children = new ObservableCollection < LoggerInfo > ();
-        public IDictionary < string , LoggerInfo > ChildrenLoggers
+        private ObservableCollection<ViewerLoggerInfo> children = new ObservableCollection < ViewerLoggerInfo > ();
+        public IDictionary < string , ViewerLoggerInfo > ChildrenLoggers
         {
             get => _childrenLoggers ;
         }
 
         public string LoggerName { get { return _loggerName ; } set { _loggerName = value ; } }
 
-        public ObservableCollection < LoggerInfo > Children
+        public ObservableCollection < ViewerLoggerInfo > Children
         {
             get => children ;
             set => children = value ;
@@ -38,7 +38,7 @@ namespace LogViewer1
 
         public bool IsExpanded { get => isExpanded ; set => isExpanded = value ; }
 
-        private IDictionary< string, LoggerInfo > _childrenLoggers = new Dictionary < string , LoggerInfo > ();
+        private IDictionary< string, ViewerLoggerInfo > _childrenLoggers = new Dictionary < string , ViewerLoggerInfo > ();
         private string                            _loggerName ;
         private string                            _partName ;
         private string                            _displayName ;

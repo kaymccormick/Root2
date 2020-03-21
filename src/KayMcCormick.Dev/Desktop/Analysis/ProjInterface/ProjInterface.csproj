@@ -88,6 +88,7 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppViewModel.cs" />
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="AppExplorerItem.cs" />
     <Compile Include="BreakTraceListener.cs" />
@@ -111,11 +112,13 @@
     <Compile Include="JSON\JsonSolidColorBrushConverter.cs" />
     <Compile Include="JSON\JsonSyntaxNodeConverter.cs" />
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
-    <Compile Include="LoggerInfo.cs" />
+    <Compile Include="LogEventInstanceCollection.cs" />
+    <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="LogListener.cs" />
     <Compile Include="LogViewerControl.xaml.cs" />
     <Compile Include="LogViewModel.cs" />
+    <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceAppConverter.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
@@ -127,9 +130,6 @@
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Compile Include="WorkspaceTable.cs" />
-    <EmbeddedResource Include="Program-Parse.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Compile Include="MSBuild.xaml.cs">
       <DependentUpon>MSBuild.xaml</DependentUpon>
     </Compile>
@@ -148,6 +148,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LogViewerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LogViewerWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

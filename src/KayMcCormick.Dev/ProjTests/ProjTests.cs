@@ -36,6 +36,7 @@ using Moq ;
 using NLog ;
 using NLog.Layouts ;
 using ProjInterface ;
+using ProjInterface.JSON ;
 using ProjLib ;
 using ProjLib.Interfaces ;
 using Xunit ;

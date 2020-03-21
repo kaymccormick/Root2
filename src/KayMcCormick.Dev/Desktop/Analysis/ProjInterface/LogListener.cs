@@ -20,7 +20,7 @@ using System.Text.Json ;
 using System.Xml ;
 using KayMcCormick.Dev ;
 
-namespace LogViewer1
+namespace ProjInterface
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -215,12 +215,5 @@ namespace LogViewer1
             dtDateTime = dtDateTime.AddMilliseconds ( javaTimeStamp ).ToLocalTime ( ) ;
             return dtDateTime ;
         }
-    }
-
-    public class LogInstanceWrapper
-    {
-        private LogEventInstance _logInstance ;
-
-        public LogEventInstance LogInstance { get => _logInstance ; set => _logInstance = value ; }
     }
 }

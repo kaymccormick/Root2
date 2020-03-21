@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.ObjectModel ;
+﻿using System ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
 using System.Diagnostics ;
-using System.Linq;
+using System.Linq ;
 using System.Runtime.CompilerServices ;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows ;
+using System.Windows.Controls ;
+using System.Windows.Data ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
-namespace LogViewer1
+namespace ProjInterface
 {
-    public class LogEventInstanceCollection : ObservableCollection < LogEventInstance >
-    {
-
-    }
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>

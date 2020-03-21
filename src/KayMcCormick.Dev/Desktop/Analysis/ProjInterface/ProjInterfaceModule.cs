@@ -170,6 +170,9 @@ namespace ProjInterface
                                                                     )
                              )
                    .AsSelf ( ) ;
+            builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
+            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ) ;
+            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ) ;
         }
     }
 }

@@ -18,42 +18,44 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
 
-namespace LogViewer1
+namespace ProjInterface
 {
-    public class LogViewModel : INotifyPropertyChanged
+    public sealed class LogViewModel : INotifyPropertyChanged, IViewModel
     {
         private LogEventInstanceCollection _logEntries ;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        private ObservableCollection <LoggerInfo> rootNodes ;
-        private IDictionary<string, LoggerInfo>   _dict ;
-        private LoggerInfo rootLogger ;
-        private SynchronizationContext _context ;
-        private string _displayName ;
+        private ObservableCollection < ViewerLoggerInfo > rootNodes ;
+        private IDictionary < string , ViewerLoggerInfo > _dict ;
+        private ViewerLoggerInfo                          rootLogger ;
+        private SynchronizationContext                    _context ;
+        private string                                    _displayName ;
 
-        public LogViewModel ( ) {
+        public LogViewModel ( )
+        {
             _context = SynchronizationContext.Current ;
-            rootLogger = new LoggerInfo() { LoggerName = "", PartName = "", DisplayName = "Root logger"};
+            rootLogger = new ViewerLoggerInfo ( )
+                         {
+                             LoggerName = "" , PartName = "" , DisplayName = "Root logger"
+                         } ;
             _logEntries = new LogEventInstanceCollection ( ) ;
-            _dict = new Dictionary < string , LoggerInfo> () ;
-            rootNodes = new ObservableCollection < LoggerInfo> () ;
-            // var treeNode = new TreeNode() { DisplayName = "Root logger", HierarchyName = ""} ;
-            rootNodes.Add (rootLogger);
-            // rootLogger.TreeNode = treeNode ;
+            _dict       = new Dictionary < string , ViewerLoggerInfo > ( ) ;
+            rootNodes   = new ObservableCollection < ViewerLoggerInfo > ( ) ;
+
+            rootNodes.Add ( rootLogger ) ;
+
             _dict[ "" ] = rootLogger ;
         }
 
-        public LoggerInfo RootLogger { get => rootLogger ; set => rootLogger = value ; }
-
-        public ObservableCollection < LoggerInfo > RootNodes
+        public ViewerLoggerInfo RootLogger
         {
-            get => rootNodes ;
+            get { return rootLogger ; }
+            set { rootLogger = value ; }
         }
 
-        public LogEventInstanceCollection  LogEntries
-        {
-            get => _logEntries ;
-        }
+        public ObservableCollection < ViewerLoggerInfo > RootNodes { get { return rootNodes ; } }
+
+        public LogEventInstanceCollection LogEntries { get { return _logEntries ; } }
 
         public string DisplayName { get { return _displayName ; } set { _displayName = value ; } }
 
@@ -61,62 +63,64 @@ namespace LogViewer1
         {
             //Regex x = new Regex(@"\.[^\.]*$", RegexOptions.Compiled);
             //var m = x.Match(LoggerName);
-            
-                        RegisterLogger ( loggerName ) ;
+
+            RegisterLogger ( loggerName ) ;
         }
 
         private void RegisterLogger ( string loggerName )
         {
             var strings = loggerName.Split ( '.' ) ;
-            int i = 0 ;
-            LoggerInfo logger = rootLogger ;
+            var i = 0 ;
+            var logger = rootLogger ;
             var loggerName1 = "" ;
             for ( i = 0 ; i < strings.Length ; i ++ )
             {
                 loggerName1 = loggerName1 + strings[ i ] ;
-                if(!logger.ChildrenLoggers.TryGetValue ( strings[ i ] , out var child ))
+                if ( ! logger.ChildrenLoggers.TryGetValue ( strings[ i ] , out var child ) )
                 {
-                    child = new LoggerInfo ( ) { LoggerName = loggerName, PartName = strings[i], DisplayName = strings[i] } ; 
+                    child = new ViewerLoggerInfo ( )
+                            {
+                                LoggerName  = loggerName
+                              , PartName    = strings[ i ]
+                              , DisplayName = strings[ i ]
+                            } ;
                     logger.ChildrenLoggers[ strings[ i ] ] = child ;
                     logger.Children.Add ( child ) ;
                 }
 
-                logger = child ;
+                logger      = child ;
                 loggerName1 = loggerName1 + "." ;
             }
-
         }
 
-        private LoggerInfo CheckForLogger ( string loggerName )
+        private ViewerLoggerInfo CheckForLogger ( string loggerName )
         {
-            if(_dict.ContainsKey ( loggerName ))
+            if ( _dict.ContainsKey ( loggerName ) )
             {
                 return _dict[ loggerName ] ;
-
             }
 
             return null ;
         }
 
-        public void  AddEntry ( LogEventInstance logEvent )
+        public void AddEntry ( LogEventInstance logEvent )
         {
             //var loggers = logEvent.LoggerName.Split ( '.' ) ;
 
             _context.Post (
-                           ( state) => {
-
+                           ( state ) => {
                                var logEventLoggerName = logEvent.LoggerName ;
                                ParseLoggerName ( logEventLoggerName ) ;
                                _logEntries.Add ( logEvent ) ;
-                           }, null
+                           }
+                         , null
                           ) ;
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
-        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
