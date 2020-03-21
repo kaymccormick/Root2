@@ -115,7 +115,7 @@ namespace WpfApp
             if ( eParameter != null )
             {
                 var typeControl2 = new TypeControl2 ( ) ;
-                typeControl2.SetValue ( Props.RenderedTypeProperty , eParameter ) ;
+                typeControl2.SetValue (AttachedProperties.RenderedTypeProperty , eParameter ) ;
                 var findName = FindName ( "frame" ) as Frame ;
                 findName?.Navigate ( typeControl2 ) ;
             }

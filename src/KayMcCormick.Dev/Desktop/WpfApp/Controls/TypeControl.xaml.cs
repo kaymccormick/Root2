@@ -5,6 +5,7 @@ using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Markup ;
 using System.Windows.Navigation ;
+using KayMcCormick.Lib.Wpf ;
 using Microsoft.CSharp ;
 using NLog ;
 
@@ -19,7 +20,7 @@ namespace WpfApp.Controls
 
         /// <summary>The rendered type property</summary>
         public static readonly DependencyProperty
-            RenderedTypeProperty = Props.RenderedTypeProperty ;
+            RenderedTypeProperty = AttachedProperties.RenderedTypeProperty ;
 
         /// <summary>The target name property</summary>
         public static readonly DependencyProperty TargetNameProperty =
@@ -122,8 +123,8 @@ namespace WpfApp.Controls
         /// <summary>Occurs when rendered type is changed.</summary>
         public event RoutedPropertyChangedEventHandler < Type > RenderedTypeChanged
         {
-            add => AddHandler ( Props.RenderedTypeChangedEvent , value ) ;
-            remove => RemoveHandler ( Props.RenderedTypeChangedEvent , value ) ;
+            add => AddHandler ( AttachedProperties.RenderedTypeChangedEvent , value ) ;
+            remove => RemoveHandler (AttachedProperties.RenderedTypeChangedEvent , value ) ;
         }
 
         private void OnRenderedTypeChanged (
@@ -291,9 +292,9 @@ namespace WpfApp.Controls
                 if ( navigationService != null )
                 {
                     var targetDetailed = Detailed || TargetDetailed ;
-                    var value = uie.GetValue ( Props.RenderedTypeProperty ) as Type ;
+                    var value = uie.GetValue ( AttachedProperties.RenderedTypeProperty ) as Type ;
                     var typeControl2 = new TypeControl2 ( ) ;
-                    typeControl2.SetValue ( Props.RenderedTypeProperty , value ) ;
+                    typeControl2.SetValue (AttachedProperties.RenderedTypeProperty , value ) ;
                     var navigationState = new NavState
                                           {
                                               Detailed = targetDetailed , RenderedType = value

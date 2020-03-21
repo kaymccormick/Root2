@@ -151,7 +151,7 @@
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="2*" />
+      <ColumnDefinition Width="*" />
       <ColumnDefinition Width="30" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
@@ -220,21 +220,21 @@
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value Type"
                    Grid.Row="4" Grid.Column="0" />
-        <ContentControl 
-                        Grid.Row="5"
-                        Style="{StaticResource DetailValue}"
-                        Grid.Column="0"
-                        Content="{Binding Data,Converter={StaticResource GetTypeConverter}}" />
+        <ContentControl
+          Grid.Row="5"
+          Grid.Column="0"
+          Style="{StaticResource DetailValue}"
+          Content="{Binding Data,Converter={StaticResource GetTypeConverter}}" />
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value"
                    Grid.Row="6" Grid.Column="0" />
-        <ContentControl 
-                        Style="{StaticResource DetailValue}"
-                        x:FieldModifier="public"
-                        x:Name="details"
-                        ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
-                        Grid.Row="7" Grid.Column="0"
-                        Content="{Binding Data}" />
+        <ContentControl
+          Style="{StaticResource DetailValue}"
+          x:FieldModifier="public"
+          x:Name="details"
+          ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
+          Grid.Row="7" Grid.Column="0"
+          Content="{Binding Data}" />
         <ContentControl Margin="0,40,0,0" Grid.Row="8"
                         Grid.Column="0"
                         ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"

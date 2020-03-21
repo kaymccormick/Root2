@@ -14,7 +14,7 @@
 
   <kmWpf:AppWindow.Resources>
 
-   <local:DictionaryConverter x:Key="DictionaryConverter"></local:DictionaryConverter>
+    <local:DictionaryConverter x:Key="DictionaryConverter"></local:DictionaryConverter>
     <DataTemplate x:Key="Template1">
 
       <TextBlock
@@ -79,12 +79,35 @@
       x:Key="LayoutAnchorControlControlTemplate1"
       TargetType="{x:Type avalondock:LayoutAnchorControl}">
       <Border
+        
+        CornerRadius="3"
         BorderBrush="#FF59C873"
-        BorderThickness="5" Margin="2" Padding="2">
+        BorderThickness="5" Margin="8" Padding="2">
         <ContentPresenter
           ContentTemplate="{Binding Model.Root.Manager.AnchorableHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" />
       </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="LayoutAnchorGroupControlControlTemplate1" 
+                     TargetType="{x:Type avalondock:LayoutAnchorGroupControl}">
+      <ItemsControl>
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel IsItemsHost="True" Orientation="Horizontal"></StackPanel>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.LayoutTransform>
+          <RotateTransform>
+            <RotateTransform.Angle>
+              <Binding Path="Model.Parent.Side" RelativeSource="{RelativeSource TemplatedParent}">
+                <Binding.Converter>
+                  <avalondock:AnchorSideToAngleConverter/>
+                </Binding.Converter>
+              </Binding>
+            </RotateTransform.Angle>
+          </RotateTransform>
+        </ItemsControl.LayoutTransform>
+      </ItemsControl>
     </ControlTemplate>
   </kmWpf:AppWindow.Resources>
   <kmWpf:AppWindow.CommandBindings>
@@ -147,12 +170,12 @@
     </ToolBarTray>
     <avalondock:DockingManager Grid.Row="3" Grid.Column="0"
                                AllowMixedOrientation="True"
-
                                AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
                                IconContentTemplate="{DynamicResource DataTemplate1}"
                                DocumentTitleTemplate="{DynamicResource DataTemplate2}"
                                DocumentPaneMenuItemHeaderTemplate="{DynamicResource DataTemplate3}"
-                               AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}">
+                               AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}" 
+                               >
       <avalondock:DockingManager.DocumentHeaderTemplate>
         <DataTemplate
           DataType="{x:Type avalondock:LayoutDocument}">

@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:wpfApp="clr-namespace:WpfApp"
       xmlns:controls="clr-namespace:WpfApp.Controls"
+      xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
       mc:Ignorable="d"
       Background="AliceBlue"
       d:DesignHeight="200" d:DesignWidth="300"
@@ -12,9 +13,9 @@
 
     <DockPanel LastChildFill="True">
         <controls:TypeControl Detailed="true">
-            <wpfApp:Props.RenderedType>
+            <kmWpf:AttachedProperties.RenderedType>
                 <x:Type TypeName="Window" />
-            </wpfApp:Props.RenderedType>
+            </kmWpf:AttachedProperties.RenderedType>
         </controls:TypeControl>
     </DockPanel>
 </Page>
