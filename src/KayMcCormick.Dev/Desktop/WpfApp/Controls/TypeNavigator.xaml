@@ -6,16 +6,17 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:wpfApp="clr-namespace:WpfApp"
              xmlns:controls="clr-namespace:WpfApp.Controls"
+             xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
              mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="300">
     <DockPanel>
-        <controls:TypeControl Detailed="False" Target="{Binding ElementName=TypeNavigationFrame}"
+        <kmWpf:TypeControl Detailed="False" Target="{Binding ElementName=TypeNavigationFrame}"
                                         DockPanel.Dock="Top">
-            <wpfApp:Props.RenderedType>
-                <Binding ElementName="userControl" Path="(wpfApp:Props.RenderedType)"
+            <kmWpf:AttachedProperties.RenderedType>
+                <Binding ElementName="userControl" Path="(kmWpf:AttachedProperties.RenderedType)"
                          FallbackValue="{x:Type system:String}" />
-            </wpfApp:Props.RenderedType>
-        </controls:TypeControl>
+            </kmWpf:AttachedProperties.RenderedType>
+        </kmWpf:TypeControl>
         <Frame Name="TypeNavigationFrame" Source="../Controls/DefaultPage.xaml" />
     </DockPanel>
 </UserControl>

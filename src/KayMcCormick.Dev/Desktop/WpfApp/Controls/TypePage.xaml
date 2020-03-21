@@ -12,10 +12,10 @@
       Title="TypePage">
 
     <DockPanel LastChildFill="True">
-        <controls:TypeControl Detailed="true">
+        <kmWpf:TypeControl Detailed="true">
             <kmWpf:AttachedProperties.RenderedType>
                 <x:Type TypeName="Window" />
             </kmWpf:AttachedProperties.RenderedType>
-        </controls:TypeControl>
+        </kmWpf:TypeControl>
     </DockPanel>
 </Page>

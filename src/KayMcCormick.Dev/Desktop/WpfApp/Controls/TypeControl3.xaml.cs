@@ -305,7 +305,7 @@ namespace WpfApp.Controls
                 {
                     var targetDetailed = Detailed || TargetDetailed ;
                     var value = uie.GetValue (AttachedProperties.RenderedTypeProperty ) as Type ;
-                    var typeControl2 = new TypeControl2 ( ) ;
+                    var typeControl2 = new KayMcCormick.Lib.Wpf.TypeControl2 ( ) ;
                     typeControl2.SetValue (AttachedProperties.RenderedTypeProperty , value ) ;
                     var navigationState = new NavState3
                                           {

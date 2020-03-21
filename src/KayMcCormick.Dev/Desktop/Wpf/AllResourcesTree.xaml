@@ -24,7 +24,6 @@
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="TextDecorations"
                     Value="Underline" />
-
           </Style>
           <Style x:Key="DetailValue"
                  TargetType="ContentControl">
@@ -189,19 +188,18 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
           <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Key Type"
@@ -220,11 +218,12 @@
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value Type"
                    Grid.Row="4" Grid.Column="0" />
-        <ContentControl
+        <wpf:TypeControl
           Grid.Row="5"
           Grid.Column="0"
           Style="{StaticResource DetailValue}"
-          Content="{Binding Data,Converter={StaticResource GetTypeConverter}}" />
+          ><wpf:AttachedProperties.RenderedType><Binding Path="Data" Converter="{StaticResource GetTypeConverter}"/>
+        </wpf:AttachedProperties.RenderedType></wpf:TypeControl>
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value"
                    Grid.Row="6" Grid.Column="0" />

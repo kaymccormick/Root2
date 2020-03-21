@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls ;
 
-namespace WpfApp.Controls
+namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     ///     Interaction logic for TypeControl2.xaml

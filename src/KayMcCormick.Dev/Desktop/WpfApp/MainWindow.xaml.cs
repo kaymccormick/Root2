@@ -10,6 +10,7 @@ using KayMcCormick.Lib.Wpf ;
 using NLog ;
 using WpfApp.Application ;
 using WpfApp.Controls ;
+using TypeControl2 = KayMcCormick.Lib.Wpf.TypeControl2 ;
 
 namespace WpfApp
 {

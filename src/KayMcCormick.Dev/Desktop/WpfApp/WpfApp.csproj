@@ -152,14 +152,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\TypeControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\TypeControl2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\TypeControl3.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -191,12 +183,6 @@
     </Compile>
     <Compile Include="Controls\ResourcesView.xaml.cs">
       <DependentUpon>ResourcesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TypeControl.xaml.cs">
-      <DependentUpon>TypeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TypeControl2.xaml.cs">
-      <DependentUpon>TypeControl2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TypeNavigator.xaml.cs">
       <DependentUpon>TypeNavigator.xaml</DependentUpon>

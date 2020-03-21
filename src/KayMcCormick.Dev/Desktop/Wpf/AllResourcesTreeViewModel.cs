@@ -42,21 +42,23 @@ namespace KayMcCormick.Lib.Wpf
                                StyleKey = "Important"
                            };
 
-                if ( current != null )
+                if ( current == null )
                 {
-                    var appResources = new ResourceNodeInfo
-                                       {
-                                           Key = "Resources" , Data = current.Resources
-                                       } ;
-                    _appNode.Children.Add ( appResources ) ;
-                    AddResourceNodeInfos ( appResources ) ;
-                    AllResourcesCollection.Add ( _appNode ) ;
-                
+                    return ;
+                }
+
+                var appResources = new ResourceNodeInfo
+                                   {
+                                       Key = "Resources" , Data = current.Resources
+                                   } ;
+                _appNode.Children.Add ( appResources ) ;
+                AddResourceNodeInfos ( appResources ) ;
+                AllResourcesCollection.Add ( _appNode ) ;
+
 
                 foreach ( Window currentWindow in current.Windows )
                 {
-                    HandleWindow(currentWindow);
-                }
+                    HandleWindow ( currentWindow ) ;
                 }
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used

@@ -1,15 +1,15 @@
 ﻿using System ;
 using System.CodeDom ;
+using System.Diagnostics ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Markup ;
 using System.Windows.Navigation ;
-using KayMcCormick.Lib.Wpf ;
 using Microsoft.CSharp ;
 using NLog ;
 
-namespace WpfApp.Controls
+namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>Control for displaying runtime type information.</summary>
     public partial class TypeControl : UserControl
@@ -63,7 +63,9 @@ namespace WpfApp.Controls
         {
             RenderedTypeChanged += OnRenderedTypeChanged ;
             InitializeComponent ( ) ;
-            PopulateControl ( GetValue ( RenderedTypeProperty ) as Type ) ;
+            var t = GetValue ( RenderedTypeProperty ) ;
+            Debug.WriteLine ( "t: " + t?.ToString ( ) ?? "null" ) ;
+            PopulateControl ( ( Type)t ) ;
         }
 
         /// <summary>Gets or sets the type to be rendered.</summary>
@@ -138,6 +140,7 @@ namespace WpfApp.Controls
         private void PopulateControl ( Type myType )
         {
             IAddChild addChild ;
+            Debug.WriteLine( myType?.FullName ?? "null" ) ;
             if ( Detailed )
             {
                 var paragraph = new Paragraph ( ) ;
@@ -293,7 +296,7 @@ namespace WpfApp.Controls
                 {
                     var targetDetailed = Detailed || TargetDetailed ;
                     var value = uie.GetValue ( AttachedProperties.RenderedTypeProperty ) as Type ;
-                    var typeControl2 = new TypeControl2 ( ) ;
+                    var typeControl2 = new KayMcCormick.Lib.Wpf.TypeControl2 ( ) ;
                     typeControl2.SetValue (AttachedProperties.RenderedTypeProperty , value ) ;
                     var navigationState = new NavState
                                           {
@@ -331,12 +334,5 @@ namespace WpfApp.Controls
                                                 .GetNavigationService ( this ) ;
             return navigationService ;
         }
-    }
-
-    internal class NavState
-    {
-        public bool Detailed { get ; set ; }
-
-        public Type RenderedType { get ; set ; }
     }
 }

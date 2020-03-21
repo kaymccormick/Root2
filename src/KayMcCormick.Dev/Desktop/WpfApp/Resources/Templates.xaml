@@ -251,22 +251,22 @@
 
   <DataTemplate DataType="{x:Type system:Type}"
                 x:Key="CellTemplateType">
-    <controls:TypeControl MinWidth="200"
+    <wpf:TypeControl MinWidth="200"
                           Target="{Binding ElementName=frame}">
-      <wpfApp:Props.RenderedType>
+      <wpf:AttachedProperties.RenderedType>
         <Binding/>
-      </wpfApp:Props.RenderedType>
-    </controls:TypeControl>
+      </wpf:AttachedProperties.RenderedType>
+    </wpf:TypeControl>
   </DataTemplate>
   <DataTemplate x:Key="ResourceValueCell">
-    <controls:TypeControl
+    <wpf:TypeControl
       Target="{Binding ElementName=frame}"
       TargetDetailed="true">
-      <wpfApp:Props.RenderedType>
+      <wpf:AttachedProperties.RenderedType>
         <Binding Path="Value"
                  Converter="{StaticResource GetTypeConverter}" />
-      </wpfApp:Props.RenderedType>
-    </controls:TypeControl>
+      </wpf:AttachedProperties.RenderedType>
+    </wpf:TypeControl>
   </DataTemplate>
 
   <DataTemplate x:Key="ValueContentCell">
@@ -293,10 +293,10 @@
     </StackPanel>
   </DataTemplate>
   <DataTemplate DataType="{x:Type system:RuntimeTypeHandle}">
-    <controls:TypeControl>
-      <wpfApp:Props.RenderedType>
+    <wpf:TypeControl>
+      <wpf:AttachedProperties.RenderedType>
         <Binding/>
-      </wpfApp:Props.RenderedType></controls:TypeControl>
+      </wpf:AttachedProperties.RenderedType></wpf:TypeControl>
   </DataTemplate>
   <DataTemplate DataType="{x:Type Window}">
 

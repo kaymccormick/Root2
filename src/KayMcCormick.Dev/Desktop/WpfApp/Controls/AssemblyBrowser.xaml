@@ -44,10 +44,10 @@
 
         <ListBox Grid.Row="2" Grid.Column="0" MinHeight="100" Name="TypeBox"
                  ItemsSource="{Binding Source={StaticResource AssemblyCollectionView}, Converter={StaticResource AssemblyConverter}}" />
-        <controls:TypeControl Grid.Row="3" Grid.Column="1">
-            <wpfApp:Props.RenderedType>
+        <kmWpf:TypeControl Grid.Row="3" Grid.Column="1">
+            <kmWpf:AttachedProperties.RenderedType>
                 <Binding ElementName="TypeBox" Path="SelectedItem" />
-            </wpfApp:Props.RenderedType>
-        </controls:TypeControl>
+            </kmWpf:AttachedProperties.RenderedType>
+        </kmWpf:TypeControl>
     </Grid>
 </UserControl>
