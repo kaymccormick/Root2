@@ -21,6 +21,7 @@ using Microsoft.Build.Locator ;
 #endif
 using NLog ;
 using NLog.Targets ;
+using ProjInterface.JSON ;
 
 namespace ProjInterface
 {

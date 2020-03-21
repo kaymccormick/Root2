@@ -17,7 +17,7 @@ using System.Text.Json.Serialization ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 
-namespace ProjInterface
+namespace ProjInterface.JSON
 {
     public class JsonConverterImage : JsonConverterFactory
     {

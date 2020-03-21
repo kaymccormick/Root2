@@ -88,6 +88,8 @@ namespace ProjInterface
         {
             await ViewModel.Login ( ) ;
         }
+
+
     }
 
     public static class InputBindingsManager

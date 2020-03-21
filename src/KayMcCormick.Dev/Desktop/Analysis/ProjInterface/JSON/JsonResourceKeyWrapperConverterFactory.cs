@@ -14,7 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using KayMcCormick.Lib.Wpf ;
 
-namespace ProjInterface
+namespace ProjInterface.JSON
 {
     public class JsonResourceKeyWrapperConverterFactory : JsonConverterFactory
     {

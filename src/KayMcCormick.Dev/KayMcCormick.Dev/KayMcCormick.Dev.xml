@@ -1142,6 +1142,16 @@
             
             </summary>
         </member>
+        <member name="P:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.DisableLoggingEnvVar">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.Performant">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.JsonFileTarget">
             <summary>JSON File Target</summary>
             <returns></returns>
@@ -1593,6 +1603,28 @@
             <param name="options"></param>
             <returns></returns>
         </member>
+        <member name="T:KayMcCormick.Dev.Logging.JsonTypeInfoConverter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.JsonTypeInfoConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="typeToConvert"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.JsonTypeInfoConverter.Write(System.Text.Json.Utf8JsonWriter,System.Reflection.TypeInfo,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="options"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.Logging.MyLogFactory">
             <summary></summary>
             <seealso cref="T:NLog.LogFactory" />
@@ -1862,6 +1894,16 @@
             </summary>
         </member>
         <member name="P:KayMcCormick.Dev.LogEventInstance.Message">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.LogEventInstance.GDC">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.LogEventInstance.MDLC">
             <summary>
             
             </summary>
@@ -2447,6 +2489,16 @@
             
             </summary>
             <param name="param1"></param>
+        </member>
+        <member name="P:KayMcCormick.Dev.TestLib.LogHelper.Executed">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.TestLib.LogHelper.DisableLogging">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:KayMcCormick.Dev.TestLib.LogHelper.TestMethodProperties(System.Reflection.MethodInfo,KayMcCormick.Dev.TestLib.TestMethodLifecycle)">
             <summary>Supplied structured logging properties for a particular test method indicated by method.. Supplied properties "TestMethodName", "TestClass",</summary>

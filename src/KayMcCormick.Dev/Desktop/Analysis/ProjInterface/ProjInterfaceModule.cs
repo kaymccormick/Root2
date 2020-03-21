@@ -13,12 +13,14 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Linq ;
+using System.Net.Http.Headers ;
 using System.Threading.Tasks ;
 using System.Windows.Controls ;
 using Autofac ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using NLog ;
 using ProjLib ;
@@ -140,6 +142,34 @@ namespace ProjInterface
                               }
                              )
                    .As < IPublicClientApplication > ( ) ;
+            builder.Register (
+                              ( ctx , p ) => new GraphServiceClient (
+                                                                     new
+                                                                         DelegateAuthenticationProvider (
+                                                                                                         (
+                                                                                                             requestMessage
+                                                                                                         ) => {
+                                                                                                             requestMessage
+                                                                                                                    .Headers
+                                                                                                                    .Authorization
+                                                                                                                 = new
+                                                                                                                     AuthenticationHeaderValue (
+                                                                                                                                                "Bearer"
+                                                                                                                                              , p
+                                                                                                                                                   .TypedAs
+                                                                                                                                                    < string
+                                                                                                                                                    > ( )
+                                                                                                                                               ) ;
+                                                                                                             return
+                                                                                                                 Task
+                                                                                                                    .FromResult (
+                                                                                                                                 0
+                                                                                                                                ) ;
+                                                                                                         }
+                                                                                                        )
+                                                                    )
+                             )
+                   .AsSelf ( ) ;
         }
     }
 }

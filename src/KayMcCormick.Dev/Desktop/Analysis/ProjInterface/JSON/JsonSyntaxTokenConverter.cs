@@ -14,7 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using Microsoft.CodeAnalysis ;
 
-namespace ProjInterface
+namespace ProjInterface.JSON
 {
     // ReSharper disable once UnusedType.Global
     public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >

@@ -12,8 +12,8 @@
 using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
-using System.IO ;
 using System.Linq ;
+using System.Net ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json ;
@@ -31,6 +31,7 @@ using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.SharePoint.Client ;
 using Moq ;
 using NLog ;
 using NLog.Layouts ;
@@ -39,6 +40,7 @@ using ProjLib ;
 using ProjLib.Interfaces ;
 using Xunit ;
 using Xunit.Abstractions ;
+using File = System.IO.File ;
 using FormattedCode = AnalysisControls.FormattedCode ;
 using LogLevel = NLog.LogLevel ;
 
@@ -99,8 +101,32 @@ namespace ProjTests
                 _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
             }
         }
+        [Fact]
+        public void Test1()
+        {
+            ClientContext clientContext = new ClientContext(
+                                                     "https://satoridev.sharepoint.com/sites/Dev/SitePages/DevHome.aspx"
+                                                    );
 
-        [ WpfFact ]
+            clientContext.AuthenticationMode = ClientAuthenticationMode.Default ;
+            clientContext.Credentials = new NetworkCredential (
+                                                               "110102a3-a114-4204-a2b9-16419682bc0c"
+                                                             , "frvewVuRhCJTZleUy0CiHo4FUYXsp3xjn6xBIkpNhwk="
+                                                              ) ;
+            Web oWebsite = clientContext.Web;
+            clientContext.Load(oWebsite);
+            clientContext.ExecuteQuery();
+            // WebCollection w = client.Web.Webs;
+            // foreach ( var web in w )
+            // {
+            //     _output.WriteLine(string.Join ( ", " , web.Folders.Select ( ( folder , i ) => folder.Name ) ) );
+            // }
+            _output.WriteLine("Title: {0} Created: {1}", oWebsite.Title, oWebsite.Created);
+
+        }
+
+
+        [WpfFact ]
         public void TestResourcesTree1 ( )
         {
             using ( var app = CreateProjInterfaceApp ( ) )

@@ -18,9 +18,8 @@ using AnalysisFramework.SyntaxTransform ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-using NLog.Fluent ;
 
-namespace ProjInterface
+namespace ProjInterface.JSON
 {
     public class JsonSyntaxNodeConverter : JsonConverterFactory
     {

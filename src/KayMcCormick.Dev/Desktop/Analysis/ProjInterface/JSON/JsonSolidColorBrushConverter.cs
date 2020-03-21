@@ -14,7 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows.Media ;
 
-namespace ProjInterface
+namespace ProjInterface.JSON
 {
     public class JsonSolidColorBrushConverter : JsonConverter < SolidColorBrush >
     {

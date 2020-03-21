@@ -14,18 +14,19 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using Autofac.Features.Metadata ;
-using DynamicData ;
 using ExplorerCtrl ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
+using Microsoft.SharePoint.Client ;
+using Newtonsoft.Json ;
 using NLog ;
 using Logger = NLog.Logger ;
 
@@ -35,83 +36,29 @@ namespace ProjInterface
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        private readonly IIconsSource                          _iconsSource ;
+        private readonly IEnumerable < IExplorerItemProvider > _providers ;
+        private readonly Func < string , GraphServiceClient >  _graphFunc ;
+        private readonly IPublicClientApplication              _publicClient ;
+
         private readonly ObservableCollection < IExplorerItem > _rootCollection =
             new ObservableCollection < IExplorerItem > ( ) ;
 
 
         private readonly IEnumerable < Meta < Lazy < IView1 > > > _views ;
-        private readonly IIconsSource                             _iconsSource ;
-        private readonly IEnumerable < IExplorerItemProvider >    _providers ;
-        private readonly IPublicClientApplication                 _publicClient ;
-        private          string                                   _defaultInputPath ;
-        private          FrameworkElement                         _resourcesElement ;
-        private          IDictionary                              _iconsResources ;
-        private          IntPtr                                   _hWnd ;
         private          IAccount                                 _account ;
-
-        public IAccount Account
-        {
-            get { return _account ; }
-            private set
-            {
-                if ( Equals ( value , _account ) )
-                {
-                    return ;
-                }
-
-                _account = value ;
-                OnPropertyChanged ( ) ;
-            }
-        }
-
-        public async Task Login ( )
-        {
-            var scopes = new string[] { "user.read" } ;
-            var app = _publicClient ;
-            var accounts = await app.GetAccountsAsync ( ) ;
-            AuthenticationResult result ;
-            try
-            {
-                result = await app.AcquireTokenSilent ( scopes , accounts.FirstOrDefault ( ) )
-                                  .ExecuteAsync ( ) ;
-            }
-            catch ( MsalUiRequiredException )
-            {
-                result = await app.AcquireTokenInteractive ( scopes ).ExecuteAsync ( ) ;
-            }
-
-            Account = result.Account ;
-        }
-
-        public bool CanLogin => Account == null ;
-
-        public async Task < bool > LoginSilentAsync ( )
-        {
-            var app = _publicClient ;
-            var accounts = await app.GetAccountsAsync ( ) ;
-            var account = accounts.FirstOrDefault ( ) ;
-
-            var scopes = new string[] { "user.read" } ;
-            // if the app manages is at most one account  
-            AuthenticationResult result ;
-            try
-            {
-                result = await app.AcquireTokenSilent ( scopes , account ).ExecuteAsync ( ) ;
-            }
-            catch ( MsalUiRequiredException ex )
-            {
-                return false ;
-            }
-
-            Account = result.Account ;
-            return true ;
-        }
+        private          string                                   _defaultInputPath ;
+        private          IntPtr                                   _hWnd ;
+        private          IDictionary                              _iconsResources ;
+        private          FrameworkElement                         _resourcesElement ;
+        private GraphServiceClient _graphClient ;
 
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IView1 > > > views
           , IIconsSource                             iconsSource
           , IEnumerable < IExplorerItemProvider >    providers
           , Func < Guid , IPublicClientApplication > publicClientFunc
+          , Func < string , GraphServiceClient >     graphFunc
         )
 
         {
@@ -119,6 +66,7 @@ namespace ProjInterface
             _views       = views ;
             _iconsSource = iconsSource ;
             _providers   = providers ;
+            _graphFunc   = graphFunc ;
             _publicClient =
                 publicClientFunc ( Guid.Parse ( "73d9e90c-5cd2-4fd7-9e36-4faab9404a7c" ) ) ;
 
@@ -141,6 +89,24 @@ namespace ProjInterface
                 }
             }
         }
+
+        public IAccount Account
+        {
+            get { return _account ; }
+            private set
+            {
+                if ( Equals ( value , _account ) )
+                {
+                    return ;
+                }
+
+                _account = value ;
+
+                OnPropertyChanged ( ) ;
+            }
+        }
+
+        public bool CanLogin { get { return Account == null ; } }
 
         public IEnumerable < Meta < Lazy < IView1 > > > Views { get { return _views ; } }
 
@@ -172,11 +138,89 @@ namespace ProjInterface
             set { _defaultInputPath = value ; }
         }
 
+        public GraphServiceClient GraphClient
+        {
+            get { return _graphClient ; }
+            set
+            {
+                if ( Equals ( value , _graphClient ) ) return ;
+                _graphClient = value ;
+                OnPropertyChanged ( ) ;
+                Request1 ( ) ;
+            }
+        }
+
+        public void Test1 ( )
+        {
+            ClientContext client = new ClientContext (
+                                                      "https://satoridev.sharepoint.com/sites/Dev/SitePages/DevHome.aspx"
+                                                     ) ;
+            WebCollection w = client.Web.Webs ;
+
+
+        }
+        public async Task Request1 ( )
+
+        {
+            if ( _graphClient != null ) {
+                var results = await _graphClient.Me.Contacts.Request ( ).GetAsync ( ) ;
+                foreach ( var contact in results )
+                {
+                    Logger.Debug ( JsonConvert.SerializeObject ( contact ) ) ;
+                    //Logger.Info ( "{contact}" , contact.DisplayName ) ;
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        public async Task Login ( )
+        {
+            var scopes = new[] { "user.read.all" , "group.read.all", "contacts.read" } ;
+
+            var app = _publicClient ;
+            var accounts = await app.GetAccountsAsync ( ) ;
+            AuthenticationResult result ;
+            try
+            {
+                result = await app.AcquireTokenSilent ( scopes , accounts.FirstOrDefault ( ) )
+                                  .ExecuteAsync ( ) ;
+            }
+            catch ( MsalUiRequiredException )
+            {
+                result = await app.AcquireTokenInteractive ( scopes ).ExecuteAsync ( ) ;
+            }
+
+            GraphClient = _graphFunc(result.AccessToken);
+            Account = result.Account ;
+        }
+
+        public async Task < bool > LoginSilentAsync ( )
+        {
+            var app = _publicClient ;
+            var accounts = await app.GetAccountsAsync ( ) ;
+            var account = accounts.FirstOrDefault ( ) ;
+
+            var scopes = new[] { "user.read.all" , "group.read.all" } ;
+
+            // if the app manages is at most one account  
+            AuthenticationResult result ;
+            try
+            {
+                result = await app.AcquireTokenSilent ( scopes , account ).ExecuteAsync ( ) ;
+            }
+            catch ( MsalUiRequiredException ex )
+            {
+                return false ;
+            }
+
+            GraphClient = _graphFunc ( result.AccessToken ) ;
+            Account      = result.Account ;
+            return true ;
+        }
+
         public IntPtr GethWnd ( ) { return _hWnd ; }
 
         public void SethWnd ( IntPtr value ) { _hWnd = value ; }
-
-        public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
