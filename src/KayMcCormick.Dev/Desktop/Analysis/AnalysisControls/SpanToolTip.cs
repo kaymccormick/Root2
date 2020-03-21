@@ -14,7 +14,6 @@ using System.Windows.Controls ;
 using System.Windows.Media ;
 using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
-using ProjLib ;
 using ProjLib.Interfaces ;
 
 namespace AnalysisControls

@@ -56,15 +56,18 @@ namespace KayMcCormick.Dev
             {
                 serviceCollection.AddLogging ( ) ;
                 var config = configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
-                LogManager.EnableLogging ( ) ;
+                // LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
                 {
                     Debug.WriteLine ( "logging enableD" ) ;
                 }
 
-                foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+                if ( LogManager.Configuration != null )
                 {
-                    Debug.WriteLine ( configurationAllTarget ) ;
+                    foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+                    {
+                        Debug.WriteLine ( configurationAllTarget ) ;
+                    }
                 }
 
                 Logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( logMethod , config ) ;

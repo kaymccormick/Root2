@@ -193,6 +193,7 @@ private Type[] _optionTypes ;
 
             if ( TestMode )
             {
+                Logger.Info ( "In test mode calling into callback." ) ;
                 var exitApplication = TestCallback ( this , lifetimeScope ) ;
                 if ( exitApplication )
                 {

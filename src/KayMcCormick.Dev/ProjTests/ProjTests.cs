@@ -12,17 +12,25 @@
 using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
+using System.Globalization ;
+using System.IO ;
 using System.Linq ;
 using System.Net ;
+using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json ;
+using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows ;
+using System.Windows.Controls ;
 using System.Windows.Markup ;
+using System.Windows.Media ;
+using System.Windows.Media.Imaging ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
+using Castle.DynamicProxy ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
@@ -69,8 +77,8 @@ namespace ProjTests
     {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
-        private static Logger Logger          = LogManager.CreateNullLogger ( ) ;
-        private static bool   _disableLogging = true ;
+        private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
+        private static          bool   _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
@@ -125,37 +133,96 @@ namespace ProjTests
             _output.WriteLine ( "Title: {0} Created: {1}" , oWebsite.Title , oWebsite.Created ) ;
         }
 
+        [ WpfFact ]
+        public void TestProxyUtils ( )
+        {
+            Action < string > x = ( message ) => Debug.WriteLine ( message ) ;
+            var proxy = ProxyUtilsBase.CreateProxy (
+                                                    x
+                                                  , new BaseInterceptorImpl (
+                                                                             x
+                                                                           , new ProxyGenerator ( )
+                                                                            )
+                                                   ) ;
+            Assert.NotNull ( proxy ) ;
+            var r = proxy.TransformXaml ( new Button ( ) { Content = "Hello" } ) ;
+        }
+
+        [ WpfFact ]
+        public void TestFE ( )
+        {
+            var f = new FrameworkElementFactory ( ) ;
+            f.Type = typeof ( Button ) ;
+            f.AppendChild ( new FrameworkElementFactory ( typeof ( TextBlock ) , "Hello" ) ) ;
+
+            MethodInfo m1 = null ;
+            MethodInfo m2 = null ;
+            foreach ( var methodInfo in f.GetType ( )
+                                         .GetMethods (
+                                                      BindingFlags.Instance | BindingFlags.NonPublic
+                                                     ) )
+            {
+                if ( methodInfo.Name == "InstantiateUnoptimizedTree" )
+                {
+                    m1 = methodInfo ;
+                }
+
+                if ( methodInfo.Name                        == "Seal"
+                     && methodInfo.GetParameters ( ).Length == 1 )
+                {
+                    m2 = methodInfo ;
+                }
+            }
+
+            m2.Invoke ( f , new object[] { ( FrameworkTemplate ) new ControlTemplate ( ) } ) ; //
+            var r = m1.Invoke (
+                               f
+                             , BindingFlags.NonPublic | BindingFlags.Instance
+                             , null
+                             , Array.Empty < object > ( )
+                             , CultureInfo.CurrentCulture
+                              ) ;
+
+
+            var p = r.GetType ( )
+                     .GetProperty ( "FE" , BindingFlags.Instance | BindingFlags.NonPublic ) ;
+            var fe = p.GetValue ( r ) ;
+            var w = new Window ( ) ;
+            w.Content = fe ;
+            w.ShowDialog ( ) ;
+            Logger.Info ( r.GetType ( ) ) ;
+        }
 
         [ WpfFact ]
         public void TestResourcesTree1 ( )
         {
-            using ( var app = CreateProjInterfaceApp ( ) )
-            {
-                app.TestCallback = ( app2 , lifetimeScope ) => {
-                    var model = new AllResourcesTreeViewModel ( ) ;
-                    var tree = new AllResourcesTree ( model ) ;
-                    var tv = tree.tv ;
-                    var childcount = CountChildren ( tv ) ;
-                    Logger.Info ( "Child count is {childCount}" , childcount ) ;
-                    Window w = new AppWindow ( lifetimeScope ) ;
-                    w.Content = tree ;
-                    w.Show ( ) ;
+            ApplicationInstance instance = new ApplicationInstance(_output.WriteLine);
+            instance.AddModule(new ProjInterfaceModule());
+            instance.Initialize();
+            var lifetimescope = instance.GetLifetimeScope ( ) ;
+            LogManager.ThrowExceptions = true ;
+            Logger.Warn ( "in callback" ) ;
+            var model = new AllResourcesTreeViewModel ( ) ;
+            var tree = new AllResourcesTree ( model ) ;
+            var tv = tree.tv ;
+            var childcount = CountChildren ( tv ) ;
+            Logger.Warn ( $"Child count is {childcount}" ) ;
+            Window w = new AppWindow ( lifetimescope ) ;
+            w.Content = tree ;
+            w.Show ( ) ;
 
-                    model.AllResourcesCollection.First ( ).IsExpanded = true ;
-                    Logger.Info ( "Child count is {childCount}" , childcount ) ;
+            Assert.NotEmpty(model.AllResourcesCollection);
+            model.AllResourcesCollection.First ( ).IsExpanded = true ;
 
-                    return true ;
-                    //DumpTree(app, tree, model.AllResourcesCollection);
-                } ;
-                app.Run ( ) ;
-            }
+            Thread.Sleep ( 300 ) ;
+            var childcount2 = CountChildren ( tv ) ;
+            Logger.Info ( $"Child count is {childcount2}" ) ;
         }
 
         private ProjInterfaceApp CreateProjInterfaceApp ( ) { return _appFixture.InterfaceApp ; }
 
         private int CountChildren ( DependencyObject tv )
         {
-            Logger.Info ( "{type}" , tv.GetType ( ) ) ;
             var count = 1 ;
             foreach ( var child in LogicalTreeHelper.GetChildren ( tv ) )
             {
@@ -375,8 +442,8 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-          , document.Name
-          , document.SourceCodeKind
+  , document.Name
+  , document.SourceCodeKind
                               ) ;
             } ;
             await v.ProcessAsync ( ) ;
@@ -403,8 +470,8 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-          , document.Name
-          , document.SourceCodeKind
+  , document.Name
+  , document.SourceCodeKind
                               ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
@@ -416,9 +483,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-         , yy.Item1
-         , yy.Item2
-         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+ , yy.Item1
+ , yy.Item2
+ , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
 
@@ -426,9 +493,9 @@ namespace ProjTests
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-          , inv.SourceLocation
-          , inv.MethodSymbol.Name
-          , inv.Msgval
+  , inv.SourceLocation
+  , inv.MethodSymbol.Name
+  , inv.Msgval
                               ) ;
             }
         }
@@ -442,9 +509,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-                 , string         proj
-                 , string         doc
-                 , ILifetimeScope scope
+         , string         proj
+         , string         doc
+         , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -477,9 +544,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
-         , yy.Item1
-         , yy.Item2
-         , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+ , yy.Item1
+ , yy.Item2
+ , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
         }
@@ -619,6 +686,22 @@ namespace ProjTests
                               ) ;
 
             w.Show ( ) ;
+
+            var bmp = new RenderTargetBitmap (
+                                              ( int ) w.ActualWidth
+                                            , ( int ) w.ActualHeight
+                                            , 72
+                                            , 72
+                                            , PixelFormats.Pbgra32
+                                             ) ;
+            bmp.Render ( codeControl ) ;
+            var pngImage = new PngBitmapEncoder ( ) ;
+            pngImage.Frames.Add ( BitmapFrame.Create ( bmp ) ) ;
+            using ( Stream fileStream = File.Create ( @"c:\data\test\out.png" ) )
+            {
+                pngImage.Save ( fileStream ) ;
+            }
+
             tcs.Task.Wait ( ) ;
 
             // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
@@ -677,9 +760,6 @@ namespace ProjTests
                 _loggingFixture.SetOutputHelper ( null ) ;
             }
         }
-
-        [ WpfFact ]
-        public void FormattdCode1 ( ) { }
     }
 
     public class UnableToDeserializeLogEventInfo : Exception

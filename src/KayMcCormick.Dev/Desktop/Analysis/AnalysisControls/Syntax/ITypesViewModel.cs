@@ -10,7 +10,6 @@
 // ---
 #endregion
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Interfaces ;
 
 namespace AnalysisControls.Syntax
 {

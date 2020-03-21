@@ -2,7 +2,6 @@
 using AnalysisControls.Syntax ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-using ProjLib.Interfaces ;
 
 namespace AnalysisControls.Views
 {
