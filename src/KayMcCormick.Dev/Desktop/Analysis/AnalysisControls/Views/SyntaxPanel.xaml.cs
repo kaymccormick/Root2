@@ -10,7 +10,6 @@ using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
-using ProjLib.Interfaces ;
 
 namespace AnalysisControls.Views
 {

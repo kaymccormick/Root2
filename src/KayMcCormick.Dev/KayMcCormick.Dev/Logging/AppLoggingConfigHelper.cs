@@ -268,9 +268,9 @@ namespace KayMcCormick.Dev.Logging
           , ILoggingConfiguration  config1
         )
         {
-            var oldTargets = LogManager.Configuration.AllTargets.ToList ( ) ;
-            var oldRules = LogManager.Configuration.LoggingRules.ToList ( ) ;
-            var usedNames = oldTargets.Select ( target => target.Name ).ToHashSet ( ) ;
+            var oldTargets = LogManager.Configuration?.AllTargets?.ToList ( ) ;
+            var oldRules = LogManager.Configuration?.LoggingRules?.ToList ( ) ;
+            var usedNames = oldTargets?.Select ( target => target.Name )?.ToHashSet ( ) ;
             LogFactory useFactory ;
             if ( proxyLogging )
             {
@@ -479,7 +479,7 @@ namespace KayMcCormick.Dev.Logging
                 byType[ type ] =  count ;
 
                 if ( target.Name == null
-                     || usedNames.Contains ( target.Name ) )
+                     || (usedNames != null && usedNames.Contains ( target.Name ) ))
                 {
                     target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
@@ -507,14 +507,22 @@ namespace KayMcCormick.Dev.Logging
                 // ((List<LoggingRule>lConf.LoggingRules)).AddRange ( result ) ;
             }
 
-            foreach ( var oldTarget in oldTargets )
+            if ( oldTargets != null )
             {
-                lConf.AddTarget ( oldTarget ) ;
+                foreach ( var oldTarget in oldTargets )
+                {
+                    lConf.AddTarget ( oldTarget ) ;
+                }
+
             }
 
-            foreach ( var oldRule in oldRules )
+            if ( oldRules != null )
             {
-                lConf.LoggingRules.Add ( oldRule ) ;
+
+                foreach ( var oldRule in oldRules )
+                {
+                    lConf.LoggingRules.Add ( oldRule ) ;
+                }
             }
 
             try
@@ -906,7 +914,7 @@ namespace KayMcCormick.Dev.Logging
             var config = LogManager.Configuration ;
             if ( config == null )
             {
-                return null ;
+                return new Dictionary < string , object > () ;
             }
 
             var configInfo = new Dictionary < string , object > ( ) ;

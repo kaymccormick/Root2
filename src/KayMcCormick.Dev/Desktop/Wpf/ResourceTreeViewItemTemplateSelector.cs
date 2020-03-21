@@ -1,5 +1,6 @@
 using System ;
 using System.ComponentModel ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -59,7 +60,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            Logger.Info ( "using key ResourceNodeInfo);" ) ;
+            Logger.Info ( "using key ResourceNodeInfo;" ) ;
             var tryFindResource =
                 fe.TryFindResource ( new DataTemplateKey ( typeof ( ResourceNodeInfo ) ) ) ;
             var dt2 = tryFindResource as DataTemplate ;
@@ -86,7 +87,9 @@ namespace KayMcCormick.Lib.Wpf
             {
                 return false ;
             }
-                Logger.Debug ( "[ {type} ]\t\t\t{fe} {resource}" , item1 , item2.ToString() , item3?.ToString ( ) ) ;
+
+            Debug.WriteLine ( item1.FullName ) ;
+            Logger.Debug ( "[ {type} ]\t\t\t{fe} {resource}" , item1 , item2.ToString() , item3?.ToString ( ) ) ;
             return true ;
 
         }

@@ -30,7 +30,7 @@
             </Border.Background>
             <ScrollViewer Focusable="False"
                           CanContentScroll="False"
-                          Padding="4">
+                          Padding="1">
               <ItemsPresenter />
             </ScrollViewer>
           </Border>

@@ -165,16 +165,16 @@ namespace ProjInterface
                     select item ;
                 if ( r.Any ( ) )
                 {
-                    return IconsSource.ProjectDirectoryIcon ;
+                    return IconsSource?.ProjectDirectoryIcon ;
                 }
 
-                return IconsSource.DirectoryIcon ;
+                return IconsSource?.DirectoryIcon ;
             }
             else
             {
                 return new Image
                        {
-                           Source = IconsSource.GetIconForFileExtension (
+                           Source = IconsSource?.GetIconForFileExtension (
                                                                          fileSystemAppExplorerItem.Extension
                                                                         )
                        } ;

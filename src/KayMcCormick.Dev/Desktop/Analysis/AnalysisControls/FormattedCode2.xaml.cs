@@ -72,6 +72,11 @@ namespace AnalysisControls
 
         private void Visit ( )
         {
+            if ( CompilationUnitSyntax != null )
+            {
+                _visitor3.DefaultVisit ( CompilationUnitSyntax ) ;
+            }
+
             // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
             // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
             // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;

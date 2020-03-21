@@ -6,7 +6,7 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
-using ProjLib.Interfaces ;
+
 #if MIGRADOC
 using MigraDoc.DocumentObjectModel ;
 using Document = MigraDoc.DocumentObjectModel.Document ;

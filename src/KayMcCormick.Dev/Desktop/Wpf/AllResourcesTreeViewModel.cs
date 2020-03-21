@@ -35,18 +35,28 @@ namespace KayMcCormick.Lib.Wpf
             try
             {
                 var current = (BaseApp)Application.Current;
-                _appNode = new ResourceNodeInfo { Key = "Application", Data = current };
-                var appResources = new ResourceNodeInfo
-                                   {
-                                       Key  = "Resources",
-                                       Data = current.Resources
-                                   };
-                _appNode.Children.Add(appResources);
-                AddResourceNodeInfos(appResources);
-                AllResourcesCollection.Add(_appNode);
+
+                _appNode = new ResourceNodeInfo
+                           {
+                               Key = "Application", Data = current,
+                               StyleKey = "Important"
+                           };
+
+                if ( current != null )
+                {
+                    var appResources = new ResourceNodeInfo
+                                       {
+                                           Key = "Resources" , Data = current.Resources
+                                       } ;
+                    _appNode.Children.Add ( appResources ) ;
+                    AddResourceNodeInfos ( appResources ) ;
+                    AllResourcesCollection.Add ( _appNode ) ;
+                
+
                 foreach ( Window currentWindow in current.Windows )
                 {
                     HandleWindow(currentWindow);
+                }
                 }
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used
@@ -98,6 +108,12 @@ namespace KayMcCormick.Lib.Wpf
 
                     resourceInfo = CreateResourceNodeInfo ( key , haveResourcesResource.Value ) ;
                     resNode.Children.Add(resourceInfo);
+                    if ( haveResourcesResource.Value is FrameworkTemplate ft )
+                    {
+                        var resourcesNode = CreateResourceNodeInfo("Resources", ft.Resources);
+                        resourceInfo.Children.Add ( resourcesNode ) ;
+                        AddResourceNodeInfos(resourcesNode);
+                    }
                     if ( haveResourcesResource.Value is Style sty)
                     {
                         var settersNode = CreateResourceNodeInfo ( "Setters" ) ;

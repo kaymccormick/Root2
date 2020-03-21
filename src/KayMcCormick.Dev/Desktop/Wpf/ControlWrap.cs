@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.IO ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
 using System.Windows.Media ;
@@ -18,8 +17,10 @@ using System.Windows.Media.Imaging ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    public class ControlWrap<T> where T : UIElement
+    public class ControlWrap<T> : IWrap<T>, IWrap1 where T : UIElement
     {
+        private object _controlObject ;
+
         [JsonIgnore]
         public T Control { get ; }
 
@@ -57,5 +58,14 @@ namespace KayMcCormick.Lib.Wpf
                 
             }
         }
+
+        #region Implementation of IWrap1
+        public object ControlObject => Control ;
+        #endregion
+    }
+
+    public interface IWrap1
+    {
+        object ControlObject { get ; }
     }
 }

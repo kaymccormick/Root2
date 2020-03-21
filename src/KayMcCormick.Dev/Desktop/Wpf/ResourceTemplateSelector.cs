@@ -46,13 +46,22 @@ namespace KayMcCormick.Lib.Wpf
             }
 
             var fe = ( FrameworkElement ) container ;
-            object resourceKey = null ;
             DataTemplate returnVal = null ;
 
             var resourceKeys = new List < object > ( ) ;
             if ( item is ControlWrap < Window > )
             {
                 resourceKeys.Add ( "WindowTemplate" ) ;
+            }
+
+            if ( item != null && item.GetType ( ).IsGenericType
+                 && item.GetType ( ).GetGenericTypeDefinition ( ) == typeof ( ControlWrap <> ) )
+            {
+                if ( item is IWrap1 w1 )
+                {
+                    var unwrappped = w1.ControlObject ;
+                    resourceKeys.Add ( $"{TemplatePartName}{unwrappped.GetType ( ).Name}" ) ;
+                }
             }
 
             if ( item is ResourceNodeInfo r )
@@ -65,8 +74,10 @@ namespace KayMcCormick.Lib.Wpf
 
             if ( item != null )
             {
+                var try1 = $"{TemplatePartName}{item.GetType ( ).Name.Replace ( "." , "_" )}" ;
+                Debug.WriteLine ( try1 ) ;
                 resourceKeys.Add (
-                                  $"{TemplatePartName}{item.GetType ( ).Name.Replace ( "." , "_" )}"
+                                  try1
                                  ) ;
             }
 

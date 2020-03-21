@@ -14,15 +14,34 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
+          Source="AppResources.xaml" />
+        <ResourceDictionary
           Source="ResourcesTemplates.xaml" />
         <ResourceDictionary Source="ResourcesMisc.xaml" />
         <ResourceDictionary>
+          <Style x:Key="DetailHeader"
+                 TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextDecorations"
+                    Value="Underline" />
+
+          </Style>
+          <Style x:Key="DetailValue"
+                 TargetType="ContentControl">
+            <Setter Property="Margin" Value="20,5,0,0" />
+          </Style>
 
           <wpf:ResourceDetailTemplateSelector
             x:Key="ResourceDetailTemplateSelector" />
           <wpf:ResourcePreviewTemplateSelector
             x:Key="ResourcePreviewTemplateSelector" />
-
+          <wpf:ControlTemplateConverter
+            x:Key="ControlTemplateConverter" />
+          <DataTemplate x:Key="DetailControlTemplate"
+                        DataType="{x:Type ControlTemplate}">
+            <ContentControl
+              Content="{Binding Converter={StaticResource ControlTemplateConverter}}" />
+          </DataTemplate>
           <DataTemplate DataType="{x:Type ImageSource}"
                         x:Key="DetailImageSource">
             <Image Source="{Binding}" />
@@ -33,19 +52,26 @@
           </DataTemplate>
 
           <Style TargetType="{x:Type TreeViewItem}">
-            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="IsExpanded"
+                    Value="{Binding IsExpanded, Mode=TwoWay}" />
           </Style>
 
-          <DataTemplate DataType="{x:Type FontFamily}" x:Key="PreviewFontFamily">
-            <TextBlock FontFamily="{Binding}" FontSize="24.0" Text="{Binding FamilyNames[en-US]}"/>
+          <DataTemplate DataType="{x:Type FontFamily}"
+                        x:Key="PreviewFontFamily">
+            <TextBlock FontFamily="{Binding}"
+                       FontSize="24.0"
+                       Text="{Binding FamilyNames[en-US]}" />
           </DataTemplate>
           <DataTemplate DataType="{x:Type Color}"
                         x:Key="DetailColor">
-            <Rectangle MinWidth="25" MinHeight="25">
-              <Rectangle.Fill>
-                <SolidColorBrush Color="{Binding}" />
-              </Rectangle.Fill>
-            </Rectangle>
+            <Border Margin="10">
+              <Rectangle Margin="25" MinWidth="25"
+                         MinHeight="25">
+                <Rectangle.Fill>
+                  <SolidColorBrush Color="{Binding}" />
+                </Rectangle.Fill>
+              </Rectangle>
+            </Border>
           </DataTemplate>
           <HierarchicalDataTemplate
             DataType="{x:Type Color}">
@@ -53,7 +79,9 @@
               <Border.Background>
                 <SolidColorBrush Color="{Binding Data}" />
               </Border.Background>
-              <TextBlock Margin="10"  Padding="6" Background="White" Text="{Binding Key,Converter={StaticResource KeyConverter}}"/>
+              <TextBlock Margin="10" Padding="6"
+                         Background="White"
+                         Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </Border>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
@@ -75,7 +103,8 @@
           <HierarchicalDataTemplate
             DataType="{x:Type Style}"
             ItemsSource="{Binding Path=Children}">
-            <ContentControl Content="{Binding Key}">
+            <ContentControl Focusable="False"
+                            Content="{Binding Key}">
               <ContentControl.ToolTip>
                 <Binding Path="Key"
                          Converter="{StaticResource GetTypeConverter}" />
@@ -86,7 +115,8 @@
           <HierarchicalDataTemplate
             DataType="{x:Type wpf:ResourceNodeInfo}"
             ItemsSource="{Binding Path=Children}">
-            <ContentControl Content="{Binding Key}">
+            <ContentControl Focusable="False"
+                            Content="{Binding Key}">
               <ContentControl.ToolTip>
                 <Binding Path="Key"
                          Converter="{StaticResource GetTypeConverter}" />
@@ -94,7 +124,9 @@
             </ContentControl>
           </HierarchicalDataTemplate>
           <DataTemplate x:Key="WindowTemplate">
-            <Image Source="{Binding Path=Image}" />
+            <Image HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Source="{Binding Path=Image}" />
           </DataTemplate>
           <wpf:ResourceTreeViewItemTemplateSelector
             x:Key="ResourceTreeViewItemTemplateSelector" />
@@ -103,12 +135,15 @@
           <Style x:Key="DefaultResourceNodeInfoStyle"
                  BasedOn="{StaticResource {x:Type TreeViewItem}}"
                  TargetType="TreeViewItem">
+            <Setter Property="Control.BorderThickness"
+                    Value="0.5" />
             <Setter Property="Control.BorderBrush"
-                    Value="Green" />
+                    Value="#80aaaaaa" />
             <Setter Property="Background"
-                    Value="Aquamarine" />
-            <Setter Property="Control.Margin" Value="1" />
-            <Setter Property="Control.Padding" Value="2" />
+                    Value="Beige" />
+            <Setter Property="Control.Margin"
+                    Value="-5,0,0,0" />
+            <Setter Property="Control.Padding" Value="0" />
           </Style>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
@@ -116,18 +151,21 @@
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="2*" />
+      <ColumnDefinition Width="30" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="2*" />
       <RowDefinition Height="*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <Border Padding="7" BorderBrush="DarkKhaki"
-            BorderThickness="6" CornerRadius="15"
-            Grid.Row="0" Grid.Column="0"
-            Grid.RowSpan="2">
+    <ComboBox ItemsSource="{Binding}" />
+    <Border Padding="0" BorderBrush="LightBlue"
+            BorderThickness="3" CornerRadius="2"
+            Grid.Row="1" Grid.Column="0"
+            Grid.RowSpan="3">
       <wpf:TreeView1 x:Name="tv"
                      x:FieldModifier="public"
                      VerticalAlignment="Stretch"
@@ -137,7 +175,7 @@
                      Margin="0,0,0,0.2" />
     </Border>
 
-    <Grid Grid.Column="1" Grid.Row="0"
+    <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"
           DataContext="{Binding ElementName=tv,Path=SelectedItem}">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
@@ -148,7 +186,6 @@
       </Grid.ColumnDefinitions>
       <Grid Margin="10" Grid.Column="0" Grid.Row="1">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -156,45 +193,53 @@
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Margin="0,0,20,0" Text="Key Type"
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,0,20,0" Text="Key Type"
                    Grid.Row="0" Grid.Column="0" />
-        <ContentControl Grid.Row="0" Grid.Column="1"
-                        Content="{Binding Key,Converter={StaticResource GetTypeConverter}}" />
-        <TextBlock Margin="0,0,20,0" Text="Key"
-                   Grid.Row="1" Grid.Column="0" />
-        <ContentControl Grid.Row="1" Grid.Column="1"
-                        Content="{Binding Key}" />
-        <TextBlock Margin="0,0,20,0" Text="Value Type"
+        <ContentControl
+          Style="{StaticResource DetailValue}"
+          Margin="20,0,0,0" Grid.Row="1" Grid.Column="0"
+          Content="{Binding Key,Converter={StaticResource GetTypeConverter}}" />
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,5,20,0" Text="Key"
                    Grid.Row="2" Grid.Column="0" />
-        <ContentControl Grid.Row="2" Grid.Column="1"
+        <ContentControl Margin="20,0,0,0" Grid.Row="3"
+                        Style="{StaticResource DetailValue}"
+                        Grid.Column="0"
+                        Content="{Binding Key}" />
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,0,20,0" Text="Value Type"
+                   Grid.Row="4" Grid.Column="0" />
+        <ContentControl 
+                        Grid.Row="5"
+                        Style="{StaticResource DetailValue}"
+                        Grid.Column="0"
                         Content="{Binding Data,Converter={StaticResource GetTypeConverter}}" />
-        <TextBlock Margin="0,0,20,0" Text="Value"
-                   Grid.Row="3" Grid.Column="0" />
-        <ContentControl x:FieldModifier="public"
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,0,20,0" Text="Value"
+                   Grid.Row="6" Grid.Column="0" />
+        <ContentControl 
+                        Style="{StaticResource DetailValue}"
+                        x:FieldModifier="public"
                         x:Name="details"
                         ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
-                        Grid.Row="3" Grid.Column="1"
+                        Grid.Row="7" Grid.Column="0"
                         Content="{Binding Data}" />
-        <ContentControl Grid.Row="4" Grid.Column="0"
-                        Grid.ColumnSpan="2"
+        <ContentControl Margin="0,40,0,0" Grid.Row="8"
+                        Grid.Column="0"
                         ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
                         Content="{Binding Data}" />
       </Grid>
-    </Grid>
-    <Grid Grid.Row="2" Grid.Column="0">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <GroupBox Header="Group 1" />
     </Grid>
   </Grid>
 </UserControl>

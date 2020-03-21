@@ -45,6 +45,7 @@ namespace KayMcCormick.Lib.Wpf
 
         
         private bool? _internalIsExpanded ;
+        private object _styleKey ;
 
         public bool IsExpanded
         {
@@ -58,6 +59,8 @@ namespace KayMcCormick.Lib.Wpf
                 OnPropertyChanged();
             }
         }
+
+        public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

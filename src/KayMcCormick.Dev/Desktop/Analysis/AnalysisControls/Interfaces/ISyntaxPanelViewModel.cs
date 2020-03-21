@@ -11,7 +11,6 @@
 #endregion
 using System.ComponentModel ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Interfaces ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisControls.Interfaces
