@@ -301,7 +301,7 @@
                 Grid.Row="2" Grid.ColumnSpan="2"
                 Grid.Column="0"
                 ItemsSource="{Binding ElementName=logViewerWindow,Path=ViewModel.LogViewModels}"
-                d:DataContext="{d:DesignInstance {x:Type projInterface:AppViewModel}, IsDesignTimeCreatable=True}" />
+                d:DataContext="{d:DesignInstance {x:Type projInterface:LogViewerAppViewModel}, IsDesignTimeCreatable=True}" />
     <StatusBar Grid.Row="3" Grid.Column="0"
                Grid.ColumnSpan="2">
       <StatusBarItem />

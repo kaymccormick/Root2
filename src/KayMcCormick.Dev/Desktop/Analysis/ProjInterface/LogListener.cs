@@ -22,17 +22,20 @@ using KayMcCormick.Dev ;
 
 namespace ProjInterface
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    ///
-    public class LogListener
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
+#pragma warning disable DV2002 // Unmapped types
+    public class LogListener : IDisposable
+#pragma warning restore DV2002 // Unmapped types
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
-        private string[] levels =
+        private const string log4jNsPrefix = "log4j" ;
+        private const string nlogNsPrefix  = "nlog" ;
+        private const string loggerAttributeName = "logger";
+        private readonly string[] levels =
             new[] { "TRACE" , "DEBUG" , "INFO" , "WARN" , "ERROR" , "FATAL" } ;
+
         private readonly int                   _port ;
         private readonly LogViewModel          _viewModel ;
-        private          int                   udpPort = 4446 ;
         private          UdpClient             _udpClient ;
         private          JsonSerializerOptions _options ;
 
@@ -65,52 +68,66 @@ namespace ProjInterface
             Listen ( ) ;
         }
 
-        private void HandleJson ( JsonSerializerOptions options , string s )
+        private LogEventInstance HandleJsonMessage ( JsonSerializerOptions options , string s )
         {
-            var i = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
-            i.SerializedForm = s ;
-            _viewModel.AddEntry(i);
+            var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
+            instance.SerializedForm = s ;
+            return instance ;
         }
 
         private void PacketReceived ( UdpReceiveResult resp )
         {
             var resultBuffer = resp.Buffer ;
-            Debug.WriteLine ( "received" ) ;
+            Debug.WriteLine ( "received packet" ) ;
             var s = Encoding.UTF8.GetString ( resultBuffer ) ;
             try
             {
                 if ( s[ 0 ] == '{' )
                 {
-                    HandleJson ( _options , s ) ;
-                    return ;
+                    var instance = HandleJsonMessage ( _options , s ) ;
+                    HandleLogInstance ( instance ) ;
                 }
                 else if ( s[ 0 ] == '<' )
                 {
                     try
                     {
-                        HandleXml ( resultBuffer ) ;
+                        var instance = HandleXml ( resultBuffer ) ;
+                        HandleLogInstance ( instance ) ;
                     }
                     catch ( XmlException xmlException )
                     {
+                        Debug.WriteLine ( xmlException.ToString ( ) ) ;
                     }
                 }
             }
             catch ( Exception ex )
             {
+                Debug.WriteLine ( ex.ToString ( ) ) ;
             }
         }
 
-        private void HandleXml ( byte[] resultBuffer )
+        private void HandleLogInstance ( LogEventInstance instance )
+        {
+            _viewModel.AddEntry ( instance ) ;
+        }
+
+        private LogEventInstance HandleXml ( byte[] resultBuffer )
         {
             var xmlNameTable = new NameTable ( ) ;
 
-            xmlNameTable.Add ( "log4j" ) ;
+            xmlNameTable.Add ( log4jNsPrefix ) ;
             var nameTable = new NameTable ( ) ;
-            nameTable.Add ( "log4j" ) ;
+            nameTable.Add ( log4jNsPrefix ) ;
             var xmlNamespaceManager = new XmlNamespaceManager ( xmlNameTable ) ;
-            xmlNamespaceManager.AddNamespace ( "log4j" , "http://kaymccormick.com/xmlns/log4j" ) ;
+            xmlNamespaceManager.AddNamespace (
+                                              log4jNsPrefix
+                                            , "http://kaymccormick.com/xmlns/log4j"
+                                             ) ;
 
-            xmlNamespaceManager.AddNamespace ( "nlog" , "http://kaymccormick.com/xmlns/nlog" ) ;
+            xmlNamespaceManager.AddNamespace (
+                                              nlogNsPrefix
+                                            , "http://kaymccormick.com/xmlns/nlog"
+                                             ) ;
             var xmlParserContext = new XmlParserContext (
                                                          xmlNameTable
                                                        , xmlNamespaceManager
@@ -118,85 +135,94 @@ namespace ProjInterface
                                                        , XmlSpace.Preserve
                                                        , Encoding.UTF8
                                                         ) ;
-            var reader = XmlReader.Create (
-                                           new MemoryStream ( resultBuffer )
-                                         , new XmlReaderSettings ( ) { NameTable = xmlNameTable }
-                                         , xmlParserContext
-                                          ) ;
-
-            var document = new XmlDocument ( ) ;
-            document.Load ( reader ) ;
-            var instance = new LogEventInstance ( ) ;
-            var elem = document.DocumentElement ;
-            var logger = elem.GetAttribute ( "logger" ) ;
-            var level = elem.GetAttribute ( "level" ) ;
-            var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
-            var timestamp = elem.GetAttribute ( "timestamp" ) ;
-            var dt = JavaTimeStampToDateTime ( long.Parse ( timestamp ) ) ;
-            instance.LoggerName = logger ;
-            instance.Level = levelOrdinal ;
-            instance.TimeStamp  = dt ;
-            foreach ( var elemChildNode in elem.ChildNodes )
+            LogEventInstance instance ;
+            using ( var reader = XmlReader.Create (
+                                                   new MemoryStream ( resultBuffer )
+                                                 , new XmlReaderSettings ( )
+                                                   {
+                                                       NameTable = xmlNameTable
+                                                   }
+                                                 , xmlParserContext
+                                                  ) )
             {
-                if ( elemChildNode is XmlElement elem2 )
+#pragma warning disable CA3075 // Insecure DTD processing in XML
+                var document = new XmlDocument ( ) ;
+#pragma warning restore CA3075 // Insecure DTD processing in XML
+                document.Load ( reader ) ;
+
+                instance = new LogEventInstance ( ) ;
+                var elem = document.DocumentElement ;
+                var logger = elem.GetAttribute (loggerAttributeName) ;
+                var level = elem.GetAttribute ( "level" ) ;
+                var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
+                var timestamp = elem.GetAttribute ( "timestamp" ) ;
+                var dt = JavaTimeStampToDateTime ( long.Parse ( timestamp ) ) ;
+                instance.LoggerName = logger ;
+                instance.Level      = levelOrdinal ;
+                instance.TimeStamp  = dt ;
+                foreach ( var elemChildNode in elem.ChildNodes )
                 {
-                    Debug.WriteLine ( elem2.Name ) ;
-                    switch ( elem2.Name )
+                    if ( elemChildNode is XmlElement elem2 )
                     {
-                        case "log4j:message" :
+                        Debug.WriteLine ( elem2.Name ) ;
+                        switch ( elem2.Name )
+                        {
+                            case "log4j:message" :
 
-                            instance.FormattedMessage = elem2.InnerText ;
-                            break ;
-                        case "log4j:locationInfo" :        break ;
-                        case "nlog:eventSequenceNumber" : 
-                            if(long.TryParse(elem2.InnerText, out var seq))
-                            {
-                                instance.SequenceID = seq ;
-                            }
-                            break ;
-                        case "log4j:properties":
-                            /*
-                             *     <log4j:data name="methodName" value="OnInitialized" />
-    <log4j:data name="typeEvent" value="System.EventArgs" />
-    <log4j:data name="log4japp" value="WpfClient1.exe(12712)" />
-    <log4j:data name="log4jmachinename" value="EXOMAIL-87976" />
+                                instance.FormattedMessage = elem2.InnerText ;
+                                break ;
+                            case "log4j:locationInfo" : break ;
+                            case "nlog:eventSequenceNumber" :
+                                if ( long.TryParse ( elem2.InnerText , out var seq ) )
+                                {
+                                    instance.SequenceID = seq ;
+                                }
 
-                             * */
-                            
-                            foreach (var xmlElement in elem2
-                                                      .ChildNodes.OfType<XmlElement>()
-                                                      .Where(
-                                                             element => element.Name
-                                                                        == "log4j:data"
-                                                            ))
-                            {
-                                var name = xmlElement.GetAttribute("name");
-                                var value = xmlElement.GetAttribute("value");
-                                instance.Properties[name] = value;
-                            }
-                            break;
-                        
-                        case "nlog:properties":
-                            foreach ( var xmlElement in elem2
-                                                       .ChildNodes.OfType < XmlElement > ( )
-                                                       .Where (
-                                                               element => element.Name
-                                                                          == "nlog:data"
-                                                              ) )
-                            {
-                                var name =  xmlElement.GetAttribute ( "name" ) ;
-                                var value = xmlElement.GetAttribute ( "value" ) ;
-                                instance.Properties[ name ] = value ;
-                            }
-                            break;
+                                break ;
+                            case "log4j:properties" :
+                                /*
+                                 *     <log4j:data name="methodName" value="OnInitialized" />
+        <log4j:data name="typeEvent" value="System.EventArgs" />
+        <log4j:data name="log4japp" value="WpfClient1.exe(12712)" />
+        <log4j:data name="log4jmachinename" value="EXOMAIL-87976" />
+    
+                                 * */
+
+                                foreach ( var xmlElement in elem2
+                                                           .ChildNodes.OfType < XmlElement > ( )
+                                                           .Where (
+                                                                   element => element.Name
+                                                                              == "log4j:data"
+                                                                  ) )
+                                {
+                                    var name = xmlElement.GetAttribute ( "name" ) ;
+                                    var value = xmlElement.GetAttribute ( "value" ) ;
+                                    instance.Properties[ name ] = value ;
+                                }
+
+                                break ;
+
+                            case "nlog:properties" :
+                                foreach ( var xmlElement in elem2
+                                                           .ChildNodes.OfType < XmlElement > ( )
+                                                           .Where (
+                                                                   element => element.Name
+                                                                              == "nlog:data"
+                                                                  ) )
+                                {
+                                    var name = xmlElement.GetAttribute ( "name" ) ;
+                                    var value = xmlElement.GetAttribute ( "value" ) ;
+                                    instance.Properties[ name ] = value ;
+                                }
+
+                                break ;
+                        }
                     }
-
-                  
                 }
             }
 
             instance.SerializedForm = resultBuffer ;
-            _viewModel.AddEntry(instance);
+            return instance ;
         }
 
         public static DateTime JavaTimeStampToDateTime ( double javaTimeStamp )
@@ -215,5 +241,9 @@ namespace ProjInterface
             dtDateTime = dtDateTime.AddMilliseconds ( javaTimeStamp ).ToLocalTime ( ) ;
             return dtDateTime ;
         }
+
+        #region IDisposable
+        public void Dispose ( ) { _udpClient?.Dispose ( ) ; }
+        #endregion
     }
 }

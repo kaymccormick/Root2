@@ -88,7 +88,7 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppViewModel.cs" />
+    <Compile Include="LogViewerAppViewModel.cs" />
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="AppExplorerItem.cs" />
     <Compile Include="BreakTraceListener.cs" />

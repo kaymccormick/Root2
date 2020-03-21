@@ -9,15 +9,18 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf ;
 
 namespace ProjInterface
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class LogViewerControl : UserControl, INotifyPropertyChanged
+    [TitleMetadata("Log Viewer")]
+    public partial class LogViewerControl : UserControl, INotifyPropertyChanged, IView1
     {
         private ICollectionView _defView ;
+        private string _viewTitle ;
 
         public LogViewerControl()
         {
@@ -156,5 +159,9 @@ namespace ProjInterface
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;  
         }
+
+        #region Implementation of IView1
+        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        #endregion
     }
 }

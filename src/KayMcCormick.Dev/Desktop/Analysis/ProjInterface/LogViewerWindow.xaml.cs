@@ -1,23 +1,28 @@
 ﻿using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
+using Autofac ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace ProjInterface
 {
-    public partial class LogViewerWindow : AppWindow, INotifyPropertyChanged
+    [TitleMetadata("Log Viewer Window")]
+#pragma warning disable DV2002 // Unmapped types
+    public partial class LogViewerWindow : AppWindow, INotifyPropertyChanged, IView1, IView<LogViewerAppViewModel>
+#pragma warning restore DV2002 // Unmapped types
     {
-        AppViewModel appViewModel = new AppViewModel();
-        public LogViewerWindow()
-        {
+        private string _viewTitle ;
+        private LogViewerAppViewModel _logViewerAppViewModel ;
 
+        public LogViewerWindow(ILifetimeScope scope, LogViewerAppViewModel logViewerAppViewModel) : base(scope)
+        {
+            _logViewerAppViewModel = logViewerAppViewModel ;
             InitializeComponent();
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;
-
-        public AppViewModel ViewModel { get => appViewModel ; set => appViewModel = value ; }
 
         [ NotifyPropertyChangedInvocator ]
         protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
@@ -33,15 +38,22 @@ namespace ProjInterface
         private void ButtonBase_OnClick2 ( object sender , RoutedEventArgs e )
         {
             int port = int.Parse ( this.port.Text ) ;
-            LogViewModel viewModel = new LogViewModel();
-            LogListener x = new LogListener(port, viewModel);
-            viewModel.DisplayName = port.ToString ( ) ;
-            appViewModel.LogViewModels.Add(viewModel);
-            mainTabControl.SelectedItem = viewModel ;
+            LogViewModel logViewModel = new LogViewModel();
+            LogListener x = new LogListener(port, logViewModel);
+            logViewModel.DisplayName = port.ToString ( ) ;
+            _logViewerAppViewModel.LogViewModels.Add(logViewModel);
+            mainTabControl.SelectedItem = logViewModel ;
             x.Start();
         }
 
-     
+
+        #region Implementation of IView1
+        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        #endregion
+
+        #region Implementation of IView<out LogViewerAppViewModel>
+        public LogViewerAppViewModel ViewModel { get { return _logViewerAppViewModel ; } set { _logViewerAppViewModel = value ; } }
+        #endregion
     }
     
 }
