@@ -139,6 +139,10 @@
       <Link>DependencyValidation1.layerdiagram</Link>
       <Visible>False</Visible>
     </AdditionalFiles>
+    <AdditionalFiles Include="..\..\..\DependencyValidation1\DependencyValidation1.layerdiagram">
+      <Link>DependencyValidation1.layerdiagram</Link>
+      <Visible>False</Visible>
+    </AdditionalFiles>
     <None Include="Resources\AttachedProps.cs" />
     <Compile Include="ResultStatus.cs" />
     <Compile Include="SpanObject.cs" />

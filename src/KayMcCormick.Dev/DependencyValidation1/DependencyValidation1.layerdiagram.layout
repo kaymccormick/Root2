@@ -1,9 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<layerDiagram dslVersion="1.0.0.0" Id="f438bf5b-e7f1-4e4f-8848-44757d645712" absoluteBounds="0, 0, 11, 8.5" name="DependencyValidation1">
+<layerDiagram dslVersion="1.0.0.0" Id="f438bf5b-e7f1-4e4f-8848-44757d645712" absoluteBounds="0, 0, 13.375, 8.5" name="DependencyValidation1">
   <layerModelMoniker Id="4b40c1a7-6c5f-4f4b-98e0-270a59c304d9" />
   <nestedChildShapes>
-    <layerShape Id="d137e023-c673-468f-a8e4-c740666228c9" absoluteBounds="6.75, 1.75, 2, 0.75" customColor="161, 199, 231">
-      <layerMoniker Id="779b48ff-ae5f-4ce8-9a95-9ee230977fa6" />
+    <layerShape Id="3aadf5a8-ff4a-4e9c-8b32-45f40342815d" absoluteBounds="1.75, 0.5, 5.875, 2.75" customColor="161, 199, 231">
+      <layerMoniker Id="bba0566e-ea8f-4f89-b3c7-be461460e36a" />
+      <nestedChildShapes>
+        <layerShape Id="28d3bd88-cc47-4193-8787-1ac5d6cb1bfb" absoluteBounds="2.625, 1.125, 2, 0.75" customColor="161, 199, 231">
+          <layerMoniker Id="4835cd40-7dec-4cb2-99a9-e4a2f005ce34" />
+        </layerShape>
+      </nestedChildShapes>
     </layerShape>
+    <layerShape Id="2b753ff6-832d-48de-8c31-05f5b6037f09" absoluteBounds="10.25, 1.75, 2.875, 2" customColor="161, 199, 231">
+      <layerMoniker Id="a473e89b-396a-4e80-8458-e0a60840a405" />
+      <nestedChildShapes>
+        <layerShape Id="0480a620-efde-4774-a675-f2c2e4bd1ba0" absoluteBounds="11, 2, 2, 0.75" customColor="161, 199, 231">
+          <layerMoniker Id="7bf221dd-0b69-48ae-90f8-274cae61d340" />
+        </layerShape>
+      </nestedChildShapes>
+    </layerShape>
+    <dependencyConnector edgePoints="[(7.625 : 2.5); (10.25 : 2.5)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="113, 111, 110">
+      <dependencyFromLayerToLayerMoniker Id="c8a7b718-eece-44c3-b1fe-fc3b86c8a348" />
+      <nodes>
+        <layerShapeMoniker Id="3aadf5a8-ff4a-4e9c-8b32-45f40342815d" />
+        <layerShapeMoniker Id="2b753ff6-832d-48de-8c31-05f5b6037f09" />
+      </nodes>
+    </dependencyConnector>
   </nestedChildShapes>
 </layerDiagram>

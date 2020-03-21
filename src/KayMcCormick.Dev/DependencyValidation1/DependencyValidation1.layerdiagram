@@ -1,19 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="4b40c1a7-6c5f-4f4b-98e0-270a59c304d9" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
   <layers>
-    <layer Id="779b48ff-ae5f-4ce8-9a95-9ee230977fa6" name="AnalysisFramework">
-      <references>
-        <reference Id="0b2dc4e0-1ae5-4d39-8272-0a7513cdc9be" name="AnalysisFramework">
-          <ArtifactNode Label="AnalysisFramework" Category="CodeSchema_Project" Id="(Assembly=../Desktop/Analysis/AnalysisFramework/AnalysisFramework.csproj)">
-            <Category Ref="File" />
-          </ArtifactNode>
-          <ExpandedNode Id="(Assembly=AnalysisFramework)" Label="AnalysisFramework.dll" Category="CodeSchema_Assembly">
-            <Category Ref="FileSystem.Category.FileOfType.dll" />
-            <LinkCategory Ref="Produces" />
-            <LinkCategory Ref="Represents" />
-          </ExpandedNode>
-        </reference>
-      </references>
+    <layer Id="bba0566e-ea8f-4f89-b3c7-be461460e36a" name="Layer1">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="c8a7b718-eece-44c3-b1fe-fc3b86c8a348" direction="Forward">
+          <layerMoniker Id="a473e89b-396a-4e80-8458-e0a60840a405" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+      <childLayers>
+        <layer Id="4835cd40-7dec-4cb2-99a9-e4a2f005ce34" name="ProjInterface" requiredNamespace="ProjInterface;KayMcCormick.Dev">
+          <references>
+            <reference Id="8bfb4c64-7efd-4b37-aaa6-4b29cf292bdc" name="ProjInterface">
+              <ArtifactNode Label="ProjInterface" Category="CodeSchema_Project" Id="(Assembly=../Desktop/Analysis/ProjInterface/ProjInterface.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=ProjInterface)" Label="ProjInterface.exe" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.exe" />
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+    </layer>
+    <layer Id="a473e89b-396a-4e80-8458-e0a60840a405" name="Layer2">
+      <childLayers>
+        <layer Id="7bf221dd-0b69-48ae-90f8-274cae61d340" name="AnalysisFramework">
+          <references>
+            <reference Id="41bcfdb7-c382-4d38-a1d1-05a24c37e553" name="AnalysisFramework">
+              <ArtifactNode Label="AnalysisFramework" Category="CodeSchema_Project" Id="(Assembly=../Desktop/Analysis/AnalysisFramework/AnalysisFramework.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=AnalysisFramework)" Label="AnalysisFramework.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
     </layer>
   </layers>
 </layerModel>

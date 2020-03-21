@@ -262,6 +262,10 @@
       <Link>DependencyValidation1.layerdiagram</Link>
       <Visible>False</Visible>
     </AdditionalFiles>
+    <AdditionalFiles Include="..\DependencyValidation1\DependencyValidation1.layerdiagram">
+      <Link>DependencyValidation1.layerdiagram</Link>
+      <Visible>False</Visible>
+    </AdditionalFiles>
     <None Include="App.config" />
     <None Include="Connected Services\CentralServiceReference\CentralService.wsdl" />
     <None Include="Connected Services\CentralServiceReference\CentralSvc.xsd">

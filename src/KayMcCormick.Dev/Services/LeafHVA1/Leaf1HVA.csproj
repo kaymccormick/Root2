@@ -83,5 +83,11 @@
       <Visible>False</Visible>
     </AdditionalFiles>
   </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\DependencyValidation1\DependencyValidation1.layerdiagram">
+      <Link>DependencyValidation1.layerdiagram</Link>
+      <Visible>False</Visible>
+    </AdditionalFiles>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
