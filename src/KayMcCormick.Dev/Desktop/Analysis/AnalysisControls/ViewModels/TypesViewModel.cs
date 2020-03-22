@@ -27,6 +27,11 @@ namespace AnalysisControls.ViewModels
         private AppTypeInfo                       root ;
         private List < Type >                     _nodeTypes ;
         private Dictionary < Type , AppTypeInfo > map = new Dictionary < Type , AppTypeInfo > ( ) ;
+#if false
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#else
+        private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
+#endif
 
         public TypesViewModel ( )
         {
@@ -46,7 +51,7 @@ namespace AnalysisControls.ViewModels
             {
                 var info = map[ methodInfo.ReturnType ] ;
                 info.FactoryMethods.Add ( methodInfo ) ;
-                LogManager.GetCurrentClassLogger ( )
+                Logger
                           .Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
@@ -72,7 +77,7 @@ namespace AnalysisControls.ViewModels
                         if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
                              && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                         {
-                            LogManager.GetCurrentClassLogger ( )
+                            Logger
                                       .Info (
                                              "{name} {prop} list of {}"
                                            , pair.Key.Name
@@ -101,12 +106,12 @@ namespace AnalysisControls.ViewModels
                                                  , PropertyName = propertyInfo.Name
                                                }
                                               ) ;
-                    LogManager.GetCurrentClassLogger ( ).Info ( t.ToString ( ) ) ;
+                    Logger.Info ( t.ToString ( ) ) ;
                 }
             }
         }
 
-        public AppTypeInfo Root { get => root ; set => root = value ; }
+        public AppTypeInfo Root { get { return root ; } set { root = value ; } }
 
         private AppTypeInfo CollectTypeInfos ( Type rootR )
         {
@@ -120,8 +125,8 @@ namespace AnalysisControls.ViewModels
             return r ;
         }
 
-        #region Implementation of ISerializable
+#region Implementation of ISerializable
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
+#endregion
     }
 }
