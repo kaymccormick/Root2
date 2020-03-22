@@ -1,0 +1,64 @@
+<instrumentationManifest
+    xmlns="http://schemas.microsoft.com/win/2004/08/events"
+    xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events"
+    xmlns:xs="https://www.w3.org/2001/XMLSchema"
+    >
+
+    <instrumentation>
+        <events>
+            <provider name="KayMcCormick-Roslyn-Analyzer-Provider"
+                guid="{4572dcf8-26a3-4eb0-bb9e-6773aec7c4e4}"
+                symbol="PROVIDER_GUID"
+                resourceFileName="..\debug\CompatLib1.dll"
+                messageFileName="..\debug\CompatLib1.dll"
+                message="$(string.Provider.Name)">
+              <channels>
+                <channel chid="c2"
+                         name="KayMcCormick-Provider-Operational"
+                         type="Operational"
+                         enabled="true"
+                />
+                <channel chid="c3"
+
+                         name="KayMcCormick-Provider-Debug"
+                         type="Debug"
+                         enabled="true"
+                />
+              </channels>
+
+<tasks>
+<task name="Initialization" symbol="TASK_INITIALIZATION" value="1" message="$(string.Task.Initialization)">
+<opcodes>
+<opcode name="SetupLogging" symbol="OPCODE_SETUP_LOGGING" value="10"
+message="$(string.Task.Initialization.SetupLogging)"/>
+</opcodes>
+</task>
+</tasks>
+<keywords>
+<keyword name="Logging" mask="0x1" symbol="LOGGING_KEYWORD"/>
+</keywords>
+<templates>
+<template tid="t2">
+<data name="MessageValue" inType="win:UnicodeString"/>
+</template>
+</templates>
+
+<events>
+<event value="1" level="win:Informational" task="Initialization" template="t2" channel="c2" symbol="SETUP_LOGGING_EVENT" message="$(string.Event.SetupLogging)"/>
+</events>
+            </provider>
+        </events>
+    </instrumentation>
+
+    <localization>
+        <resources culture="en-US">
+            <stringTable>
+                <string id="Provider.Name" value="KayMcCormick-Roslyn-Analyzer-Provider"/>
+<string id="Task.Initialization.SetupLogging" value="Setting up logging"/>
+<string id="Task.Initialization" value="Initialization"/>
+<string id="Event.SetupLogging" value="Setup logging message: %1"/>
+            </stringTable>
+        </resources>
+    </localization>
+
+</instrumentationManifest>
