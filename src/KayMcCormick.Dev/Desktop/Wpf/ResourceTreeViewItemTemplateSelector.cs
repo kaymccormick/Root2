@@ -37,30 +37,32 @@ namespace KayMcCormick.Lib.Wpf
 
             if ( item is ResourceNodeInfo node )
             {
-                var dType = node.Data.GetType ( ) ;
-                var dataTemplateKey = new DataTemplateKey(dType) ;
-                Logger.Debug ( "trying key {key}" , dataTemplateKey ) ;
-                var o = fe.TryFindResource ( dataTemplateKey) ;
-                if ( o != null
-                     && o is DataTemplate dt1 )
-                {
-                    Logger.Info("found key {key}", dataTemplateKey);
-                    return dt1 ;
-                }
+                if ( node.Data != null ) {
+                    var dType = node.Data.GetType ( ) ;
+                    var dataTemplateKey = new DataTemplateKey(dType) ;
+                    Debug.WriteLine( $"trying key {dataTemplateKey}");
+                    var o = fe.TryFindResource ( dataTemplateKey) ;
+                    if ( o != null
+                         && o is DataTemplate dt1 )
+                    {
+                        Debug.WriteLine($"found key {dataTemplateKey}");
+                        return dt1 ;
+                    }
 
-                var dt = dType.GetInterfaces ( )
-                              .Select ( x => Tuple.Create ( x , fe , fe.TryFindResource ( x ) ) )
-                              .Where ( Predicate2)
-                              .Where ( Predicate3 )
-                              .FirstOrDefault ( ) ;
-                if ( dt != null )
-                {
-                    Logger.Info("using key {key}", dt.Item1);
-                    return dt.Item3 as DataTemplate ;
+                    var dt = dType.GetInterfaces ( )
+                                  .Select ( x => Tuple.Create ( x , fe , fe.TryFindResource ( new DataTemplateKey(x) ) ) )
+                                  .Where ( Predicate2)
+                                  .Where ( Predicate3 )
+                                  .FirstOrDefault ( ) ;
+                    if ( dt != null )
+                    {
+                        Debug.WriteLine($"using key {dt.Item1}");
+                        return dt.Item3 as DataTemplate ;
+                    }
                 }
             }
 
-            Logger.Info ( "using key ResourceNodeInfo;" ) ;
+            Debug.WriteLine( "using key ResourceNodeInfo;" ) ;
             var tryFindResource =
                 fe.TryFindResource ( new DataTemplateKey ( typeof ( ResourceNodeInfo ) ) ) ;
             var dt2 = tryFindResource as DataTemplate ;
@@ -70,6 +72,10 @@ namespace KayMcCormick.Lib.Wpf
 
         private bool Predicate3 (  Tuple < Type , FrameworkElement , object > arg, int i )
         {
+            if ( arg.Item3 != null )
+            {
+                Debug.WriteLine ( $"{nameof ( Predicate3 )}: {arg.Item3.GetType ( ).FullName}" ) ;
+            }
             var r = arg.Item3 is DataTemplate ;
             if ( r )
             {

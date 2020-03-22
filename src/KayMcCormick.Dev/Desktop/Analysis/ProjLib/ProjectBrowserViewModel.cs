@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Runtime.Serialization ;
 using ProjLib.Interfaces ;
 
 namespace ProjLib
@@ -48,6 +49,9 @@ namespace ProjLib
         private readonly IBrowserNodeCollection _rootCollection ;
         #region Implementation of IProjectBrowserViewModoel
         public IBrowserNodeCollection RootCollection { get => _rootCollection ; }
+        #endregion
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }
 }

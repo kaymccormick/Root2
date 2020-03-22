@@ -5,6 +5,8 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
+  xmlns:registration="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
+  xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
   Background="AliceBlue"
   DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
   x:Class="KayMcCormick.Lib.Wpf.AllResourcesTree"
@@ -19,7 +21,12 @@
           Source="ResourcesTemplates.xaml" />
         <ResourceDictionary Source="ResourcesMisc.xaml" />
         <ResourceDictionary>
-          <Style x:Key="DetailHeader"
+          <Style TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+          </Style>
+
+
+<Style x:Key="DetailHeader"
                  TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="TextDecorations"
@@ -99,6 +106,14 @@
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </WrapPanel>
           </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type core:IComponentRegistration}" ItemsSource="{Binding Children}">
+            <TextBlock Text="{Binding Path=Data.Services[0].Description}"></TextBlock>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type core:TypedService}" ItemsSource="{Binding Children}">
+            <wpf:TypeControl>
+              <wpf:AttachedProperties.RenderedType>
+                <Binding Path="Data.ServiceType"/></wpf:AttachedProperties.RenderedType></wpf:TypeControl>
+          </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
             DataType="{x:Type Style}"
             ItemsSource="{Binding Path=Children}">
@@ -160,7 +175,7 @@
       <RowDefinition Height="*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <ComboBox ItemsSource="{Binding}" />
+    <ComboBox ItemsSource="{Binding AllResourcesItemList}" IsEditable="True" IsTextSearchEnabled="True" />
     <Border Padding="0" BorderBrush="LightBlue"
             BorderThickness="3" CornerRadius="2"
             Grid.Row="1" Grid.Column="0"

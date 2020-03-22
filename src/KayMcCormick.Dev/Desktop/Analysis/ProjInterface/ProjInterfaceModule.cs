@@ -66,7 +66,9 @@ namespace ProjInterface
             Logger.Warn (
                          $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                         ) ;
+            builder.RegisterModule<AppBuildModule>();
             builder.RegisterModule < ProjLibModule > ( ) ;
+
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
 #else

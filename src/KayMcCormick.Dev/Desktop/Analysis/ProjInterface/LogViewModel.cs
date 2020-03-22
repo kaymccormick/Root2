@@ -13,6 +13,7 @@ using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
 using System.Threading ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -124,5 +125,9 @@ namespace ProjInterface
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

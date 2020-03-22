@@ -48,10 +48,21 @@ namespace KayMcCormick.Dev
         /// </summary>
         public void HostOpen()
         {
-            #if NETFRAMEWORK
-            _host = new ServiceHost(_service, _baseAddresses);
-            _host.Open();
+
+#if NETFRAMEWORK
+            try
+            {
+                _host = new ServiceHost ( _service , _baseAddresses ) ;
+                _host.Open ( ) ;
+            } catch(Exception)
+
+            {
+
+            }
 #endif
+                
+                
+            
         }
 
         #region IDisposable

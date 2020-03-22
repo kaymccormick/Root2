@@ -13,6 +13,7 @@ using System ;
 using System.Collections.ObjectModel ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
 using System.Windows.Media.Animation ;
 using KayMcCormick.Dev ;
@@ -34,5 +35,8 @@ namespace ProjInterface
             set => _logViewModels = value ;
         }
 
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

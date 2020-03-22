@@ -11,6 +11,7 @@
 #endregion
 using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
 using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -74,5 +75,9 @@ namespace AnalysisControls.ViewModels
         {
             PropertyChanging?.Invoke ( this , new PropertyChangingEventArgs(propertyName) ) ;
         }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

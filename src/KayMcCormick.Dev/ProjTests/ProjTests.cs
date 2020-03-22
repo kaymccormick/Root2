@@ -202,7 +202,7 @@ namespace ProjTests
             var lifetimescope = instance.GetLifetimeScope ( ) ;
             LogManager.ThrowExceptions = true ;
             Logger.Warn ( "in callback" ) ;
-            var model = new AllResourcesTreeViewModel ( ) ;
+            var model = new AllResourcesTreeViewModel ( lifetimescope) ;
             var tree = new AllResourcesTree ( model ) ;
             var tv = tree.tv ;
             var childcount = CountChildren ( tv ) ;
@@ -238,7 +238,7 @@ namespace ProjTests
             using ( var app = CreateProjInterfaceApp ( ) )
             {
                 app.TestCallback = ( app2 , lifetimeScope ) => {
-                    var model = new AllResourcesTreeViewModel ( ) ;
+                    var model = new AllResourcesTreeViewModel ( lifetimeScope) ;
                     var tree = new AllResourcesTree ( model ) ;
 
                     DumpTree ( app , tree , model.AllResourcesCollection ) ;

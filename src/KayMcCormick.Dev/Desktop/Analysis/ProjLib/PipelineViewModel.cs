@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 using ProjLib.Interfaces ;
 
@@ -25,5 +26,9 @@ namespace ProjLib
         public PipelineViewModel(Pipeline pipeline) {
             this._pipeline = pipeline;
 }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

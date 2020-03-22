@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System.Runtime.Serialization ;
 using AnalysisControls.Interfaces ;
 using AnalysisFramework ;
 using JetBrains.Annotations ;
@@ -27,5 +28,9 @@ namespace AnalysisControls.ViewModels
             this.RootContext = rootContext ;
             this.Tree        = syntaxTree ;
         }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

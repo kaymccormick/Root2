@@ -14,6 +14,7 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Reflection ;
+using System.Runtime.Serialization ;
 using AnalysisControls.Syntax ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -118,5 +119,9 @@ namespace AnalysisControls.ViewModels
             map[ rootR ] = r ;
             return r ;
         }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

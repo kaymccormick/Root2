@@ -13,6 +13,7 @@ using System ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
 using AnalysisControls.Interfaces ;
 using AnalysisFramework ;
 using JetBrains.Annotations ;
@@ -106,5 +107,9 @@ namespace AnalysisControls.ViewModels
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
     }
 }

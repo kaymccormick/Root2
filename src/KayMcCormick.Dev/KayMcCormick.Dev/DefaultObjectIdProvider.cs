@@ -173,7 +173,7 @@ namespace KayMcCormick.Dev
           , IEnumerable<Parameter> eParameters
           , long id
         )
-        {
+         {
             Logger.Trace(
                           $"RegisterObject of type {instance.GetType()} for {eComponent.DebugFormat()} id is {id}"
                          );
