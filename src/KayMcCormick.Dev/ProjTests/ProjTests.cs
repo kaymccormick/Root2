@@ -19,6 +19,8 @@ using System.Net ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization ;
+using System.Runtime.Serialization.Formatters.Binary ;
+using System.Runtime.Serialization.Formatters.Soap ;
 using System.Text.Json ;
 using System.Threading ;
 using System.Threading.Tasks ;
@@ -286,6 +288,30 @@ namespace ProjTests
                 Debug.WriteLine ( source.Task.Result ) ;
 
             }
+        }
+
+        [ WpfFact ]
+        public void TestExceptionInfo ( )
+        {
+            var @in = File.OpenRead ( @"c:\data\logs\exception.bin" ) ;
+            BinaryFormatter f = new BinaryFormatter();
+            var exception = (Exception)f.Deserialize ( @in ) ;
+            HandleExceptionImpl h = new HandleExceptionImpl();
+            h.HandleException ( exception ) ;
+            SoapFormatter f2 = new SoapFormatter();
+            var  w = File.OpenWrite ( @"C:\data\logs\exception.xml" ) ;
+            f2.Serialize(w, exception);
+            w.Flush();
+            w.Close();
+            // try
+            // {
+            // object[] x = new object[] { null } ;
+            // var y = x[ 1 ] ;
+            // }
+            // catch ( Exception ex )
+            // {
+            // h.HandleException ( ex ) ;
+            // }
         }
 
         private ProjInterfaceApp CreateProjInterfaceApp ( ) { return _appFixture.InterfaceApp ; }

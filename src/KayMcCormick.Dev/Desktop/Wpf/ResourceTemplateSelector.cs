@@ -54,7 +54,8 @@ namespace KayMcCormick.Lib.Wpf
                 resourceKeys.Add ( "WindowTemplate" ) ;
             }
 
-            if ( item != null && item.GetType ( ).IsGenericType
+            if ( item != null
+                 && item.GetType ( ).IsGenericType
                  && item.GetType ( ).GetGenericTypeDefinition ( ) == typeof ( ControlWrap <> ) )
             {
                 if ( item is IWrap1 w1 )
@@ -76,9 +77,7 @@ namespace KayMcCormick.Lib.Wpf
             {
                 var try1 = $"{TemplatePartName}{item.GetType ( ).Name.Replace ( "." , "_" )}" ;
                 Debug.WriteLine ( try1 ) ;
-                resourceKeys.Add (
-                                  try1
-                                 ) ;
+                resourceKeys.Add ( try1 ) ;
             }
 
             if ( resourceKeys.Any ( ) )
