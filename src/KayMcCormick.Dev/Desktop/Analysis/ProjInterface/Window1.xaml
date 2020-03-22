@@ -143,6 +143,11 @@
         <MenuItem Header="_Quit"
                   Command="kmWpf:WpfAppCommands.QuitApplication" />
       </MenuItem>
+      <MenuItem Header="Commands" ItemsSource="{kmWpf:ResolveEnumerable local:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}" Command="{Binding Command}">
+        <MenuItem.ItemTemplate><DataTemplate DataType="local:IDisplayableAppCommand">
+            <MenuItem Header="{Binding DisplayName}" Command="{Binding Command}"/>
+          </DataTemplate></MenuItem.ItemTemplate>
+      </MenuItem>
     </Menu>
     <ToolBarTray Grid.Row="1" Grid.Column="0">
       <ToolBar Band="1" BandIndex="1">

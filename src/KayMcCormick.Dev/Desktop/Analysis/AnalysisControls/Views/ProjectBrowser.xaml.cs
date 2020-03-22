@@ -10,7 +10,7 @@ namespace AnalysisControls.Views
     /// Interaction logic for ProjectBrowser.xaml
     /// </summary>
     [TitleMetadata("Project Browser")]
-    public partial class ProjectBrowser : UserControl, IView1, IView<IProjectBrowserViewModel>
+    public partial class ProjectBrowser : UserControl, IView1, IView<IProjectBrowserViewModel>, IControlView
     {
         private IProjectBrowserViewModel _viewModel;
 

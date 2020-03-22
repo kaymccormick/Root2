@@ -9,7 +9,7 @@ namespace AnalysisControls.Views
     /// Interaction logic for Types.xaml
     /// </summary>
     [TitleMetadata("Types view")]
-    public partial class TypesView : UserControl , IView < ITypesViewModel > , IView1
+    public partial class TypesView : UserControl , IView < ITypesViewModel > , IView1, IControlView
     {
         private ITypesViewModel _viewModel ;
 

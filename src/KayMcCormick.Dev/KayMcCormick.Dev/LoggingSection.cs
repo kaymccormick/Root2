@@ -23,6 +23,12 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
+        [ConfigurationProperty( "IsEnabledCacheTarget", DefaultValue = false, IsRequired = false, IsKey = false)]
+        public bool? IsEnabledCacheTarget { get => (bool?)this[nameof(IsEnabledCacheTarget)]; set => this[nameof(IsEnabledCacheTarget)] = value; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         [ConfigurationProperty( "MinLogLevel", DefaultValue = "Trace", IsRequired = false, IsKey = false)]
         public LogLevel MinLogLevel
         {

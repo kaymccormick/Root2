@@ -17,7 +17,7 @@ namespace ProjInterface
     /// Interaction logic for UserControl1.xaml
     /// </summary>
     [ TitleMetadata ( "Log Viewer" ) ]
-    public partial class LogViewerControl : UserControl , INotifyPropertyChanged , IView1
+    public partial class LogViewerControl : UserControl , INotifyPropertyChanged , IView1, IControlView
     {
         private readonly LogViewerConfig _config ;
         private          ICollectionView _defView ;

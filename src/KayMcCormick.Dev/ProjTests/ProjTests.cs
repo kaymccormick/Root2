@@ -30,10 +30,14 @@ using System.Windows.Media.Imaging ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
+using AvalonDock ;
+using AvalonDock.Controls ;
+using AvalonDock.Layout ;
 using Castle.DynamicProxy ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
@@ -46,12 +50,10 @@ using NLog.Layouts ;
 using ProjInterface ;
 using ProjInterface.JSON ;
 using ProjLib ;
-using ProjLib.Interfaces ;
 using Xunit ;
 using Xunit.Abstractions ;
+using Application = System.Windows.Application ;
 using File = System.IO.File ;
-using FormattedCode = AnalysisControls.FormattedCode ;
-using LogLevel = NLog.LogLevel ;
 
 namespace ProjTests
 {
@@ -78,7 +80,7 @@ namespace ProjTests
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
-        private static          bool   _disableLogging = true ;
+        private static readonly bool   _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
@@ -136,7 +138,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TestProxyUtils ( )
         {
-            Action < string > x = ( message ) => Debug.WriteLine ( message ) ;
+            Action < string > x = message => Debug.WriteLine ( message ) ;
             var proxy = ProxyUtilsBase.CreateProxy (
                                                     x
                                                   , new BaseInterceptorImpl (
@@ -145,7 +147,7 @@ namespace ProjTests
                                                                             )
                                                    ) ;
             Assert.NotNull ( proxy ) ;
-            var r = proxy.TransformXaml ( new Button ( ) { Content = "Hello" } ) ;
+            var r = proxy.TransformXaml ( new Button { Content = "Hello" } ) ;
         }
 
         [ WpfFact ]
@@ -174,7 +176,7 @@ namespace ProjTests
                 }
             }
 
-            m2.Invoke ( f , new object[] { ( FrameworkTemplate ) new ControlTemplate ( ) } ) ; //
+            m2.Invoke ( f , new object[] { new ControlTemplate ( ) } ) ; //
             var r = m1.Invoke (
                                f
                              , BindingFlags.NonPublic | BindingFlags.Instance
@@ -196,13 +198,17 @@ namespace ProjTests
         [ WpfFact ]
         public void TestResourcesTree1 ( )
         {
-            ApplicationInstance instance = new ApplicationInstance(_output.WriteLine);
-            instance.AddModule(new ProjInterfaceModule());
-            instance.Initialize();
+            var instance = new ApplicationInstance ( _output.WriteLine ) ;
+            instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+            instance.Initialize ( ) ;
             var lifetimescope = instance.GetLifetimeScope ( ) ;
             LogManager.ThrowExceptions = true ;
             Logger.Warn ( "in callback" ) ;
-            var model = new AllResourcesTreeViewModel ( lifetimescope) ;
+            var model = new AllResourcesTreeViewModel (
+                                                       lifetimescope
+                                                     , lifetimescope
+                                                          .Resolve < IObjectIdProvider > ( )
+                                                      ) ;
             var tree = new AllResourcesTree ( model ) ;
             var tv = tree.tv ;
             var childcount = CountChildren ( tv ) ;
@@ -211,12 +217,75 @@ namespace ProjTests
             w.Content = tree ;
             w.Show ( ) ;
 
-            Assert.NotEmpty(model.AllResourcesCollection);
+            Assert.NotEmpty ( model.AllResourcesCollection ) ;
             model.AllResourcesCollection.First ( ).IsExpanded = true ;
 
             Thread.Sleep ( 300 ) ;
             var childcount2 = CountChildren ( tv ) ;
             Logger.Info ( $"Child count is {childcount2}" ) ;
+        }
+
+        [ WpfFact ]
+        public void TestAdapter ( )
+        {
+            TestApplication x = new TestApplication();
+            
+            var instance = new ApplicationInstance ( _output.WriteLine ) ;
+            instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+            instance.AddModule ( new AnalysisControlsModule ( ) ) ;
+            instance.Initialize ( ) ;
+            var lifetimescope = instance.GetLifetimeScope ( ) ;
+            LogManager.ThrowExceptions = true ;
+            var funcs = lifetimescope
+               .Resolve < IEnumerable < Func < LayoutDocumentPane , IDisplayableAppCommand > >
+                > ( ) ;
+            var pane = new LayoutDocumentPane ( ) ;
+            foreach ( var func in funcs )
+            {
+                try
+                {
+                    Logger.Info ( "func is {func}" , func.ToString ( ) ) ;
+                    var xx = func ( pane ) ;
+                    Debug.WriteLine ( xx.DisplayName ) ;
+                    xx.ExecuteAsync ( )
+                      .ContinueWith (
+                                     task => {
+                                         if ( task.IsFaulted )
+                                         {
+                                             Debug.WriteLine ( task.Exception ) ;
+                                         }
+                                         else
+                                         {
+                                             Debug.WriteLine ( task.Result ) ;
+                                         }
+                                     }
+                                    )
+                      .Wait ( ) ;
+                }
+                catch ( Exception ex )
+                {
+                    Debug.WriteLine ( ex.ToString ( ) ) ;
+                }
+
+                var m = new DockingManager ( ) ;
+                
+                
+
+                var group = new LayoutDocumentPaneGroup ( pane ) ;
+//LayoutAnchorablePane xx = new LayoutAnchorablePane(group);
+                var mLayoutRootPanel = new LayoutPanel ( group ) ;
+                LayoutRoot layout = new LayoutRoot();
+                layout.RootPanel = mLayoutRootPanel ;
+                
+                TaskCompletionSource<bool> source = new TaskCompletionSource < bool > ();
+                Window w = new AppWindow ( lifetimescope ) ;
+                w.Content = m ;
+                x.TCS = source ;
+                x.Run ( w ) ;
+                Task.WaitAll ( x.TCS.Task ) ;
+                Debug.WriteLine ( source.Task.Result ) ;
+
+            }
         }
 
         private ProjInterfaceApp CreateProjInterfaceApp ( ) { return _appFixture.InterfaceApp ; }
@@ -238,7 +307,11 @@ namespace ProjTests
             using ( var app = CreateProjInterfaceApp ( ) )
             {
                 app.TestCallback = ( app2 , lifetimeScope ) => {
-                    var model = new AllResourcesTreeViewModel ( lifetimeScope) ;
+                    var model = new AllResourcesTreeViewModel (
+                                                               lifetimeScope
+                                                             , lifetimeScope
+                                                                  .Resolve < IObjectIdProvider > ( )
+                                                              ) ;
                     var tree = new AllResourcesTree ( model ) ;
 
                     DumpTree ( app , tree , model.AllResourcesCollection ) ;
@@ -442,8 +515,8 @@ namespace ProjTests
             v.ProcessDocument += document => {
                 Logger.Debug (
                               "Document: {doc} {sourcecode}"
-  , document.Name
-  , document.SourceCodeKind
+, document.Name
+, document.SourceCodeKind
                               ) ;
             } ;
             await v.ProcessAsync ( ) ;
@@ -470,8 +543,8 @@ namespace ProjTests
             projectHandlerImpl.ProcessDocument += document => {
                 Logger.Trace (
                               "Document: {doc} {sourcecode}"
-  , document.Name
-  , document.SourceCodeKind
+, document.Name
+, document.SourceCodeKind
                               ) ;
             } ;
             Func<Tuple<SyntaxTree, SemanticModel, CompilationUnitSyntax>,
@@ -483,9 +556,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
- , yy.Item1
- , yy.Item2
- , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+, yy.Item1
+, yy.Item2
+, string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
 
@@ -493,9 +566,9 @@ namespace ProjTests
             {
                 Logger.Error (
                               "{path} {line} {msgval} {list}"
-  , inv.SourceLocation
-  , inv.MethodSymbol.Name
-  , inv.Msgval
+, inv.SourceLocation
+, inv.MethodSymbol.Name
+, inv.Msgval
                               ) ;
             }
         }
@@ -509,9 +582,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-         , string         proj
-         , string         doc
-         , ILifetimeScope scope
+     , string         proj
+     , string         doc
+     , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -544,9 +617,9 @@ namespace ProjTests
             {
                 Logger.Info (
                              "{item1} {item2} {item3}"
- , yy.Item1
- , yy.Item2
- , string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
+, yy.Item1
+, yy.Item2
+, string.Join ( ";" , yy.Item3.Select ( tuple => tuple.Item2 ) )
                              ) ;
             }
         }
@@ -720,9 +793,9 @@ namespace ProjTests
                                               , new Visitor2 ( )
                                                ) ;
             Logger.Info ( "Transform is {transform}" , transform ) ;
-            var w = new Window ( ) { } ;
+            var w = new Window ( ) ;
             Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
-            var fmt = transform.FormattedCodeControl as IFormattedCode ;
+            var fmt = transform.FormattedCodeControl ;
             fmt.SourceCode = transform.SourceCode ;
             w.Content      = fmt ;
         }
@@ -760,6 +833,27 @@ namespace ProjTests
                 _loggingFixture.SetOutputHelper ( null ) ;
             }
         }
+    }
+
+    public class TestApplication : Application
+    {
+
+        private TaskCompletionSource < bool > _tcs ;
+        public TaskCompletionSource < bool > TCS { get { return _tcs ; } set { _tcs = value ; } }
+        #region Overrides of Application
+        protected override void OnExit ( ExitEventArgs e )
+        {
+
+            base.OnExit ( e ) ;
+            _tcs.TrySetResult ( true ) ;
+        }
+
+        protected override void OnStartup ( StartupEventArgs e )
+        {
+            base.OnStartup ( e ) ;
+
+        }
+        #endregion
     }
 
     public class UnableToDeserializeLogEventInfo : Exception

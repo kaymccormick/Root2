@@ -13,6 +13,7 @@ using System.Collections.Concurrent ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Diagnostics ;
 using System.Globalization ;
 using System.IO ;
 using System.Linq ;
@@ -66,7 +67,7 @@ namespace ProjInterface
             _factory = new TaskFactory ( TaskScheduler.FromCurrentSynchronizationContext ( ) ) ;
         }
 
-        public ProjMainWindow ( IWorkspacesViewModel viewModel , ILifetimeScope scope )
+        public ProjMainWindow ( IWorkspacesViewModel viewModel , ILifetimeScope scope ) : base(scope)
         {
             _scope = scope ;
 #pragma warning disable WPF0014 // SetValue must use registered type.
@@ -87,47 +88,56 @@ namespace ProjInterface
                                        infos => {
                                            foreach ( var json in infos )
                                            {
-                                               var i = JsonSerializer
-                                                  .Deserialize < LogEventInstance > (
-                                                                                     json
-                                                                                   , new
-                                                                                         JsonSerializerOptions ( )
-                                                                                    ) ;
-                                               if ( i.Properties != null )
+                                               try
                                                {
-                                                   foreach ( var p in i.Properties )
+                                                   var i = JsonSerializer
+                                                      .Deserialize < LogEventInstance > (
+                                                                                         json
+                                                                                       , new
+                                                                                             JsonSerializerOptions ( )
+                                                                                        ) ;
+                                                   if ( i.Properties != null )
                                                    {
-                                                       var g = _eventView.View as GridView ;
-                                                       if ( ! PropertiesColumns.ContainsKey (
-                                                                                             p.Key
-                                                                                            ) )
+                                                       foreach ( var p in i.Properties )
                                                        {
-                                                           var gridViewColumn =
-                                                               new GridViewColumn ( )
-                                                               {
-                                                                   Header = p.Key
-                                                                 , DisplayMemberBinding =
-                                                                       new Binding ( )
-                                                                       {
-                                                                           Converter =
-                                                                               _propConverter
-                                                                         , ConverterParameter =
-                                                                               p.Key
-                                                                       }
-                                                               } ;
-                                                           PropertiesColumns[ p.Key ] =
-                                                               gridViewColumn ;
-                                                           if ( g != null )
+                                                           var g = _eventView.View as GridView ;
+                                                           if ( ! PropertiesColumns.ContainsKey (
+                                                                                                 p.Key
+                                                                                                ) )
                                                            {
-                                                               g.Columns.Add ( gridViewColumn ) ;
+                                                               var gridViewColumn =
+                                                                   new GridViewColumn ( )
+                                                                   {
+                                                                       Header = p.Key
+                                                                     , DisplayMemberBinding =
+                                                                           new Binding ( )
+                                                                           {
+                                                                               Converter =
+                                                                                   _propConverter
+                                                                             , ConverterParameter =
+                                                                                   p.Key
+                                                                           }
+                                                                   } ;
+                                                               PropertiesColumns[ p.Key ] =
+                                                                   gridViewColumn ;
+                                                               if ( g != null )
+                                                               {
+                                                                   g.Columns.Add (
+                                                                                  gridViewColumn
+                                                                                 ) ;
+                                                               }
+
+                                                               //               _eventView.UpdateLayout();
                                                            }
-
-                                                           //               _eventView.UpdateLayout();
                                                        }
-                                                   }
-                                               }
 
-                                               ViewModel.Events.Add ( i ) ;
+                                                   }
+                                                   ViewModel.Events.Add(i);
+                                               }
+                                               catch ( Exception ex )
+                                               {
+                                                   Debug.WriteLine ( ex.ToString ( ) ) ;
+                                               }
                                            }
                                        }
                                       ) ;

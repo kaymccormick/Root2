@@ -6,7 +6,7 @@ namespace AnalysisControls.Views
 {
     [TitleMetadata("TEst View 1")]
     [ UsedImplicitly ]
-    public partial class TestView1 : UserControl, IView1
+    public partial class TestView1 : UserControl, IView1, IControlView
     {
         private string _viewTitle = "Test View 1";
 

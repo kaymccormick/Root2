@@ -22,7 +22,7 @@ namespace ProjInterface
     /// Interaction logic for Window1.xaml
     /// </summary>
     ///
-    public class Shell : HwndHost, IView1
+    public class Shell : HwndHost, IView1, IControlView
     {
         // ReSharper disable once ArrangeTypeMemberModifiers
         // ReSharper disable once IdentifierTypo

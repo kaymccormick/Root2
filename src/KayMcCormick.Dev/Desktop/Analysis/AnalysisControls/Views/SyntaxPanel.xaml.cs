@@ -17,7 +17,7 @@ namespace AnalysisControls.Views
     /// Interaction logic for SyntaxPanel.xaml
     /// </summary>
     [TitleMetadata("Syntax panel")]
-    public partial class SyntaxPanel : UserControl, IView <ISyntaxPanelViewModel>, IView1
+    public partial class SyntaxPanel : UserControl, IView <ISyntaxPanelViewModel>, IView1, IControlView
     {
         private ISyntaxPanelViewModel viewModel = new SyntaxPanelViewModel();
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

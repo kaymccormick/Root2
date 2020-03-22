@@ -444,7 +444,8 @@ namespace KayMcCormick.Lib.Wpf
     [ TitleMetadataAttribute ( "Resources Explorer" ) ]
     public partial class AllResourcesTree : UserControl
       , IView1
-      , IView < AllResourcesTreeViewModel >
+      , IView < AllResourcesTreeViewModel >,
+        IControlView
     {
         private static readonly Logger Logger     = LogManager.GetCurrentClassLogger ( ) ;
         private                 string _viewTitle = "Resources Explorer" ;

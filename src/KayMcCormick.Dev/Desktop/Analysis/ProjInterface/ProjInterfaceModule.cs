@@ -10,13 +10,16 @@
 // ---
 #endregion
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
-using System.Linq ;
+using System.Diagnostics ;
 using System.Net.Http.Headers ;
+using System.Reflection ;
 using System.Threading.Tasks ;
+using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
+using Autofac.Features.Metadata ;
+using AvalonDock.Layout ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
@@ -66,7 +69,7 @@ namespace ProjInterface
             Logger.Warn (
                          $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                         ) ;
-            builder.RegisterModule<AppBuildModule>();
+            builder.RegisterModule < AppBuildModule > ( ) ;
             builder.RegisterModule < ProjLibModule > ( ) ;
 
 #if MSBUILDWORKSPACE
@@ -104,7 +107,9 @@ namespace ProjInterface
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
-                   .As < IView1 > ( ) ;
+                   .As < IView1 > ( )
+                   .As < IControlView > ( ) ;
+            ;
             LogRegistration ( typeof ( AllResourcesTreeViewModel ) , "AsSelf" ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
             LogRegistration (
@@ -148,9 +153,8 @@ namespace ProjInterface
                               ( ctx , p ) => new GraphServiceClient (
                                                                      new
                                                                          DelegateAuthenticationProvider (
-                                                                                                         (
-                                                                                                             requestMessage
-                                                                                                         ) => {
+                                                                                                         requestMessage
+                                                                                                             => {
                                                                                                              requestMessage
                                                                                                                     .Headers
                                                                                                                     .Authorization
@@ -174,11 +178,118 @@ namespace ProjInterface
                    .AsSelf ( ) ;
             builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IView1 > ( ) ;
-            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IView1 > ( ) ;
+            builder.RegisterType < LogViewerControl > ( )
+                   .AsSelf ( )
+                   .As < IView1 > ( )
+                   .As < IControlView > ( ) ;
             builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
             builder.Register ( ( c , p ) => new LogViewerConfig ( p.TypedAs < ushort > ( ) ) )
                    .AsSelf ( ) ;
             builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
+            builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly ( ) )
+                   .Where (
+                           type => typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
+                                   && type != typeof ( LambdaAppCommand )
+                          )
+                   .As < IDisplayableAppCommand > ( )
+                   .As < IAppCommand > ( )
+                   .As < IDisplayable > ( ) ;
+            builder
+               .RegisterAdapter < Func < LayoutDocumentPane , IControlView > ,
+                    Func < LayoutDocumentPane , IDisplayableAppCommand > > (
+                                                                            (
+                                                                                Func <
+                                                                                        LayoutDocumentPane
+                                                                                      , IControlView
+                                                                                    >
+                                                                                    viewFunc
+                                                                            ) => {
+                                                                                return (
+                                                                                    LayoutDocumentPane
+                                                                                        pane
+                                                                                ) => {
+                                                                                    return (
+                                                                                        IDisplayableAppCommand
+                                                                                    ) new
+                                                                                        LambdaAppCommand (
+                                                                                                          "x"
+                                                                                                        , CommandFunc
+                                                                                                        , Tuple
+                                                                                                             .Create (
+                                                                                                                      viewFunc
+                                                                                                                    , pane
+                                                                                                                     )
+                                                                                                         ) ;
+                                                                                } ;
+                                                                            }
+                                                                           )
+               .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
+
+            // builder.RegisterAdapter (
+                                     // ( Meta < Lazy < IView1 > > view )
+                                         // => LambdaAppCommandAdapter ( view )
+                                    // )
+                   .As < IDisplayableAppCommand > ( ) ;
+            builder.Register (
+                              ( context , parameters ) => {
+                                  return new LogViewerControl ( new LogViewerConfig ( 0 ) ) ;
+                              }
+                             )
+                   .As < IView1 > ( )
+                   .As < LogViewerControl > ( ) ;
+        }
+
+        private static IAppCommandResult CommandFunc ( LambdaAppCommand command )
+        {
+            var (viewFunc1 , pane1) =
+                ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
+                command.Argument ;
+
+            var view = viewFunc1 ( pane1 ) ;
+            Debug.WriteLine ( view.ViewTitle ) ;
+            var doc = new LayoutDocument { Content = view , Title = view.ViewTitle } ;
+            pane1.Children.Add ( doc ) ;
+            pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
+            return AppCommandResult.Success ;
+        }
+
+        private static LambdaAppCommand LambdaAppCommandAdapter (
+            Meta < Lazy < IView1 > > view
+          , object                   obj = null
+        )
+        {
+            view.Metadata.TryGetValue ( "Title" , out var title ) ;
+            if ( title == null )
+            {
+                title = "<none>" ;
+            }
+
+            return new LambdaAppCommand (
+                                         title.ToString ( )
+                                       , ( command ) => {
+                                             try
+                                             {
+                                                 if ( view.Value.Value is Window w )
+                                                 {
+                                                     w.Show ( ) ;
+                                                 }
+
+                                                 // else if (view is Control c)
+                                                 // {
+                                                 // var doc = new LayoutDocument { Content = c };
+                                                 // doc.Title = view.ViewTitle;
+                                                 // docpane.Children.Add(doc);
+                                                 // }
+                                             }
+                                             catch ( Exception ex )
+                                             {
+                                                 Debug.WriteLine ( ex.ToString ( ) ) ;
+                                             }
+
+                                             return AppCommandResult.Failed ;
+                                         }
+                                       , obj
+                                        ) ;
         }
     }
 }
