@@ -18,6 +18,7 @@ using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
+using Autofac.Core ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 using KayMcCormick.Dev ;
@@ -195,41 +196,102 @@ namespace ProjInterface
                    .As < IAppCommand > ( )
                    .As < IDisplayable > ( ) ;
             builder
-               .RegisterAdapter < Func < LayoutDocumentPane , IControlView > ,
-                    Func < LayoutDocumentPane , IDisplayableAppCommand > > (
-                                                                            (
-                                                                                Func <
-                                                                                        LayoutDocumentPane
-                                                                                      , IControlView
-                                                                                    >
-                                                                                    viewFunc
-                                                                            ) => {
-                                                                                return (
-                                                                                    LayoutDocumentPane
-                                                                                        pane
-                                                                                ) => {
-                                                                                    return (
-                                                                                        IDisplayableAppCommand
-                                                                                    ) new
-                                                                                        LambdaAppCommand (
-                                                                                                          "x"
-                                                                                                        , CommandFunc
-                                                                                                        , Tuple
-                                                                                                             .Create (
-                                                                                                                      viewFunc
-                                                                                                                    , pane
-                                                                                                                     )
-                                                                                                         ) ;
-                                                                                } ;
-                                                                            }
-                                                                           )
+               .RegisterAdapter < Meta < Lazy < IControlView > > ,
+                    Meta < Lazy < Func < LayoutDocumentPane , IDisplayableAppCommand > > > > (
+                                                                                              (
+                                                                                                  IComponentContext
+                                                                                                      c
+                                                                                                , IEnumerable
+                                                                                                  < Parameter
+                                                                                                  > p
+                                                                                                , Meta
+                                                                                                      < Lazy
+                                                                                                          < IControlView
+                                                                                                          > >
+                                                                                                      metaLazy
+                                                                                              ) => {
+                                                                                                  metaLazy
+                                                                                                     .Metadata
+                                                                                                     .TryGetValue (
+                                                                                                                   "Title"
+                                                                                                                 , out
+                                                                                                                   var
+                                                                                                                       titleo
+                                                                                                                  ) ;
+                                                                                                  var
+                                                                                                      title
+                                                                                                          = ( string
+                                                                                                            ) titleo
+                                                                                                            ?? "no title" ;
+
+                                                                                                  IDictionary
+                                                                                                  < string
+                                                                                                    , object
+                                                                                                  > theMetadata
+                                                                                                      = new
+                                                                                                          Dictionary
+                                                                                                          < string
+                                                                                                            , object
+                                                                                                          > ( ) ;
+                                                                                                  theMetadata
+                                                                                                          [ "Title" ]
+                                                                                                      = title ;
+                                                                                                  return
+                                                                                                      new
+                                                                                                          Meta
+                                                                                                          < Lazy
+                                                                                                              < Func
+                                                                                                                  < LayoutDocumentPane
+                                                                                                                    , IDisplayableAppCommand
+                                                                                                                  > >
+                                                                                                          > (
+                                                                                                             new
+                                                                                                                 Lazy
+                                                                                                                 < Func
+                                                                                                                     < LayoutDocumentPane
+                                                                                                                       , IDisplayableAppCommand
+                                                                                                                     > > (
+                                                                                                                          ( )
+                                                                                                                              => {
+                                                                                                                              var
+                                                                                                                                  theFunc
+                                                                                                                                      =
+                                                                                                                                      c.Resolve
+                                                                                                                                      < Func
+                                                                                                                                          < LayoutDocumentPane
+                                                                                                                                            , IControlView
+                                                                                                                                          > > ( ) ;
+                                                                                                                              return
+                                                                                                                              (
+                                                                                                                                  LayoutDocumentPane
+                                                                                                                                      pane
+                                                                                                                              ) => {
+                                                                                                                                  return
+                                                                                                                                      ( IDisplayableAppCommand
+                                                                                                                                      ) new
+                                                                                                                                          LambdaAppCommand (
+                                                                                                                                                            title
+                                                                                                                                                          , CommandFunc
+                                                                                                                                                          , Tuple
+                                                                                                                                                               .Create (
+                                                                                                                                                                        theFunc
+                                                                                                                                                                      , pane
+                                                                                                                                                                       )
+                                                                                                                                                           ) ;
+                                                                                                                              } ;
+                                                                                                                          }
+                                                                                                                         )
+                                                                                                           , theMetadata
+                                                                                                            ) ;
+                                                                                              }
+                                                                                             )
                .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
             // builder.RegisterAdapter (
-                                     // ( Meta < Lazy < IView1 > > view )
-                                         // => LambdaAppCommandAdapter ( view )
-                                    // )
-                   .As < IDisplayableAppCommand > ( ) ;
+            // ( Meta < Lazy < IView1 > > view )
+            // => LambdaAppCommandAdapter ( view )
+            // )
+            // .As < IDisplayableAppCommand > ( ) ;
             builder.Register (
                               ( context , parameters ) => {
                                   return new LogViewerControl ( new LogViewerConfig ( 0 ) ) ;
