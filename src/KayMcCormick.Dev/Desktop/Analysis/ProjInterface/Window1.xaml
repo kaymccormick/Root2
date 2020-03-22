@@ -14,8 +14,9 @@
 
   <kmWpf:AppWindow.Resources>
 
-    <BitmapImage UriSource="Assets/ASPWebSite_16x.png" x:Key="BrowserIcon"/>
-    <local:DictionaryConverter x:Key="DictionaryConverter"></local:DictionaryConverter>
+    <BitmapImage UriSource="Assets/ASPWebSite_16x.png"
+                 x:Key="BrowserIcon" />
+    <local:DictionaryConverter x:Key="DictionaryConverter" />
     <DataTemplate x:Key="Template1">
       <TextBlock
         Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
@@ -79,7 +80,7 @@
       x:Key="LayoutAnchorControlControlTemplate1"
       TargetType="{x:Type avalondock:LayoutAnchorControl}">
       <Border
-        
+
         CornerRadius="3"
         BorderBrush="#FF59C873"
         BorderThickness="5" Margin="8" Padding="2">
@@ -88,20 +89,23 @@
           Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" />
       </Border>
     </ControlTemplate>
-    <ControlTemplate x:Key="LayoutAnchorGroupControlControlTemplate1" 
-                     TargetType="{x:Type avalondock:LayoutAnchorGroupControl}">
+    <ControlTemplate
+      x:Key="LayoutAnchorGroupControlControlTemplate1"
+      TargetType="{x:Type avalondock:LayoutAnchorGroupControl}">
       <ItemsControl>
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel IsItemsHost="True" Orientation="Horizontal"></StackPanel>
+            <StackPanel IsItemsHost="True"
+                        Orientation="Horizontal" />
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.LayoutTransform>
           <RotateTransform>
             <RotateTransform.Angle>
-              <Binding Path="Model.Parent.Side" RelativeSource="{RelativeSource TemplatedParent}">
+              <Binding Path="Model.Parent.Side"
+                       RelativeSource="{RelativeSource TemplatedParent}">
                 <Binding.Converter>
-                  <avalondock:AnchorSideToAngleConverter/>
+                  <avalondock:AnchorSideToAngleConverter />
                 </Binding.Converter>
               </Binding>
             </RotateTransform.Angle>
@@ -110,9 +114,8 @@
       </ItemsControl>
     </ControlTemplate>
     <Style x:Key="A1"
-           TargetType="avalondock:LayoutAnchorablePaneControl" >
-      
-    </Style>
+           TargetType="avalondock:LayoutAnchorablePaneControl" />
+    <kmWpf:AppCommandConverter x:Key="AppCommandConverter" />
   </kmWpf:AppWindow.Resources>
   <kmWpf:AppWindow.CommandBindings>
     <CommandBinding Command="Open"
@@ -143,10 +146,16 @@
         <MenuItem Header="_Quit"
                   Command="kmWpf:WpfAppCommands.QuitApplication" />
       </MenuItem>
-      <MenuItem Header="Commands" ItemsSource="{kmWpf:ResolveEnumerable local:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}" Command="{Binding Command}">
-        <MenuItem.ItemTemplate><DataTemplate DataType="local:IDisplayableAppCommand">
-            <MenuItem Header="{Binding DisplayName}" Command="{Binding Command}"/>
-          </DataTemplate></MenuItem.ItemTemplate>
+      <MenuItem Header="Commands"
+                ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+
+        <MenuItem.ItemTemplate>
+          <DataTemplate
+            DataType="kmWpf:IDisplayableAppCommand">
+            <MenuItem Header="{Binding DisplayName}"
+                      Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}"/>
+          </DataTemplate>
+        </MenuItem.ItemTemplate>
       </MenuItem>
     </Menu>
     <ToolBarTray Grid.Row="1" Grid.Column="0">
@@ -180,14 +189,13 @@
       </ToolBar>
     </ToolBarTray>
     <avalondock:DockingManager Grid.Row="3" Grid.Column="0"
-                  
+
                                AllowMixedOrientation="True"
                                AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
                                IconContentTemplate="{DynamicResource DataTemplate1}"
                                DocumentTitleTemplate="{DynamicResource DataTemplate2}"
                                DocumentPaneMenuItemHeaderTemplate="{DynamicResource DataTemplate3}"
-                               AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}" 
-                               >
+                               AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}">
       <avalondock:DockingManager.DocumentHeaderTemplate>
         <DataTemplate
           DataType="{x:Type avalondock:LayoutDocument}">
@@ -205,8 +213,12 @@
           <avalondock:LayoutAnchorablePane DockWidth="300" />
           <avalondock:LayoutDocumentPaneGroup>
             <avalondock:LayoutDocumentPane x:Name="docpane">
-              <avalondock:LayoutDocument Title="Browser" IconSource="{StaticResource BrowserIcon}" x:Name="FrameDocument">
-                <Frame Navigating="BrowserFrame_OnNavigating"  x:Name="BrowserFrame" Source="Home.xaml"></Frame>
+              <avalondock:LayoutDocument Title="Browser"
+                                         IconSource="{StaticResource BrowserIcon}"
+                                         x:Name="FrameDocument">
+                <Frame
+                  Navigating="BrowserFrame_OnNavigating"
+                  x:Name="BrowserFrame" Source="Home.xaml" />
               </avalondock:LayoutDocument>
               <avalondock:LayoutAnchorable Title="Files"
                                            IconSource="{StaticResource FilesIcon}"

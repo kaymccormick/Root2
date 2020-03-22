@@ -196,95 +196,51 @@ namespace ProjInterface
                    .As < IAppCommand > ( )
                    .As < IDisplayable > ( ) ;
             builder
-               .RegisterAdapter < Meta < Lazy < IControlView > > ,
-                    Meta < Lazy < Func < LayoutDocumentPane , IDisplayableAppCommand > > > > (
-                                                                                              (
-                                                                                                  IComponentContext
-                                                                                                      c
-                                                                                                , IEnumerable
-                                                                                                  < Parameter
-                                                                                                  > p
-                                                                                                , Meta
-                                                                                                      < Lazy
-                                                                                                          < IControlView
-                                                                                                          > >
-                                                                                                      metaLazy
-                                                                                              ) => {
-                                                                                                  metaLazy
-                                                                                                     .Metadata
-                                                                                                     .TryGetValue (
-                                                                                                                   "Title"
-                                                                                                                 , out
-                                                                                                                   var
-                                                                                                                       titleo
-                                                                                                                  ) ;
-                                                                                                  var
-                                                                                                      title
-                                                                                                          = ( string
-                                                                                                            ) titleo
-                                                                                                            ?? "no title" ;
+               .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
+                    Func < LayoutDocumentPane , IDisplayableAppCommand > > (
+                                                                            (
+                                                                                IComponentContext c
+                                                                              , IEnumerable <
+                                                                                    Parameter > p
+                                                                              , Meta < Func <
+                                                                                        LayoutDocumentPane
+                                                                                      , IControlView
+                                                                                    > >
+                                                                                    metaFunc
+                                                                            ) => {
+                                                                                metaFunc
+                                                                                   .Metadata
+                                                                                   .TryGetValue (
+                                                                                                 "Title"
+                                                                                               , out
+                                                                                                 var
+                                                                                                     titleo
+                                                                                                ) ;
+                                                                                var title =
+                                                                                    ( string )
+                                                                                    titleo
+                                                                                    ?? "no title" ;
 
-                                                                                                  IDictionary
-                                                                                                  < string
-                                                                                                    , object
-                                                                                                  > theMetadata
-                                                                                                      = new
-                                                                                                          Dictionary
-                                                                                                          < string
-                                                                                                            , object
-                                                                                                          > ( ) ;
-                                                                                                  theMetadata
-                                                                                                          [ "Title" ]
-                                                                                                      = title ;
-                                                                                                  return
-                                                                                                      new
-                                                                                                          Meta
-                                                                                                          < Lazy
-                                                                                                              < Func
-                                                                                                                  < LayoutDocumentPane
-                                                                                                                    , IDisplayableAppCommand
-                                                                                                                  > >
-                                                                                                          > (
-                                                                                                             new
-                                                                                                                 Lazy
-                                                                                                                 < Func
-                                                                                                                     < LayoutDocumentPane
-                                                                                                                       , IDisplayableAppCommand
-                                                                                                                     > > (
-                                                                                                                          ( )
-                                                                                                                              => {
-                                                                                                                              var
-                                                                                                                                  theFunc
-                                                                                                                                      =
-                                                                                                                                      c.Resolve
-                                                                                                                                      < Func
-                                                                                                                                          < LayoutDocumentPane
-                                                                                                                                            , IControlView
-                                                                                                                                          > > ( ) ;
-                                                                                                                              return
-                                                                                                                              (
-                                                                                                                                  LayoutDocumentPane
-                                                                                                                                      pane
-                                                                                                                              ) => {
-                                                                                                                                  return
-                                                                                                                                      ( IDisplayableAppCommand
-                                                                                                                                      ) new
-                                                                                                                                          LambdaAppCommand (
-                                                                                                                                                            title
-                                                                                                                                                          , CommandFunc
-                                                                                                                                                          , Tuple
-                                                                                                                                                               .Create (
-                                                                                                                                                                        theFunc
-                                                                                                                                                                      , pane
-                                                                                                                                                                       )
-                                                                                                                                                           ) ;
-                                                                                                                              } ;
-                                                                                                                          }
+                                                                                return (
+                                                                                    LayoutDocumentPane
+                                                                                        pane
+                                                                                ) => {
+                                                                                    return
+                                                                                        ( IDisplayableAppCommand
+                                                                                        ) new
+                                                                                            LambdaAppCommand (
+                                                                                                              title
+                                                                                                            , CommandFunc
+                                                                                                            , Tuple
+                                                                                                                 .Create (
+                                                                                                                          metaFunc
+                                                                                                                             .Value
+                                                                                                                        , pane
                                                                                                                          )
-                                                                                                           , theMetadata
-                                                                                                            ) ;
-                                                                                              }
-                                                                                             )
+                                                                                                             ) ;
+                                                                                } ;
+                                                                            }
+                                                                           )
                .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
             // builder.RegisterAdapter (

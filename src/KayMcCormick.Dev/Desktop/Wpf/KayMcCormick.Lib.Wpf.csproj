@@ -74,6 +74,8 @@
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="AllResourcesTreeViewModel.cs" />
+    <Compile Include="AppCommand.cs" />
+    <Compile Include="AppCommandConverter.cs" />
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />
@@ -84,6 +86,8 @@
     <Compile Include="DataTemplateKeyConverter.cs" />
     <Compile Include="GetTypeConverter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HandleExceptionImpl.cs" />
+    <Compile Include="IHandleException.cs" />
     <Compile Include="IView1.cs" />
     <Compile Include="IWrap1.cs" />
     <Compile Include="KeyConverter.cs" />
@@ -120,6 +124,7 @@
     </Compile>
     <Compile Include="TypeInfoConverter.cs" />
     <Compile Include="WpfAppCommands.cs" />
+    <Compile Include="WrappedAppCommand.cs" />
     <Compile Include="XamlXmlDocumentConverter.cs" />
     <Compile Include="XmlViewer.xaml.cs">
       <DependentUpon>XmlViewer.xaml</DependentUpon>

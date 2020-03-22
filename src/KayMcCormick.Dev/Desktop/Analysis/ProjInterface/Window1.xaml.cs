@@ -26,8 +26,16 @@ namespace ProjInterface
         public Window1 ( ) { InitializeComponent ( ) ; }
 
         public Window1 ( ILifetimeScope lifetimeScope , DockWindowViewModel viewModel ) :
-            base ( lifetimeScope )
+            base ( )
         {
+            var lf = lifetimeScope.BeginLifetimeScope(
+                                                      builder => {
+                                                          builder.RegisterType<HandleExceptionImpl>()
+                                                                 .As<IHandleException>().InstancePerLifetimeScope();
+                                                      }
+                                                     );
+            SetValue(AttachedProperties.LifetimeScopeProperty, lf);
+
             ViewModel = viewModel ;
             var wih = new WindowInteropHelper ( this ) ;
             var hWnd = wih.Handle ;
