@@ -2,7 +2,7 @@
 
 namespace KayMcCormick.Lib.Wpf
 {
-    internal class NavState
+    public class NavState
     {
         public bool Detailed { get ; set ; }
 

@@ -18,6 +18,13 @@ namespace KayMcCormick.Lib.Wpf
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        public static readonly RoutedEvent TypeActivatedEvent =
+            EventManager.RegisterRoutedEvent (
+                                              "TypeActivated"
+                                            , RoutingStrategy.Bubble
+                                            , typeof ( TypeActivatedEventHandler)
+                                            , typeof ( TypeControl )
+                                             ) ;
         /// <summary>The rendered type property</summary>
         public static readonly DependencyProperty
             RenderedTypeProperty = AttachedProperties.RenderedTypeProperty ;
@@ -147,12 +154,12 @@ namespace KayMcCormick.Lib.Wpf
                 FlowDocument = new FlowDocument ( paragraph ) ;
                 var reader = new FlowDocumentReader { Document = FlowDocument } ;
                 addChild = paragraph ;
-                Content  = reader ;
+                SetCurrentValue(ContentProperty, reader) ;
             }
             else
             {
                 addChild = new TextBlock ( ) ;
-                Content  = addChild ;
+                SetCurrentValue(ContentProperty, addChild) ;
 
                 // Container.Children.Clear();
                 // Container.Children.Add ( block ) ;
@@ -200,7 +207,7 @@ namespace KayMcCormick.Lib.Wpf
 
             var hyperLink = new Hyperlink ( new Run ( myType.Name ) ) ;
             Uri.TryCreate (
-                           "obj://" + Uri.EscapeUriString ( myType.Name )
+                           "obj:///" + Uri.EscapeUriString ( myType.AssemblyQualifiedName )
                          , UriKind.Absolute
                          , out var res
                           ) ;
@@ -279,6 +286,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        public delegate void TypeActivatedEventHandler(object sender, TypeActivatedEventArgs e);
         private void HyperLinkOnRequestNavigate ( object sender , RequestNavigateEventArgs e )
         {
             //
@@ -286,8 +294,9 @@ namespace KayMcCormick.Lib.Wpf
             // {
             // 	Logger.Debug ( "Cant find " + findName) ;
             // }
+            var uie = (ContentElement)sender;
             Logger.Debug ( $"{nameof ( HyperLinkOnRequestNavigate )}: Uri={e.Uri}" ) ;
-            var uie = ( ContentElement ) sender ;
+            
             try
             {
                 var navigationService = NavigationService ( ) ;
@@ -311,7 +320,15 @@ namespace KayMcCormick.Lib.Wpf
                 }
                 else
                 {
-                    Logger.Info ( "find other way to navigate type" ) ;
+                    var uri = (Uri)uie.GetValue(Hyperlink.NavigateUriProperty);
+                    var stringToUnescape = uri.AbsolutePath.Substring(1);
+                    var unescapeDataString = Uri.UnescapeDataString(stringToUnescape);
+                    Type t = Type.GetType(unescapeDataString);
+
+                    var value1 = uie.GetValue(AttachedProperties.RenderedTypeProperty) as Type;
+                    RaiseEvent(
+                               new TypeActivatedEventArgs(TypeActivatedEvent, sender, value1, t)
+                              );
                 }
             }
             catch ( Exception ex )
@@ -334,5 +351,25 @@ namespace KayMcCormick.Lib.Wpf
                                                 .GetNavigationService ( this ) ;
             return navigationService ;
         }
+    }
+
+    public class TypeActivatedEventArgs : RoutedEventArgs
+    {
+        private Type _sourceType ;
+        private Type _activatedType ;
+
+        public TypeActivatedEventArgs ( RoutedEvent routedEvent , object source , Type sourceType , Type activatedType ) : base ( routedEvent , source )
+        {
+            _sourceType = sourceType ;
+            _activatedType = activatedType ;
+        }
+
+        public Type ActivatedType
+        {
+            get { return _activatedType ; }
+            set { _activatedType = value ; }
+        }
+
+        public Type SourceType { get { return _sourceType ; } set { _sourceType = value ; } }
     }
 }

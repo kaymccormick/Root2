@@ -14,9 +14,9 @@
 
   <kmWpf:AppWindow.Resources>
 
+    <BitmapImage UriSource="Assets/ASPWebSite_16x.png" x:Key="BrowserIcon"/>
     <local:DictionaryConverter x:Key="DictionaryConverter"></local:DictionaryConverter>
     <DataTemplate x:Key="Template1">
-
       <TextBlock
         Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
 
@@ -42,7 +42,7 @@
                  x:Key="PowerOffImage" />
 
     <ControlTemplate x:Key="ControlTemplate1">
-      <Border BorderThickness="5" BorderBrush="Red">
+      <Border BorderThickness="50" BorderBrush="Red">
         <ContentPresenter />
       </Border>
     </ControlTemplate>
@@ -109,6 +109,10 @@
         </ItemsControl.LayoutTransform>
       </ItemsControl>
     </ControlTemplate>
+    <Style x:Key="A1"
+           TargetType="avalondock:LayoutAnchorablePaneControl" >
+      
+    </Style>
   </kmWpf:AppWindow.Resources>
   <kmWpf:AppWindow.CommandBindings>
     <CommandBinding Command="Open"
@@ -117,7 +121,9 @@
       Command="kmWpf:WpfAppCommands.QuitApplication"
       Executed="CommandBinding_OnExecuted2" />
   </kmWpf:AppWindow.CommandBindings>
-  <Grid>
+  <kmWpf:AppWindow.Triggers>
+  </kmWpf:AppWindow.Triggers>
+  <Grid x:Name="Test1">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="50" />
@@ -169,6 +175,7 @@
       </ToolBar>
     </ToolBarTray>
     <avalondock:DockingManager Grid.Row="3" Grid.Column="0"
+                  
                                AllowMixedOrientation="True"
                                AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
                                IconContentTemplate="{DynamicResource DataTemplate1}"
@@ -193,6 +200,9 @@
           <avalondock:LayoutAnchorablePane DockWidth="300" />
           <avalondock:LayoutDocumentPaneGroup>
             <avalondock:LayoutDocumentPane x:Name="docpane">
+              <avalondock:LayoutDocument Title="Browser" IconSource="{StaticResource BrowserIcon}" x:Name="FrameDocument">
+                <Frame Navigating="BrowserFrame_OnNavigating"  x:Name="BrowserFrame" Source="Home.xaml"></Frame>
+              </avalondock:LayoutDocument>
               <avalondock:LayoutAnchorable Title="Files"
                                            IconSource="{StaticResource FilesIcon}"
                                            ContentId="fileBrowser">

@@ -1,9 +1,11 @@
 ﻿using System ;
+using System.Activities.Expressions ;
 using System.Diagnostics ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Interop ;
+using System.Windows.Navigation ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
@@ -42,6 +44,32 @@ namespace ProjInterface
                 _viewModel.ResourcesElement = this ;
                 // await _viewModel.LoginSilentAsync ( ).ConfigureAwait ( true ) ;
             }
+
+            AddHandler (
+                        TypeControl.TypeActivatedEvent
+                      , new TypeControl.TypeActivatedEventHandler ( Target )
+                       ) ;
+        }
+
+        private void Target ( object sender , TypeActivatedEventArgs e )
+        {
+            BrowserFrame.NavigationService.Navigate (
+                                                     new Page ( )
+                                                     {
+                                                         Content = new TypeInfoControl ( )
+                                                                   {
+                                                                       DataContext = e.ActivatedType
+                                                                   }
+                                                         // Content = new TypeControl ( )
+                                                         //           {
+                                                         //               RenderedType =
+                                                         //                   e.ActivatedType
+                                                         //           }
+                                                     }
+                                                    ) ;
+
+            docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+            Debug.WriteLine ( e.ActivatedType.FullName ) ;
         }
         #endregion
         #region Implementation of IView1
@@ -85,6 +113,32 @@ namespace ProjInterface
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
             System.Windows.Application.Current.Shutdown ( ) ;
+        }
+
+        private void BrowserFrame_OnNavigating ( object sender , NavigatingCancelEventArgs e )
+        {
+            var uri = e.Uri ;
+            Type t = null ;
+            if ( e.ExtraData is NavState n )
+            {
+                t = n.RenderedType ;
+            } else if ( uri != null
+                        && uri.IsAbsoluteUri
+                        && uri.Scheme == "obj" )
+            {
+                var stringToUnescape = uri.AbsolutePath.Substring ( 1 ) ;
+                var unescapeDataString = Uri.UnescapeDataString ( stringToUnescape ) ;
+                t=  Type.GetType ( unescapeDataString ) ;
+            }
+            if(t != null) {
+                if ( BrowserFrame.Content is TypeInfoControl tic )
+                {
+                    tic.DataContext              = t ;
+                    docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+                    e.Cancel = true ;
+                    
+                }
+            }
         }
     }
 }

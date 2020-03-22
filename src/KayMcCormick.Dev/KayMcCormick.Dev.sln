@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KayMcCormick.Dev", "KayMcCormick.Dev\KayMcCormick.Dev.csproj", "{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}"
 EndProject
@@ -71,8 +71,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service1AddInView", "Services\ServiceAddIn1\Service1AddInView.csproj", "{F2F394BF-088C-4ED4-8610-C96ABA021DD1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Explorer", "..\WpfExplorer\Explorer\Explorer.csproj", "{03FB5D97-71E4-4304-B52F-6836605398B5}"
-EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "DependencyValidation1", "DependencyValidation1\DependencyValidation1.modelproj", "{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -294,18 +292,6 @@ Global
 		{03FB5D97-71E4-4304-B52F-6836605398B5}.Release|x64.Build.0 = Release|x64
 		{03FB5D97-71E4-4304-B52F-6836605398B5}.Release|x86.ActiveCfg = Release|x86
 		{03FB5D97-71E4-4304-B52F-6836605398B5}.Release|x86.Build.0 = Release|x86
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Debug|x64.Build.0 = Debug|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Debug|x86.Build.0 = Debug|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Release|x64.ActiveCfg = Release|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Release|x64.Build.0 = Release|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Release|x86.ActiveCfg = Release|Any CPU
-		{7ADAFDFD-FC69-47BA-9C99-A8EF7E1C04BF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
