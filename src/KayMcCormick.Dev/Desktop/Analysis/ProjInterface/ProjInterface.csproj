@@ -228,8 +228,20 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AdaptiveCards.Rendering.Html">
+      <Version>1.2.4</Version>
+    </PackageReference>
     <PackageReference Include="AdaptiveCards.Rendering.Wpf">
       <Version>1.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="AdaptiveCards.Rendering.Wpf.Xceed">
+      <Version>1.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="AdaptiveCards.Templating">
+      <Version>0.1.0-alpha1</Version>
+    </PackageReference>
+    <PackageReference Include="Dapplo.CaliburnMicro.Cards">
+      <Version>2.1.10</Version>
     </PackageReference>
     <PackageReference Include="Dirkster.AvalonDock">
       <Version>4.0.0</Version>

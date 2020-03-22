@@ -117,6 +117,7 @@
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
+    <Compile Include="CodeAnalysisApp1.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\CentralServiceReference\Reference.cs">
@@ -203,6 +204,8 @@
     <Compile Include="TestLib\LogHelper.cs" />
     <Compile Include="TestLib\LogTestMethodAttribute.cs" />
     <Compile Include="TestLib\TestMethodLifecycle.cs" />
+    <Compile Include="Tracing\ExtLib.cs" />
+    <Compile Include="Tracing\NLogTraceTarget.cs" />
     <Compile Include="UnableToRegisterObjectIdException.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>

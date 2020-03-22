@@ -232,61 +232,64 @@ namespace ProjTests
         {
             var x = new TestApplication ( ) ;
 
-            var instance = new ApplicationInstance ( _output.WriteLine ) ;
-            instance.AddModule ( new ProjInterfaceModule ( ) ) ;
-            instance.AddModule ( new AnalysisControlsModule ( ) ) ;
-            instance.Initialize ( ) ;
-            var lifetimescope = instance.GetLifetimeScope ( ) ;
-            LogManager.ThrowExceptions = true ;
-            var funcs = lifetimescope
-               .Resolve < IEnumerable < Func < LayoutDocumentPane , IDisplayableAppCommand > >
-                > ( ) ;
-            var pane = new LayoutDocumentPane ( ) ;
-            foreach ( var func in funcs )
+            using ( var instance = new ApplicationInstance ( _output.WriteLine ) )
             {
-                try
+                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
+                instance.Initialize ( ) ;
+                var lifetimescope = instance.GetLifetimeScope ( ) ;
+                LogManager.ThrowExceptions = true ;
+                var funcs = lifetimescope
+                   .Resolve < IEnumerable < Func < LayoutDocumentPane , IDisplayableAppCommand > >
+                    > ( ) ;
+
+
+                var m = new DockingManager ( ) ;
+
+                var pane = new LayoutDocumentPane ( ) ;
+
+                var group = new LayoutDocumentPaneGroup ( pane ) ;
+
+                var mLayoutRootPanel = new LayoutPanel ( group ) ;
+                var layout = new LayoutRoot { RootPanel = mLayoutRootPanel } ;
+                m.Layout = layout ;
+                Window w = new AppWindow ( lifetimescope ) ;
+                w.Content = m ;
+
+                foreach ( var func in funcs )
                 {
-                    Logger.Info ( "func is {func}" , func.ToString ( ) ) ;
-                    var xx = func ( pane ) ;
-                    Debug.WriteLine ( xx.DisplayName ) ;
-                    xx.ExecuteAsync ( )
-                      .ContinueWith (
-                                     task => {
-                                         if ( task.IsFaulted )
-                                         {
-                                             Debug.WriteLine ( task.Exception ) ;
+                    try
+                    {
+                        Debug.WriteLine ( "func is {func}" ) ;
+                        var xx = func ( pane ) ;
+                        Debug.WriteLine ( xx.DisplayName ) ;
+                        xx.ExecuteAsync ( )
+                          .ContinueWith (
+                                         task => {
+                                             if ( task.IsFaulted )
+                                             {
+                                                 Debug.WriteLine ( task.Exception ) ;
+                                             }
+                                             else
+                                             {
+                                                 Debug.WriteLine ( task.Result ) ;
+                                             }
                                          }
-                                         else
-                                         {
-                                             Debug.WriteLine ( task.Result ) ;
-                                         }
-                                     }
-                                    )
-                      .Wait ( ) ;
+                                        )
+                          .Wait ( ) ;
+                    }
+                    catch ( Exception ex )
+                    {
+                        Debug.WriteLine ( ex.ToString ( ) ) ;
+                    }
                 }
-                catch ( Exception ex )
-                {
-                    Debug.WriteLine ( ex.ToString ( ) ) ;
-                }
+
+                var source = new TaskCompletionSource < bool > ( ) ;
+                x.TCS = source ;
+                x.Run ( w ) ;
+                Task.WaitAll ( x.TCS.Task ) ;
+                Debug.WriteLine ( source.Task.Result ) ;
             }
-
-            var m = new DockingManager ( ) ;
-
-
-
-            var group = new LayoutDocumentPaneGroup ( pane ) ;
-//LayoutAnchorablePane xx = new LayoutAnchorablePane(group);
-            var mLayoutRootPanel = new LayoutPanel ( group ) ;
-            var layout = new LayoutRoot ( ) ;
-            layout.RootPanel = mLayoutRootPanel ;
-
-            var source = new TaskCompletionSource < bool > ( ) ;
-            Window w = new AppWindow ( lifetimescope ) ;
-            w.Content = m ;
-            x.TCS     = source ;
-            x.Run ( w ) ;
-            Task.WaitAll ( x.TCS.Task ) ;
-            Debug.WriteLine ( source.Task.Result ) ;
         }
 
         [ WpfFact ]
@@ -607,9 +610,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
- , string         proj
- , string         doc
- , ILifetimeScope scope
+, string         proj
+, string         doc
+, ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;

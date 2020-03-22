@@ -11,6 +11,7 @@ using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.Tracing ;
 using NLog ;
 using NLog.Targets ;
 using Application = System.Windows.Application ;
@@ -68,6 +69,10 @@ namespace KayMcCormick.Lib.Wpf
                                                                                               != null
                                                                                           )
                                                                                           {
+                                                                                              ExtLib
+                                                                                                 .fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled (
+                                                                                                                                                 message
+                                                                                                                                                ) ;
                                                                                               _eventLog
                                                                                                  .WriteEntry (
                                                                                                               message

@@ -65,6 +65,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="EventMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -75,6 +79,9 @@
     </Compile>
     <Compile Include="DockingSetup.xaml.cs">
       <DependentUpon>DockingSetup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EventMessage.xaml.cs">
+      <DependentUpon>EventMessage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -139,8 +146,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AdaptiveCards.Rendering.Html">
+      <Version>1.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="AdaptiveCards.Rendering.Wpf.Xceed">
+      <Version>1.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="AdaptiveCards.Templating">
+      <Version>0.1.0-alpha1</Version>
+    </PackageReference>
     <PackageReference Include="Autofac">
       <Version>5.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="Dapplo.CaliburnMicro.Cards">
+      <Version>2.1.10</Version>
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.7.0</Version>

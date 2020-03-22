@@ -29,6 +29,7 @@ using System.Security ;
 using System.Security.Permissions ;
 using System.Text ;
 using System.Text.RegularExpressions ;
+using KayMcCormick.Dev.Tracing ;
 using NLog.LayoutRenderers ;
 #if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
@@ -360,6 +361,9 @@ namespace KayMcCormick.Dev.Logging
                 var x = EventLogTarget ( EventLogTargetName ) ;
                 errorTargets?.Add ( x ) ;
             }
+
+            var tracingTarget = new NLogTraceTarget();
+            t.Add ( tracingTarget ) ;
 
 #if ENABLE_WCF_TARGET
             var endpointAddress = Environment.GetEnvironmentVariable("LOGGING_WEBSERVICE_ENDPOINT")
