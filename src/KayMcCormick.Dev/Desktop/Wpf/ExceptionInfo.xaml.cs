@@ -18,7 +18,7 @@ using System.Windows.Media.Imaging ;
 using System.Windows.Navigation ;
 using System.Windows.Shapes ;
 using DynamicData ;
-using Elmah ;
+using KayMcCormick.Dev ;
 using Newtonsoft.Json ;
 
 namespace KayMcCormick.Lib.Wpf

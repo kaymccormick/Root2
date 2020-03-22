@@ -275,7 +275,7 @@
       <Version>3.8.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>3.4.0</Version>
+      <Version>3.6.0-1.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>2.9.8</Version>

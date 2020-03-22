@@ -177,12 +177,6 @@
       <Version>2.5.1</Version>
     </PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0-eap6" />
-    <PackageReference Include="LibGit2Sharp">
-      <Version>0.27.0-preview-0034</Version>
-    </PackageReference>
-    <PackageReference Include="libgit2sharp.nativebinaries" IncludeAssets="none" ExcludeAssets="all">
-      <Version>2.0.306</Version>
-    </PackageReference>
     <PackageReference Include="MessageTemplates">
       <Version>1.0.0-rc-00275</Version>
     </PackageReference>

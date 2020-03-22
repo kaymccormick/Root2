@@ -230,8 +230,8 @@ namespace ProjTests
         [ WpfFact ]
         public void TestAdapter ( )
         {
-            TestApplication x = new TestApplication();
-            
+            var x = new TestApplication ( ) ;
+
             var instance = new ApplicationInstance ( _output.WriteLine ) ;
             instance.AddModule ( new ProjInterfaceModule ( ) ) ;
             instance.AddModule ( new AnalysisControlsModule ( ) ) ;
@@ -268,41 +268,40 @@ namespace ProjTests
                 {
                     Debug.WriteLine ( ex.ToString ( ) ) ;
                 }
-
-                var m = new DockingManager ( ) ;
-                
-                
-
-                var group = new LayoutDocumentPaneGroup ( pane ) ;
-//LayoutAnchorablePane xx = new LayoutAnchorablePane(group);
-                var mLayoutRootPanel = new LayoutPanel ( group ) ;
-                LayoutRoot layout = new LayoutRoot();
-                layout.RootPanel = mLayoutRootPanel ;
-                
-                TaskCompletionSource<bool> source = new TaskCompletionSource < bool > ();
-                Window w = new AppWindow ( lifetimescope ) ;
-                w.Content = m ;
-                x.TCS = source ;
-                x.Run ( w ) ;
-                Task.WaitAll ( x.TCS.Task ) ;
-                Debug.WriteLine ( source.Task.Result ) ;
-
             }
+
+            var m = new DockingManager ( ) ;
+
+
+
+            var group = new LayoutDocumentPaneGroup ( pane ) ;
+//LayoutAnchorablePane xx = new LayoutAnchorablePane(group);
+            var mLayoutRootPanel = new LayoutPanel ( group ) ;
+            var layout = new LayoutRoot ( ) ;
+            layout.RootPanel = mLayoutRootPanel ;
+
+            var source = new TaskCompletionSource < bool > ( ) ;
+            Window w = new AppWindow ( lifetimescope ) ;
+            w.Content = m ;
+            x.TCS     = source ;
+            x.Run ( w ) ;
+            Task.WaitAll ( x.TCS.Task ) ;
+            Debug.WriteLine ( source.Task.Result ) ;
         }
 
         [ WpfFact ]
         public void TestExceptionInfo ( )
         {
             var @in = File.OpenRead ( @"c:\data\logs\exception.bin" ) ;
-            BinaryFormatter f = new BinaryFormatter();
-            var exception = (Exception)f.Deserialize ( @in ) ;
-            HandleExceptionImpl h = new HandleExceptionImpl();
+            var f = new BinaryFormatter ( ) ;
+            var exception = ( Exception ) f.Deserialize ( @in ) ;
+            var h = new HandleExceptionImpl ( ) ;
             h.HandleException ( exception ) ;
-            SoapFormatter f2 = new SoapFormatter();
-            var  w = File.OpenWrite ( @"C:\data\logs\exception.xml" ) ;
-            f2.Serialize(w, exception);
-            w.Flush();
-            w.Close();
+            var f2 = new SoapFormatter ( ) ;
+            var w = File.OpenWrite ( @"C:\data\logs\exception.xml" ) ;
+            f2.Serialize ( w , exception ) ;
+            w.Flush ( ) ;
+            w.Close ( ) ;
             // try
             // {
             // object[] x = new object[] { null } ;
@@ -608,9 +607,9 @@ namespace ProjTests
 
         private async Task Command_ (
                                      string         p1
-     , string         proj
-     , string         doc
-     , ILifetimeScope scope
+ , string         proj
+ , string         doc
+ , ILifetimeScope scope
                                      )
         {
             Assert.NotNull ( VSI ) ;
@@ -863,22 +862,16 @@ namespace ProjTests
 
     public class TestApplication : Application
     {
-
         private TaskCompletionSource < bool > _tcs ;
-        public TaskCompletionSource < bool > TCS { get { return _tcs ; } set { _tcs = value ; } }
+        public  TaskCompletionSource < bool > TCS { get { return _tcs ; } set { _tcs = value ; } }
         #region Overrides of Application
         protected override void OnExit ( ExitEventArgs e )
         {
-
             base.OnExit ( e ) ;
             _tcs.TrySetResult ( true ) ;
         }
 
-        protected override void OnStartup ( StartupEventArgs e )
-        {
-            base.OnStartup ( e ) ;
-
-        }
+        protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
         #endregion
     }
 

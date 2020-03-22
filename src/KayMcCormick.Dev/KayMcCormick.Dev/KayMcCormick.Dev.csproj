@@ -191,6 +191,7 @@
     <Compile Include="MyCacheTarget2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushContextAttribute.cs" />
+    <Compile Include="StackTraceParser.cs" />
     <Compile Include="TestApplicationInstance.cs" />
     <Compile Include="TestLib\BeforeAfterLoggerAttribute.cs" />
     <Compile Include="TestLib\FixtureLogger.cs" />

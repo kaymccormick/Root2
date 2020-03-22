@@ -6,11 +6,9 @@
 #pragma once
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Provider "KayMcCormick-Roslyn-Analyzer-Provider" event count 0
+// Provider "KayMcCormick-Roslyn-Analyzer-Provider" event count 1
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#include <VSCustomNativeHeapEtwProvider.h>
-#include <guiddef.h>
 // Provider GUID = 4572dcf8-26a3-4eb0-bb9e-6773aec7c4e4
 EXTERN_C __declspec(selectany) const GUID PROVIDER_GUID = {0x4572dcf8, 0x26a3, 0x4eb0, {0xbb, 0x9e, 0x67, 0x73, 0xae, 0xc7, 0xc4, 0xe4}};
 
@@ -19,7 +17,33 @@ EXTERN_C __declspec(selectany) const GUID PROVIDER_GUID = {0x4572dcf8, 0x26a3, 0
 #endif // PROVIDER_GUID_Traits
 
 //
+// Channel
+//
+#define PROVIDER_GUID_CHANNEL_c2 0x10
+#define PROVIDER_GUID_CHANNEL_c3 0x11
+
+//
+// Opcodes
+//
+#define OPCODE_SETUP_LOGGING 0xa
+
+//
+// Tasks
+//
+#define TASK_INITIALIZATION 0x1
+
+//
+// Keyword
+//
+#define LOGGING_KEYWORD 0x1
+
+//
 // Event Descriptors
 //
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR SETUP_LOGGING_EVENT = {0x1, 0x0, 0x10, 0x4, 0x0, 0x1, 0x8000000000000000};
+#define SETUP_LOGGING_EVENT_value 0x1
 
+#define MSG_Task_Initialization_SetupLogging 0x3001000AL
+#define MSG_Task_Initialization              0x70000001L
 #define MSG_Provider_Name                    0x90000001L
+#define MSG_Event_SetupLogging               0xB0000001L
