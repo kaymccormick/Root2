@@ -12,6 +12,6 @@
 #include <crtdefs.h>
 #include <apiquery2.h>
 #include <evntprov.h>
-#include "CodeAnalysisApp1.h"
+#include "KayMcCormickDevProvider.h"
 
 #endif //PCH_H

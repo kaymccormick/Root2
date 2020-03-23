@@ -3,8 +3,8 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "CodeAnalysisApp1.h"
 #include "CompatLib.h"
+#include "KayMcCormickDevProvider.h"
 
 // TODO: This is an example of a library function
 extern "C" {
@@ -14,14 +14,11 @@ ULONG fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled(LPCWSTR message)
 	return EventWriteSETUP_LOGGING_EVENT_AssumeEnabled(message);
 }
 
+}
 
-ULONG fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled(LPCWSTR message)
+
+ULONG fnEventWriteEVENT_COMPONENT_REGISTERED(LPCWSTR limitType, const GUID* id)
 {
-	return
-		EventWriteEVENT_COMPONENT_RESOLVED_AssumeEnabled();
+	return EventWriteEVENT_COMPONENT_REGISTERED(limitType, id);
 }
-DLL1_API int fnCompatLib1(void)
-{
-	return 5;
-}
-}
+

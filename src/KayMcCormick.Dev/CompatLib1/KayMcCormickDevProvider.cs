@@ -24,10 +24,10 @@ namespace KayMcCormick.Dev.Tracing
     public static class PROVIDER_GUID
     {
         //
-        // Provider "KayMcCormick-Roslyn-Analyzer-Provider" event count = 4
+        // Provider "KayMcCormick-Development-CodeAnalysis" event count = 4
         //
 
-        internal static EventProviderVersionTwo m_provider = new EventProviderVersionTwo(new Guid("4572dcf8-26a3-4eb0-bb9e-6773aec7c4e4"));
+        internal static EventProviderVersionTwo m_provider = new EventProviderVersionTwo(new Guid("5dd6e00a-e8fc-4e66-b8d7-dc8f0d62b0a1"));
         //
         // Task :  eventGUIDs
         //

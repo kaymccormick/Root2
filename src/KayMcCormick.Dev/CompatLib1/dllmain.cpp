@@ -1,20 +1,22 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 
+#include "KayMcCormickDevProvider.h"
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
-                     )
+)
 {
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
     case DLL_THREAD_ATTACH:
-		EventRegisterKayMcCormick_Roslyn_Analyzer_Provider();
+		EventRegisterKayMcCormick_Development_CodeAnalysis();
 		break;
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
-		EventUnregisterKayMcCormick_Roslyn_Analyzer_Provider();
+		EventUnregisterKayMcCormick_Development_CodeAnalysis();
         break;
     }
     return TRUE;
