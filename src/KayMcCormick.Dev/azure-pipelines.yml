@@ -21,7 +21,7 @@ pool:
 variables:
   solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
   buildPlatform: 'x86'
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
   KmGlobalOutputPath: $(Build.BinariesDirectory)
 
 steps:
