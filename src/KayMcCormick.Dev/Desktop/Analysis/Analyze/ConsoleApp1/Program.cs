@@ -73,6 +73,7 @@ namespace ConsoleApp1
             using ( var appinst = new ApplicationInstance ( Console.Error.WriteLine ) )
             {
                 appinst.AddModule ( new AppModule ( ) ) ;
+                appinst.AddModule(new AnalysisAppLibModule());
                 appinst.AddModule ( new ProjLibModule ( ) ) ;
                 var scope = appinst.GetLifetimeScope ( ) ;
 
@@ -210,15 +211,16 @@ namespace ConsoleApp1
 
 #if MSBUILDLOCATOR
             // var instances = MSBuildLocator.RegisterDefaults ( ) ;
-            var i2 = MSBuildLocator
+            var i2 = (from inst in  MSBuildLocator
                .QueryVisualStudioInstances (
                                             new VisualStudioInstanceQueryOptions ( )
                                             {
                                                 DiscoveryTypes = DiscoveryType.VisualStudioSetup
                                             }
                                            )
-               .Where ( instance => instance.Version.Major == 16 && instance.Version.Minor == 4 )
-               .First ( ) ;
+                      where inst.Version.Major == 15
+                                  orderby  inst.Version descending select inst).FirstOrDefault();
+                
             Logger.Warn(
                         "Selected instance {instance} {path}"
                       , i2.Name
@@ -246,38 +248,36 @@ namespace ConsoleApp1
                 }
             }
 
-            var key = Console.ReadKey ( ) ;
-            if ( ! Char.IsDigit ( key.KeyChar ) )
+            for ( ; ; )
             {
-                return ;
+                var key = Console.ReadKey ( ) ;
 
-            }
+                if ( ! char.IsDigit ( key.KeyChar ) )
+                {
+                    continue ;
 
-            var selection = (int)char.GetNumericValue ( key.KeyChar ) ;
+                }
 
-            if ( nodes[selection - 1] is IProjectBrowserNode projectNode )
-            {
+                var selection = ( int ) char.GetNumericValue ( key.KeyChar ) ;
+
+                var projectNode = nodes[ selection - 1 ] as IProjectBrowserNode ;
+                if ( projectNode == null )
+                {
+                    continue ;
+                }
+
                 Console.WriteLine ( projectNode.SolutionPath ) ;
                 Console.ReadLine ( ) ;
                 await viewModel.AnalyzeCommand ( projectNode ) ;
                 using ( var s = File.OpenWrite ( "invocs.json" ) )
                 {
-                    await JsonSerializer.SerializeAsync( s , viewModel.LogInvocations ) ;
+                    await JsonSerializer.SerializeAsync ( s , viewModel.LogInvocations ) ;
                 }
+
+                break ;
+
             }
-            //
-            // var pipe = viewModel.PipelineViewModel.Pipeline.PipelineInstance ;
-            //
-            //
-            // var timeSpan = new TimeSpan ( 0 , 15, 0 ) ;
-            // Logger.Info ( "waiting " + timeSpan ) ;
-            //
-            // await context.actionBlock.Completion ;
-            //
-            // if ( pipe.Completion.IsFaulted )
-            // {
-            //     Logger.Error ( pipe.Completion.Exception , pipe.Completion.Exception.ToString ) ;
-            // }
+
         }
 
         private static void Init ( )
