@@ -15,6 +15,7 @@ using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading ;
+using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
@@ -22,7 +23,7 @@ namespace AnalysisAppLib
 {
     public sealed class LogViewModel : INotifyPropertyChanged, IViewModel
     {
-        private LogEventInstanceCollection _logEntries ;
+        private LogEventInstanceObservableCollection _logEntries ;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private ObservableCollection < ViewerLoggerInfo > rootNodes ;
@@ -38,7 +39,7 @@ namespace AnalysisAppLib
                          {
                              LoggerName = "" , PartName = "" , DisplayName = "Root logger"
                          } ;
-            _logEntries = new LogEventInstanceCollection ( ) ;
+            _logEntries = new LogEventInstanceObservableCollection ( ) ;
             _dict       = new Dictionary < string , ViewerLoggerInfo > ( ) ;
             rootNodes   = new ObservableCollection < ViewerLoggerInfo > ( ) ;
 
@@ -55,7 +56,7 @@ namespace AnalysisAppLib
 
         public ObservableCollection < ViewerLoggerInfo > RootNodes { get { return rootNodes ; } }
 
-        public LogEventInstanceCollection LogEntries { get { return _logEntries ; } }
+        public LogEventInstanceObservableCollection LogEntries { get { return _logEntries ; } }
 
         public string DisplayName { get { return _displayName ; } set { _displayName = value ; } }
 

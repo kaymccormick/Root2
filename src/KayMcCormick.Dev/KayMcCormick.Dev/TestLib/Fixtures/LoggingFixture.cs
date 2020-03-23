@@ -87,7 +87,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
                     }
                 }
             }
-
+            LogManager.ReconfigExistingLoggers();
             if ( fUpdated )
             {
                 LogManager.ReconfigExistingLoggers ( ) ;

@@ -55,5 +55,10 @@ namespace KayMcCormick.Dev.Logging
         /// Chainsaw port
         /// </summary>
         int? ChainsawPort { get ;  }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        bool? LogThrowExceptions { get ; }
     }
 }

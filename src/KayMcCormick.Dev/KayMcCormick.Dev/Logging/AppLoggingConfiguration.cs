@@ -32,6 +32,7 @@ namespace KayMcCormick.Dev.Logging
         private int ? _nLogViewerPort ;
         private int ? _chainsawPort ;
         private bool ? _isEnabledDebuggerTarget ;
+        private bool ? _logThrowExceptions ;
 
         #region Implementation of ILoggingConfiguration
         /// <summary>
@@ -75,6 +76,11 @@ namespace KayMcCormick.Dev.Logging
         /// 
         /// </summary>
         public int? ChainsawPort { get => _chainsawPort ; set => _chainsawPort = value ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool ? LogThrowExceptions { get { return _logThrowExceptions ; } set { _logThrowExceptions = value ; } }
 
         /// <summary>
         /// 

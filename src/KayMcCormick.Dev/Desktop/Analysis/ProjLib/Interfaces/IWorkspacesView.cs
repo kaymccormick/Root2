@@ -1,4 +1,5 @@
 ﻿using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using KayMcCormick.Dev ;
 
 namespace ProjLib.Interfaces

@@ -12,6 +12,7 @@ using Autofac.Extras.AttributeMetadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.AppBuild ;
 using KayMcCormick.Dev.Interfaces ;
+using KayMcCormick.Dev.Tracing ;
 using NLog ;
 using Module = Autofac.Module ;
 
@@ -156,9 +157,16 @@ namespace KayMcCormick.Dev
                 throw new ArgumentNullException ( nameof ( args ) ) ;
             }
 
-            var activatorLimitType = args.ComponentRegistration.Activator.LimitType ;
+            var reg = args.ComponentRegistration ;
+            var activatorLimitType = reg.Activator.LimitType ;
             Logger.Trace ( "Registered " + activatorLimitType ) ;
-            args.ComponentRegistration.Activated += ( o , eventArgs ) => {
+            PROVIDER_GUID.EventWriteEVENT_COMPONENT_REGISTERED (
+                                                                activatorLimitType
+                                                                   .AssemblyQualifiedName
+                                                              , reg.Id
+                                                               ) ;
+
+            reg.Activated += ( o , eventArgs ) => {
                 Logger.Trace ( $"Activated {DescribeComponent ( eventArgs.Component )} (sender={o}, instance={eventArgs.Instance})" ) ;
             } ;
         }

@@ -38,6 +38,30 @@ using JsonAttribute = NLog.Layouts.JsonAttribute ;
 
 namespace KayMcCormick.Dev.Logging
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AppFileTarget : FileTarget
+    {
+        #region Overrides of FileTarget
+        /// <summary>
+        /// 
+        /// </summary>
+        public AppFileTarget ( ) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        public AppFileTarget ( string name ) : base ( name ) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logEvent"></param>
+        protected override void Write ( LogEventInfo logEvent ) { base.Write ( logEvent ) ; }
+        #endregion
+    }
 #if NETFRAMEWORK && ENABLE_WCF_TARGET
     internal class Client
     {
@@ -92,6 +116,7 @@ namespace KayMcCormick.Dev.Logging
         private const  int    DefaultProtoLogUdpPort      = 4445 ;
         private const  string EnvVarName_MINLOGLEVEL      = "MINLOGLEVEL" ;
         private const  string DefaultEventLogTargetName   = "eventLogTarget" ;
+        private const  string LogRootPath                 = @"c:\data\logs\" ;
 
         // ReSharper disable once InconsistentNaming
         [ SuppressMessage ( "Microsoft.Performance" , "CA1823:AvoidUnusedPrivateFields" ) ]
@@ -230,7 +255,7 @@ namespace KayMcCormick.Dev.Logging
 #if FIELD_ACCESS
             var fieldInfo = typeof ( LogManager ).GetField (
                                                             "factory"
-                                                      , BindingFlags.Static
+                                                  , BindingFlags.Static
                                                             | BindingFlags.NonPublic
                                                            ) ;
             if ( fieldInfo != null )
@@ -284,6 +309,11 @@ namespace KayMcCormick.Dev.Logging
             }
 
             var lConf = new CodeConfiguration ( useFactory ) ;
+            if ( config1.LogThrowExceptions.GetValueOrDefault ( ) )
+            {
+                LogManager.ThrowExceptions = true ;
+            }
+
             //LogManager.ThrowExceptions = true ;
             _dict = LogLevel.AllLoggingLevels.ToDictionary (
                                                             level => level
@@ -362,7 +392,7 @@ namespace KayMcCormick.Dev.Logging
                 errorTargets?.Add ( x ) ;
             }
 
-            var tracingTarget = new NLogTraceTarget();
+            var tracingTarget = new NLogTraceTarget ( ) ;
             t.Add ( tracingTarget ) ;
 
 #if ENABLE_WCF_TARGET
@@ -384,11 +414,11 @@ namespace KayMcCormick.Dev.Logging
             {
                 // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
                                     EndpointAddress = receiverAddress.ToString ( )
-  , ClientId = new SimpleLayout ( "${processName}" )
-  , EndpointConfigurationName =
+, ClientId = new SimpleLayout ( "${processName}" )
+, EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
-  , IncludeEventProperties = true
-                   ,
+, IncludeEventProperties = true
+                 ,
                                 } ;
             }
                 
@@ -420,9 +450,10 @@ namespace KayMcCormick.Dev.Logging
             // } ;
             // t.Add ( jsonNetworkTarget ) ;
 
-            var xmlTarget = new FileTarget ( "xmlFile" )
+            var logRootDir = LogRootPath ;
+            var xmlTarget = new AppFileTarget ( "xmlFile" )
                             {
-                                FileName = new SimpleLayout ( @"c:\data\logs\xmllog.log" )
+                                FileName = new SimpleLayout ( $@"{logRootDir}xmllog.log" )
                               , Layout   = _xmlEventLayout
                             } ;
             t.Add ( xmlTarget ) ;
@@ -483,7 +514,7 @@ namespace KayMcCormick.Dev.Logging
                 byType[ type ] =  count ;
 
                 if ( target.Name == null
-                     || (usedNames != null && usedNames.Contains ( target.Name ) ))
+                     || usedNames != null && usedNames.Contains ( target.Name ) )
                 {
                     target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
@@ -491,6 +522,7 @@ namespace KayMcCormick.Dev.Logging
                 logMethod (
                            $"Adding log target {target.Name} of type {target.GetType ( ).AssemblyQualifiedName}"
                           ) ;
+                LogAddTarget ( target ) ;
                 lConf.AddTarget ( target ) ;
             }
 
@@ -517,12 +549,10 @@ namespace KayMcCormick.Dev.Logging
                 {
                     lConf.AddTarget ( oldTarget ) ;
                 }
-
             }
 
             if ( oldRules != null )
             {
-
                 foreach ( var oldRule in oldRules )
                 {
                     lConf.LoggingRules.Add ( oldRule ) ;
@@ -545,6 +575,14 @@ namespace KayMcCormick.Dev.Logging
                 System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
                 throw ;
             }
+        }
+
+        private static void LogAddTarget ( Target target )
+        {
+            PROVIDER_GUID.EventWriteLOGTARGET_ATTACHED_EVENT (
+                                                              target.Name
+                                                            , target.GetType ( ).FullName
+                                                             ) ;
         }
 
         private static ChainsawTarget CreateChainsawTarget ( )
@@ -689,7 +727,7 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for JsonFileTarget
         public static FileTarget JsonFileTarget ( )
         {
-            var f = new FileTarget ( JsonTargetName )
+            var f = new AppFileTarget ( JsonTargetName )
                     {
                         FileName = Layout.FromString ( @"c:\data\logs\${processName}.json" )
                         // ,
@@ -706,7 +744,7 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for MyFileTarget
         public static FileTarget MyFileTarget ( )
         {
-            var f = new FileTarget
+            var f = new AppFileTarget
                     {
                         Name     = "text_log"
                       , FileName = Layout.FromString ( @"c:\data\logs\log.txt" )
@@ -918,7 +956,7 @@ namespace KayMcCormick.Dev.Logging
             var config = LogManager.Configuration ;
             if ( config == null )
             {
-                return new Dictionary < string , object > () ;
+                return new Dictionary < string , object > ( ) ;
             }
 
             var configInfo = new Dictionary < string , object > ( ) ;
@@ -1029,10 +1067,12 @@ namespace KayMcCormick.Dev.Logging
         // ReSharper disable once UnusedMember.Global
         public static void AddTarget ( Target target , LogLevel minLevel , bool addRules = true )
         {
+            LogAddTarget ( target ) ;
             if ( minLevel == null )
             {
                 minLevel = LogLevel.Trace ;
             }
+
 
             LogManager.Configuration.AddTarget ( target ) ;
 

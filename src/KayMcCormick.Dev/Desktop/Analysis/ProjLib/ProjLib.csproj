@@ -71,7 +71,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveSpans.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
     <Compile Include="BuildResults.cs" />
@@ -86,16 +85,13 @@
     <Compile Include="Interfaces\IFormattedCode.cs" />
     <Compile Include="Interfaces\IItemInfo.cs" />
     <Compile Include="Interfaces\IMruItem.cs" />
-    <Compile Include="Interfaces\IPipelineViewModel.cs" />
     <Compile Include="Interfaces\IProjectInfo.cs" />
     <Compile Include="Interfaces\IRuntimestatus.cs" />
     <Compile Include="Interfaces\ISpanObject.cs" />
     <Compile Include="Interfaces\ISpanToolTipViewModel.cs" />
-    <Compile Include="Interfaces\ISpanViewModel.cs" />
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="Interfaces\IWorkspacesView.cs" />
     <Compile Include="MruItem.cs" />
-    <Compile Include="PipelineViewModel.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
     <Compile Include="ProjLibContainer.cs" />

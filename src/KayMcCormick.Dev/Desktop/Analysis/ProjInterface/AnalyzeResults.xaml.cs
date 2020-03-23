@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using ProjLib;
 using ProjLib.Interfaces ;
 

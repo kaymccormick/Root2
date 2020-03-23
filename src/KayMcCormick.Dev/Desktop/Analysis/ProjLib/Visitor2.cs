@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Linq ;
+using AnalysisAppLib ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

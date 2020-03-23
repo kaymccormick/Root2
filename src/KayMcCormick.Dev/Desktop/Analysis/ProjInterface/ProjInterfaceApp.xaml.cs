@@ -5,6 +5,8 @@ using System.Linq ;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Threading ;
+using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
 using AnalysisControls.Interfaces ;
 using Autofac ;

@@ -48,6 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>0</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -118,8 +119,7 @@
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
     <Compile Include="IView1.cs" />
-    <Compile Include="LogEventInstanceCollection.cs" />
-    <Compile Include="Tracing\CodeAnalysisApp1.cs" />
+    <Compile Include="LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\CentralServiceReference\Reference.cs">
@@ -161,7 +161,6 @@
     <Compile Include="Interfaces\IObjectIdProvider.cs" />
     <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
     <Compile Include="IView.cs" />
-    <Compile Include="IViewModel.cs" />
     <Compile Include="LogEventInstance.cs" />
     <Compile Include="LoggerEventArgs.cs" />
     <Compile Include="LoggerSettings.cs" />
@@ -207,6 +206,7 @@
     <Compile Include="TestLib\LogTestMethodAttribute.cs" />
     <Compile Include="TestLib\TestMethodLifecycle.cs" />
     <Compile Include="Tracing\ExtLib.cs" />
+    <Compile Include="Tracing\KayMcCormickDevProvider.cs" />
     <Compile Include="Tracing\NLogTraceTarget.cs" />
     <Compile Include="UnableToRegisterObjectIdException.cs" />
     <Compile Include="Utils.cs" />

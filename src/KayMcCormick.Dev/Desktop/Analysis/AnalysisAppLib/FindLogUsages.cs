@@ -28,55 +28,58 @@ namespace AnalysisAppLib
                                  ) ;
 #endif
                     var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
-                    var root = tree.GetCompilationUnitRoot ( ) ;
+                    var root = (tree ?? throw new InvalidOperationException ( )).GetCompilationUnitRoot ( ) ;
                     var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
 
-                    var exceptionType =
-                        model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
-                    var t = LogUsages.GetNLogSymbol ( model ) ;
-                    if ( t == null )
+                    if ( model != null )
                     {
-                        return Array.Empty < ILogInvocation > ( ) ;
+                        var exceptionType =
+                            model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
+                        var t = LogUsages.GetNLogSymbol ( model ) ;
+                        if ( t == null )
+                        {
+                            return Array.Empty < ILogInvocation > ( ) ;
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-                    }
+                        }
 
-                    var t2 = LogUsages.GetILoggerSymbol ( model ) ;
-                    if ( t2 == null )
-                    {
-                        return Array.Empty < ILogInvocation > ( ) ;
+                        var t2 = LogUsages.GetILoggerSymbol ( model ) ;
+                        if ( t2 == null )
+                        {
+                            return Array.Empty < ILogInvocation > ( ) ;
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-                    }
+                        }
 
-                    var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
-                    var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
-                    return
-                        from node in root.DescendantNodes ( )//.AsParallel ( )
-                        let t_ = t
-                        let t2_ = t2
-                        let builderSymbol = logBuilderSymbol
-                        let tree_ = tree
-                        let model_ = model
-                        let exType = exceptionType
-                        where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression || node.RawKind== (ushort)SyntaxKind.ObjectCreationExpression
-                        let @out =
-                            LogUsages.CheckInvocationExpression ( node
-                                                                , model_
-                                                                , builderSymbol
-                                                               , t_
-                                                               , t2_
-                                                                )
-                        where @out.Item1
-                        let statement = Enumerable.Where < SyntaxNode > ( node.AncestorsAndSelf ( ) , Predicate ).First ( )
-                        select new InvocationParams (
-                                                    new CodeSource ( tree_.FilePath )
-                                                  , tree_
-                                                  , model_
-                                                  , statement
-                                                  , @out
-                                                  , exType
-                                                   ).ProcessInvocation ( ) ;
+                        var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
+                        var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
+                        return
+                            from node in root.DescendantNodes ( ) //.AsParallel ( )
+                            let t_ = t
+                            let t2_ = t2
+                            let builderSymbol = logBuilderSymbol
+                            let tree_ = tree
+                            let model_ = model
+                            let exType = exceptionType
+                            where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression || node.RawKind == (ushort)SyntaxKind.ObjectCreationExpression
+                            let @out =
+                                LogUsages.CheckInvocationExpression ( node
+                                                                    , model_
+                                                                    , builderSymbol
+                                                                    , t_
+                                                                    , t2_
+                                                                    )
+                            where @out.Item1
+                            let statement = Enumerable.Where < SyntaxNode > ( node.AncestorsAndSelf ( ) , Predicate ).First ( )
+                            select new InvocationParams (
+                                                         new CodeSource ( tree_.FilePath )
+                                                       , tree_
+                                                       , model_
+                                                       , statement
+                                                       , @out
+                                                       , exType
+                                                        ).ProcessInvocation ( ) ;
+                    }
                 }
                 catch ( Exception ex )
                 {
@@ -84,6 +87,8 @@ namespace AnalysisAppLib
                     throw ;
                 }
             }
+
+            throw new InvalidOperationException ( ) ;
         }
 
         private static bool Predicate ( SyntaxNode arg1 , int arg2 )

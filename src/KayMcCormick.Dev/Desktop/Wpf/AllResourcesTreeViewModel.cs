@@ -23,7 +23,7 @@ using KayMcCormick.Dev.Interfaces ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    public class AllResourcesTreeViewModel
+    public sealed class AllResourcesTreeViewModel
     {
         private readonly ILifetimeScope _lifetimeScope ;
         private readonly IObjectIdProvider _idProvider ;
@@ -99,8 +99,9 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        [ NotNull ]
         private ResourceNodeInfo CreateNode (
-            ResourceNodeInfo parent
+            [ CanBeNull ] ResourceNodeInfo parent
           , object           key
           , object           data
           , bool?             isValueChildren = null
@@ -185,11 +186,16 @@ namespace KayMcCormick.Lib.Wpf
 
             var resNodeData = resNode.Data ;
             ResourceDictionary res = ( ResourceDictionary ) resNodeData ;
-            resNode.SourceUri = res.Source ;
+            resNode.SourceUri = res?.Source ;
+
+            if ( res == null )
+            {
+                return ;
+            }
 
             foreach ( var md in res.MergedDictionaries )
             {
-                var mdr = CreateNode ( resNode , md.Source , md, true ) ;
+                var mdr = CreateNode ( resNode , md.Source , md , true ) ;
                 AddResourceNodeInfos ( mdr ) ;
             }
 
@@ -210,8 +216,7 @@ namespace KayMcCormick.Lib.Wpf
                         case ComponentResourceKey componentResourceKey : break ;
 
                         // ReSharper disable once UnusedVariable
-                        case ItemContainerTemplateKey 
-                            itemContainerTemplateKey : break ;
+                        case ItemContainerTemplateKey itemContainerTemplateKey : break ;
                         // ReSharper disable once UnusedVariable
                         case DataTemplateKey dataTemplateKey : break ;
                         // ReSharper disable once UnusedVariable
@@ -225,13 +230,14 @@ namespace KayMcCormick.Lib.Wpf
                 var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
                 if ( haveResourcesResource.Value is FrameworkTemplate ft )
                 {
-                    var resourcesNode = CreateNode( resourceInfo, "Resources" , ft.Resources ) ;
+                    var resourcesNode =
+                        CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
                     AddResourceNodeInfos ( resourcesNode ) ;
                 }
 
                 if ( haveResourcesResource.Value is Style sty )
                 {
-                    var settersNode = CreateNode(resourceInfo, "Setters", null ) ;
+                    var settersNode = CreateNode ( resourceInfo , "Setters" , null ) ;
                     settersNode.IsExpanded = true ;
                     foreach ( var setter in sty.Setters )
                     {
@@ -239,45 +245,38 @@ namespace KayMcCormick.Lib.Wpf
                         {
                             case EventSetter _ : break ;
                             case Setter setter1 :
-                                CreateNode (
-                                            settersNode
-                                          , setter1.Property
-                                          , setter1.Value
-                                           ) ;
-                                        
+                                CreateNode ( settersNode , setter1.Property , setter1.Value ) ;
+
                                 break ;
-                            default :
-                                throw new InvalidOperationException() ;
+                            default : throw new InvalidOperationException ( ) ;
                         }
-
-
                     }
-
                 }
 
                 if ( haveResourcesResource.Value is IDictionary dict )
                 {
                     foreach ( var key2 in dict.Keys )
                     {
-                        CreateNode(resourceInfo, key2 , dict[ key2 ] ) ;
+                        CreateNode ( resourceInfo , key2 , dict[ key2 ] ) ;
                     }
                 }
                 else
                 {
                     if ( ! ( haveResourcesResource.Value is IEnumerable enumerable )
-                         || haveResourcesResource.Value.GetType ( ) == typeof ( string ) )
+                         || haveResourcesResource.Value is string )
                     {
                         continue ;
                     }
 
                     foreach ( var child in enumerable )
                     {
-                        CreateNode( resourceInfo, child , null ) ;
+                        CreateNode ( resourceInfo , child , null ) ;
                     }
                 }
             }
         }
 
+        [ CanBeNull ]
         private static object WrapValue ( object data )
         {
             object wrapped = null ;
@@ -289,7 +288,7 @@ namespace KayMcCormick.Lib.Wpf
             return wrapped ;
         }
 
-        private void HandleWindow ( Window w )
+        private void HandleWindow ( [ NotNull ] Window w )
         {
             var winNode = CreateNode(_appNode,
                               w.GetType ( )

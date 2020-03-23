@@ -1,4 +1,6 @@
 ﻿using System.Windows.Controls ;
+using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
 
 namespace AnalysisControls.Views

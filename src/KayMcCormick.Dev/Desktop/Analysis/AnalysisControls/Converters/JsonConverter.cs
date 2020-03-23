@@ -15,7 +15,7 @@ namespace AnalysisControls.Converters
           , CultureInfo culture
         )
         {
-            var x = JsonSerializer.Deserialize<dynamic> ( value as string ) ;
+            var x = JsonSerializer.Deserialize<dynamic> ( value as string ?? throw new InvalidOperationException ( ) ) ;
             return x ;
         }
 

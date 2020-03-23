@@ -1,5 +1,7 @@
 ﻿using System.Windows ;
 using System.Windows.Input ;
+using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

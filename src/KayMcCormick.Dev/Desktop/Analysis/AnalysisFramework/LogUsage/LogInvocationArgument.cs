@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Syntax ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisFramework.LogUsage

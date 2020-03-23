@@ -4,6 +4,7 @@ using System.IO ;
 using System.Linq ;
 using System.Text ;
 using System.Threading ;
+using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
@@ -223,8 +224,11 @@ namespace AnalysisAppLib
                                                              , relevantNode
                                                              , null
                                                               ) ;
-                var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
-                var i2 = sourceContext.IndexOf ( relevantNode ) ;
+                if ( relevantNode.Parent != null )
+                {
+                    var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
+                    var i2 = sourceContext.IndexOf ( relevantNode ) ;
+                }
 
                 var p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
                 try

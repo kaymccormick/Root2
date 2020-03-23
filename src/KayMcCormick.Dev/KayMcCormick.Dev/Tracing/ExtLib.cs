@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices ;
-
+#if false
 namespace KayMcCormick.Dev.Tracing
 {
     /// <summary>
@@ -18,3 +18,4 @@ namespace KayMcCormick.Dev.Tracing
             fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled ([MarshalAs( UnmanagedType.LPWStr)] string message ) ;
     }
 }
+#endif

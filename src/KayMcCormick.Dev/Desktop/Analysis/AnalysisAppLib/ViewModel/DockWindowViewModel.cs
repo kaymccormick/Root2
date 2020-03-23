@@ -17,18 +17,27 @@ using Logger = NLog.Logger ;
 
 namespace AnalysisAppLib.ViewModel
 {
+    public sealed class LoginAuthenticationViewModel : IViewModel
+    {
+        private readonly Func<string, GraphServiceClient> _graphFunc;
+        private readonly IPublicClientApplication         _publicClient;
+
+        public LoginAuthenticationViewModel ( Func < string , GraphServiceClient > graphFunc , IPublicClientApplication publicClient )
+        {
+            _graphFunc = graphFunc ;
+            _publicClient = publicClient ;
+        }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
+    }
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly IEnumerable < IExplorerItemProvider > _providers ;
-        private readonly Func < string , GraphServiceClient >  _graphFunc ;
-        private readonly IPublicClientApplication              _publicClient ;
-
-        // private readonly ObservableCollection < IExplorerItem > _rootCollection =
-        // new ObservableCollection < IExplorerItem > ( ) ;
-
-
+        
         private readonly IEnumerable < Meta < Lazy < IView1 > > > _views ;
         private          IAccount                                 _account ;
 
@@ -46,9 +55,7 @@ namespace AnalysisAppLib.ViewModel
             IEnumerable < Meta < Lazy < IView1 > > > views
           , IEnumerable < IExplorerItemProvider >    providers
         )
-
         {
-            Logger.Debug ( "Constructor" ) ;
             _views     = views ;
             _providers = providers ;
 
@@ -98,8 +105,6 @@ namespace AnalysisAppLib.ViewModel
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;
-
-        public IntPtr GethWnd ( ) { return _hWnd ; }
 
         public void SethWnd ( IntPtr value ) { _hWnd = value ; }
 

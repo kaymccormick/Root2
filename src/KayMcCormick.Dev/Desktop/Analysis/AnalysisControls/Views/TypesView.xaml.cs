@@ -1,5 +1,5 @@
 ﻿using System.Windows.Controls ;
-using AnalysisControls.Syntax ;
+using AnalysisAppLib.ViewModel ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 

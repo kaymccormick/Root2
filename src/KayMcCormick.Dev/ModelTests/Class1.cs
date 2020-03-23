@@ -4,21 +4,31 @@ using System.IO ;
 using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.TestLib ;
+using KayMcCormick.Dev.TestLib.Fixtures ;
+using KayMcCormick.Dev.Tracing ;
 using Xunit ;
 using Xunit.Abstractions ;
 
 namespace ModelTests
 {
-    public class Class1 : IDisposable
+
+    [BeforeAfterLogger]
+    [LogTestMethod]
+    public sealed class Class1 : IDisposable, IClassFixture <LoggingFixture>
     {
         private readonly ITestOutputHelper _outputHelper ;
+        private readonly LoggingFixture _loggingFixture ;
         private readonly ApplicationInstance _app ;
         private readonly bool _disableLogging ;
 
-        public Class1 ( ITestOutputHelper outputHelper )
+        public Class1 ( ITestOutputHelper outputHelper , [ NotNull ] LoggingFixture loggingFixture)
         {
             _outputHelper = outputHelper ;
+            loggingFixture.SetOutputHelper ( _outputHelper ) ;
+            _loggingFixture = loggingFixture ;
             _disableLogging = false;
             _app = SetupApplicationInstance ( ) ;
             
@@ -27,6 +37,7 @@ namespace ModelTests
         public bool DisableLogging { get { return _disableLogging ; } }
 
 
+        [ NotNull ]
         private ApplicationInstance SetupApplicationInstance ( )
         {
             var applicationInstance = new ApplicationInstance (
@@ -87,8 +98,11 @@ namespace ModelTests
             }
         }
 
+
+
         private void LogMethod ( string message )
         {
+            //PROVIDER_GUID.EventWriteEVENT_TEST_OUTPUT ( message ) ;
             Debug.WriteLine ( message ) ;
             _outputHelper.WriteLine ( message ) ;
         }
@@ -96,6 +110,7 @@ namespace ModelTests
         #region IDisposable
         public void Dispose ( )
         {
+            _loggingFixture.SetOutputHelper ( null ) ;
             _app?.Dispose ( ) ;
         }
         #endregion

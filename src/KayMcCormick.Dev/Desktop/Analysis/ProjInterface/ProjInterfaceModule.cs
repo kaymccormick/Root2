@@ -17,6 +17,7 @@ using System.Reflection ;
 using System.Windows ;
 using System.Windows.Controls ;
 using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;

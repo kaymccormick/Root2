@@ -10,10 +10,12 @@
     xmlns:analysisControls="clr-namespace:AnalysisControls"
         xmlns:interfaces="clr-namespace:AnalysisControls.Interfaces"
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+        xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+        xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
         mc:Ignorable="d" FontSize="18.0"
         Title="Window1" Height="450" Width="800">
   <kmWpf:AppWindow.Resources>
-    <DataTemplate DataType="{x:Type analysisControls:SyntaxItem}">
+    <DataTemplate DataType="{x:Type analysisAppLib:SyntaxItem}">
       <StackPanel Orientation="Horizontal">
         <TextBlock Text="{Binding SyntaxKind}"/>
         <TextBlock Text="{Binding Token}"/>
@@ -27,7 +29,7 @@
       <xcad:LayoutPanel Orientation="Horizontal">
         <xcad:LayoutAnchorablePane DockWidth="200">
 <xcad:LayoutAnchorable>
-  <ListView ItemsSource="{Binding Source={kmWpf:Resolve interfaces:IApplicationViewModel},Path=SyntaxItems}">
+  <ListView ItemsSource="{Binding Source={kmWpf:Resolve viewModel:IApplicationViewModel},Path=SyntaxItems}">
     <ListView.View>
       <GridView>
                   <GridViewColumn Header="Kind" DisplayMemberBinding="{Binding Path=SyntaxKind}"></GridViewColumn>

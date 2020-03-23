@@ -85,25 +85,16 @@
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
     <Compile Include="Converters\TokenConverter.cs" />
-    <Compile Include="Interfaces\IApplicationViewModel.cs" />
-    <Compile Include="ViewModels\ApplicationViewModel.cs" />
-    <Compile Include="Syntax\AppTypeInfo.cs" />
-    <Compile Include="Syntax\ComponentInfo.cs" />
     <Compile Include="Views\CompilationView.xaml.cs">
       <DependentUpon>CompilationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\CompilationViewModel.cs" />
     <Compile Include="Views\ComponentPage.xaml.cs">
       <DependentUpon>ComponentPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ComponentViewModel.cs" />
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
-    <Compile Include="Interfaces\ICompilationViewModel.cs" />
-    <Compile Include="Interfaces\IComponentViewModel.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
-    <Compile Include="Interfaces\ISyntaxPanelViewModel.cs" />
     <Compile Include="Views\NodePanel.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
@@ -122,15 +113,11 @@
     <Compile Include="SpanToolTip.cs" />
     <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SymbolControl.cs" />
-    <Compile Include="SyntaxItem.cs" />
-    <Compile Include="ViewModels\SyntaxPanelViewModel.cs" />
-    <Compile Include="Syntax\ITypesViewModel.cs" />
     <Compile Include="Views\TestView1.xaml.cs">
       <DependentUpon>TestView1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Token.cs" />
     <Compile Include="ToolTips.cs" />
-    <Compile Include="ViewModels\TypesViewModel.cs" />
     <Compile Include="ValueTemplateItemSelector.cs" />
     <Compile Include="Views\SyntaxPanel.xaml.cs">
       <DependentUpon>SyntaxPanel.xaml</DependentUpon>
@@ -306,6 +293,9 @@
     <Resource Include="Themes\DataDesignersUI_2405.ico" />
     <Resource Include="Themes\RecordSetDest_201.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Syntax\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

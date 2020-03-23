@@ -38,7 +38,7 @@ using Timer = System.Timers.Timer ;
 
 namespace LeafService
 {
-    internal class LeafService1 : IDisposable
+    internal sealed class LeafService1 : IDisposable
     {
         private static readonly Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
         private static readonly Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
@@ -51,7 +51,7 @@ namespace LeafService
 #pragma warning restore CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
         private ServiceHost        _svcReceiver ;
         private Timer              _timer ;
-        private List < IService1 > _services = new List < IService1 > ( ) ;
+        private readonly List < IService1 > _services = new List < IService1 > ( ) ;
         private AddInProcess _addInProcess ;
 
         public LeafService1 ( ILog commonLogger ) { _commonLogger = commonLogger ; }
@@ -71,11 +71,15 @@ namespace LeafService
         // ReSharper disable once UnusedParameter.Global
         public bool Start ( HostControl hostControl )
         {
+            Logger.Info($"{nameof(LeafService1)} Start command received.");
             InitializeAddin ( ) ;
-
+            
 
             var f = new LogFactory < MyLogger > ( ) ;
-            Trace.Refresh ( ) ;
+
+
+#if false
+      Trace.Refresh ( ) ;
             Trace.Listeners.Add (
                                  new NLogTraceListener
                                  {
@@ -87,25 +91,30 @@ namespace LeafService
                                    , LogFactory = f
                                  }
                                 ) ;
+#endif
 
+            RemoveOrUpdateServiceTarget ( ) ;
 
-            var svcTarget = AppLoggingConfigHelper.ServiceTarget ;
-            if ( svcTarget != null )
-            {
-                Logger.Debug (
-                              "Existing service target endpoing is {endpoingAddress}"
-                            , ( svcTarget as LogReceiverWebServiceTarget )?.EndpointAddress
-                             ) ;
-                AppLoggingConfigHelper.RemoveTarget ( svcTarget ) ;
-            }
-
-            Logger.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
+            
 
             InitializeWfcServices ( ) ;
 
             InitializeTimer ( ) ;
             InitializeEventLogListener ( ) ;
             return true ;
+        }
+
+        private static void RemoveOrUpdateServiceTarget ( )
+        {
+            var svcTarget = AppLoggingConfigHelper.ServiceTarget ;
+            if ( svcTarget != null )
+            {
+                Logger.Debug (
+                              "Existing service target endpoint is {endpointAddress}"
+                            , ( svcTarget as LogReceiverWebServiceTarget )?.EndpointAddress
+                             ) ;
+                AppLoggingConfigHelper.RemoveTarget ( svcTarget ) ;
+            }
         }
 
         private void InitializeEventLogListener ( )
@@ -214,7 +223,7 @@ namespace LeafService
             const string pipelineDir = "Pipeline" ;
             var root = Path.Combine ( baseDir , pipelineDir ) ;
             var warnings = AddInStore.Update ( root ) ;
-            Logger.Info ( "pipeline directory is {dir}" , root ) ;
+            Logger.Debug( "pipeline directory is {dir}" , root ) ;
             foreach ( var warning in warnings )
             {
                 Logger.Warn ( warning ) ;
@@ -233,120 +242,21 @@ namespace LeafService
             _commonLogger.Debug ( $"add ins count {tokens.Count}" ) ;
             if ( ! tokens.Any ( ) )
             {
-                throw new AddInException ( "No addins found" ) ;
+                throw new AddInException ( "No add-ins found" ) ;
             }
 
             _addInProcess = new AddInProcess ( ) ;
             _addInProcess.ShuttingDown += ( sender , args )
-                => _commonLogger.Warn ( "Shutting down adin process" ) ;
+                => _commonLogger.Warn ( "Shutting down add-in process" ) ;
 
-#if false
-            PermissionSet set = new PermissionSet(PermissionState.None);
-            set.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-            set.AddPermission(new SecurityPermission(SecurityPermissionFlag.AllFlags));
-            set.AddPermission ( new SocketPermission (PermissionState.Unrestricted ) ) ;
-            set.AddPermission ( new EnvironmentPermission 
-                                    ( PermissionState.Unrestricted ) ) ;
-            set.AddPermission ( new SqlClientPermission ( PermissionState.Unrestricted ) ) ;
-            var p1 =
- @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\addin2\build\service\Debug\x86\Pipeline\AddIns\Service1V1";
-
-            set.AddPermission (
-                               new FileIOPermission (
-                                                     FileIOPermissionAccess.PathDiscovery | FileIOPermissionAccess.Read 
-                                               , AccessControlActions.None
-                                               , p1
-                                                    )
-                               
-                              ) ;
-            set.AddPermission (
-                               new FileIOPermission (
-                                                     FileIOPermissionAccess.AllAccess
-                                               , AccessControlActions.None
-                                               , @"C:\data"
-                                                    )
-                              ) ;
-            Console.WriteLine(set);
-            byte[] key = new byte[]
-                         {
-                             0 , 36 , 0 , 0 , 4 , 128
-                       , 0 , 0 , 148 , 0 , 0 , 0
-                       , 6 , 2 , 0 , 0 , 0 , 36
-                       , 0 , 0 , 82 , 83 , 65 , 49
-                       , 0 , 4 , 0 , 0 , 1 , 0
-                       , 1 , 0 , 119 , 35 , 145 , 230
-                       , 60 , 16 , 71 , 40 , 173 , 207
-                       , 24 , 226 , 57 , 4 , 116 , 38
-                       , 37 , 89 , 250 , 127 , 52 , 164
-                       , 33 , 88 , 72 , 244 , 50 , 136
-                       , 205 , 232 , 117 , 220 , 201 , 42
-                       , 6 , 34 , 46 , 155 , 224 , 89
-                       , 43 , 33 , 31 , 247 , 74 , 219
-                       , 181 , 210 , 26 , 122 , 171 , 85
-                       , 34 , 181 , 64 , 177 , 115 , 95
-                       , 47 , 3 , 39 , 146 , 33 , 5
-                       , 111 , 237 , 190 , 126 , 83 , 64
-                       , 115 , 218 , 190 , 233 , 219 , 72
-                       , 248 , 236 , 235 , 207 , 29 , 201
-                       , 138 , 149 , 87 , 110 , 69 , 203
-                       , 239 , 245 , 254 , 124 , 72 , 66
-                       , 133 , 148 , 81 , 171 , 45 , 174
-                       , 122 , 131 , 112 , 241 , 178 , 247
-                       , 165 , 41 , 210 , 202 , 33 , 14
-                       , 62 , 132 , 77 , 151 , 53 , 35
-                       , 215 , 61 , 25 , 61 , 246 , 193
-                       , 127 , 19 , 20 , 166
-                         } ;
-            var a1 = typeof ( AppLoggingConfigHelper ).Assembly.GetName ( ) ;
-            var key1 = a1.GetPublicKey ( ) ;
-            var name1 = a1.Name ;
-            var version1 = a1.Version ;
-            var sn1 = new StrongName ( new StrongNamePublicKeyBlob(key1), name1, version1);
-            var assembly = typeof ( Logger ).Assembly ;
-            var name = assembly.GetName ( ).Name ;
-            var version = assembly.GetName ( ).Version ;
-            Console.WriteLine(assembly.FullName);
-            StrongName xx = new StrongName (
-                                            new StrongNamePublicKeyBlob ( key )
-                                      , name
-                                      , version
-                                           ) ;
-#endif
             foreach ( var addInToken in tokens )
             {
-                // var code = addInToken.AssemblyName.CodeBase;
-                // Console.WriteLine(code);
-#if false
-                ActivationContext ac = AppDomain.CurrentDomain.ActivationContext;
-                ApplicationIdentity ai = ac?.Identity;
-                Console.WriteLine(ai?.FullName);
-                var applicationBase =
- @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\addin2\build\service\Debug\x86\Pipeline\AddIns\Service1V1";
-                var applicationIdentity = new ApplicationIdentity("test") ;
-                var appDomainSetup = new AppDomainSetup ( ) ;
-                appDomainSetup.ApplicationBase = applicationBase ;
-                Console.WriteLine(xx);
-                Console.WriteLine(sn1);
-                // appDomainSetup.ApplicationBase = applicationBase;
-                AppDomain x = AppDomain.CreateDomain (
-                "add in domain"
-            , null
-            , appDomainSetup
-            , set
-              ,xx
-                                                     ) ;
-                
-                // x.FirstChanceException += ( sender , args )
-                 // => _commonLogger.Error ( args.Exception.ToString ( ) ) ;
-                 AppDomain.CurrentDomain.FirstChanceException += ( sender , args )
-                     => _commonLogger.Error ( args.Exception.ToString ( ) ) ;
-#endif
                 var service1 =
                     addInToken.Activate < IService1 > ( _addInProcess , AddInSecurityLevel.FullTrust ) ;
-                var addInController = AddInController.GetAddInController ( service1 ) ;
+             
                 Console.WriteLine(_addInProcess.IsCurrentProcess);
                 Console.WriteLine(_addInProcess.ProcessId);
-                //Console.WriteLine(addInController.AppDomain.BaseDirectory);
+             
                 _services.Add ( service1 ) ;
                 bool success ;
                 try
@@ -355,12 +265,12 @@ namespace LeafService
                 }
                 catch ( Exception ex )
                 {
-                    throw new AddInException ( "Addin failed to start" + ex.ToString ( ) ) ;
+                    throw new AddInException ( "Add-in failed to start" + ex.ToString ( ) ) ;
                 }
 
                 if ( ! success )
                 {
-                    throw new AddInException ( "Addin failed to start" ) ;
+                    throw new AddInException ( "Add-in failed to start" ) ;
                 }
             }
         }
@@ -507,7 +417,7 @@ namespace LeafService
 
     internal class LeafServiceTraceFilter : TraceFilter
     {
-        #region Overrides of TraceFilter
+#region Overrides of TraceFilter
         public override bool ShouldTrace (
             TraceEventCache cache
           , string          source
@@ -521,7 +431,7 @@ namespace LeafService
         {
             return true ;
         }
-        #endregion
+#endregion
     }
 
     [ ServiceBehavior ( AddressFilterMode = AddressFilterMode.Any ) ]
@@ -532,7 +442,7 @@ namespace LeafService
 
         public LogReceiver ( ) { CLogger.Warn ( "In constructor" ) ; }
 
-        #region Implementation of ILogReceiverServer
+#region Implementation of ILogReceiverServer
         public void ProcessLogMessages ( NLogEvents nEvents )
         {
             CLogger.Warn ( $"Received {nEvents.Events.Length} events" ) ;
@@ -569,6 +479,6 @@ namespace LeafService
                 logger.Log ( ev ) ;
             }
         }
-        #endregion
+#endregion
     }
 }

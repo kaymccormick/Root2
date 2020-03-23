@@ -69,10 +69,9 @@ namespace KayMcCormick.Lib.Wpf
                                                                                               != null
                                                                                           )
                                                                                           {
-                                                                                              ExtLib
-                                                                                                 .fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled (
-                                                                                                                                                 message
-                                                                                                                                                ) ;
+                                                                                              PROVIDER_GUID.EventWriteSETUP_LOGGING_EVENT( 
+                                                                                                                                                 message)
+                                                                                                                                                 ;
                                                                                               _eventLog
                                                                                                  .WriteEntry (
                                                                                                               message

@@ -10,8 +10,9 @@
 // ---
 #endregion
 using System.Windows.Controls ;
+using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
-using AnalysisControls.ViewModels ;
 using AnalysisControls.Views ;
 using Autofac ;
 using KayMcCormick.Dev ;
@@ -26,11 +27,6 @@ namespace AnalysisControls
         protected override void Load ( ContainerBuilder builder )
         {
             builder.RegisterType < CompilationView > ( ).AsSelf ( ) ;
-            builder.RegisterType < CompilationViewModel > ( ).As < ICompilationViewModel > ( ) ;
-            builder.RegisterType < ComponentViewModel > ( ).As < IComponentViewModel > ( ) ;
-            builder.RegisterType < ApplicationViewModel > ( )
-                   .As < IApplicationViewModel > ( )
-                   .SingleInstance ( ) ;
             builder.RegisterType < ComponentPage > ( ).As < Page > ( ) ;
             builder.RegisterAssemblyTypes ( ThisAssembly )
                    .Where (

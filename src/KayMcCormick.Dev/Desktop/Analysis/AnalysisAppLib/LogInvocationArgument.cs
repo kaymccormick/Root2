@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel ;
+using AnalysisAppLib.Syntax ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib

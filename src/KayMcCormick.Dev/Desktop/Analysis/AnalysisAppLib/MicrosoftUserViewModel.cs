@@ -15,6 +15,7 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
+using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.Graph ;

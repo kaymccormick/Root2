@@ -14,7 +14,7 @@ namespace KayMcCormick.Dev.Tracing
         protected override void Write ( LogEventInfo logEvent )
         {
             var message = RenderLogEvent (Layout, logEvent ) ;
-            Tracing.ExtLib.fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled ( message ) ;
+            //Tracing.ExtLib.fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled ( message ) ;
         }
         #endregion
     }

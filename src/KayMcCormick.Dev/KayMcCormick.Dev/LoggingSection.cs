@@ -29,6 +29,11 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
+        [ConfigurationProperty( "LogThrowExceptions", DefaultValue = false, IsRequired = false, IsKey = false)]
+        public bool? LogThrowExceptions { get => (bool?)this[nameof(LogThrowExceptions)]; set => this[nameof(LogThrowExceptions)] = value; }
+        /// <summary>
+        /// 
+        /// </summary>
         [ConfigurationProperty( "MinLogLevel", DefaultValue = "Trace", IsRequired = false, IsKey = false)]
         public LogLevel MinLogLevel
         {

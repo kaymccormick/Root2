@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib ;
 using Microsoft.CodeAnalysis.Text ;
 using ProjLib.Interfaces ;
 

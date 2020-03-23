@@ -3,6 +3,7 @@ using System.Globalization ;
 using System.Text.Json ;
 using System.Windows.Data ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Syntax ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisControls.Converters

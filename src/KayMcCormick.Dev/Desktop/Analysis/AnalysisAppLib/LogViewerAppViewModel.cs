@@ -11,6 +11,7 @@
 #endregion
 using System.Collections.ObjectModel ;
 using System.Runtime.Serialization ;
+using AnalysisAppLib.ViewModel ;
 using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
