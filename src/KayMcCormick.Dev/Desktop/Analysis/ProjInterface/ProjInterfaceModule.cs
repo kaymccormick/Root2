@@ -17,6 +17,7 @@ using System.Reflection ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
+using AnalysisAppLib ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
@@ -70,7 +71,7 @@ namespace ProjInterface
             Logger.Warn (
                          $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                         ) ;
-            builder.RegisterModule < AppBuildModule > ( ) ;
+            builder.RegisterModule < AnalysisAppLibModule > ( ) ;
             builder.RegisterModule < ProjLibModule > ( ) ;
 
 #if MSBUILDWORKSPACE
@@ -95,8 +96,8 @@ namespace ProjInterface
                                                                              )
                              )
                    .AsSelf ( ) ;
-            LogRegistration ( typeof ( DockWindowViewModel ) , "AsSelf" ) ;
-            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
+            
+            
             LogRegistration ( typeof ( ProjMainWindow ) , "AsSelf" , typeof ( IView1 ) ) ;
             builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ).As < IView1 > ( ) ;
             LogRegistration (
@@ -113,80 +114,16 @@ namespace ProjInterface
             ;
             LogRegistration ( typeof ( AllResourcesTreeViewModel ) , "AsSelf" ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
-            LogRegistration (
-                             typeof ( LogUsageAnalysisViewModel )
-                           , typeof ( ILogUsageAnalysisViewModel )
-                            ) ;
-            builder.RegisterType < LogUsageAnalysisViewModel > ( )
-                   .As < ILogUsageAnalysisViewModel > ( ) ;
             LogRegistration ( typeof ( IconsSource ) , typeof ( IIconsSource ) ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
             //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
-            builder.RegisterType < FileSystemExplorerItemProvider > ( )
-                   .As < IExplorerItemProvider > ( ) ;
 
-            builder.Register (
-                              ( context , p ) => {
-                                  var a = PublicClientApplicationBuilder
-                                         .CreateWithApplicationOptions (
-                                                                        new
-                                                                        PublicClientApplicationOptions
-                                                                        {
-                                                                            ClientId =
-                                                                                p.TypedAs < Guid
-                                                                                  > ( )
-                                                                                 .ToString ( )
-                                                                          , RedirectUri =
-                                                                                "myapp://auth"
-                                                                        }
-                                                                       )
-                                         .WithAuthority (
-                                                         AadAuthorityAudience
-                                                            .AzureAdAndPersonalMicrosoftAccount
-                                                        )
-                                         .Build ( ) ;
-                                  TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
-                                  return a ;
-                              }
-                             )
-                   .As < IPublicClientApplication > ( ) ;
-            builder.Register (
-                              ( ctx , p ) => new GraphServiceClient (
-                                                                     new
-                                                                         DelegateAuthenticationProvider (
-                                                                                                         requestMessage
-                                                                                                             => {
-                                                                                                             requestMessage
-                                                                                                                    .Headers
-                                                                                                                    .Authorization
-                                                                                                                 = new
-                                                                                                                     AuthenticationHeaderValue (
-                                                                                                                                                "Bearer"
-                                                                                                                                              , p
-                                                                                                                                                   .TypedAs
-                                                                                                                                                    < string
-                                                                                                                                                    > ( )
-                                                                                                                                               ) ;
-                                                                                                             return
-                                                                                                                 Task
-                                                                                                                    .FromResult (
-                                                                                                                                 0
-                                                                                                                                ) ;
-                                                                                                         }
-                                                                                                        )
-                                                                    )
-                             )
-                   .AsSelf ( ) ;
-            builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
+
             builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IView1 > ( ) ;
             builder.RegisterType < LogViewerControl > ( )
                    .AsSelf ( )
                    .As < IView1 > ( )
                    .As < IControlView > ( ) ;
-            builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
-            builder.Register ( ( c , p ) => new LogViewerConfig ( p.TypedAs < ushort > ( ) ) )
-                   .AsSelf ( ) ;
-            builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
             builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly ( ) )
                    .Where (
                            type => typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using System ;
 using System.Collections ;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic ;
+using System.Linq ;
+using System.Text ;
+using System.Threading.Tasks ;
 using Autofac ;
 using NLog ;
 
@@ -23,7 +23,11 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="builder"></param>
         // ReSharper disable once MemberCanBeProtected.Global
-        public abstract void DoLoad ( ContainerBuilder builder) ;
+        public abstract void DoLoad ( ContainerBuilder builder ) ;
+
+        #region Overrides of Module
+        protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
+        #endregion
 
         /// <summary>
         /// 

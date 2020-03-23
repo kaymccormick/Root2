@@ -6,6 +6,7 @@ using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
+using AnalysisAppLib ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;

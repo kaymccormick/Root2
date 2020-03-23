@@ -1,0 +1,238 @@
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+ <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
+  <events>
+   <provider name="Microsoft-ServiceBus-Client" guid="{a307c7a2-a4cd-4d22-8093-94db72934152}" resourceFileName="Microsoft-ServiceBus-Client" messageFileName="Microsoft-ServiceBus-Client" symbol="MicrosoftServiceBusClient" source="Xml" >
+    <keywords>
+     <keyword name="keyword_800000000000" message="$(string.keyword_keyword_800000000000)" mask="0x800000000000"/>
+    </keywords>
+    <tasks>
+     <task name="NonSerializableException" message="$(string.task_NonSerializableException)" value="5527"/>
+     <task name="HandledExceptionWithFunctionName" message="$(string.task_HandledExceptionWithFunctionName)" value="5528"/>
+     <task name="ThrowingExceptionWithEntityName" message="$(string.task_ThrowingExceptionWithEntityName)" value="5529"/>
+     <task name="LogAsWarning" message="$(string.task_LogAsWarning)" value="5530"/>
+     <task name="HandledExceptionWithEntityName" message="$(string.task_HandledExceptionWithEntityName)" value="5531"/>
+     <task name="ExceptionAsInformation" message="$(string.task_ExceptionAsInformation)" value="5532"/>
+     <task name="ExceptionAsWarning" message="$(string.task_ExceptionAsWarning)" value="5533"/>
+     <task name="BatchManagerTransactionInDoubt" message="$(string.task_BatchManagerTransactionInDoubt)" value="25532"/>
+     <task name="BatchManagerException" message="$(string.task_BatchManagerException)" value="25533"/>
+     <task name="BatchManagerExecutingBatchedObject" message="$(string.task_BatchManagerExecutingBatchedObject)" value="25534"/>
+     <task name="RenewSessionLockTransfer" message="$(string.task_RenewSessionLockTransfer)" value="34418"/>
+     <task name="MessageReceiveTransfer" message="$(string.task_MessageReceiveTransfer)" value="34419"/>
+     <task name="GetStateTransfer" message="$(string.task_GetStateTransfer)" value="34420"/>
+     <task name="SetStateTransfer" message="$(string.task_SetStateTransfer)" value="34421"/>
+     <task name="MessageSendingTransfer" message="$(string.task_MessageSendingTransfer)" value="34422"/>
+     <task name="SingletonManagerLoadSucceeded" message="$(string.task_SingletonManagerLoadSucceeded)" value="34423"/>
+     <task name="HandledExceptionWarning" message="$(string.task_HandledExceptionWarning)" value="35323"/>
+     <task name="TraceCodeEventLogWarning" message="$(string.task_TraceCodeEventLogWarning)" value="35324"/>
+     <task name="TraceCodeEventLogVerbose" message="$(string.task_TraceCodeEventLogVerbose)" value="35325"/>
+     <task name="TraceCodeEventLogInformational" message="$(string.task_TraceCodeEventLogInformational)" value="35326"/>
+     <task name="TraceCodeEventLogError" message="$(string.task_TraceCodeEventLogError)" value="35327"/>
+     <task name="TraceCodeEventLogCritical" message="$(string.task_TraceCodeEventLogCritical)" value="35328"/>
+     <task name="UnhandledException" message="$(string.task_UnhandledException)" value="35330"/>
+     <task name="ThrowingException" message="$(string.task_ThrowingException)" value="35331"/>
+     <task name="ShipAssertExceptionMessage" message="$(string.task_ShipAssertExceptionMessage)" value="35332"/>
+     <task name="AppDomainUnload" message="$(string.task_AppDomainUnload)" value="35333"/>
+     <task name="InnerRuntimeChannelFaulted" message="$(string.task_InnerRuntimeChannelFaulted)" value="35494"/>
+     <task name="RetryOperation" message="$(string.task_RetryOperation)" value="35501"/>
+     <task name="LogOperationWarning" message="$(string.task_LogOperationWarning)" value="35502"/>
+     <task name="LogOperation" message="$(string.task_LogOperation)" value="35503"/>
+     <task name="MessageDefer" message="$(string.task_MessageDefer)" value="35523"/>
+     <task name="MessageRenew" message="$(string.task_MessageRenew)" value="35524"/>
+     <task name="MessageSuspend" message="$(string.task_MessageSuspend)" value="35525"/>
+     <task name="ChannelReceivedMessage" message="$(string.task_ChannelReceivedMessage)" value="35526"/>
+     <task name="ChannelSendingMessage" message="$(string.task_ChannelSendingMessage)" value="35527"/>
+     <task name="ChannelReceiveContextComplete" message="$(string.task_ChannelReceiveContextComplete)" value="35528"/>
+     <task name="ChannelReceiveContextAbandon" message="$(string.task_ChannelReceiveContextAbandon)" value="35529"/>
+     <task name="ChannelFaulted" message="$(string.task_ChannelFaulted)" value="35530"/>
+     <task name="MessageSending" message="$(string.task_MessageSending)" value="35531"/>
+     <task name="MessageReceived" message="$(string.task_MessageReceived)" value="35532"/>
+     <task name="MessageComplete" message="$(string.task_MessageComplete)" value="35533"/>
+     <task name="MessageAbandon" message="$(string.task_MessageAbandon)" value="35534"/>
+    </tasks>
+    <events>
+     <event value="30000" symbol="MessageAbandon" version="0" task="MessageAbandon" level="win:Verbose" keywords="keyword_800000000000" template="MessageAbandonArgs"/>
+     <event value="30001" symbol="MessageComplete" version="0" task="MessageComplete" level="win:Verbose" keywords="keyword_800000000000" template="MessageAbandonArgs"/>
+     <event value="30002" symbol="MessageReceived" version="0" task="MessageReceived" level="win:Verbose" keywords="keyword_800000000000" template="MessageReceivedArgs"/>
+     <event value="30003" symbol="MessageSending" version="0" task="MessageSending" level="win:Verbose" keywords="keyword_800000000000" template="MessageReceivedArgs"/>
+     <event value="30004" symbol="ChannelFaulted" version="0" task="ChannelFaulted" level="win:Warning" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="30005" symbol="ChannelReceiveContextAbandon" version="0" task="ChannelReceiveContextAbandon" level="win:Verbose" keywords="keyword_800000000000" template="ChannelReceiveContextAbandonArgs"/>
+     <event value="30006" symbol="ChannelReceiveContextComplete" version="0" task="ChannelReceiveContextComplete" level="win:Verbose" keywords="keyword_800000000000" template="ChannelReceiveContextAbandonArgs"/>
+     <event value="30007" symbol="ChannelSendingMessage" version="0" task="ChannelSendingMessage" level="win:Verbose" keywords="keyword_800000000000" template="ChannelSendingMessageArgs"/>
+     <event value="30008" symbol="ChannelReceivedMessage" version="0" task="ChannelReceivedMessage" level="win:Verbose" keywords="keyword_800000000000" template="ChannelSendingMessageArgs"/>
+     <event value="30009" symbol="MessageSuspend" version="0" task="MessageSuspend" level="win:Verbose" keywords="keyword_800000000000" template="MessageAbandonArgs"/>
+     <event value="30010" symbol="MessageRenew" version="0" task="MessageRenew" level="win:Verbose" keywords="keyword_800000000000" template="MessageAbandonArgs"/>
+     <event value="30011" symbol="MessageDefer" version="0" task="MessageDefer" level="win:Verbose" keywords="keyword_800000000000" template="MessageAbandonArgs"/>
+     <event value="30031" symbol="LogOperation" version="0" task="LogOperation" level="win:Verbose" keywords="keyword_800000000000" template="LogOperationArgs"/>
+     <event value="30032" symbol="LogOperationWarning" version="0" task="LogOperationWarning" level="win:Warning" keywords="keyword_800000000000" template="LogOperationWarningArgs"/>
+     <event value="30033" symbol="RetryOperation" version="0" task="RetryOperation" level="win:Informational" keywords="keyword_800000000000" template="RetryOperationArgs"/>
+     <event value="30040" symbol="InnerRuntimeChannelFaulted" version="0" task="InnerRuntimeChannelFaulted" level="win:Warning" keywords="keyword_800000000000" template="InnerRuntimeChannelFaultedArgs"/>
+     <event value="30201" symbol="AppDomainUnload" version="0" task="AppDomainUnload" level="win:Warning" keywords="keyword_800000000000" template="AppDomainUnloadArgs"/>
+     <event value="30202" symbol="ShipAssertExceptionMessage" version="0" task="ShipAssertExceptionMessage" level="win:Error" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="30203" symbol="ThrowingException" version="0" task="ThrowingException" level="win:Error" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="30204" symbol="UnhandledException" version="0" task="UnhandledException" level="win:Error" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="30206" symbol="TraceCodeEventLogCritical" version="0" task="TraceCodeEventLogCritical" level="win:Critical" keywords="keyword_800000000000" template="TraceCodeEventLogCriticalArgs"/>
+     <event value="30207" symbol="TraceCodeEventLogError" version="0" task="TraceCodeEventLogError" level="win:Error" keywords="keyword_800000000000" template="TraceCodeEventLogCriticalArgs"/>
+     <event value="30208" symbol="TraceCodeEventLogInformational" version="0" task="TraceCodeEventLogInformational" level="win:Informational" keywords="keyword_800000000000" template="TraceCodeEventLogCriticalArgs"/>
+     <event value="30209" symbol="TraceCodeEventLogVerbose" version="0" task="TraceCodeEventLogVerbose" level="win:Verbose" keywords="keyword_800000000000" template="TraceCodeEventLogCriticalArgs"/>
+     <event value="30210" symbol="TraceCodeEventLogWarning" version="0" task="TraceCodeEventLogWarning" level="win:Warning" keywords="keyword_800000000000" template="TraceCodeEventLogCriticalArgs"/>
+     <event value="30211" symbol="HandledExceptionWarning" version="0" task="HandledExceptionWarning" level="win:Warning" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="31111" symbol="SingletonManagerLoadSucceeded" version="0" task="SingletonManagerLoadSucceeded" level="win:Informational" keywords="keyword_800000000000" template="SingletonManagerLoadSucceededArgs"/>
+     <event value="31112" symbol="MessageSendingTransfer" version="0" task="MessageSendingTransfer" level="win:Informational" keywords="keyword_800000000000"/>
+     <event value="31113" symbol="SetStateTransfer" version="0" task="SetStateTransfer" level="win:Informational" keywords="keyword_800000000000" template="SetStateTransferArgs"/>
+     <event value="31114" symbol="GetStateTransfer" version="0" task="GetStateTransfer" level="win:Informational" keywords="keyword_800000000000" template="SetStateTransferArgs"/>
+     <event value="31115" symbol="MessageReceiveTransfer" version="0" task="MessageReceiveTransfer" level="win:Informational" keywords="keyword_800000000000"/>
+     <event value="31116" symbol="RenewSessionLockTransfer" version="0" task="RenewSessionLockTransfer" level="win:Informational" keywords="keyword_800000000000"/>
+     <event value="40000" symbol="BatchManagerExecutingBatchedObject" version="0" task="BatchManagerExecutingBatchedObject" level="win:Informational" keywords="keyword_800000000000" template="BatchManagerExecutingBatchedObjectArgs"/>
+     <event value="40001" symbol="BatchManagerException" version="0" task="BatchManagerException" level="win:Warning" keywords="keyword_800000000000" template="BatchManagerExceptionArgs"/>
+     <event value="40002" symbol="BatchManagerTransactionInDoubt" version="0" task="BatchManagerTransactionInDoubt" level="win:Warning" keywords="keyword_800000000000" template="BatchManagerTransactionInDoubtArgs"/>
+     <event value="60001" symbol="ExceptionAsWarning" version="0" task="ExceptionAsWarning" level="win:Warning" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="60002" symbol="ExceptionAsInformation" version="0" task="ExceptionAsInformation" level="win:Informational" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+     <event value="60003" symbol="HandledExceptionWithEntityName" version="0" task="HandledExceptionWithEntityName" level="win:Warning" keywords="keyword_800000000000" template="HandledExceptionWithEntityNameArgs"/>
+     <event value="60004" symbol="LogAsWarning" version="0" task="LogAsWarning" level="win:Warning" keywords="keyword_800000000000" template="TraceCodeEventLogCriticalArgs"/>
+     <event value="60005" symbol="ThrowingExceptionWithEntityName" version="0" task="ThrowingExceptionWithEntityName" level="win:Error" keywords="keyword_800000000000" template="ThrowingExceptionWithEntityNameArgs"/>
+     <event value="60006" symbol="HandledExceptionWithFunctionName" version="0" task="HandledExceptionWithFunctionName" level="win:Warning" keywords="keyword_800000000000" template="HandledExceptionWithFunctionNameArgs"/>
+     <event value="60007" symbol="NonSerializableException" version="0" task="NonSerializableException" level="win:Warning" keywords="keyword_800000000000" template="ChannelFaultedArgs"/>
+    </events>
+    <templates>
+     <template tid="MessageAbandonArgs">
+      <data name="TrackingId" inType="win:UnicodeString"/>
+      <data name="SubsystemId" inType="win:UnicodeString"/>
+      <data name="TransportType" inType="win:UnicodeString"/>
+      <data name="LockTokens" inType="win:UnicodeString"/>
+     </template>
+     <template tid="MessageReceivedArgs">
+      <data name="TrackingId" inType="win:UnicodeString"/>
+      <data name="SubsystemId" inType="win:UnicodeString"/>
+      <data name="TransportType" inType="win:UnicodeString"/>
+      <data name="MessageIds" inType="win:UnicodeString"/>
+     </template>
+     <template tid="ChannelFaultedArgs">
+      <data name="Exception" inType="win:UnicodeString"/>
+     </template>
+     <template tid="ChannelReceiveContextAbandonArgs">
+      <data name="LockToken" inType="win:GUID"/>
+     </template>
+     <template tid="ChannelSendingMessageArgs">
+      <data name="ChannelId" inType="win:UnicodeString"/>
+      <data name="ActionId" inType="win:UnicodeString"/>
+      <data name="MessageId" inType="win:UnicodeString"/>
+     </template>
+     <template tid="LogOperationArgs">
+      <data name="Value1" inType="win:UnicodeString"/>
+      <data name="Value2" inType="win:UnicodeString"/>
+     </template>
+     <template tid="LogOperationWarningArgs">
+      <data name="exception" inType="win:UnicodeString"/>
+      <data name="Value2" inType="win:UnicodeString"/>
+     </template>
+     <template tid="RetryOperationArgs">
+      <data name="operation" inType="win:UnicodeString"/>
+      <data name="retryCount" inType="win:Int32"/>
+      <data name="reason" inType="win:UnicodeString"/>
+     </template>
+     <template tid="InnerRuntimeChannelFaultedArgs">
+      <data name="Exception" inType="win:UnicodeString"/>
+      <data name="SessionId" inType="win:UnicodeString"/>
+      <data name="Via" inType="win:UnicodeString"/>
+      <data name="LocalEndpoint" inType="win:UnicodeString"/>
+      <data name="RemoteEndpoint" inType="win:UnicodeString"/>
+     </template>
+     <template tid="AppDomainUnloadArgs">
+      <data name="DomainName" inType="win:UnicodeString"/>
+      <data name="ProcessName" inType="win:UnicodeString"/>
+      <data name="ProcessId" inType="win:Int32"/>
+     </template>
+     <template tid="TraceCodeEventLogCriticalArgs">
+      <data name="Value" inType="win:UnicodeString"/>
+     </template>
+     <template tid="SingletonManagerLoadSucceededArgs">
+      <data name="KeyName" inType="win:UnicodeString"/>
+     </template>
+     <template tid="SetStateTransferArgs">
+      <data name="sessionId" inType="win:UnicodeString"/>
+     </template>
+     <template tid="BatchManagerExecutingBatchedObjectArgs">
+      <data name="trackingId" inType="win:UnicodeString"/>
+      <data name="subsystemId" inType="win:UnicodeString"/>
+      <data name="newTrackingId" inType="win:UnicodeString"/>
+     </template>
+     <template tid="BatchManagerExceptionArgs">
+      <data name="trackingId" inType="win:UnicodeString"/>
+      <data name="subsystemId" inType="win:UnicodeString"/>
+      <data name="functionName" inType="win:UnicodeString"/>
+      <data name="exception" inType="win:UnicodeString"/>
+     </template>
+     <template tid="BatchManagerTransactionInDoubtArgs">
+      <data name="trackingId" inType="win:UnicodeString"/>
+      <data name="subsystemId" inType="win:UnicodeString"/>
+      <data name="transactionId" inType="win:UnicodeString"/>
+      <data name="rollbackCalled" inType="win:Boolean"/>
+     </template>
+     <template tid="HandledExceptionWithEntityNameArgs">
+      <data name="EntityName" inType="win:UnicodeString"/>
+      <data name="ExceptionMessage" inType="win:UnicodeString"/>
+      <data name="StackTrace" inType="win:UnicodeString"/>
+     </template>
+     <template tid="ThrowingExceptionWithEntityNameArgs">
+      <data name="EntityName" inType="win:UnicodeString"/>
+      <data name="ExceptionString" inType="win:UnicodeString"/>
+     </template>
+     <template tid="HandledExceptionWithFunctionNameArgs">
+      <data name="FunctionName" inType="win:UnicodeString"/>
+      <data name="ExceptionMessage" inType="win:UnicodeString"/>
+      <data name="ExceptionToString" inType="win:UnicodeString"/>
+     </template>
+    </templates>
+   </provider>
+  </events>
+ </instrumentation>
+ <localization>
+  <resources culture="en-US">
+   <stringTable>
+    <string id="keyword_keyword_800000000000" value="keyword_800000000000"/>
+    <string id="task_NonSerializableException" value="NonSerializableException"/>
+    <string id="task_HandledExceptionWithFunctionName" value="HandledExceptionWithFunctionName"/>
+    <string id="task_ThrowingExceptionWithEntityName" value="ThrowingExceptionWithEntityName"/>
+    <string id="task_LogAsWarning" value="LogAsWarning"/>
+    <string id="task_HandledExceptionWithEntityName" value="HandledExceptionWithEntityName"/>
+    <string id="task_ExceptionAsInformation" value="ExceptionAsInformation"/>
+    <string id="task_ExceptionAsWarning" value="ExceptionAsWarning"/>
+    <string id="task_BatchManagerTransactionInDoubt" value="BatchManagerTransactionInDoubt"/>
+    <string id="task_BatchManagerException" value="BatchManagerException"/>
+    <string id="task_BatchManagerExecutingBatchedObject" value="BatchManagerExecutingBatchedObject"/>
+    <string id="task_RenewSessionLockTransfer" value="RenewSessionLockTransfer"/>
+    <string id="task_MessageReceiveTransfer" value="MessageReceiveTransfer"/>
+    <string id="task_GetStateTransfer" value="GetStateTransfer"/>
+    <string id="task_SetStateTransfer" value="SetStateTransfer"/>
+    <string id="task_MessageSendingTransfer" value="MessageSendingTransfer"/>
+    <string id="task_SingletonManagerLoadSucceeded" value="SingletonManagerLoadSucceeded"/>
+    <string id="task_HandledExceptionWarning" value="HandledExceptionWarning"/>
+    <string id="task_TraceCodeEventLogWarning" value="TraceCodeEventLogWarning"/>
+    <string id="task_TraceCodeEventLogVerbose" value="TraceCodeEventLogVerbose"/>
+    <string id="task_TraceCodeEventLogInformational" value="TraceCodeEventLogInformational"/>
+    <string id="task_TraceCodeEventLogError" value="TraceCodeEventLogError"/>
+    <string id="task_TraceCodeEventLogCritical" value="TraceCodeEventLogCritical"/>
+    <string id="task_UnhandledException" value="UnhandledException"/>
+    <string id="task_ThrowingException" value="ThrowingException"/>
+    <string id="task_ShipAssertExceptionMessage" value="ShipAssertExceptionMessage"/>
+    <string id="task_AppDomainUnload" value="AppDomainUnload"/>
+    <string id="task_InnerRuntimeChannelFaulted" value="InnerRuntimeChannelFaulted"/>
+    <string id="task_RetryOperation" value="RetryOperation"/>
+    <string id="task_LogOperationWarning" value="LogOperationWarning"/>
+    <string id="task_LogOperation" value="LogOperation"/>
+    <string id="task_MessageDefer" value="MessageDefer"/>
+    <string id="task_MessageRenew" value="MessageRenew"/>
+    <string id="task_MessageSuspend" value="MessageSuspend"/>
+    <string id="task_ChannelReceivedMessage" value="ChannelReceivedMessage"/>
+    <string id="task_ChannelSendingMessage" value="ChannelSendingMessage"/>
+    <string id="task_ChannelReceiveContextComplete" value="ChannelReceiveContextComplete"/>
+    <string id="task_ChannelReceiveContextAbandon" value="ChannelReceiveContextAbandon"/>
+    <string id="task_ChannelFaulted" value="ChannelFaulted"/>
+    <string id="task_MessageSending" value="MessageSending"/>
+    <string id="task_MessageReceived" value="MessageReceived"/>
+    <string id="task_MessageComplete" value="MessageComplete"/>
+    <string id="task_MessageAbandon" value="MessageAbandon"/>
+   </stringTable>
+  </resources>
+ </localization>
+</instrumentationManifest>

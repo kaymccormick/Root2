@@ -246,16 +246,16 @@ namespace KayMcCormick.Dev
 
             Type[] ary = { typeof ( IHaveObjectId ) , typeof ( AppBuildModule ) } ;
             var forScanning = ary.Select ( ( type , i ) => type.Assembly ).ToList ( ) ;
-            Logger.Info (
-                         "Assemblies "
-                         + string.Join (
-                                        ", "
-                                      , forScanning.Select (
-                                                            ( assembly , i1 )
-                                                                => assembly.GetName ( ).Name
-                                                           )
-                                       )
-                        ) ;
+            // Logger.Info (
+                         // "Assemblies "
+                         // + string.Join (
+                                        // ", "
+                                      // , forScanning.Select (
+                                                            // ( assembly , i1 )
+                                                                // => assembly.GetName ( ).Name
+                                                           // )
+                                       // )
+                        // ) ;
             return forScanning ;
         }
 

@@ -29,6 +29,9 @@ namespace KayMcCormick.Dev
 
     // ReSharper disable once PartialTypeWithSinglePart
 
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class StackTraceParser
     {
         const string Space = @"[\x20\t]";
@@ -73,6 +76,15 @@ namespace KayMcCormick.Dev
             // https://github.com/atifaziz/StackTraceParser/issues/4
             TimeSpan.FromSeconds(5));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="selector"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        // ReSharper disable once UnusedMember.Global
         public static IEnumerable<T> Parse<T>(
             string text,
             Func<string, string, string, string, IEnumerable<KeyValuePair<string, string>>, string, string, T> selector)
@@ -88,6 +100,24 @@ namespace KayMcCormick.Dev
                                (f, tm, p, fl) => selector(f, tm.Type, tm.Method, p.List, p.Items, fl.File, fl.Line));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="tokenSelector"></param>
+        /// <param name="methodSelector"></param>
+        /// <param name="parameterSelector"></param>
+        /// <param name="parametersSelector"></param>
+        /// <param name="sourceLocationSelector"></param>
+        /// <param name="selector"></param>
+        /// <typeparam name="TToken"></typeparam>
+        /// <typeparam name="TMethod"></typeparam>
+        /// <typeparam name="TParameters"></typeparam>
+        /// <typeparam name="TParameter"></typeparam>
+        /// <typeparam name="TSourceLocation"></typeparam>
+        /// <typeparam name="TFrame"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IEnumerable<TFrame> Parse<TToken, TMethod, TParameters, TParameter, TSourceLocation, TFrame>(
             string text,
             Func<int, int, string, TToken> tokenSelector,

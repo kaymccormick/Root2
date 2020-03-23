@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace AnalysisControls.Views

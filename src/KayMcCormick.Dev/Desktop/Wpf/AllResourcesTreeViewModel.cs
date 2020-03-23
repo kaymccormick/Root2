@@ -11,17 +11,14 @@
 #endregion
 using System ;
 using System.Collections ;
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
-using System.Linq ;
-using System.Security.Cryptography ;
+using System.Diagnostics ;
+using System.Threading ;
 using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev.Interfaces ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using MessageBox = System.Windows.Forms.MessageBox ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -47,28 +44,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             try
             {
-                var n1 = CreateNode ( null , "Objects" , null , false ) ;
-                foreach ( var rootNode in _idProvider.GetRootNodes ( ) )
-                {
-                    
-                    var c = _idProvider.GetComponentInfo ( rootNode ) ;
-                    var n2=CreateNode ( n1 , rootNode , c , true ) ;
-                    foreach ( var instanceInfo in c.Instances )
-                    {
-                        var n3 = CreateNode ( n2 , instanceInfo , instanceInfo , true ) ;
-                        CreateNode(n3,  instanceInfo.Instance, instanceInfo.Instance, false);
-                        if ( instanceInfo.Instance is FrameworkElement fe )
-                        {
-                            var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
-                            AddResourceNodeInfos ( res ) ;
-                        }
-                        var n4 = CreateNode ( n3 , "Parameters" , instanceInfo.Parameters , true ) ;
-                        foreach ( var p in instanceInfo.Parameters )
-                        {
-                            CreateNode ( n4 , p , p , false ) ;
-                        }
-                    }
-                }
+                // PopulateObjects ( ) ;
                 PopulateLifetimeScope ( ) ;
 
                 PopulateAppNode ( ) ;
@@ -78,6 +54,32 @@ namespace KayMcCormick.Lib.Wpf
 #pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 throw ;
+            }
+        }
+
+        private void PopulateObjects ( )
+        {
+            var n1 = CreateNode ( null , "Objects" , null , false ) ;
+            foreach ( var rootNode in _idProvider.GetRootNodes ( ) )
+            {
+                var c = _idProvider.GetComponentInfo ( rootNode ) ;
+                var n2 = CreateNode ( n1 , rootNode , c , true ) ;
+                foreach ( var instanceInfo in c.Instances )
+                {
+                    var n3 = CreateNode ( n2 , instanceInfo , instanceInfo , true ) ;
+                    CreateNode ( n3 , instanceInfo.Instance , instanceInfo.Instance , false ) ;
+                    if ( instanceInfo.Instance is FrameworkElement fe )
+                    {
+                        var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
+                        AddResourceNodeInfos ( res ) ;
+                    }
+
+                    var n4 = CreateNode ( n3 , "Parameters" , instanceInfo.Parameters , true ) ;
+                    foreach ( var p in instanceInfo.Parameters )
+                    {
+                        CreateNode ( n4 , p , p , false ) ;
+                    }
+                }
             }
         }
 
@@ -133,13 +135,13 @@ namespace KayMcCormick.Lib.Wpf
                     var s1 = CreateNode ( s , regService.Description , regService , false ) ;
                 }
 
-                PopulateInstances ( n2 , reg ) ;
+                // PopulateInstances ( n2 , reg ) ;
             }
         }
 
         private bool PopulateAppNode ( )
         {
-            var current = ( BaseApp ) Application.Current ;
+            var current = Application.Current ;
             _appNode = CreateNode ( null , "Application" , current , false ) ;
             
             if ( current == null )
@@ -151,6 +153,7 @@ namespace KayMcCormick.Lib.Wpf
                 CreateNode (  _appNode , "Resources" , current.Resources , true  ) ;
             AddResourceNodeInfos ( appResources ) ;
 
+            Debug.WriteLine ( Thread.CurrentThread.ManagedThreadId ) ;
             foreach ( Window currentWindow in current.Windows )
             {
                 HandleWindow ( currentWindow ) ;

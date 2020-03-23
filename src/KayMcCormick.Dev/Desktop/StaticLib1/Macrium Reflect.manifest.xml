@@ -1,0 +1,203 @@
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+ <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
+  <events>
+   <provider name="Macrium Reflect" guid="{b570c5b4-841d-11df-a87f-daafdfd72085}" resourceFileName="Macrium Reflect" messageFileName="Macrium Reflect" symbol="MacriumReflect" source="Xml" >
+    <keywords>
+    </keywords>
+    <tasks>
+     <task name="task_0" message="$(string.task_task_0)" value="0"/>
+    </tasks>
+    <events>
+     <event value="256" symbol="task_0" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="257" symbol="task_0257" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="258" symbol="task_0258" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="259" symbol="task_0259" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="260" symbol="task_0260" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="261" symbol="task_0261" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="262" symbol="task_0262" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="263" symbol="task_0263" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="264" symbol="task_0264" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="265" symbol="task_0265" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="266" symbol="task_0266" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="267" symbol="task_0267" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="268" symbol="task_0268" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="269" symbol="task_0269" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="270" symbol="task_0270" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="271" symbol="task_0271" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="272" symbol="task_0272" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="273" symbol="task_0273" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="274" symbol="task_0274" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="275" symbol="task_0275" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="276" symbol="task_0276" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="277" symbol="task_0277" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="278" symbol="task_0278" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="279" symbol="task_0279" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="280" symbol="task_0280" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="281" symbol="task_0281" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="282" symbol="task_0282" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="283" symbol="task_0283" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="284" symbol="task_0284" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="285" symbol="task_0285" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="286" symbol="task_0286" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="287" symbol="task_0287" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="288" symbol="task_0288" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="289" symbol="task_0289" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="290" symbol="task_0290" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="401" symbol="task_0401" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="402" symbol="task_0402" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="403" symbol="task_0403" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="404" symbol="task_0404" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="405" symbol="task_0405" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="406" symbol="task_0406" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="407" symbol="task_0407" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="408" symbol="task_0408" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="409" symbol="task_0409" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="410" symbol="task_0410" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="411" symbol="task_0411" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="412" symbol="task_0412" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="413" symbol="task_0413" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="414" symbol="task_0414" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="415" symbol="task_0415" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="416" symbol="task_0416" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="417" symbol="task_0417" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="418" symbol="task_0418" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="419" symbol="task_0419" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="420" symbol="task_0420" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="421" symbol="task_0421" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="422" symbol="task_0422" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="423" symbol="task_0423" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="424" symbol="task_0424" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="425" symbol="task_0425" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="426" symbol="task_0426" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="427" symbol="task_0427" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="428" symbol="task_0428" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="429" symbol="task_0429" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="430" symbol="task_0430" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="431" symbol="task_0431" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="432" symbol="task_0432" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="433" symbol="task_0433" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="434" symbol="task_0434" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="435" symbol="task_0435" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="436" symbol="task_0436" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="601" symbol="task_0601" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="602" symbol="task_0602" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="603" symbol="task_0603" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="604" symbol="task_0604" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="605" symbol="task_0605" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="606" symbol="task_0606" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="607" symbol="task_0607" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="608" symbol="task_0608" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="609" symbol="task_0609" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="610" symbol="task_0610" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="611" symbol="task_0611" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="612" symbol="task_0612" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="613" symbol="task_0613" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="614" symbol="task_0614" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="615" symbol="task_0615" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="616" symbol="task_0616" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="617" symbol="task_0617" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8256" symbol="task_08256" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8257" symbol="task_08257" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8258" symbol="task_08258" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8259" symbol="task_08259" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8260" symbol="task_08260" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8261" symbol="task_08261" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8262" symbol="task_08262" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8263" symbol="task_08263" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8264" symbol="task_08264" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8265" symbol="task_08265" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8266" symbol="task_08266" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8267" symbol="task_08267" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8268" symbol="task_08268" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8269" symbol="task_08269" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8270" symbol="task_08270" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8271" symbol="task_08271" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8272" symbol="task_08272" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8273" symbol="task_08273" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8274" symbol="task_08274" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8275" symbol="task_08275" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8276" symbol="task_08276" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8277" symbol="task_08277" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8278" symbol="task_08278" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8279" symbol="task_08279" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8280" symbol="task_08280" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8281" symbol="task_08281" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8282" symbol="task_08282" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8283" symbol="task_08283" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8284" symbol="task_08284" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8285" symbol="task_08285" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8286" symbol="task_08286" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8287" symbol="task_08287" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8288" symbol="task_08288" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8289" symbol="task_08289" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8290" symbol="task_08290" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8401" symbol="task_08401" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8402" symbol="task_08402" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8403" symbol="task_08403" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8404" symbol="task_08404" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8405" symbol="task_08405" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8406" symbol="task_08406" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8407" symbol="task_08407" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8408" symbol="task_08408" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8409" symbol="task_08409" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8410" symbol="task_08410" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8411" symbol="task_08411" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8412" symbol="task_08412" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8413" symbol="task_08413" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8414" symbol="task_08414" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8415" symbol="task_08415" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8416" symbol="task_08416" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8417" symbol="task_08417" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8418" symbol="task_08418" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8419" symbol="task_08419" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8420" symbol="task_08420" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8421" symbol="task_08421" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8422" symbol="task_08422" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8423" symbol="task_08423" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8424" symbol="task_08424" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8425" symbol="task_08425" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8426" symbol="task_08426" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8427" symbol="task_08427" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8428" symbol="task_08428" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8429" symbol="task_08429" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8430" symbol="task_08430" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8431" symbol="task_08431" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8432" symbol="task_08432" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8433" symbol="task_08433" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8434" symbol="task_08434" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8435" symbol="task_08435" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8436" symbol="task_08436" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8601" symbol="task_08601" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8602" symbol="task_08602" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8603" symbol="task_08603" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8604" symbol="task_08604" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8605" symbol="task_08605" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8606" symbol="task_08606" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8607" symbol="task_08607" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8608" symbol="task_08608" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8609" symbol="task_08609" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8610" symbol="task_08610" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8611" symbol="task_08611" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8612" symbol="task_08612" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="8613" symbol="task_08613" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8614" symbol="task_08614" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8615" symbol="task_08615" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8616" symbol="task_08616" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+     <event value="8617" symbol="task_08617" version="0" task="task_0" level="win:Informational" template="task_0Args"/>
+    </events>
+    <templates>
+     <template tid="task_0Args">
+      <data name="Message" inType="win:UnicodeString"/>
+     </template>
+    </templates>
+   </provider>
+  </events>
+ </instrumentation>
+ <localization>
+  <resources culture="en-US">
+   <stringTable>
+    <string id="task_task_0" value="task_0"/>
+   </stringTable>
+  </resources>
+ </localization>
+</instrumentationManifest>

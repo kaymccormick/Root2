@@ -230,8 +230,8 @@ namespace ProjTests
         [ WpfFact ]
         public void TestAdapter ( )
         {
-            var x = new TestApplication ( ) ;
-
+            // var x = new TestApplication ( ) ;
+            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} projtests");
             using ( var instance = new ApplicationInstance ( _output.WriteLine ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
@@ -260,9 +260,10 @@ namespace ProjTests
                 {
                     try
                     {
-                        Debug.WriteLine ( "func is {func}" ) ;
+                        Debug.WriteLine ( $"func is {func}" ) ;
                         var xx = func ( pane ) ;
                         Debug.WriteLine ( xx.DisplayName ) ;
+                        Debug.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projtests" ) ;
                         xx.ExecuteAsync ( )
                           .ContinueWith (
                                          task => {
@@ -285,9 +286,9 @@ namespace ProjTests
                 }
 
                 var source = new TaskCompletionSource < bool > ( ) ;
-                x.TCS = source ;
-                x.Run ( w ) ;
-                Task.WaitAll ( x.TCS.Task ) ;
+                // x.TCS = source ;
+                // x.Run ( w ) ;
+                // Task.WaitAll ( x.TCS.Task ) ;
                 Debug.WriteLine ( source.Task.Result ) ;
             }
         }

@@ -1,0 +1,89 @@
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+ <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
+  <events>
+   <provider name="Microsoft-AadApplicationProxy-Updater" guid="{ab2dd0a7-a2ba-40e4-a66b-d305acdac0d5}" resourceFileName="Microsoft-AadApplicationProxy-Updater" messageFileName="Microsoft-AadApplicationProxy-Updater" symbol="MicrosoftAadApplicationProxyUpdater" source="Xml" >
+    <keywords>
+    </keywords>
+    <tasks>
+     <task name="task_0" message="$(string.task_task_0)" value="0"/>
+    </tasks>
+    <events>
+     <event value="32000" symbol="task_0" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="32001" symbol="task_032001" version="0" task="task_0" level="win:Error"/>
+     <event value="32002" symbol="task_032002" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="32003" symbol="task_032003" version="0" task="task_0" level="win:Error" template="task_032003Args"/>
+     <event value="32004" symbol="task_032004" version="0" task="task_0" level="win:Error" template="task_032004Args"/>
+     <event value="32005" symbol="task_032005" version="0" task="task_0" level="win:Error" template="task_032004Args"/>
+     <event value="32006" symbol="task_032006" version="0" task="task_0" level="win:Error" template="task_032006Args"/>
+     <event value="32007" symbol="task_032007" version="0" task="task_0" level="win:Error" template="task_032004Args"/>
+     <event value="32008" symbol="task_032008" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="32012" symbol="task_032012" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="33000" symbol="task_033000" version="0" task="task_0" level="win:Warning"/>
+     <event value="34000" symbol="task_034000" version="0" task="task_0" level="win:Informational"/>
+     <event value="34004" symbol="task_034004" version="0" task="task_0" level="win:Informational" template="task_034004Args"/>
+     <event value="34005" symbol="task_034005" version="0" task="task_0" level="win:Informational"/>
+     <event value="34006" symbol="task_034006" version="0" task="task_0" level="win:Informational" template="task_034006Args"/>
+     <event value="34007" symbol="task_034007" version="0" task="task_0" level="win:Informational"/>
+     <event value="42000" symbol="task_042000" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="42001" symbol="task_042001" version="0" task="task_0" level="win:Error"/>
+     <event value="42002" symbol="task_042002" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="42003" symbol="task_042003" version="0" task="task_0" level="win:Error" template="task_032003Args"/>
+     <event value="42004" symbol="task_042004" version="0" task="task_0" level="win:Error" template="task_032004Args"/>
+     <event value="42005" symbol="task_042005" version="0" task="task_0" level="win:Error" template="task_032004Args"/>
+     <event value="42006" symbol="task_042006" version="0" task="task_0" level="win:Error" template="task_032006Args"/>
+     <event value="42007" symbol="task_042007" version="0" task="task_0" level="win:Error" template="task_032004Args"/>
+     <event value="42008" symbol="task_042008" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="42009" symbol="task_042009" version="0" task="task_0" level="win:Error" template="task_042009Args"/>
+     <event value="42010" symbol="task_042010" version="0" task="task_0" level="win:Error"/>
+     <event value="42011" symbol="task_042011" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="42012" symbol="task_042012" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="43000" symbol="task_043000" version="0" task="task_0" level="win:Warning"/>
+     <event value="44000" symbol="task_044000" version="0" task="task_0" level="win:Informational"/>
+     <event value="44001" symbol="task_044001" version="0" task="task_0" level="win:Informational" template="task_044001Args"/>
+     <event value="44002" symbol="task_044002" version="0" task="task_0" level="win:Informational"/>
+     <event value="44003" symbol="task_044003" version="0" task="task_0" level="win:Informational"/>
+     <event value="44004" symbol="task_044004" version="0" task="task_0" level="win:Informational" template="task_034004Args"/>
+     <event value="44005" symbol="task_044005" version="0" task="task_0" level="win:Informational"/>
+     <event value="44006" symbol="task_044006" version="0" task="task_0" level="win:Informational" template="task_034006Args"/>
+     <event value="44007" symbol="task_044007" version="0" task="task_0" level="win:Informational"/>
+     <event value="44008" symbol="task_044008" version="0" task="task_0" level="win:Informational"/>
+    </events>
+    <templates>
+     <template tid="task_0Args">
+      <data name="exception" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_032003Args">
+      <data name="errorCode" inType="win:Int32"/>
+     </template>
+     <template tid="task_032004Args">
+      <data name="msiPath" inType="win:UnicodeString"/>
+      <data name="exception" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_032006Args">
+      <data name="msiPath" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_034004Args">
+      <data name="totalBytes" inType="win:Int32"/>
+     </template>
+     <template tid="task_034006Args">
+      <data name="connectorVersion" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_042009Args">
+      <data name="appConfigTraceFilenameKey" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_044001Args">
+      <data name="UpdaterEndpoint" inType="win:UnicodeString"/>
+      <data name="CheckForUpdatePeriodInSeconds" inType="win:Int32"/>
+     </template>
+    </templates>
+   </provider>
+  </events>
+ </instrumentation>
+ <localization>
+  <resources culture="en-US">
+   <stringTable>
+    <string id="task_task_0" value="task_0"/>
+   </stringTable>
+  </resources>
+ </localization>
+</instrumentationManifest>

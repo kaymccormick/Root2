@@ -10,6 +10,9 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 #include <crtdefs.h>
+#include <VSCustomNativeHeapEtwProvider.h>
+#include "comdef.h"
+#include <evntprov.h>
 #include "CodeAnalysisApp1.h"
 
 

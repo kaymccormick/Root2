@@ -117,7 +117,9 @@
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
-    <Compile Include="CodeAnalysisApp1.cs" />
+    <Compile Include="IView1.cs" />
+    <Compile Include="LogEventInstanceCollection.cs" />
+    <Compile Include="Tracing\CodeAnalysisApp1.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\CentralServiceReference\Reference.cs">

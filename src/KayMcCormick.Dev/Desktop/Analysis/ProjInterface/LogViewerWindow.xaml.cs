@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
+using AnalysisAppLib ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

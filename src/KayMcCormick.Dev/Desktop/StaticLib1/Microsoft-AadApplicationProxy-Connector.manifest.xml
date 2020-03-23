@@ -1,0 +1,1061 @@
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+ <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
+  <events>
+   <provider name="Microsoft-AadApplicationProxy-Connector" guid="{3f0720f8-fa3b-4f7c-a0be-29ce97ccd8c9}" resourceFileName="Microsoft-AadApplicationProxy-Connector" messageFileName="Microsoft-AadApplicationProxy-Connector" symbol="MicrosoftAadApplicationProxyConnector" source="Xml" >
+    <keywords>
+    </keywords>
+    <tasks>
+     <task name="task_0" message="$(string.task_task_0)" value="0"/>
+    </tasks>
+    <events>
+     <event value="11003" symbol="task_0" version="0" task="task_0" level="win:Critical" template="task_0Args"/>
+     <event value="11004" symbol="task_011004" version="0" task="task_0" level="win:Critical" template="task_0Args"/>
+     <event value="11005" symbol="task_011005" version="0" task="task_0" level="win:Critical"/>
+     <event value="11006" symbol="task_011006" version="0" task="task_0" level="win:Critical" template="task_0Args"/>
+     <event value="11007" symbol="task_011007" version="0" task="task_0" level="win:Critical"/>
+     <event value="12000" symbol="task_012000" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="12001" symbol="task_012001" version="0" task="task_0" level="win:Error" template="task_012001Args"/>
+     <event value="12002" symbol="task_012002" version="0" task="task_0" level="win:Error" template="task_012001Args"/>
+     <event value="12003" symbol="task_012003" version="0" task="task_0" level="win:Error" template="task_012003Args"/>
+     <event value="12004" symbol="task_012004" version="0" task="task_0" level="win:Error" template="task_012004Args"/>
+     <event value="12005" symbol="task_012005" version="0" task="task_0" level="win:Error" template="task_012005Args"/>
+     <event value="12008" symbol="task_012008" version="0" task="task_0" level="win:Error" template="task_012008Args"/>
+     <event value="12009" symbol="task_012009" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="12010" symbol="task_012010" version="0" task="task_0" level="win:Error" template="task_012008Args"/>
+     <event value="12011" symbol="task_012011" version="0" task="task_0" level="win:Error" template="task_012011Args"/>
+     <event value="12012" symbol="task_012012" version="0" task="task_0" level="win:Error" template="task_012008Args"/>
+     <event value="12013" symbol="task_012013" version="0" task="task_0" level="win:Error" template="task_012013Args"/>
+     <event value="12014" symbol="task_012014" version="0" task="task_0" level="win:Error" template="task_012014Args"/>
+     <event value="12015" symbol="task_012015" version="0" task="task_0" level="win:Error" template="task_012015Args"/>
+     <event value="12016" symbol="task_012016" version="0" task="task_0" level="win:Error" template="task_012016Args"/>
+     <event value="12017" symbol="task_012017" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="12018" symbol="task_012018" version="0" task="task_0" level="win:Error" template="task_012018Args"/>
+     <event value="12019" symbol="task_012019" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="12020" symbol="task_012020" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="12021" symbol="task_012021" version="0" task="task_0" level="win:Error" template="task_012021Args"/>
+     <event value="12022" symbol="task_012022" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="12023" symbol="task_012023" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="12024" symbol="task_012024" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="12025" symbol="task_012025" version="0" task="task_0" level="win:Error" template="task_012025Args"/>
+     <event value="12026" symbol="task_012026" version="0" task="task_0" level="win:Error" template="task_012025Args"/>
+     <event value="12027" symbol="task_012027" version="0" task="task_0" level="win:Error" template="task_012027Args"/>
+     <event value="12028" symbol="task_012028" version="0" task="task_0" level="win:Error" template="task_012028Args"/>
+     <event value="12029" symbol="task_012029" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="12030" symbol="task_012030" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="12031" symbol="task_012031" version="0" task="task_0" level="win:Error" template="task_012031Args"/>
+     <event value="12032" symbol="task_012032" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="12033" symbol="task_012033" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="13000" symbol="task_013000" version="0" task="task_0" level="win:Warning" template="task_013000Args"/>
+     <event value="13001" symbol="task_013001" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13002" symbol="task_013002" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13003" symbol="task_013003" version="0" task="task_0" level="win:Warning" template="task_013003Args"/>
+     <event value="13004" symbol="task_013004" version="0" task="task_0" level="win:Warning" template="task_013004Args"/>
+     <event value="13005" symbol="task_013005" version="0" task="task_0" level="win:Warning" template="task_013004Args"/>
+     <event value="13006" symbol="task_013006" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="13007" symbol="task_013007" version="0" task="task_0" level="win:Warning" template="task_013007Args"/>
+     <event value="13008" symbol="task_013008" version="0" task="task_0" level="win:Warning" template="task_013008Args"/>
+     <event value="13009" symbol="task_013009" version="0" task="task_0" level="win:Warning" template="task_013009Args"/>
+     <event value="13010" symbol="task_013010" version="0" task="task_0" level="win:Warning" template="task_0Args"/>
+     <event value="13011" symbol="task_013011" version="0" task="task_0" level="win:Warning" template="task_012005Args"/>
+     <event value="13012" symbol="task_013012" version="0" task="task_0" level="win:Warning" template="task_013012Args"/>
+     <event value="13013" symbol="task_013013" version="0" task="task_0" level="win:Warning" template="task_013013Args"/>
+     <event value="13014" symbol="task_013014" version="0" task="task_0" level="win:Warning" template="task_013012Args"/>
+     <event value="13015" symbol="task_013015" version="0" task="task_0" level="win:Warning" template="task_013015Args"/>
+     <event value="13016" symbol="task_013016" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13017" symbol="task_013017" version="0" task="task_0" level="win:Warning" template="task_012005Args"/>
+     <event value="13018" symbol="task_013018" version="0" task="task_0" level="win:Warning" template="task_012005Args"/>
+     <event value="13019" symbol="task_013019" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="13020" symbol="task_013020" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13021" symbol="task_013021" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="13022" symbol="task_013022" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13024" symbol="task_013024" version="0" task="task_0" level="win:Warning" template="task_013024Args"/>
+     <event value="13025" symbol="task_013025" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13026" symbol="task_013026" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="13027" symbol="task_013027" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13028" symbol="task_013028" version="0" task="task_0" level="win:Warning" template="task_013013Args"/>
+     <event value="13029" symbol="task_013029" version="0" task="task_0" level="win:Warning" template="task_013029Args"/>
+     <event value="13030" symbol="task_013030" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="13031" symbol="task_013031" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="13032" symbol="task_013032" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="13033" symbol="task_013033" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="13034" symbol="task_013034" version="0" task="task_0" level="win:Warning" template="task_013034Args"/>
+     <event value="13035" symbol="task_013035" version="0" task="task_0" level="win:Warning" template="task_013035Args"/>
+     <event value="13036" symbol="task_013036" version="0" task="task_0" level="win:Warning" template="task_013036Args"/>
+     <event value="13037" symbol="task_013037" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13038" symbol="task_013038" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="13039" symbol="task_013039" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="13040" symbol="task_013040" version="0" task="task_0" level="win:Warning" template="task_013040Args"/>
+     <event value="13041" symbol="task_013041" version="0" task="task_0" level="win:Warning" template="task_013040Args"/>
+     <event value="13042" symbol="task_013042" version="0" task="task_0" level="win:Warning" template="task_013042Args"/>
+     <event value="13043" symbol="task_013043" version="0" task="task_0" level="win:Warning" template="task_013013Args"/>
+     <event value="13044" symbol="task_013044" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="13045" symbol="task_013045" version="0" task="task_0" level="win:Warning" template="task_013045Args"/>
+     <event value="14000" symbol="task_014000" version="0" task="task_0" level="win:Informational"/>
+     <event value="14001" symbol="task_014001" version="0" task="task_0" level="win:Informational"/>
+     <event value="14002" symbol="task_014002" version="0" task="task_0" level="win:Informational"/>
+     <event value="14003" symbol="task_014003" version="0" task="task_0" level="win:Informational"/>
+     <event value="14004" symbol="task_014004" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="14005" symbol="task_014005" version="0" task="task_0" level="win:Informational" template="task_014005Args"/>
+     <event value="14007" symbol="task_014007" version="0" task="task_0" level="win:Informational" template="task_014007Args"/>
+     <event value="14008" symbol="task_014008" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="14010" symbol="task_014010" version="0" task="task_0" level="win:Informational" template="task_014010Args"/>
+     <event value="14011" symbol="task_014011" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="14012" symbol="task_014012" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="14013" symbol="task_014013" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="14014" symbol="task_014014" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="14015" symbol="task_014015" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="14016" symbol="task_014016" version="0" task="task_0" level="win:Informational"/>
+     <event value="14017" symbol="task_014017" version="0" task="task_0" level="win:Informational"/>
+     <event value="14018" symbol="task_014018" version="0" task="task_0" level="win:Informational" template="task_014018Args"/>
+     <event value="14019" symbol="task_014019" version="0" task="task_0" level="win:Informational" template="task_014019Args"/>
+     <event value="14020" symbol="task_014020" version="0" task="task_0" level="win:Informational"/>
+     <event value="14021" symbol="task_014021" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="14022" symbol="task_014022" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="14023" symbol="task_014023" version="0" task="task_0" level="win:Informational"/>
+     <event value="14024" symbol="task_014024" version="0" task="task_0" level="win:Informational"/>
+     <event value="14025" symbol="task_014025" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="14026" symbol="task_014026" version="0" task="task_0" level="win:Informational" template="task_014026Args"/>
+     <event value="14027" symbol="task_014027" version="0" task="task_0" level="win:Informational" template="task_013013Args"/>
+     <event value="14032" symbol="task_014032" version="0" task="task_0" level="win:Informational" template="task_013013Args"/>
+     <event value="14039" symbol="task_014039" version="0" task="task_0" level="win:Error" template="task_014039Args"/>
+     <event value="14041" symbol="task_014041" version="0" task="task_0" level="win:Informational" template="task_014041Args"/>
+     <event value="14042" symbol="task_014042" version="0" task="task_0" level="win:Informational" template="task_014041Args"/>
+     <event value="21003" symbol="task_021003" version="0" task="task_0" level="win:Critical" template="task_0Args"/>
+     <event value="21004" symbol="task_021004" version="0" task="task_0" level="win:Critical" template="task_0Args"/>
+     <event value="21005" symbol="task_021005" version="0" task="task_0" level="win:Critical"/>
+     <event value="21006" symbol="task_021006" version="0" task="task_0" level="win:Critical" template="task_0Args"/>
+     <event value="21007" symbol="task_021007" version="0" task="task_0" level="win:Critical"/>
+     <event value="22000" symbol="task_022000" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="22001" symbol="task_022001" version="0" task="task_0" level="win:Error" template="task_012001Args"/>
+     <event value="22002" symbol="task_022002" version="0" task="task_0" level="win:Error" template="task_012001Args"/>
+     <event value="22003" symbol="task_022003" version="0" task="task_0" level="win:Error" template="task_012003Args"/>
+     <event value="22004" symbol="task_022004" version="0" task="task_0" level="win:Error" template="task_012004Args"/>
+     <event value="22005" symbol="task_022005" version="0" task="task_0" level="win:Error" template="task_012005Args"/>
+     <event value="22008" symbol="task_022008" version="0" task="task_0" level="win:Error" template="task_012008Args"/>
+     <event value="22009" symbol="task_022009" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="22010" symbol="task_022010" version="0" task="task_0" level="win:Error" template="task_012008Args"/>
+     <event value="22011" symbol="task_022011" version="0" task="task_0" level="win:Error" template="task_012011Args"/>
+     <event value="22012" symbol="task_022012" version="0" task="task_0" level="win:Error" template="task_012008Args"/>
+     <event value="22013" symbol="task_022013" version="0" task="task_0" level="win:Error" template="task_012013Args"/>
+     <event value="22014" symbol="task_022014" version="0" task="task_0" level="win:Error" template="task_012014Args"/>
+     <event value="22015" symbol="task_022015" version="0" task="task_0" level="win:Error" template="task_012015Args"/>
+     <event value="22016" symbol="task_022016" version="0" task="task_0" level="win:Error" template="task_012016Args"/>
+     <event value="22017" symbol="task_022017" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="22018" symbol="task_022018" version="0" task="task_0" level="win:Error" template="task_012018Args"/>
+     <event value="22019" symbol="task_022019" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="22020" symbol="task_022020" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="22021" symbol="task_022021" version="0" task="task_0" level="win:Error" template="task_012021Args"/>
+     <event value="22022" symbol="task_022022" version="0" task="task_0" level="win:Error" template="task_0Args"/>
+     <event value="22023" symbol="task_022023" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="22024" symbol="task_022024" version="0" task="task_0" level="win:Error" template="task_012019Args"/>
+     <event value="22025" symbol="task_022025" version="0" task="task_0" level="win:Error" template="task_012025Args"/>
+     <event value="22026" symbol="task_022026" version="0" task="task_0" level="win:Error" template="task_012025Args"/>
+     <event value="22027" symbol="task_022027" version="0" task="task_0" level="win:Error" template="task_012027Args"/>
+     <event value="22028" symbol="task_022028" version="0" task="task_0" level="win:Error" template="task_012028Args"/>
+     <event value="22029" symbol="task_022029" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="22030" symbol="task_022030" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="22031" symbol="task_022031" version="0" task="task_0" level="win:Error" template="task_012031Args"/>
+     <event value="22032" symbol="task_022032" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="22033" symbol="task_022033" version="0" task="task_0" level="win:Error" template="task_012029Args"/>
+     <event value="23000" symbol="task_023000" version="0" task="task_0" level="win:Warning" template="task_013000Args"/>
+     <event value="23001" symbol="task_023001" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23002" symbol="task_023002" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23003" symbol="task_023003" version="0" task="task_0" level="win:Warning" template="task_013003Args"/>
+     <event value="23004" symbol="task_023004" version="0" task="task_0" level="win:Warning" template="task_013004Args"/>
+     <event value="23005" symbol="task_023005" version="0" task="task_0" level="win:Warning" template="task_013004Args"/>
+     <event value="23006" symbol="task_023006" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="23007" symbol="task_023007" version="0" task="task_0" level="win:Warning" template="task_013007Args"/>
+     <event value="23008" symbol="task_023008" version="0" task="task_0" level="win:Warning" template="task_013008Args"/>
+     <event value="23009" symbol="task_023009" version="0" task="task_0" level="win:Warning" template="task_013009Args"/>
+     <event value="23010" symbol="task_023010" version="0" task="task_0" level="win:Warning" template="task_0Args"/>
+     <event value="23011" symbol="task_023011" version="0" task="task_0" level="win:Warning" template="task_012005Args"/>
+     <event value="23012" symbol="task_023012" version="0" task="task_0" level="win:Warning" template="task_013012Args"/>
+     <event value="23013" symbol="task_023013" version="0" task="task_0" level="win:Warning" template="task_013013Args"/>
+     <event value="23014" symbol="task_023014" version="0" task="task_0" level="win:Warning" template="task_013012Args"/>
+     <event value="23015" symbol="task_023015" version="0" task="task_0" level="win:Warning" template="task_013015Args"/>
+     <event value="23016" symbol="task_023016" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23017" symbol="task_023017" version="0" task="task_0" level="win:Warning" template="task_012005Args"/>
+     <event value="23018" symbol="task_023018" version="0" task="task_0" level="win:Warning" template="task_012005Args"/>
+     <event value="23019" symbol="task_023019" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="23020" symbol="task_023020" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23021" symbol="task_023021" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="23022" symbol="task_023022" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23024" symbol="task_023024" version="0" task="task_0" level="win:Warning" template="task_013024Args"/>
+     <event value="23025" symbol="task_023025" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23026" symbol="task_023026" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="23027" symbol="task_023027" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23028" symbol="task_023028" version="0" task="task_0" level="win:Warning" template="task_013013Args"/>
+     <event value="23029" symbol="task_023029" version="0" task="task_0" level="win:Warning" template="task_013029Args"/>
+     <event value="23030" symbol="task_023030" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="23031" symbol="task_023031" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="23032" symbol="task_023032" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="23033" symbol="task_023033" version="0" task="task_0" level="win:Warning" template="task_013026Args"/>
+     <event value="23034" symbol="task_023034" version="0" task="task_0" level="win:Warning" template="task_013034Args"/>
+     <event value="23035" symbol="task_023035" version="0" task="task_0" level="win:Warning" template="task_013035Args"/>
+     <event value="23036" symbol="task_023036" version="0" task="task_0" level="win:Warning" template="task_013036Args"/>
+     <event value="23037" symbol="task_023037" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23038" symbol="task_023038" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="23039" symbol="task_023039" version="0" task="task_0" level="win:Warning" template="task_013006Args"/>
+     <event value="23040" symbol="task_023040" version="0" task="task_0" level="win:Warning" template="task_013040Args"/>
+     <event value="23041" symbol="task_023041" version="0" task="task_0" level="win:Warning" template="task_013040Args"/>
+     <event value="23042" symbol="task_023042" version="0" task="task_0" level="win:Warning" template="task_013042Args"/>
+     <event value="23043" symbol="task_023043" version="0" task="task_0" level="win:Warning" template="task_013013Args"/>
+     <event value="23044" symbol="task_023044" version="0" task="task_0" level="win:Warning" template="task_012008Args"/>
+     <event value="23045" symbol="task_023045" version="0" task="task_0" level="win:Warning" template="task_013045Args"/>
+     <event value="24000" symbol="task_024000" version="0" task="task_0" level="win:Informational"/>
+     <event value="24001" symbol="task_024001" version="0" task="task_0" level="win:Informational"/>
+     <event value="24002" symbol="task_024002" version="0" task="task_0" level="win:Informational"/>
+     <event value="24003" symbol="task_024003" version="0" task="task_0" level="win:Informational"/>
+     <event value="24004" symbol="task_024004" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="24005" symbol="task_024005" version="0" task="task_0" level="win:Informational" template="task_014005Args"/>
+     <event value="24007" symbol="task_024007" version="0" task="task_0" level="win:Informational" template="task_014007Args"/>
+     <event value="24008" symbol="task_024008" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="24009" symbol="task_024009" version="0" task="task_0" level="win:Informational" template="task_013035Args"/>
+     <event value="24010" symbol="task_024010" version="0" task="task_0" level="win:Informational" template="task_014010Args"/>
+     <event value="24011" symbol="task_024011" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="24012" symbol="task_024012" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="24013" symbol="task_024013" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="24014" symbol="task_024014" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="24015" symbol="task_024015" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="24016" symbol="task_024016" version="0" task="task_0" level="win:Informational"/>
+     <event value="24017" symbol="task_024017" version="0" task="task_0" level="win:Informational"/>
+     <event value="24018" symbol="task_024018" version="0" task="task_0" level="win:Informational" template="task_014018Args"/>
+     <event value="24019" symbol="task_024019" version="0" task="task_0" level="win:Informational" template="task_014019Args"/>
+     <event value="24020" symbol="task_024020" version="0" task="task_0" level="win:Informational"/>
+     <event value="24021" symbol="task_024021" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="24022" symbol="task_024022" version="0" task="task_0" level="win:Informational" template="task_014012Args"/>
+     <event value="24023" symbol="task_024023" version="0" task="task_0" level="win:Informational"/>
+     <event value="24024" symbol="task_024024" version="0" task="task_0" level="win:Informational"/>
+     <event value="24025" symbol="task_024025" version="0" task="task_0" level="win:Informational" template="task_014004Args"/>
+     <event value="24026" symbol="task_024026" version="0" task="task_0" level="win:Informational" template="task_014026Args"/>
+     <event value="24027" symbol="task_024027" version="0" task="task_0" level="win:Informational" template="task_013013Args"/>
+     <event value="24028" symbol="task_024028" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="24029" symbol="task_024029" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="24030" symbol="task_024030" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="24031" symbol="task_024031" version="0" task="task_0" level="win:Informational" template="task_012008Args"/>
+     <event value="24032" symbol="task_024032" version="0" task="task_0" level="win:Informational" template="task_013013Args"/>
+     <event value="24037" symbol="task_024037" version="0" task="task_0" level="win:Informational" template="task_024037Args"/>
+     <event value="24038" symbol="task_024038" version="0" task="task_0" level="win:Informational" template="task_024037Args"/>
+     <event value="24039" symbol="task_024039" version="0" task="task_0" level="win:Error" template="task_014039Args"/>
+     <event value="24040" symbol="task_024040" version="0" task="task_0" level="win:Informational" template="task_024040Args"/>
+     <event value="24041" symbol="task_024041" version="0" task="task_0" level="win:Informational" template="task_014041Args"/>
+     <event value="24042" symbol="task_024042" version="0" task="task_0" level="win:Informational" template="task_014041Args"/>
+     <event value="25000" symbol="task_025000" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25001" symbol="task_025001" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25002" symbol="task_025002" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25003" symbol="task_025003" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25004" symbol="task_025004" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25005" symbol="task_025005" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25006" symbol="task_025006" version="0" task="task_0" level="win:Verbose" template="task_025006Args"/>
+     <event value="25007" symbol="task_025007" version="0" task="task_0" level="win:Verbose" template="task_025007Args"/>
+     <event value="25008" symbol="task_025008" version="0" task="task_0" level="win:Verbose" template="task_025008Args"/>
+     <event value="25009" symbol="task_025009" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25010" symbol="task_025010" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25011" symbol="task_025011" version="0" task="task_0" level="win:Verbose" template="task_013035Args"/>
+     <event value="25012" symbol="task_025012" version="0" task="task_0" level="win:Verbose" template="task_025012Args"/>
+     <event value="25013" symbol="task_025013" version="0" task="task_0" level="win:Verbose" template="task_025013Args"/>
+     <event value="25014" symbol="task_025014" version="0" task="task_0" level="win:Verbose" template="task_025012Args"/>
+     <event value="25015" symbol="task_025015" version="0" task="task_0" level="win:Verbose" template="task_025015Args"/>
+    </events>
+    <templates>
+     <template tid="task_0Args">
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012001Args">
+      <data name="Server" inType="win:UnicodeString"/>
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012003Args">
+      <data name="Cookie" inType="win:AnsiString"/>
+      <data name="ErrorMsg" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012004Args">
+      <data name="CookieUrl" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012005Args">
+      <data name="Token" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012008Args">
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012011Args">
+      <data name="Cookie" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012013Args">
+      <data name="AppName1" inType="win:UnicodeString"/>
+      <data name="AppId1" inType="win:UnicodeString"/>
+      <data name="AppUrl1" inType="win:UnicodeString"/>
+      <data name="AppName2" inType="win:UnicodeString"/>
+      <data name="AppId2" inType="win:UnicodeString"/>
+      <data name="AppUrl2" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012014Args">
+      <data name="AppName1" inType="win:UnicodeString"/>
+      <data name="AppId1" inType="win:UnicodeString"/>
+      <data name="AppName2" inType="win:UnicodeString"/>
+      <data name="AppId2" inType="win:UnicodeString"/>
+      <data name="AppsUrl" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012015Args">
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+      <data name="AppName" inType="win:UnicodeString"/>
+      <data name="AppId" inType="win:UnicodeString"/>
+      <data name="AppUrl" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012016Args">
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="Cmd" inType="win:UnicodeString"/>
+      <data name="Params" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012018Args">
+      <data name="CertThumbprint" inType="win:AnsiString"/>
+      <data name="HostName" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012019Args">
+      <data name="Url" inType="win:UnicodeString"/>
+      <data name="Cause" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012021Args">
+      <data name="Error" inType="win:UnicodeString"/>
+      <data name="CertThumbprint" inType="win:AnsiString"/>
+      <data name="HostName" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012025Args">
+      <data name="Details" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012027Args">
+      <data name="errMsg" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012028Args">
+      <data name="FailReason" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_012029Args">
+      <data name="FailReason" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_012031Args">
+      <data name="Method" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013000Args">
+      <data name="Url" inType="win:UnicodeString"/>
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_013003Args">
+      <data name="Date" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013004Args">
+      <data name="CDP" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013006Args">
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013007Args">
+      <data name="Seconds" inType="win:UInt32"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013008Args">
+      <data name="WarningMsg" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="Cmd" inType="win:UnicodeString"/>
+      <data name="Params" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_013009Args">
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+      <data name="Retries" inType="win:UInt32"/>
+     </template>
+     <template tid="task_013012Args">
+      <data name="ErrorMsg" inType="win:AnsiString"/>
+      <data name="Token" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013013Args">
+      <data name="Audience" inType="win:AnsiString"/>
+      <data name="Issuer" inType="win:AnsiString"/>
+      <data name="ValidFrom" inType="win:FILETIME"/>
+      <data name="Expired" inType="win:FILETIME"/>
+      <data name="RelyingPartyTrustId" inType="win:UnicodeString"/>
+      <data name="UPN" inType="win:UnicodeString"/>
+      <data name="DeviceCertificateThumbprint" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013015Args">
+      <data name="Expired" inType="win:FILETIME"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013024Args">
+      <data name="Reason" inType="win:UnicodeString"/>
+      <data name="CertThumbprint" inType="win:AnsiString"/>
+      <data name="HostName" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_013026Args">
+      <data name="CertThumbprint" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013029Args">
+      <data name="WarningMsg" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_013034Args">
+      <data name="CertThumbprint" inType="win:AnsiString"/>
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013035Args">
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_013036Args">
+      <data name="CertThumbprint" inType="win:AnsiString"/>
+      <data name="ConfigThumbprint" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_013040Args">
+      <data name="ErrorMsg" inType="win:UnicodeString"/>
+      <data name="RelyingPartyTrustId" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013042Args">
+      <data name="Token" inType="win:UnicodeString"/>
+      <data name="ValidFrom" inType="win:FILETIME"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_013045Args">
+      <data name="BackendServerCode" inType="win:UInt32"/>
+      <data name="ClientResponseCode" inType="win:UInt32"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_014004Args">
+      <data name="ConfigID" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_014005Args">
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="Cmd" inType="win:UnicodeString"/>
+      <data name="Params" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_014007Args">
+      <data name="Server" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_014010Args">
+      <data name="CertThumbprint" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_014012Args">
+      <data name="Url" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_014018Args">
+      <data name="TxID" inType="win:GUID"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_014019Args">
+      <data name="NumOfConnection" inType="win:UInt32"/>
+     </template>
+     <template tid="task_014026Args">
+      <data name="Msg" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_014039Args">
+      <data name="Reason" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+      <data name="PublishedAppName" inType="win:UnicodeString"/>
+      <data name="PublishedAppID" inType="win:UnicodeString"/>
+      <data name="PublishedExternalUrl" inType="win:UnicodeString"/>
+      <data name="PublishedBackendUrl" inType="win:UnicodeString"/>
+      <data name="User" inType="win:UnicodeString"/>
+      <data name="UserAgent" inType="win:AnsiString"/>
+      <data name="DeviceID" inType="win:UnicodeString"/>
+      <data name="TokenState" inType="win:AnsiString"/>
+      <data name="CookieState" inType="win:AnsiString"/>
+      <data name="ClientRequestUrl" inType="win:UnicodeString"/>
+      <data name="BackendRequestUrl" inType="win:UnicodeString"/>
+      <data name="PreAuthenticationFlow" inType="win:AnsiString"/>
+      <data name="BackendServerAuthenticationMode" inType="win:AnsiString"/>
+      <data name="StateMachineState" inType="win:AnsiString"/>
+      <data name="ResponseCodeToClient" inType="win:AnsiString"/>
+      <data name="ResponseMsgToClient" inType="win:AnsiString"/>
+      <data name="ClientCertIssuer" inType="win:UnicodeString"/>
+      <data name="ResponseCodeFromBackend" inType="win:AnsiString"/>
+      <data name="FrontendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendLocationHeader" inType="win:AnsiString"/>
+      <data name="BackendHttpVerb" inType="win:AnsiString"/>
+      <data name="ClientHttpVerb" inType="win:AnsiString"/>
+     </template>
+     <template tid="task_014041Args">
+      <data name="PrimaryKey" inType="win:UnicodeString"/>
+      <data name="SecondaryKey" inType="win:UnicodeString"/>
+     </template>
+     <template tid="task_024037Args">
+      <data name="Expires" inType="win:FILETIME"/>
+      <data name="Upn" inType="win:UnicodeString"/>
+      <data name="RelyingPartyTrsutId" inType="win:UnicodeString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_024040Args">
+      <data name="RedirectedFrom" inType="win:UnicodeString"/>
+      <data name="RedirectedTo" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_025006Args">
+      <data name="Required" inType="win:AnsiString"/>
+      <data name="ReturnUrl" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_025007Args">
+      <data name="WwwAuthentication" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_025008Args">
+      <data name="Authorization" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_025012Args">
+      <data name="TranslatedFrom" inType="win:AnsiString"/>
+      <data name="TranslatedTo" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_025013Args">
+      <data name="CookieName" inType="win:AnsiString"/>
+      <data name="TranslatedFrom" inType="win:AnsiString"/>
+      <data name="TranslatedTo" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+     <template tid="task_025015Args">
+      <data name="OldValue" inType="win:AnsiString"/>
+      <data name="NewValue" inType="win:AnsiString"/>
+      <data name="TransactionID" inType="win:GUID"/>
+      <data name="SessionID" inType="win:GUID"/>
+     </template>
+    </templates>
+   </provider>
+  </events>
+ </instrumentation>
+ <localization>
+  <resources culture="en-US">
+   <stringTable>
+    <string id="task_task_0" value="task_0"/>
+   </stringTable>
+  </resources>
+ </localization>
+</instrumentationManifest>

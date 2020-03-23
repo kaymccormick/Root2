@@ -86,7 +86,6 @@
     <Compile Include="ICodeSource.cs" />
     <Compile Include="ISemanticModelContext.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
-    <Compile Include="Interfaces\ILogInvocation.cs" />
     <Compile Include="LogUsage\Interfaces\ILogInvocationArgument.cs" />
     <Compile Include="LogUsage\LogInvocation2.cs" />
     <Compile Include="LogUsage\InvocationParams.cs" />
@@ -221,6 +220,8 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

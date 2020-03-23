@@ -45,6 +45,7 @@ namespace KayMcCormick.Dev
         ) : base ( logMethod )
 
         {
+            _disableServiceHost = disableServiceHost ;
             var serviceCollection = new ServiceCollection ( ) ;
             if ( ! disableRuntimeConfiguration )
             {
@@ -55,7 +56,9 @@ namespace KayMcCormick.Dev
             if ( ! disableLogging )
             {
                 serviceCollection.AddLogging ( ) ;
-                var config = configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( ) ;
+                var config = configs != null
+                                 ? configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( )
+                                 : null ;
                 // LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
                 {

@@ -95,20 +95,15 @@
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputBindingsManager.cs" />
-    <Compile Include="LogViewerAppViewModel.cs" />
-    <Compile Include="FileSystemAppExplorerItem.cs" />
-    <Compile Include="AppExplorerItem.cs" />
+    <Compile Include="ITakesHwnd.cs" />
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="DictionaryConverter.cs" />
-    <Compile Include="DockWindowViewModel.cs" />
     <Compile Include="FileBrowser.xaml.cs">
       <DependentUpon>FileBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileSystemExplorerItemProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HashtableConverter.cs" />
     <Compile Include="IconsSource.cs" />
-    <Compile Include="IExplorerItemProvider.cs" />
     <Compile Include="IIconsSource.cs" />
     <Compile Include="JSON\JsonBrushConverter.cs" />
     <Compile Include="JSON\JsonConverterImage.cs" />
@@ -119,14 +114,8 @@
     <Compile Include="JSON\JsonSolidColorBrushConverter.cs" />
     <Compile Include="JSON\JsonSyntaxNodeConverter.cs" />
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
-    <Compile Include="LogEventInstanceCollection.cs" />
-    <Compile Include="LogViewerConfig.cs" />
-    <Compile Include="MicrosoftUserViewModel.cs" />
-    <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="LogInvocationConverter.cs" />
-    <Compile Include="LogListener.cs" />
     <Compile Include="LogViewerControl.xaml.cs" />
-    <Compile Include="LogViewModel.cs" />
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceAppConverter.cs" />
@@ -134,7 +123,6 @@
     <Compile Include="Shell.cs" />
     <Compile Include="ShellExplorerItem.cs" />
     <Compile Include="ShellExplorerItemProvider.cs" />
-    <Compile Include="TokenCacheHelper.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
@@ -311,6 +299,10 @@
     <ProjectReference Include="..\..\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
+      <Name>AnalysisAppLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\AnalysisControls\AnalysisControls.csproj">
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
              xmlns:projInterface="clr-namespace:ProjInterface"
+             xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
@@ -33,7 +34,7 @@
         <TextBlock Grid.Column="1" Grid.Row="1"  Text="{Binding FormattedMessage}"></TextBlock>
       </Grid>
     </DataTemplate>
-    <HierarchicalDataTemplate DataType="{x:Type projInterface:ViewerLoggerInfo}" ItemsSource="{Binding Children}">
+    <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:ViewerLoggerInfo}" ItemsSource="{Binding Children}">
       <TextBlock MinWidth="80" Text="{Binding DisplayName}"></TextBlock>
     </HierarchicalDataTemplate>
   </UserControl.Resources>

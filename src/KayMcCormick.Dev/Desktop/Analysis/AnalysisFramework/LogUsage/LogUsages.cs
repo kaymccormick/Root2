@@ -1,6 +1,5 @@
 using System ;
 using System.Linq ;
-using AnalysisFramework.Interfaces ;
 using AnalysisFramework.LogUsage.Interfaces ;
 using AnalysisFramework.SyntaxTransform ;
 using JetBrains.Annotations ;

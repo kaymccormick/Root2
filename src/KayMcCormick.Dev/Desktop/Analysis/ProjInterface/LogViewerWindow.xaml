@@ -6,6 +6,7 @@
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:projInterface="clr-namespace:ProjInterface"
                  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+                 xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
                  Name="logViewerWindow"
                  mc:Ignorable="d"
                  Title="Log Viewer Window" Height="450"
@@ -252,11 +253,11 @@
       <TextBlock Text="{Binding Properties.Count}" />
     </DataTemplate>
     <DataTemplate
-      DataType="{x:Type projInterface:LogViewModel}">
+      DataType="{x:Type analysisAppLib:LogViewModel}">
       <TextBlock Text="{Binding DisplayName}" />
     </DataTemplate>
     <HierarchicalDataTemplate
-      DataType="{x:Type projInterface:ViewerLoggerInfo}"
+      DataType="{x:Type analysisAppLib:ViewerLoggerInfo}"
       ItemsSource="{Binding Children}">
       <TextBlock MinWidth="80" Text="{Binding DisplayName}" />
     </HierarchicalDataTemplate>
@@ -301,7 +302,7 @@
                 Grid.Row="2" Grid.ColumnSpan="2"
                 Grid.Column="0"
                 ItemsSource="{Binding ElementName=logViewerWindow,Path=ViewModel.LogViewModels}"
-                d:DataContext="{d:DesignInstance {x:Type projInterface:LogViewerAppViewModel}, IsDesignTimeCreatable=True}" />
+                d:DataContext="{d:DesignInstance {x:Type analysisAppLib:LogViewerAppViewModel}, IsDesignTimeCreatable=True}" />
     <StatusBar Grid.Row="3" Grid.Column="0"
                Grid.ColumnSpan="2">
       <StatusBarItem />

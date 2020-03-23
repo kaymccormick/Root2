@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if USE_SHELL
 using System ;
 using System.Collections.Generic ;
 using System.Drawing ;
@@ -22,6 +23,7 @@ using System.Windows.Forms ;
 using System.Windows.Interop ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using AnalysisAppLib ;
 using ExplorerCtrl ;
 using JetBrains.Annotations ;
 using NLog ;
@@ -196,7 +198,8 @@ namespace ProjInterface
         private LogBuilder LB ( )
         {
             return new LogBuilder ( Logger ).LoggerName ( string.Join(".", PathSegments.Select(s => s.Replace(".", "_")))).Level ( LogLevel.Debug ) ;
-        }
+
+}
 
         #region Overrides of AppExplorerItemBase
         public override event EventHandler < RefreshEventArgs > Refresh ;
@@ -472,3 +475,4 @@ namespace ProjInterface
         #endregion
     }
 }
+#endif

@@ -1,0 +1,80 @@
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+ <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
+  <events>
+   <provider name="Intel-SST-CFD-HDA" guid="{daae058c-46c9-4c13-85d9-d352fd829951}" resourceFileName="Intel-SST-CFD-HDA" messageFileName="Intel-SST-CFD-HDA" symbol="IntelSSTCFDHDA" source="Xml" >
+    <keywords>
+    </keywords>
+    <tasks>
+     <task name="Driver_Entry" message="$(string.task_Driver_Entry)" value="1"/>
+     <task name="Driver_Unload" message="$(string.task_Driver_Unload)" value="2"/>
+     <task name="DeviceAdd" message="$(string.task_DeviceAdd)" value="3"/>
+     <task name="DeviceStart" message="$(string.task_DeviceStart)" value="4"/>
+     <task name="Power" message="$(string.task_Power)" value="5"/>
+     <task name="PinComplex" message="$(string.task_PinComplex)" value="6">
+>
+      <opcodes>
+       <opcode name="GfxSendusMessage" message="$(string.opcode_PinComplexGfxSendusMessage)" value="10"/>
+      </opcodes>
+     </task>
+    </tasks>
+    <events>
+     <event value="301" symbol="Driver_EntryStart" version="0" task="Driver_Entry" opcode="win:Start" level="win:Informational"/>
+     <event value="302" symbol="Driver_EntryStop" version="0" task="Driver_Entry" opcode="win:Stop" level="win:Informational"/>
+     <event value="303" symbol="Driver_UnloadStart" version="0" task="Driver_Unload" opcode="win:Start" level="win:Informational"/>
+     <event value="304" symbol="Driver_UnloadStop" version="0" task="Driver_Unload" opcode="win:Stop" level="win:Informational"/>
+     <event value="305" symbol="DeviceAddStart" version="0" task="DeviceAdd" opcode="win:Start" level="win:Informational"/>
+     <event value="306" symbol="DeviceAddStop" version="0" task="DeviceAdd" opcode="win:Stop" level="win:Informational"/>
+     <event value="307" symbol="DeviceStart" version="0" task="DeviceStart" opcode="win:Start" level="win:Informational"/>
+     <event value="308" symbol="DeviceStartStop" version="0" task="DeviceStart" opcode="win:Stop" level="win:Informational"/>
+     <event value="309" symbol="PowerStart" version="0" task="Power" opcode="win:Start" level="win:Informational" template="PowerStartArgs"/>
+     <event value="310" symbol="PowerStop" version="0" task="Power" opcode="win:Stop" level="win:Informational" template="PowerStopArgs"/>
+     <event value="311" symbol="PinComplexGfxSendusMessage" version="0" task="PinComplex" opcode="GfxSendusMessage" level="win:Informational" template="PinComplexGfxSendusMessageArgs"/>
+     <event value="312" symbol="PinComplexGfxSendusMessage312" version="0" task="PinComplex" opcode="GfxSendusMessage" level="win:Informational" template="PinComplexGfxSendusMessage312Args"/>
+     <event value="313" symbol="PinComplexGfxSendusMessage313" version="0" task="PinComplex" opcode="GfxSendusMessage" level="win:Informational" template="PinComplexGfxSendusMessage313Args"/>
+    </events>
+    <templates>
+     <template tid="PowerStartArgs">
+      <data name="oldDState" inType="win:UInt32"/>
+      <data name="newDState" inType="win:UInt32"/>
+      <data name="oldDxExitLatency" inType="win:UInt32"/>
+      <data name="newDxExitLatency" inType="win:UInt32"/>
+     </template>
+     <template tid="PowerStopArgs">
+      <data name="newDState" inType="win:UInt32"/>
+      <data name="newDxExitLatency" inType="win:UInt32"/>
+     </template>
+     <template tid="PinComplexGfxSendusMessageArgs">
+      <data name="result" inType="win:UInt32"/>
+     </template>
+     <template tid="PinComplexGfxSendusMessage312Args">
+      <data name="nodeId" inType="win:UInt8"/>
+      <data name="DE" inType="win:UInt32"/>
+      <data name="PD" inType="win:UInt32"/>
+      <data name="ELDv" inType="win:UInt32"/>
+      <data name="IA" inType="win:UInt32"/>
+      <data name="Message" inType="win:UnicodeString"/>
+      <data name="RAW" inType="win:UInt32"/>
+     </template>
+     <template tid="PinComplexGfxSendusMessage313Args">
+      <data name="nodeId" inType="win:UInt8"/>
+      <data name="subTag" inType="win:UInt32"/>
+      <data name="RAW" inType="win:UInt32"/>
+     </template>
+    </templates>
+   </provider>
+  </events>
+ </instrumentation>
+ <localization>
+  <resources culture="en-US">
+   <stringTable>
+    <string id="task_Driver_Entry" value="Driver_Entry"/>
+    <string id="task_Driver_Unload" value="Driver_Unload"/>
+    <string id="task_DeviceAdd" value="DeviceAdd"/>
+    <string id="task_DeviceStart" value="DeviceStart"/>
+    <string id="task_Power" value="Power"/>
+    <string id="task_PinComplex" value="PinComplex"/>
+    <string id="opcode_PinComplexGfxSendusMessage" value="GfxSendusMessage"/>
+   </stringTable>
+  </resources>
+ </localization>
+</instrumentationManifest>
