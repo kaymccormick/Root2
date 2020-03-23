@@ -14,7 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.Serialization
 {
     public class LogInvocationConverter : JsonConverter<ILogInvocation>
     {

@@ -58,7 +58,6 @@ namespace AnalysisAppLib
             SemanticModel         currentModel
           , StatementSyntax       statement
           , SyntaxNode            node
-          , ICodeSource           document
           , SyntaxTree            syntaxTree
            , string assemblyName
         ) : this( assemblyName )
@@ -70,11 +69,6 @@ namespace AnalysisAppLib
             _syntaxTree    = syntaxTree ;
         }
 
-        
-        public CodeAnalyseContext ( ICodeSource document , string assemblyName ) : this( assemblyName )
-        {
-            Document = document ;
-        }
 
         private CodeAnalyseContext ( string assemblyName )
         {

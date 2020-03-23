@@ -72,7 +72,6 @@ namespace AnalysisAppLib
                                            compilation.GetSemanticModel ( syntaxTree )
                                          , null
                                          , syntaxTree.GetRoot ( )
-                                         , new CodeSource ( "memory" )
                                          , syntaxTree, ""
                                           ) ;
         }

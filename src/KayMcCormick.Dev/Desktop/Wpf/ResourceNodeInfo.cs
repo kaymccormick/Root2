@@ -20,56 +20,59 @@ namespace KayMcCormick.Lib.Wpf
 {
     public class ResourceNodeInfo : INotifyPropertyChanged
     {
-        private object                 _data ;
-        private List<ResourceNodeInfo> _children = new List < ResourceNodeInfo > ();
-        private Uri                    _sourceUri ;
-        private object                 _key ;
+        private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
+        private object                    _data ;
 
-        public ResourceNodeInfo ( ) {
-        }
 
-        [JsonIgnore]
-        public object Data { get { return _data ; } set { _data = value ; } }
-        [JsonIgnore]
-        public List<ResourceNodeInfo> Children { get { return _children ; } set { _children = value ; } }
-
-        public Uri SourceUri { get { return _sourceUri ; } set { _sourceUri = value ; } }
-
-        [JsonIgnore]
-        public object Key { get { return _key ; } set { _key = value ; } }
-
-        public object TemplateKey { get => _templateKey ; set => _templateKey = value ; }
+        private bool ? _internalIsExpanded ;
+        private bool ? _isValueChildren ;
+        private object _key ;
+        private Uri    _sourceUri ;
+        private object _styleKey ;
 
         private object _templateKey ;
 
-        public override string ToString ( )
+        [ JsonIgnore ]
+        public object Data { get { return _data ; } set { _data = value ; } }
+
+        [ JsonIgnore ]
+        public List < ResourceNodeInfo > Children
         {
-            return $"{nameof ( _data )}: {_data}, {nameof ( _key )}: {_key}" ;
+            get { return _children ; }
+            set { _children = value ; }
         }
 
-        
-        private bool? _internalIsExpanded ;
-        private object _styleKey ;
-        private bool? _isValueChildren ;
+        public Uri SourceUri { get { return _sourceUri ; } set { _sourceUri = value ; } }
+
+        [ JsonIgnore ]
+        public object Key { get { return _key ; } set { _key = value ; } }
+
+        public object TemplateKey { get { return _templateKey ; } set { _templateKey = value ; } }
 
         public bool IsExpanded
         {
-            get
-            {
-                return _internalIsExpanded.GetValueOrDefault ( ) ;
-            }
+            get { return _internalIsExpanded.GetValueOrDefault ( ) ; }
             set
             {
                 _internalIsExpanded = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
         }
 
         public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
 
-        public bool? IsValueChildren { get { return _isValueChildren ; } set { _isValueChildren = value ; } }
+        public bool ? IsValueChildren
+        {
+            get { return _isValueChildren ; }
+            set { _isValueChildren = value ; }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged ;
+
+        public override string ToString ( )
+        {
+            return $"{nameof ( _data )}: {_data}, {nameof ( _key )}: {_key}" ;
+        }
 
         [ NotifyPropertyChangedInvocator ]
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )

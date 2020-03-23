@@ -10,33 +10,14 @@
 // ---
 #endregion
 using System ;
+using System.Diagnostics ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using System.Windows.Markup ;
+using System.Xaml ;
+using XamlWriter = System.Windows.Markup.XamlWriter ;
 
 namespace ProjInterface
 {
-    public class ProjInterfaceAppConverter : JsonConverter < ProjInterfaceApp >
-    {
-        #region Overrides of JsonConverter<ProjInterfaceApp>
-        public override ProjInterfaceApp Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null ;
-        }
 
-        public override void Write (
-            Utf8JsonWriter        writer
-          , ProjInterfaceApp      value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject ( ) ;
-            writer.WriteString ( "ApplicationType" , value.GetType ( ).FullName ) ;
-            writer.WriteEndObject ( ) ;
-        }
-        #endregion
-    }
 }

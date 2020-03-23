@@ -3,9 +3,9 @@
 // 
 // KayMcCormick.Dev
 // ProjInterface
-// JsonConverterResourceDictionary.cs
+// JsonDependencyPropertyConverter.cs
 // 
-// 2020-03-20-3:59 AM
+// 2020-03-20-3:58 AM
 // 
 // ---
 #endregion
@@ -14,12 +14,12 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
 
-namespace ProjInterface.JSON
+namespace KayMcCormick.Lib.Wpf.JSON
 {
-    public class JsonConverterResourceDictionary : JsonConverter < ResourceDictionary >
+    public class JsonDependencyPropertyConverter : JsonConverter < DependencyProperty >
     {
-        #region Overrides of JsonConverter<ResourceDictionary>
-        public override ResourceDictionary Read (
+        #region Overrides of JsonConverter<DependencyProperty>
+        public override DependencyProperty Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
           , JsonSerializerOptions options
@@ -30,12 +30,12 @@ namespace ProjInterface.JSON
 
         public override void Write (
             Utf8JsonWriter        writer
-          , ResourceDictionary    value
+          , DependencyProperty    value
           , JsonSerializerOptions options
         )
         {
             writer.WriteStartObject ( ) ;
-            writer.WriteString ( "Source" , value.Source?.ToString ( ) ?? "" ) ;
+            writer.WriteString ( "DependencyPropertyName" , value.Name ) ;
             writer.WriteEndObject ( ) ;
         }
         #endregion

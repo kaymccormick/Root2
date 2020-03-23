@@ -33,7 +33,7 @@ namespace AnalysisAppLib
             builder.RegisterType < Pipeline > ( ).AsSelf ( ) ;
             builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < SyntaxPanelViewModel > ( ).As < ISyntaxPanelViewModel > ( ) ;
-            builder.RegisterType < CompilationViewModel > ( ).As < ICompilationViewModel > ( ) ;
+            
             builder.RegisterType < ComponentViewModel > ( ).As < IComponentViewModel > ( ) ;
             builder.RegisterType < ApplicationViewModel > ( )
                    .As < IApplicationViewModel > ( )
@@ -42,7 +42,7 @@ namespace AnalysisAppLib
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
 #else
-            builder.RegisterType < StubWorkspaceManager > ( ).As < IWorkspaceManager > ( ) ;
+            
 
 #endif
 

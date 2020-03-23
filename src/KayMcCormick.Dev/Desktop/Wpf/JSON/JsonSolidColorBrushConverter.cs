@@ -3,39 +3,40 @@
 // 
 // KayMcCormick.Dev
 // ProjInterface
-// JsonSyntaxTokenConverter.cs
+// JsonSolidColorBrushConverter.cs
 // 
-// 2020-03-17-1:50 PM
+// 2020-03-20-4:00 AM
 // 
 // ---
 #endregion
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using Microsoft.CodeAnalysis ;
+using System.Windows.Media ;
 
-namespace ProjInterface.JSON
+namespace KayMcCormick.Lib.Wpf.JSON
 {
-    // ReSharper disable once UnusedType.Global
-    public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
+    public class JsonSolidColorBrushConverter : JsonConverter < SolidColorBrush >
     {
-        #region Overrides of JsonConverter<SyntaxToken>
-        public override SyntaxToken Read (
+        #region Overrides of JsonConverter<SolidColorBrush>
+        public override SolidColorBrush Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
-            return default ;
+            return null ;
         }
 
         public override void Write (
             Utf8JsonWriter        writer
-          , SyntaxToken           value
+          , SolidColorBrush       value
           , JsonSerializerOptions options
         )
         {
-            
+            writer.WriteStartObject ( ) ;
+            writer.WriteString ( "Color" , value.Color.ToString ( ) ) ;
+            writer.WriteEndObject ( ) ;
         }
         #endregion
     }

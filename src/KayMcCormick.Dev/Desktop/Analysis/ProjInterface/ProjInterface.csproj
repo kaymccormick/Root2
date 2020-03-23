@@ -105,14 +105,9 @@
     <Compile Include="HashtableConverter.cs" />
     <Compile Include="IconsSource.cs" />
     <Compile Include="IIconsSource.cs" />
-    <Compile Include="JSON\JsonConverterImage.cs" />
-    <Compile Include="JSON\JsonConverterResourceDictionary.cs" />
-    <Compile Include="JSON\JsonDependencyPropertyConverter.cs" />
-    <Compile Include="JSON\JsonFontFamilyConverter.cs" />
-    <Compile Include="JSON\JsonResourceKeyWrapperConverterFactory.cs" />
-    <Compile Include="JSON\JsonSolidColorBrushConverter.cs" />
-    <Compile Include="JSON\JsonSyntaxNodeConverter.cs" />
-    <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
+    <Compile Include="JsonConverters.cs" />
+    <Compile Include="JsonFrameworkElementConverter.cs" />
+    <Compile Include="JsonSyntaxNodeConverter.cs" />
     <Compile Include="LogViewerControl.xaml.cs" />
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />
@@ -474,6 +469,8 @@
     <Content Include="Assets\LaunchSamplingTargets\SVG\Artboard 1.svg" />
     <Content Include="Assets\LaunchSamplingTarget_16x.svg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="JSON\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

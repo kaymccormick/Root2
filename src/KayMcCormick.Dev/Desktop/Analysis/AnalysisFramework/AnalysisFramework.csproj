@@ -79,11 +79,9 @@
     </Compile>
     <Compile Include="Ext.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="LogUsage\LogInvocationArgument.cs" />
     <Compile Include="LogUsage\MissingTypeException.cs" />
     <Compile Include="LogUsage\NoMessageParameterException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LogUsage\RefactorLogUsage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">

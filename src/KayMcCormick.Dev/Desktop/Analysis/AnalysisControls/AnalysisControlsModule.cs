@@ -26,7 +26,6 @@ namespace AnalysisControls
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-            builder.RegisterType < CompilationView > ( ).AsSelf ( ) ;
             builder.RegisterType < ComponentPage > ( ).As < Page > ( ) ;
             builder.RegisterAssemblyTypes ( ThisAssembly )
                    .Where (

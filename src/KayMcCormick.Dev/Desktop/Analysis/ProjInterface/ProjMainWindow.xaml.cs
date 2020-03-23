@@ -29,6 +29,7 @@ using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Windows.Threading ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Views ;
 using KayMcCormick.Dev.Logging ;
@@ -41,7 +42,7 @@ namespace ProjInterface
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     [ TitleMetadata ( "Main window" ) ]
-    public partial class ProjMainWindow : AppWindow
+    public sealed partial class ProjMainWindow : AppWindow
       , IView < IWorkspacesViewModel >
       , IView1
       , IWorkspacesView
@@ -96,9 +97,6 @@ namespace ProjInterface
                                     ) ;
         }
 
-        public Dictionary < string , GridViewColumn > PropertiesColumns { get ; set ; } =
-            new Dictionary < string , GridViewColumn > ( ) ;
-
 
         protected override void OnInitialized ( EventArgs e )
         {
@@ -111,12 +109,6 @@ namespace ProjInterface
 
         private IWorkspacesViewModel _viewModel ;
 
-        public event RoutedEventHandler TaskCompleted
-        {
-            add { AddHandler ( TaskCompleteEvent , value ) ; }
-            remove { RemoveHandler ( TaskCompleteEvent , value ) ; }
-        }
-
         public static RoutedEvent TaskCompleteEvent =
             EventManager.RegisterRoutedEvent (
                                               "task completed"
@@ -125,8 +117,8 @@ namespace ProjInterface
                                             , typeof ( ProjMainWindow )
                                              ) ;
 
-        private ConcurrentBag < Task > _tasks = new ConcurrentBag < Task > ( ) ;
-        private TaskScheduler          _taskScheduler ;
+        private readonly ConcurrentBag < Task > _tasks = new ConcurrentBag < Task > ( ) ;
+        private readonly TaskScheduler           _taskScheduler ;
 
         private ObservableCollection < TaskWrap > _obsTasks =
             new ObservableCollection < TaskWrap > ( ) ;
@@ -135,7 +127,7 @@ namespace ProjInterface
 
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e ) { }
 
-        private async void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        private async void CommandBinding_OnExecuted ( object sender , [ NotNull ] ExecutedRoutedEventArgs e )
         {
             
             if ( e.OriginalSource is ListView )
@@ -251,7 +243,7 @@ namespace ProjInterface
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
-        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }

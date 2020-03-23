@@ -73,13 +73,13 @@ private Type[] _optionTypes ;
                 {
                     var jsonSerializerOptions = myJsonLayout.Options ;
                     AppJsonSerializerOptions = jsonSerializerOptions ;
-                    AddJsonConverters ( jsonSerializerOptions ) ;
+                    JsonConverters.AddJsonConverters ( jsonSerializerOptions ) ;
                 }
             }
             else
             {
                 var options = new JsonSerializerOptions ( ) ;
-                AddJsonConverters ( options ) ;
+                JsonConverters.AddJsonConverters ( options ) ;
                 AppJsonSerializerOptions = options ;
             }
 
@@ -122,22 +122,6 @@ private Type[] _optionTypes ;
             bs.Listeners.Add ( nLogTraceListener ) ;
 
 #endif
-        }
-
-        private static void AddJsonConverters ( JsonSerializerOptions jsonSerializerOptions )
-        {
-            jsonSerializerOptions.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonConverterImage ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonConverterResourceDictionary ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new ProjInterfaceAppConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new HashtableConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonDependencyPropertyConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonFontFamilyConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonSolidColorBrushConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add (
-                                                  new JsonResourceKeyWrapperConverterFactory ( )
-                                                 ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonBrushConverter ( ) ) ;
         }
 
         public JsonSerializerOptions AppJsonSerializerOptions

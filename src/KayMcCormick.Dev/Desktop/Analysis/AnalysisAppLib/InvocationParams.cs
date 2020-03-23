@@ -5,7 +5,6 @@ using System.Linq ;
 using System.Text ;
 using System.Threading ;
 using AnalysisAppLib.Syntax ;
-using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
@@ -22,19 +21,13 @@ namespace AnalysisAppLib
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public InvocationParams (
-            [ NotNull ] ICodeSource                     codeSoure
-          , SyntaxTree                                  syntaxTree
+            SyntaxTree                                  syntaxTree
           , SemanticModel                               model
           , SyntaxNode                                  relevantNode
           , Tuple < bool , IMethodSymbol , SyntaxNode > tuple
           , INamedTypeSymbol                            namedTypeSymbol
         )
         {
-            if ( codeSoure == null )
-            {
-                throw new ArgumentNullException ( nameof ( codeSoure ) ) ;
-            }
-
             if ( tuple is null )
             {
                 throw new ArgumentNullException ( nameof ( tuple ) ) ;
@@ -52,7 +45,6 @@ namespace AnalysisAppLib
                 Tree = syntaxTree ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
 
                 Model        = model ?? throw new ArgumentNullException ( nameof ( model ) ) ;
-                ICodeSoure   = codeSoure ;
                 RelevantNode = relevantNode ;
             }
 
@@ -64,8 +56,6 @@ namespace AnalysisAppLib
         }
 
         public SemanticModel Model { get ; }
-
-        public ICodeSource ICodeSoure { get ; }
 
         public SyntaxNode RelevantNode { get ; }
 

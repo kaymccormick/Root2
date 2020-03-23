@@ -3,23 +3,24 @@
 // 
 // KayMcCormick.Dev
 // ProjInterface
-// JsonSolidColorBrushConverter.cs
+// JsonFontFamilyConverter.cs
 // 
-// 2020-03-20-4:00 AM
+// 2020-03-20-3:58 AM
 // 
 // ---
 #endregion
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using System.Windows.Markup ;
 using System.Windows.Media ;
 
-namespace ProjInterface.JSON
+namespace KayMcCormick.Lib.Wpf.JSON
 {
-    public class JsonSolidColorBrushConverter : JsonConverter < SolidColorBrush >
+    public class JsonFontFamilyConverter : JsonConverter < FontFamily >
     {
-        #region Overrides of JsonConverter<SolidColorBrush>
-        public override SolidColorBrush Read (
+        #region Overrides of JsonConverter<FontFamily>
+        public override FontFamily Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
           , JsonSerializerOptions options
@@ -30,12 +31,15 @@ namespace ProjInterface.JSON
 
         public override void Write (
             Utf8JsonWriter        writer
-          , SolidColorBrush       value
+          , FontFamily            value
           , JsonSerializerOptions options
         )
         {
             writer.WriteStartObject ( ) ;
-            writer.WriteString ( "Color" , value.Color.ToString ( ) ) ;
+            writer.WriteString (
+                                "FamilyName"
+                              , value.FamilyNames[ XmlLanguage.GetLanguage ( "en-US" ) ]
+                               ) ;
             writer.WriteEndObject ( ) ;
         }
         #endregion

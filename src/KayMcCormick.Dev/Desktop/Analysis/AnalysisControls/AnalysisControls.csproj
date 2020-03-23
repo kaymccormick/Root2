@@ -38,7 +38,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE</DefineConstants>
-    <DefineConstants>TRACE;DEBUG;MSBUILDLOCATOR</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MSBUILDLOCATOR;MIGRADOC</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -84,12 +84,6 @@
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
     <Compile Include="Converters\TokenConverter.cs" />
-    <Compile Include="Views\CompilationView.xaml.cs">
-      <DependentUpon>CompilationView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ComponentPage.xaml.cs">
-      <DependentUpon>ComponentPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
@@ -129,14 +123,6 @@
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Page Include="AnalysisControls.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\CompilationView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ComponentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

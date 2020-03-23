@@ -13,7 +13,7 @@ using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CodeRefactorings ;
 
-namespace AnalysisFramework.LogUsage
+namespace AnalysisAppLib
 {
     /// <summary>
     /// Refactoring for logging.

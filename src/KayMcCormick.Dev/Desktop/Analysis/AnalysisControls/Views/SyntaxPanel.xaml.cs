@@ -27,6 +27,9 @@ namespace AnalysisControls.Views
         private static readonly Logger
             Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        public SyntaxPanel ( ) {
+        }
+
         public SyntaxPanel ( ISyntaxPanelViewModel viewModel )
         {
             _viewModel = viewModel ;

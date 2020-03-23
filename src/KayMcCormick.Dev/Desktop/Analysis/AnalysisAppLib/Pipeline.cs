@@ -2,7 +2,6 @@ using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using JetBrains.Annotations ;
 using NLog ;
 using NLog.Fluent ;
 
@@ -10,8 +9,6 @@ namespace AnalysisAppLib
 {
     public class Pipeline
     {
-        private Workspaces _workspaces ;
-        
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public IPropagatorBlock < AnalysisRequest , ILogInvocation > PipelineInstance
@@ -41,14 +38,14 @@ namespace AnalysisAppLib
             get => _currentBlock ;
             set => _currentBlock = value ;
         }
-        public Pipeline( [ NotNull ] Workspaces workspaces) { _workspaces = workspaces ?? throw new ArgumentNullException ( nameof ( workspaces ) );
+        public Pipeline( ) { 
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
         }
 
-        public virtual IPropagatorBlock < AnalysisRequest , ILogInvocation > BuildPipeline ( )
+        public virtual void BuildPipeline ( )
         {
-            var initWorkspace = Register ( _workspaces.InitializeWorkspace2Block ( ) ) ;
+            var initWorkspace = Register ( Workspaces.InitializeWorkspace2Block ( ) ) ;
 
             var cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
             cur.LinkTo ( initWorkspace , LinkOptions ) ;
@@ -62,7 +59,6 @@ namespace AnalysisAppLib
             findLogUsages.LinkTo ( Register ( ResultBufferBlock ) , LinkOptions ) ;
 
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
-            return PipelineInstance ;
         }
 
         private T Register < T > ( T block )
