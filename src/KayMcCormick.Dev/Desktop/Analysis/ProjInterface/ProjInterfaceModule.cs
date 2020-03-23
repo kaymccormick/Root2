@@ -14,7 +14,6 @@ using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
-using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
 using AnalysisAppLib ;
@@ -24,7 +23,6 @@ using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.CodeAnalysis ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using NLog ;
@@ -47,15 +45,6 @@ namespace ProjInterface
         }
     }
 #else
-    internal class StubWorkspaceManager : IWorkspaceManager
-    {
-        public Workspace CreateWorkspace ( IDictionary < string , string > props ) { return null ; }
-
-        public Task OpenSolutionAsync ( Workspace workspace , string solutionPath )
-        {
-            return Task.CompletedTask ;
-        }
-    }
 #endif
 
     public class ProjInterfaceModule : IocModule
@@ -73,13 +62,6 @@ namespace ProjInterface
                         ) ;
             builder.RegisterModule < AnalysisAppLibModule > ( ) ;
             builder.RegisterModule < ProjLibModule > ( ) ;
-
-#if MSBUILDWORKSPACE
-            builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
-#else
-            builder.RegisterType < StubWorkspaceManager > ( ).As < IWorkspaceManager > ( ) ;
-
-#endif
             LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
             LogRegistration ( typeof ( ProjMainWindow ) , "AsSelf" ) ;

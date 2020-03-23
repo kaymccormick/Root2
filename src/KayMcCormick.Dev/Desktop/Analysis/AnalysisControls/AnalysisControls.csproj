@@ -258,6 +258,10 @@
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
+      <Name>AnalysisAppLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnalysisFramework\AnalysisFramework.csproj">
       <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
       <Name>AnalysisFramework</Name>

@@ -56,7 +56,7 @@ namespace AnalysisAppLib
                                      .Where ( s => ! s.StartsWith ( "." ) )
                                      .Select ( s => new FileSystemAppExplorerItem ( s  ) )
                                      .Where ( item => ! item.IsHidden ) ;
-                _hasChildren = Children.Any ( ) ;
+                _hasChildren = _children.Any ( ) ;
                 // _type        = ExplorerItemType.Directory ;
             }
             else

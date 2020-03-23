@@ -26,6 +26,10 @@ namespace KayMcCormick.Dev
         public abstract void DoLoad ( ContainerBuilder builder ) ;
 
         #region Overrides of Module
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
         #endregion
 

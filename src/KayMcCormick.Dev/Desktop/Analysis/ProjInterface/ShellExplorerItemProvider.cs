@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if USE_SHELL
 using System ;
 using System.Collections.Generic ;
 using AnalysisAppLib ;
@@ -48,3 +49,4 @@ namespace ProjInterface
         #endregion
     }
 }
+#endif

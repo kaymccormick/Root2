@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using AnalysisAppLib ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

@@ -2,7 +2,7 @@ using System ;
 using System.Globalization ;
 using System.Text.Json ;
 using System.Windows.Data ;
-using AnalysisFramework.SyntaxTransform ;
+using AnalysisAppLib ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisControls.Converters

@@ -114,7 +114,6 @@
     <Compile Include="JSON\JsonSolidColorBrushConverter.cs" />
     <Compile Include="JSON\JsonSyntaxNodeConverter.cs" />
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
-    <Compile Include="LogInvocationConverter.cs" />
     <Compile Include="LogViewerControl.xaml.cs" />
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />

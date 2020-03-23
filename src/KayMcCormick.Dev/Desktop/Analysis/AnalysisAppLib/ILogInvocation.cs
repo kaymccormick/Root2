@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+using System.Collections.Generic ;
+
 namespace AnalysisAppLib
 {
     public interface ILogInvocation

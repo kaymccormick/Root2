@@ -88,6 +88,10 @@
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
+      <Name>AnalysisAppLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AnalysisFramework\AnalysisFramework.csproj">
       <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
       <Name>AnalysisFramework</Name>

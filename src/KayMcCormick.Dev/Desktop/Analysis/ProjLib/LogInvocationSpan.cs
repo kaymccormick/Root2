@@ -11,7 +11,7 @@
 #endregion
 using System ;
 using System.Linq ;
-using AnalysisFramework.Interfaces ;
+using AnalysisAppLib ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using ProjLib.Interfaces ;

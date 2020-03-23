@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib ;
 using Autofac ;
 using NLog ;
 using ProjLib.Interfaces ;
@@ -24,13 +25,6 @@ namespace ProjLib
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
             Logger.Trace ( "{methodName}" , nameof ( Load ) ) ;
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-            builder.RegisterType<WorkspacesViewModel>()
-                   .As<IWorkspacesViewModel>()
-                   .InstancePerLifetimeScope();
-builder.RegisterType<Workspaces>().AsSelf();
-            builder.RegisterType < ProjectBrowserViewModel > ( )
-                   .As < IProjectBrowserViewModel > ( ) ;
-builder.RegisterType<Pipeline>().AsSelf();
 
         }
         #endregion

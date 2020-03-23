@@ -72,31 +72,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveSpans.cs" />
-    <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppProjectInfo.cs" />
     <Compile Include="AppStatus.cs" />
-    <Compile Include="BrowserNode.cs" />
-    <Compile Include="BrowserNodeCollection.cs" />
     <Compile Include="BuildResults.cs" />
     <Compile Include="BuildTool.cs" />
     <Compile Include="CommandException.cs" />
-    <Compile Include="DataflowBlocks.cs" />
     <Compile Include="FailedBuildException.cs" />
     <Compile Include="FilePaths.cs" />
-    <Compile Include="FindLogUsages.cs" />
     <Compile Include="GlobalSuppressions2.cs" />
     <Compile Include="DetailedOperation.cs" />
-    <Compile Include="Interfaces\IAppState.cs" />
-    <Compile Include="Interfaces\IBrowserNode.cs" />
-    <Compile Include="Interfaces\IBrowserNodeCollection.cs" />
     <Compile Include="Interfaces\ICodeRenderer.cs" />
     <Compile Include="Interfaces\IDetailedOperation.cs" />
     <Compile Include="Interfaces\IFormattedCode.cs" />
     <Compile Include="Interfaces\IItemInfo.cs" />
     <Compile Include="Interfaces\IMruItem.cs" />
     <Compile Include="Interfaces\IPipelineViewModel.cs" />
-    <Compile Include="Interfaces\IProjectBrowserNode.cs" />
-    <Compile Include="Interfaces\IProjectBrowserViewModel.cs" />
     <Compile Include="Interfaces\IProjectInfo.cs" />
     <Compile Include="Interfaces\IRuntimestatus.cs" />
     <Compile Include="Interfaces\ISpanObject.cs" />
@@ -104,12 +94,10 @@
     <Compile Include="Interfaces\ISpanViewModel.cs" />
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="Interfaces\IWorkspacesView.cs" />
-    <Compile Include="Interfaces\IWorkspacesViewModel.cs" />
     <Compile Include="MruItem.cs" />
     <Compile Include="PipelineViewModel.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
-    <Compile Include="ProjectBrowserNode.cs" />
     <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
@@ -122,8 +110,6 @@
     <EmbeddedResource Include="Program-Parse.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Compile Include="Pipeline.cs" />
-    <Compile Include="ProjectBrowserViewModel.cs" />
     <Compile Include="ProjectHandler.cs" />
     <Compile Include="ProjLibModule.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -141,7 +127,6 @@
       <Visible>False</Visible>
     </AdditionalFiles>
     <None Include="Resources\AttachedProps.cs" />
-    <Compile Include="ResultStatus.cs" />
     <Compile Include="SpanObject.cs" />
     <Compile Include="SpanToolTipViewModel.cs" />
     <Compile Include="SyntaxNodeSpanObject.cs" />
@@ -159,8 +144,6 @@
     <Compile Include="VsInstance.cs" />
     <Compile Include="VsInstanceCollector.cs" />
     <Compile Include="VsInstanceConverter.cs" />
-    <Compile Include="Workspaces.cs" />
-    <Compile Include="WorkspacesViewModel.cs" />
     <EmbeddedResource Include="LibResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LibResources.Designer.cs</LastGenOutput>
@@ -207,6 +190,10 @@
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
+      <Name>AnalysisAppLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\AnalysisFramework\AnalysisFramework.csproj">
       <Project>{4B41601C-F950-4E9D-9B9F-FF0920B96AAB}</Project>

@@ -69,7 +69,6 @@
   <ItemGroup>
     <Compile Include="AnalysisService.cs" />
     <Compile Include="CodeAnalyseContext.cs" />
-    <Compile Include="CodeSource.cs" />
     <Compile Include="Connected Services\AnalysisService1Reference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -83,30 +82,22 @@
     <Compile Include="Ext.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ICodeAnalyseContext.cs" />
-    <Compile Include="ICodeSource.cs" />
     <Compile Include="ISemanticModelContext.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
-    <Compile Include="LogUsage\Interfaces\ILogInvocationArgument.cs" />
-    <Compile Include="LogUsage\LogInvocation2.cs" />
-    <Compile Include="LogUsage\InvocationParams.cs" />
     <Compile Include="LogUsage\LogInvocationArgument.cs" />
-    <Compile Include="LogUsage\LogMessageRepr.cs" />
-    <Compile Include="LogUsage\LogUsages.cs" />
     <Compile Include="LogUsage\MissingTypeException.cs" />
     <Compile Include="LogUsage\NoMessageParameterException.cs" />
-    <Compile Include="SyntaxTransform\PojoClassDeclarationSyntax.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LogUsage\RefactorLogUsage.cs" />
-    <Compile Include="SyntaxTransform\PocoSyntaxToken.cs" />
-    <Compile Include="SyntaxTransform\PojoCompilationUnit.cs" />
-    <Compile Include="SyntaxTransform\TransformNode.cs" />
-    <Compile Include="SyntaxTransform\Transforms.cs" />
-    <Compile Include="SyntaxTransform\UnsupportedExpressionTypeSyntaxException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
+      <Name>AnalysisAppLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +213,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
+    <Folder Include="LogUsage\Interfaces\" />
+    <Folder Include="SyntaxTransform\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

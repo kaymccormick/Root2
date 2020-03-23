@@ -3,6 +3,7 @@ using KayMcCormick.Lib.Wpf;
 using ProjLib.Interfaces;
 using System.Windows.Controls ;
 using System.Windows.Data ;
+using AnalysisAppLib ;
 
 namespace AnalysisControls.Views
 {

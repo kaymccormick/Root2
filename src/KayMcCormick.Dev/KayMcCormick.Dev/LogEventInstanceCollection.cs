@@ -13,6 +13,9 @@ using System.Collections.ObjectModel ;
 
 namespace KayMcCormick.Dev
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogEventInstanceCollection : ObservableCollection < LogEventInstance >
     {
 

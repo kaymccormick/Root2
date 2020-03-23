@@ -28,6 +28,7 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Windows.Threading ;
+using AnalysisAppLib ;
 using AnalysisControls.Views ;
 using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;

@@ -22,6 +22,22 @@ namespace AnalysisAppLib
                    .As<ILogUsageAnalysisViewModel>();
             builder.RegisterType<FileSystemExplorerItemProvider>()
                    .As<IExplorerItemProvider>();
+            builder.RegisterType<WorkspacesViewModel>()
+                   .As<IWorkspacesViewModel>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<Workspaces>().AsSelf();
+            builder.RegisterType<ProjectBrowserViewModel>()
+                   .As<IProjectBrowserViewModel>();
+            builder.RegisterType<Pipeline>().AsSelf();
+
+
+#if MSBUILDWORKSPACE
+            builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
+#else
+            builder.RegisterType<StubWorkspaceManager>().As<IWorkspaceManager>();
+
+#endif
+
 
             builder.Register(
                               (context, p) => {

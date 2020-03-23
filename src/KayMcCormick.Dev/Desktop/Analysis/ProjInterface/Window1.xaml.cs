@@ -48,11 +48,7 @@ namespace ProjInterface
         public override async void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
-            if ( _viewModel != null )
-            {
-                _viewModel.ResourcesElement = this ;
-                // await _viewModel.LoginSilentAsync ( ).ConfigureAwait ( true ) ;
-            }
+           
 
             AddHandler (
                         TypeControl.TypeActivatedEvent
