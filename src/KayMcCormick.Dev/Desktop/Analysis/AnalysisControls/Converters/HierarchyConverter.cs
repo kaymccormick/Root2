@@ -29,6 +29,8 @@ namespace AnalysisControls.Converters
                     var cs = ( CSharpSyntaxNode ) s ;
                     switch ( cs )
                     {
+                        case null :
+                            throw new InvalidOperationException();
                         case FieldDeclarationSyntax fieldDeclarationSyntax :
                             return string.Join (
                                                 ", "

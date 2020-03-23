@@ -344,8 +344,6 @@
             <summary>
             </summary>
             <param name="logMethod"></param>
-            <param name="configs"></param>
-            <param name="disableLogging"></param>
         </member>
         <member name="P:KayMcCormick.Dev.ApplicationInstanceBase.InstanceRunGuid">
             <summary>
@@ -1233,6 +1231,7 @@
             <summary>Adds the supplied target to the current NLog configuration.</summary>
             <param name="target">The target.</param>
             <param name="minLevel"></param>
+            <param name="addRules"></param>
         </member>
         <member name="M:KayMcCormick.Dev.Logging.AppLoggingConfigHelper.RemoveTarget(System.String)">
             <summary>Removes a target by name from the current NLog configuration.</summary>
