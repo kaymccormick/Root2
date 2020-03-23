@@ -13,7 +13,7 @@ using System.Collections.Generic ;
 
 namespace AnalysisAppLib
 {
-    public class LogInvocation2 : ILogInvocation {
+    public sealed class LogInvocation2 : ILogInvocation {
         private string _sourceLocation ;
         private string _followingCode ;
         private string _precedingCode ;
@@ -21,7 +21,7 @@ namespace AnalysisAppLib
         private string _loggerType ;
         private string _methodName ;
         private string _methodDisplayName ;
-        private readonly object _transformedRelevantNode ;
+        private object _transformedRelevantNode ;
         private IList < ILogInvocationArgument > _arguments = new List < ILogInvocationArgument > ();
         #region Implementation of ILogInvocation
         public LogInvocation2 (
@@ -45,11 +45,26 @@ namespace AnalysisAppLib
             _transformedRelevantNode = transformedRelevantNode ;
         }
 
-        public string SourceLocation { get => _sourceLocation ; set => _sourceLocation = value ; }
+        public LogInvocation2 ( ) {
+        }
 
-        public string FollowingCode { get => _followingCode ; set => _followingCode = value ; }
+        public string SourceLocation
+        {
+            get { return _sourceLocation ; }
+            set { _sourceLocation = value ; }
+        }
 
-        public string PrecedingCode { get => _precedingCode ; set => _precedingCode = value ; }
+        public string FollowingCode
+        {
+            get { return _followingCode ; }
+            set { _followingCode = value ; }
+        }
+
+        public string PrecedingCode
+        {
+            get { return _precedingCode ; }
+            set { _precedingCode = value ; }
+        }
 
         public string Code { get => _code ; set => _code = value ; }
 
@@ -61,7 +76,11 @@ namespace AnalysisAppLib
 
         public IList < ILogInvocationArgument > Arguments { get => _arguments ; set => _arguments = value ; }
 
-        public object TransformedRelevantNode { get { return _transformedRelevantNode ; } }
+        public object TransformedRelevantNode
+        {
+            get { return _transformedRelevantNode ; }
+            set { _transformedRelevantNode = value ; }
+        }
         #endregion
 
         public override string ToString ( )

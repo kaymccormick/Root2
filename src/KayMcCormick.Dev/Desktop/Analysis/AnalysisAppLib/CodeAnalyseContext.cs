@@ -65,7 +65,7 @@ namespace AnalysisAppLib
             _currentModel = currentModel ;
             _statement    = statement ;
             Node          = node ;
-            Document      = document ;
+            
             _syntaxTree    = syntaxTree ;
         }
 
@@ -106,8 +106,6 @@ namespace AnalysisAppLib
         public SemanticModel CurrentModel { get => _currentModel ; set => _currentModel = value ; }
 
         public SyntaxNode Node { get => node ; set => node = value ; }
-
-        public ICodeSource Document { get ; }
 
         public SyntaxTree SyntaxTree => _syntaxTree ;
 

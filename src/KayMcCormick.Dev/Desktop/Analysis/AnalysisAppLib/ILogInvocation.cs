@@ -27,10 +27,10 @@ namespace AnalysisAppLib
 
         string MethodName { get ; set ; }
 
-        string MethodDisplayName { get ; }
+        string MethodDisplayName { get ; set ; }
 
         IList < ILogInvocationArgument > Arguments { get ; }
 
-        object TransformedRelevantNode { get ; }
+        object TransformedRelevantNode { get ; set ; }
     }
 }

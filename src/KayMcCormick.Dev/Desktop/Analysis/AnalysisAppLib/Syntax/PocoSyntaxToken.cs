@@ -1,4 +1,4 @@
-namespace AnalysisAppLib
+namespace AnalysisAppLib.Syntax
 {
     public class PocoSyntaxToken
     {

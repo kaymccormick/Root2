@@ -1553,6 +1553,10 @@ namespace AnalysisControls.Converters
                         case StructuredTriviaSyntax structuredTriviaSyntax : break ;
                     }
 
+                    if ( cs == null )
+                    {
+                        return null ;
+                    }
                     return cs.ChildNodes ( ) ;
                 }
 

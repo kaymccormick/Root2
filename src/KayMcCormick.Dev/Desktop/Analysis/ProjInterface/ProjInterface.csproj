@@ -111,7 +111,6 @@
     <Compile Include="LogViewerControl.xaml.cs" />
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />
-    <Compile Include="ProjInterfaceAppConverter.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="ShellExplorerItem.cs" />
@@ -157,16 +156,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProjMainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="ProjInterfaceApp.xaml.cs">
       <DependentUpon>ProjInterfaceApp.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ProjMainWindow.xaml.cs">
-      <DependentUpon>ProjMainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="VsInstancePanel.xaml">

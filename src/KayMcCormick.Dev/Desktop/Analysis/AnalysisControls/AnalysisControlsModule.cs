@@ -26,7 +26,6 @@ namespace AnalysisControls
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-            builder.RegisterType < ComponentPage > ( ).As < Page > ( ) ;
             builder.RegisterAssemblyTypes ( ThisAssembly )
                    .Where (
                            type => typeof ( IView1 ).IsAssignableFrom ( type )

@@ -106,7 +106,10 @@ namespace ProjTests
             {
                 loggingFixture?.SetOutputHelper ( output , this ) ;
 
-                _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
+                if ( _loggingFixture != null )
+                {
+                    _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
+                }
             }
         }
 

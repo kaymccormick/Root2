@@ -2658,6 +2658,36 @@
             
             </summary>
         </member>
+        <member name="T:KayMcCormick.Dev.UnableToDeserializeLogEventInfo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.UnableToDeserializeLogEventInfo.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.UnableToDeserializeLogEventInfo.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.UnableToDeserializeLogEventInfo.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.UnableToDeserializeLogEventInfo.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.UnableToRegisterObjectIdException">
             <summary></summary>
             <seealso cref="T:System.Exception" />

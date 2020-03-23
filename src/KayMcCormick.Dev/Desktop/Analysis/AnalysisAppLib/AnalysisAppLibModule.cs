@@ -24,17 +24,14 @@ namespace AnalysisAppLib
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             builder.RegisterType < FileSystemExplorerItemProvider > ( )
                    .As < IExplorerItemProvider > ( ) ;
-            builder.RegisterType < WorkspacesViewModel > ( )
-                   .As < IWorkspacesViewModel > ( )
-                   .InstancePerLifetimeScope ( ) ;
-            builder.RegisterType < Workspaces > ( ).AsSelf ( ) ;
+            builder.RegisterType < AnalyzeCommand > ( ).As < IAnalyzeCommand > ( ) ;
+            builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
             builder.RegisterType < ProjectBrowserViewModel > ( )
                    .As < IProjectBrowserViewModel > ( ) ;
             builder.RegisterType < Pipeline > ( ).AsSelf ( ) ;
             builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < SyntaxPanelViewModel > ( ).As < ISyntaxPanelViewModel > ( ) ;
             
-            builder.RegisterType < ComponentViewModel > ( ).As < IComponentViewModel > ( ) ;
             builder.RegisterType < ApplicationViewModel > ( )
                    .As < IApplicationViewModel > ( )
                    .SingleInstance ( ) ;

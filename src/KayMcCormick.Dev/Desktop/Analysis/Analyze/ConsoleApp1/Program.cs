@@ -20,7 +20,6 @@ using CommandLine ;
 #endif
 using KayMcCormick.Dev.Logging ;
 using Microsoft.Build.Locator ;
-
 using NLog ;
 using ProjLib ;
 using ProjLib.Interfaces ;
@@ -28,22 +27,36 @@ using Module = Autofac.Module ;
 
 namespace ConsoleApp1
 {
-    [UsedImplicitly]
+    [ UsedImplicitly ]
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal class AppContext
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes
     {
         public ILifetimeScope Scope { get ; }
 
-        public IWorkspacesViewModel ViewModel { get ; }
+        public IProjectBrowserViewModel BrowserViewModel
+        {
+            get { return _projectBrowserViewModel ; }
+            set { _projectBrowserViewModel = value ; }
+        }
+
+        public IAnalyzeCommand AnalyzeCommand { get ; }
 
         public ActionBlock < ILogInvocation > actionBlock ;
 
-        public AppContext ( ILifetimeScope scope , IWorkspacesViewModel workspacesViewModel , ActionBlock < ILogInvocation > actionBlock )
+        private IProjectBrowserViewModel _projectBrowserViewModel ;
+
+        public AppContext (
+            ILifetimeScope                 scope
+          , ActionBlock < ILogInvocation > actionBlock
+          , IProjectBrowserViewModel       projectBrowserViewModel
+            , IAnalyzeCommand analyzeCommand
+        )
         {
-            Scope     = scope ;
-            ViewModel = workspacesViewModel ;
-            this.actionBlock = actionBlock ;
+            Scope                    = scope ;
+            this.actionBlock         = actionBlock ;
+            BrowserViewModel = projectBrowserViewModel ;
+            AnalyzeCommand = analyzeCommand ;
         }
     }
 
@@ -53,8 +66,10 @@ namespace ConsoleApp1
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
-            var actionBlock = new ActionBlock<ILogInvocation>(Program.Action) ;
-            builder.RegisterInstance(actionBlock).As<ActionBlock <ILogInvocation>>().SingleInstance();
+            var actionBlock = new ActionBlock < ILogInvocation > ( Program.Action ) ;
+            builder.RegisterInstance ( actionBlock )
+                   .As < ActionBlock < ILogInvocation > > ( )
+                   .SingleInstance ( ) ;
             // Pipeline pipeline = new Pipeline();
             // pipeline.BuildPipeline ( ).LinkTo ( actionBlock ) ;
             // builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
@@ -74,7 +89,7 @@ namespace ConsoleApp1
             using ( var appinst = new ApplicationInstance ( Console.Error.WriteLine ) )
             {
                 appinst.AddModule ( new AppModule ( ) ) ;
-                appinst.AddModule(new AnalysisAppLibModule());
+                appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 appinst.AddModule ( new ProjLibModule ( ) ) ;
                 var scope = appinst.GetLifetimeScope ( ) ;
 
@@ -93,8 +108,6 @@ namespace ConsoleApp1
                     }
 
                     return ;
-
-
                 }
                 catch ( Exception ex )
                 {
@@ -108,7 +121,7 @@ namespace ConsoleApp1
                                       Logger.Error (
                                                     string.Join (
                                                                  ", "
-                                                           , errors.Select (
+                                                       , errors.Select (
                                                                                 error => error.Tag
                                                                                )
                                                                 )
@@ -128,11 +141,11 @@ namespace ConsoleApp1
 
         public static void Action ( ILogInvocation invocation )
         {
-            var json = JsonSerializer.Serialize( invocation ) ;
+            var json = JsonSerializer.Serialize ( invocation ) ;
             Logger.Debug ( json ) ;
             Console.WriteLine ( json ) ;
-                               // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
-                              // ) ;
+            // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
+            // ) ;
         }
 
         private static void Instances ( )
@@ -151,18 +164,19 @@ namespace ConsoleApp1
             {
                 Logger.Info (
                              "{name} {x}"
-                           , visualStudioInstance.Name
-                           , visualStudioInstance.Version
+                       , visualStudioInstance.Name
+                       , visualStudioInstance.Version
                             ) ;
             }
 #endif
         }
 
-        private static async Task MainCommand ( 
-            #if COMMANDLINE
+        private static async Task MainCommand (
+#if COMMANDLINE
             Options options ,
-            #endif
-            AppContext context )
+#endif
+            AppContext context
+        )
         {
 #if COMMANDLINE
             if ( options.FirstChance )
@@ -172,8 +186,8 @@ namespace ConsoleApp1
             }
 #endif
 
-            var viewModel = context.ViewModel ;
-            #if VSSETTINGS
+
+#if VSSETTINGS
             var x = ( ISupportInitialize ) viewModel ;
             x.BeginInit ( ) ;
             x.EndInit ( ) ;
@@ -189,14 +203,14 @@ namespace ConsoleApp1
                     var canConvertTo = converter.CanConvertTo ( typeof ( TemplatePropertyValue ) ) ;
                     var converted = converter.ConvertTo (
                                                          vsInstance
-                                                       , typeof ( TemplatePropertyValue )
+                                                   , typeof ( TemplatePropertyValue )
                                                         ) ;
                     Logger.Info ( "" + "converted = {converted}" , converted ) ;
                     var templateProperties = new[]
                                              {
                                                  new TemplateProperty (
                                                                        "I"
-                                                                     , ( TemplatePropertyValue )
+                                                                 , ( TemplatePropertyValue )
                                                                        converted
                                                                       )
                                              } ;
@@ -208,19 +222,23 @@ namespace ConsoleApp1
                     // Console.WriteLine(l\ine);
                 }
             }
-            #endif
+#endif
 
 #if MSBUILDLOCATOR
             // var instances = MSBuildLocator.RegisterDefaults ( ) ;
-            var i2 = (from inst in  MSBuildLocator
-               .QueryVisualStudioInstances (
-                                            new VisualStudioInstanceQueryOptions ( )
-                                            {
-                                                DiscoveryTypes = DiscoveryType.VisualStudioSetup
-                                            }
-                                           )
-                      where inst.Version.Major == 15
-                                  orderby  inst.Version descending select inst).FirstOrDefault();
+            var i2 = (
+                         from inst in MSBuildLocator.QueryVisualStudioInstances (
+                                                                                 new
+                                                                                 VisualStudioInstanceQueryOptions ( )
+                                                                                 {
+                                                                                     DiscoveryTypes
+                                                                                         = DiscoveryType
+                                                                                            .VisualStudioSetup
+                                                                                 }
+                                                                                )
+                         where inst.Version.Major == 15
+                         orderby inst.Version descending
+                         select inst ).FirstOrDefault ( ) ;
 
             if ( i2 != null )
             {
@@ -229,10 +247,9 @@ namespace ConsoleApp1
             }
 
 #endif
-            int i = 0 ;
-            var browserNodeCollection = viewModel.ProjectBrowserViewModel.RootCollection ;
-            List < IBrowserNode >
-                nodes = new List < IBrowserNode > ( browserNodeCollection.Count ) ;
+            var i = 0 ;
+            var browserNodeCollection = context.BrowserViewModel.RootCollection ;
+            var nodes = new List < IBrowserNode > ( browserNodeCollection.Count ) ;
             foreach ( var browserNode in browserNodeCollection )
             {
                 i += 1 ;
@@ -244,8 +261,8 @@ namespace ConsoleApp1
                     Console.WriteLine ( $"\tSolutionPath is {project.SolutionPath}" ) ;
                     Console.WriteLine (
                                        $"\tConfiguration property Platform is {project.Platform ?? "Null"}"
-                                           ) ;
-                    Console.WriteLine ($"\tRepositoryUrl is {project.RepositoryUrl}" ) ;
+                                      ) ;
+                    Console.WriteLine ( $"\tRepositoryUrl is {project.RepositoryUrl}" ) ;
                 }
             }
 
@@ -256,7 +273,6 @@ namespace ConsoleApp1
                 if ( ! char.IsDigit ( key.KeyChar ) )
                 {
                     continue ;
-
                 }
 
                 var selection = ( int ) char.GetNumericValue ( key.KeyChar ) ;
@@ -269,16 +285,15 @@ namespace ConsoleApp1
 
                 Console.WriteLine ( projectNode.SolutionPath ) ;
                 Console.ReadLine ( ) ;
-                await viewModel.AnalyzeCommand ( projectNode ) ;
-                using ( var s = File.OpenWrite ( "invocs.json" ) )
-                {
-                    await JsonSerializer.SerializeAsync ( s , viewModel.LogInvocations ) ;
-                }
+
+                await context.AnalyzeCommand.AnalyzeCommandAsync( projectNode ) ;
+                // using ( var s = File.OpenWrite ( "invocs.json" ) )
+                // {
+                    // await JsonSerializer.SerializeAsync ( s , logInvocations ) ;
+                // }
 
                 break ;
-
             }
-
         }
 
         private static void Init ( )
@@ -328,5 +343,4 @@ namespace ConsoleApp1
         public bool FirstChance { get ; set ; }
     }
 #endif
-
 }

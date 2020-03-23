@@ -17,7 +17,6 @@ using System.Reflection ;
 using System.Windows ;
 using System.Windows.Controls ;
 using AnalysisAppLib ;
-using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
@@ -66,24 +65,6 @@ namespace ProjInterface
             builder.RegisterModule < ProjLibModule > ( ) ;
             LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
-            LogRegistration ( typeof ( ProjMainWindow ) , "AsSelf" ) ;
-            builder.Register (
-                              ( context , parameters ) => new ProjMainWindow (
-                                                                              context
-                                                                                 .Resolve <
-                                                                                      IWorkspacesViewModel
-                                                                                  > ( )
-                                                                            , context
-                                                                                 .Resolve <
-                                                                                      ILifetimeScope
-                                                                                  > ( )
-                                                                             )
-                             )
-                   .AsSelf ( ) ;
-            
-            
-            LogRegistration ( typeof ( ProjMainWindow ) , "AsSelf" , typeof ( IView1 ) ) ;
-            builder.RegisterType < ProjMainWindow > ( ).AsSelf ( ).As < IView1 > ( ) ;
             LogRegistration (
                              typeof ( AllResourcesTree )
                            , typeof ( UserControl )
