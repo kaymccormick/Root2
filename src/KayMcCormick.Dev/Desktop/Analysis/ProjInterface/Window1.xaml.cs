@@ -1,15 +1,15 @@
 ﻿using System ;
-using System.Activities.Expressions ;
 using System.Diagnostics ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
-using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using NLog ;
@@ -17,18 +17,27 @@ using NLog ;
 namespace ProjInterface
 {
     [ TitleMetadata ( "Docking window" ) ]
-    public partial class Window1 : AppWindow , IView1 , IView < DockWindowViewModel >
+    public sealed partial class Window1 : AppWindow , IView1 , IView < DockWindowViewModel >
     {
-        private string              _viewTitle = "Docking window" ;
+        private readonly string              _viewTitle = "Docking window" ;
         private DockWindowViewModel _viewModel ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public Window1 ( ) { InitializeComponent ( ) ; }
 
-        public Window1 ( ILifetimeScope lifetimeScope , DockWindowViewModel viewModel ) :
-            base ( )
+        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope , [ NotNull ] DockWindowViewModel viewModel )
         {
+            if ( lifetimeScope == null )
+            {
+                throw new ArgumentNullException ( nameof ( lifetimeScope ) ) ;
+            }
+
+            if ( viewModel == null )
+            {
+                throw new ArgumentNullException ( nameof ( viewModel ) ) ;
+            }
+
             var lf = lifetimeScope.BeginLifetimeScope(
                                                       builder => {
                                                           builder.RegisterType<HandleExceptionImpl>()
@@ -45,7 +54,7 @@ namespace ProjInterface
         }
 
         #region Overrides of FrameworkElement
-        public override async void OnApplyTemplate ( )
+        public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
            
@@ -56,8 +65,13 @@ namespace ProjInterface
                        ) ;
         }
 
-        private void Target ( object sender , TypeActivatedEventArgs e )
+        private void Target ( object sender , [ NotNull ] TypeActivatedEventArgs e )
         {
+            if ( e == null )
+            {
+                throw new ArgumentNullException ( nameof ( e ) ) ;
+            }
+
             BrowserFrame.NavigationService.Navigate (
                                                      new Page ( )
                                                      {
@@ -78,7 +92,7 @@ namespace ProjInterface
         }
         #endregion
         #region Implementation of IView1
-        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        public string ViewTitle { get { return _viewTitle ; } }
         #endregion
 
         #region Implementation of IView<out DockWindowViewModel>
@@ -89,8 +103,13 @@ namespace ProjInterface
         }
         #endregion
 
-        private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
+        private void CommandBinding_OnExecuted ( object sender , [ NotNull ] ExecutedRoutedEventArgs e )
         {
+            if ( e == null )
+            {
+                throw new ArgumentNullException ( nameof ( e ) ) ;
+            }
+
             Logger.Warn ( nameof ( CommandBinding_OnExecuted ) ) ;
             if ( e.Parameter is Meta < Lazy < IView1 > > meta )
             {
@@ -103,8 +122,7 @@ namespace ProjInterface
                     }
                     else if ( val is Control c )
                     {
-                        var doc = new LayoutDocument { Content = c } ;
-                        doc.Title = val.ViewTitle ;
+                        var doc = new LayoutDocument { Content = c , Title = val.ViewTitle } ;
                         docpane.Children.Add ( doc ) ;
                     }
                 }
@@ -120,8 +138,14 @@ namespace ProjInterface
             System.Windows.Application.Current.Shutdown ( ) ;
         }
 
-        private void BrowserFrame_OnNavigating ( object sender , NavigatingCancelEventArgs e )
+        private void BrowserFrame_OnNavigating ( object sender , [ NotNull ]
+                                                 NavigatingCancelEventArgs e )
         {
+            if ( e == null )
+            {
+                throw new ArgumentNullException ( nameof ( e ) ) ;
+            }
+
             var uri = e.Uri ;
             Type t = null ;
             if ( e.ExtraData is NavState n )

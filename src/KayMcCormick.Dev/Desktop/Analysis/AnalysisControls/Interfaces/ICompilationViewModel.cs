@@ -12,6 +12,7 @@
 using System ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using AnalysisAppLib ;
 using AnalysisFramework ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;

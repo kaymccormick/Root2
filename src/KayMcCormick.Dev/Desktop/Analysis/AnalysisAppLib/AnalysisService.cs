@@ -10,13 +10,12 @@
 // ---
 #endregion
 using System ;
-using AnalysisAppLib ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 
-namespace AnalysisFramework
+namespace AnalysisAppLib
 {
     public static class AnalysisService
     {

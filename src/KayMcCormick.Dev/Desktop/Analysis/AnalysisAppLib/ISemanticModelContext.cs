@@ -11,7 +11,7 @@
 #endregion
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisFramework
+namespace AnalysisAppLib
 {
     public interface ISemanticModelContext
     {

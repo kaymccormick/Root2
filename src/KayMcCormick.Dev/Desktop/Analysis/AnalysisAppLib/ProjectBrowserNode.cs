@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using AnalysisAppLib.Projects ;
 
 namespace AnalysisAppLib
 {
@@ -20,7 +21,11 @@ namespace AnalysisAppLib
 
         public Uri RepositoryUrl { get ; set ; }
 
-        public string Platform { get => _platform ; set => _platform = value ; }
+        public string Platform
+        {
+            get => _platform ;
+            set { _platform = value ; }
+        }
 
         public string SolutionPath { get { return _solutionPath ; } set { _solutionPath = value ; } }
     }

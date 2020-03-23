@@ -10,16 +10,15 @@
 // 
 // ---
 #endregion
+
 using System ;
 using System.Linq ;
-using AnalysisAppLib ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-
 using NLog ;
 
-namespace AnalysisFramework
+namespace AnalysisAppLib
 {
     internal class CodeAnalyseContext : ICodeAnalyseContext
     {

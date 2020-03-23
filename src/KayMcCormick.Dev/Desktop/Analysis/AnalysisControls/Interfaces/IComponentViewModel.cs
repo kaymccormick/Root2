@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib ;
 using AnalysisFramework ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;

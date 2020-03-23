@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Headers ;
 using System.Text;
 using System.Threading.Tasks;
+using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using KayMcCormick.Dev ;
 using Microsoft.Graph ;

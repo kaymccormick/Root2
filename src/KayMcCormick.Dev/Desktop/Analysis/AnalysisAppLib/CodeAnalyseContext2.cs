@@ -13,12 +13,8 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisFramework
+namespace AnalysisAppLib
 {
-    public interface ICodeAnalyseContext : ICompilationUnitRootContext , ISemanticModelContext
-    {
-    }
-
     // ReSharper disable once UnusedType.Global
     public class CodeAnalyseContext2 : ICodeAnalyseContext
     {

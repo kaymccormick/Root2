@@ -9,16 +9,10 @@
 // 
 // ---
 #endregion
-using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisFramework
+namespace AnalysisAppLib
 {
-    public interface ISyntaxTreeContext
-    {
-        SyntaxTree SyntaxTree { get ; }
-    }
-
     public interface ICompilationUnitRootContext : ISyntaxTreeContext
     {
         CompilationUnitSyntax CompilationUnit { get ; }

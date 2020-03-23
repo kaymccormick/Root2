@@ -71,8 +71,13 @@ namespace AnalysisAppLib
         private LogEventInstance HandleJsonMessage ( JsonSerializerOptions options , string s )
         {
             var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
-            instance.SerializedForm = s ;
-            return instance ;
+            if ( instance != null )
+            {
+                instance.SerializedForm = s ;
+                return instance ;
+            }
+
+            throw new InvalidOperationException ( ) ;
         }
 
         private void PacketReceived ( UdpReceiveResult resp )

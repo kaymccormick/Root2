@@ -29,6 +29,7 @@ using System.Windows.Controls ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using AnalysisAppLib ;
 using AnalysisControls ;
 using AnalysisFramework ;
 using Autofac ;
@@ -483,7 +484,7 @@ namespace ProjTests
                 LogEventInfo info ;
                 try
                 {
-                    info = JsonSerializer.Deserialize < LogEventInfo > ( line , options ) ;
+                    info = JsonSerializer.Deserialize < LogEventInfo > ( line ?? throw new InvalidOperationException ( ) , options ) ;
                 }
                 catch ( JsonException x )
                 {
@@ -526,11 +527,14 @@ namespace ProjTests
                     throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
                 }
 
-                Logger.Debug ( info.FormattedMessage ) ;
-                foreach ( var keyValuePair in info.Properties )
+                if ( info != null )
                 {
-                    Logger.Debug ( keyValuePair.Key ) ;
-                    Logger.Debug ( keyValuePair.Value.ToString ( ) ) ;
+                    Logger.Debug ( info.FormattedMessage ) ;
+                    foreach ( var keyValuePair in info.Properties )
+                    {
+                        Logger.Debug ( keyValuePair.Key ) ;
+                        Logger.Debug ( keyValuePair.Value.ToString ( ) ) ;
+                    }
                 }
             }
         }

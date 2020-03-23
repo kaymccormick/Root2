@@ -52,14 +52,24 @@ namespace AnalysisFramework
 
         public static string ShortenedPath ( [ NotNull ] this Document doc )
         {
-            var strings = doc.FilePath.Split(Path.DirectorySeparatorChar);
-            var numElems = 4 ;
-            var p = strings.ToList()
-                           .GetRange(
-                                     strings.Length < numElems  ? 0 : strings.Length - numElems
-                                   , strings.Length >= numElems ? 3 : strings.Length
-                                    );
-            return String.Join(Path.DirectorySeparatorChar.ToString(), p);
+            if ( doc == null )
+            {
+                throw new ArgumentNullException ( nameof ( doc ) ) ;
+            }
+
+            if ( doc.FilePath != null )
+            {
+                var strings = doc.FilePath.Split(Path.DirectorySeparatorChar);
+                var numElems = 4 ;
+                var p = strings.ToList()
+                               .GetRange(
+                                         strings.Length < numElems  ? 0 : strings.Length - numElems
+                                       , strings.Length >= numElems ? 3 : strings.Length
+                                        );
+                return String.Join(Path.DirectorySeparatorChar.ToString(), p);
+            }
+
+            throw new InvalidOperationException ( ) ;
         }
 
         public static string RelativePath ( [ NotNull ] this Document doc )

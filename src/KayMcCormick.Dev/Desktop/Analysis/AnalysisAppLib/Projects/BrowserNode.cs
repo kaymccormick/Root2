@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace AnalysisAppLib
+namespace AnalysisAppLib.Projects
 {
     public class BrowserNode : IBrowserNode
     {

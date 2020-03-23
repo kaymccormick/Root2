@@ -9,11 +9,17 @@
 // TODO: This is an example of a library function
 extern "C" {
 
-DLL1_API ULONG fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled(LPCWSTR message)
+ULONG fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled(LPCWSTR message)
 {
 	return EventWriteSETUP_LOGGING_EVENT_AssumeEnabled(message);
 }
 
+
+ULONG fnEventWriteSETUP_LOGGING_EVENT_AssumeEnabled(LPCWSTR message)
+{
+	return
+		EventWriteEVENT_COMPONENT_RESOLVED_AssumeEnabled();
+}
 DLL1_API int fnCompatLib1(void)
 {
 	return 5;

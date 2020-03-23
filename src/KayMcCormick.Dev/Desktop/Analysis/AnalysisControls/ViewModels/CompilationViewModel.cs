@@ -14,6 +14,7 @@ using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
+using AnalysisAppLib ;
 using AnalysisControls.Interfaces ;
 using AnalysisFramework ;
 using JetBrains.Annotations ;
@@ -22,13 +23,18 @@ using NLog ;
 
 namespace AnalysisControls.ViewModels
 {
+    /// <summary></summary>
+    /// <seealso cref="AnalysisControls.Interfaces.ICompilationViewModel" />
     public sealed class CompilationViewModel : ICompilationViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public ICompilationUnitRootContext CompilationUnitRootContext { get ; set ; }
 
-        public ISyntaxTreeContext SyntaxTreeContext => CompilationUnitRootContext ;
+        public ISyntaxTreeContext SyntaxTreeContext
+        {
+            get { return CompilationUnitRootContext ; }
+        }
 
         private object              selectedItem ;
         private ControlFlowAnalysis currentControlFlowAnalysis ;
@@ -42,7 +48,7 @@ namespace AnalysisControls.ViewModels
 
         public object SelectedItem
         {
-            get => selectedItem ;
+            get { return selectedItem ; }
             set
             {
                 selectedItem = value ;
@@ -56,7 +62,7 @@ namespace AnalysisControls.ViewModels
             {
                 CurrentControlFlowAnalysisException = null ;
                 var controlFlowAnalysis =
-                    model.AnalyzeControlFlow ( viewModelSelectedItem as SyntaxNode ) ;
+                    model.AnalyzeControlFlow ( viewModelSelectedItem as SyntaxNode ?? throw new InvalidOperationException ( ) ) ;
                 CurrentControlFlowAnalysis = controlFlowAnalysis ;
             }
             catch ( Exception ex )
@@ -66,22 +72,27 @@ namespace AnalysisControls.ViewModels
             }
         }
 
-        public void GetDeclaredSymbol ( object viewModelSelectedItem , SemanticModel model )
+        public void GetDeclaredSymbol ( [ NotNull ] object viewModelSelectedItem , [ NotNull ] SemanticModel model )
         {
-            var symbol = model.GetDeclaredSymbol ( viewModelSelectedItem as SyntaxNode ) ;
+            if ( viewModelSelectedItem == null )
+            {
+                throw new ArgumentNullException ( nameof ( viewModelSelectedItem ) ) ;
+            }
+
+            var symbol = model.GetDeclaredSymbol ( viewModelSelectedItem as SyntaxNode ?? throw new InvalidOperationException ( ) ) ;
             ValueStack.Add ( symbol ) ;
             Logger.Debug ( "result i {symbmol} -{kind} " , symbol , symbol.Kind ) ;
         }
 
         public ObservableCollection < ISymbol > ValueStack
         {
-            get => valueStack ;
-            set => valueStack = value ;
+            get { return valueStack ; }
+            set { valueStack = value ; }
         }
 
         public Exception CurrentControlFlowAnalysisException
         {
-            get => currentControlFlowAnalysisException ;
+            get { return currentControlFlowAnalysisException ; }
             set
             {
                 currentControlFlowAnalysisException = value ;
@@ -91,7 +102,7 @@ namespace AnalysisControls.ViewModels
 
         public ControlFlowAnalysis CurrentControlFlowAnalysis
         {
-            get => currentControlFlowAnalysis ;
+            get { return currentControlFlowAnalysis ; }
             set
             {
                 currentControlFlowAnalysis = value ;

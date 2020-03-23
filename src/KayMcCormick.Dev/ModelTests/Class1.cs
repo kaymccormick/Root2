@@ -2,6 +2,7 @@
 using System.Diagnostics ;
 using System.IO ;
 using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using KayMcCormick.Dev ;
 using Xunit ;

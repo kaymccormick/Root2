@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System.Runtime.Serialization ;
+using AnalysisAppLib ;
 using AnalysisControls.Interfaces ;
 using AnalysisFramework ;
 using JetBrains.Annotations ;

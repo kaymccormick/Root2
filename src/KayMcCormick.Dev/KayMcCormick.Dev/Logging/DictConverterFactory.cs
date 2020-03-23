@@ -80,7 +80,7 @@ namespace KayMcCormick.Dev.Logging
 
                     var propertyName = reader.GetString ( ) ;
                     var value = JsonSerializer.Deserialize < object > ( ref reader , options ) ;
-                    dict[ propertyName ] = value ;
+                    dict[ propertyName ?? throw new InvalidOperationException ( ) ] = value ;
                 }
 
                 return dict ;

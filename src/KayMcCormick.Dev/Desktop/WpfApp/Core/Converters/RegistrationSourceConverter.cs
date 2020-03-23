@@ -41,10 +41,15 @@ namespace WpfApp.Core.Converters
                 //return new object[0];
             }
 
-            var objectIdProvider = x.Resolve < IObjectIdProvider > ( ) ;
-            var instanceByComponentRegistration =
-                objectIdProvider.GetInstanceByComponentRegistration ( c ) ;
-            return instanceByComponentRegistration ;
+            if ( x != null )
+            {
+                var objectIdProvider = x.Resolve < IObjectIdProvider > ( ) ;
+                var instanceByComponentRegistration =
+                    objectIdProvider.GetInstanceByComponentRegistration ( c ) ;
+                return instanceByComponentRegistration ;
+            }
+
+            throw new InvalidOperationException ( ) ;
         }
 
         /// <summary>Converts a value. </summary>

@@ -15,7 +15,7 @@ using Newtonsoft.Json ;
 using NLog ;
 using Logger = NLog.Logger ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.ViewModel
 {
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {

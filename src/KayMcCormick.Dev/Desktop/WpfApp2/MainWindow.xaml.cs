@@ -133,43 +133,53 @@ namespace WpfApp2
                                 while ( ! LogFileReader.EndOfStream )
                                 {
                                     var readLine = LogFileReader.ReadLine ( ) ;
-                                    var logEntry =
-                                        JsonSerializer.Deserialize < LogEntry > ( readLine ) ;
-                                    foreach ( var logEntryKey in logEntry.Keys )
+                                    if ( readLine != null )
                                     {
-                                        if ( PropertyInfos.TryGetValue (
-                                                                        logEntryKey
-                                                                      , out var propInfo
-                                                                       ) )
+                                        var logEntry =
+                                            JsonSerializer.Deserialize < LogEntry > ( readLine ) ;
+                                        if ( logEntry != null )
                                         {
-#pragma warning disable RCS1089 // Use --/++ operator instead of assignment.
-                                            propInfo.Count += 1 ;
-#pragma warning restore RCS1089 // Use --/++ operator instead of assignment.
-                                        }
-                                        else
-                                        {
-                                            var newProp =
-                                                new PropInfo { Name = logEntryKey , Count = 1 } ;
-                                            if ( PropertiesDict.ContainsKey ( logEntryKey ) )
+                                            foreach ( var logEntryKey in logEntry.Keys )
                                             {
-                                                Logger.Debug (
-                                                              "adding new Prop Info for existing property with key {key}"
-                                                            , logEntryKey
-                                                             ) ;
-                                                newProp.LogProperty =
-                                                    PropertiesDict[ logEntryKey ] ;
+                                                if ( PropertyInfos.TryGetValue (
+                                                                                logEntryKey
+                                                                              , out var propInfo
+                                                                               ) )
+                                                {
+#pragma warning disable RCS1089 // Use --/++ operator instead of assignment.
+                                                    propInfo.Count += 1 ;
+#pragma warning restore RCS1089 // Use --/++ operator instead of assignment.
+                                                }
+                                                else
+                                                {
+                                                    var newProp =
+                                                        new PropInfo
+                                                        {
+                                                            Name = logEntryKey , Count = 1
+                                                        } ;
+                                                    if ( PropertiesDict.ContainsKey ( logEntryKey )
+                                                    )
+                                                    {
+                                                        Logger.Debug (
+                                                                      "adding new Prop Info for existing property with key {key}"
+                                                                    , logEntryKey
+                                                                     ) ;
+                                                        newProp.LogProperty =
+                                                            PropertiesDict[ logEntryKey ] ;
+                                                    }
+
+                                                    PropertyInfos[ logEntryKey ] = newProp ;
+                                                }
                                             }
 
-                                            PropertyInfos[ logEntryKey ] = newProp ;
+                                            _propertiesSet.UnionWith ( logEntry.Keys ) ;
+                                            Dispatcher?.Invoke (
+                                                                ( ) => {
+                                                                    Entries.Add ( logEntry ) ;
+                                                                }
+                                                               ) ;
                                         }
                                     }
-
-                                    _propertiesSet.UnionWith ( logEntry.Keys ) ;
-                                    Dispatcher?.Invoke (
-                                                        ( ) => {
-                                                            Entries.Add ( logEntry ) ;
-                                                        }
-                                                       ) ;
                                 }
                             }
                            ) ;

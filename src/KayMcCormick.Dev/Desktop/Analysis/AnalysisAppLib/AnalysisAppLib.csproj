@@ -46,13 +46,20 @@
   <ItemGroup>
     <Compile Include="AnalysisAppLibModule.cs" />
     <Compile Include="AnalysisRequest.cs" />
+    <Compile Include="AnalysisService.cs" />
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppExplorerItem.cs" />
-    <Compile Include="BrowserNode.cs" />
     <Compile Include="BrowserNodeCollection.cs" />
+    <Compile Include="CodeAnalyseContext.cs" />
+    <Compile Include="CodeAnalyseContext2.cs" />
     <Compile Include="CodeSource.cs" />
     <Compile Include="DataflowBlocks.cs" />
-    <Compile Include="DockWindowViewModel.cs" />
+    <Compile Include="ICodeAnalyseContext.cs" />
+    <Compile Include="ICompilationUnitRootContext.cs" />
+    <Compile Include="ISemanticModelContext.cs" />
+    <Compile Include="ISyntaxTreeContext.cs" />
+    <Compile Include="Projects\BrowserNode.cs" />
+    <Compile Include="ViewModel\DockWindowViewModel.cs" />
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="FileSystemExplorerItemProvider.cs" />
     <Compile Include="FindLogUsages.cs" />
@@ -144,5 +151,6 @@
       <Version>5.0.0-preview.1.20120.5</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -73,7 +73,7 @@ namespace ProjInterface.JSON
                                                                                           , options
                                                                                            ) ;
 
-                    if ( d.ExternAliases != null )
+                    if ( d != null && d.ExternAliases != null )
                     {
                         foreach ( var dExternAliase in d.ExternAliases )
                         {
@@ -83,7 +83,7 @@ namespace ProjInterface.JSON
                         }
                     }
 
-                    if ( d.Members != null )
+                    if ( d != null && d.Members != null )
                     {
                         foreach ( var xx in d.Members )
                         {
