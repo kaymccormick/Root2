@@ -21,7 +21,7 @@ using Autofac.Core ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     public sealed class AllResourcesTreeViewModel
     {

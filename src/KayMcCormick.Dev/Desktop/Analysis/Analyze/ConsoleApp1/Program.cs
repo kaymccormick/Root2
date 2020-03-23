@@ -8,6 +8,7 @@ using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisFramework ;
 using AnalysisFramework.LogUsage ;
 using Autofac ;

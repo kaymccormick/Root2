@@ -12,9 +12,9 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using KayMcCormick.Lib.Wpf ;
+using JsonConverter = System.Text.Json.Serialization.JsonConverter ;
 
-namespace ProjInterface.JSON
+namespace KayMcCormick.Lib.Wpf.JSON
 {
     public class JsonResourceKeyWrapperConverterFactory : JsonConverterFactory
     {
@@ -30,7 +30,7 @@ namespace ProjInterface.JSON
         }
         #endregion
         #region Overrides of JsonConverterFactory
-        public override JsonConverter CreateConverter (
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )

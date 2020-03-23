@@ -3,7 +3,7 @@ using System.Globalization ;
 using System.Text.Json ;
 using System.Windows.Data ;
 
-namespace AnalysisControls.Converters
+namespace KayMcCormick.Lib.Wpf
 {
     public class JsonConverter : IValueConverter
     {

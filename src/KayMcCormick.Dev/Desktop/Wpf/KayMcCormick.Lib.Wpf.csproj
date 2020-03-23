@@ -74,9 +74,10 @@
     <Compile Include="AllResourcesTree.xaml.cs">
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AllResourcesTreeViewModel.cs" />
     <Compile Include="AppCommand.cs" />
-    <Compile Include="AppCommandConverter.cs" />
+    <Compile Include="JSON\JsonBrushConverter.cs" />
+    <Compile Include="JSON\JsonConverterImage.cs" />
+    <Compile Include="Xaml\AppCommandConverter.cs" />
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="IHandleException.cs" />
     <Compile Include="IView1.cs" />
     <Compile Include="IWrap1.cs" />
+    <Compile Include="JsonConverter.cs" />
     <Compile Include="KeyConverter.cs" />
     <Compile Include="LifetimeScopeExtension.cs" />
     <Compile Include="NavState.cs" />
@@ -131,9 +133,10 @@
       <DependentUpon>TypeInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="TypeInfoConverter.cs" />
+    <Compile Include="ViewModel\AllResourcesTreeViewModel.cs" />
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="WrappedAppCommand.cs" />
-    <Compile Include="XamlXmlDocumentConverter.cs" />
+    <Compile Include="Xaml\XamlXmlDocumentConverter.cs" />
     <Compile Include="XmlViewer.xaml.cs">
       <DependentUpon>XmlViewer.xaml</DependentUpon>
     </Compile>
@@ -171,7 +174,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AppResources.xaml">
+    <Page Include="SharedResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -220,5 +223,6 @@
       <Visible>False</Visible>
     </AdditionalFiles>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,6 +9,7 @@ using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Windows.Media ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf.ViewModel ;
 using NLog ;
 
 namespace KayMcCormick.Lib.Wpf

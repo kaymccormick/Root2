@@ -12,10 +12,11 @@
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
         xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
         xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
+        xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
         mc:Ignorable="d" FontSize="18.0"
         Title="Window1" Height="450" Width="800">
   <kmWpf:AppWindow.Resources>
-    <DataTemplate DataType="{x:Type analysisAppLib:SyntaxItem}">
+    <DataTemplate DataType="{x:Type syntax:SyntaxItem}">
       <StackPanel Orientation="Horizontal">
         <TextBlock Text="{Binding SyntaxKind}"/>
         <TextBlock Text="{Binding Token}"/>

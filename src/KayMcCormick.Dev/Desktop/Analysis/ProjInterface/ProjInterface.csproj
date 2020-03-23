@@ -105,7 +105,6 @@
     <Compile Include="HashtableConverter.cs" />
     <Compile Include="IconsSource.cs" />
     <Compile Include="IIconsSource.cs" />
-    <Compile Include="JSON\JsonBrushConverter.cs" />
     <Compile Include="JSON\JsonConverterImage.cs" />
     <Compile Include="JSON\JsonConverterResourceDictionary.cs" />
     <Compile Include="JSON\JsonDependencyPropertyConverter.cs" />

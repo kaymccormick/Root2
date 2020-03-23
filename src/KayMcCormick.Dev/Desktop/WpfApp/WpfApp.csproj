@@ -117,7 +117,6 @@
       <DependentUpon>Container.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TypedService.cs" />
-    <Compile Include="DesignData.cs" />
     <Compile Include="Core\Events\AttachedEvents.cs" />
     <Compile Include="Core\Logging\AppLoggerContainer.cs" />
     <Compile Include="Core\Logging\NLogTargetConverter.cs" />
@@ -243,7 +242,6 @@
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
     <Compile Include="ResourceMetadata.cs" />
-    <Compile Include="TestO.cs" />
     <Compile Include="Core\Tracing\AppTraceListener.cs" />
     <Compile Include="Core\Tracing\AppTraceListener2.cs" />
     <Compile Include="Core\Tracing\Info.cs" />

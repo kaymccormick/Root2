@@ -29,7 +29,10 @@ namespace KayMcCormick.Lib.Wpf
         public T ResourceKey { get { return _resourceKey ; } set { _resourceKey = value ; } }
 
         #region Implementation of IResourceKeyWrapper1
-        public object ResourceKeyObject => ResourceKey ;
+        public object ResourceKeyObject
+        {
+            get { return ResourceKey ; }
+        }
         #endregion
     }
 

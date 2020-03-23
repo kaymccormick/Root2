@@ -1,11 +1,10 @@
 using System ;
 using System.Globalization ;
-using System.IO ;
 using System.Windows.Data ;
 using System.Xaml ;
 using System.Xml ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Lib.Wpf.Xaml
 {
     public class XamlXmlDocumentConverter : IValueConverter
     {

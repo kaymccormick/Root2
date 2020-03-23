@@ -2,7 +2,7 @@ using System.Collections.Generic ;
 
 // ReSharper disable UnusedVariable
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.Syntax
 {
     public class PojoCompilationUnit
     {

@@ -29,6 +29,7 @@ using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Windows.Threading ;
 using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Views ;
 using KayMcCormick.Dev.Logging ;
 using ProjLib.Interfaces ;

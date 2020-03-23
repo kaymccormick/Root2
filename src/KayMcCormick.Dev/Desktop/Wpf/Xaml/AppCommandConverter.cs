@@ -1,10 +1,9 @@
 using System ;
 using System.Globalization ;
-using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Lib.Wpf.Xaml
 {
     public class AppCommandConverter : IValueConverter
     {

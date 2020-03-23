@@ -14,12 +14,11 @@ using System.Collections.Generic ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using AnalysisAppLib ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
-namespace ProjInterface.JSON
+namespace KayMcCormick.Lib.Wpf.JSON
 {
     public class JsonSyntaxNodeConverter : JsonConverterFactory
     {
@@ -28,20 +27,20 @@ namespace ProjInterface.JSON
         public override bool CanConvert ( Type typeToConvert ) { return typeof(CSharpSyntaxNode).IsAssignableFrom(typeToConvert) ; }
         #endregion
         #region Overrides of JsonConverterFactory
-        public override JsonConverter CreateConverter (
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
-            return ( JsonConverter ) Activator.CreateInstance (
-                                                               typeof ( InnerConverter <> ).MakeGenericType (
-                                                                                                             typeToConvert
-                                                                                                            )
-                                                             , BindingFlags.Instance | BindingFlags.Public
-                                                             , null
-                                                             , new object[] { options }
-                                                             , null
-                                                              ) ;
+            return ( System.Text.Json.Serialization.JsonConverter ) Activator.CreateInstance (
+                                                                                              typeof ( InnerConverter <> ).MakeGenericType (
+                                                                                                                                            typeToConvert
+                                                                                                                                           )
+                                                                                            , BindingFlags.Instance | BindingFlags.Public
+                                                                                            , null
+                                                                                            , new object[] { options }
+                                                                                            , null
+                                                                                             ) ;
         }
         #endregion
 
@@ -111,7 +110,7 @@ namespace ProjInterface.JSON
                 // value.SerializeTo(s);
                 // writer.WriteBase64StringValue(s.GetBuffer());
                 var transformed = Transforms.TransformSyntaxNode ( value ) ;
-                JsonSerializer.Serialize ( writer , transformed , options ) ;
+                JsonSerializer.Serialize < object > ( writer , transformed , options ) ;
                 writer.WriteEndObject();
             }
             #endregion

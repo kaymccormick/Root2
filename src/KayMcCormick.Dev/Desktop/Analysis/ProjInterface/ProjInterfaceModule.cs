@@ -24,6 +24,7 @@ using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.ViewModel ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using NLog ;

@@ -51,6 +51,7 @@
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppExplorerItem.cs" />
     <Compile Include="BrowserNodeCollection.cs" />
+    <Compile Include="Syntax\PojoCompilationUnit.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
     <Compile Include="CodeAnalyseContext.cs" />
     <Compile Include="CodeAnalyseContext2.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="PipelineResult.cs" />
     <Compile Include="PocoSyntaxToken.cs" />
     <Compile Include="Syntax\PojoClassDeclarationSyntax.cs" />
-    <Compile Include="PojoCompilationUnit.cs" />
     <Compile Include="ProjectBrowserNode.cs" />
     <Compile Include="ProjectBrowserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
