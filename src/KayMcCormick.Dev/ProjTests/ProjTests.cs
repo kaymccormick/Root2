@@ -178,23 +178,32 @@ namespace ProjTests
                 }
             }
 
-            m2.Invoke ( f , new object[] { new ControlTemplate ( ) } ) ; //
-            var r = m1.Invoke (
-                               f
-                             , BindingFlags.NonPublic | BindingFlags.Instance
-                             , null
-                             , Array.Empty < object > ( )
-                             , CultureInfo.CurrentCulture
-                              ) ;
+            if ( m2 != null )
+            {
+                m2.Invoke ( f , new object[] { new ControlTemplate ( ) } ) ; //
+            }
+
+            if ( m1 != null ) {
+                var r = m1.Invoke (
+                                   f
+                                 , BindingFlags.NonPublic | BindingFlags.Instance
+                                 , null
+                                 , Array.Empty < object > ( )
+                                 , CultureInfo.CurrentCulture
+                                  ) ;
 
 
-            var p = r.GetType ( )
-                     .GetProperty ( "FE" , BindingFlags.Instance | BindingFlags.NonPublic ) ;
-            var fe = p.GetValue ( r ) ;
-            var w = new Window ( ) ;
-            w.Content = fe ;
-            w.ShowDialog ( ) ;
-            Logger.Info ( r.GetType ( ) ) ;
+                var p = r.GetType ( )
+                         .GetProperty ( "FE" , BindingFlags.Instance | BindingFlags.NonPublic ) ;
+                if ( p != null ) {
+                    var fe = p.GetValue ( r ) ;
+                    var w = new Window ( ) ;
+                    w.Content = fe ;
+                    w.ShowDialog ( ) ;
+                }
+
+                Logger.Info ( r.GetType ( ) ) ;
+            }
         }
 
         [ WpfFact ]
@@ -285,11 +294,12 @@ namespace ProjTests
                     }
                 }
 
-                var source = new TaskCompletionSource < bool > ( ) ;
+                w.ShowDialog ( ) ;
+                // var source = new TaskCompletionSource < bool > ( ) ;
                 // x.TCS = source ;
                 // x.Run ( w ) ;
                 // Task.WaitAll ( x.TCS.Task ) ;
-                Debug.WriteLine ( source.Task.Result ) ;
+                // Debug.WriteLine ( source.Task.Result ) ;
             }
         }
 
@@ -490,13 +500,16 @@ namespace ProjTests
 
                             var length = 32 ;
                             var endIndex = eBytePositionInLine + length ;
-                            if ( endIndex >= line.Length )
+                            if ( line != null && endIndex >= line.Length )
                             {
                                 endIndex = line.Length ;
                             }
 
                             length    = endIndex - eBytePositionInLine ;
-                            substring = line.Substring ( eBytePositionInLine , length ) ;
+                            if ( line != null )
+                            {
+                                substring = line.Substring ( eBytePositionInLine , length ) ;
+                            }
                         }
                         catch ( ArgumentOutOfRangeException )
                         {
@@ -746,7 +759,7 @@ namespace ProjTests
             var syntaxTree = context.CurrentModel.SyntaxTree ;
             var model = context.CurrentModel ;
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
-            Logger.Info ( "Context is {Context}" , context ) ;
+            Logger.Info ( "Context is {Context}" , context .ToString()) ;
             codeControl.SyntaxTree            = syntaxTree ;
             codeControl.Model                 = model ;
             codeControl.CompilationUnitSyntax = compilationUnitSyntax ;
@@ -789,19 +802,26 @@ namespace ProjTests
 
             w.Show ( ) ;
 
-            var bmp = new RenderTargetBitmap (
-                                              ( int ) w.ActualWidth
-                                            , ( int ) w.ActualHeight
-                                            , 72
-                                            , 72
-                                            , PixelFormats.Pbgra32
-                                             ) ;
-            bmp.Render ( codeControl ) ;
-            var pngImage = new PngBitmapEncoder ( ) ;
-            pngImage.Frames.Add ( BitmapFrame.Create ( bmp ) ) ;
-            using ( Stream fileStream = File.Create ( @"c:\data\test\out.png" ) )
+            try
             {
-                pngImage.Save ( fileStream ) ;
+                var bmp = new RenderTargetBitmap (
+                                                  ( int ) w.ActualWidth
+                                                , ( int ) w.ActualHeight
+                                                , 72
+                                                , 72
+                                                , PixelFormats.Pbgra32
+                                                 ) ;
+                bmp.Render ( codeControl ) ;
+                var pngImage = new PngBitmapEncoder ( ) ;
+                pngImage.Frames.Add ( BitmapFrame.Create ( bmp ) ) ;
+                using ( Stream fileStream = File.Create ( @"c:\data\test\out.png" ) )
+                {
+                    pngImage.Save ( fileStream ) ;
+                }
+            }
+            catch ( Exception ex )
+            {
+                Debug.WriteLine ( ex ) ;
             }
 
             tcs.Task.Wait ( ) ;
@@ -813,22 +833,7 @@ namespace ProjTests
             // Logger.Info ( "Tree is {tree}" , tree ) ;
         }
 
-        [ WpfFact ]
-        public void TestCommand ( )
-        {
-            var transform = new TransformScope (
-                                                LibResources.Program_Parse
-                                              , new FormattedCode ( )
-                                              , new Visitor2 ( )
-                                               ) ;
-            Logger.Info ( "Transform is {transform}" , transform ) ;
-            var w = new Window ( ) ;
-            Logger.Info ( Process.GetCurrentProcess ( ).Id ) ;
-            var fmt = transform.FormattedCodeControl ;
-            fmt.SourceCode = transform.SourceCode ;
-            w.Content      = fmt ;
-        }
-
+      
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
         ///
         /// resources.</summary>

@@ -1,5 +1,4 @@
 ﻿using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
@@ -390,10 +389,8 @@ namespace WpfApp.Application
         {
             if ( _appNode == null )
             {
-                PopulateResourcesTree ( ) ;
             }
 
-            HandleWindow ( o as Window ) ;
             var fe = ( FrameworkElement ) o ;
             DebugLog?.Invoke (fe.ToString() ) ;
             Props.SetMenuItemListCollectionView ( fe , MenuItemListCollectionView ) ;
@@ -404,70 +401,6 @@ namespace WpfApp.Application
                                   ) ;
         }
 
-        private void PopulateResourcesTree ( )
-        {
-            try
-            {
-                var current = ( App ) Current ;
-                _appNode = new ResourceNodeInfo { Key = "Application" , Data = current } ;
-                var appResources = new ResourceNodeInfo
-                                   {
-                                       Key = "Resources" , Data = current.Resources
-                                   } ;
-                _appNode.Children.Add ( appResources ) ;
-                AddResourceNodeInfos ( appResources ) ;
-                AllResourcesCollection.Add ( _appNode ) ;
-            }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
-            catch ( Exception ex )
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
-            {
-                throw;
-            }
-        }
-        
-
-        public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
-            => _allResourcesCollection ;
-
-        private void AddResourceNodeInfos ( ResourceNodeInfo appResources )
-        {
-            var res = ( ResourceDictionary ) appResources.Data ;
-            appResources.SourceUri = res.Source ;
-
-            foreach ( var md in res.MergedDictionaries )
-            {
-                var mdr = new ResourceNodeInfo { Key = md.Source , Data = md } ;
-                AddResourceNodeInfos ( mdr ) ;
-                appResources.Children.Add ( mdr ) ;
-            }
-
-            foreach ( DictionaryEntry haveResourcesResource in res )
-            {
-                if ( haveResourcesResource.Key      != null
-                     && haveResourcesResource.Value != null )
-                {
-                    var resourceInfo = new ResourceNodeInfo
-                                       {
-                                           Key  = haveResourcesResource.Key
-                                         , Data = haveResourcesResource.Value
-                                       } ;
-                    appResources.Children.Add ( resourceInfo ) ;
-                }
-            }
-        }
-
-        private void HandleWindow ( Window w )
-        {
-            var winNode = new ResourceNodeInfo
-                          {
-                              Key = w.GetType ( ) , Data = new ControlWrap < Window > ( w )
-                          } ;
-            _appNode.Children.Add ( winNode ) ;
-            var winRes = new ResourceNodeInfo { Key = "Resources" , Data = w.Resources } ;
-            winNode.Children.Add ( winRes ) ;
-            AddResourceNodeInfos ( winRes ) ;
-        }
 
         private void AddEventListeners ( )
         {

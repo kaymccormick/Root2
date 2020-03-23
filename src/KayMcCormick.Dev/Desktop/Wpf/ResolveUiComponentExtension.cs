@@ -133,7 +133,10 @@ namespace KayMcCormick.Lib.Wpf
                 var result = scope.Resolve ( _componentType ) ;
                 if ( Name != null )
                 {
-                    nameScope.RegisterName ( Name , result ) ;
+                    if ( nameScope != null )
+                    {
+                        nameScope.RegisterName ( Name , result ) ;
+                    }
                 }
 
                 return result ;

@@ -20,11 +20,6 @@ namespace KayMcCormick.Dev
     
     public interface IViewModel : ISerializable
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="resourceKey"></param>
-        /// <returns></returns>
         //object TryFindResource ( object resourceKey ) ;
     }
 }

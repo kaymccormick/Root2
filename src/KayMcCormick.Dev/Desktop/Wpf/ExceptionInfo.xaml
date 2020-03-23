@@ -40,7 +40,7 @@
   <DockPanel d:DataContext="{StaticResource DesignData2}" LastChildFill="True">
   <TextBlock DockPanel.Dock="Top" FontWeight="Bold" TextAlignment="Center" FontSize="24pt">Application Error</TextBlock>
     <StackPanel Margin="20" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-      <Button Padding="10,0,10,0" Click="ButtonBase_OnClick">OK</Button>
+      <Button  Padding="10,0,10,0" Click="ButtonBase_OnClick">OK</Button>
     </StackPanel>
     <StackPanel Margin="20" Orientation="Vertical">
       <ListView ItemsSource="{Binding ElementName=userControl,Path=Entries}">

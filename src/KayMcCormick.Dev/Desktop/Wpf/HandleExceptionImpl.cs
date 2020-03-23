@@ -29,7 +29,11 @@ namespace KayMcCormick.Lib.Wpf
                 try
                 {
                     StreamWriter s1 = new StreamWriter ( @"C:\data\logs\stack.txt" ) ;
-                    s1.Write(exception.InnerException.StackTrace);
+                    if ( exception.InnerException != null )
+                    {
+                        s1.Write ( exception.InnerException.StackTrace ) ;
+                    }
+
                     s1.Close();
                     IFormatter formatter = new BinaryFormatter ( ) ;
                     Stream stream = new FileStream (

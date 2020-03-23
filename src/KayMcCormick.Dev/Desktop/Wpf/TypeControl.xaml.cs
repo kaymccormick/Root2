@@ -6,6 +6,7 @@ using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Markup ;
 using System.Windows.Navigation ;
+using JetBrains.Annotations ;
 using Microsoft.CSharp ;
 using NLog ;
 
@@ -198,8 +199,17 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
-        private void GenerateControlsForType ( Type myType , IAddChild addChild , bool toolTip )
+        private void GenerateControlsForType ( [ NotNull ] Type myType , [ NotNull ] IAddChild addChild , bool toolTip )
         {
+            if ( myType == null )
+            {
+                throw new ArgumentNullException ( nameof ( myType ) ) ;
+            }
+
+            if ( addChild == null )
+            {
+                throw new ArgumentNullException ( nameof ( addChild ) ) ;
+            }
             // TextBlock tb = new TextBlock();
             // var old = addChild ;
             // addChild = tb ;
@@ -207,7 +217,7 @@ namespace KayMcCormick.Lib.Wpf
 
             var hyperLink = new Hyperlink ( new Run ( myType.Name ) ) ;
             Uri.TryCreate (
-                           "obj:///" + Uri.EscapeUriString ( myType.AssemblyQualifiedName )
+                           "obj:///" + Uri.EscapeUriString ( myType.AssemblyQualifiedName ?? throw new InvalidOperationException ( ) )
                          , UriKind.Absolute
                          , out var res
                           ) ;

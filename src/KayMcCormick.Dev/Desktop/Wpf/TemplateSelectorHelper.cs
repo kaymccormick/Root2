@@ -50,7 +50,10 @@ namespace KayMcCormick.Lib.Wpf
                 while ( t != typeof(object) )
                 {
                     resourceKeys.Add(new DataTemplateKey(t));
-                    t = t.BaseType ;
+                    if ( t != null )
+                    {
+                        t = t.BaseType ;
+                    }
                 }
                 resourceKeys.AddRange (
                                        item.GetType ( )

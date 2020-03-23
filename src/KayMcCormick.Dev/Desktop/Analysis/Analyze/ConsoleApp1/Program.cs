@@ -220,13 +220,13 @@ namespace ConsoleApp1
                                            )
                       where inst.Version.Major == 15
                                   orderby  inst.Version descending select inst).FirstOrDefault();
-                
-            Logger.Warn(
-                        "Selected instance {instance} {path}"
-                      , i2.Name
-                      , i2.MSBuildPath
-                       );
-            MSBuildLocator.RegisterInstance (i2);
+
+            if ( i2 != null )
+            {
+                Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
+                MSBuildLocator.RegisterInstance ( i2 ) ;
+            }
+
 #endif
             int i = 0 ;
             var browserNodeCollection = viewModel.ProjectBrowserViewModel.RootCollection ;

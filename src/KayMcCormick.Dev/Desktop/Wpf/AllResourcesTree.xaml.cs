@@ -24,7 +24,7 @@ namespace KayMcCormick.Lib.Wpf
         )
         {
             Debug.WriteLine ( item ) ;
-            ( element as TreeViewItem1 ).Tag = item ;
+            ( ( TreeViewItem1 ) element ).Tag = item ;
             base.PrepareContainerForItemOverride ( element , item ) ;
         }
 

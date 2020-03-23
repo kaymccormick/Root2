@@ -24,6 +24,10 @@ namespace KayMcCormick.Lib.Wpf
         private List<ResourceNodeInfo> _children = new List < ResourceNodeInfo > ();
         private Uri                    _sourceUri ;
         private object                 _key ;
+
+        public ResourceNodeInfo ( ) {
+        }
+
         [JsonIgnore]
         public object Data { get { return _data ; } set { _data = value ; } }
         [JsonIgnore]
@@ -46,6 +50,7 @@ namespace KayMcCormick.Lib.Wpf
         
         private bool? _internalIsExpanded ;
         private object _styleKey ;
+        private bool? _isValueChildren ;
 
         public bool IsExpanded
         {
@@ -61,6 +66,8 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
+
+        public bool? IsValueChildren { get { return _isValueChildren ; } set { _isValueChildren = value ; } }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

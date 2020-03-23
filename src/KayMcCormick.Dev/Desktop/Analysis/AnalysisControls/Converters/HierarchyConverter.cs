@@ -26,7 +26,7 @@ namespace AnalysisControls.Converters
             {
                 if ( targetType == typeof ( string ) )
                 {
-                    var cs = s as CSharpSyntaxNode ;
+                    var cs = ( CSharpSyntaxNode ) s ;
                     switch ( cs )
                     {
                         case FieldDeclarationSyntax fieldDeclarationSyntax :

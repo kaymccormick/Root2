@@ -27,8 +27,6 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         /// <param name="logMethod"></param>
-        /// <param name="configs"></param>
-        /// <param name="disableLogging"></param>
         protected ApplicationInstanceBase ( LogDelegates.LogMethod logMethod )
         {
             InstanceRunGuid = Guid.NewGuid ( ) ;

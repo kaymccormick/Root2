@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections ;
 using System.IO ;
 using System.Windows.Controls ;
@@ -65,7 +66,11 @@ namespace ProjInterface
                 return ( ImageSource ) IconsResources[ extension ] ;
             }
 
-            return ( ImageSource ) IconsResources[ typeof ( File ) ] ;
+            if ( IconsResources != null )
+            {
+                return ( ImageSource ) IconsResources[ typeof ( File ) ] ;
+            }
+            throw new InvalidOperationException();
         }
 
         public Image DirectoryIcon

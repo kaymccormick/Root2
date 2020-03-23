@@ -18,6 +18,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
 using Autofac.Core ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -27,7 +28,7 @@ namespace KayMcCormick.Lib.Wpf
         private readonly ILifetimeScope _lifetimeScope ;
         private readonly IObjectIdProvider _idProvider ;
 
-        private ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
+        private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         private ResourceNodeInfo                          _appNode ;
@@ -50,6 +51,7 @@ namespace KayMcCormick.Lib.Wpf
                 PopulateAppNode ( ) ;
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            // ReSharper disable once RedundantCatchClause
             catch ( Exception ex )
 #pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
@@ -57,6 +59,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void PopulateObjects ( )
         {
             var n1 = CreateNode ( null , "Objects" , null , false ) ;
@@ -83,6 +86,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void PopulateInstances (ResourceNodeInfo res, IComponentRegistration registration )
         {
             var n = CreateNode ( res , "Instances" , null , false ) ;
@@ -90,8 +94,8 @@ namespace KayMcCormick.Lib.Wpf
                 _idProvider.GetInstanceByComponentRegistration ( registration ) )
             {
                 var key = _idProvider.GetObjectInstanceIdentifier ( instanceInfo.Instance ) ;
-                var n2 = CreateNode ( n , new CompositeResourceNodeKey(key, instanceInfo.Instance), instanceInfo.Parameters , true ) ;
-
+                CreateNode ( n , new CompositeResourceNodeKey(key, instanceInfo.Instance), instanceInfo.Parameters , true );
+                
             }
         }
 
@@ -99,10 +103,11 @@ namespace KayMcCormick.Lib.Wpf
             ResourceNodeInfo parent
           , object           key
           , object           data
-          , bool             isValueChildren
+          , bool?             isValueChildren = null
         )
         {
-            var r = new ResourceNodeInfo { Key = key , Data = data } ;
+            var wrapped = WrapValue(data);
+            var r = new ResourceNodeInfo { Key = key , Data = wrapped, IsValueChildren = isValueChildren } ;
             if ( parent == null )
             {
                 AllResourcesCollection.Add ( r ) ;
@@ -132,25 +137,25 @@ namespace KayMcCormick.Lib.Wpf
                 var s = CreateNode ( n2 ,    "Services" , reg.Services , true ) ;
                 foreach ( var regService in reg.Services )
                 {
-                    var s1 = CreateNode ( s , regService.Description , regService , false ) ;
+                    CreateNode ( s , regService.Description , regService , false ) ;
                 }
 
                 // PopulateInstances ( n2 , reg ) ;
             }
         }
 
-        private bool PopulateAppNode ( )
+        private void PopulateAppNode ( )
         {
             var current = Application.Current ;
             _appNode = CreateNode ( null , "Application" , current , false ) ;
             
             if ( current == null )
             {
-                return true ;
+                return ;
             }
 
             var appResources =
-                CreateNode (  _appNode , "Resources" , current.Resources , true  ) ;
+                CreateNode ( _appNode , "Resources" , current.Resources , true ) ;
             AddResourceNodeInfos ( appResources ) ;
 
             Debug.WriteLine ( Thread.CurrentThread.ManagedThreadId ) ;
@@ -158,8 +163,6 @@ namespace KayMcCormick.Lib.Wpf
             {
                 HandleWindow ( currentWindow ) ;
             }
-
-            return false ;
         }
 
         public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
@@ -173,112 +176,106 @@ namespace KayMcCormick.Lib.Wpf
             set { _allResourcesItemList = value ; }
         }
 
-        private static void AddResourceNodeInfos ( ResourceNodeInfo resNode )
+        private  void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
         {
-            var res = ( ResourceDictionary ) resNode.Data ;
+            if ( resNode == null )
+            {
+                throw new ArgumentNullException ( nameof ( resNode ) ) ;
+            }
+
+            var resNodeData = resNode.Data ;
+            ResourceDictionary res = ( ResourceDictionary ) resNodeData ;
             resNode.SourceUri = res.Source ;
 
             foreach ( var md in res.MergedDictionaries )
             {
-                var mdr = new ResourceNodeInfo { Key = md.Source , Data = md } ;
+                var mdr = CreateNode ( resNode , md.Source , md, true ) ;
                 AddResourceNodeInfos ( mdr ) ;
-                resNode.Children.Add ( mdr ) ;
             }
 
             foreach ( DictionaryEntry haveResourcesResource in res )
             {
-                if ( haveResourcesResource.Key      != null
-                     && haveResourcesResource.Value != null )
+                if ( haveResourcesResource.Key      == null
+                     || haveResourcesResource.Value == null )
                 {
-                    ResourceNodeInfo resourceInfo ;
-                    var key = haveResourcesResource.Key ;
-                    if ( key is ResourceKey rkey )
-                    {
-                        switch ( rkey )
-                        {
-                            case ComponentResourceKey componentResourceKey : break ;
+                    continue ;
+                }
 
-                            case ItemContainerTemplateKey itemContainerTemplateKey : break ;
-                            case DataTemplateKey dataTemplateKey :                   break ;
-                            case TemplateKey templateKey :                           break ;
-                            default :
-                                key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
+                var key = haveResourcesResource.Key ;
+                if ( key is ResourceKey rkey )
+                {
+                    switch ( rkey )
+                    {
+                        // ReSharper disable once UnusedVariable
+                        case ComponentResourceKey componentResourceKey : break ;
+
+                        // ReSharper disable once UnusedVariable
+                        case ItemContainerTemplateKey 
+                            itemContainerTemplateKey : break ;
+                        // ReSharper disable once UnusedVariable
+                        case DataTemplateKey dataTemplateKey : break ;
+                        // ReSharper disable once UnusedVariable
+                        case TemplateKey templateKey : break ;
+                        default :
+                            key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
+                            break ;
+                    }
+                }
+
+                var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
+                if ( haveResourcesResource.Value is FrameworkTemplate ft )
+                {
+                    var resourcesNode = CreateNode( resourceInfo, "Resources" , ft.Resources ) ;
+                    AddResourceNodeInfos ( resourcesNode ) ;
+                }
+
+                if ( haveResourcesResource.Value is Style sty )
+                {
+                    var settersNode = CreateNode(resourceInfo, "Setters", null ) ;
+                    settersNode.IsExpanded = true ;
+                    foreach ( var setter in sty.Setters )
+                    {
+                        switch ( setter )
+                        {
+                            case EventSetter _ : break ;
+                            case Setter setter1 :
+                                CreateNode (
+                                            settersNode
+                                          , setter1.Property
+                                          , setter1.Value
+                                           ) ;
+                                        
                                 break ;
-                        }
-                    }
-
-                    resourceInfo = CreateResourceNodeInfo ( key , haveResourcesResource.Value ) ;
-                    resNode.Children.Add ( resourceInfo ) ;
-                    if ( haveResourcesResource.Value is FrameworkTemplate ft )
-                    {
-                        var resourcesNode = CreateResourceNodeInfo ( "Resources" , ft.Resources ) ;
-                        resourceInfo.Children.Add ( resourcesNode ) ;
-                        AddResourceNodeInfos ( resourcesNode ) ;
-                    }
-
-                    if ( haveResourcesResource.Value is Style sty )
-                    {
-                        var settersNode = CreateResourceNodeInfo ( "Setters" ) ;
-                        settersNode.IsExpanded = true ;
-                        foreach ( var setter in sty.Setters )
-                        {
-                            ResourceNodeInfo setterNode = null ;
-                            switch ( setter )
-                            {
-                                case EventSetter eventSetter : break ;
-                                case Setter setter1 :
-                                    setterNode =
-                                        CreateResourceNodeInfo (
-                                                                setter1.Property
-                                                              , setter1.Value
-                                                               ) ;
-                                    break ;
-                                default :
-                                    throw new ArgumentOutOfRangeException ( nameof ( setter ) ) ;
-                            }
-
-                            if ( setterNode != null )
-                            {
-                                settersNode.Children.Add ( setterNode ) ;
-                            }
+                            default :
+                                throw new InvalidOperationException() ;
                         }
 
-                        resourceInfo.Children.Add ( settersNode ) ;
+
                     }
 
-                    if ( haveResourcesResource.Value is IDictionary dict )
+                }
+
+                if ( haveResourcesResource.Value is IDictionary dict )
+                {
+                    foreach ( var key2 in dict.Keys )
                     {
-                        foreach ( var key2 in dict.Keys )
-                        {
-                            var childNode = CreateResourceNodeInfo ( key2 , dict[ key2 ] ) ;
-                            resourceInfo.Children.Add ( childNode ) ;
-                        }
+                        CreateNode(resourceInfo, key2 , dict[ key2 ] ) ;
                     }
-                    else
+                }
+                else
+                {
+                    if ( ! ( haveResourcesResource.Value is IEnumerable enumerable )
+                         || haveResourcesResource.Value.GetType ( ) == typeof ( string ) )
                     {
-                        if ( haveResourcesResource.Value is IEnumerable enumerable
-                             && haveResourcesResource.Value.GetType ( ) != typeof ( string ) )
-                        {
-                            foreach ( var child in enumerable )
-                            {
-                                var childNode = CreateResourceNodeInfo ( child , null ) ;
-                                resourceInfo.Children.Add ( childNode ) ;
-                            }
-                        }
+                        continue ;
+                    }
+
+                    foreach ( var child in enumerable )
+                    {
+                        CreateNode( resourceInfo, child , null ) ;
                     }
                 }
             }
-        }
-
-        private static ResourceNodeInfo CreateResourceNodeInfo ( object child , object data = null )
-        {
-            if ( data == null )
-            {
-                data = child ;
-            }
-
-            var wrapped = WrapValue ( data ) ;
-            return new ResourceNodeInfo { Key = child , Data = wrapped ?? data } ;
         }
 
         private static object WrapValue ( object data )
@@ -294,15 +291,13 @@ namespace KayMcCormick.Lib.Wpf
 
         private void HandleWindow ( Window w )
         {
-            var winNode = new ResourceNodeInfo
-                          {
-                              Key         = w.GetType ( )
-                            , Data        = new ControlWrap < Window > ( w )
-                            , TemplateKey = "WindowTemplate"
-                          } ;
-            _appNode.Children.Add ( winNode ) ;
-            var winRes = new ResourceNodeInfo { Key = "Resources" , Data = w.Resources } ;
-            winNode.Children.Add ( winRes ) ;
+            var winNode = CreateNode(_appNode,
+                              w.GetType ( )
+                            ,  new ControlWrap < Window > ( w ));
+            winNode.TemplateKey = "WindowTemplate" ;
+
+
+            var winRes = CreateNode ( winNode , "Resources" , w.Resources , true ) ;
             AddResourceNodeInfos ( winRes ) ;
         }
     }

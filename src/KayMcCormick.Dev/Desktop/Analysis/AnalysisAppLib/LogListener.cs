@@ -152,35 +152,40 @@ namespace AnalysisAppLib
 
                 instance = new LogEventInstance ( ) ;
                 var elem = document.DocumentElement ;
-                var logger = elem.GetAttribute (loggerAttributeName) ;
-                var level = elem.GetAttribute ( "level" ) ;
-                var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
-                var timestamp = elem.GetAttribute ( "timestamp" ) ;
-                var dt = JavaTimeStampToDateTime ( long.Parse ( timestamp ) ) ;
-                instance.LoggerName = logger ;
-                instance.Level      = levelOrdinal ;
-                instance.TimeStamp  = dt ;
-                foreach ( var elemChildNode in elem.ChildNodes )
+                if ( elem != null ) {
+                    var logger = elem.GetAttribute (loggerAttributeName) ;
+                    var level = elem.GetAttribute ( "level" ) ;
+                    var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
+                    var timestamp = elem.GetAttribute ( "timestamp" ) ;
+                    var dt = JavaTimeStampToDateTime ( long.Parse ( timestamp ) ) ;
+                    instance.LoggerName = logger ;
+                    instance.Level      = levelOrdinal ;
+                    instance.TimeStamp  = dt ;
+                }
+
+                if ( elem != null )
                 {
-                    if ( elemChildNode is XmlElement elem2 )
+                    foreach ( var elemChildNode in elem.ChildNodes )
                     {
-                        Debug.WriteLine ( elem2.Name ) ;
-                        switch ( elem2.Name )
+                        if ( elemChildNode is XmlElement elem2 )
                         {
-                            case "log4j:message" :
+                            Debug.WriteLine ( elem2.Name ) ;
+                            switch ( elem2.Name )
+                            {
+                                case "log4j:message" :
 
-                                instance.FormattedMessage = elem2.InnerText ;
-                                break ;
-                            case "log4j:locationInfo" : break ;
-                            case "nlog:eventSequenceNumber" :
-                                if ( long.TryParse ( elem2.InnerText , out var seq ) )
-                                {
-                                    instance.SequenceID = seq ;
-                                }
+                                    instance.FormattedMessage = elem2.InnerText ;
+                                    break ;
+                                case "log4j:locationInfo" : break ;
+                                case "nlog:eventSequenceNumber" :
+                                    if ( long.TryParse ( elem2.InnerText , out var seq ) )
+                                    {
+                                        instance.SequenceID = seq ;
+                                    }
 
-                                break ;
-                            case "log4j:properties" :
-                                /*
+                                    break ;
+                                case "log4j:properties" :
+                                    /*
                                  *     <log4j:data name="methodName" value="OnInitialized" />
         <log4j:data name="typeEvent" value="System.EventArgs" />
         <log4j:data name="log4japp" value="WpfClient1.exe(12712)" />
@@ -188,34 +193,35 @@ namespace AnalysisAppLib
     
                                  * */
 
-                                foreach ( var xmlElement in elem2
-                                                           .ChildNodes.OfType < XmlElement > ( )
-                                                           .Where (
-                                                                   element => element.Name
-                                                                              == "log4j:data"
-                                                                  ) )
-                                {
-                                    var name = xmlElement.GetAttribute ( "name" ) ;
-                                    var value = xmlElement.GetAttribute ( "value" ) ;
-                                    instance.Properties[ name ] = value ;
-                                }
+                                    foreach ( var xmlElement in elem2
+                                                               .ChildNodes.OfType < XmlElement > ( )
+                                                               .Where (
+                                                                       element => element.Name
+                                                                                  == "log4j:data"
+                                                                      ) )
+                                    {
+                                        var name = xmlElement.GetAttribute ( "name" ) ;
+                                        var value = xmlElement.GetAttribute ( "value" ) ;
+                                        instance.Properties[ name ] = value ;
+                                    }
 
-                                break ;
+                                    break ;
 
-                            case "nlog:properties" :
-                                foreach ( var xmlElement in elem2
-                                                           .ChildNodes.OfType < XmlElement > ( )
-                                                           .Where (
-                                                                   element => element.Name
-                                                                              == "nlog:data"
-                                                                  ) )
-                                {
-                                    var name = xmlElement.GetAttribute ( "name" ) ;
-                                    var value = xmlElement.GetAttribute ( "value" ) ;
-                                    instance.Properties[ name ] = value ;
-                                }
+                                case "nlog:properties" :
+                                    foreach ( var xmlElement in elem2
+                                                               .ChildNodes.OfType < XmlElement > ( )
+                                                               .Where (
+                                                                       element => element.Name
+                                                                                  == "nlog:data"
+                                                                      ) )
+                                    {
+                                        var name = xmlElement.GetAttribute ( "name" ) ;
+                                        var value = xmlElement.GetAttribute ( "value" ) ;
+                                        instance.Properties[ name ] = value ;
+                                    }
 
-                                break ;
+                                    break ;
+                            }
                         }
                     }
                 }

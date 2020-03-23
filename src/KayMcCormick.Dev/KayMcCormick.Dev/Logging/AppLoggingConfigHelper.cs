@@ -1024,6 +1024,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>Adds the supplied target to the current NLog configuration.</summary>
         /// <param name="target">The target.</param>
         /// <param name="minLevel"></param>
+        /// <param name="addRules"></param>
         // ReSharper disable once RedundantNameQualifier
         // ReSharper disable once UnusedMember.Global
         public static void AddTarget ( Target target , LogLevel minLevel , bool addRules = true )

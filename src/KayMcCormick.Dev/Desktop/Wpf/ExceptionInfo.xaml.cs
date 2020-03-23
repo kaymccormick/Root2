@@ -184,7 +184,7 @@ namespace KayMcCormick.Lib.Wpf
 
         private void ButtonBase_OnClick ( object sender , RoutedEventArgs e )
         {
-            Window.GetWindow ( this ).Close ( ) ;
+            Window.GetWindow ( this )?.Close ( ) ;
         }
 
         private void ExceptionInfo_OnDataContextChanged (
@@ -198,7 +198,10 @@ namespace KayMcCormick.Lib.Wpf
                 var stackTrace = x.StackTrace ;
                 if ( String.IsNullOrEmpty ( stackTrace ) )
                 {
-                    stackTrace = x.InnerException.StackTrace ;
+                    if ( x.InnerException != null )
+                    {
+                        stackTrace = x.InnerException.StackTrace ;
+                    }
                 }
 
                 Entries.AddRange ( ParseStackTrace ( stackTrace ) ) ;
