@@ -36,7 +36,7 @@ namespace KayMcCormick.Lib.Wpf
             }
             else
             {
-                Debug.WriteLine ( $"Selecting detail template for {item} {item.GetType ( )}" ) ;
+                Debug.WriteLine ( $"Selecting template for {item} {item.GetType ( )}" ) ;
             }
 
             var fe = ( FrameworkElement ) container ;
@@ -81,7 +81,7 @@ namespace KayMcCormick.Lib.Wpf
                 if ( tuple1 != null  )
                 {
                     returnVal = tuple1.Item3 ;
-                    Debug.WriteLine ( "OBtained template" ) ;
+                    Debug.WriteLine ( "Obtained template" ) ;
                     try
                     {
                         Debug.WriteLine ( XamlWriter.Save ( returnVal ) ) ;

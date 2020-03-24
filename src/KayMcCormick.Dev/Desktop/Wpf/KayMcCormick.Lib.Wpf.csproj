@@ -88,6 +88,7 @@
     <Compile Include="JSON\JsonResourceKeyWrapperConverterFactory.cs" />
     <Compile Include="JSON\JsonSolidColorBrushConverter.cs" />
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
+    <Compile Include="MethodInfoConverter.cs" />
     <Compile Include="Xaml\AppCommandConverter.cs" />
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />

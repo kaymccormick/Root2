@@ -16,5 +16,7 @@ namespace AnalysisAppLib.ViewModel
     public interface ITypesViewModel : IViewModel
     {
         AppTypeInfo Root { get ; set ; }
+
+        bool ShowBordersIsChecked { get ; set ; }
     }
 }

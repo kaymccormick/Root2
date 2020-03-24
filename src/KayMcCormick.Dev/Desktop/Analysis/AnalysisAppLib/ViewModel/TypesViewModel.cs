@@ -25,6 +25,7 @@ namespace AnalysisAppLib.ViewModel
 {
     public class TypesViewModel : ITypesViewModel
     {
+        private bool _showBordersIsChecked = false ;
         private AppTypeInfo                       root ;
         private List < Type >                     _nodeTypes ;
         private Dictionary < Type , AppTypeInfo > map = new Dictionary < Type , AppTypeInfo > ( ) ;
@@ -107,6 +108,12 @@ namespace AnalysisAppLib.ViewModel
         }
 
         public AppTypeInfo Root { get { return root ; } set { root = value ; } }
+
+        public bool ShowBordersIsChecked
+        {
+            get { return _showBordersIsChecked ; }
+            set { _showBordersIsChecked = value ; }
+        }
 
         private AppTypeInfo CollectTypeInfos ( Type rootR )
         {
