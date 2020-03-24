@@ -64,7 +64,7 @@
         <ItemsControl Margin="0,0,0,0"  ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-            <WrapPanel Orientation="Horizontal"/>
+            <StackPanel Orientation="Vertical"/>
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
@@ -104,12 +104,22 @@
     </Grid.ColumnDefinitions>
     <TreeView x:Name="tv"
               ItemsSource="{Binding Root.SubTypeInfos}" />
-    <StackPanel Grid.Column="1" Grid.Row="0"
+    <ScrollViewer Grid.Column="1" Grid.Row="0">
+    <StackPanel 
                 Orientation="Vertical">
       <StackPanel.Resources>
         <DataTemplate
           DataType="{x:Type syntax1:ComponentInfo}">
           <TextBlock>
+            <TextBlock.Style>
+              <Style TargetType="TextBlock">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelfOwned}" Value="false">
+                      <Setter Property="Background" Value="Aqua"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
             <Run Text="{Binding Path=PropertyName}" />
             <Run Text=": " />
             <Run Text="{Binding Path=TypeInfo.Title}" />
@@ -122,7 +132,8 @@
       <ItemsControl Margin="25" x:Name="factoryMethods"
         ItemsSource="{Binding ElementName=tv,Path=SelectedItem.FactoryMethods}" ItemTemplateSelector="{StaticResource CustomDataTemplateSelector}" />
       <ListBox Margin="25"
-        ItemsSource="{Binding ElementName=tv,Path=SelectedItem.Components}" />
+        ItemsSource="{Binding ElementName=tv,Path=SelectedItem.AllComponents}" />
     </StackPanel>
+    </ScrollViewer>
   </Grid>
 </UserControl>

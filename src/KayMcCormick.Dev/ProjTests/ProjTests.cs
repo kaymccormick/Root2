@@ -89,6 +89,7 @@ namespace ProjTests
         [ UsedImplicitly ] private readonly ProjectFixture    _projectFixture ;
         private readonly                    AppFixture        _appFixture ;
         private                             ILifetimeScope    _testScope ;
+        private JsonSerializerOptions _testJsonSerializerOptions ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
@@ -339,30 +340,27 @@ namespace ProjTests
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
-            using ( var app = CreateProjInterfaceApp ( ) )
+            using ( var instance = new ApplicationInstance ( _output.WriteLine ) )
             {
-                app.TestCallback = ( app2 , lifetimeScope ) => {
-                    var model = new AllResourcesTreeViewModel (
-                                                               lifetimeScope
-                                                             , lifetimeScope
-                                                                  .Resolve < IObjectIdProvider > ( )
-                                                              ) ;
-                    var tree = new AllResourcesTree ( model ) ;
+                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.Initialize ( ) ;
+                var lifetimescope = instance.GetLifetimeScope ( ) ;
 
-                    if ( app != null )
-                    {
-                        DumpTree ( app , tree , model.AllResourcesCollection ) ;
-                    }
+                var model = new AllResourcesTreeViewModel (
+                                                           lifetimescope
+                                                         , lifetimescope
+                                                              .Resolve < IObjectIdProvider > ( )
+                                                          ) ;
+                var tree = new AllResourcesTree ( model ) ;
 
-                    return true ;
-                } ;
-                app.Run ( ) ;
+                DumpTree ( tree , model.AllResourcesCollection ) ;
+
             }
+        
         }
 
         private void DumpTree (
-            ProjInterfaceApp                             app
-          , AllResourcesTree                             tree
+            AllResourcesTree                             tree
           , [ NotNull ] IEnumerable < ResourceNodeInfo > modelAllResourcesCollection
           , int                                          depth = 0
         )
@@ -373,13 +371,13 @@ namespace ProjTests
                 {
                     var json1 = JsonSerializer.Serialize (
                                                           resourceNodeInfo.Key
-                                                        , app.AppJsonSerializerOptions
+                                                        , TestJsonSerializerOptions
                                                          ) ;
 
                     Logger.Debug ( json1 ) ;
                     var json2 = JsonSerializer.Serialize (
                                                           resourceNodeInfo.Data
-                                                        , app.AppJsonSerializerOptions
+                                                        , TestJsonSerializerOptions
                                                          ) ;
                     Logger.Debug ( json2 ) ;
                 }
@@ -402,9 +400,11 @@ namespace ProjTests
                            , resourceNodeInfo.Key
                            , resourceNodeInfo.Data
                             ) ;
-                DumpTree ( app , tree , resourceNodeInfo.Children , depth + 1 ) ;
+                DumpTree ( tree , resourceNodeInfo.Children , depth + 1 ) ;
             }
         }
+
+        public JsonSerializerOptions TestJsonSerializerOptions { get { return _testJsonSerializerOptions ; } set { _testJsonSerializerOptions = value ; } }
 
         [ Fact ]
         public void TestModule1 ( )

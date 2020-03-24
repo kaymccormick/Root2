@@ -29,6 +29,7 @@ namespace AnalysisAppLib.ViewModel
         private AppTypeInfo                       root ;
         private List < Type >                     _nodeTypes ;
         private Dictionary < Type , AppTypeInfo > map = new Dictionary < Type , AppTypeInfo > ( ) ;
+        private Dictionary <Type, AppTypeInfo> otherTyps = new Dictionary < Type , AppTypeInfo > ();
 #if false
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
@@ -41,7 +42,7 @@ namespace AnalysisAppLib.ViewModel
             _nodeTypes = rootR.Assembly.GetExportedTypes ( )
                               .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
                               .ToList ( ) ;
-            Root = CollectTypeInfos ( rootR ) ;
+            Root = CollectTypeInfos ( null , rootR ) ;
             var methodInfos = typeof ( SyntaxFactory )
                              .GetMethods ( BindingFlags.Static | BindingFlags.Public )
                              .ToList ( ) ;
@@ -56,53 +57,67 @@ namespace AnalysisAppLib.ViewModel
                 Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
-            foreach ( var pair in map.Where ( pair => pair.Key.IsAbstract == false ) )
+            foreach ( var pair in map )
             {
-                foreach ( var propertyInfo in pair.Key.GetProperties (
-                                                                      BindingFlags.DeclaredOnly
-                                                                      | BindingFlags.Instance
-                                                                      | BindingFlags.Public
-                                                                     ) )
+                //}.Where ( pair => pair.Key.IsAbstract == false ) )
                 {
-                    var t = propertyInfo.PropertyType ;
-                    if ( t == typeof ( SyntaxToken ) )
+                    foreach ( var propertyInfo in pair.Key.GetProperties (
+                                                                          BindingFlags.DeclaredOnly
+                                                                          | BindingFlags.Instance
+                                                                          | BindingFlags.Public
+                                                                         ) )
                     {
-                        continue ;
-                    }
+                        if ( propertyInfo.DeclaringType != pair.Key ) continue ;
+                        var t = propertyInfo.PropertyType ;
+                        // if ( t == typeof ( SyntaxToken ) )
+                        // {
+                            // continue ;
+                        // }
 
-                    var isList = false ;
-                    AppTypeInfo typeInfo = null ;
-                    if ( t.IsGenericType )
-                    {
-                        var targ = t.GenericTypeArguments[ 0 ] ;
-                        if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
-                             && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
+                        var isList = false ;
+                        AppTypeInfo typeInfo = null ;
+                        AppTypeInfo otherTypeInfo = null ;
+                        if ( t.IsGenericType )
                         {
-                            Debug.WriteLine(
-                                         $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}");
-                            isList   = true ;
-                            typeInfo = map[ targ ] ;
+                            var targ = t.GenericTypeArguments[ 0 ] ;
+                            if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
+                                 && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
+                            {
+                                Debug.WriteLine (
+                                                 $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
+                                                ) ;
+                                isList   = true ;
+                                typeInfo = map[ targ ] ;
+                            }
                         }
-                    }
-                    else
-                    {
-                        map.TryGetValue ( t , out typeInfo ) ;
-                    }
+                        else
+                        {
+                            if ( ! map.TryGetValue ( t , out typeInfo ) )
+                            {
+                                if ( ! otherTyps.TryGetValue ( t , out otherTypeInfo ) )
+                                {
+                                    otherTypeInfo = otherTyps[ t ] = new AppTypeInfo ( ) { Type = t } ;
+                                }
+                            }
+                        }
 
-                    if ( typeInfo == null )
-                    {
-                        continue ;
-                    }
+                        if ( typeInfo == null && otherTypeInfo == null)
+                        {
+                            continue ;
+                        }
 
-                    pair.Value.Components.Add (
-                                               new ComponentInfo ( )
-                                               {
-                                                   IsList       = isList
-                                                 , TypeInfo     = typeInfo
-                                                 , PropertyName = propertyInfo.Name
-                                               }
-                                              ) ;
-                    Logger.Info ( t.ToString ( ) ) ;
+                        pair.Value.Components.Add (
+                                                   new ComponentInfo ( )
+                                                   {
+                                                       IsSelfOwned    = true
+                                                     , OwningTypeInfo = pair.Value
+                                                     , IsList         = isList
+                                                     , TypeInfo       = typeInfo ?? otherTypeInfo
+                                                     , PropertyName   = propertyInfo.Name
+                                                   }
+                                                  ) ;
+                        Logger.Info ( t.ToString ( ) ) ;
+                    }
                 }
             }
         }
@@ -115,12 +130,12 @@ namespace AnalysisAppLib.ViewModel
             set { _showBordersIsChecked = value ; }
         }
 
-        private AppTypeInfo CollectTypeInfos ( Type rootR )
+        private AppTypeInfo CollectTypeInfos ( AppTypeInfo parentTypeInfo, Type rootR )
         {
-            var r = new AppTypeInfo ( ) { Type = rootR } ;
+            var r = new AppTypeInfo ( ) { Type = rootR , ParentInfo = parentTypeInfo } ;
             foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
             {
-                r.SubTypeInfos.Add ( CollectTypeInfos ( type1 ) ) ;
+                r.SubTypeInfos.Add ( CollectTypeInfos ( r, type1 ) ) ;
             }
 
             map[ rootR ] = r ;

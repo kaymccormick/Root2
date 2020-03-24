@@ -10,8 +10,10 @@
 // ---
 #endregion
 using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
+using System.Linq ;
 using System.Reflection ;
 using System.Text.RegularExpressions ;
 
@@ -27,6 +29,10 @@ namespace AnalysisAppLib.Syntax
         private string                 _title ;
         private List < MethodInfo >    _factoryMethods = new List < MethodInfo > ( ) ;
         private List < ComponentInfo > _components     = new List < ComponentInfo > ( ) ;
+        private AppTypeInfo _parentInfo ;
+
+        public AppTypeInfo ( ) {
+        }
 
         public Type Type
         {
@@ -55,5 +61,46 @@ namespace AnalysisAppLib.Syntax
             get => _components ;
             set => _components = value ;
         }
+
+        public IEnumerable < ComponentInfo > AllComponents
+        {
+            get
+            {
+                var type = ParentInfo ;
+                IEnumerable < ComponentInfo > allComponentInfos =
+                    Components?.ToList() ?? Enumerable.Empty < ComponentInfo > ( ) ;
+                while ( type != null )
+                {
+                    allComponentInfos = allComponentInfos.Concat (
+                                              type.Components.Select (
+                                                                                 info
+                                                                                     => new
+                                                                                        ComponentInfo
+                                                                                        {
+                                                                                            OwningTypeInfo
+                                                                                                = info
+                                                                                                   .OwningTypeInfo
+                                                                                          , IsList =
+                                                                                                info
+                                                                                                   .IsList
+                                                                                          , IsSelfOwned
+                                                                                                = false
+                                                                                          , PropertyName
+                                                                                                = info
+                                                                                                   .PropertyName
+                                                                                          , TypeInfo
+                                                                                                = info
+                                                                                                   .TypeInfo
+                                                                                        }
+                                                                                )
+                                             ) ;
+                    type = type.ParentInfo ;
+                }
+
+                return allComponentInfos ;
+            }
+        }
+
+        public AppTypeInfo ParentInfo { get { return _parentInfo ; } set { _parentInfo = value ; } }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System ;
 using System.CodeDom ;
+using System.Collections ;
 using System.Diagnostics ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Markup ;
+using System.Windows.Media ;
 using System.Windows.Navigation ;
 using JetBrains.Annotations ;
 using Microsoft.CSharp ;
@@ -13,7 +15,7 @@ using NLog ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>Control for displaying runtime type information.</summary>
-    public partial class TypeControl : UserControl
+    public sealed partial class TypeControl : UserControl
     {
         private const string NavCancelledMessage = @"nav cancelled";
 
@@ -216,6 +218,10 @@ namespace KayMcCormick.Lib.Wpf
 
 
             var hyperLink = new Hyperlink ( new Run ( myType.Name ) ) ;
+            if ( typeof ( IEnumerator ).IsAssignableFrom ( myType ) )
+            {
+                hyperLink.Foreground = new SolidColorBrush { Color = Colors.DarkOrange } ;
+            }
             Uri.TryCreate (
                            "obj:///" + Uri.EscapeUriString ( myType.AssemblyQualifiedName ?? throw new InvalidOperationException ( ) )
                          , UriKind.Absolute
