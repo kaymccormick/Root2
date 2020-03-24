@@ -19,7 +19,7 @@ namespace AnalysisControls.Views
     [ TitleMetadata ( "Syntax panel" ) ]
     public sealed partial class SyntaxPanel : UserControl
       , IView < ISyntaxPanelViewModel >
-      , IView1
+      , IViewWithTitle
       , IControlView
     {
         private ISyntaxPanelViewModel _viewModel ;

@@ -69,12 +69,12 @@ namespace ProjInterface
                              typeof ( AllResourcesTree )
                            , typeof ( UserControl )
                            , "AsSelf"
-                           , typeof ( IView1 )
+                           , typeof ( IViewWithTitle )
                             ) ;
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
-                   .As < IView1 > ( )
+                   .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
             ;
             LogRegistration ( typeof ( AllResourcesTreeViewModel ) , "AsSelf" ) ;
@@ -83,11 +83,10 @@ namespace ProjInterface
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
             //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
 
-
-            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IView1 > ( ) ;
+            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
             builder.RegisterType < LogViewerControl > ( )
                    .AsSelf ( )
-                   .As < IView1 > ( )
+                   .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
             builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly ( ) )
                    .Where (
@@ -126,21 +125,18 @@ namespace ProjInterface
                                                                                 return (
                                                                                     LayoutDocumentPane
                                                                                         pane
-                                                                                ) => {
-                                                                                    return
-                                                                                        ( IDisplayableAppCommand
-                                                                                        ) new
-                                                                                            LambdaAppCommand (
-                                                                                                              title
-                                                                                                            , CommandFunc
-                                                                                                            , Tuple
-                                                                                                                 .Create (
-                                                                                                                          metaFunc
-                                                                                                                             .Value
-                                                                                                                        , pane
-                                                                                                                         )
-                                                                                                             ) ;
-                                                                                } ;
+                                                                                ) => ( IDisplayableAppCommand
+                                                                                    ) new
+                                                                                        LambdaAppCommand (
+                                                                                                          title
+                                                                                                        , CommandFunc
+                                                                                                        , Tuple
+                                                                                                             .Create (
+                                                                                                                      metaFunc
+                                                                                                                         .Value
+                                                                                                                    , pane
+                                                                                                                     )
+                                                                                                         ) ;
                                                                             }
                                                                            )
                .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
@@ -155,7 +151,7 @@ namespace ProjInterface
                                   return new LogViewerControl ( new LogViewerConfig ( 0 ) ) ;
                               }
                              )
-                   .As < IView1 > ( )
+                   .As < IViewWithTitle > ( )
                    .As < LogViewerControl > ( ) ;
         }
 
@@ -166,15 +162,14 @@ namespace ProjInterface
                 command.Argument ;
 
             var view = viewFunc1 ( pane1 ) ;
-            Debug.WriteLine ( view.ViewTitle ) ;
-            var doc = new LayoutDocument { Content = view , Title = view.ViewTitle } ;
+            var doc = new LayoutDocument { Content = view } ;
             pane1.Children.Add ( doc ) ;
             pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
             return AppCommandResult.Success ;
         }
 
         private static LambdaAppCommand LambdaAppCommandAdapter (
-            Meta < Lazy < IView1 > > view
+            Meta < Lazy < IViewWithTitle > > view
           , object                   obj = null
         )
         {

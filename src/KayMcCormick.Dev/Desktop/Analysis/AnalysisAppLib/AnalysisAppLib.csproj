@@ -106,6 +106,7 @@
     <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="ViewModel\IApplicationViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxPanelViewModel.cs" />
+    <Compile Include="ViewModel\ISyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\ITypesViewModel.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />

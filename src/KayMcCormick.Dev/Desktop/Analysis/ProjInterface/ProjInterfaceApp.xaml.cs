@@ -159,7 +159,6 @@ private Type[] _optionTypes ;
 
             var lifetimeScope = Scope ;
 #if ANALYSISCONTROLS
-            var appViewModel = lifetimeScope.Resolve < IApplicationViewModel > ( ) ;
 #endif
 #if false
             foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )

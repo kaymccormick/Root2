@@ -118,7 +118,7 @@
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
-    <Compile Include="IView1.cs" />
+    <Compile Include="IViewWithTitle.cs" />
     <Compile Include="LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />

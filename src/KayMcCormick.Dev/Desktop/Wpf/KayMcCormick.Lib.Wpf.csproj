@@ -79,6 +79,7 @@
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppCommand.cs" />
+    <Compile Include="ContentControlView.cs" />
     <Compile Include="JSON\JsonBrushConverter.cs" />
     <Compile Include="JSON\JsonConverterImage.cs" />
     <Compile Include="JSON\JsonConverterResourceDictionary.cs" />
@@ -106,7 +107,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HandleExceptionImpl.cs" />
     <Compile Include="IHandleException.cs" />
-    <Compile Include="IView1.cs" />
+    <Compile Include="IControlView.cs" />
     <Compile Include="IWrap1.cs" />
     <Compile Include="JsonConverter.cs" />
     <Compile Include="KeyConverter.cs" />

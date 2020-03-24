@@ -70,9 +70,6 @@ namespace ConsoleApp1
             builder.RegisterInstance ( actionBlock )
                    .As < ActionBlock < ILogInvocation > > ( )
                    .SingleInstance ( ) ;
-            // Pipeline pipeline = new Pipeline();
-            // pipeline.BuildPipeline ( ).LinkTo ( actionBlock ) ;
-            // builder.RegisterInstance ( pipeline ).As < Pipeline > ( ).SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
         }
         #endregion
@@ -286,7 +283,9 @@ namespace ConsoleApp1
                 Console.WriteLine ( projectNode.SolutionPath ) ;
                 Console.ReadLine ( ) ;
 
-                await context.AnalyzeCommand.AnalyzeCommandAsync( projectNode ) ;
+
+                ITargetBlock <RejectedItem> rejectTarget = new ActionBlock < RejectedItem > (item => Console.WriteLine($"Reject: {item.Statement}"));
+                await context.AnalyzeCommand.AnalyzeCommandAsync ( projectNode , rejectTarget ) ; 
                 // using ( var s = File.OpenWrite ( "invocs.json" ) )
                 // {
                     // await JsonSerializer.SerializeAsync ( s , logInvocations ) ;

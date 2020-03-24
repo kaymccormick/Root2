@@ -444,7 +444,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     [ TitleMetadataAttribute ( "Resources Explorer" ) ]
     public partial class AllResourcesTree : UserControl
-      , IView1
+      , IViewWithTitle
       , IView < AllResourcesTreeViewModel >,
         IControlView
     {

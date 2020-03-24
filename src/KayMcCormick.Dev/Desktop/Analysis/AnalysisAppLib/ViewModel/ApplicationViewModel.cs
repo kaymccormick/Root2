@@ -19,27 +19,23 @@ using NLog ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    public sealed class ApplicationViewModel : IApplicationViewModel
+    public sealed class SyntaxTokenViewModel : ISyntaxTokenViewModel
     {
         public ObservableCollection < SyntaxItem > SyntaxItems { get ; } =
             new ObservableCollection < SyntaxItem > ( ) ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public ApplicationViewModel ( )
+        public SyntaxTokenViewModel( )
         {
             foreach ( SyntaxKind value in Enum.GetValues ( typeof ( SyntaxKind ) ) )
             {
-                //Logger.Info ( "{value} {type}" , value , value.GetType ( ).FullName ) ;
                 SyntaxToken ? token = null ;
                 if ( SyntaxFacts.IsAnyToken ( value ) )
                 {
                     try
                     {
-                        // if ( Enum.GetName ( typeof ( SyntaxKind ) , value ).EndsWith ( "Token" ) )
-                        // {
                         token = SyntaxFactory.Token ( value ) ;
-                        // }
                     }
                     catch ( Exception ex )
                     {
@@ -47,7 +43,7 @@ namespace AnalysisAppLib.ViewModel
                     }
                 }
 
-                SyntaxItems.Add ( new SyntaxItem ( ) { SyntaxKind = value , Token = token } ) ;
+                SyntaxItems.Add ( new SyntaxItem ( ) { SyntaxKind = value , Token = token , RawKind = (ushort)value} ) ;
             }
         }
 

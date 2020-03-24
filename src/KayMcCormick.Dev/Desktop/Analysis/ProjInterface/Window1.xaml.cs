@@ -17,7 +17,7 @@ using NLog ;
 namespace ProjInterface
 {
     [ TitleMetadata ( "Docking window" ) ]
-    public sealed partial class Window1 : AppWindow , IView1 , IView < DockWindowViewModel >
+    public sealed partial class Window1 : AppWindow , IViewWithTitle , IView < DockWindowViewModel >
     {
         private readonly string              _viewTitle = "Docking window" ;
         private DockWindowViewModel _viewModel ;
@@ -111,7 +111,7 @@ namespace ProjInterface
             }
 
             Logger.Warn ( nameof ( CommandBinding_OnExecuted ) ) ;
-            if ( e.Parameter is Meta < Lazy < IView1 > > meta )
+            if ( e.Parameter is Meta < Lazy < IViewWithTitle > > meta )
             {
                 try
                 {

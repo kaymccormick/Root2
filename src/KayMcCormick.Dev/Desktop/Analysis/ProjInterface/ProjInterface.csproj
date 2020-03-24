@@ -112,6 +112,10 @@
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
+    <Compile Include="PythonControl.xaml.cs">
+      <DependentUpon>PythonControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RegSource.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="ShellExplorerItem.cs" />
     <Compile Include="ShellExplorerItemProvider.cs" />
@@ -160,6 +164,10 @@
       <DependentUpon>ProjInterfaceApp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PythonControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VsInstancePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

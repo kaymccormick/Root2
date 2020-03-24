@@ -38,7 +38,7 @@ namespace AnalysisAppLib.ViewModel
 
         private readonly IEnumerable < IExplorerItemProvider > _providers ;
         
-        private readonly IEnumerable < Meta < Lazy < IView1 > > > _views ;
+        private readonly IEnumerable < Meta < Lazy < IViewWithTitle > > > _views ;
         private          IAccount                                 _account ;
 
         private string _defaultInputPath =
@@ -52,7 +52,7 @@ namespace AnalysisAppLib.ViewModel
             new ObservableCollection < AppExplorerItem > ( ) ;
 
         public DockWindowViewModel (
-            IEnumerable < Meta < Lazy < IView1 > > > views
+            IEnumerable < Meta < Lazy < IViewWithTitle > > > views
           , IEnumerable < IExplorerItemProvider >    providers
         )
         {
@@ -75,7 +75,7 @@ namespace AnalysisAppLib.ViewModel
         }
 
 
-        public IEnumerable < Meta < Lazy < IView1 > > > Views { get { return _views ; } }
+        public IEnumerable < Meta < Lazy < IViewWithTitle > > > Views { get { return _views ; } }
 
         public ObservableCollection < AppExplorerItem > RootCollection
         {

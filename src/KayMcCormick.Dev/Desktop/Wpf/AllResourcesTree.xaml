@@ -16,17 +16,18 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="AppResources.xaml" />
+          Source="SharedResources.xaml" />
         <ResourceDictionary
           Source="ResourcesTemplates.xaml" />
         <ResourceDictionary Source="ResourcesMisc.xaml" />
         <ResourceDictionary>
           <Style TargetType="TextBlock">
-            <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+            <Setter Property="TextWrapping"
+                    Value="WrapWithOverflow" />
           </Style>
 
 
-<Style x:Key="DetailHeader"
+          <Style x:Key="DetailHeader"
                  TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="TextDecorations"
@@ -106,13 +107,20 @@
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </WrapPanel>
           </HierarchicalDataTemplate>
-          <HierarchicalDataTemplate DataType="{x:Type core:IComponentRegistration}" ItemsSource="{Binding Children}">
-            <TextBlock Text="{Binding Path=Data.Services[0].Description}"></TextBlock>
+          <HierarchicalDataTemplate
+            DataType="{x:Type core:IComponentRegistration}"
+            ItemsSource="{Binding Children}">
+            <TextBlock
+              Text="{Binding Path=Data.Services[0].Description}" />
           </HierarchicalDataTemplate>
-          <HierarchicalDataTemplate DataType="{x:Type core:TypedService}" ItemsSource="{Binding Children}">
+          <HierarchicalDataTemplate
+            DataType="{x:Type core:TypedService}"
+            ItemsSource="{Binding Children}">
             <wpf:TypeControl>
               <wpf:AttachedProperties.RenderedType>
-                <Binding Path="Data.ServiceType"/></wpf:AttachedProperties.RenderedType></wpf:TypeControl>
+                <Binding Path="Data.ServiceType" />
+              </wpf:AttachedProperties.RenderedType>
+            </wpf:TypeControl>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
             DataType="{x:Type Style}"
@@ -175,7 +183,8 @@
       <RowDefinition Height="*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <ComboBox ItemsSource="{Binding AllResourcesItemList}" IsEditable="True" IsTextSearchEnabled="True" />
+    <ComboBox ItemsSource="{Binding AllResourcesItemList}"
+              IsEditable="True" IsTextSearchEnabled="True" />
     <Border Padding="0" BorderBrush="LightBlue"
             BorderThickness="3" CornerRadius="2"
             Grid.Row="1" Grid.Column="0"
@@ -236,9 +245,12 @@
         <wpf:TypeControl
           Grid.Row="5"
           Grid.Column="0"
-          Style="{StaticResource DetailValue}"
-          ><wpf:AttachedProperties.RenderedType><Binding Path="Data" Converter="{StaticResource GetTypeConverter}"/>
-        </wpf:AttachedProperties.RenderedType></wpf:TypeControl>
+          Style="{StaticResource DetailValue}">
+          <wpf:AttachedProperties.RenderedType>
+            <Binding Path="Data"
+                     Converter="{StaticResource GetTypeConverter}" />
+          </wpf:AttachedProperties.RenderedType>
+        </wpf:TypeControl>
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value"
                    Grid.Row="6" Grid.Column="0" />

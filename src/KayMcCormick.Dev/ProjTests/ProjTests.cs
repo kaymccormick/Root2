@@ -28,7 +28,9 @@ using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using AnalysisAppLib ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
+using AnalysisControls.Views ;
 using Autofac ;
 using AvalonDock ;
 using AvalonDock.Layout ;
@@ -113,6 +115,15 @@ namespace ProjTests
             }
         }
 
+
+        [ WpfFact ]
+        public void TEstTypesview ( )
+        {
+            ITypesViewModel viewModel = new TypesViewModel ( ) ;
+            TypesView typesView = new TypesView(viewModel);
+            Window w = new Window { Content = typesView } ;
+            w.ShowDialog ( ) ;
+        }
         [ WpfFact ]
         public void TestJsonSerialization ( )
         {

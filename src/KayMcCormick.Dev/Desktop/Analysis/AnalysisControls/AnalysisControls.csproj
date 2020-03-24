@@ -106,8 +106,8 @@
     <Compile Include="SpanToolTip.cs" />
     <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SymbolControl.cs" />
-    <Compile Include="Views\TestView1.xaml.cs">
-      <DependentUpon>TestView1.xaml</DependentUpon>
+    <Compile Include="Views\TestViewWithTitle.xaml.cs">
+      <DependentUpon>TestViewWithTitle.xaml</DependentUpon>
     </Compile>
     <Compile Include="Token.cs" />
     <Compile Include="ToolTips.cs" />
@@ -166,7 +166,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TestView1.xaml">
+    <Page Include="Views\TestViewWithTitle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -266,6 +266,9 @@
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="Vanara.PInvoke.Gdi32">
+      <Version>3.2.1</Version>
     </PackageReference>
     <PackageReference Include="WpfAnalyzers">
       <Version>2.4.5</Version>

@@ -39,6 +39,7 @@ namespace AnalysisAppLib
             new DataflowLinkOptions { PropagateCompletion = true } ;
 
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
+        private BufferBlock < RejectedItem >                           _rejectBlock ;
 
         public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
 
@@ -71,8 +72,15 @@ namespace AnalysisAppLib
             var toDocuments = Register ( Workspaces.SolutionDocumentsBlock ( ) ) ;
 
 
+            RejectBlock = new BufferBlock < RejectedItem > ( ) ;
+
             initWorkspace.LinkTo ( toDocuments , LinkOptions ) ;
-            var findLogUsages = Register ( DataflowBlocks.FindLogUsages1 ( _invocationFactory ) ) ;
+            var findLogUsages = Register (
+                                          DataflowBlocks.FindLogUsages1 (
+                                                                         _invocationFactory
+                                                                       , RejectBlock
+                                                                        )
+                                         ) ;
             toDocuments.LinkTo ( findLogUsages , LinkOptions ) ;
             findLogUsages.LinkTo ( Register ( ResultBufferBlock ) , LinkOptions ) ;
 
@@ -123,6 +131,12 @@ namespace AnalysisAppLib
         }
 
         public ITargetBlock < AnalysisRequest > Head { get ; set ; }
+
+        public BufferBlock < RejectedItem > RejectBlock
+        {
+            get { return _rejectBlock ; }
+            set { _rejectBlock = value ; }
+        }
 
         private static class Workspaces
         {
@@ -211,14 +225,20 @@ namespace AnalysisAppLib
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
             public static TransformManyBlock < Document , ILogInvocation > FindLogUsages1 (
-                Func < ILogInvocation > invocationFactory
+                Func < ILogInvocation >      invocationFactory
+              , BufferBlock < RejectedItem > rejectBlock
             )
             {
                 Logger.Trace ( "Constructing FindUsagesBlock" ) ;
                 var flu = new FindLogUsages ( invocationFactory ) ;
                 var findLogUsagesBlock =
                     new TransformManyBlock < Document , ILogInvocation > (
-                                                                          flu.FindUsagesFunc
+                                                                          ( document )
+                                                                              => flu
+                                                                                 .FindUsagesFunc (
+                                                                                                  document
+                                                                                                , rejectBlock
+                                                                                                 )
                                                                         , new
                                                                           ExecutionDataflowBlockOptions
                                                                           {
@@ -266,7 +286,10 @@ namespace AnalysisAppLib
                 }
 
 
-                public async Task < IEnumerable < ILogInvocation > > FindUsagesFunc ( Document d )
+                public async Task < IEnumerable < ILogInvocation > > FindUsagesFunc (
+                    Document                     d
+                  , BufferBlock < RejectedItem > rejectBlock
+                )
                 {
                     using ( MappedDiagnosticsLogicalContext.SetScoped ( "Document" , d.FilePath ) )
                     {
@@ -306,37 +329,55 @@ namespace AnalysisAppLib
 
                                 var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
                                 var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
-                                return
-                                    from node in root.DescendantNodes ( ) //.AsParallel ( )
-                                    let t_ = t
-                                    let t2_ = t2
-                                    let builderSymbol = logBuilderSymbol
-                                    let tree_ = tree
-                                    let model_ = model
-                                    let exType = exceptionType
-                                    where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression
-                                          || node.RawKind
-                                          == ( ushort ) SyntaxKind.ObjectCreationExpression
-                                    let @out =
-                                        LogUsages.CheckInvocationExpression (
-                                                                             node
-                                                                           , model_
-                                                                           , builderSymbol
-                                                                           , t_
-                                                                           , t2_
-                                                                            )
-                                    where @out.Item1
-                                    let statement =
-                                        node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                                    select new InvocationParams (
-                                                                 tree_
-                                                               , model_
-                                                               , statement
-                                                               , @out
-                                                               , exType
-                                                                ).ProcessInvocation (
-                                                                                     _invocationFactory
-                                                                                    ) ;
+                                return (
+                                           from node in root.DescendantNodes ( ) //.AsParallel ( )
+                                           let t_ = t
+                                           let t2_ = t2
+                                           let builderSymbol = logBuilderSymbol
+                                           let tree_ = tree
+                                           let model_ = model
+                                           let exType = exceptionType
+                                           where
+                                               node.RawKind
+                                               == ( ushort ) SyntaxKind.InvocationExpression
+                                               || node.RawKind
+                                               == ( ushort ) SyntaxKind.ObjectCreationExpression
+                                           let @out =
+                                               LogUsages.CheckInvocationExpression (
+                                                                                    node
+                                                                                  , model_
+                                                                                  , builderSymbol
+                                                                                  , t_
+                                                                                  , t2_
+                                                                                   )
+                                           where @out.Item1
+                                           let statement =
+                                               node.AncestorsAndSelf ( )
+                                                   .Where ( Predicate )
+                                                   .First ( )
+                                           let result =
+                                               new InvocationParams (
+                                                                     tree_
+                                                                   , model_
+                                                                   , statement
+                                                                   , @out
+                                                                   , exType
+                                                                    ).ProcessInvocation (
+                                                                                         _invocationFactory
+                                                                                        )
+                                           select result is ILogInvocation inv
+                                                      ? inv
+                                                      : ( object ) rejectBlock.Post (
+                                                                                     result is
+                                                                                         RejectedItem
+                                                                                         rj
+                                                                                         ? rj
+                                                                                         : new
+                                                                                             RejectedItem (
+                                                                                                           statement
+                                                                                                          )
+                                                                                    ) ).OfType <
+                                    ILogInvocation > ( ) ;
                             }
                         }
                         catch ( Exception ex )
@@ -572,7 +613,7 @@ namespace AnalysisAppLib
 
                 private INamedTypeSymbol NamedTypeSymbol { get ; }
 
-                internal ILogInvocation ProcessInvocation (
+                internal object ProcessInvocation (
                     Func < ILogInvocation > invocationFactory
                 )
                 {
@@ -588,194 +629,198 @@ namespace AnalysisAppLib
                                                    ) ;
                     }
 
-                    if ( MethodSymbol != null )
+                    if ( MethodSymbol == null )
                     {
-                        var msgParam = MethodSymbol
-                                      .Parameters.Select ( ( symbol , i ) => new { symbol , i } )
-                                      .Where ( arg1 => arg1.symbol.Name == "message" ) ;
-#if TRACE
-                        if ( ! msgParam.Any ( ) )
-                        {
-                            Logger.Trace (
-                                          "{params}"
-                                        , string.Join (
-                                                       ", "
-                                                     , MethodSymbol.Parameters.Select (
-                                                                                       symbol
-                                                                                           => symbol
-                                                                                              .Name
-                                                                                      )
-                                                      )
-                                         ) ;
-                        }
-#endif
+                        return null ;
+                    }
 
-                        var msgI = msgParam.Any ( ) ? ( int ? ) msgParam.First ( ).i : null ;
-                        var methodSymbol = MethodSymbol ;
+                    var msgParam = MethodSymbol
+                                  .Parameters.Select ( ( symbol , i ) => new { symbol , i } )
+                                  .Where ( arg1 => arg1.symbol.Name == "message" ) ;
 #if TRACE
+                    if ( ! msgParam.Any ( ) )
+                    {
                         Logger.Trace (
-                                      "params = {params}"
+                                      "{params}"
                                     , string.Join (
                                                    ", "
-                                                 , methodSymbol.Parameters.Select (
+                                                 , MethodSymbol.Parameters.Select (
                                                                                    symbol => symbol
                                                                                       .Name
                                                                                   )
                                                   )
                                      ) ;
+                    }
 #endif
-                        var invocation = InvocationExpression ;
-                        IEnumerable < ArgumentSyntax > rest ;
-                        var semanticModel = Model ;
-                        if ( msgI != null )
+
+                    var msgI = msgParam.Any ( ) ? ( int ? ) msgParam.First ( ).i : null ;
+                    var methodSymbol = MethodSymbol ;
+#if TRACE
+                    Logger.Trace (
+                                  "params = {params}"
+                                , string.Join (
+                                               ", "
+                                             , methodSymbol.Parameters.Select (
+                                                                               symbol => symbol.Name
+                                                                              )
+                                              )
+                                 ) ;
+#endif
+                    var invocation = InvocationExpression ;
+                    IEnumerable < ArgumentSyntax > rest ;
+                    var semanticModel = Model ;
+                    if ( msgI != null )
+                    {
+                        var fargs = invocation
+                                   .ArgumentList.Arguments.Skip ( msgI.Value )
+                                   .ToList ( ) ;
+                        rest = fargs.Skip ( 1 ) ;
+                        var msgarg = fargs.First ( ) ;
+                        var msgArgExpr = msgarg.Expression ;
+                        var msgArgTypeInfo =
+                            ModelExtensions.GetTypeInfo ( semanticModel , msgArgExpr ) ;
+                        var symbolInfo =
+                            ModelExtensions.GetSymbolInfo ( semanticModel , msgArgExpr ) ;
+                        var arg1sym = symbolInfo.Symbol ;
+#if TRACE
+                        if ( arg1sym != null )
                         {
-                            var fargs = invocation
-                                       .ArgumentList.Arguments.Skip ( msgI.Value )
-                                       .ToList ( ) ;
-                            rest = fargs.Skip ( 1 ) ;
-                            var msgarg = fargs.First ( ) ;
-                            var msgArgExpr = msgarg.Expression ;
-                            var msgArgTypeInfo =
-                                ModelExtensions.GetTypeInfo ( semanticModel , msgArgExpr ) ;
-                            var symbolInfo =
-                                ModelExtensions.GetSymbolInfo ( semanticModel , msgArgExpr ) ;
-                            var arg1sym = symbolInfo.Symbol ;
-#if TRACE
-                            if ( arg1sym != null )
-                            {
-                                Logger.Trace (
-                                              "{type} {symb}"
-                                            , arg1sym.GetType ( )
-                                            , arg1sym?.ToDisplayString ( )
-                                             ) ;
-                            }
+                            Logger.Trace (
+                                          "{type} {symb}"
+                                        , arg1sym.GetType ( )
+                                        , arg1sym?.ToDisplayString ( )
+                                         ) ;
+                        }
 #endif
 
 
-                            var constant = semanticModel.GetConstantValue ( msgArgExpr ) ;
+                        var constant = semanticModel.GetConstantValue ( msgArgExpr ) ;
 
-                            var msgval = new LogMessageRepr ( ) ;
-                            if ( constant.HasValue )
-                            {
-                                msgval.IsMessageTemplate = true ;
+                        var msgval = new LogMessageRepr ( ) ;
+                        if ( constant.HasValue )
+                        {
+                            msgval.IsMessageTemplate = true ;
 #if TRACE
-                                Logger.Trace ( "Constant {constant}" , constant.Value ) ;
+                            Logger.Trace ( "Constant {constant}" , constant.Value ) ;
 #endif
-                                msgval.ConstantMessage = constant.Value ;
-                                var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
-                                var o = new List < object > ( ) ;
-                                msgval.MessageTemplate = m ;
-                                foreach ( var messageTemplateToken in m.Tokens )
+                            msgval.ConstantMessage = constant.Value ;
+                            var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
+                            var o = new List < object > ( ) ;
+                            msgval.MessageTemplate = m ;
+                            foreach ( var messageTemplateToken in m.Tokens )
+                            {
+                                if ( messageTemplateToken is PropertyToken prop )
                                 {
-                                    if ( messageTemplateToken is PropertyToken prop )
-                                    {
-                                        var t = Tuple.Create (
-                                                              prop.IsPositional
-                                                            , prop.PropertyName
-                                                             ) ;
-                                        o.Add ( t ) ;
-                                    }
-                                    else if ( messageTemplateToken is TextToken t )
-                                    {
-                                        var xt = Tuple.Create ( t.Text ) ;
-                                        o.Add ( xt ) ;
-                                    }
+                                    var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
+                                    o.Add ( t ) ;
                                 }
-#if TRACE
-                                Logger.Debug ( "{}" , string.Join ( ", " , o ) ) ;
-#endif
-                            }
-                            else
-                            {
-                                var t = new StringBuilder ( ) ;
-                                //invocation.WithArgumentList(invocation.ArgumentList.)
-                                if ( msgArgExpr is InterpolatedStringExpressionSyntax interp )
+                                else if ( messageTemplateToken is TextToken t )
                                 {
-                                    var n = 1 ;
-                                    foreach ( var s in interp.Contents )
-                                    {
-                                        if ( s is InterpolationSyntax expr )
-                                        {
-                                            var varName = "arg" + n ;
-                                            if ( expr.Expression is IdentifierNameSyntax nn )
-                                            {
-                                                varName = nn.Identifier.ValueText ;
-                                            }
-
-                                            //expr.Expression.
-                                        }
-                                    }
+                                    var xt = Tuple.Create ( t.Text ) ;
+                                    o.Add ( xt ) ;
                                 }
-#if TRACE
-                                Logger.Trace ( "{}" , msgArgExpr ) ;
-#endif
-                                //msgval.MessageExprPojo = Transforms.TransformExpr ( msgArgExpr ) ;
                             }
+#if TRACE
+                            Logger.Debug ( "{}" , string.Join ( ", " , o ) ) ;
+#endif
                         }
                         else
                         {
-                            rest = invocation.ArgumentList.Arguments ;
-                        }
+                            var t = new StringBuilder ( ) ;
+                            //invocation.WithArgumentList(invocation.ArgumentList.)
+                            if ( msgArgExpr is InterpolatedStringExpressionSyntax interp )
+                            {
+                                var n = 1 ;
+                                foreach ( var s in interp.Contents )
+                                {
+                                    if ( s is InterpolationSyntax expr )
+                                    {
+                                        var varName = "arg" + n ;
+                                        if ( expr.Expression is IdentifierNameSyntax nn )
+                                        {
+                                            varName = nn.Identifier.ValueText ;
+                                        }
 
-                        var relevantNode = RelevantNode ;
-                        var sourceLocation = Tree.FilePath
-                                             + ":"
-                                             + ( relevantNode.GetLocation ( )
-                                                             .GetMappedLineSpan ( )
-                                                             .StartLinePosition.Line
-                                                 + 1 ) ;
-
-                        var t1 = Transforms.TransformSyntaxNode ( relevantNode ) ;
-                        var debugInvo = invocationFactory ( ) ;
-                        debugInvo.SourceLocation = sourceLocation ;
-                        debugInvo.LoggerType     = methodSymbol.ContainingType.MetadataName ;
-                        debugInvo.MethodDisplayName = methodSymbol.ContainingType.MetadataName
-                                                      + "."
-                                                      + methodSymbol.MetadataName ;
-                        debugInvo.TransformedRelevantNode = t1 ;
-                        if ( relevantNode.Parent != null )
-                        {
-                            var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
-                            var i2 = sourceContext.IndexOf ( relevantNode ) ;
-                        }
-
-                        var p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
-                        try
-                        {
-                            var lines = File.ReadAllLines ( p ) ;
-                            debugInvo.PrecedingCode =
-                                lines[ relevantNode.GetLocation ( )
-                                                   .GetMappedLineSpan ( )
-                                                   .StartLinePosition.Line
-                                       - 1 ] ;
-
-                            debugInvo.Code = relevantNode.ToFullString ( ) ;
-                            debugInvo.FollowingCode = lines[ relevantNode.GetLocation ( )
-                                                                         .GetMappedLineSpan ( )
-                                                                         .EndLinePosition.Line
-                                                             + 1 ] ;
-                        }
-                        catch ( Exception ex )
-                        {
-                            Logger.Warn ( ex , ex.ToString ( ) ) ;
-                        }
-
-                        var transformed = rest.Select (
-                                                       syntax
-                                                           => ( ILogInvocationArgument )
-                                                           new LogInvocationArgument ( syntax )
-                                                      ) ;
-                        foreach ( var logInvocationArgument in transformed )
-                        {
-                            debugInvo.Arguments.Add ( logInvocationArgument ) ;
-                        }
+                                        //expr.Expression.
+                                    }
+                                }
+                            }
 #if TRACE
-                        Logger.Trace ( "{t}" , transformed ) ;
+                            Logger.Trace ( "{}" , msgArgExpr ) ;
 #endif
-                        return debugInvo ;
+                            //msgval.MessageExprPojo = Transforms.TransformExpr ( msgArgExpr ) ;
+                        }
+                    }
+                    else
+                    {
+                        rest = invocation.ArgumentList.Arguments ;
                     }
 
-                    throw new InvalidOperationException() ;
+                    var relevantNode = RelevantNode ;
+                    var sourceLocation = Tree.FilePath
+                                         + ":"
+                                         + ( relevantNode.GetLocation ( )
+                                                         .GetMappedLineSpan ( )
+                                                         .StartLinePosition.Line
+                                             + 1 ) ;
+
+                    object t1 ;
+                    try
+                    {
+                        t1 = Transforms.TransformSyntaxNode ( relevantNode ) ;
+                    }
+                    catch ( UnsupportedExpressionTypeSyntaxException unsupported )
+                    {
+                        return  new RejectedItem ( relevantNode , unsupported ) ;
+                    }
+
+                    var debugInvo = invocationFactory ( ) ;
+                    debugInvo.SourceLocation = sourceLocation ;
+                    debugInvo.LoggerType     = methodSymbol.ContainingType.MetadataName ;
+                    debugInvo.MethodDisplayName = methodSymbol.ContainingType.MetadataName
+                                                  + "."
+                                                  + methodSymbol.MetadataName ;
+                    debugInvo.TransformedRelevantNode = t1 ;
+                    if ( relevantNode.Parent != null )
+                    {
+                        var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
+                        var i2 = sourceContext.IndexOf ( relevantNode ) ;
+                    }
+
+                    var p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
+                    try
+                    {
+                        var lines = File.ReadAllLines ( p ) ;
+                        debugInvo.PrecedingCode =
+                            lines[ relevantNode.GetLocation ( )
+                                               .GetMappedLineSpan ( )
+                                               .StartLinePosition.Line
+                                   - 1 ] ;
+
+                        debugInvo.Code = relevantNode.ToFullString ( ) ;
+                        debugInvo.FollowingCode = lines[ relevantNode.GetLocation ( )
+                                                                     .GetMappedLineSpan ( )
+                                                                     .EndLinePosition.Line
+                                                         + 1 ] ;
+                    }
+                    catch ( Exception ex )
+                    {
+                        Logger.Warn ( ex , ex.ToString ( ) ) ;
+                    }
+
+                    var transformed = rest.Select (
+                                                   syntax
+                                                       => ( ILogInvocationArgument )
+                                                       new LogInvocationArgument ( syntax )
+                                                  ) ;
+                    foreach ( var logInvocationArgument in transformed )
+                    {
+                        debugInvo.Arguments.Add ( logInvocationArgument ) ;
+                    }
+#if TRACE
+                    Logger.Trace ( "{t}" , transformed ) ;
+#endif
+                    return debugInvo ;
                 }
 
                 private static bool IsException (
@@ -843,5 +888,22 @@ namespace AnalysisAppLib
         public static string RestorePackages ( string s ) { return s ; }
     }
 #endif
+    }
+
+    public class RejectedItem
+    {
+        private readonly SyntaxNode                               _statement ;
+        private readonly UnsupportedExpressionTypeSyntaxException _unsupported ;
+
+        public RejectedItem (
+            SyntaxNode                               statement
+          , UnsupportedExpressionTypeSyntaxException unsupported = null
+        )
+        {
+            _statement   = statement ;
+            _unsupported = unsupported ;
+        }
+
+        public SyntaxNode Statement { get { return _statement ; } }
     }
 }

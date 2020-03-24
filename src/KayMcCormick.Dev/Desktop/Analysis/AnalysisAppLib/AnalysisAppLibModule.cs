@@ -24,6 +24,7 @@ namespace AnalysisAppLib
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             builder.RegisterType < FileSystemExplorerItemProvider > ( )
                    .As < IExplorerItemProvider > ( ) ;
+            builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ; 
             builder.RegisterType < AnalyzeCommand > ( ).As < IAnalyzeCommand > ( ) ;
             builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
             builder.RegisterType < ProjectBrowserViewModel > ( )
@@ -32,10 +33,11 @@ namespace AnalysisAppLib
             builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < SyntaxPanelViewModel > ( ).As < ISyntaxPanelViewModel > ( ) ;
             
-            builder.RegisterType < ApplicationViewModel > ( )
-                   .As < IApplicationViewModel > ( )
+            builder.RegisterType < SyntaxTokenViewModel > ( )
+                   .As < ISyntaxTokenViewModel> ( )
                    .SingleInstance ( ) ;
 
+            
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
 #else
@@ -69,6 +71,7 @@ namespace AnalysisAppLib
                               }
                              )
                    .As < IPublicClientApplication > ( ) ;
+
             builder.Register (
                               ( ctx , p ) => new GraphServiceClient (
                                                                      new

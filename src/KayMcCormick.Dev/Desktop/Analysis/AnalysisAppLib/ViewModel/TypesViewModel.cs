@@ -12,6 +12,7 @@
 using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
@@ -22,7 +23,7 @@ using NLog ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    internal class TypesViewModel : ITypesViewModel
+    public class TypesViewModel : ITypesViewModel
     {
         private AppTypeInfo                       root ;
         private List < Type >                     _nodeTypes ;
@@ -51,8 +52,7 @@ namespace AnalysisAppLib.ViewModel
             {
                 var info = map[ methodInfo.ReturnType ] ;
                 info.FactoryMethods.Add ( methodInfo ) ;
-                Logger
-                          .Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
+                Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
             foreach ( var pair in map.Where ( pair => pair.Key.IsAbstract == false ) )
@@ -77,13 +77,8 @@ namespace AnalysisAppLib.ViewModel
                         if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
                              && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                         {
-                            Logger
-                                      .Info (
-                                             "{name} {prop} list of {}"
-                                           , pair.Key.Name
-                                           , propertyInfo.Name
-                                           , targ.Name
-                                            ) ;
+                            Debug.WriteLine(
+                                         $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}");
                             isList   = true ;
                             typeInfo = map[ targ ] ;
                         }
@@ -125,8 +120,8 @@ namespace AnalysisAppLib.ViewModel
             return r ;
         }
 
-#region Implementation of ISerializable
+        #region Implementation of ISerializable
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-#endregion
+        #endregion
     }
 }

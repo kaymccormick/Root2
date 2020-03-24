@@ -11,7 +11,7 @@ namespace ProjInterface
 {
     [TitleMetadata("Log Viewer Window")]
 #pragma warning disable DV2002 // Unmapped types
-    public partial class LogViewerWindow : AppWindow, INotifyPropertyChanged, IView1, IView<LogViewerAppViewModel>
+    public partial class LogViewerWindow : AppWindow, INotifyPropertyChanged, IViewWithTitle, IView<LogViewerAppViewModel>
 #pragma warning restore DV2002 // Unmapped types
     {
         private string _viewTitle ;
