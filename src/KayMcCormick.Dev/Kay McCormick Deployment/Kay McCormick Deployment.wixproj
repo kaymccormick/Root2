@@ -60,14 +60,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\AnalysisFramework\AnalysisFramework.csproj">
-      <Name>AnalysisFramework</Name>
-      <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\Desktop\Analysis\Analyze\ConsoleApp1\ConsoleApp1.csproj">
       <Name>ConsoleApp1</Name>
       <Project>{fad293b8-c008-4243-88fc-a3a8a01db52d}</Project>

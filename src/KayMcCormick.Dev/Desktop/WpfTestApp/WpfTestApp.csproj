@@ -145,10 +145,6 @@
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Analysis\AnalysisFramework\AnalysisFramework.csproj">
-      <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
-      <Name>AnalysisFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Analysis\ProjInterface\ProjInterface.csproj">
       <Project>{4451ad21-ad52-49f1-874b-0bbab2d4df95}</Project>
       <Name>ProjInterface</Name>

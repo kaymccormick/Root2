@@ -11,7 +11,6 @@
 #endregion
 using AnalysisAppLib ;
 using AnalysisFramework ;
-using AnalysisFramework.LogUsage ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Integration.Mef ;

@@ -134,10 +134,6 @@
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\AnalysisFramework\AnalysisFramework.csproj">
-      <Project>{4B41601C-F950-4E9D-9B9F-FF0920B96AAB}</Project>
-      <Name>AnalysisFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>

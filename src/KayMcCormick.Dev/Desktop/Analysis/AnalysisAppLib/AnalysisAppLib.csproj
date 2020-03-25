@@ -85,6 +85,7 @@
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
     <Compile Include="Serialization\LogInvocationConverter.cs" />
     <Compile Include="Syntax\AppParameterInfo.cs" />
+    <Compile Include="Syntax\Ext.cs" />
     <Compile Include="Syntax\PojoCompilationUnit.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
     <Compile Include="CodeAnalyseContext.cs" />

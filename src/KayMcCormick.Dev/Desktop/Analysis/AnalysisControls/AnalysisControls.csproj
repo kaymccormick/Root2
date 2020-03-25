@@ -236,10 +236,6 @@
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AnalysisFramework\AnalysisFramework.csproj">
-      <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
-      <Name>AnalysisFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProjLib\ProjLib.csproj">
       <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
       <Name>ProjLib</Name>

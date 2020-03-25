@@ -24,9 +24,7 @@
         <viewModel:TypesViewModel/>
       </views:TypesView.ViewModel>
     </views:TypesView>
-  </kmWpf:AppWindow.Resources>
-  <Grid>
-    <views:SyntaxPanel>
+    <views:SyntaxPanel x:Key="SyntaxPanel">
       <views:SyntaxPanel.ViewModel>
         <viewModel:SyntaxPanelViewModel>
           <viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
@@ -35,5 +33,8 @@
         </viewModel:SyntaxPanelViewModel>
       </views:SyntaxPanel.ViewModel>
     </views:SyntaxPanel>
+  </kmWpf:AppWindow.Resources>
+  <Grid>
+
   </Grid>
 </kmWpf:AppWindow>

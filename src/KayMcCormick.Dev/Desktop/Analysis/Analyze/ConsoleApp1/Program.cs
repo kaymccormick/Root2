@@ -1,6 +1,5 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
@@ -9,8 +8,6 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
-using AnalysisFramework ;
-using AnalysisFramework.LogUsage ;
 using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
@@ -22,7 +19,6 @@ using KayMcCormick.Dev.Logging ;
 using Microsoft.Build.Locator ;
 using NLog ;
 using ProjLib ;
-using ProjLib.Interfaces ;
 using Module = Autofac.Module ;
 
 namespace ConsoleApp1

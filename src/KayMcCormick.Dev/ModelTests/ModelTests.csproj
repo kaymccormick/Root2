@@ -77,10 +77,6 @@
       <Project>{0381d4d0-945e-4340-b974-9d07b2830d4f}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\AnalysisFramework\AnalysisFramework.csproj">
-      <Project>{4b41601c-f950-4e9d-9b9f-ff0920b96aab}</Project>
-      <Name>AnalysisFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
