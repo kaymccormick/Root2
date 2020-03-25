@@ -19,7 +19,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
-namespace ProjInterface
+namespace AnalysisAppLib.Serialization
 {
     public class JsonSyntaxNodeConverter : JsonConverterFactory
     {

@@ -28,6 +28,7 @@ using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
 using AnalysisControls.Views ;
@@ -52,7 +53,7 @@ using ProjInterface ;
 using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
-using Application = System.Windows.Application ;
+using ColorConverter = System.Windows.Media.ColorConverter ;
 using File = System.IO.File ;
 
 namespace ProjTests
@@ -703,6 +704,12 @@ namespace ProjTests
             // }
         }
 
+        [ Fact ]
+        public void TestColorConverter ( )
+        {
+            ColorConverter c = new ColorConverter();
+        }
+
 
         public void Dispose ( )
         {
@@ -716,18 +723,4 @@ namespace ProjTests
     }
 
     // ReSharper disable once UnusedType.Global
-    public class TestApplication : Application
-    {
-        private TaskCompletionSource < bool > _tcs ;
-        public  TaskCompletionSource < bool > TCS { get { return _tcs ; } set { _tcs = value ; } }
-        #region Overrides of Application
-        protected override void OnExit ( ExitEventArgs e )
-        {
-            base.OnExit ( e ) ;
-            _tcs.TrySetResult ( true ) ;
-        }
-
-        protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
-        #endregion
-    }
 }

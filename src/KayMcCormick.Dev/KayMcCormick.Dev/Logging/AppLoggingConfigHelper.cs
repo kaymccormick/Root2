@@ -287,7 +287,13 @@ namespace KayMcCormick.Dev.Logging
             var lConf = new CodeConfiguration ( useFactory ) ;
             if ( config1.LogThrowExceptions.GetValueOrDefault ( ) )
             {
+                logMethod ( "Setting throwExceptions to true" ) ;
                 LogManager.ThrowExceptions = true ;
+            }
+            else
+            {
+                logMethod("Setting throwExceptions to false");
+                LogManager.ThrowExceptions = false;
             }
 
             //LogManager.ThrowExceptions = true ;
@@ -429,7 +435,8 @@ namespace KayMcCormick.Dev.Logging
             var logRootDir = LogRootPath ;
             var xmlTarget = new AppFileTarget ( "xmlFile" )
                             {
-                                FileName = new SimpleLayout ( $@"{logRootDir}xmllog.log" )
+                                FileName = new SimpleLayout ( $@"{logRootDir}xmllog-${{processId}}.log" )
+
                               , Layout   = _xmlEventLayout
                             } ;
             t.Add ( xmlTarget ) ;
@@ -543,7 +550,6 @@ namespace KayMcCormick.Dev.Logging
                 System.Diagnostics.Debug.WriteLine (
                                                     $"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}"
                                                    ) ;
-                Logger.Info ( "test 123" ) ;
                 return useFactory ;
             }
             catch ( Exception ex )
@@ -705,7 +711,7 @@ namespace KayMcCormick.Dev.Logging
         {
             var f = new AppFileTarget ( JsonTargetName )
                     {
-                        FileName = Layout.FromString ( @"c:\data\logs\${processName}.json" )
+                        FileName = Layout.FromString ( @"c:\data\logs\${processName}\${processId}.json" )
                         // ,
                         // Layout = new MyJsonLayout()
                       , Layout = new MyJsonLayout ( )
@@ -722,7 +728,7 @@ namespace KayMcCormick.Dev.Logging
         {
             var f = new AppFileTarget("text_log")
                     {
- FileName = Layout.FromString ( @"c:\data\logs\log.txt" )
+ FileName = Layout.FromString ( @"c:\data\logs\log-${processid}.txt" )
                       , Layout   = Layout.FromString ( "${message}" )
                     } ;
 

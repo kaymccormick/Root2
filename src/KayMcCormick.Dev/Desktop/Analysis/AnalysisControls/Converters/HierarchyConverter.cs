@@ -26,6 +26,18 @@ namespace AnalysisControls.Converters
           , CultureInfo culture
         )
         {
+            if ( value == null )
+            {
+                if ( targetType == typeof ( string ) )
+                {
+                    return "<null>" ;
+
+                }
+                else
+                {
+                    return Array.Empty < object > ( ) ;
+                }
+            }
             if (targetType == null)
             {
                 throw new ArgumentNullException(nameof(targetType));

@@ -4,9 +4,12 @@ using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Text ;
 using System.Threading.Tasks ;
+using System.Threading.Tasks.Dataflow ;
 using AnalysisAppLib.Auth ;
+using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
+using Autofac.Features.AttributeFilters ;
 using KayMcCormick.Dev ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
@@ -15,7 +18,7 @@ namespace AnalysisAppLib
 {
     public sealed class AnalysisAppLibModule : IocModule
     {
-        #region Overrides of IocModule
+        
         public override void DoLoad ( ContainerBuilder builder )
         {
             builder.RegisterModule < AppBuildModule > ( ) ;
@@ -38,10 +41,35 @@ namespace AnalysisAppLib
                    .SingleInstance ( ) ;
 
             
+            builder.RegisterType < FindLogInvocations > ( )
+                   .AsImplementedInterfaces ( )
+                   .WithAttributeFiltering ( )
+                   .InstancePerLifetimeScope ( ) ;
+            builder.RegisterType < FindLogUsagesFuncProvider > ( )
+                   .AsImplementedInterfaces ( )
+                   .WithAttributeFiltering ( ).AsSelf()
+                   .InstancePerLifetimeScope ( ) ;
+            // builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
+                   // .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                   // .WithAttributeFiltering ( )
+                   // .InstancePerLifetimeScope ( ) ;
+            // builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
+                   // .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+                   // .WithAttributeFiltering ( )
+                   // .InstancePerLifetimeScope ( ) ;
+            // builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
+                   // .As(typeof(IAnalysisBlockProvider<,,>))
+                   // .WithAttributeFiltering()
+                   // .InstancePerLifetimeScope();
+            // builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
+                   // .As(typeof(IDataflowTransformFuncProvider<,>))
+                   // .WithAttributeFiltering()
+                   // .InstancePerLifetimeScope();
+
 #if MSBUILDWORKSPACE
             builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
 #else
-            
+
 
 #endif
 
@@ -105,6 +133,5 @@ namespace AnalysisAppLib
                    .AsSelf ( ) ;
             builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
         }
-        #endregion
     }
 }

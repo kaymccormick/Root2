@@ -18,5 +18,7 @@ namespace AnalysisAppLib.ViewModel
         AppTypeInfo Root { get ; set ; }
 
         bool ShowBordersIsChecked { get ; set ; }
+
+        uint[] HierarchyColors { get ; set ; }
     }
 }

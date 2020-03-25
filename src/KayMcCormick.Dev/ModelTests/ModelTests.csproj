@@ -7,7 +7,7 @@
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\test\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
-   <ProjectGuid>{B0165914-17FA-4C02-BFD1-BF2F6C664152}</ProjectGuid>
+    <ProjectGuid>{B0165914-17FA-4C02-BFD1-BF2F6C664152}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModelTests</RootNamespace>
@@ -65,6 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Text.Json">
+      <Version>4.7.1</Version>
+    </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.4.1</Version>
     </PackageReference>

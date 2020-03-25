@@ -17,6 +17,7 @@ using System.ComponentModel ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
+using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
 using JetBrains.Annotations ;
 
@@ -27,13 +28,16 @@ namespace AnalysisAppLib.Syntax
     ///   <para></para>
     /// </summary>
     public sealed class AppTypeInfo : INotifyPropertyChanged
+
     {
         private Type                   _type ;
         private string                 _title ;
-        private ObservableCollection < MethodInfo >    _factoryMethods = new ObservableCollection < MethodInfo > ( ) ;
+        private ObservableCollection < AppMethodInfo >    _factoryMethods = new ObservableCollection < AppMethodInfo > ( ) ;
         private ObservableCollection < ComponentInfo > _components     = new ObservableCollection < ComponentInfo > ( ) ;
         private AppTypeInfo _parentInfo ;
         private readonly ObservableCollection < AppTypeInfo > _subTypeInfos ;
+        private int _hierarchyLevel ;
+        private uint? _colorValue ;
 
         public AppTypeInfo ( ObservableCollection < AppTypeInfo > subTypeInfos = null )
         {
@@ -53,6 +57,9 @@ namespace AnalysisAppLib.Syntax
                 OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
             };
             _subTypeInfos = subTypeInfos ;
+        }
+
+        public AppTypeInfo ( ) :this(null) {
         }
 
         public Type Type
@@ -79,7 +86,7 @@ namespace AnalysisAppLib.Syntax
 
         public ObservableCollection < AppTypeInfo > SubTypeInfos { get { return _subTypeInfos ; } }
 
-        public ObservableCollection < MethodInfo > FactoryMethods
+        public ObservableCollection < AppMethodInfo > FactoryMethods
         {
             get => _factoryMethods ;
             set
@@ -89,6 +96,7 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        [JsonIgnore]
         public ObservableCollection < ComponentInfo > Components
         {
             get => _components ;
@@ -138,6 +146,7 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        [JsonIgnore]
         public AppTypeInfo ParentInfo
         {
             get
@@ -151,6 +160,14 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        public int HierarchyLevel
+        {
+            get { return _hierarchyLevel ; }
+            set { _hierarchyLevel = value ; }
+        }
+
+        public uint ? ColorValue { get { return _colorValue ; } set { _colorValue = value ; } }
+
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
@@ -158,5 +175,32 @@ namespace AnalysisAppLib.Syntax
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    public class AppMethodInfo
+    {
+        private MethodInfo _methodInfo ;
+
+        [JsonIgnore]
+        public MethodInfo MethodInfo { get { return _methodInfo ; } set { _methodInfo = value ; } }
+
+        public Type ReflectedType => MethodInfo.ReflectedType ;
+
+        public Type DeclaringType => MethodInfo.DeclaringType ;
+
+        public string MethodName => MethodInfo.Name ;
+
+        public Type ReturnType => MethodInfo.ReturnType ;
+        public IEnumerable < AppParameterInfo > Parameters => MethodInfo
+                                                             .GetParameters ( )
+                                                             .Select (
+                                                                      (info, i) => new AppParameterInfo
+                                                                              {
+                                                                                  Index = i,
+                                                                                  ParameterType = info.ParameterType,
+                                                                                  Name = info.Name,
+                                                                                  IsOptional = info.IsOptional
+                                                                              }
+                                                                     ) ;
     }
 }

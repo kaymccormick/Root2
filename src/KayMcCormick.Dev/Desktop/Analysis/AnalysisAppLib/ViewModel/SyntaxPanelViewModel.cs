@@ -17,11 +17,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    internal sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel
+    public sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel, INotifyPropertyChanged
     {
         private CompilationUnitSyntax compilationUnitSyntax ;
         private object                selectedItem ;
         #region Implementation of ISyntaxPanelViewModel
+        public SyntaxPanelViewModel()
+        {
+
+        }
         public SyntaxPanelViewModel ( CompilationUnitSyntax compilationUnitSyntax = null)
         {
             if ( compilationUnitSyntax != null )

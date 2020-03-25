@@ -158,8 +158,6 @@ private Type[] _optionTypes ;
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
 
             var lifetimeScope = Scope ;
-#if ANALYSISCONTROLS
-#endif
 #if false
             foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
             {

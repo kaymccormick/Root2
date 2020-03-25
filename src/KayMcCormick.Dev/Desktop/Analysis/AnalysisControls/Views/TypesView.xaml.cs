@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel ;
 using System.Diagnostics;
 using System.Runtime.CompilerServices ;
+using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
 using AnalysisAppLib.ViewModel ;
@@ -17,7 +18,9 @@ namespace AnalysisControls.Views
     public sealed partial class TypesView : UserControl , IView < ITypesViewModel > , IViewWithTitle, IControlView, INotifyPropertyChanged
     {
         public TypesView ( ) {
+            InitializeComponent();
         }
+
 
         private ITypesViewModel _viewModel ;
 
@@ -31,13 +34,21 @@ namespace AnalysisControls.Views
         public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
-            var childrenCount = VisualTreeHelper.GetChildrenCount ( this ) ;
+            DumpVisualRects ( this ) ;
+        }
+
+        private void DumpVisualRects ( [ NotNull ] DependencyObject reference )
+        {
+            var childrenCount = VisualTreeHelper.GetChildrenCount ( reference ) ;
             for ( int i = 0 ; i < childrenCount ; i ++ )
             {
-                var dependencyObject = VisualTreeHelper.GetChild ( this , i ) ;
+                var dependencyObject = VisualTreeHelper.GetChild ( reference , i ) ;
                 Visual v = ( Visual ) dependencyObject ;
                 var contentBounds = VisualTreeHelper.GetContentBounds ( v ) ;
-                Debug.WriteLine ($"{v}{i} {contentBounds.Left},{contentBounds.Top} - {contentBounds.Right},{contentBounds.Bottom}");
+                Debug.WriteLine (
+                                 $"{v}{i} {contentBounds.Left},{contentBounds.Top} - {contentBounds.Right},{contentBounds.Bottom}"
+                                ) ;
+                DumpVisualRects(v);
             }
         }
         #endregion

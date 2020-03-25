@@ -1,13 +1,15 @@
 using System ;
 using System.Text.Json ;
+using AnalysisAppLib.Serialization ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf.JSON ;
-using NLog.Targets ;
 
-namespace ProjInterface
+namespace AnalysisControls
 {
     public static class JsonConverters
     {
+        [ NotNull ]
         public static JsonSerializerOptions CreateJsonSerializeOptions ( )
         {
             var r = new JsonSerializerOptions();
@@ -24,7 +26,6 @@ namespace ProjInterface
             jsonSerializerOptions.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonConverterImage ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonConverterResourceDictionary ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new ProjInterfaceAppConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new HashtableConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonDependencyPropertyConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonFontFamilyConverter ( ) ) ;

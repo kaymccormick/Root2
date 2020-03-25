@@ -88,6 +88,8 @@
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
+    <Compile Include="JsonConverters.cs" />
+    <Compile Include="ProvideCompilationUnitSyntax.cs" />
     <Compile Include="Views\NodePanel.cs" />
     <Compile Include="FormattedCode.xaml.cs">
       <DependentUpon>FormattedCode.xaml</DependentUpon>
@@ -263,6 +265,9 @@
     </PackageReference>
     <PackageReference Include="PDFsharp-MigraDoc-WPF">
       <Version>1.51.5186-beta</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>4.7.1</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.5.4</Version>

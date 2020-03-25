@@ -3,8 +3,10 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Configuration ;
 using System.Diagnostics ;
+using System.IO ;
 using System.Linq ;
 using System.Reflection ;
+using System.Runtime.Serialization.Formatters.Binary ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
@@ -12,33 +14,12 @@ using Autofac.Features.Decorators ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.Tracing ;
 using Microsoft.Extensions.DependencyInjection ;
 using NLog ;
 
 namespace KayMcCormick.Dev
 {
-    public class ApplicationInstanceConfiguration
-    {
-        public ApplicationInstanceConfiguration ( LogDelegates.LogMethod logMethod , IEnumerable configs = null , bool disableLogging = false , bool disableRuntimeConfiguration = false , bool disableServiceHost = false )
-        {
-            LogMethod = logMethod ;
-            Configs = configs ;
-            DisableLogging = disableLogging ;
-            DisableRuntimeConfiguration = disableRuntimeConfiguration ;
-            DisableServiceHost = disableServiceHost ;
-        }
-
-        public LogDelegates.LogMethod LogMethod { get ; private set ; }
-
-        public IEnumerable Configs { get ; set ; }
-
-        public bool DisableLogging { get ; private set ; }
-
-        public bool DisableRuntimeConfiguration { get ; private set ; }
-
-        public bool DisableServiceHost { get ; private set ; }
-    }
-
     /// <summary>
     /// </summary>
     [ UsedImplicitly ]
@@ -50,6 +31,7 @@ namespace KayMcCormick.Dev
         private          IContainer              _container ;
         private          ApplicationInstanceHost _host ;
         private          ILifetimeScope          _lifetimeScope ;
+        private static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter() ;
 
         /// <summary>
         /// </summary>
@@ -62,6 +44,7 @@ namespace KayMcCormick.Dev
             [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
         ) : base ( applicationInstanceConfiguration.LogMethod )
         {
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost ;
             var serviceCollection = new ServiceCollection ( ) ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
@@ -106,6 +89,26 @@ namespace KayMcCormick.Dev
             {
                 Logger = LogManager.CreateNullLogger ( ) ;
             }
+        }
+
+        private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            if ( e.Exception is FileLoadException || e.Exception is TargetInvocationException)
+            {
+                return ;
+            }
+            var s = new MemoryStream() ;
+            _binaryFormatter.Serialize(s, e.Exception);
+            var bytes = new byte[ s.Length ] ;
+            var sLength = ( int ) s.Length ;
+            s.Read ( bytes , 0 , sLength ) ;
+            PROVIDER_GUID.EventWriteEXCEPTION_RAISED_EVENT (
+                                                            e.Exception.GetType ( )
+                                                             .AssemblyQualifiedName
+                                                          , e.Exception.StackTrace ?? "No stacktrace", e.Exception.Message, 
+                                                            ( uint ) s.Length, bytes
+                                                           ) ;
+            Debug.WriteLine ( e.Exception.ToString ( ) ) ;
         }
 
         /// <summary>

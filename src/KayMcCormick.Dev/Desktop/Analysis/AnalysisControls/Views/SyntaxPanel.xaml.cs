@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.ComponentModel ;
+using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
@@ -17,7 +18,7 @@ namespace AnalysisControls.Views
     /// Interaction logic for SyntaxPanel.xaml
     /// </summary>
     [ TitleMetadata ( "Syntax panel" ) ]
-    public sealed partial class SyntaxPanel : UserControl
+    public sealed partial class SyntaxPanel : UserControl, INotifyPropertyChanged
       , IView < ISyntaxPanelViewModel >
       , IViewWithTitle
       , IControlView
@@ -27,23 +28,35 @@ namespace AnalysisControls.Views
         private static readonly Logger
             Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public SyntaxPanel ( ) {
+        public SyntaxPanel ( ): this(null) {
+         
         }
 
         public SyntaxPanel ( ISyntaxPanelViewModel viewModel )
         {
             _viewModel = viewModel ;
-            InitializeComponent ( ) ;
-            var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
-            if ( view.View != null )
+            if ( _viewModel != null )
             {
-                Logger.Debug ( "Adding ViewOnCurrentChanged handler to view.View" ) ;
-                view.View.CurrentChanged += ViewOnCurrentChanged ;
+                ViewModel.PropertyChanged  += ViewModelOnPropertyChanged;
+                ViewModel.PropertyChanging += ViewModelOnPropertyChanging;
+            }
+            InitializeComponent ( ) ;
+
+        }
+
+        #region Overrides of FrameworkElement
+        public override void EndInit ( )
+        {
+            base.EndInit ( ) ;
+            var view = (CollectionViewSource)TryFindResource("AllNodes");
+            if (view.View != null)
+            {
+                Logger.Debug("Adding ViewOnCurrentChanged handler to view.View");
+                view.View.CurrentChanged += ViewOnCurrentChanged;
             }
 
-            ViewModel.PropertyChanged  += ViewModelOnPropertyChanged ;
-            ViewModel.PropertyChanging += ViewModelOnPropertyChanging ;
         }
+        #endregion
 
         private void ViewModelOnPropertyChanging (
             object                                sender
@@ -57,16 +70,21 @@ namespace AnalysisControls.Views
                          ) ;
             if ( e.PropertyName == "CompilationUnitSyntax" )
             {
-                var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
-                if ( view.View != null )
-                {
-                    Logger.Debug ( "removing ViewOnCurrentChanged handler from view.View" ) ;
-                    view.View.CurrentChanged -= ViewOnCurrentChanged ;
-                }
-                else
-                {
-                    Logger.Debug ( "view.View is null not removing handler" ) ;
-                }
+                RemoveViewChangedHAndler ( ) ;
+            }
+        }
+
+        private void RemoveViewChangedHAndler ( )
+        {
+            var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
+            if ( view.View != null )
+            {
+                Logger.Debug ( "removing ViewOnCurrentChanged handler from view.View" ) ;
+                view.View.CurrentChanged -= ViewOnCurrentChanged ;
+            }
+            else
+            {
+                Logger.Debug ( "view.View is null not removing handler" ) ;
             }
         }
 
@@ -82,17 +100,22 @@ namespace AnalysisControls.Views
                          ) ;
             if ( e.PropertyName == "CompilationUnitSyntax" )
             {
-                var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
+                AddViewChangedHAndler ( ) ;
+            }
+        }
 
-                if ( view.View != null )
-                {
-                    Logger.Debug ( "Adding ViewOnCurrentChanged handler to view.View" ) ;
-                    view.View.CurrentChanged += ViewOnCurrentChanged ;
-                }
-                else
-                {
-                    Logger.Debug ( "view.View is null not adding handler" ) ;
-                }
+        private void AddViewChangedHAndler ( )
+        {
+            var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
+
+            if ( view.View != null )
+            {
+                Logger.Debug ( "Adding ViewOnCurrentChanged handler to view.View" ) ;
+                view.View.CurrentChanged += ViewOnCurrentChanged ;
+            }
+            else
+            {
+                Logger.Debug ( "view.View is null not adding handler" ) ;
             }
         }
 
@@ -157,15 +180,43 @@ namespace AnalysisControls.Views
         }
 
         #region Implementation of IView<ISyntaxPanelViewModel>
-        public ISyntaxPanelViewModel ViewModel
-        {
+        public ISyntaxPanelViewModel ViewModel { 
+        
             get { return _viewModel ; }
-            set { _viewModel = value ; }
+            set
+            {
+                if ( Equals ( value , _viewModel ) ) return ;
+                if ( _viewModel != null )
+                {
+                    _viewModel.PropertyChanged -= ViewModelOnPropertyChanged ;
+
+                    _viewModel.PropertyChanging -= ViewModelOnPropertyChanging ;
+                    RemoveViewChangedHAndler();
+                }
+
+                _viewModel = value ;
+                if ( _viewModel != null )
+                {
+                    _viewModel.PropertyChanged  += ViewModelOnPropertyChanged ;
+                    _viewModel.PropertyChanging += ViewModelOnPropertyChanging ;
+                    AddViewChangedHAndler();
+                }
+
+                OnPropertyChanged( ) ;
+            }
         }
         #endregion
 
         #region Implementation of IView1
         [ NotNull ] public string ViewTitle { get { return "Syntax Panel" ; } }
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
     }
 }

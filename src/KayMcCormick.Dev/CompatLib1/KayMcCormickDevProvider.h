@@ -547,11 +547,11 @@ Remarks:
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Provider "KayMcCormick-Development-CodeAnalysis" event count 7
+// Provider "Kay McCormick" event count 8
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Provider GUID = 5dd6e00a-e8fc-4e66-b8d7-dc8f0d62b0a1
-EXTERN_C __declspec(selectany) const GUID PROVIDER_GUID = {0x5dd6e00a, 0xe8fc, 0x4e66, {0xb8, 0xd7, 0xdc, 0x8f, 0x0d, 0x62, 0xb0, 0xa1}};
+// Provider GUID = 91068038-d3ce-44bc-a0f4-966ca64e2994
+EXTERN_C __declspec(selectany) const GUID PROVIDER_GUID = {0x91068038, 0xd3ce, 0x44bc, {0xa0, 0xf4, 0x96, 0x6c, 0xa6, 0x4e, 0x29, 0x94}};
 
 #ifndef PROVIDER_GUID_Traits
 #define PROVIDER_GUID_Traits NULL
@@ -562,6 +562,7 @@ EXTERN_C __declspec(selectany) const GUID PROVIDER_GUID = {0x5dd6e00a, 0xe8fc, 0
 //
 #define PROVIDER_GUID_CHANNEL_c2 0x10
 #define PROVIDER_GUID_CHANNEL_c3 0x11
+#define PROVIDER_GUID_CHANNEL_c4 0x12
 
 //
 // Opcodes
@@ -574,11 +575,13 @@ EXTERN_C __declspec(selectany) const GUID PROVIDER_GUID = {0x5dd6e00a, 0xe8fc, 0
 // Tasks
 //
 #define TASK_INITIALIZATION 0x1
-EXTERN_C __declspec(selectany) const GUID InitializationId = {0x0f6f2e80, 0xee12, 0x4cc7, {0xa8, 0xd3, 0x91, 0xcd, 0x66, 0x01, 0x30, 0x55}};
+EXTERN_C __declspec(selectany) const GUID InitializationId = {0x0fb6694d, 0xc817, 0x4f5d, {0x85, 0x35, 0xf7, 0xa7, 0x1f, 0xf8, 0x15, 0x43}};
 #define TASK_CODE_ANALYSIS 0x2
-EXTERN_C __declspec(selectany) const GUID CodeAnalysisId = {0xf8eb7d1a, 0x98fe, 0x4c21, {0xa7, 0xfe, 0xd6, 0x26, 0xdf, 0xfd, 0xfa, 0xcf}};
+EXTERN_C __declspec(selectany) const GUID CodeAnalysisId = {0x0f2f2da4, 0x5706, 0x4e2a, {0xb9, 0xa2, 0xfd, 0xd9, 0xc0, 0xd1, 0x48, 0xc4}};
 #define TASK_CONTAINER_SETUP 0x3
-EXTERN_C __declspec(selectany) const GUID ContainerSetupId = {0x13fd22f9, 0xec69, 0x4ebc, {0x8d, 0x86, 0x02, 0xff, 0x4c, 0xf2, 0x39, 0x4c}};
+EXTERN_C __declspec(selectany) const GUID ContainerSetupId = {0x899ccee3, 0xd93b, 0x4989, {0x84, 0x84, 0x4b, 0x6e, 0xc4, 0xc9, 0x09, 0x36}};
+#define TASK_TESTING 0x4
+EXTERN_C __declspec(selectany) const GUID TestingId = {0xef3c49e7, 0x0273, 0x4311, {0xbe, 0x6b, 0xef, 0x9d, 0x2b, 0xa1, 0x8b, 0x5d}};
 
 //
 // Keyword
@@ -599,12 +602,14 @@ EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EVENT_COMPONENT_RESOLVED =
 #define EVENT_COMPONENT_RESOLVED_value 0x3
 EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EVENT_COMPONENT_REGISTERED = {0x4, 0x0, 0x11, 0x4, 0x0, 0x0, 0x4000000000000000};
 #define EVENT_COMPONENT_REGISTERED_value 0x4
-EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EVENT_TEST_OUTPUT = {0x5, 0x0, 0x11, 0x5, 0x0, 0x0, 0x4000000000000000};
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EVENT_TEST_OUTPUT = {0x5, 0x0, 0x12, 0x5, 0x0, 0x4, 0x2000000000000000};
 #define EVENT_TEST_OUTPUT_value 0x5
 EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EVENT_LEAFSERVICE_MESSAGE = {0x6, 0x0, 0x10, 0x4, 0x0, 0x0, 0x8000000000000000};
 #define EVENT_LEAFSERVICE_MESSAGE_value 0x6
 EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR LOGTARGET_ATTACHED_EVENT = {0x7, 0x0, 0x11, 0x5, 0xc, 0x0, 0x4000000000000001};
 #define LOGTARGET_ATTACHED_EVENT_value 0x7
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EXCEPTION_RAISED_EVENT = {0x8, 0x0, 0x10, 0x2, 0x0, 0x0, 0x8000000000000000};
+#define EXCEPTION_RAISED_EVENT_value 0x8
 
 //
 // MCGEN_DISABLE_PROVIDER_CODE_GENERATION macro:
@@ -616,19 +621,19 @@ EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR LOGTARGET_ATTACHED_EVENT =
 //
 // Event Enablement Bits
 //
-EXTERN_C __declspec(selectany) DECLSPEC_CACHEALIGN ULONG KayMcCormick_Development_CodeAnalysisEnableBits[1];
-EXTERN_C __declspec(selectany) const ULONGLONG KayMcCormick_Development_CodeAnalysisKeywords[5] = {0x8000000000000001, 0x8000000000000000, 0x4000000000000000, 0x4000000000000000, 0x4000000000000001};
-EXTERN_C __declspec(selectany) const unsigned char KayMcCormick_Development_CodeAnalysisLevels[5] = {5, 4, 4, 5, 5};
+EXTERN_C __declspec(selectany) DECLSPEC_CACHEALIGN ULONG Kay_McCormickEnableBits[1];
+EXTERN_C __declspec(selectany) const ULONGLONG Kay_McCormickKeywords[6] = {0x8000000000000001, 0x8000000000000000, 0x4000000000000000, 0x2000000000000000, 0x4000000000000001, 0x8000000000000000};
+EXTERN_C __declspec(selectany) const unsigned char Kay_McCormickLevels[6] = {5, 4, 4, 5, 5, 2};
 
 //
 // Provider context
 //
-EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (ULONG_PTR)PROVIDER_GUID_Traits, 0, 0, 0, 0, 0, 0, 5, KayMcCormick_Development_CodeAnalysisEnableBits, KayMcCormick_Development_CodeAnalysisKeywords, KayMcCormick_Development_CodeAnalysisLevels};
+EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (ULONG_PTR)PROVIDER_GUID_Traits, 0, 0, 0, 0, 0, 0, 6, Kay_McCormickEnableBits, Kay_McCormickKeywords, Kay_McCormickLevels};
 
 //
 // Provider REGHANDLE
 //
-#define KayMcCormick_Development_CodeAnalysisHandle (PROVIDER_GUID_Context.RegistrationHandle)
+#define Kay_McCormickHandle (PROVIDER_GUID_Context.RegistrationHandle)
 
 //
 // This macro is set to 0, indicating that the EventWrite[Name] macros do not
@@ -645,16 +650,16 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 // returns an error, it is generally safe to use EventWrite and
 // EventUnregister macros (they will be no-ops if EventRegister failed).
 //
-#ifndef EventRegisterKayMcCormick_Development_CodeAnalysis
-#define EventRegisterKayMcCormick_Development_CodeAnalysis() McGenEventRegister(&PROVIDER_GUID, McGenControlCallbackV2, &PROVIDER_GUID_Context, &KayMcCormick_Development_CodeAnalysisHandle)
+#ifndef EventRegisterKay_McCormick
+#define EventRegisterKay_McCormick() McGenEventRegister(&PROVIDER_GUID, McGenControlCallbackV2, &PROVIDER_GUID_Context, &Kay_McCormickHandle)
 #endif
 
 //
 // Register with ETW using a specific control GUID (i.e. a GUID other than what
 // is specified in the manifest). Advanced scenarios only.
 //
-#ifndef EventRegisterByGuidKayMcCormick_Development_CodeAnalysis
-#define EventRegisterByGuidKayMcCormick_Development_CodeAnalysis(Guid) McGenEventRegister(&(Guid), McGenControlCallbackV2, &PROVIDER_GUID_Context, &KayMcCormick_Development_CodeAnalysisHandle)
+#ifndef EventRegisterByGuidKay_McCormick
+#define EventRegisterByGuidKay_McCormick(Guid) McGenEventRegister(&(Guid), McGenControlCallbackV2, &PROVIDER_GUID_Context, &Kay_McCormickHandle)
 #endif
 
 //
@@ -665,14 +670,14 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 // (not optional): failure to unregister a provider before DLL or driver unload
 // will result in crashes.
 //
-#ifndef EventUnregisterKayMcCormick_Development_CodeAnalysis
-#define EventUnregisterKayMcCormick_Development_CodeAnalysis() McGenEventUnregister(&KayMcCormick_Development_CodeAnalysisHandle)
+#ifndef EventUnregisterKay_McCormick
+#define EventUnregisterKay_McCormick() McGenEventUnregister(&Kay_McCormickHandle)
 #endif
 
 //
 // Enablement check macro for SETUP_LOGGING_EVENT
 //
-#define EventEnabledSETUP_LOGGING_EVENT() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 0)
+#define EventEnabledSETUP_LOGGING_EVENT() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 0)
 
 //
 // Event write macros for SETUP_LOGGING_EVENT
@@ -686,7 +691,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Enablement check macro for CODE_ANALYSIS_EVENT
 //
-#define EventEnabledCODE_ANALYSIS_EVENT() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 1)
+#define EventEnabledCODE_ANALYSIS_EVENT() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 1)
 
 //
 // Event write macros for CODE_ANALYSIS_EVENT
@@ -700,7 +705,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Enablement check macro for EVENT_COMPONENT_RESOLVED
 //
-#define EventEnabledEVENT_COMPONENT_RESOLVED() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 2)
+#define EventEnabledEVENT_COMPONENT_RESOLVED() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 2)
 
 //
 // Event write macros for EVENT_COMPONENT_RESOLVED
@@ -714,7 +719,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Enablement check macro for EVENT_COMPONENT_REGISTERED
 //
-#define EventEnabledEVENT_COMPONENT_REGISTERED() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 2)
+#define EventEnabledEVENT_COMPONENT_REGISTERED() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 2)
 
 //
 // Event write macros for EVENT_COMPONENT_REGISTERED
@@ -728,7 +733,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Enablement check macro for EVENT_TEST_OUTPUT
 //
-#define EventEnabledEVENT_TEST_OUTPUT() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 3)
+#define EventEnabledEVENT_TEST_OUTPUT() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 3)
 
 //
 // Event write macros for EVENT_TEST_OUTPUT
@@ -742,7 +747,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Enablement check macro for EVENT_LEAFSERVICE_MESSAGE
 //
-#define EventEnabledEVENT_LEAFSERVICE_MESSAGE() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 1)
+#define EventEnabledEVENT_LEAFSERVICE_MESSAGE() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 1)
 
 //
 // Event write macros for EVENT_LEAFSERVICE_MESSAGE
@@ -756,7 +761,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Enablement check macro for LOGTARGET_ATTACHED_EVENT
 //
-#define EventEnabledLOGTARGET_ATTACHED_EVENT() MCGEN_EVENT_BIT_SET(KayMcCormick_Development_CodeAnalysisEnableBits, 4)
+#define EventEnabledLOGTARGET_ATTACHED_EVENT() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 4)
 
 //
 // Event write macros for LOGTARGET_ATTACHED_EVENT
@@ -766,6 +771,20 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
         ? McTemplateU0zz(&PROVIDER_GUID_Context, &LOGTARGET_ATTACHED_EVENT, TargetName, TargetType) : 0
 #define EventWriteLOGTARGET_ATTACHED_EVENT_AssumeEnabled(TargetName, TargetType) \
         McTemplateU0zz(&PROVIDER_GUID_Context, &LOGTARGET_ATTACHED_EVENT, TargetName, TargetType)
+
+//
+// Enablement check macro for EXCEPTION_RAISED_EVENT
+//
+#define EventEnabledEXCEPTION_RAISED_EVENT() MCGEN_EVENT_BIT_SET(Kay_McCormickEnableBits, 5)
+
+//
+// Event write macros for EXCEPTION_RAISED_EVENT
+//
+#define EventWriteEXCEPTION_RAISED_EVENT(ExceptionType, StackTrace, Message, __binlength, SerializedForm) \
+        MCGEN_EVENT_ENABLED(EXCEPTION_RAISED_EVENT) \
+        ? McTemplateU0zzzqbr3(&PROVIDER_GUID_Context, &EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm) : 0
+#define EventWriteEXCEPTION_RAISED_EVENT_AssumeEnabled(ExceptionType, StackTrace, Message, __binlength, SerializedForm) \
+        McTemplateU0zzzqbr3(&PROVIDER_GUID_Context, &EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm)
 
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 
@@ -882,6 +901,47 @@ McTemplateU0zz(
 }
 #endif // McTemplateU0zz_def
 
+//
+//Template from manifest : t8
+//
+#ifndef McTemplateU0zzzqbr3_def
+#define McTemplateU0zzzqbr3_def
+ETW_INLINE
+ULONG
+McTemplateU0zzzqbr3(
+    _In_ PMCGEN_TRACE_CONTEXT Context,
+    _In_ PCEVENT_DESCRIPTOR Descriptor,
+    _In_opt_ PCWSTR  _Arg0,
+    _In_opt_ PCWSTR  _Arg1,
+    _In_opt_ PCWSTR  _Arg2,
+    _In_ const unsigned int  _Arg3,
+    _In_reads_(_Arg3) const unsigned char*  _Arg4
+    )
+{
+#define McTemplateU0zzzqbr3_ARGCOUNT 5
+
+    EVENT_DATA_DESCRIPTOR EventData[McTemplateU0zzzqbr3_ARGCOUNT + 1];
+
+    EventDataDescCreate(&EventData[1],
+                        (_Arg0 != NULL) ? _Arg0 : L"NULL",
+                        (_Arg0 != NULL) ? (ULONG)((wcslen(_Arg0) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L"NULL"));
+
+    EventDataDescCreate(&EventData[2],
+                        (_Arg1 != NULL) ? _Arg1 : L"NULL",
+                        (_Arg1 != NULL) ? (ULONG)((wcslen(_Arg1) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L"NULL"));
+
+    EventDataDescCreate(&EventData[3],
+                        (_Arg2 != NULL) ? _Arg2 : L"NULL",
+                        (_Arg2 != NULL) ? (ULONG)((wcslen(_Arg2) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L"NULL"));
+
+    EventDataDescCreate(&EventData[4],&_Arg3, sizeof(const unsigned int)  );
+
+    EventDataDescCreate(&EventData[5],_Arg4, (ULONG)sizeof(char)*_Arg3);
+
+    return McGenEventWrite(Context, Descriptor, NULL, McTemplateU0zzzqbr3_ARGCOUNT + 1, EventData);
+}
+#endif // McTemplateU0zzzqbr3_def
+
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 
 #if defined(__cplusplus)
@@ -895,6 +955,7 @@ McTemplateU0zz(
 #define MSG_Task_Initialization              0x70000001L
 #define MSG_Task_CodeAnalysis                0x70000002L
 #define MSG_task_TASK_CONTAINER_SETUP_message 0x70000003L
+#define MSG_task_TASK_TESTING_message        0x70000004L
 #define MSG_Provider_Name                    0x90000001L
 #define MSG_Event_SetupLogging               0xB0000001L
 #define MSG_Event_CodeAnalysis_CodeAnalysis  0xB0000002L
@@ -902,3 +963,4 @@ McTemplateU0zz(
 #define MSG_Event_4_message                  0xB0000004L
 #define MSG_Event_5_message                  0xB0000005L
 #define MSG_Event_LogTargetAttached          0xB0000007L
+#define MSG_Event_ExceptionRaised            0xB0000008L

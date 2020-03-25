@@ -14,11 +14,21 @@ using System.Collections ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 
-namespace ProjInterface
+namespace KayMcCormick.Dev
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class HashtableConverter : JsonConverter < Hashtable >
     {
         #region Overrides of JsonConverter<Hashtable>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override Hashtable Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

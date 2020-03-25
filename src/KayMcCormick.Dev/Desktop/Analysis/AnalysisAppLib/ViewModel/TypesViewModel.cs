@@ -32,6 +32,12 @@ namespace AnalysisAppLib.ViewModel
     {
         private bool _showBordersIsChecked = false ;
 
+        private uint[] _hierarchyColors = new[]
+                                          {
+                                              0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c
+                                            , 0xff3c6e7d , 0xff533ca3
+                                          } ;
+
         private AppTypeInfo root =
             new AppTypeInfo (
                              new ObservableCollection < AppTypeInfo > ( )
@@ -67,11 +73,11 @@ namespace AnalysisAppLib.ViewModel
                                                           ) )
             {
                 var info = map[ methodInfo.ReturnType ] ;
-                info.FactoryMethods.Add ( methodInfo ) ;
+                info.FactoryMethods.Add ( new AppMethodInfo { MethodInfo = methodInfo } ) ;
                 Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
-            foreach ( var pair in map )
+            foreach ( var pair in map.Where(pair => pair.Key != typeof(CSharpSyntaxNode)) )
             {
                 //}.Where ( pair => pair.Key.IsAbstract == false ) )
                 {
@@ -162,12 +168,28 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
-        private AppTypeInfo CollectTypeInfos ( AppTypeInfo parentTypeInfo , Type rootR )
+        public uint[] HierarchyColors
         {
-            var r = new AppTypeInfo ( ) { Type = rootR , ParentInfo = parentTypeInfo } ;
+            get { return _hierarchyColors ; }
+            set { _hierarchyColors = value ; }
+        }
+
+        private AppTypeInfo CollectTypeInfos (
+            AppTypeInfo parentTypeInfo
+          , Type        rootR
+          , int         level = 0
+        )
+        {
+            var r = new AppTypeInfo ( )
+                    {
+                        Type           = rootR
+                      , ParentInfo     = parentTypeInfo
+                      , HierarchyLevel = level
+                      , ColorValue     = HierarchyColors[ level ]
+                    } ;
             foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
             {
-                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 ) ) ;
+                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
             }
 
             map[ rootR ] = r ;

@@ -12,11 +12,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
     case DLL_PROCESS_ATTACH:
     case DLL_THREAD_ATTACH:
-		EventRegisterKayMcCormick_Development_CodeAnalysis();
+		EventRegisterKay_McCormick();
 		break;
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
-		EventUnregisterKayMcCormick_Development_CodeAnalysis();
+		EventUnregisterKay_McCormick();
         break;
     }
     return TRUE;

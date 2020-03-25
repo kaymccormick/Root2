@@ -24,17 +24,17 @@ namespace KayMcCormick.Dev.Tracing
     public static class PROVIDER_GUID
     {
         //
-        // Provider "KayMcCormick-Development-CodeAnalysis" event count = 7
+        // Provider "Kay McCormick" event count = 8
         //
 
-        internal static EventProviderVersionTwo m_provider = new EventProviderVersionTwo(new Guid("5dd6e00a-e8fc-4e66-b8d7-dc8f0d62b0a1"));
+        internal static EventProviderVersionTwo m_provider = new EventProviderVersionTwo(new Guid("91068038-d3ce-44bc-a0f4-966ca64e2994"));
         //
         // Task :  eventGUIDs
         //
-        private static Guid InitializationId = new Guid("0f6f2e80-ee12-4cc7-a8d3-91cd66013055");
-        private static Guid CodeAnalysisId = new Guid("f8eb7d1a-98fe-4c21-a7fe-d626dffdfacf");
-        private static Guid ContainerSetupId = new Guid("13fd22f9-ec69-4ebc-8d86-02ff4cf2394c");
-        private static Guid TestingId = new Guid("d0c260eb-437e-4de6-a558-a23f5d2f15ba");
+        private static Guid InitializationId = new Guid("0fb6694d-c817-4f5d-8535-f7a71ff81543");
+        private static Guid CodeAnalysisId = new Guid("0f2f2da4-5706-4e2a-b9a2-fdd9c0d148c4");
+        private static Guid ContainerSetupId = new Guid("899ccee3-d93b-4989-8484-4b6ec4c90936");
+        private static Guid TestingId = new Guid("ef3c49e7-0273-4311-be6b-ef9d2ba18b5d");
 
         //
         // Event Descriptors
@@ -46,6 +46,7 @@ namespace KayMcCormick.Dev.Tracing
         private static EventDescriptor EVENT_TEST_OUTPUT;
         private static EventDescriptor EVENT_LEAFSERVICE_MESSAGE;
         private static EventDescriptor LOGTARGET_ATTACHED_EVENT;
+        private static EventDescriptor EXCEPTION_RAISED_EVENT;
 
         static PROVIDER_GUID()
         {
@@ -58,6 +59,7 @@ namespace KayMcCormick.Dev.Tracing
                 EVENT_TEST_OUTPUT = new EventDescriptor(0x5, 0x0, 0x12, 0x5, 0x0, 0x4, (long)0x2000000000000000);
                 EVENT_LEAFSERVICE_MESSAGE = new EventDescriptor(0x6, 0x0, 0x10, 0x4, 0x0, 0x0, (long)0x8000000000000000);
                 LOGTARGET_ATTACHED_EVENT = new EventDescriptor(0x7, 0x0, 0x11, 0x5, 0xc, 0x0, (long)0x4000000000000001);
+                EXCEPTION_RAISED_EVENT = new EventDescriptor(0x8, 0x0, 0x10, 0x2, 0x0, 0x0, (long)0x8000000000000000);
             }
         }
 
@@ -130,6 +132,19 @@ namespace KayMcCormick.Dev.Tracing
             }
 
             return m_provider.Templatet7(ref LOGTARGET_ATTACHED_EVENT, TargetName, TargetType);
+        }
+
+        //
+        // Event method for EXCEPTION_RAISED_EVENT
+        //
+        public static bool EventWriteEXCEPTION_RAISED_EVENT(string ExceptionType, string StackTrace, string Message, uint __binlength, byte[] SerializedForm)
+        {
+            if (!m_provider.IsEnabled())
+            {
+                return true;
+            }
+
+            return m_provider.Templatet8(ref EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm);
         }
     }
 
@@ -216,6 +231,55 @@ namespace KayMcCormick.Dev.Tracing
                     userDataPtr[0].DataPointer = (ulong)a0;
                     userDataPtr[1].DataPointer = (ulong)a1;
                     status = WriteEvent(ref eventDescriptor, argumentCount, (IntPtr)(userData));
+                }
+            }
+
+            return status;
+        }
+
+        internal unsafe bool Templatet8(
+            ref EventDescriptor eventDescriptor,
+            string ExceptionType,
+            string StackTrace,
+            string Message,
+            uint __binlength,
+            byte[] SerializedForm
+            )
+        {
+            int argumentCount = 5;
+            bool status = true;
+
+            if (IsEnabled(eventDescriptor.Level, eventDescriptor.Keywords))
+            {
+                byte* userData = stackalloc byte[sizeof(EventData) * argumentCount];
+                EventData* userDataPtr = (EventData*)userData;
+
+                // Value is a nul-terminated string (assume no embedded nuls):
+                userDataPtr[0].Size = (uint)(ExceptionType.Length + 1)*sizeof(char);
+
+                // Value is a nul-terminated string (assume no embedded nuls):
+                userDataPtr[1].Size = (uint)(StackTrace.Length + 1)*sizeof(char);
+
+                // Value is a nul-terminated string (assume no embedded nuls):
+                userDataPtr[2].Size = (uint)(Message.Length + 1)*sizeof(char);
+
+                userDataPtr[3].DataPointer = (UInt64)(&__binlength);
+                userDataPtr[3].Size = (uint)(sizeof(int)  );
+
+                // Value has length = __binlength:
+                if (SerializedForm.Length < sizeof(byte)*__binlength  ) return false;
+                userDataPtr[4].Size = (uint)(sizeof(byte)*__binlength  );
+
+                fixed (char* a0 = ExceptionType, a1 = StackTrace, a2 = Message)
+                {
+                    userDataPtr[0].DataPointer = (ulong)a0;
+                    userDataPtr[1].DataPointer = (ulong)a1;
+                    userDataPtr[2].DataPointer = (ulong)a2;
+                    fixed (byte* b0 = SerializedForm)
+                    {
+                        userDataPtr[4].DataPointer = (ulong)b0;
+                        status = WriteEvent(ref eventDescriptor, argumentCount, (IntPtr)(userData));
+                    }
                 }
             }
 

@@ -2,30 +2,30 @@
 <instrumentationManifest xsi:schemaLocation="http://schemas.microsoft.com/win/2004/08/events eventman.xsd" xmlns="http://schemas.microsoft.com/win/2004/08/events" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:trace="http://schemas.microsoft.com/win/2004/08/events/trace">
 <instrumentation>
 <events>
-<provider name="KayMcCormick-Development-CodeAnalysis" guid="{5DD6E00A-E8FC-4E66-B8D7-DC8F0D62B0A1}" symbol="PROVIDER_GUID" resourceFileName="c:\tools\CompatLib1.dll" messageFileName="c:\tools\CompatLib1.dll" message="$(string.Provider.Name)">
+<provider name="Kay McCormick" guid="{91068038-d3ce-44bc-a0f4-966ca64e2994}" symbol="PROVIDER_GUID" resourceFileName="c:\analysis\CompatLib1.dll" messageFileName="c:\analysis\CompatLib1.dll" message="$(string.Provider.Name)">
 <events>
-<event symbol="SETUP_LOGGING_EVENT" value="1" version="0" channel="KayMcCormick-Development-Provider-Operational" level="win:Verbose" task="Initialization" opcode="SetupLogging" template="t2" keywords="Logging " message="$(string.Event.SetupLogging)">
+<event symbol="SETUP_LOGGING_EVENT" value="1" version="0" channel="KayMcCormick-Operational" level="win:Verbose" task="Initialization" opcode="SetupLogging" template="t2" keywords="Logging " message="$(string.Event.SetupLogging)">
 </event>
-<event symbol="CODE_ANALYSIS_EVENT" value="2" version="0" channel="KayMcCormick-Development-Provider-Operational" level="win:Informational" task="CodeAnalysis" opcode="CodeAnalysis" template="t3" message="$(string.Event.CodeAnalysis.CodeAnalysis)">
+<event symbol="CODE_ANALYSIS_EVENT" value="2" version="0" channel="KayMcCormick-Operational" level="win:Informational" task="CodeAnalysis" opcode="CodeAnalysis" template="t3" message="$(string.Event.CodeAnalysis.CodeAnalysis)">
 </event>
-<event symbol="EVENT_COMPONENT_RESOLVED" value="3" version="0" channel="KayMcCormick-Development-Provider-Debug" level="win:Informational" message="$(string.Event.3.message)">
+<event symbol="EVENT_COMPONENT_RESOLVED" value="3" version="0" channel="KayMcCormick-Debug" level="win:Informational" message="$(string.Event.3.message)">
 </event>
-<event symbol="EVENT_COMPONENT_REGISTERED" value="4" version="0" channel="KayMcCormick-Development-Provider-Debug" level="win:Informational" template="t4" message="$(string.Event.4.message)"/>
-<event symbol="EVENT_TEST_OUTPUT" value="5" version="0" channel="KayMcCormick-Development-Provider-Testing" level="win:Verbose" template="t5" message="$(string.Event.5.message)" task="Testing"/>
-<event symbol="EVENT_LEAFSERVICE_MESSAGE" value="6" version="0" channel="KayMcCormick-Development-Provider-Operational"  level="win:Informational" template="t5" message="$(string.Event.5.message)">
+<event symbol="EVENT_COMPONENT_REGISTERED" value="4" version="0" channel="KayMcCormick-Debug" level="win:Informational" template="t4" message="$(string.Event.4.message)"/>
+<event symbol="EVENT_TEST_OUTPUT" value="5" version="0" channel="KayMcCormick-Testing" level="win:Verbose" template="t5" message="$(string.Event.5.message)" task="Testing"/>
+<event symbol="EVENT_LEAFSERVICE_MESSAGE" value="6" version="0" channel="KayMcCormick-Operational"  level="win:Informational" template="t5" message="$(string.Event.5.message)">
 </event>
-<event symbol="LOGTARGET_ATTACHED_EVENT" value="7" version="0" channel="KayMcCormick-Development-Provider-Debug" level="win:Verbose" template="t7" keywords="Logging " opcode="LogTargetAttach" message="$(string.Event.LogTargetAttached)"/>
-
+<event symbol="LOGTARGET_ATTACHED_EVENT" value="7" version="0" channel="KayMcCormick-Debug" level="win:Verbose" template="t7" keywords="Logging " opcode="LogTargetAttach" message="$(string.Event.LogTargetAttached)"/>
+<event symbol="EXCEPTION_RAISED_EVENT" value="8" version="0" channel="KayMcCormick-Operational" level="win:Error" template="t8" keywords="" message="$(string.Event.ExceptionRaised)"/>
 </events>
 <levels>
 </levels>
 <tasks>
-<task name="Initialization" symbol="TASK_INITIALIZATION" value="1" eventGUID="{0F6F2E80-EE12-4CC7-A8D3-91CD66013055}" message="$(string.Task.Initialization)">
+<task name="Initialization" symbol="TASK_INITIALIZATION" value="1" eventGUID="{0fb6694d-c817-4f5d-8535-f7a71ff81543}" message="$(string.Task.Initialization)">
 </task>
-<task name="CodeAnalysis" symbol="TASK_CODE_ANALYSIS" value="2" eventGUID="{F8EB7D1A-98FE-4C21-A7FE-D626DFFDFACF}" message="$(string.Task.CodeAnalysis)">
+<task name="CodeAnalysis" symbol="TASK_CODE_ANALYSIS" value="2" eventGUID="{0f2f2da4-5706-4e2a-b9a2-fdd9c0d148c4}" message="$(string.Task.CodeAnalysis)">
 </task>
-<task name="ContainerSetup" symbol="TASK_CONTAINER_SETUP" value="3" eventGUID="{13FD22F9-EC69-4EBC-8D86-02FF4CF2394C}" message="$(string.task.TASK_CONTAINER_SETUP.message)"/>
-<task name="Testing" symbol="TASK_TESTING" value="4" eventGUID="{d0c260eb-437e-4de6-a558-a23f5d2f15ba}" message="$(string.task.TASK_TESTING.message)">
+<task name="ContainerSetup" symbol="TASK_CONTAINER_SETUP" value="3" eventGUID="{899ccee3-d93b-4989-8484-4b6ec4c90936}" message="$(string.task.TASK_CONTAINER_SETUP.message)"/>
+<task name="Testing" symbol="TASK_TESTING" value="4" eventGUID="{ef3c49e7-0273-4311-be6b-ef9d2ba18b5d}" message="$(string.task.TASK_TESTING.message)">
 </task>
 </tasks>
 <opcodes>
@@ -36,10 +36,10 @@
 </opcode>
 </opcodes>
 <channels>
-<channel name="KayMcCormick-Development-Provider-Operational" chid="c2" type="Operational" enabled="true">
+<channel name="KayMcCormick-Operational" chid="c2" type="Operational" enabled="true">
 </channel>
-<channel name="KayMcCormick-Development-Provider-Debug" chid="c3" type="Debug" enabled="true"/>
-<channel name="KayMcCormick-Development-Provider-Testing" chid="c4" type="Debug" enabled="true">
+<channel name="KayMcCormick-Debug" chid="c3" type="Operational" enabled="true"/>
+<channel name="KayMcCormick-Testing" chid="c4" type="Operational" enabled="true">
 </channel>
 </channels>
 <keywords>
@@ -74,6 +74,13 @@
 <data name="TargetName" inType="win:UnicodeString" outType="xs:string"/>
 <data name="TargetType" inType="win:UnicodeString" outType="xs:string"/>
 </template>
+<template tid="t8">
+<data name="ExceptionType" inType="win:UnicodeString" outType="xs:string"/>
+<data name="StackTrace" inType="win:UnicodeString" outType="xs:string"/>
+<data name="Message" inType="win:UnicodeString" outType="xs:string"/>
+<data name="__binlength" inType="win:UInt32"/>
+<data name="SerializedForm" inType="win:Binary" outType="xs:hexBinary" length="__binlength"/>
+</template>
 </templates>
 </provider>
 </events>
@@ -91,7 +98,7 @@
 </string>
 <string id="Task.CodeAnalysis" value="Code Analyis">
 </string>
-<string id="Provider.Name" value="KayMcCormick-Development-Provider">
+<string id="Provider.Name" value="Kay McCormick">
 </string>
 <string id="task.TASK_CONTAINER_SETUP.message" value="Configuration of autofac IOC container">
 </string>
@@ -110,8 +117,8 @@
 <string id="Event.7.message" value="Log target attached %1 %2"/>
 <string id="Task.Logging.LogTargetAttach" value="Log target attached"/>
 <string id="task.TASK_TESTING.message" value="Testing task"/>
+<string id="Event.ExceptionRaised" value="Exception raised of type %1: %3 %2"/>
 </stringTable>
 </resources>
 </localization>
 </instrumentationManifest>
-

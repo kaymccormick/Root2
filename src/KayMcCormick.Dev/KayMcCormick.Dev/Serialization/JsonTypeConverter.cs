@@ -14,7 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
-namespace KayMcCormick.Dev.Logging
+namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// 
@@ -60,7 +60,10 @@ namespace KayMcCormick.Dev.Logging
                 throw new ArgumentNullException ( nameof ( value ) ) ;
             }
 
-            writer.WriteStringValue ( value.FullName ) ;
+            writer.WriteStartObject();
+            writer.WriteString ( "FullName" , value.FullName ) ;
+            writer.WriteString ( "AssemblyQualifiedName" , value.AssemblyQualifiedName ) ;
+            writer.WriteEndObject (  );
         }
         #endregion
     }

@@ -7,13 +7,33 @@
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
         xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
         xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
+        xmlns:anal="http://kaymccormick.com/xaml/analysis"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+  <kmWpf:AppWindow.Resources>
+    <views:TypesView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Key="ctrl1">
+      <views:TypesView.CommandBindings>
+        <CommandBinding Command="Save" Executed="CommandBinding_OnExecuted"></CommandBinding>
+        <CommandBinding Command="Open" Executed="CommandBinding_OnExecuted2"></CommandBinding>
+      </views:TypesView.CommandBindings>
+      <views:TypesView.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"></KeyBinding>
+        <KeyBinding Key="L" Modifiers="Control" Command="Open"></KeyBinding>
+      </views:TypesView.InputBindings>
+      <views:TypesView.ViewModel>
+        <viewModel:TypesViewModel/>
+      </views:TypesView.ViewModel>
+    </views:TypesView>
+  </kmWpf:AppWindow.Resources>
   <Grid>
-  <views:TypesView VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-    <views:TypesView.ViewModel>
-      <viewModel:TypesViewModel/>
-    </views:TypesView.ViewModel>
-  </views:TypesView>
+    <views:SyntaxPanel>
+      <views:SyntaxPanel.ViewModel>
+        <viewModel:SyntaxPanelViewModel>
+          <viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
+            <anal:ProvideCompilationUnitSyntax/>
+          </viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
+        </viewModel:SyntaxPanelViewModel>
+      </views:SyntaxPanel.ViewModel>
+    </views:SyntaxPanel>
   </Grid>
 </kmWpf:AppWindow>

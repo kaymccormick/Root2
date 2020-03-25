@@ -9,11 +9,9 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Reflection ;
 using System.Text.Json ;
-using System.Text.Json.Serialization ;
 using Autofac ;
+using KayMcCormick.Dev.Serialization ;
 using NLog ;
 using NLog.Layouts ;
 
@@ -63,77 +61,6 @@ namespace KayMcCormick.Dev.Logging
         protected override string GetFormattedMessage(LogEventInfo logEvent)
         {
             return JsonSerializer.Serialize(logEvent, Options);
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class JsonTypeConverterFactory : JsonConverterFactory
-    {
-        #region Overrides of JsonConverter
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <returns></returns>
-        public override bool CanConvert ( Type typeToConvert )
-        {
-            return typeof ( Type ).IsAssignableFrom ( typeToConvert ) ;
-        }
-        #endregion
-        #region Overrides of JsonConverterFactory
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override JsonConverter CreateConverter (
-            Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            if ( typeof ( TypeInfo ).IsAssignableFrom ( typeToConvert ) )
-            {
-                return new JsonTypeInfoConverter ( ) ;
-            }
-            return new JsonTypeConverter();
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class JsonTypeInfoConverter : JsonConverter<TypeInfo>
-    {
-        #region Overrides of JsonConverter<TypeInfo>
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override TypeInfo Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="value"></param>
-        /// <param name="options"></param>
-        public override void Write (
-            Utf8JsonWriter        writer
-          , TypeInfo              value
-          , JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject();
-            writer.WriteString("TypeInfo", value.AssemblyQualifiedName);
-            writer.WriteEndObject();
         }
         #endregion
     }
