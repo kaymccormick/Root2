@@ -584,6 +584,14 @@
             <param name="options"></param>
             <returns></returns>
         </member>
+        <member name="M:KayMcCormick.Dev.HashtableConverter.Write(System.Text.Json.Utf8JsonWriter,System.Collections.Hashtable,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="options"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.IViewWithTitle">
             <summary>
             

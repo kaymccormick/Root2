@@ -5,10 +5,9 @@
   <!-- <?define KmGlobalOutputPath_TargetDir=$(var.KmGlobalOutputPath)?> -->
   <?define ProjInterface_TargetDir=$(var.ProjInterface.TargetDir)?>
   <?define ProjLib_TargetDir=$(var.ProjLib.TargetDir)?>
-  <?define WpfApp_TargetDir=$(var.WpfApp.TargetDir)?>
-  <?define WpfApp2_TargetDir=$(var.WpfApp2.TargetDir)?>
   <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
-  <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?><?define AnalysisFramework_TargetDir=$(var.AnalysisFramework.TargetDir)?><?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?><?define LeafService_TargetDir=$(var.LeafService.TargetDir)?><?define Leaf1AddInSideAdapter_TargetDir=$(var.Leaf1AddInSideAdapter.TargetDir)?><?define Leaf1Contract_TargetDir=$(var.Leaf1Contract.TargetDir)?><?define Leaf1HVA_TargetDir=$(var.Leaf1HVA.TargetDir)?><?define Service1AddInView_TargetDir=$(var.Service1AddInView.TargetDir)?><?define Leaf1HostSideAdapter_TargetDir=$(var.Leaf1HostSideAdapter.TargetDir)?><?define AddInService1V1_TargetDir=$(var.AddInService1V1.TargetDir)?>
+  <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?>
+  <?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?><?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?><?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?><?define LeafService_TargetDir=$(var.LeafService.TargetDir)?><?define Leaf1AddInSideAdapter_TargetDir=$(var.Leaf1AddInSideAdapter.TargetDir)?><?define Leaf1Contract_TargetDir=$(var.Leaf1Contract.TargetDir)?><?define Leaf1HVA_TargetDir=$(var.Leaf1HVA.TargetDir)?><?define Service1AddInView_TargetDir=$(var.Service1AddInView.TargetDir)?><?define Leaf1HostSideAdapter_TargetDir=$(var.Leaf1HostSideAdapter.TargetDir)?><?define AddInService1V1_TargetDir=$(var.AddInService1V1.TargetDir)?><?define AnalysisAppLib_TargetDir=$(var.AnalysisAppLib.TargetDir)?>
   <Product Id="*" Name="Kay_McCormick_Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Kay McCormick" UpgradeCode="715179D2-24C8-46D4-A637-03DABC5A52A1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -19,6 +18,8 @@
       <ComponentGroupRef Id="_files" />
       <ComponentGroupRef Id="lib_win32_x86_files" />
       <ComponentGroupRef Id="lib_win32_x64_files" />
+      <ComponentGroupRef Id="Assets_LaunchSamplingTargets_SVG_files" />
+      <ComponentGroupRef Id="Assets_files" />
     </Feature>
   </Product>
   <Fragment>
@@ -94,6 +95,11 @@
             </Directory>
           </Directory>
           <Directory Id="bin" Name="bin" />
+          <Directory Id="Assets" Name="Assets">
+            <Directory Id="Assets_LaunchSamplingTargets" Name="LaunchSamplingTargets">
+              <Directory Id="Assets_LaunchSamplingTargets_SVG" Name="SVG" />
+            </Directory>
+          </Directory>
         </Directory>
       </Directory>
     </Directory>
@@ -148,27 +154,17 @@
       <Component Id="ProjLib.dll" Guid="4BB3307E-D03B-4FA2-B053-8465D5E36AA3">
         <File KeyPath="yes" Id="ProjLib.dll" Name="ProjLib.dll" Source="$(var.ProjLib_TargetDir)ProjLib.dll" />
       </Component>
-      <Component Id="WpfApp.exe" Guid="A8B84463-A0E5-40B1-BEFA-1AE32F963EBE">
-        <File KeyPath="yes" Id="WpfApp.exe" Name="WpfApp.exe" Source="$(var.WpfApp_TargetDir)WpfApp.exe" />
-      </Component>
-      <Component Id="WpfApp.exe.config" Guid="2BE12BB0-B1F3-4CAB-BBC0-EBFEFA749587">
-        <File KeyPath="yes" Id="WpfApp.exe.config" Name="WpfApp.exe.config" Source="$(var.WpfApp_TargetDir)WpfApp.exe.config" />
-      </Component>
-      <Component Id="WpfApp2.exe" Guid="2DDA6BBD-9DAA-4527-AE21-72254A5DBF89">
-        <File KeyPath="yes" Id="WpfApp2.exe" Name="WpfApp2.exe" Source="$(var.WpfApp2_TargetDir)WpfApp2.exe" />
-      </Component>
-      <Component Id="WpfApp2.exe.config" Guid="04B2F9EA-A9A9-401B-A36E-71BD079DEAF5">
-        <File KeyPath="yes" Id="WpfApp2.exe.config" Name="WpfApp2.exe.config" Source="$(var.WpfApp2_TargetDir)WpfApp2.exe.config" />
-      </Component>
+      
+      
+      
+      
       <Component Id="KayMcCormick.Lib.Wpf.dll" Guid="F78EC651-F4BD-4078-A1D4-C00BDD04A452">
         <File KeyPath="yes" Id="KayMcCormick.Lib.Wpf.dll" Name="KayMcCormick.Lib.Wpf.dll" Source="$(var.KayMcCormick.Lib.Wpf_TargetDir)KayMcCormick.Lib.Wpf.dll" />
       </Component>
       <Component Id="AnalysisControls.dll" Guid="E66B8682-4F7E-40C0-B423-77EA453ACE69">
         <File KeyPath="yes" Id="AnalysisControls.dll" Name="AnalysisControls.dll" Source="$(var.AnalysisControls_TargetDir)AnalysisControls.dll" />
       </Component>
-      <Component Id="AnalysisFramework.dll" Guid="E2226093-F729-43CC-B2BD-B7E3EFE7C643">
-        <File KeyPath="yes" Id="AnalysisFramework.dll" Name="AnalysisFramework.dll" Source="$(var.AnalysisFramework_TargetDir)AnalysisFramework.dll" />
-      </Component>
+      
 
 
       <Component Id="ConfigTest.exe" Guid="77B75EE6-A8C9-418E-BA21-48465818971B">
@@ -247,11 +243,6 @@
       </Component>
 
 
-      <Component Id="Autofac.Extras.AttributeMetadata.dll" Guid="44D90832-6CB7-49DD-8756-5960828AAA78">
-        <File KeyPath="yes" Id="Autofac.Extras.AttributeMetadata.dll" Name="Autofac.Extras.AttributeMetadata.dll" Source="$(var.WpfApp_TargetDir)Autofac.Extras.AttributeMetadata.dll" />
-      </Component>
-
-
       <Component Id="Microsoft.Extensions.DependencyInjection.dll" Guid="00DE8A36-2FE5-4B55-A2CF-599707D1C083">
         <File KeyPath="yes" Id="Microsoft.Extensions.DependencyInjection.dll" Name="Microsoft.Extensions.DependencyInjection.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
       </Component>
@@ -303,9 +294,6 @@
       </Component>
       <Component Id="Xceed.Wpf.Toolkit.dll" Guid="08699CE0-61F8-4BA7-8854-2AE7DA97D7BF">
         <File KeyPath="yes" Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.AnalysisControls_TargetDir)Xceed.Wpf.Toolkit.dll" />
-      </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="E41F6AE5-6974-465C-A7E9-04417BB11211">
-        <File KeyPath="yes" Id="Xceed.Wpf.AvalonDock.dll" Name="Xceed.Wpf.AvalonDock.dll" Source="$(var.AnalysisControls_TargetDir)Xceed.Wpf.AvalonDock.dll" />
       </Component>
       <Component Id="System.Collections.Immutable.dll" Guid="04735F8E-BAE1-4552-A93C-498C1BFDFB65">
         <File KeyPath="yes" Id="System.Collections.Immutable.dll" Name="System.Collections.Immutable.dll" Source="$(var.AnalysisControls_TargetDir)System.Collections.Immutable.dll" />
@@ -364,29 +352,37 @@
       <Component Id="Microsoft.Build.Locator.dll" Guid="08CFFFD9-610E-4464-AB71-8B8C1477E3D5">
         <File KeyPath="yes" Id="Microsoft.Build.Locator.dll" Name="Microsoft.Build.Locator.dll" Source="$(var.ConsoleApp1_TargetDir)Microsoft.Build.Locator.dll" />
       </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="E5954111-BCDC-4FED-A347-100483EACFB5">
-        <File KeyPath="yes" Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Name="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.ProjInterface_TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
-      </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="260514AD-67E7-45C0-9C07-4EA83E39824D">
-        <File KeyPath="yes" Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Name="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.ProjInterface_TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
-      </Component>
-      <Component Id="DynamicData.dll" Guid="542FAEB7-A110-4F4A-AB93-DDA59A81D108">
-        <File KeyPath="yes" Id="DynamicData.dll" Name="DynamicData.dll" Source="$(var.WpfApp_TargetDir)DynamicData.dll" />
-      </Component>
-      <Component Id="Autofac.Extras.DynamicProxy.dll" Guid="B89437C5-6DC4-48E6-A2D0-21B47BEC289F">
-        <File KeyPath="yes" Id="Autofac.Extras.DynamicProxy.dll" Name="Autofac.Extras.DynamicProxy.dll" Source="$(var.WpfApp_TargetDir)Autofac.Extras.DynamicProxy.dll" />
-      </Component>
-      <Component Id="Vanara.Core.dll" Guid="B8B71759-C628-44D5-9126-3068AAF00879">
-        <File KeyPath="yes" Id="Vanara.Core.dll" Name="Vanara.Core.dll" Source="$(var.WpfApp_TargetDir)Vanara.Core.dll" />
-      </Component>
+      
+      
       <Component Id="Leaf1HostSideAdapter.dll" Guid="9D30B011-3807-4804-8F79-E2815AF2EFA7">
         <File KeyPath="yes" Id="Leaf1HostSideAdapter.dll" Name="Leaf1HostSideAdapter.dll" Source="$(var.Leaf1HostSideAdapter_TargetDir)Leaf1HostSideAdapter.dll" />
       </Component>
       <Component Id="AddInService1V1.dll" Guid="AF7958BE-19B9-4F0D-8A84-B545F6120B10">
         <File KeyPath="yes" Id="AddInService1V1.dll" Name="AddInService1V1.dll" Source="$(var.AddInService1V1_TargetDir)AddInService1V1.dll" />
       </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="574C5BEF-ABFC-433C-8C3F-717E267C11BD">
-        <File KeyPath="yes" Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Name="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.ProjInterface_TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+      <Component Id="AnalysisAppLib.dll" Guid="54eba1d2-be8f-4657-9c72-658949660e96">
+        <File Id="AnalysisAppLib.dll" Name="AnalysisAppLib.dll" Source="$(var.AnalysisAppLib_TargetDir)AnalysisAppLib.dll" />
+      </Component>
+      <Component Id="Microsoft.Identity.Client.dll" Guid="c9b0ae0c-0fbd-4dea-b9ea-c01d3129ed6b">
+        <File Id="Microsoft.Identity.Client.dll" Name="Microsoft.Identity.Client.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Identity.Client.dll" />
+      </Component>
+      <Component Id="Microsoft.Graph.Beta.dll" Guid="f1b4306d-d163-487c-bdfb-edd996c17b4e">
+        <File Id="Microsoft.Graph.Beta.dll" Name="Microsoft.Graph.Beta.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Graph.Beta.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="2912886a-7e94-44d6-9e3e-d21e005b7de4">
+        <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.AnalysisControls_TargetDir)Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="Microsoft.Graph.Core.dll" Guid="2ae44e17-09fd-40d3-805a-f0315a963597">
+        <File Id="Microsoft.Graph.Core.dll" Name="Microsoft.Graph.Core.dll" Source="$(var.AnalysisControls_TargetDir)Microsoft.Graph.Core.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.DiagnosticSource.dll" Guid="bddaeb18-db2e-40d7-8a67-b26e22ae103a">
+        <File Id="System.Diagnosticsl.DiagnosticSource.dll" Name="System.Diagnostics.DiagnosticSource.dll" Source="$(var.AnalysisControls_TargetDir)System.Diagnostics.DiagnosticSource.dll" />
+      </Component>
+      <Component Id="Explorer.dll" Guid="f68b1df5-5e75-4a5a-9a0a-311cc63ef98f">
+        <File Id="Explorer.dll" Name="Explorer.dll" Source="$(var.ProjInterface_TargetDir)Explorer.dll" />
+      </Component>
+      <Component Id="AvalonDock.dll" Guid="327f43ed-dc1b-4ad2-a4cd-4af599fc8ab1">
+        <File Id="AvalonDock.dll" Name="AvalonDock.dll" Source="$(var.ProjInterface_TargetDir)AvalonDock.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

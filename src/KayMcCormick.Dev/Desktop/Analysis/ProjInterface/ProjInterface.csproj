@@ -124,7 +124,6 @@
       <DependentUpon>MSBuild.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjCommands.cs" />
-    <Compile Include="ProjUtils.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="VsInstancePanel.xaml.cs">
       <DependentUpon>VsInstancePanel.xaml</DependentUpon>

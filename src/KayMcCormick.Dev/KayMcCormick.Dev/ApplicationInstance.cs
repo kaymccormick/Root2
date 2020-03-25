@@ -11,6 +11,7 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
 using Autofac.Features.Decorators ;
+using Autofac.Integration.Mef ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
@@ -177,6 +178,7 @@ namespace KayMcCormick.Dev
         {
             var builder = new ContainerBuilder ( ) ;
             builder.RegisterModule < AttributedMetadataModule > ( ) ;
+            builder.RegisterMetadataRegistrationSources();
             foreach ( var module in _modules )
             {
                 Logger.Debug ( "Registering module {module}" , module.ToString ( ) ) ;

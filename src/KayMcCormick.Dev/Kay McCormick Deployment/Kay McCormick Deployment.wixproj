@@ -52,6 +52,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Name>AnalysisAppLib</Name>
+      <Project>{0381d4d0-945e-4340-b974-9d07b2830d4f}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
       <Name>AnalysisControls</Name>
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
@@ -79,30 +87,6 @@
     <ProjectReference Include="..\Desktop\Analysis\ProjLib\ProjLib.csproj">
       <Name>ProjLib</Name>
       <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\Desktop\StaticLib1\StaticLib1.vcxproj">
-      <Name>StaticLib1</Name>
-      <Project>{694e1f18-c1be-4741-870c-86645033bbc9}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\Desktop\WpfApp2\WpfApp2.csproj">
-      <Name>WpfApp2</Name>
-      <Project>{fc03e7ad-f794-49ee-9803-61a7423bcef7}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\Desktop\WpfApp\WpfApp.csproj">
-      <Name>WpfApp</Name>
-      <Project>{74792445-f224-4c75-b204-094ff689d950}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

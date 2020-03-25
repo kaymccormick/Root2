@@ -38,6 +38,12 @@ namespace KayMcCormick.Dev
             return null ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
         public override void Write (
             Utf8JsonWriter        writer
           , Hashtable             value

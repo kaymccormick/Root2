@@ -93,7 +93,6 @@
     <Compile Include="MruItem.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="MyLogger2.cs" />
-    <Compile Include="ProjLibContainer.cs" />
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="IMruItems.cs" />
