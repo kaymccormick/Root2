@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestApp"
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+        xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
+        xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-<DockPanel><TextBox Height="50" AcceptsReturn="False" MaxLines="1" DockPanel.Dock="Bottom" KeyDown="UIElement_OnKeyDown">
-</TextBox></DockPanel>
+  <Grid>
+  <views:TypesView VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <views:TypesView.ViewModel>
+      <viewModel:TypesViewModel/>
+    </views:TypesView.ViewModel>
+  </views:TypesView>
+  </Grid>
 </kmWpf:AppWindow>

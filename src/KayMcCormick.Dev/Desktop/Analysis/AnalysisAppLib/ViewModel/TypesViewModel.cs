@@ -12,24 +12,38 @@
 using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel ;
+using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Linq ;
 using System.Reflection ;
+using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using AnalysisAppLib.Syntax ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax ;
 using NLog ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    public class TypesViewModel : ITypesViewModel
+    public class TypesViewModel : ITypesViewModel , INotifyPropertyChanged
     {
         private bool _showBordersIsChecked = false ;
-        private AppTypeInfo                       root ;
+
+        private AppTypeInfo root =
+            new AppTypeInfo (
+                             new ObservableCollection < AppTypeInfo > ( )
+                             {
+                                 new AppTypeInfo ( ) { Type = typeof ( EndBlockStatementSyntax ) }
+                             }
+                            ) { Type = typeof ( CSharpSyntaxNode ) } ;
+
         private List < Type >                     _nodeTypes ;
         private Dictionary < Type , AppTypeInfo > map = new Dictionary < Type , AppTypeInfo > ( ) ;
-        private Dictionary <Type, AppTypeInfo> otherTyps = new Dictionary < Type , AppTypeInfo > ();
+        private Dictionary < Type , AppTypeInfo > otherTyps =
+            new Dictionary < Type , AppTypeInfo > ( ) ;
 #if false
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
@@ -67,11 +81,15 @@ namespace AnalysisAppLib.ViewModel
                                                                           | BindingFlags.Public
                                                                          ) )
                     {
-                        if ( propertyInfo.DeclaringType != pair.Key ) continue ;
+                        if ( propertyInfo.DeclaringType != pair.Key )
+                        {
+                            continue ;
+                        }
+
                         var t = propertyInfo.PropertyType ;
                         // if ( t == typeof ( SyntaxToken ) )
                         // {
-                            // continue ;
+                        // continue ;
                         // }
 
                         var isList = false ;
@@ -96,12 +114,14 @@ namespace AnalysisAppLib.ViewModel
                             {
                                 if ( ! otherTyps.TryGetValue ( t , out otherTypeInfo ) )
                                 {
-                                    otherTypeInfo = otherTyps[ t ] = new AppTypeInfo ( ) { Type = t } ;
+                                    otherTypeInfo =
+                                        otherTyps[ t ] = new AppTypeInfo ( ) { Type = t } ;
                                 }
                             }
                         }
 
-                        if ( typeInfo == null && otherTypeInfo == null)
+                        if ( typeInfo         == null
+                             && otherTypeInfo == null )
                         {
                             continue ;
                         }
@@ -122,20 +142,32 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
-        public AppTypeInfo Root { get { return root ; } set { root = value ; } }
+        public AppTypeInfo Root
+        {
+            get { return root ; }
+            set
+            {
+                root = value ;
+                OnPropertyChanged ( ) ;
+            }
+        }
 
         public bool ShowBordersIsChecked
         {
             get { return _showBordersIsChecked ; }
-            set { _showBordersIsChecked = value ; }
+            set
+            {
+                _showBordersIsChecked = value ;
+                OnPropertyChanged ( ) ;
+            }
         }
 
-        private AppTypeInfo CollectTypeInfos ( AppTypeInfo parentTypeInfo, Type rootR )
+        private AppTypeInfo CollectTypeInfos ( AppTypeInfo parentTypeInfo , Type rootR )
         {
             var r = new AppTypeInfo ( ) { Type = rootR , ParentInfo = parentTypeInfo } ;
             foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
             {
-                r.SubTypeInfos.Add ( CollectTypeInfos ( r, type1 ) ) ;
+                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 ) ) ;
             }
 
             map[ rootR ] = r ;
@@ -145,5 +177,13 @@ namespace AnalysisAppLib.ViewModel
         #region Implementation of ISerializable
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
     }
 }

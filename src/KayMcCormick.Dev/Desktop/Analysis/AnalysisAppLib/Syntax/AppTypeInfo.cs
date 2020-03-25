@@ -13,9 +13,12 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
+using System.ComponentModel ;
 using System.Linq ;
 using System.Reflection ;
+using System.Runtime.CompilerServices ;
 using System.Text.RegularExpressions ;
+using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Syntax
 {
@@ -23,15 +26,33 @@ namespace AnalysisAppLib.Syntax
     ///   <para>Represents a Syntax Node type in the application.</para>
     ///   <para></para>
     /// </summary>
-    public class AppTypeInfo
+    public sealed class AppTypeInfo : INotifyPropertyChanged
     {
         private Type                   _type ;
         private string                 _title ;
-        private List < MethodInfo >    _factoryMethods = new List < MethodInfo > ( ) ;
-        private List < ComponentInfo > _components     = new List < ComponentInfo > ( ) ;
+        private ObservableCollection < MethodInfo >    _factoryMethods = new ObservableCollection < MethodInfo > ( ) ;
+        private ObservableCollection < ComponentInfo > _components     = new ObservableCollection < ComponentInfo > ( ) ;
         private AppTypeInfo _parentInfo ;
+        private readonly ObservableCollection < AppTypeInfo > _subTypeInfos ;
 
-        public AppTypeInfo ( ) {
+        public AppTypeInfo ( ObservableCollection < AppTypeInfo > subTypeInfos = null )
+        {
+
+            if ( subTypeInfos == null )
+            {
+                subTypeInfos = new ObservableCollection < AppTypeInfo > ( ) ;
+            }
+
+            subTypeInfos.CollectionChanged += ( sender , args ) => {
+                OnPropertyChanged ( nameof ( SubTypeInfos ) ) ;
+            } ;
+            _components.CollectionChanged +=
+                ( sender , args ) => OnPropertyChanged ( nameof ( Components ) ) ;
+            _factoryMethods.CollectionChanged +=( sender , args ) => 
+            {
+                OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
+            };
+            _subTypeInfos = subTypeInfos ;
         }
 
         public Type Type
@@ -40,26 +61,42 @@ namespace AnalysisAppLib.Syntax
             set
             {
                 _type = value ;
+                OnPropertyChanged();
                 var title = _type.Name.Replace ( "Syntax" , "" ) ;
                 Title = Regex.Replace ( title , "([a-z])([A-Z])" , @"$1 $2" ) ;
             }
         }
 
-        public string Title { get => _title ; set => _title = value ; }
-
-        public ObservableCollection < AppTypeInfo > SubTypeInfos { get ; } =
-            new ObservableCollection < AppTypeInfo > ( ) ;
-
-        public List < MethodInfo > FactoryMethods
+        public string Title
         {
-            get => _factoryMethods ;
-            set => _factoryMethods = value ;
+            get => _title ;
+            set
+            {
+                _title = value ;
+                OnPropertyChanged();
+            }
         }
 
-        public List < ComponentInfo > Components
+        public ObservableCollection < AppTypeInfo > SubTypeInfos { get { return _subTypeInfos ; } }
+
+        public ObservableCollection < MethodInfo > FactoryMethods
+        {
+            get => _factoryMethods ;
+            set
+            {
+                _factoryMethods = value ;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection < ComponentInfo > Components
         {
             get => _components ;
-            set => _components = value ;
+            set
+            {
+                _components = value ;
+                OnPropertyChanged();
+            }
         }
 
         public IEnumerable < ComponentInfo > AllComponents
@@ -101,6 +138,25 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
-        public AppTypeInfo ParentInfo { get { return _parentInfo ; } set { _parentInfo = value ; } }
+        public AppTypeInfo ParentInfo
+        {
+            get
+            {
+                return _parentInfo ;
+            }
+            set
+            {
+                _parentInfo = value ;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
     }
 }
