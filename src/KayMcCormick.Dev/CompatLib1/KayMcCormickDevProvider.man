@@ -80,6 +80,8 @@
 <data name="Message" inType="win:UnicodeString" outType="xs:string"/>
 <data name="__binlength" inType="win:UInt32"/>
 <data name="SerializedForm" inType="win:Binary" outType="xs:hexBinary" length="__binlength"/>
+<data name="ParsedStackFrames" inType="win:UnicodeString" outType="win:Xml"/>
+
 </template>
 </templates>
 </provider>

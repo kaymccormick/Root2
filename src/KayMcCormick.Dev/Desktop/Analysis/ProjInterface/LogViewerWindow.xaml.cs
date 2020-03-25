@@ -43,7 +43,7 @@ namespace ProjInterface
             LogListener x = new LogListener(port, logViewModel);
             logViewModel.DisplayName = port.ToString ( ) ;
             _logViewerAppViewModel.LogViewModels.Add(logViewModel);
-            mainTabControl.SelectedItem = logViewModel ;
+            mainTabControl.SetCurrentValue(System.Windows.Controls.Primitives.Selector.SelectedItemProperty, logViewModel) ;
             x.Start();
         }
 

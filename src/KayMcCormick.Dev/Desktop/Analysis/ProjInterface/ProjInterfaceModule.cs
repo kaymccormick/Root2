@@ -12,7 +12,6 @@
 using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
-using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -21,14 +20,13 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
+using ExplorerCtrl ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
-using Microsoft.Graph ;
-using Microsoft.Identity.Client ;
 using NLog ;
 using ProjLib ;
-using ProjLib.Interfaces ;
 using Logger = NLog.Logger ;
 
 namespace ProjInterface
@@ -55,7 +53,7 @@ namespace ProjInterface
         protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
         #endregion
 
-        public override void DoLoad ( ContainerBuilder builder )
+        public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
             Logger.Trace ( "Load" ) ;
             Logger.Warn (
@@ -65,6 +63,18 @@ namespace ProjInterface
             builder.RegisterModule < ProjLibModule > ( ) ;
             LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
+            builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
+                                                                         (
+                                                                             context
+                                                                           , parameters
+                                                                           , item
+                                                                         ) => {
+                                                                             var r =
+                                                                                 new
+                                                                                     AdaptedExplorerItem (item ) ;
+                                                                             return r ;
+                                                                         }
+                                                                        ) ;
             LogRegistration (
                              typeof ( AllResourcesTree )
                            , typeof ( UserControl )
@@ -125,37 +135,31 @@ namespace ProjInterface
                                                                                 return (
                                                                                     LayoutDocumentPane
                                                                                         pane
-                                                                                ) => ( IDisplayableAppCommand
-                                                                                    ) new
-                                                                                        LambdaAppCommand (
-                                                                                                          title
-                                                                                                        , CommandFunc
-                                                                                                        , Tuple
-                                                                                                             .Create (
-                                                                                                                      metaFunc
-                                                                                                                         .Value
-                                                                                                                    , pane
-                                                                                                                     )
-                                                                                                         ) ;
+                                                                                ) => (
+                                                                                    IDisplayableAppCommand
+                                                                                ) new
+                                                                                    LambdaAppCommand (
+                                                                                                      title
+                                                                                                    , CommandFunc
+                                                                                                    , Tuple
+                                                                                                         .Create (
+                                                                                                                  metaFunc
+                                                                                                                     .Value
+                                                                                                                , pane
+                                                                                                                 )
+                                                                                                     ) ;
                                                                             }
                                                                            )
                .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
-            // builder.RegisterAdapter (
-            // ( Meta < Lazy < IView1 > > view )
-            // => LambdaAppCommandAdapter ( view )
-            // )
-            // .As < IDisplayableAppCommand > ( ) ;
             builder.Register (
-                              ( context , parameters ) => {
-                                  return new LogViewerControl ( new LogViewerConfig ( 0 ) ) ;
-                              }
+                              ( context , parameters ) => new LogViewerControl ( new LogViewerConfig ( 0 ) )
                              )
                    .As < IViewWithTitle > ( )
                    .As < LogViewerControl > ( ) ;
         }
 
-        private static IAppCommandResult CommandFunc ( LambdaAppCommand command )
+        private static IAppCommandResult CommandFunc ( [ NotNull ] LambdaAppCommand command )
         {
             var (viewFunc1 , pane1) =
                 ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
@@ -168,9 +172,10 @@ namespace ProjInterface
             return AppCommandResult.Success ;
         }
 
+        [ NotNull ]
         private static LambdaAppCommand LambdaAppCommandAdapter (
             Meta < Lazy < IViewWithTitle > > view
-          , object                   obj = null
+          , object                           obj = null
         )
         {
             view.Metadata.TryGetValue ( "Title" , out var title ) ;

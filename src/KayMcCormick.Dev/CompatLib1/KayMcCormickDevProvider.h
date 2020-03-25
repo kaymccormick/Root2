@@ -780,11 +780,11 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT PROVIDER_GUID_Context = {0, (
 //
 // Event write macros for EXCEPTION_RAISED_EVENT
 //
-#define EventWriteEXCEPTION_RAISED_EVENT(ExceptionType, StackTrace, Message, __binlength, SerializedForm) \
+#define EventWriteEXCEPTION_RAISED_EVENT(ExceptionType, StackTrace, Message, __binlength, SerializedForm, ParsedStackFrames) \
         MCGEN_EVENT_ENABLED(EXCEPTION_RAISED_EVENT) \
-        ? McTemplateU0zzzqbr3(&PROVIDER_GUID_Context, &EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm) : 0
-#define EventWriteEXCEPTION_RAISED_EVENT_AssumeEnabled(ExceptionType, StackTrace, Message, __binlength, SerializedForm) \
-        McTemplateU0zzzqbr3(&PROVIDER_GUID_Context, &EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm)
+        ? McTemplateU0zzzqbr3z(&PROVIDER_GUID_Context, &EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm, ParsedStackFrames) : 0
+#define EventWriteEXCEPTION_RAISED_EVENT_AssumeEnabled(ExceptionType, StackTrace, Message, __binlength, SerializedForm, ParsedStackFrames) \
+        McTemplateU0zzzqbr3z(&PROVIDER_GUID_Context, &EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm, ParsedStackFrames)
 
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 
@@ -904,23 +904,24 @@ McTemplateU0zz(
 //
 //Template from manifest : t8
 //
-#ifndef McTemplateU0zzzqbr3_def
-#define McTemplateU0zzzqbr3_def
+#ifndef McTemplateU0zzzqbr3z_def
+#define McTemplateU0zzzqbr3z_def
 ETW_INLINE
 ULONG
-McTemplateU0zzzqbr3(
+McTemplateU0zzzqbr3z(
     _In_ PMCGEN_TRACE_CONTEXT Context,
     _In_ PCEVENT_DESCRIPTOR Descriptor,
     _In_opt_ PCWSTR  _Arg0,
     _In_opt_ PCWSTR  _Arg1,
     _In_opt_ PCWSTR  _Arg2,
     _In_ const unsigned int  _Arg3,
-    _In_reads_(_Arg3) const unsigned char*  _Arg4
+    _In_reads_(_Arg3) const unsigned char*  _Arg4,
+    _In_opt_ PCWSTR  _Arg5
     )
 {
-#define McTemplateU0zzzqbr3_ARGCOUNT 5
+#define McTemplateU0zzzqbr3z_ARGCOUNT 6
 
-    EVENT_DATA_DESCRIPTOR EventData[McTemplateU0zzzqbr3_ARGCOUNT + 1];
+    EVENT_DATA_DESCRIPTOR EventData[McTemplateU0zzzqbr3z_ARGCOUNT + 1];
 
     EventDataDescCreate(&EventData[1],
                         (_Arg0 != NULL) ? _Arg0 : L"NULL",
@@ -938,9 +939,13 @@ McTemplateU0zzzqbr3(
 
     EventDataDescCreate(&EventData[5],_Arg4, (ULONG)sizeof(char)*_Arg3);
 
-    return McGenEventWrite(Context, Descriptor, NULL, McTemplateU0zzzqbr3_ARGCOUNT + 1, EventData);
+    EventDataDescCreate(&EventData[6],
+                        (_Arg5 != NULL) ? _Arg5 : L"NULL",
+                        (_Arg5 != NULL) ? (ULONG)((wcslen(_Arg5) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L"NULL"));
+
+    return McGenEventWrite(Context, Descriptor, NULL, McTemplateU0zzzqbr3z_ARGCOUNT + 1, EventData);
 }
-#endif // McTemplateU0zzzqbr3_def
+#endif // McTemplateU0zzzqbr3z_def
 
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 

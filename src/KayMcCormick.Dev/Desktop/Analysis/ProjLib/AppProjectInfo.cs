@@ -13,6 +13,7 @@ using ProjLib.Interfaces ;
 
 namespace ProjLib
 {
+    // mru related
     public class AppProjectInfo : IProjectInfo
     {
         public string Name { get ; }

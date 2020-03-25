@@ -35,14 +35,14 @@ namespace KayMcCormick.Lib.Wpf
                                                                               , FrameworkPropertyMetadataOptions
                                                                                    .Inherits
                                                                               , OnLifetimeScopeChanged
-                                                                              , CoerceLifetimeScopeValue
+                                                                              , CoerceLifetimeScope
                                                                               , false
                                                                               , UpdateSourceTrigger
                                                                                    .PropertyChanged
                                                                                )
                                                 ) ;
 
-        private static object CoerceLifetimeScopeValue ( [ NotNull ] DependencyObject d , object baseValue )
+        private static object CoerceLifetimeScope ( [ NotNull ] DependencyObject d , object baseValue )
         {
             if ( d == null )
             {
@@ -191,14 +191,14 @@ namespace KayMcCormick.Lib.Wpf
                                                                               , FrameworkPropertyMetadataOptions
                                                                                    .Inherits
                                                                               , OnRenderedTypeChanged
-                                                                              , CoerceRenderedTypeValue
+                                                                              , CoerceRenderedType
                                                                               , false
                                                                               , UpdateSourceTrigger
                                                                                    .PropertyChanged
                                                                                )
                                                 );
 
-        private static object CoerceRenderedTypeValue(DependencyObject d, object baseValue)
+        private static object CoerceRenderedType(DependencyObject d, object baseValue)
         {
             return baseValue;
         }

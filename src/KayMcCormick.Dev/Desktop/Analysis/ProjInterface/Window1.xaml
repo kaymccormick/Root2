@@ -8,6 +8,7 @@
                  xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
                  xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
+                 Style="{DynamicResource Borderless}"
                  mc:Ignorable="d"
                  FontSize="14.0"
                  Title="Window1" Height="450" Width="800">
@@ -15,108 +16,125 @@
 
   <kmWpf:AppWindow.Resources>
 
-    <BitmapImage UriSource="Assets/ASPWebSite_16x.png"
-                 x:Key="BrowserIcon" />
-    <local:DictionaryConverter x:Key="DictionaryConverter" />
-    <DataTemplate x:Key="Template1">
-      <TextBlock
-        Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml"/>
+          <ResourceDictionary>
+          <Style TargetType="Window">
+            <Setter Property="WindowStyle" Value="None" />
+            <Setter Property="AllowsTransparency" Value="True" />
+            <Setter Property="Background" Value="Olive" />
+          </Style>
+          <BitmapImage
+            UriSource="Assets/ASPWebSite_16x.png"
+            x:Key="BrowserIcon" />
+          <local:DictionaryConverter
+            x:Key="DictionaryConverter" />
+          <DataTemplate x:Key="Template1">
+            <TextBlock
+              Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
 
-    </DataTemplate>
-    <ContextMenu x:Key="itemContextMenu">
-      <MenuItem Header="Open" IsEnabled="{Binding CanOpen}" />
-      <MenuItem Header="Delete"
-                IsEnabled="{Binding CanDelete}" />
-      <MenuItem Header="Rename"
-                IsEnabled="{Binding CanRename}" />
-    </ContextMenu>
-    <ContextMenu x:Key="listContextMenu">
-      <MenuItem Header="New Folder"
-                IsEnabled="{Binding CanCreateFolder}" />
-      <MenuItem Header="New Link"
-                IsEnabled="{Binding CanCreateLink}" />
-    </ContextMenu>
+          </DataTemplate>
+          <ContextMenu x:Key="itemContextMenu">
+            <MenuItem Header="Open"
+                      IsEnabled="{Binding CanOpen}" />
+            <MenuItem Header="Delete"
+                      IsEnabled="{Binding CanDelete}" />
+            <MenuItem Header="Rename"
+                      IsEnabled="{Binding CanRename}" />
+          </ContextMenu>
+          <ContextMenu x:Key="listContextMenu">
+            <MenuItem Header="New Folder"
+                      IsEnabled="{Binding CanCreateFolder}" />
+            <MenuItem Header="New Link"
+                      IsEnabled="{Binding CanCreateLink}" />
+          </ContextMenu>
 
-    <BitmapImage
-      UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png"
-      x:Key="FilesIcon" />
-    <BitmapImage UriSource="Assets/shell32_329.ico"
-                 x:Key="PowerOffImage" />
+          <BitmapImage
+            UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png"
+            x:Key="FilesIcon" />
+          <BitmapImage UriSource="Assets/shell32_329.ico"
+                       x:Key="PowerOffImage" />
 
-    <ControlTemplate x:Key="ControlTemplate1">
-      <Border BorderThickness="50" BorderBrush="Red">
-        <ContentPresenter />
-      </Border>
-    </ControlTemplate>
-    <DataTemplate x:Key="DataTemplate1">
-      <Image
-        AutomationProperties.AutomationId="IconContent"
-        AutomationProperties.Name="IconContent"
-        Stretch="Uniform">
-        <Image.Effect>
-          <BlurEffect Radius="3" />
-        </Image.Effect>
-        <Image.Source>
-          <Binding Path="IconSource">
-            <Binding.Converter>
-              <avalondock:NullToDoNothingConverter />
-            </Binding.Converter>
-          </Binding>
-        </Image.Source>
-      </Image>
-    </DataTemplate>
-    <DataTemplate x:Key="DataTemplate2">
-      <TextBlock
-        AutomationProperties.AutomationId="DocumentTitle"
-        Text="{Binding Title}"
-        TextTrimming="CharacterEllipsis" />
-    </DataTemplate>
-    <DataTemplate x:Key="DataTemplate3">
-      <TextBlock
-        AutomationProperties.AutomationId="DocumentHeaderTitle"
-        Text="{Binding Title}"
-        TextTrimming="CharacterEllipsis" />
-    </DataTemplate>
-    <ControlTemplate
-      x:Key="LayoutAnchorControlControlTemplate1"
-      TargetType="{x:Type avalondock:LayoutAnchorControl}">
-      <Border
+          <ControlTemplate x:Key="ControlTemplate1">
+            <Border BorderThickness="50" BorderBrush="Red">
+              <ContentPresenter />
+            </Border>
+          </ControlTemplate>
+          <DataTemplate x:Key="DataTemplate1">
+            <Image
+              AutomationProperties.AutomationId="IconContent"
+              AutomationProperties.Name="IconContent"
+              Stretch="Uniform">
+              <Image.Effect>
+                <BlurEffect Radius="3" />
+              </Image.Effect>
+              <Image.Source>
+                <Binding Path="IconSource">
+                  <Binding.Converter>
+                    <avalondock:NullToDoNothingConverter />
+                  </Binding.Converter>
+                </Binding>
+              </Image.Source>
+            </Image>
+          </DataTemplate>
+          <DataTemplate x:Key="DataTemplate2">
+            <TextBlock
+              AutomationProperties.AutomationId="DocumentTitle"
+              Text="{Binding Title}"
+              TextTrimming="CharacterEllipsis" />
+          </DataTemplate>
+          <DataTemplate x:Key="DataTemplate3">
+            <TextBlock
+              AutomationProperties.AutomationId="DocumentHeaderTitle"
+              Text="{Binding Title}"
+              TextTrimming="CharacterEllipsis" />
+          </DataTemplate>
+          <ControlTemplate
+            x:Key="LayoutAnchorControlControlTemplate1"
+            TargetType="{x:Type avalondock:LayoutAnchorControl}">
+            <Border
 
-        CornerRadius="3"
-        BorderBrush="#FF59C873"
-        BorderThickness="5" Margin="8" Padding="2">
-        <ContentPresenter
-          ContentTemplate="{Binding Model.Root.Manager.AnchorableHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-          Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" />
-      </Border>
-    </ControlTemplate>
-    <ControlTemplate
-      x:Key="LayoutAnchorGroupControlControlTemplate1"
-      TargetType="{x:Type avalondock:LayoutAnchorGroupControl}">
-      <ItemsControl>
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <StackPanel IsItemsHost="True"
-                        Orientation="Horizontal" />
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.LayoutTransform>
-          <RotateTransform>
-            <RotateTransform.Angle>
-              <Binding Path="Model.Parent.Side"
-                       RelativeSource="{RelativeSource TemplatedParent}">
-                <Binding.Converter>
-                  <avalondock:AnchorSideToAngleConverter />
-                </Binding.Converter>
-              </Binding>
-            </RotateTransform.Angle>
-          </RotateTransform>
-        </ItemsControl.LayoutTransform>
-      </ItemsControl>
-    </ControlTemplate>
-    <Style x:Key="A1"
-           TargetType="avalondock:LayoutAnchorablePaneControl" />
-    <xaml:AppCommandConverter x:Key="AppCommandConverter" />
+              CornerRadius="3"
+              BorderBrush="#FF59C873"
+              BorderThickness="5" Margin="8" Padding="2">
+              <ContentPresenter
+                ContentTemplate="{Binding Model.Root.Manager.AnchorableHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" />
+            </Border>
+          </ControlTemplate>
+          <ControlTemplate
+            x:Key="LayoutAnchorGroupControlControlTemplate1"
+            TargetType="{x:Type avalondock:LayoutAnchorGroupControl}">
+            <ItemsControl>
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel IsItemsHost="True"
+                              Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.LayoutTransform>
+                <RotateTransform>
+                  <RotateTransform.Angle>
+                    <Binding Path="Model.Parent.Side"
+                             RelativeSource="{RelativeSource TemplatedParent}">
+                      <Binding.Converter>
+                        <avalondock:AnchorSideToAngleConverter />
+                      </Binding.Converter>
+                    </Binding>
+                  </RotateTransform.Angle>
+                </RotateTransform>
+              </ItemsControl.LayoutTransform>
+            </ItemsControl>
+          </ControlTemplate>
+          <Style x:Key="A1"
+                 TargetType="avalondock:LayoutAnchorablePaneControl" />
+          <xaml:AppCommandConverter
+            x:Key="AppCommandConverter" />
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <kmWpf:AppWindow.CommandBindings>
     <CommandBinding Command="Open"
@@ -127,6 +145,7 @@
   </kmWpf:AppWindow.CommandBindings>
   <kmWpf:AppWindow.Triggers>
   </kmWpf:AppWindow.Triggers>
+  <Border BorderBrush="CadetBlue" BorderThickness="4" CornerRadius="5">
   <Grid x:Name="Test1">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -138,7 +157,9 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
-    <Menu Grid.Row="0" Grid.Column="0" FontSize="18.0">
+      <Border BorderBrush="Aqua" BorderThickness="1" Grid.Row="0" Grid.Column="0" Padding="3">
+        <Border Background="BlanchedAlmond" Padding="5">
+        <Menu Background ="{x:Null}"  FontSize="18.0">
       <MenuItem Header="File">
         <MenuItem.Effect>
           <BlurEffect Radius="3" RenderingBias="Quality" />
@@ -154,11 +175,13 @@
           <DataTemplate
             DataType="kmWpf:IDisplayableAppCommand">
             <MenuItem Header="{Binding DisplayName}"
-                      Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}"/>
+                      Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
           </DataTemplate>
         </MenuItem.ItemTemplate>
       </MenuItem>
     </Menu>
+        </Border>
+      </Border>
     <ToolBarTray Grid.Row="1" Grid.Column="0">
       <ToolBar Band="1" BandIndex="1">
         <Button Padding="0"
@@ -217,7 +240,7 @@
               <avalondock:LayoutDocument Title="Browser"
                                          IconSource="{StaticResource BrowserIcon}"
                                          x:Name="FrameDocument">
-                <Frame
+                <Frame Background="{x:Null}"
                   Navigating="BrowserFrame_OnNavigating"
                   x:Name="BrowserFrame" Source="Home.xaml" />
               </avalondock:LayoutDocument>
@@ -265,17 +288,8 @@
       </avalondock:LayoutRoot>
     </avalondock:DockingManager>
     <StatusBar Grid.Row="4" Grid.Column="0">
-      <StatusBarItem VerticalAlignment="Stretch">
-        <TextBlock BaselineOffset="-10"
-                   VerticalAlignment="Bottom">
-          Ready
-        </TextBlock>
-      </StatusBarItem>
-      <StatusBarItem VerticalAlignment="Stretch">
-        <TextBlock FontSize="12pt" FontWeight="Bold"
-                   Text="{Binding Account.Username}"
-                   VerticalAlignment="Bottom" />
-      </StatusBarItem>
+    
     </StatusBar>
   </Grid>
+  </Border>
 </kmWpf:AppWindow>

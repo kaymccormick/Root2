@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
 namespace TestApp
@@ -11,7 +12,7 @@ namespace TestApp
     {
         private readonly ApplicationInstance _applicationInstance ;
 
-        public TestAppApp ( ApplicationInstanceConfiguration config )
+        public TestAppApp ( [ NotNull ] ApplicationInstanceConfiguration config )
         {
             _applicationInstance = new ApplicationInstance( config ) ;
         }

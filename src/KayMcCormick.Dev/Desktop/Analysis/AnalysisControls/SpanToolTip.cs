@@ -43,9 +43,9 @@ namespace AnalysisControls
         {
             if ( o != null )
             {
-                o.SetValue ( BorderBrushProperty , Brushes.Black ) ;
+                o.SetCurrentValue ( BorderBrushProperty , Brushes.Black ) ;
 
-                o.SetValue ( BorderThicknessProperty , new Thickness ( 0 , 0 , 0 , 3 ) ) ;
+                o.SetCurrentValue ( BorderThicknessProperty , new Thickness ( 0 , 0 , 0 , 3 ) ) ;
                 Panel.Children.Add ( o ) ;
                 // var element = new Line ( ) ;
                 // element.VerticalAlignment   = VerticalAlignment.Stretch ;

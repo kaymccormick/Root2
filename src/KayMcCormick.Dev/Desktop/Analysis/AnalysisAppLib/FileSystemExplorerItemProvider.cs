@@ -17,7 +17,7 @@ namespace AnalysisAppLib
 {
     public class FileSystemExplorerItemProvider : IExplorerItemProvider
     {
-        private AppExplorerItem root ;
+        private readonly AppExplorerItem root ;
 
         public string DefaultInputPath { get ; } = Path.Combine (
                                                                  Environment.GetFolderPath (

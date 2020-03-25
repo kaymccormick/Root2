@@ -75,7 +75,6 @@
     <Compile Include="AppStatus.cs" />
     <Compile Include="BuildResults.cs" />
     <Compile Include="BuildTool.cs" />
-    <Compile Include="CommandException.cs" />
     <Compile Include="FailedBuildException.cs" />
     <Compile Include="FilePaths.cs" />
     <Compile Include="GlobalSuppressions2.cs" />
@@ -96,7 +95,6 @@
     <Compile Include="DesignRuntimeStatus.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="IMruItems.cs" />
-    <Compile Include="IVisitor.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />

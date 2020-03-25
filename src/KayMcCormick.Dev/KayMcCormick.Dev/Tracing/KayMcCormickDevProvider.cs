@@ -137,14 +137,14 @@ namespace KayMcCormick.Dev.Tracing
         //
         // Event method for EXCEPTION_RAISED_EVENT
         //
-        public static bool EventWriteEXCEPTION_RAISED_EVENT(string ExceptionType, string StackTrace, string Message, uint __binlength, byte[] SerializedForm)
+        public static bool EventWriteEXCEPTION_RAISED_EVENT(string ExceptionType, string StackTrace, string Message, uint __binlength, byte[] SerializedForm, string ParsedStackFrames)
         {
             if (!m_provider.IsEnabled())
             {
                 return true;
             }
 
-            return m_provider.Templatet8(ref EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm);
+            return m_provider.Templatet8(ref EXCEPTION_RAISED_EVENT, ExceptionType, StackTrace, Message, __binlength, SerializedForm, ParsedStackFrames);
         }
     }
 
@@ -243,10 +243,11 @@ namespace KayMcCormick.Dev.Tracing
             string StackTrace,
             string Message,
             uint __binlength,
-            byte[] SerializedForm
+            byte[] SerializedForm,
+            string ParsedStackFrames
             )
         {
-            int argumentCount = 5;
+            int argumentCount = 6;
             bool status = true;
 
             if (IsEnabled(eventDescriptor.Level, eventDescriptor.Keywords))
@@ -270,11 +271,15 @@ namespace KayMcCormick.Dev.Tracing
                 if (SerializedForm.Length < sizeof(byte)*__binlength  ) return false;
                 userDataPtr[4].Size = (uint)(sizeof(byte)*__binlength  );
 
-                fixed (char* a0 = ExceptionType, a1 = StackTrace, a2 = Message)
+                // Value is a nul-terminated string (assume no embedded nuls):
+                userDataPtr[5].Size = (uint)(ParsedStackFrames.Length + 1)*sizeof(char);
+
+                fixed (char* a0 = ExceptionType, a1 = StackTrace, a2 = Message, a3 = ParsedStackFrames)
                 {
                     userDataPtr[0].DataPointer = (ulong)a0;
                     userDataPtr[1].DataPointer = (ulong)a1;
                     userDataPtr[2].DataPointer = (ulong)a2;
+                    userDataPtr[5].DataPointer = (ulong)a3;
                     fixed (byte* b0 = SerializedForm)
                     {
                         userDataPtr[4].DataPointer = (ulong)b0;

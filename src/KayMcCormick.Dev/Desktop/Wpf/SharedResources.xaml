@@ -48,7 +48,13 @@
 
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
-    <LinearGradientBrush x:Key="MenuPopupBrush"
+    <Style TargetType="Window" x:Key="Borderless">
+      <Setter Property="WindowStyle" Value="None" />
+      <Setter Property="AllowsTransparency" Value="True" />
+      <Setter Property="Background" Value="{x:Null}" />
+    </Style>
+
+  <LinearGradientBrush x:Key="MenuPopupBrush"
                          EndPoint="0.5,1"
                          StartPoint="0.5,0">
       <GradientStop

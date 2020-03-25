@@ -82,7 +82,7 @@ namespace AnalysisAppLib
             {
                 result = await app.AcquireTokenSilent ( scopes , account ).ExecuteAsync ( ) ;
             }
-            catch ( MsalUiRequiredException ex )
+            catch ( MsalUiRequiredException )
             {
                 return false ;
             }

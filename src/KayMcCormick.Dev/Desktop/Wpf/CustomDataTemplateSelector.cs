@@ -15,6 +15,7 @@ using System.Text ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -23,8 +24,13 @@ namespace KayMcCormick.Lib.Wpf
 #pragma warning restore DV2002 // Unmapped types
     {
         #region Overrides of DataTemplateSelector
-        public override DataTemplate SelectTemplate ( object item , DependencyObject container )
+        public override DataTemplate SelectTemplate ( [ NotNull ] object item , DependencyObject container )
         {
+            if ( item == null )
+            {
+                throw new ArgumentNullException ( nameof ( item ) ) ;
+            }
+
             Func < object , DependencyObject, DataTemplate > baseFunc = base.SelectTemplate ;
             var itemRepr = item.ToString ( ) ;
             if ( itemRepr.Length > 40 )
@@ -54,7 +60,10 @@ namespace KayMcCormick.Lib.Wpf
 
                 containerRepr.Append ( " " ) ;
                 containerRepr.Append ( name ) ;
-                containerRepr.Append ( fe.GetType ( ).FullName ) ;
+                if ( fe != null )
+                {
+                    containerRepr.Append ( fe.GetType ( ).FullName ) ;
+                }
             }
             Debug.WriteLine (
                              $"{GetType ( ).FullName} calling TemplateSelectorHelper.HelpSelectDataTemplate with {itemRepr}, {containerRepr} and base.SelectTemplate"

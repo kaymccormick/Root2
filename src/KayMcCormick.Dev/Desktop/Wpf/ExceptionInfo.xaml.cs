@@ -23,82 +23,6 @@ using Newtonsoft.Json ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    public class StackTraceToken
-    {
-        public int Index { get ; set ; }
-
-        public int Length { get ; set ; }
-
-        public string Text { get ; set ; }
-
-        public override string ToString ( )
-        {
-            return $"{{ Index = {Index}, Length = {Length}, Text = {Text} }}" ;
-        }
-    }
-
-    public class StackTraceMethod
-    {
-        public StackTraceToken Type { get ; set ; }
-
-        public StackTraceToken Method { get ; set ; }
-
-        public override string ToString ( ) { return $"{{ Type = {Type}, Method = {Method} }}" ; }
-    }
-
-    public class StackTraceParameter
-    {
-        public StackTraceToken Type { get ; set ; }
-
-        public StackTraceToken Name { get ; set ; }
-
-        public override string ToString ( ) { return $"{{ Type = {Type}, Name = {Name} }}" ; }
-    }
-
-    public class StackTraceParams
-    {
-        public StackTraceToken List { get ; set ; }
-
-        public IEnumerable < StackTraceParameter > Parameters { get ; set ; }
-
-        public override string ToString ( )
-        {
-            return $"{{ List = {List}, Parameters = {Parameters} }}" ;
-        }
-    }
-
-    public class StackTraceSourceLocation
-    {
-        public StackTraceToken File { get ; set ; }
-
-        public StackTraceToken Line { get ; set ; }
-
-        public override string ToString ( ) { return $"{{ File = {File}, Line = {Line} }}" ; }
-    }
-
-    public class StackTraceEntry
-    {
-        public StackTraceToken Frame { get ; set ; }
-
-        public StackTraceToken Type { get ; set ; }
-
-        public StackTraceToken Method { get ; set ; }
-
-        public StackTraceToken ParameterList { get ; set ; }
-
-        public IEnumerable < StackTraceParameter > Parameters { get ; set ; }
-
-        public StackTraceToken File { get ; set ; }
-
-        public StackTraceToken Line { get ; set ; }
-
-        public override string ToString ( )
-        {
-            return
-                $"{{ Frame = {Frame}, Type = {Type}, Method = {Method}, ParameterList = {ParameterList}, Parameters = {Parameters}, File = {File}, Line = {Line} }}" ;
-        }
-    }
-
     /// <summary>
     /// Interaction logic for ExceptionInfo.xaml
     /// </summary>
@@ -128,49 +52,6 @@ namespace KayMcCormick.Lib.Wpf
             // {
             // Debug.WriteLine ( x ) ;
             // }
-        }
-
-        private static IEnumerable < StackTraceEntry > ParseStackTrace ( string text )
-        {
-            return StackTraceParser.Parse (
-                                           text
-                                         , ( idx , len , txt )
-                                               => new StackTraceToken
-                                                  {
-                                                      Index = idx , Length = len , Text = txt
-                                                  }
-                                         , ( type , method )
-                                               => new StackTraceMethod
-                                                  {
-                                                      Type = type , Method = method
-                                                  }
-                                         , ( type , name )
-                                               => new StackTraceParameter
-                                                  {
-                                                      Type = type , Name = name
-                                                  }
-                                         , ( pl , ps )
-                                               => new StackTraceParams
-                                                  {
-                                                      List = pl , Parameters = ps
-                                                  }
-                                         , ( file , line )
-                                               => new StackTraceSourceLocation
-                                                  {
-                                                      File = file , Line = line
-                                                  }
-                                         , ( f , tm , p , fl )
-                                               => new StackTraceEntry
-                                                  {
-                                                      Frame         = f
-                                                    , Type          = tm.Type
-                                                    , Method        = tm.Method
-                                                    , ParameterList = p.List
-                                                    , Parameters    = p.Parameters
-                                                    , File          = fl.File
-                                                    , Line          = fl.Line
-                                                  }
-                                          ) ;
         }
         #endregion
 
@@ -204,7 +85,7 @@ namespace KayMcCormick.Lib.Wpf
                     }
                 }
 
-                Entries.AddRange ( ParseStackTrace ( stackTrace ) ) ;
+                Entries.AddRange ( Utils.ParseStackTrace ( stackTrace ) ) ;
             }
         }
     }

@@ -124,7 +124,10 @@ namespace TestApp
             if ( e.Key == Key.Enter )
             {
                 var box = sender as TextBox ;
-                LogMethod ( box?.Text ) ;
+                if ( box != null )
+                {
+                    LogMethod ( box.Text ) ;
+                }
             }
         }
 

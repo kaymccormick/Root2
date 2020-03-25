@@ -3,8 +3,6 @@ using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
-using System.Reflection ;
-using System.Text ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -15,11 +13,9 @@ using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
-using KayMcCormick.Dev.Tracing ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
@@ -267,7 +263,10 @@ namespace ModelTests
                 var task = tasks[ waitAnyResult ] ;
                 if ( task.IsFaulted )
                 {
-                    LogMethod ( "Task faulted with " + task.Exception.ToString ( ) ) ;
+                    if ( task.Exception != null )
+                    {
+                        LogMethod ( "Task faulted with " + task.Exception.ToString ( ) ) ;
+                    }
                 }
 
                 LogMethod ( task.Status.ToString ( ) ) ;
@@ -351,7 +350,11 @@ namespace ModelTests
             var compilation = await project.GetCompilationAsync ( ) ;
 
             var model = await doc.GetSemanticModelAsync ( ) ;
-            LogMethod ( model.SyntaxTree.ToString ( ) ) ;
+            if ( model != null )
+            {
+                LogMethod ( model.SyntaxTree.ToString ( ) ) ;
+            }
+
             if ( ! x.Post ( doc ) )
             {
                 throw new InvalidOperationException ( "doco faild to post" ) ;
@@ -365,14 +368,14 @@ namespace ModelTests
         public void TestLog ( )
         {
             LogManager.ThrowExceptions = false ;
-            var logName = EventLog.LogNameFromSourceName ( "Kay McCormick" , "." ) ;
-            LogMethod(logName);
-            foreach ( var eventLog1 in EventLog.GetEventLogs ( ) )
-            {
-                LogMethod(eventLog1.ToString());
-                LogMethod(eventLog1.LogDisplayName);
-                LogMethod(eventLog1.Log);
-            }
+            // var logName = EventLog.LogNameFromSourceName ( "Kay McCormick" , "." ) ;
+            // LogMethod(logName);
+            // foreach ( var eventLog1 in EventLog.GetEventLogs ( ) )
+            // {
+            //     LogMethod(eventLog1.ToString());
+            //     LogMethod(eventLog1.LogDisplayName);
+            //     LogMethod(eventLog1.Log);
+            // }
 #if false
             foreach (var eventLog1 in EventLog.GetEventLogs().Where (
             eventLog
@@ -392,24 +395,46 @@ namespace ModelTests
             }
 #endif
             EventLog log=new EventLog("Application");
-            foreach ( EventLogEntry logEntry in log.Entries )
+            var q =
+                from entry in log.Entries.Cast < EventLogEntry > ( )
+                where entry.InstanceId == 8
+                orderby entry.TimeWritten descending 
+                select entry;
+            foreach ( var bytese in q )
             {
-                if ( logEntry.InstanceId == 8 )
-                {
-                    Debug.WriteLine(logEntry.Source);
-                    StringBuilder bb = new StringBuilder();
-                    foreach ( var b in logEntry.Data )
-                    {
-                        bb.Append(((int)b).ToString ( "x2" )) ;
-                        
-                    }
-
-                    Debug.WriteLine(bb.ToString());
-                    
-                }
+                LogMethod ( bytese.ToString ( ) ) ;
             }
+            // foreach ( EventLogEntry logEntry in log.Entries.OrderBy<>((x) => ((EventLogEntry)x).TimeGenerated) )
+            // {
+                // if ( logEntry.InstanceId == 8 )
+                // {
+                    // Debug.WriteLine(logEntry.Source);
+                    // StringBuilder bb = new StringBuilder();
+                    // foreach ( var b in logEntry.Data )
+                    // {
+                        // bb.Append(((int)b).ToString ( "x2" )) ;
+                        
+                    // }
+
+                    // Debug.WriteLine(bb.ToString());
+                    
+                // }
+            // }
         }
 
+        [Fact]
+        public void TestEx ( )
+        {
+            try
+            {
+                throw new InvalidOperationException ( "TesT" ) ;
+            }
+            catch ( Exception ex )
+            {
+                Utils.LogParsedExceptions ( ex ) ;
+            }
+
+        }
 #region IDisposable
         public void Dispose ( )
         {

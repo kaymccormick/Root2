@@ -24,7 +24,9 @@ namespace ProjInterface
                                                , typeof ( InputBindingsManager )
                                                , new PropertyMetadata (
                                                                        null
+#pragma warning disable WPF0005 // Name of PropertyChangedCallback should match registered name.
                                                                      , OnUpdatePropertySourceWhenEnterPressedPropertyChanged
+#pragma warning restore WPF0005 // Name of PropertyChangedCallback should match registered name.
                                                                       )
                                                 ) ;
 

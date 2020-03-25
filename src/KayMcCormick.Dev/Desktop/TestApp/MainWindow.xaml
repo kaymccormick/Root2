@@ -1,40 +1,54 @@
 ﻿<kmWpf:AppWindow x:Class="TestApp.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TestApp"
-        xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-        xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
-        xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
-        xmlns:anal="http://kaymccormick.com/xaml/analysis"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:TestApp"
+                 xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+                 xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
+                 xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
+                 xmlns:anal="http://kaymccormick.com/xaml/analysis"
+                 mc:Ignorable="d"
+                 Title="MainWindow" Height="450"
+                 Width="800">
   <kmWpf:AppWindow.Resources>
-    <views:TypesView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Key="ctrl1">
-      <views:TypesView.CommandBindings>
-        <CommandBinding Command="Save" Executed="CommandBinding_OnExecuted"></CommandBinding>
-        <CommandBinding Command="Open" Executed="CommandBinding_OnExecuted2"></CommandBinding>
-      </views:TypesView.CommandBindings>
-      <views:TypesView.InputBindings>
-        <KeyBinding Key="S" Modifiers="Control" Command="Save"></KeyBinding>
-        <KeyBinding Key="L" Modifiers="Control" Command="Open"></KeyBinding>
-      </views:TypesView.InputBindings>
-      <views:TypesView.ViewModel>
-        <viewModel:TypesViewModel/>
-      </views:TypesView.ViewModel>
-    </views:TypesView>
-    <views:SyntaxPanel x:Key="SyntaxPanel">
-      <views:SyntaxPanel.ViewModel>
-        <viewModel:SyntaxPanelViewModel>
-          <viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
-            <anal:ProvideCompilationUnitSyntax/>
-          </viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
-        </viewModel:SyntaxPanelViewModel>
-      </views:SyntaxPanel.ViewModel>
-    </views:SyntaxPanel>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+        <ResourceDictionary>
+          <views:TypesView VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch"
+                           x:Key="ctrl1">
+            <views:TypesView.CommandBindings>
+              <CommandBinding Command="Save"
+                              Executed="CommandBinding_OnExecuted" />
+              <CommandBinding Command="Open"
+                              Executed="CommandBinding_OnExecuted2" />
+            </views:TypesView.CommandBindings>
+            <views:TypesView.InputBindings>
+              <KeyBinding Key="S" Modifiers="Control"
+                          Command="Save" />
+              <KeyBinding Key="L" Modifiers="Control"
+                          Command="Open" />
+            </views:TypesView.InputBindings>
+            <views:TypesView.ViewModel>
+              <viewModel:TypesViewModel />
+            </views:TypesView.ViewModel>
+          </views:TypesView>
+          <views:SyntaxPanel x:Key="SyntaxPanel">
+            <views:SyntaxPanel.ViewModel>
+              <viewModel:SyntaxPanelViewModel>
+                <viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
+                  <anal:ProvideCompilationUnitSyntax />
+                </viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
+              </viewModel:SyntaxPanelViewModel>
+            </views:SyntaxPanel.ViewModel>
+          </views:SyntaxPanel>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-
-  </Grid>
+    <TextBox FontSize="72pt">Hello</TextBox></Grid>
 </kmWpf:AppWindow>

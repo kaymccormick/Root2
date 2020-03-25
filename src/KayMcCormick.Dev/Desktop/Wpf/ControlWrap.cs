@@ -50,7 +50,7 @@ namespace KayMcCormick.Lib.Wpf
                         return renderTargetBitmap ;
                     }
                 }
-                catch ( Exception ex )
+                catch ( Exception )
                 {
                 
                 }

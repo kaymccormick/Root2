@@ -10,7 +10,7 @@ using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    [ContentProperty("Content")]
+    [ContentProperty(nameof(Content))]
     public class ContentControlView : ContentControl, IControlView 
     {
     }

@@ -7,7 +7,7 @@ using ProjLib.Interfaces ;
 
 namespace ProjInterface
 {
-    [ValueConversion( typeof(IMruItem), typeof(Brush))]
+    [ValueConversion( typeof(IMruItem), typeof(SolidColorBrush))]
     public class MruBackground : IValueConverter
     {
         /// <summary>Converts a value. </summary>

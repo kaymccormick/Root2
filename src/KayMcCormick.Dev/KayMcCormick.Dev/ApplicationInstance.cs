@@ -6,7 +6,9 @@ using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Reflection ;
+using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization.Formatters.Binary ;
+using System.Xml.Serialization ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
@@ -94,22 +96,7 @@ namespace KayMcCormick.Dev
 
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
-            if ( e.Exception is FileLoadException || e.Exception is TargetInvocationException)
-            {
-                return ;
-            }
-            var s = new MemoryStream() ;
-            _binaryFormatter.Serialize(s, e.Exception);
-            var bytes = new byte[ s.Length ] ;
-            var sLength = ( int ) s.Length ;
-            s.Read ( bytes , 0 , sLength ) ;
-            PROVIDER_GUID.EventWriteEXCEPTION_RAISED_EVENT (
-                                                            e.Exception.GetType ( )
-                                                             .AssemblyQualifiedName
-                                                          , e.Exception.StackTrace ?? "No stacktrace", e.Exception.Message, 
-                                                            ( uint ) s.Length, bytes
-                                                           ) ;
-            Debug.WriteLine ( e.Exception.ToString ( ) ) ;
+            Utils.LogParsedExceptions ( e.Exception ) ;
         }
 
         /// <summary>
@@ -357,5 +344,71 @@ namespace KayMcCormick.Dev
 
         #region IDisposable
         #endregion
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ParsedExceptions
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public ParsedExceptions ( ) {
+        }
+
+        private List<ParsedStackInfo> _parsedList = new List < ParsedStackInfo > ();
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<ParsedStackInfo> ParsedList { get { return _parsedList ; } set { _parsedList = value ; } }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ParsedStackInfo
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public ParsedStackInfo ( ) {
+        }
+
+        private readonly string _typeName ;
+        private readonly string _exMessage ;
+        private List < StackTraceEntry > _stackTraceEntries ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parsed"></param>
+        /// <param name="typeName"></param>
+        /// <param name="exMessage"></param>
+        public ParsedStackInfo (
+            IEnumerable < StackTraceEntry > parsed
+          , string                        typeName
+          , string                          exMessage
+        )
+        {
+            _typeName = typeName ;
+            _exMessage = exMessage ;
+            StackTraceEntries = parsed.ToList ( ) ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List < StackTraceEntry > StackTraceEntries { get { return _stackTraceEntries ; } set { _stackTraceEntries = value ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Message { get { return _exMessage ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TypeName { get { return _typeName ; } }
     }
 }

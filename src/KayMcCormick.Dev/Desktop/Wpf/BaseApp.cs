@@ -36,7 +36,6 @@ namespace KayMcCormick.Lib.Wpf
         private readonly bool _disableLogging ;
 
         private readonly ApplicationInstanceBase _applicationInstance ;
-        private readonly EventLog                _eventLog ;
         private readonly ApplicationInstanceBase _createdAppInstance ;
         private          ILifetimeScope          _scope ;
 #if COMMANDLINE
@@ -50,12 +49,11 @@ namespace KayMcCormick.Lib.Wpf
           , bool                    disableLogging              = false
           , bool                    disableRuntimeConfiguration = false
           , bool                    disableServiceHost          = false
-          , IModule[]               modules = null
+          , IModule[]               modules                     = null
         )
         {
             _disableLogging = disableLogging ;
-            _eventLog       = new EventLog ( "Application" ) { Source = "Application" } ;
-            //            var configs = ApplyConfiguration ( ) ;
+
             if ( applicationInstance != null )
             {
                 _applicationInstance = applicationInstance ;
@@ -63,23 +61,14 @@ namespace KayMcCormick.Lib.Wpf
             else
             {
                 _applicationInstance = _createdAppInstance = new ApplicationInstance (
-                                                                                      new ApplicationInstanceConfiguration (
-                                                                                                                            message => {
-                                                                                                                                if (
-                                                                                                                                    _eventLog
-                                                                                                                                    != null
-                                                                                                                                )
-                                                                                                                                {
-                                                                                                                                    PROVIDER_GUID.EventWriteSETUP_LOGGING_EVENT( 
-                                                                                                                                                                                message)
-                                                                                                                                        ;
-                                                                                                                                    _eventLog
-                                                                                                                                       .WriteEntry (
-                                                                                                                                                    message
-                                                                                                                                                  , EventLogEntryType
-                                                                                                                                                       .Information
-                                                                                                                                                   ) ;
-                                                                                                                                }
+                                                                                      new
+                                                                                          ApplicationInstanceConfiguration (
+                                                                                                                            message
+                                                                                                                                => {
+                                                                                                                                PROVIDER_GUID
+                                                                                                                                   .EventWriteSETUP_LOGGING_EVENT (
+                                                                                                                                                                   message
+                                                                                                                                                                  ) ;
                                                                                                                             }
                                                                                                                           , null
                                                                                                                           , disableLogging
@@ -113,14 +102,14 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        public virtual ILifetimeScope BeginLifetimeScope(object tag)
+        public virtual ILifetimeScope BeginLifetimeScope ( object tag )
         {
-            return Scope.BeginLifetimeScope(tag);
+            return Scope.BeginLifetimeScope ( tag ) ;
         }
 
-        public virtual ILifetimeScope BeginLifetimeScope()
+        public virtual ILifetimeScope BeginLifetimeScope ( )
         {
-            return Scope.BeginLifetimeScope();
+            return Scope.BeginLifetimeScope ( ) ;
         }
 
         protected virtual ILifetimeScope Scope { get { return _scope ; } set { _scope = value ; } }

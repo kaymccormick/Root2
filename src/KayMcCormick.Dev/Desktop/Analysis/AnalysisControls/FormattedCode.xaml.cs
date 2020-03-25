@@ -45,14 +45,14 @@ namespace AnalysisControls
         {
             FlowViewer = new MyFlowDocumentScrollViewer ( ) ;
             
-            Content                       = FlowViewer ;
+            SetCurrentValue(ContentProperty, FlowViewer) ;
             FlowViewerDocument = new FlowDocument ( ) ;
             
             // RichTextBox richTextBox = new RichTextBox ( ) ;// 
             // Content = richTextBox ;
-            FlowViewer.Document           = FlowViewerDocument ;
-            FlowViewerDocument.FontSize   = 24 ;
-            FlowViewerDocument.FontFamily = new FontFamily ( "Lucida Console" ) ;
+            FlowViewer.SetCurrentValue(FlowDocumentScrollViewer.DocumentProperty, FlowViewerDocument) ;
+            FlowViewerDocument.SetCurrentValue(FlowDocument.FontSizeProperty, (double)24) ;
+            FlowViewerDocument.SetCurrentValue(FlowDocument.FontFamilyProperty, new FontFamily ( "Lucida Console" )) ;
 
             return await VisitAsync ( ) ;
         }

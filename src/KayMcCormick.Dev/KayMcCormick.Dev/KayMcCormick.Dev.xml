@@ -335,6 +335,54 @@
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="T:KayMcCormick.Dev.ParsedExceptions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ParsedExceptions.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.ParsedExceptions.ParsedList">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:KayMcCormick.Dev.ParsedStackInfo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ParsedStackInfo.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.ParsedStackInfo.#ctor(System.Collections.Generic.IEnumerable{KayMcCormick.Dev.StackTraceEntry},System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="parsed"></param>
+            <param name="typeName"></param>
+            <param name="exMessage"></param>
+        </member>
+        <member name="P:KayMcCormick.Dev.ParsedStackInfo.StackTraceEntries">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.ParsedStackInfo.Message">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.ParsedStackInfo.TypeName">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.ApplicationInstanceBase">
             <summary>
             
@@ -2387,6 +2435,115 @@
             </summary>
             <param name="methodUnderTest">The method under test</param>
         </member>
+        <member name="T:KayMcCormick.Dev.StackTraceEntry">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.Frame">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.Method">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.ParameterList">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.Parameters">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.File">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceEntry.Line">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.StackTraceEntry.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.StackTraceMethod">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceMethod.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceMethod.Method">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.StackTraceMethod.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.StackTraceParameter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceParameter.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceParameter.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.StackTraceParameter.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.StackTraceParams">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceParams.List">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceParams.Parameters">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.StackTraceParams.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:KayMcCormick.Dev.StackTraceParser">
             <summary>
             
@@ -2421,6 +2578,53 @@
             <typeparam name="TFrame"></typeparam>
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="T:KayMcCormick.Dev.StackTraceSourceLocation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceSourceLocation.File">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceSourceLocation.Line">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.StackTraceSourceLocation.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KayMcCormick.Dev.StackTraceToken">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceToken.Index">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceToken.Length">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.StackTraceToken.Text">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.StackTraceToken.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:KayMcCormick.Dev.TestApplicationInstance">
             <summary>
@@ -2776,6 +2980,19 @@
             
             </summary>
             <param name="out"></param>
+        </member>
+        <member name="M:KayMcCormick.Dev.Utils.ParseStackTrace(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KayMcCormick.Dev.Utils.LogParsedExceptions(System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="eException"></param>
         </member>
     </members>
 </doc>

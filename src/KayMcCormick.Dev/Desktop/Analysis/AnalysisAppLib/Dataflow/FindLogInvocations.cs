@@ -37,7 +37,7 @@ namespace AnalysisAppLib.Dataflow
         }
 
         #region Implementation of IHaveRejectBlock
-        public ISourceBlock<RejectedItem> GetRejectBlock ( ) { return (_provider as IHaveRejectBlock).GetRejectBlock(); }
+        public ISourceBlock<RejectedItem> GetRejectBlock ( ) { return (( IHaveRejectBlock ) _provider).GetRejectBlock(); }
         #endregion
     }
 

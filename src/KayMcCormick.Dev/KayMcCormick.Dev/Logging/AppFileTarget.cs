@@ -25,8 +25,8 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="name"></param>
         public AppFileTarget ( string name ) : base ( name )
         {
-            ConcurrentWrites = false ;
-            KeepFileOpen = true ;
+            // ConcurrentWrites = false ;
+            // KeepFileOpen = true ;
         }
         
     }

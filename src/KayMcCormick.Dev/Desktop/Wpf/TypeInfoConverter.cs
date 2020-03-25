@@ -18,7 +18,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             Type source = ( Type ) value ;
             if ( value == null ) return null;
-            if ( parameter == "Interfaces" )
+            if ( (string)parameter == "Interfaces" )
             {
                 return source.GetInterfaces ( ) ;
             }

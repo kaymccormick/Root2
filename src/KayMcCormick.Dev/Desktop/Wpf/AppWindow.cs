@@ -3,7 +3,7 @@ using Autofac ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    public class AppWindow : Window
+    public partial class AppWindow : Window
     {
         public AppWindow ( ) {
         }

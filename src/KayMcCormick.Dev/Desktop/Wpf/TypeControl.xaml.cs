@@ -35,7 +35,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The target name property</summary>
         public static readonly DependencyProperty TargetNameProperty =
             DependencyProperty.Register (
-                                         "TargetName"
+                                         nameof(TargetName)
                                        , typeof ( string )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( string ) )
@@ -44,7 +44,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The target property</summary>
         public static readonly DependencyProperty TargetProperty =
             DependencyProperty.Register (
-                                         "Target"
+                                         nameof(Target)
                                        , typeof ( Frame )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( Frame ) )
@@ -53,7 +53,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The detailed property</summary>
         public static readonly DependencyProperty DetailedProperty =
             DependencyProperty.Register (
-                                         "Detailed"
+                                         nameof(Detailed)
                                        , typeof ( bool )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( bool ) )
@@ -62,7 +62,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The target detailed property</summary>
         public static readonly DependencyProperty TargetDetailedProperty =
             DependencyProperty.Register (
-                                         "TargetDetailed"
+                                         nameof(TargetDetailed)
                                        , typeof ( bool )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( bool ) )
