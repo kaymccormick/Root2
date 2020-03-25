@@ -83,7 +83,7 @@ namespace ConsoleApp1
         private static async Task Main ( )
         {
             Init ( ) ;
-            using ( var appinst = new ApplicationInstance ( Console.Error.WriteLine ) )
+            using ( var appinst = new ApplicationInstance ( new ApplicationInstanceConfiguration ( Console.Error.WriteLine ) ) )
             {
                 appinst.AddModule ( new AppModule ( ) ) ;
                 appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;

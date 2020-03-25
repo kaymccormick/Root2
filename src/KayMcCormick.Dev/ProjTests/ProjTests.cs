@@ -213,7 +213,7 @@ namespace ProjTests
         public void TestResourcesTree1 ( )
         {
             using (
-                var instance = new ApplicationInstance ( _output.WriteLine ) )
+                var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( _output.WriteLine ) ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.Initialize ( ) ;
@@ -247,7 +247,7 @@ namespace ProjTests
         {
             // var x = new TestApplication ( ) ;
             Debug.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
-            using ( var instance = new ApplicationInstance ( _output.WriteLine ) )
+            using ( var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( _output.WriteLine ) ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
@@ -340,7 +340,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
-            using ( var instance = new ApplicationInstance ( _output.WriteLine ) )
+            using ( var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( _output.WriteLine ) ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.Initialize ( ) ;

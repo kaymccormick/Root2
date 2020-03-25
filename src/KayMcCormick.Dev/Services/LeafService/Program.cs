@@ -36,7 +36,7 @@ namespace LeafService
         const string displayName = "LeafService Service";
         const string description = "A .NET Windows Service.";
 
-        public Program ( ) { _appInst = new ApplicationInstance ( Console.Error.WriteLine ) ; }
+        public Program ( ) { _appInst = new ApplicationInstance ( new ApplicationInstanceConfiguration ( Console.Error.WriteLine ) ) ; }
 
         private void Run ( )
         {

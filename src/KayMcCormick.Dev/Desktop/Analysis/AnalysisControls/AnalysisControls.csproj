@@ -268,7 +268,7 @@
       <Version>4.5.4</Version>
     </PackageReference>
     <PackageReference Include="Vanara.PInvoke.Gdi32">
-      <Version>3.2.1</Version>
+      <Version>3.2.2</Version>
     </PackageReference>
     <PackageReference Include="WpfAnalyzers">
       <Version>2.4.5</Version>

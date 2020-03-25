@@ -63,27 +63,29 @@ namespace KayMcCormick.Lib.Wpf
             else
             {
                 _applicationInstance = _createdAppInstance = new ApplicationInstance (
-                                                                                      message => {
-                                                                                          if (
-                                                                                              _eventLog
-                                                                                              != null
-                                                                                          )
-                                                                                          {
-                                                                                              PROVIDER_GUID.EventWriteSETUP_LOGGING_EVENT( 
-                                                                                                                                                 message)
-                                                                                                                                                 ;
-                                                                                              _eventLog
-                                                                                                 .WriteEntry (
-                                                                                                              message
-                                                                                                            , EventLogEntryType
-                                                                                                                 .Information
-                                                                                                             ) ;
-                                                                                          }
-                                                                                      }
-                                                                                    , null
-                                                                                    , disableLogging
-                                                                                    , disableRuntimeConfiguration
-                                                                                    , disableServiceHost
+                                                                                      new ApplicationInstanceConfiguration (
+                                                                                                                            message => {
+                                                                                                                                if (
+                                                                                                                                    _eventLog
+                                                                                                                                    != null
+                                                                                                                                )
+                                                                                                                                {
+                                                                                                                                    PROVIDER_GUID.EventWriteSETUP_LOGGING_EVENT( 
+                                                                                                                                                                                message)
+                                                                                                                                        ;
+                                                                                                                                    _eventLog
+                                                                                                                                       .WriteEntry (
+                                                                                                                                                    message
+                                                                                                                                                  , EventLogEntryType
+                                                                                                                                                       .Information
+                                                                                                                                                   ) ;
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                          , null
+                                                                                                                          , disableLogging
+                                                                                                                          , disableRuntimeConfiguration
+                                                                                                                          , disableServiceHost
+                                                                                                                           )
                                                                                      ) ;
             }
 

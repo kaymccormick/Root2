@@ -41,11 +41,9 @@ namespace ModelTests
         private ApplicationInstance SetupApplicationInstance ( )
         {
             var applicationInstance = new ApplicationInstance (
-                                                               LogMethod
-                                                             , null
-                                                             , DisableLogging
-                                                             , true
-                                                             , true
+                                                               new ApplicationInstanceConfiguration ( LogMethod , null , DisableLogging , true
+                                                                                                    , true
+                                                                                                    )
                                                               ) ;
 
             applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
@@ -61,11 +59,9 @@ namespace ModelTests
         {
             using ( var applicationInstance =
                 new ApplicationInstance (
-                                         LogMethod
-                                       , null
-                                       , DisableLogging
-                                       , true
-                                       , true
+                                         new ApplicationInstanceConfiguration ( LogMethod , null , DisableLogging , true
+                                                                              , true
+                                                                              )
                                         ) )
             {
                 applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;

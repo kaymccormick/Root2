@@ -32,9 +32,11 @@ Console.WriteLine(a.GetName());
             // return ;
 
             var x = new ApplicationInstance (
-                                             message => {
-                                                 Console.Error.WriteLine ( message ) ;
-                                             }
+                                             new ApplicationInstanceConfiguration (
+                                                                                   message => {
+                                                                                       Console.Error.WriteLine ( message ) ;
+                                                                                   }
+                                                                                  )
                                             ) ;
             x.Initialize ( ) ;
             x.Startup ( ) ;

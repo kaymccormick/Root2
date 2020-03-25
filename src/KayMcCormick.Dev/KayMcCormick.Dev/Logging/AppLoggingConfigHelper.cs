@@ -38,30 +38,6 @@ using JsonAttribute = NLog.Layouts.JsonAttribute ;
 
 namespace KayMcCormick.Dev.Logging
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class AppFileTarget : FileTarget
-    {
-        #region Overrides of FileTarget
-        /// <summary>
-        /// 
-        /// </summary>
-        public AppFileTarget ( ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        public AppFileTarget ( string name ) : base ( name ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="logEvent"></param>
-        protected override void Write ( LogEventInfo logEvent ) { base.Write ( logEvent ) ; }
-        #endregion
-    }
 #if NETFRAMEWORK && ENABLE_WCF_TARGET
     internal class Client
     {
@@ -744,10 +720,9 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for MyFileTarget
         public static FileTarget MyFileTarget ( )
         {
-            var f = new AppFileTarget
+            var f = new AppFileTarget("text_log")
                     {
-                        Name     = "text_log"
-                      , FileName = Layout.FromString ( @"c:\data\logs\log.txt" )
+ FileName = Layout.FromString ( @"c:\data\logs\log.txt" )
                       , Layout   = Layout.FromString ( "${message}" )
                     } ;
 

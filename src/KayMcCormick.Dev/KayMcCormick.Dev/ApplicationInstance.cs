@@ -17,6 +17,28 @@ using NLog ;
 
 namespace KayMcCormick.Dev
 {
+    public class ApplicationInstanceConfiguration
+    {
+        public ApplicationInstanceConfiguration ( LogDelegates.LogMethod logMethod , IEnumerable configs = null , bool disableLogging = false , bool disableRuntimeConfiguration = false , bool disableServiceHost = false )
+        {
+            LogMethod = logMethod ;
+            Configs = configs ;
+            DisableLogging = disableLogging ;
+            DisableRuntimeConfiguration = disableRuntimeConfiguration ;
+            DisableServiceHost = disableServiceHost ;
+        }
+
+        public LogDelegates.LogMethod LogMethod { get ; private set ; }
+
+        public IEnumerable Configs { get ; set ; }
+
+        public bool DisableLogging { get ; private set ; }
+
+        public bool DisableRuntimeConfiguration { get ; private set ; }
+
+        public bool DisableServiceHost { get ; private set ; }
+    }
+
     /// <summary>
     /// </summary>
     [ UsedImplicitly ]
@@ -37,27 +59,22 @@ namespace KayMcCormick.Dev
         /// <param name="disableRuntimeConfiguration"></param>
         /// <param name="disableServiceHost"></param>
         public ApplicationInstance (
-            LogDelegates.LogMethod logMethod
-          , IEnumerable            configs                     = null
-          , bool                   disableLogging              = false
-          , bool                   disableRuntimeConfiguration = false
-          , bool                   disableServiceHost          = false
-        ) : base ( logMethod )
-
+            [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
+        ) : base ( applicationInstanceConfiguration.LogMethod )
         {
-            _disableServiceHost = disableServiceHost ;
+            _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost ;
             var serviceCollection = new ServiceCollection ( ) ;
-            if ( ! disableRuntimeConfiguration )
+            if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
                 var loadedConfigs = LoadConfiguration ( AppLoggingConfigHelper.ProtoLogDelegate ) ;
-                configs = configs != null ? ((IEnumerable <object>)configs).Append ( loadedConfigs ) : loadedConfigs ;
+                applicationInstanceConfiguration.Configs = applicationInstanceConfiguration.Configs != null ? ((IEnumerable <object>)applicationInstanceConfiguration.Configs).Append ( loadedConfigs ) : loadedConfigs ;
             }
 
-            if ( ! disableLogging )
+            if ( ! applicationInstanceConfiguration.DisableLogging )
             {
                 serviceCollection.AddLogging ( ) ;
-                var config = configs != null
-                                 ? configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( )
+                var config = applicationInstanceConfiguration.Configs != null
+                                 ? applicationInstanceConfiguration.Configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( )
                                  : null ;
                 // LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
@@ -73,7 +90,7 @@ namespace KayMcCormick.Dev
                     }
                 }
 
-                Logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( logMethod , config ) ;
+                Logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( applicationInstanceConfiguration.LogMethod , config ) ;
                 GlobalDiagnosticsContext.Set (
                                               "ExecutionContext"
                                             , new ExecutionContextImpl (

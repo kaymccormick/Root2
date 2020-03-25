@@ -17,7 +17,7 @@ namespace WpfTestApp
     {
         public static Window Doit ( )
         {
-            var instance = new ApplicationInstance ( message => Debug.WriteLine ( message ) ) ;
+            var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( message => Debug.WriteLine ( message ) ) ) ;
             instance.AddModule ( new ProjInterfaceModule ( ) ) ;
             instance.AddModule ( new AnalysisControlsModule ( ) ) ;
             instance.Initialize ( ) ;

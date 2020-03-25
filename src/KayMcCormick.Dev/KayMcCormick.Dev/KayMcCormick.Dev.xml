@@ -276,7 +276,7 @@
             <summary>
             </summary>
         </member>
-        <member name="M:KayMcCormick.Dev.ApplicationInstance.#ctor(KayMcCormick.Dev.Logging.LogDelegates.LogMethod,System.Collections.IEnumerable,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:KayMcCormick.Dev.ApplicationInstance.#ctor(KayMcCormick.Dev.ApplicationInstanceConfiguration)">
             <summary>
             </summary>
             <param name="logMethod"></param>
@@ -1041,6 +1041,17 @@
             </summary>
             <param name="p"></param>
         </member>
+        <member name="T:KayMcCormick.Dev.Logging.AppFileTarget">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:KayMcCormick.Dev.Logging.AppFileTarget.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+        </member>
         <member name="T:KayMcCormick.Dev.Logging.DictConverterFactory">
             <summary>
             
@@ -1087,28 +1098,6 @@
             <param name="writer"></param>
             <param name="value"></param>
             <param name="options"></param>
-        </member>
-        <member name="T:KayMcCormick.Dev.Logging.AppFileTarget">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:KayMcCormick.Dev.Logging.AppFileTarget.#ctor">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:KayMcCormick.Dev.Logging.AppFileTarget.#ctor(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="name"></param>
-        </member>
-        <member name="M:KayMcCormick.Dev.Logging.AppFileTarget.Write(NLog.LogEventInfo)">
-            <summary>
-            
-            </summary>
-            <param name="logEvent"></param>
         </member>
         <member name="T:KayMcCormick.Dev.Logging.AppLoggingConfigHelper">
             <summary>Static class containing logging configuration methods</summary>

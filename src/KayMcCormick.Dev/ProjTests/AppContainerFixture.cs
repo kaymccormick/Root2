@@ -47,7 +47,7 @@ namespace ProjTests
             FixtureLogger.LogFixtureCreatedLifecycleEvent ( GetType ( ) ) ;
 
             _applicationInstance =
-                new ApplicationInstance ( m => _sink.OnMessage ( new DiagnosticMessage ( m ) ) ) ;
+                new ApplicationInstance ( new ApplicationInstanceConfiguration ( m => _sink.OnMessage ( new DiagnosticMessage ( m ) ) ) ) ;
         }
 
 
