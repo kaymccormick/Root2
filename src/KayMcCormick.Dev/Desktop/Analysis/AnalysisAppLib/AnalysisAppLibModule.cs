@@ -2,6 +2,7 @@
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Net.Http.Headers ;
+using System.Reflection ;
 using System.Text ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -9,129 +10,223 @@ using AnalysisAppLib.Auth ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
+using Autofac.Core ;
 using Autofac.Features.AttributeFilters ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
+using NLog ;
+using Logger = NLog.Logger ;
 
 namespace AnalysisAppLib
 {
     public sealed class AnalysisAppLibModule : IocModule
     {
-        
-        public override void DoLoad ( ContainerBuilder builder )
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-            builder.RegisterModule < AppBuildModule > ( ) ;
+            builder.RegisterModule < LegacyAppBuildModule > ( ) ;
             builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             builder.RegisterType < FileSystemExplorerItemProvider > ( )
                    .As < IExplorerItemProvider > ( ) ;
-            builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ; 
+            builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
+
             builder.RegisterType < AnalyzeCommand > ( ).As < IAnalyzeCommand > ( ) ;
-            builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
+
+            builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )
+                   .As ( typeof ( IAnalyzeCommand2 <> ) ) ;
+
             builder.RegisterType < ProjectBrowserViewModel > ( )
                    .As < IProjectBrowserViewModel > ( ) ;
             builder.RegisterType < Pipeline > ( ).AsSelf ( ) ;
+
+            /* Register the "Cache target view model. */
             builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;
+
             builder.RegisterType < SyntaxPanelViewModel > ( ).As < ISyntaxPanelViewModel > ( ) ;
-            
+
             builder.RegisterType < SyntaxTokenViewModel > ( )
-                   .As < ISyntaxTokenViewModel> ( )
+                   .As < ISyntaxTokenViewModel > ( )
                    .SingleInstance ( ) ;
 
-            
-            builder.RegisterType < FindLogInvocations > ( )
-                   .AsImplementedInterfaces ( )
-                   .WithAttributeFiltering ( )
-                   .InstancePerLifetimeScope ( ) ;
+            builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
+            // builder.RegisterType < FindLogUsagesAnalysisDefinition > ( )
+            // .As < IAnalysisDefinition > ( ) ;
             builder.RegisterType < FindLogUsagesFuncProvider > ( )
                    .AsImplementedInterfaces ( )
-                   .WithAttributeFiltering ( ).AsSelf()
+                   .WithAttributeFiltering ( )
+                   .AsSelf ( )
                    .InstancePerLifetimeScope ( ) ;
+
+
+            //builder.Register()
+            //builder.Register ( typeof ( IAnalysisDefinition <> ) )
+            //.As ( typeof ( IAnalyzeCommand2 <> ) ).As<IAnalyzeCommand3> (  ) ;
+            //  (
+            //      context
+            //    , parameters
+            //    , arg3
+            //  ) => {
+            //      return new
+            //          GenericAnalyzeCommandImpl (
+            //                                     context
+            //                                        .Resolve
+            //                                         < ITargetBlock
+            //                                             < AnalysisRequest
+            //                                             > > ( )
+            //                                   , context
+            //                                        .Resolve
+            //                                         < ISourceBlock
+            //                                             < object
+            //                                             > > ( )
+            //                                    ) ;
+            //  }
+            // ) ;
+
+            builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly ( ) )
+                   .Where (
+                           t => t.FindInterfaces (
+                                                  ( type , criteria ) => {
+                                                     if ( ! type.IsGenericType )
+                                                      {
+                                                          return false ;
+                                                      }
+
+                                                     var assemblyName = type.GetGenericTypeDefinition ( )
+                                                                            .Assembly.GetName ( ) ;
+                                                     Logger.Warn ( $"assembly is {assemblyName}" ) ;
+                                                     if ( assemblyName
+                                                          != Assembly
+                                                            .GetCallingAssembly ( )
+                                                            .GetName ( ) )
+                                                         return false ;
+
+                                                     Logger.Warn(
+                                                                 $"{t.FullName} {type.FullName} {criteria}"
+                                                                );
+
+                                                      if ( type.GetGenericTypeDefinition ( )
+                                                           == typeof ( IAnalysisBlockProvider < , ,
+                                                           > ) )
+                                                      {
+                                                          Logger.Warn(
+                                                                       "Discovered class {type}"
+                                                                      ) ;
+                                                          return true ;
+                                                      }
+
+                                                      return false ;
+                                                  }
+                                                , t
+                                                 )
+                                 .Any ( )
+                          )
+                   .AsImplementedInterfaces ( ) ;
+
+
+            //        .AsImplementedInterfaces ( )
+            //        .WithAttributeFiltering ( )
+            //        .InstancePerLifetimeScope ( ) ;
+
             // builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
-                   // .As ( typeof ( IAnalysisBlockProvider < , , > ) )
-                   // .WithAttributeFiltering ( )
-                   // .InstancePerLifetimeScope ( ) ;
+            // .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+            // .WithAttributeFiltering ( )
+            // .InstancePerLifetimeScope ( ) ;
             // builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
-                   // .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-                   // .WithAttributeFiltering ( )
-                   // .InstancePerLifetimeScope ( ) ;
+            // .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+            // .WithAttributeFiltering ( )
+            // .InstancePerLifetimeScope ( ) ;
             // builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
-                   // .As(typeof(IAnalysisBlockProvider<,,>))
-                   // .WithAttributeFiltering()
-                   // .InstancePerLifetimeScope();
+            // .As(typeof(IAnalysisBlockProvider<,,>))
+            // .WithAttributeFiltering()
+            // .InstancePerLifetimeScope();
             // builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
-                   // .As(typeof(IDataflowTransformFuncProvider<,>))
-                   // .WithAttributeFiltering()
-                   // .InstancePerLifetimeScope();
-
-#if MSBUILDWORKSPACE
-            builder.RegisterType<MSBuildWorkspaceManager>().As<IWorkspaceManager>();
-#else
+            // .As(typeof(IDataflowTransformFuncProvider<,>))
+            // .WithAttributeFiltering()
+            // .InstancePerLifetimeScope();
 
 
-#endif
-
+            #region MS LOGIN
+            builder.Register ( MakePublicClientApplication ).As < IPublicClientApplication > ( ) ;
 
             builder.Register (
-                              ( context , p ) => {
-                                  var a = PublicClientApplicationBuilder
-                                         .CreateWithApplicationOptions (
-                                                                        new
-                                                                        PublicClientApplicationOptions
-                                                                        {
-                                                                            ClientId =
-                                                                                p.TypedAs < Guid
-                                                                                  > ( )
-                                                                                 .ToString ( )
-                                                                          , RedirectUri =
-                                                                                "myapp://auth"
-                                                                        }
-                                                                       )
-                                         .WithAuthority (
-                                                         AadAuthorityAudience
-                                                            .AzureAdAndPersonalMicrosoftAccount
-                                                        )
-                                         .Build ( ) ;
-                                  TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
-                                  return a ;
+                              ( ctx , p ) => {
+                                  var bearerToken = p.TypedAs < string > ( ) ;
+                                  return MakeGraphServiceClient ( bearerToken ) ;
                               }
                              )
-                   .As < IPublicClientApplication > ( ) ;
-
-            builder.Register (
-                              ( ctx , p ) => new GraphServiceClient (
-                                                                     new
-                                                                         DelegateAuthenticationProvider (
-                                                                                                         requestMessage
-                                                                                                             => {
-                                                                                                             requestMessage
-                                                                                                                    .Headers
-                                                                                                                    .Authorization
-                                                                                                                 = new
-                                                                                                                     AuthenticationHeaderValue (
-                                                                                                                                                "Bearer"
-                                                                                                                                              , p
-                                                                                                                                                   .TypedAs
-                                                                                                                                                    < string
-                                                                                                                                                    > ( )
-                                                                                                                                               ) ;
-                                                                                                             return
-                                                                                                                 Task
-                                                                                                                    .FromResult (
-                                                                                                                                 0
-                                                                                                                                ) ;
-                                                                                                         }
-                                                                                                        )
-                                                                    )
-                             )
                    .AsSelf ( ) ;
+            #endregion
             builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
             builder.Register ( ( c , p ) => new LogViewerConfig ( p.TypedAs < ushort > ( ) ) )
                    .AsSelf ( ) ;
             builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
         }
+
+        private IPublicClientApplication MakePublicClientApplication (
+            IComponentContext         context
+          , IEnumerable < Parameter > p
+        )
+        {
+            var typedAs = p.TypedAs < Guid > ( ) ;
+
+            var a = PublicClientApplicationBuilder
+                   .CreateWithApplicationOptions (
+                                                  new PublicClientApplicationOptions
+                                                  {
+                                                      ClientId    = typedAs.ToString ( )
+                                                    , RedirectUri = "myapp://auth"
+                                                  }
+                                                 )
+                   .WithAuthority ( AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount )
+                   .Build ( ) ;
+            TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
+            return a ;
+        }
+
+        private static GraphServiceClient MakeGraphServiceClient ( string bearerToken )
+        {
+            var parameter = bearerToken ;
+            var auth = new DelegateAuthenticationProvider (
+                                                           AuthenticateRequestAsyncDelegate (
+                                                                                             parameter
+                                                                                            )
+                                                          ) ;
+            return new GraphServiceClient ( auth ) ;
+        }
+
+        private static AuthenticateRequestAsyncDelegate AuthenticateRequestAsyncDelegate (
+            string parameter
+        )
+        {
+            return requestMessage => {
+                requestMessage.Headers.Authorization =
+                    new AuthenticationHeaderValue ( "Bearer" , parameter ) ;
+                return Task.FromResult ( 0 ) ;
+            } ;
+        }
+    }
+
+    [ TitleMetadata ( "Find and analyze usages of NLog logging." ) ]
+    public sealed class FindLogUsagesAnalysisDefinition : IAnalysisDefinition < ILogInvocation >
+    {
+        private Type _dataflowOutputType = typeof ( ILogInvocation ) ;
+
+        public Type DataflowOutputType
+        {
+            get { return _dataflowOutputType ; }
+            set { _dataflowOutputType = value ; }
+        }
+    }
+
+    public interface IAnalysisDefinition < TOutput >
+    {
+        Type DataflowOutputType { get ; set ; }
     }
 }

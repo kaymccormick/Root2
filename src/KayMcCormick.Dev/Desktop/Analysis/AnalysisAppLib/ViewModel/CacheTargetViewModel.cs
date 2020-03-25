@@ -23,42 +23,44 @@ namespace AnalysisAppLib.ViewModel
 {
     public sealed class CacheTargetViewModel
     {
-        private readonly LogEventInstanceObservableCollection _events = new LogEventInstanceObservableCollection();
+        private readonly MyCacheTarget2 _cacheTarget ;
+
+        private readonly LogEventInstanceObservableCollection _events =
+            new LogEventInstanceObservableCollection ( ) ;
+
+        public CacheTargetViewModel ( MyCacheTarget2 cacheTarget ) { _cacheTarget = cacheTarget ; }
 
         public void Attach ( )
         {
-            var myCacheTarget2 = AppLoggingConfigHelper.CacheTarget2;
-            myCacheTarget2?.Cache.SubscribeOn(Scheduler.Default)
-                           .Buffer(TimeSpan.FromMilliseconds(100))
-                           .Where(x => x.Any())
-                           .ObserveOnDispatcher(DispatcherPriority.Background)
-                           .Subscribe(
-                                      infos => {
-                                          foreach (var json in infos)
-                                          {
-                                              try
-                                              {
-                                                  var i = JsonSerializer
-                                                     .Deserialize<LogEventInstance>(
-                                                                                    json
-                                                                                  , new
-                                                                                        JsonSerializerOptions()
-                                                                                   );
-                                               
-                                                  Events.Add(i);
-                                              }
-                                              catch (Exception ex)
-                                              {
-                                                  throw;
-                                                  Debug.WriteLine(ex.ToString());
-                                              }
-                                          }
-                                      }
-                                     );
+            _cacheTarget?.Cache.SubscribeOn ( Scheduler.Default )
+                         .Buffer ( TimeSpan.FromMilliseconds ( 100 ) )
+                         .Where ( x => x.Any ( ) )
+                         .ObserveOnDispatcher ( DispatcherPriority.Background )
+                         .Subscribe (
+                                     infos => {
+                                         foreach ( var json in infos )
+                                         {
+                                             try
+                                             {
+                                                 var i = JsonSerializer
+                                                    .Deserialize < LogEventInstance > (
+                                                                                       json
+                                                                                     , new
+                                                                                           JsonSerializerOptions ( )
+                                                                                      ) ;
 
-
+                                                 Events.Add ( i ) ;
+                                             }
+                                             catch ( Exception ex )
+                                             {
+                                                 throw ;
+                                                 Debug.WriteLine ( ex.ToString ( ) ) ;
+                                             }
+                                         }
+                                     }
+                                    ) ;
         }
 
-        public LogEventInstanceObservableCollection Events  { get { return _events ; } }
+        public LogEventInstanceObservableCollection Events { get { return _events ; } }
     }
 }

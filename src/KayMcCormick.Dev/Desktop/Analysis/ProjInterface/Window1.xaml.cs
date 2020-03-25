@@ -11,6 +11,7 @@ using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
 using NLog ;
 

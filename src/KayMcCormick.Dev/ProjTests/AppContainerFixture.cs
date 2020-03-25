@@ -24,7 +24,7 @@ namespace ProjTests
 {
     /// <summary>Test fixture configured to supply the primary application container from Autofac.</summary>
     /// <seealso cref="Xunit.IAsyncLifetime" />
-    /// <seealso cref="AppBuildModule"/>
+    /// <seealso cref="LegacyAppBuildModule"/>
     [ UsedImplicitly ]
     public class AppContainerFixture : IAsyncLifetime
     {

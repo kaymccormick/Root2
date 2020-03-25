@@ -7,6 +7,7 @@ using System.Windows.Media ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace AnalysisControls.Views

@@ -7,6 +7,7 @@ using System.Windows.Data ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

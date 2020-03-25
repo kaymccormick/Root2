@@ -7,6 +7,7 @@ using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
+using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Xml.Serialization ;
 using Autofac ;
@@ -28,13 +29,13 @@ namespace KayMcCormick.Dev
     [ UsedImplicitly ]
     public class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
-        private readonly bool                    _disableLogging ;
-        private readonly bool                    _disableServiceHost ;
-        private readonly List < IModule >        _modules = new List < IModule > ( ) ;
-        private          IContainer              _container ;
-        private          ApplicationInstanceHost _host ;
-        private          ILifetimeScope          _lifetimeScope ;
-        private static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter() ;
+        private readonly        bool                    _disableLogging ;
+        private readonly        bool                    _disableServiceHost ;
+        private readonly        List < IModule >        _modules = new List < IModule > ( ) ;
+        private                 IContainer              _container ;
+        private                 ApplicationInstanceHost _host ;
+        private                 ILifetimeScope          _lifetimeScope ;
+        private static readonly BinaryFormatter         _binaryFormatter = new BinaryFormatter ( ) ;
 
         /// <summary>
         /// </summary>
@@ -47,20 +48,27 @@ namespace KayMcCormick.Dev
             [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
         ) : base ( applicationInstanceConfiguration.LogMethod )
         {
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-            _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost ;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException ;
+            _disableServiceHost =
+                applicationInstanceConfiguration.DisableServiceHost ;
             var serviceCollection = new ServiceCollection ( ) ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
                 var loadedConfigs = LoadConfiguration ( AppLoggingConfigHelper.ProtoLogDelegate ) ;
-                applicationInstanceConfiguration.Configs = applicationInstanceConfiguration.Configs != null ? ((IEnumerable <object>)applicationInstanceConfiguration.Configs).Append ( loadedConfigs ) : loadedConfigs ;
+                applicationInstanceConfiguration.Configs =
+                    applicationInstanceConfiguration.Configs != null
+                        ? ( ( IEnumerable < object > ) applicationInstanceConfiguration.Configs )
+                       .Append ( loadedConfigs )
+                        : loadedConfigs ;
             }
 
             if ( ! applicationInstanceConfiguration.DisableLogging )
             {
                 serviceCollection.AddLogging ( ) ;
                 var config = applicationInstanceConfiguration.Configs != null
-                                 ? applicationInstanceConfiguration.Configs.OfType < ILoggingConfiguration > ( ).FirstOrDefault ( )
+                                 ? applicationInstanceConfiguration
+                                  .Configs.OfType < ILoggingConfiguration > ( )
+                                  .FirstOrDefault ( )
                                  : null ;
                 // LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
@@ -76,7 +84,11 @@ namespace KayMcCormick.Dev
                     }
                 }
 
-                Logger = AppLoggingConfigHelper.EnsureLoggingConfigured ( applicationInstanceConfiguration.LogMethod , config ) ;
+                Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
+                                                                         applicationInstanceConfiguration
+                                                                            .LogMethod
+                                                                       , config
+                                                                        ) ;
                 GlobalDiagnosticsContext.Set (
                                               "ExecutionContext"
                                             , new ExecutionContextImpl (
@@ -94,7 +106,10 @@ namespace KayMcCormick.Dev
             }
         }
 
-        private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        private static void CurrentDomain_FirstChanceException (
+            object                        sender
+          , FirstChanceExceptionEventArgs e
+        )
         {
             Utils.LogParsedExceptions ( e.Exception ) ;
         }
@@ -133,10 +148,7 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="appModule"></param>
-        public override void AddModule ( IModule appModule )
-        {
-            _modules.Add(appModule);
-        }
+        public override void AddModule ( IModule appModule ) { _modules.Add ( appModule ) ; }
 
         /// <summary>
         /// 
@@ -165,14 +177,26 @@ namespace KayMcCormick.Dev
         {
             var builder = new ContainerBuilder ( ) ;
             builder.RegisterModule < AttributedMetadataModule > ( ) ;
-            builder.RegisterMetadataRegistrationSources();
+            builder.RegisterMetadataRegistrationSources ( ) ;
+            builder.RegisterModule < NouveauAppModule > ( ) ;
+
             foreach ( var module in _modules )
             {
                 Logger.Debug ( "Registering module {module}" , module.ToString ( ) ) ;
                 builder.RegisterModule ( module ) ;
             }
 
-            return builder.Build ( ) ;
+            try
+            {
+                return builder.Build ( ) ;
+            }
+            catch ( ArgumentException argExp )
+            {
+                throw new ContainerBuildException (
+                                                   "Unable to build container: " + argExp.Message
+                                                 , argExp
+                                                  ) ;
+            }
         }
 
         /// <summary>
@@ -346,6 +370,43 @@ namespace KayMcCormick.Dev
         #endregion
     }
 
+    [ Serializable ]
+    public class ContainerBuildException : Exception
+    {
+        public ContainerBuildException ( ) { }
+
+        public ContainerBuildException ( string message ) : base ( message ) { }
+
+        public ContainerBuildException ( string message , Exception innerException ) : base (
+                                                                                             message
+                                                                                           , innerException
+                                                                                            )
+        {
+        }
+
+        protected ContainerBuildException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
+        {
+        }
+    }
+
+    public class NouveauAppModule : IocModule
+    {
+        #region Overrides of IocModule
+        public override void DoLoad ( ContainerBuilder builder )
+        {
+            if ( AppLoggingConfigHelper.CacheTarget2 != null )
+            {
+                builder.RegisterInstance ( AppLoggingConfigHelper.CacheTarget2 )
+                       .WithMetadata ( "Description" , "Cache target" )
+                       .SingleInstance ( ) ;
+            }
+        }
+        #endregion
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -354,14 +415,18 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public ParsedExceptions ( ) {
-        }
+        public ParsedExceptions ( ) { }
 
-        private List<ParsedStackInfo> _parsedList = new List < ParsedStackInfo > ();
+        private List < ParsedStackInfo > _parsedList = new List < ParsedStackInfo > ( ) ;
+
         /// <summary>
         /// 
         /// </summary>
-        public List<ParsedStackInfo> ParsedList { get { return _parsedList ; } set { _parsedList = value ; } }
+        public List < ParsedStackInfo > ParsedList
+        {
+            get { return _parsedList ; }
+            set { _parsedList = value ; }
+        }
     }
 
     /// <summary>
@@ -372,12 +437,11 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public ParsedStackInfo ( ) {
-        }
+        public ParsedStackInfo ( ) { }
 
-        private readonly string _typeName ;
-        private readonly string _exMessage ;
-        private List < StackTraceEntry > _stackTraceEntries ;
+        private readonly string                   _typeName ;
+        private readonly string                   _exMessage ;
+        private          List < StackTraceEntry > _stackTraceEntries ;
 
         /// <summary>
         /// 
@@ -387,19 +451,23 @@ namespace KayMcCormick.Dev
         /// <param name="exMessage"></param>
         public ParsedStackInfo (
             IEnumerable < StackTraceEntry > parsed
-          , string                        typeName
+          , string                          typeName
           , string                          exMessage
         )
         {
-            _typeName = typeName ;
-            _exMessage = exMessage ;
+            _typeName         = typeName ;
+            _exMessage        = exMessage ;
             StackTraceEntries = parsed.ToList ( ) ;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public List < StackTraceEntry > StackTraceEntries { get { return _stackTraceEntries ; } set { _stackTraceEntries = value ; } }
+        public List < StackTraceEntry > StackTraceEntries
+        {
+            get { return _stackTraceEntries ; }
+            set { _stackTraceEntries = value ; }
+        }
 
         /// <summary>
         /// 

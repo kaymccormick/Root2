@@ -12,7 +12,7 @@
 using System ;
 using System.ComponentModel.Composition ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Dev.Attributes
 {
     [ MetadataAttribute ]
     public class TitleMetadataAttribute : Attribute

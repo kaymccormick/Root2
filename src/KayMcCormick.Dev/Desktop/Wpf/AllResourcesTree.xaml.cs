@@ -9,6 +9,7 @@ using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Windows.Media ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using NLog ;
 
@@ -442,7 +443,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// Control for displaying all known resources to the application.
     /// </summary>
-    [ TitleMetadataAttribute ( "Resources Explorer" ) ]
+    [ TitleMetadata ( "Resources Explorer" ) ]
     public partial class AllResourcesTree : UserControl
       , IViewWithTitle
       , IView < AllResourcesTreeViewModel >,

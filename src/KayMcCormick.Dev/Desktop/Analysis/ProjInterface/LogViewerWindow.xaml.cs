@@ -5,6 +5,7 @@ using AnalysisAppLib ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace ProjInterface

@@ -5,6 +5,7 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
+using KayMcCormick.Dev.Attributes ;
 
 namespace AnalysisControls.Views
 {

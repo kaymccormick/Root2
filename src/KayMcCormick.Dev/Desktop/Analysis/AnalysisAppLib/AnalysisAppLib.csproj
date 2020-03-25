@@ -44,13 +44,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -79,7 +81,9 @@
     <Compile Include="Dataflow\IAnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\IDataflowTransformFuncProvider.cs" />
     <Compile Include="FindLogUsages.cs" />
+    <Compile Include="GenericAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand.cs" />
+    <Compile Include="IAnalyzeCommand2.cs" />
     <Compile Include="RefactorLogUsage.cs" />
     <Compile Include="RejectedItem.cs" />
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
@@ -144,6 +148,10 @@
     <Compile Include="ViewModel\TypesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\AnalysisServiceLibrary\AnalysisServiceLibrary.csproj">
+      <Project>{1F5D1B87-40FF-42C0-88D9-874162E5D234}</Project>
+      <Name>AnalysisServiceLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>

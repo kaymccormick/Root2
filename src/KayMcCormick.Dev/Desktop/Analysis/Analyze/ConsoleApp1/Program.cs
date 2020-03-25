@@ -10,6 +10,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 #if COMMANDLINE
@@ -38,6 +39,8 @@ namespace ConsoleApp1
 
         public IAnalyzeCommand AnalyzeCommand { get ; }
 
+        //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
+
         public ActionBlock < ILogInvocation > actionBlock ;
 
         private IProjectBrowserViewModel _projectBrowserViewModel ;
@@ -47,12 +50,14 @@ namespace ConsoleApp1
           , ActionBlock < ILogInvocation > actionBlock
           , IProjectBrowserViewModel       projectBrowserViewModel
             , IAnalyzeCommand analyzeCommand
+           //, IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > analyzeCommands
         )
         {
             Scope                    = scope ;
             this.actionBlock         = actionBlock ;
             BrowserViewModel = projectBrowserViewModel ;
             AnalyzeCommand = analyzeCommand ;
+            //AnalyzeCommands = analyzeCommands ;
         }
     }
 
@@ -73,62 +78,59 @@ namespace ConsoleApp1
 
     internal class Program
     {
-        private static Logger Logger ;
+        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         //============= Config [Edit these with your settings] =====================
-        private static async Task Main ( )
+        private static async Task < int > Main ( )
         {
             Init ( ) ;
-            using ( var appinst = new ApplicationInstance ( new ApplicationInstanceConfiguration ( Console.Error.WriteLine ) ) )
-            {
-                appinst.AddModule ( new AppModule ( ) ) ;
-                appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                appinst.AddModule ( new ProjLibModule ( ) ) ;
-                var scope = appinst.GetLifetimeScope ( ) ;
+            using (var appinst = new ApplicationInstance(new ApplicationInstanceConfiguration(
+                                                                                                  (
+                                                                                                      message
+                                                                                                  ) =>
+                                                                                                  {
+                                                                                                  })))
 
-                AppContext context ;
+            {
+                appinst.AddModule(new AppModule());
+                appinst.AddModule(new AnalysisAppLibModule());
+                appinst.AddModule(new ProjLibModule());
+                ILifetimeScope scope;
                 try
                 {
-                    context = scope.Resolve < AppContext > ( ) ;
+                    scope = appinst.GetLifetimeScope();
                 }
-                catch ( DependencyResolutionException depex )
+                catch (ContainerBuildException buildException)
                 {
-                    Exception ex1 = depex ;
-                    while ( ex1 != null )
+                    Console.WriteLine(buildException.Message);
+                    Console.WriteLine("Please contact your administrator for assistance.");
+                    return 1;
+                }
+
+                AppContext context;
+                try
+                {
+                    context = scope.Resolve<AppContext>();
+                }
+                catch (DependencyResolutionException depex)
+                {
+                    Exception ex1 = depex;
+                    while (ex1 != null)
                     {
-                        Logger.Debug ( ex1.Message ) ;
-                        ex1 = ex1.InnerException ;
+                        Logger.Debug(ex1.Message);
+                        ex1 = ex1.InnerException;
                     }
 
-                    return ;
+                    return 1;
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
-                    Logger.Fatal ( ex , ex.Message ) ;
-                    return ;
+                    Logger.Fatal(ex, ex.Message);
+                    return 1;
                 }
-#if COMMANDLINE
-            var parsed = Parser.Default.ParseArguments < Options > ( args )
-                  .WithNotParsed (
-                                  errors => {
-                                      Logger.Error (
-                                                    string.Join (
-                                                                 ", "
-                                                       , errors.Select (
-                                                                                error => error.Tag
-                                                                               )
-                                                                )
-                                                   ) ;
-                                  }
-                                 ) ;
 
-            if (parsed.Tag == ParserResultType.Parsed)
-            {
-                await MainCommand((parsed as Parsed<Options>).Value, context);
-            }
-#else
-                await MainCommand ( context ) ;
-#endif
+                return await MainCommand(context);
+
             }
         }
 
@@ -141,82 +143,10 @@ namespace ConsoleApp1
             // ) ;
         }
 
-        private static void Instances ( )
-        {
-#if false
-            var instances = MSBuildLocator.QueryVisualStudioInstances (
-                                                                       new
-                                                                       VisualStudioInstanceQueryOptions ( )
-                                                                       {
-                                                                           DiscoveryTypes =
-                                                                               DiscoveryType
-                                                                                  .VisualStudioSetup
-                                                                       }
-                                                                      ) ;
-            foreach ( var visualStudioInstance in instances )
-            {
-                Logger.Info (
-                             "{name} {x}"
-                       , visualStudioInstance.Name
-                       , visualStudioInstance.Version
-                            ) ;
-            }
-#endif
-        }
-
-        private static async Task MainCommand (
-#if COMMANDLINE
-            Options options ,
-#endif
+        private static async Task<int> MainCommand (
             AppContext context
         )
         {
-#if COMMANDLINE
-            if ( options.FirstChance )
-            {
-                AppDomain.CurrentDomain.FirstChanceException +=
-                    CurrentDomainOnFirstChanceException ;
-            }
-#endif
-
-
-#if VSSETTINGS
-            var x = ( ISupportInitialize ) viewModel ;
-            x.BeginInit ( ) ;
-            x.EndInit ( ) ;
-#endif
-#if COMMANDLINE
-            if ( options.ListVsInstances )
-            {
-                foreach ( var vsInstance in viewModel.VsCollection )
-                {
-                    var format = "{I}\n" ;
-                    var t = MessageTemplate.Parse ( format ) ;
-                    var converter = TypeDescriptor.GetConverter ( typeof ( IVsInstance ) ) ;
-                    var canConvertTo = converter.CanConvertTo ( typeof ( TemplatePropertyValue ) ) ;
-                    var converted = converter.ConvertTo (
-                                                         vsInstance
-                                                   , typeof ( TemplatePropertyValue )
-                                                        ) ;
-                    Logger.Info ( "" + "converted = {converted}" , converted ) ;
-                    var templateProperties = new[]
-                                             {
-                                                 new TemplateProperty (
-                                                                       "I"
-                                                                 , ( TemplatePropertyValue )
-                                                                       converted
-                                                                      )
-                                             } ;
-
-                    var plist = new TemplatePropertyList ( templateProperties ) ;
-                    t.Render ( new TemplatePropertyValueDictionary ( plist ) , Console.Out ) ;
-
-                    // var line = MessageTemplates.MessageTemplate.Format(format, vsInstance.DisplayName, vsInstance.InstallationVersion, vsInstance.Product.GetVersion(), vsInstance.IsPrerelease ? " [PREVIEW]" : "");
-                    // Console.WriteLine(l\ine);
-                }
-            }
-#endif
-
 #if MSBUILDLOCATOR
             // var instances = MSBuildLocator.RegisterDefaults ( ) ;
             var i2 = (
@@ -259,6 +189,7 @@ namespace ConsoleApp1
                 }
             }
 
+            IProjectBrowserNode projectNode = null ;
             for ( ; ; )
             {
                 var key = Console.ReadKey ( ) ;
@@ -270,37 +201,40 @@ namespace ConsoleApp1
 
                 var selection = ( int ) char.GetNumericValue ( key.KeyChar ) ;
 
-                var projectNode = nodes[ selection - 1 ] as IProjectBrowserNode ;
+                projectNode = nodes[ selection - 1 ] as IProjectBrowserNode ;
                 if ( projectNode == null )
                 {
                     continue ;
                 }
 
-                Console.WriteLine ( projectNode.SolutionPath ) ;
-                Console.ReadLine ( ) ;
-
-
-                ITargetBlock <RejectedItem> rejectTarget = new ActionBlock < RejectedItem > (item => Console.WriteLine($"Reject: {item.Statement}"));
-                await context.AnalyzeCommand.AnalyzeCommandAsync ( projectNode , rejectTarget ) ; 
-                // using ( var s = File.OpenWrite ( "invocs.json" ) )
-                // {
-                    // await JsonSerializer.SerializeAsync ( s , logInvocations ) ;
-                // }
-
                 break ;
             }
+
+            int j = 0 ;
+            Meta < Lazy < IAnalyzeCommand3 > > command2 = null ;
+            // foreach ( var cmd in context.AnalyzeCommands )
+            // {
+                // Console.WriteLine("Command #" + j);
+                // foreach ( var keyValuePair in cmd.Metadata )
+                // {
+                    // Console.WriteLine ( $"  {keyValuePair.Key}: {keyValuePair.Value}" ) ;
+                // }
+
+                // command2 = cmd ;
+            // }
+
+            Console.ReadLine ( ) ;
+
+            Console.WriteLine ( projectNode.SolutionPath ) ;
+            Console.ReadLine ( ) ;
+
+            //    ITargetBlock <RejectedItem> rejectTarget = new ActionBlock < RejectedItem > (item => Console.WriteLine($"Reject: {item.Statement}"));
+            await command2.Value.Value.AnalyzeCommandAsync(projectNode ) ;
+            return 0 ;
         }
 
         private static void Init ( )
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured (
-                                                            null
-                                                          , new AppLoggingConfiguration ( )
-                                                            {
-                                                                IsEnabledConsoleTarget = true
-                                                            }
-                                                           ) ;
-            Logger = LogManager.GetCurrentClassLogger ( ) ;
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -323,19 +257,5 @@ namespace ConsoleApp1
             Console.WriteLine ( "FIRST CHANCE EXCEPTION\n" + e.Exception ) ;
         }
     }
-#if COMMANDLINE
-    internal class Options
-    {
-        private bool _listVsInstances ;
 
-        [ Option ( HelpText = "Version for visual studio selection" ) ]
-        public string VsVersion { get ; set ; }
-
-        [ Option ( 'l' , "list-vs-instances" ) ]
-        public bool ListVsInstances { get => _listVsInstances ; set => _listVsInstances = value ; }
-
-        [ Option ( 'f' ) ]
-        public bool FirstChance { get ; set ; }
-    }
-#endif
 }

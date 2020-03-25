@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
 {
-    public class FindLogUsagesFuncProvider : DataflowTransformFuncProvider <
+    public sealed class FindLogUsagesFuncProvider : DataflowTransformFuncProvider <
         Document , ILogInvocation >, IHaveRejectBlock
     {
         private readonly Func < Document , Task < IEnumerable < ILogInvocation > > >
