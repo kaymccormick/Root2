@@ -265,6 +265,12 @@ namespace AnalysisControls
             linesCollectionView.MoveCurrentToLast ( ) ;
         }
         #endregion
+
+        public void ExecutePythonScript ( string textEditorText )
+        {
+            var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
+
+        }
     }
 
     public sealed class PythonVariable : IPythonVariable

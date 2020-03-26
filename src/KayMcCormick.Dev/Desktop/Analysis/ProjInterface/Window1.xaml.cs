@@ -6,6 +6,7 @@ using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
 using AnalysisAppLib.ViewModel ;
+using AnalysisControls ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
@@ -169,6 +170,13 @@ namespace ProjInterface
                     
                 }
             }
+        }
+
+        private void ExecutePythonCode ( object sender , ExecutedRoutedEventArgs e )
+        {
+            var scope = (ILifetimeScope)GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
+            var model = scope.Resolve < PythonViewModel > ( ) ;
+            model.ExecutePythonScript ( textEditor.Text ) ;
         }
     }
 }

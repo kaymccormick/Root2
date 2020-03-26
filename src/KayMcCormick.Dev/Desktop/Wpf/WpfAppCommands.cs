@@ -64,5 +64,12 @@ namespace KayMcCormick.Lib.Wpf
                               , typeof(WpfAppCommands)
                                );
 
+        public static readonly RoutedUICommand Execute =
+            new RoutedUICommand(
+                                "Execute code"
+                              , nameof(Execute)
+                              , typeof(WpfAppCommands)
+                               );
+
     }
 }

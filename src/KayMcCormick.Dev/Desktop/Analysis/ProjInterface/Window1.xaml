@@ -245,12 +245,24 @@
                   x:Name="BrowserFrame" Source="Home.xaml" />
               </avalondock:LayoutDocument>
               <avalondock:LayoutDocument>
-                <avalonEdit:TextEditor
+                  <Grid>
+                    <Grid.CommandBindings>
+                      <CommandBinding Command="kmWpf:WpfAppCommands.Execute" Executed="ExecutePythonCode"/>
+                    </Grid.CommandBindings>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/>
+                      <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <ToolBarTray><ToolBar Band="1" BandIndex="1">
+      <Button Content="Run" Command="kmWpf:WpfAppCommands.Execute"></Button>
+                    </ToolBar></ToolBarTray>
+                <avalonEdit:TextEditor Grid.Row="1" Grid.Column="1"
                   xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
                   Name="textEditor"
                   SyntaxHighlighting="C#"
                   FontFamily="Consolas"
                   FontSize="10pt"/>
+                  </Grid>
                 </avalondock:LayoutDocument>
               <avalondock:LayoutAnchorable Title="Files"
                                            IconSource="{StaticResource FilesIcon}"
