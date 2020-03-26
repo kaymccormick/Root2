@@ -99,6 +99,7 @@
             <Directory Id="Assets_LaunchSamplingTargets" Name="LaunchSamplingTargets">
               <Directory Id="Assets_LaunchSamplingTargets_SVG" Name="SVG" />
             </Directory>
+            <Directory Id="Assets_Export" Name="Export" />
           </Directory>
         </Directory>
       </Directory>
