@@ -401,6 +401,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\New folder\" />
+    <Folder Include="UserControl\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

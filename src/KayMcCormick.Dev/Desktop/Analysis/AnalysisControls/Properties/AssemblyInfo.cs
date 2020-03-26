@@ -11,12 +11,11 @@ using System.Windows.Markup ;
 [assembly: AssemblyTitle("AnalysisControls")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AnalysisControls")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCompany("Kay McCormick")]
+[assembly: AssemblyCopyright("Copyright © Kay McCormick 2020")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
+[assembly: AssemblyCulture("en_US")]
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.

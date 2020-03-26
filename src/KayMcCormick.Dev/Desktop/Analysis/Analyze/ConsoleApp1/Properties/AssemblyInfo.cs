@@ -7,11 +7,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ConsoleApp1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+
 [assembly: AssemblyProduct("ConsoleApp1")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCulture("en_US")]
+[assembly: AssemblyCompany("Kay McCormick")]
+[assembly: AssemblyCopyright("Copyright © Kay McCormick 2020")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

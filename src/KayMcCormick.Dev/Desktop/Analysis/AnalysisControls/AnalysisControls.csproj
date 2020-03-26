@@ -263,9 +263,6 @@
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.8.1</Version>
     </PackageReference>
-    <PackageReference Include="IronPython.StdLib">
-      <Version>2.7.10-candidate1</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis">
       <Version>3.6.0-1.final</Version>
     </PackageReference>

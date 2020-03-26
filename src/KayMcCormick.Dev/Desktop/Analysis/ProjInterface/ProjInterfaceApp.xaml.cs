@@ -110,7 +110,7 @@ namespace ProjInterface
             }
 #endif
 
-            if ( ! lifetimeScope.IsRegistered <Zoo > ( ) )
+            if ( ! lifetimeScope.IsRegistered <Uri > ( ) )
             {
                 ShowErrorDialog (
                                  ProjInterface
