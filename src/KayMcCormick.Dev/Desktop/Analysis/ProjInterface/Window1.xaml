@@ -8,14 +8,12 @@
                  xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
                  xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
-                 Style="{DynamicResource Borderless}"
+                 WindowStyle="ToolWindow"
                  mc:Ignorable="d"
+                 
                  FontSize="14.0"
-                 Title="Window1" Height="450" Width="800">
-
-
+                 Title="Window1" Height="1000" Width="1300">
   <kmWpf:AppWindow.Resources>
-
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
@@ -157,31 +155,33 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
-      <Border BorderBrush="Aqua" BorderThickness="1" Grid.Row="0" Grid.Column="0" Padding="3">
-        <Border Background="BlanchedAlmond" Padding="5">
+    <Border BorderBrush="Aqua" BorderThickness="1" Grid.Row="0" Grid.Column="0" Padding="3">
+      <Border Background="BlanchedAlmond" Padding="5">
         <Menu Background ="{x:Null}"  FontSize="18.0">
-      <MenuItem Header="File">
-        <MenuItem.Effect>
-          <BlurEffect Radius="3" RenderingBias="Quality" />
-        </MenuItem.Effect>
-        <MenuItem Header="_Open" Command="Open" />
-        <MenuItem Header="_Quit"
-                  Command="kmWpf:WpfAppCommands.QuitApplication" />
-      </MenuItem>
-      <MenuItem Header="Commands"
-                ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+          <MenuItem Header="File">
+            <MenuItem.Effect>
+              <BlurEffect Radius="3" RenderingBias="Quality" />
+            </MenuItem.Effect>
+            <MenuItem Header="_Open" Command="Open" />
+            <MenuItem Header="_Quit"
+                      Command="kmWpf:WpfAppCommands.QuitApplication" />
+          </MenuItem>
+          <MenuItem Header="Commands"
+                    ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
 
-        <MenuItem.ItemTemplate>
-          <DataTemplate
-            DataType="kmWpf:IDisplayableAppCommand">
-            <MenuItem Header="{Binding DisplayName}"
-                      Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
-          </DataTemplate>
-        </MenuItem.ItemTemplate>
-      </MenuItem>
-    </Menu>
-        </Border>
+            <MenuItem.ItemTemplate>
+              <DataTemplate
+                DataType="kmWpf:IDisplayableAppCommand">
+                <MenuItem Header="{Binding DisplayName}"
+                          Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
+              </DataTemplate>
+            </MenuItem.ItemTemplate>
+          </MenuItem>
+        </Menu>
       </Border>
+    </Border>
+
+
     <ToolBarTray Grid.Row="1" Grid.Column="0">
       <ToolBar Band="1" BandIndex="1">
         <Button Padding="0"
@@ -244,6 +244,14 @@
                   Navigating="BrowserFrame_OnNavigating"
                   x:Name="BrowserFrame" Source="Home.xaml" />
               </avalondock:LayoutDocument>
+              <avalondock:LayoutDocument>
+                <avalonEdit:TextEditor
+                  xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                  Name="textEditor"
+                  SyntaxHighlighting="C#"
+                  FontFamily="Consolas"
+                  FontSize="10pt"/>
+                </avalondock:LayoutDocument>
               <avalondock:LayoutAnchorable Title="Files"
                                            IconSource="{StaticResource FilesIcon}"
                                            ContentId="fileBrowser">

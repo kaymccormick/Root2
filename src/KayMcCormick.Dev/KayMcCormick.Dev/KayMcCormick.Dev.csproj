@@ -151,7 +151,6 @@
     <Compile Include="ExitCode.cs" />
     <Compile Include="FunctionalArea.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IdGeneratorModule.cs" />
     <Compile Include="IHaveLogger.cs" />
     <Compile Include="InfoContext.cs" />
     <Compile Include="IocModule.cs" />

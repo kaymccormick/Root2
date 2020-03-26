@@ -11,11 +11,13 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Reflection ;
 using System.Windows ;
 using System.Windows.Controls ;
 using AnalysisAppLib ;
+using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
@@ -25,6 +27,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
+using MigraDoc.DocumentObjectModel.Internals ;
 using NLog ;
 using ProjLib ;
 using Logger = NLog.Logger ;
@@ -55,6 +58,69 @@ namespace ProjInterface
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterType < PythonViewModel > ( )
+                   .AsSelf ( )
+                   .SingleInstance ( ) ; //.AutoActivate();
+            builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > (
+                                                                                    ( c , p , item )
+                                                                                        => {
+                                                                                        if ( ! item
+                                                                                              .Metadata
+                                                                                              .TryGetValue (
+                                                                                                            "VariableName"
+                                                                                                          , out
+                                                                                                            var
+                                                                                                                name
+                                                                                                           ) )
+                                                                                        {
+                                                                                            item
+                                                                                               .Metadata
+                                                                                               .TryGetValue (
+                                                                                                             "Identifier"
+                                                                                                           , out
+                                                                                                             name
+                                                                                                            ) ;
+                                                                                        }
+
+                                                                                        var r =
+                                                                                            new
+                                                                                            PythonVariable
+                                                                                            {
+                                                                                                VariableName
+                                                                                                    = (
+                                                                                                        string
+                                                                                                    ) name
+                                                                                              , ValueLambda
+                                                                                                    = ( )
+                                                                                                        => item
+                                                                                                          .Value
+                                                                                                          .Value
+                                                                                            } ;
+                                                                                        return r ;
+                                                                                    }
+                                                                                   ) ;
+
+            builder.RegisterBuildCallback (
+                                           scope => {
+                                               var py = scope.Resolve < PythonViewModel > ( ) ;
+                                               if ( py is ISupportInitialize init )
+                                               {
+                                                   init.BeginInit ( ) ;
+                                                   init.EndInit ( ) ;
+                                               }
+                                           }
+                                          ) ;
+
+            // builder.Register(
+            //                  (c, p) => {
+            //                      var listView = Func(c, p);
+            //                      return new ContentControlView() { Content = listView };
+            //                  })
+            //        .WithMetadata("Title", "Syntax Token View")
+            //        .As<IControlView>();
+            // builder.RegisterType<PythonViewModel>().AsSelf();
+
             Logger.Trace ( "Load" ) ;
             Logger.Warn (
                          $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
@@ -71,7 +137,9 @@ namespace ProjInterface
                                                                          ) => {
                                                                              var r =
                                                                                  new
-                                                                                     AdaptedExplorerItem (item ) ;
+                                                                                     AdaptedExplorerItem (
+                                                                                                          item
+                                                                                                         ) ;
                                                                              return r ;
                                                                          }
                                                                         ) ;
@@ -86,7 +154,7 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
-            ;
+
             LogRegistration ( typeof ( AllResourcesTreeViewModel ) , "AsSelf" ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
             LogRegistration ( typeof ( IconsSource ) , typeof ( IIconsSource ) ) ;
@@ -98,27 +166,23 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
-            builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly ( ) )
-                   .Where (
-                           type => typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
-                                   && type != typeof ( LambdaAppCommand )
-                          )
-                   .As < IDisplayableAppCommand > ( )
-                   .As < IAppCommand > ( )
-                   .As < IDisplayable > ( ) ;
+            builder
+               .RegisterAssemblyTypes (
+                                       Assembly.GetCallingAssembly ( )
+                                     , typeof ( PythonControl ).Assembly
+                                      )
+               .Where (
+                       type => typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
+                               && type != typeof ( LambdaAppCommand )
+                      )
+               .As < IDisplayableAppCommand > ( )
+               .As < IAppCommand > ( )
+               .As < IDisplayable > ( ) ;
             builder
                .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
                     Func < LayoutDocumentPane , IDisplayableAppCommand > > (
-                                                                            (
-                                                                                IComponentContext c
-                                                                              , IEnumerable <
-                                                                                    Parameter > p
-                                                                              , Meta < Func <
-                                                                                        LayoutDocumentPane
-                                                                                      , IControlView
-                                                                                    > >
-                                                                                    metaFunc
-                                                                            ) => {
+                                                                            ( c , p , metaFunc )
+                                                                                => {
                                                                                 metaFunc
                                                                                    .Metadata
                                                                                    .TryGetValue (
@@ -153,7 +217,8 @@ namespace ProjInterface
                .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
             builder.Register (
-                              ( context , parameters ) => new LogViewerControl ( new LogViewerConfig ( 0 ) )
+                              ( context , parameters )
+                                  => new LogViewerControl ( new LogViewerConfig ( 0 ) )
                              )
                    .As < IViewWithTitle > ( )
                    .As < LogViewerControl > ( ) ;

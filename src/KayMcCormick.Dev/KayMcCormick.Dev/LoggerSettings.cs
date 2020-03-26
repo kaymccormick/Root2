@@ -79,6 +79,8 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         public bool ? LogThrowExceptions { get { return _logThrowExceptions ; } set { _logThrowExceptions = value ; } }
+
+        public bool IsEnabledXmlFileTarget { get ; set ; }
         #endregion
     }
 }

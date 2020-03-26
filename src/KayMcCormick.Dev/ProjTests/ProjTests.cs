@@ -710,6 +710,39 @@ namespace ProjTests
             ColorConverter c = new ColorConverter();
         }
 
+        public delegate void RoutedExecutionResultEventHandler (
+            object                         sender
+          , RoutedExecutionResultEventArgs e
+        ) ;
+
+        public static readonly RoutedEvent ExecutionResultEvent =
+            EventManager.RegisterRoutedEvent (
+                                              "ExecutionResult"
+                                            , RoutingStrategy.Direct
+                                            , typeof ( RoutedExecutionResultEventHandler )
+                                            , typeof ( PythonViewModel )
+                                             ) ;
+
+
+        [ Fact ]
+        public void TestPython1 ( )
+        {
+            using ( var instance =
+                new ApplicationInstance (
+                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                        ) )
+            {
+                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.Initialize ( ) ;
+                var lifetimescope = instance.GetLifetimeScope ( ) ;
+                var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
+                var pInputLine = "\"hello\"" ;
+                p.InputLine = pInputLine ;
+                p.TakeLine ( p.InputLine ) ;
+                p.HistoryUp();
+                Assert.Equal(pInputLine, p.InputLine);
+            }
+        }
 
         public void Dispose ( )
         {
@@ -722,5 +755,18 @@ namespace ProjTests
         }
     }
 
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public class RoutedExecutionResultEventArgs : RoutedEventArgs
+    {
+        private readonly dynamic _result ;
+
+        public RoutedExecutionResultEventArgs ( RoutedEvent routedEvent , object source, dynamic result ) : base ( routedEvent , source )
+        {
+            _result = result ;
+        }
+
+        public dynamic Result { get { return _result ; } }
+    }
+    
     // ReSharper disable once UnusedType.Global
 }

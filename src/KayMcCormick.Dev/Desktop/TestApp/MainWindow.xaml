@@ -50,5 +50,6 @@
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-    <TextBox FontSize="72pt">Hello</TextBox></Grid>
+    <anal:PythonControl/> 
+  </Grid>
 </kmWpf:AppWindow>

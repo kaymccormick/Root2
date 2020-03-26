@@ -144,7 +144,7 @@ namespace AnalysisAppLib
             // builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
             // .As(typeof(IAnalysisBlockProvider<,,>))
             // .WithAttributeFiltering()
-            // .InstancePerLifetimeScope();
+            // .InstancePerLifetimeScope(); 
             // builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
             // .As(typeof(IDataflowTransformFuncProvider<,>))
             // .WithAttributeFiltering()

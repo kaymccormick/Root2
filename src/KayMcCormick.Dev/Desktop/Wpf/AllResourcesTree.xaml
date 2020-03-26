@@ -25,8 +25,6 @@
             <Setter Property="TextWrapping"
                     Value="WrapWithOverflow" />
           </Style>
-
-
           <Style x:Key="DetailHeader"
                  TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
@@ -37,7 +35,6 @@
                  TargetType="ContentControl">
             <Setter Property="Margin" Value="20,5,0,0" />
           </Style>
-
           <wpf:ResourceDetailTemplateSelector
             x:Key="ResourceDetailTemplateSelector" />
           <wpf:ResourcePreviewTemplateSelector
@@ -53,16 +50,13 @@
                         x:Key="DetailImageSource">
             <Image Source="{Binding}" />
           </DataTemplate>
-
           <DataTemplate DataType="{x:Type Application}">
             <TextBlock Text="Application" />
           </DataTemplate>
-
           <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded"
                     Value="{Binding IsExpanded, Mode=TwoWay}" />
           </Style>
-
           <DataTemplate DataType="{x:Type FontFamily}"
                         x:Key="PreviewFontFamily">
             <TextBlock FontFamily="{Binding}"
@@ -133,7 +127,6 @@
               </ContentControl.ToolTip>
             </ContentControl>
           </HierarchicalDataTemplate>
-
           <HierarchicalDataTemplate
             DataType="{x:Type wpf:ResourceNodeInfo}"
             ItemsSource="{Binding Path=Children}">
@@ -212,18 +205,17 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
           <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Key Type"

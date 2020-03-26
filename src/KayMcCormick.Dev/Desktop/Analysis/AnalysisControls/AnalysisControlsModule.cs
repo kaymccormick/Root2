@@ -9,19 +9,14 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
-using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
-using AnalysisControls.Interfaces ;
-using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
-using Autofac.Features.Metadata ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace AnalysisControls
@@ -29,9 +24,12 @@ namespace AnalysisControls
     // made internal 3/11
     public class AnalysisControlsModule : Module
     {
-        #region Overrides of Module
+
         protected override void Load ( ContainerBuilder builder )
         {
+
+
+            // builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
             builder.Register (
                               ( c , p ) => {
                                   var listView = Func ( c , p ) ;
@@ -39,6 +37,7 @@ namespace AnalysisControls
                               })
                    .WithMetadata ( "Title" , "Syntax Token View" )
                    .As < IControlView > ( ) ;
+            // builder.RegisterType < PythonViewModel > ( ).AsSelf ( ) ;
         }
 
         private FrameworkElement Func ( IComponentContext c1 , IEnumerable < Parameter > p1 )
@@ -80,6 +79,6 @@ namespace AnalysisControls
         // .AsSelf ( )
         // .AsImplementedInterfaces ( ) ;
     }
-    #endregion
+
 }
 

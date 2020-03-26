@@ -433,15 +433,20 @@ namespace KayMcCormick.Dev.Logging
             // , Layout  = new MyJsonLayout ( )
             // } ;
             // t.Add ( jsonNetworkTarget ) ;
+            if ( config1.IsEnabledXmlFileTarget )
+            {
+                var logRootDir = LogRootPath ;
+                var xmlTarget = new AppFileTarget ( "xmlFile" )
+                                {
+                                    FileName =
+                                        new SimpleLayout (
+                                                          $@"{logRootDir}xmllog-${{processId}}.log"
+                                                         )
+                                  , Layout = _xmlEventLayout
+                                } ;
+                t.Add ( xmlTarget ) ;
+            }
 
-            var logRootDir = LogRootPath ;
-            var xmlTarget = new AppFileTarget ( "xmlFile" )
-                            {
-                                FileName = new SimpleLayout ( $@"{logRootDir}xmllog-${{processId}}.log" )
-
-                              , Layout   = _xmlEventLayout
-                            } ;
-            t.Add ( xmlTarget ) ;
 
             #region Cache Target
             if ( config1.IsEnabledCacheTarget.GetValueOrDefault ( ) )

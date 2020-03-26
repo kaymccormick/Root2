@@ -107,9 +107,6 @@
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
-    <Compile Include="PythonControl.xaml.cs">
-      <DependentUpon>PythonControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="RegSource.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="ShellExplorerItem.cs" />
@@ -154,10 +151,6 @@
       <DependentUpon>ProjInterfaceApp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PythonControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="VsInstancePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -210,6 +203,9 @@
     <PackageReference Include="AdaptiveCards.Templating">
       <Version>0.1.0-alpha1</Version>
     </PackageReference>
+    <PackageReference Include="AvalonEdit">
+      <Version>6.0.1</Version>
+    </PackageReference>
     <PackageReference Include="Dapplo.CaliburnMicro.Cards">
       <Version>2.1.10</Version>
     </PackageReference>
@@ -218,6 +214,12 @@
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.8.1</Version>
+    </PackageReference>
+    <PackageReference Include="IronPython">
+      <Version>2.7.10-candidate1</Version>
+    </PackageReference>
+    <PackageReference Include="IronPython.StdLib">
+      <Version>2.7.10-candidate1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator">
       <Version>1.2.6</Version>
