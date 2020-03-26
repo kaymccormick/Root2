@@ -321,6 +321,7 @@
   <ItemGroup>
     <Folder Include="Syntax\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="VSS\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

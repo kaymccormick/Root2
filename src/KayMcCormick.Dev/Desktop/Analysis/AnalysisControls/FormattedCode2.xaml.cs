@@ -82,7 +82,6 @@ namespace AnalysisControls
             // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;
         }
 
-        #region Implementation of ICodeRenderer
         public void addToken ( ushort rawKind , string text , bool newLine )
         {
             //Token token = new Token ( rawKind , text ) ;
@@ -171,7 +170,6 @@ namespace AnalysisControls
 //            Debug.Assert ( object.ReferenceEquals(n , node ) );
 
         }
-        #endregion
     }
 
     internal class StyleInfo

@@ -121,7 +121,6 @@
     <Compile Include="VersionControl.cs" />
     <Compile Include="Visitor2.cs" />
     <Compile Include="Visitor4.cs" />
-    <Compile Include="VisitorStub.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
