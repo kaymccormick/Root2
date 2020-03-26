@@ -94,22 +94,6 @@ namespace ProjInterface
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
 
             var lifetimeScope = Scope ;
-#if false
-            foreach ( var view1 in lifetimeScope.Resolve < IEnumerable < IView1 > > ( ) )
-            {
-                if ( view1 is Window vW )
-                {
-                    vW.Show ( ) ;
-                }
-                else
-                {
-                    Window w = new Window ( ) ;
-                    w.Content = view1 ;
-                    w.Show ( ) ;
-                }
-            }
-#endif
-
             if ( ! lifetimeScope.IsRegistered <Window1 > ( ) )
             {
                 ShowErrorDialog (

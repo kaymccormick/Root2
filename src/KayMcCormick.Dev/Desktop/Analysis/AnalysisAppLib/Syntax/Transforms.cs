@@ -100,7 +100,7 @@ namespace AnalysisAppLib.Syntax
                                {
                                    ac.RawKind
                                  , Kind = ac.Kind ( ).ToString ( )
-                                   // ReSharper disable once PossibleNullReferenceException
+                                   
                                  , InitExpr = ac.Initializer.Expressions.Select ( TransformExpr )
                                  , ac.Type.ElementType
                                  , RankSpec = ac.Type.RankSpecifiers.Select (
@@ -316,7 +316,7 @@ namespace AnalysisAppLib.Syntax
                                                                          recursivePatternSyntax
                                                                             .PropertyPatternClause
                                                                         )
-                               // ReSharper disable once AssignNullToNotNullAttribute
+                               
                              , Type = TransformTypeSyntax ( recursivePatternSyntax.Type )
                            } ;
                 case VarPatternSyntax varPatternSyntax :
@@ -706,7 +706,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
+        
         public static object TransformMethodSymbol ( [ NotNull ] IMethodSymbol method )
         {
             if ( method == null )
@@ -829,7 +829,7 @@ namespace AnalysisAppLib.Syntax
                     return new
                            {
                                Statements =
-                                   // ReSharper disable once PossibleNullReferenceException
+                                   
                                    baseMethodDeclarationSyntax.Body.Statements.Select (
                                                                                        TransformStatement
                                                                                       )
@@ -1429,7 +1429,7 @@ namespace AnalysisAppLib.Syntax
                      , Kind = arg.Kind ( ).ToString ( )
                      , Name = TransformNameSyntax ( arg.Name )
                      , ArgumentList =
-                           // ReSharper disable once PossibleNullReferenceException
+                           
                            arg.ArgumentList.Arguments.Select ( TransformAttributeArgumentSyntax )
                    } ;
         }

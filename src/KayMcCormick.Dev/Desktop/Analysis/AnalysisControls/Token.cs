@@ -17,16 +17,16 @@ namespace AnalysisControls
 {
     public class Token : UIElement
     {
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        
         private readonly string   _text ;
-        // ReSharper disable once NotAccessedField.Local
+        
         private readonly bool _newLine ;
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        
         private readonly Typeface _typeface ;
         private FormattedText _formattedText ;
         private Size _desiredSize ;
 
-        // ReSharper disable once UnusedParameter.Local
+        
         public Token ( int rawKind , string text , SolidColorBrush solidColorBrush , bool newLine )
         {
             _text     = text ;

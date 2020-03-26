@@ -141,7 +141,7 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        // ReSharper disable once EventNeverSubscribedTo.Global
+        
         public override event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace KayMcCormick.Dev
             return ConfigSettings ;
         }
 
-        // ReSharper disable once UnusedMember.Local
+        
         private void DebugServices ( IComponentContext c )
         {
             foreach ( var componentRegistryRegistration in c.ComponentRegistry.Registrations )

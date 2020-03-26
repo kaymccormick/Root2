@@ -13,8 +13,8 @@ namespace KayMcCormick.Dev.Logging
 {
     internal interface IConfigSource
     {
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once UnusedParameter.Global
+        
+        
         string PathForLogFile(ILogFileSpecification spec);
     }
 }

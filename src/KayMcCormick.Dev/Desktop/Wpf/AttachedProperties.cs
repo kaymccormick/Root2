@@ -237,7 +237,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        // ReSharper disable once UnusedMember.Global
+        
         /// <summary>Adds the rendered type changed event handler.</summary>
         /// <param name="d">The d.</param>
         /// <param name="handler">The handler.</param>

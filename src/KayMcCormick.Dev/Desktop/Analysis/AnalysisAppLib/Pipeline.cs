@@ -26,7 +26,7 @@ namespace AnalysisAppLib
             private set ;
         }
 
-        // ReSharper disable once CollectionNeverQueried.Local
+        
         private readonly List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
 
         private DataflowLinkOptions _linkOptions =

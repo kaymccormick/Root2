@@ -45,7 +45,7 @@ namespace KayMcCormick.Lib.Wpf
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
 
-            // ReSharper disable once UnusedVariable
+            
             var p = (IAmbientProvider)serviceProvider.GetService(
                                                                  typeof(IAmbientProvider)
                                                                 );

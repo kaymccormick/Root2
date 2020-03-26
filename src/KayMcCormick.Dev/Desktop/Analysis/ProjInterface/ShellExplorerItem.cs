@@ -36,13 +36,13 @@ namespace ProjInterface
 {
     public class ItemWrapper
     {
-        // ReSharper disable once NotAccessedField.Local
+        
         private readonly ShellItem _item ;
 
-        // ReSharper disable once UnusedMember.Local
+        
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        // ReSharper disable once NotAccessedField.Local
+        
         private ShellFolder _folder ;
         private Image       _folderImage ;
 
@@ -132,7 +132,7 @@ namespace ProjInterface
 
         public string Name { get ; }
 
-        // ReSharper disable once UnusedMember.Global
+        
         public Image FolderImage { get { return _folderImage ; } set { _folderImage = value ; } }
     }
 
@@ -460,7 +460,7 @@ namespace ProjInterface
         public override void CreateFolder ( string path ) { }
         #endregion
 
-        // ReSharper disable once UnusedMember.Global
+        
         public void AddChild ( ShellExplorerItem shellExplorerItem )
         {
             _internalChildrenList.Add ( shellExplorerItem ) ;

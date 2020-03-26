@@ -64,7 +64,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
             Logger.Warn ( $"{nameof ( GlobalLoggingFixture )} logger added." ) ;
         }
 
-        // ReSharper disable once IdentifierTypo
+        
 
         /// <summary>
         /// Called immediately after the class has been created, before it is used.

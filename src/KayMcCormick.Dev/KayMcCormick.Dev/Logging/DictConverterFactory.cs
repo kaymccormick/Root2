@@ -19,7 +19,7 @@ namespace KayMcCormick.Dev.Logging
     /// <summary>
     /// 
     /// </summary>
-    // ReSharper disable once UnusedType.Global
+    
     public class DictConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter

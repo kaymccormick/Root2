@@ -13,7 +13,7 @@ using System.Diagnostics ;
 
 namespace ProjInterface
 {
-    // ReSharper disable once UnusedType.Global
+    
     public class BreakTraceListener : TraceListener
     {
         private bool _doBreak ;

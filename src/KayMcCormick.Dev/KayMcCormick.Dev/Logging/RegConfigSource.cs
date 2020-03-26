@@ -4,7 +4,7 @@
 namespace KayMcCormick.Dev.Logging
 {
     // TODO implement
-    // ReSharper disable once UnusedType.Global
+    
     class RegConfigSource
     {
         public string PathForLogFile(ILogFileSpecification spec) { return ""; }
@@ -13,7 +13,7 @@ namespace KayMcCormick.Dev.Logging
 
     
 
-    // ReSharper disable once UnusedType.Global
+    
     public class ExecutionContextImpl : ExecutionContext
 
     {
@@ -27,11 +27,11 @@ namespace KayMcCormick.Dev.Logging
 
     {
 
-        // ReSharper disable once UnusedMember.Global
+        
         MainApplication,
 
 
-        // ReSharper disable once UnusedMember.Global
+        
         Tests,
 
     }

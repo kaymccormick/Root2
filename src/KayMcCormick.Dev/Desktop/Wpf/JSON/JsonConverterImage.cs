@@ -131,7 +131,7 @@ public class MyImageSourceConverter : JsonConverter<ImageSource>
                 {
                     var p = TypeDescriptor.GetProvider(value);
                     var t = p.GetTypeDescriptor(value);
-                    // ReSharper disable once AssignNullToNotNullAttribute
+                    
                     var str = ser.ConvertToString(value, null);
                     if (str != null)
                     {

@@ -7,11 +7,11 @@
 
     {
 
-        // ReSharper disable once UnusedMember.Global
+        
         MainApplication,
 
 
-        // ReSharper disable once UnusedMember.Global
+        
         Tests,
 
     }

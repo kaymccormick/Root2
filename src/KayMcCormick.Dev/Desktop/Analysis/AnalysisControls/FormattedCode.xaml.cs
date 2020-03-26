@@ -16,7 +16,7 @@ namespace AnalysisControls
     /// </summary>
     public partial class FormattedCode : UserControl , IFormattedCode
     {
-        // ReSharper disable once UnusedMember.Local
+        
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         public FormattedCode ( ) { InitializeComponent ( ) ; }
 

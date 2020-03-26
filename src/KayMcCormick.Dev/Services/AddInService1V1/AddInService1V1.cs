@@ -120,7 +120,7 @@ namespace AddInService1V1
                  ,         conn
                           ) ;
             }
-            // ReSharper disable once FunctionNeverReturns
+            
         }
 
         private static void setupTask (
@@ -269,7 +269,7 @@ namespace AddInService1V1
                 }
                 spin.SpinOnce();
             }
-            // ReSharper disable once FunctionNeverReturns
+            
         }
 
         public bool Stop ( )

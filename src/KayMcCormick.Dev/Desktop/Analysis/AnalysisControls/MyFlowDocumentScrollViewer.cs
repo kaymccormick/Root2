@@ -36,7 +36,7 @@ namespace AnalysisControls
         }
         #endregion
         #region Overrides of UIElement
-        // ReSharper disable once RedundantOverriddenMember
+        
         protected override void OnRender ( DrawingContext drawingContext )
         {
             base.OnRender ( drawingContext ) ;
@@ -66,7 +66,7 @@ namespace AnalysisControls
                     {
                         if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
                         {
-                            // ReSharper disable once AssignNullToNotNullAttribute
+                            
                             obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
                         }
                         else

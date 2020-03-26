@@ -25,7 +25,7 @@ namespace AnalysisAppLib
     {
         private LogEventInstanceObservableCollection _logEntries ;
 
-        // ReSharper disable once FieldCanBeMadeReadOnly.Local
+        
         private ObservableCollection < ViewerLoggerInfo > rootNodes ;
         private IDictionary < string , ViewerLoggerInfo > _dict ;
         private ViewerLoggerInfo                          rootLogger ;

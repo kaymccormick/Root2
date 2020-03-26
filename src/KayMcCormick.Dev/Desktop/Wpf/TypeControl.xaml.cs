@@ -82,14 +82,14 @@ namespace KayMcCormick.Lib.Wpf
         /// <value>The type to render in the control.</value>
         public Type RenderedType
         {
-            // ReSharper disable once UnusedMember.Global
+            
             get => GetValue ( RenderedTypeProperty ) as Type ;
             set => SetValue ( RenderedTypeProperty , value ) ;
         }
 
         /// <summary>Gets or sets the name of the target frame (unused).</summary>
         /// <value>The name of the target.</value>
-        // ReSharper disable once UnusedMember.Global
+        
         public string TargetName
         {
             get => ( string ) GetValue ( TargetNameProperty ) ;
@@ -282,7 +282,7 @@ namespace KayMcCormick.Lib.Wpf
             return pp ;
         }
 
-        // ReSharper disable once UnusedMember.Local
+        
         private string NameForType ( Type myType )
         {
             // todo move to a better place

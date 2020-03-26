@@ -13,7 +13,7 @@ namespace KayMcCormick.Dev.TestLib
     /// TODO Edit XML Comment Template for LogTestMethodAttribute
     public class LogTestMethodAttribute : BeforeAfterTestAttribute
     {
-        // ReSharper disable once NotAccessedField.Local
+        
         private readonly LogLevel _level;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private LogLevel LogLevel;

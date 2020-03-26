@@ -82,16 +82,16 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         public DateTime TimeStamp { get { return _timeStamp; } set { _timeStamp = value; } }
 
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         public long SequenceID
         {
-            // ReSharper disable once UnusedMember.Global
+            
             get { return _sequenceId ; }
             set { _sequenceId = value ; }
         }
@@ -99,7 +99,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         public object SerializedForm
         {
             get { return _serializedForm ; }
@@ -166,7 +166,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="field"></param>
         /// <param name="elem"></param>
-        // ReSharper disable once UnusedMember.Global
+        
         public void AddUnknown(string field, in JsonElement elem)
         {
             _unknownFields[field] = elem;

@@ -43,8 +43,8 @@ namespace ProjLib
 
         private Func < object , object > _getResource ;
 
-        // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        
+        
         private string                   _displayString ;
     }
 }

@@ -46,7 +46,7 @@ namespace AnalysisAppLib
             var model = await document.GetSemanticModelAsync ( cancellationToken ) ;
             if ( model != null )
             {
-                // ReSharper disable once UnusedVariable
+                
 
 
 

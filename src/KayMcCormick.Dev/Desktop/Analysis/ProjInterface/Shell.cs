@@ -25,9 +25,9 @@ namespace ProjInterface
     ///
     public class Shell : HwndHost, IViewWithTitle, IControlView
     {
-        // ReSharper disable once ArrangeTypeMemberModifiers
-        // ReSharper disable once IdentifierTypo
-        // ReSharper disable once NotAccessedField.Local
+        
+        
+        
         IntPtr hwndControl;
         IntPtr hwndHost;
         int    hostHeight, hostWidth;

@@ -10,8 +10,8 @@ namespace ProjTests
     [Collection("GeneralPurpose")]
     public sealed class ContainerTests : IClassFixture<LoggingFixture>, IDisposable
     {
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once InconsistentNaming
+        
+        
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ITestOutputHelper _output ;
         private readonly LoggingFixture _loggingFixture;

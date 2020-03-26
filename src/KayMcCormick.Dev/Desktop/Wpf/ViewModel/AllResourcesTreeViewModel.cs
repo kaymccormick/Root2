@@ -60,7 +60,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 PopulateAppNode ( ) ;
             }
 
-            // ReSharper disable once RedundantCatchClause
+            
             catch ( Exception ex )
 
             {
@@ -70,7 +70,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         public bool IsEnabledPopulateObjects { get ; set ; }
 
-        // ReSharper disable once UnusedMember.Local
+        
         private void PopulateObjects ( )
         {
             var n1 = CreateNode ( null , "Objects" , null , false ) ;
@@ -97,7 +97,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        // ReSharper disable once UnusedMember.Local
+        
         private void PopulateInstances (
             ResourceNodeInfo       res
           , IComponentRegistration registration
@@ -232,14 +232,14 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 {
                     switch ( rkey )
                     {
-                        // ReSharper disable once UnusedVariable
+                        
                         case ComponentResourceKey componentResourceKey : break ;
 
-                        // ReSharper disable once UnusedVariable
+                        
                         case ItemContainerTemplateKey itemContainerTemplateKey : break ;
-                        // ReSharper disable once UnusedVariable
+                        
                         case DataTemplateKey dataTemplateKey : break ;
-                        // ReSharper disable once UnusedVariable
+                        
                         case TemplateKey templateKey : break ;
                         default :
                             key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;

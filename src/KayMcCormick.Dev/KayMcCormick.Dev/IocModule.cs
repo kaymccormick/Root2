@@ -22,7 +22,7 @@ namespace KayMcCormick.Dev
         /// 
         /// </summary>
         /// <param name="builder"></param>
-        // ReSharper disable once MemberCanBeProtected.Global
+        
         public abstract void DoLoad ( ContainerBuilder builder ) ;
 
         #region Overrides of Module

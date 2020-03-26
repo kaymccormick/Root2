@@ -62,7 +62,7 @@ namespace KayMcCormick.Lib.Wpf
 
         #region Overrides of MarkupExtension
         public override object
-            // ReSharper disable once AnnotationRedundancyInHierarchy
+            
             ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
             if ( serviceProvider == null )
@@ -70,7 +70,7 @@ namespace KayMcCormick.Lib.Wpf
                 throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
             }
 
-            // ReSharper disable once UnusedVariable
+            
             var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                      typeof ( IAmbientProvider )
                                                                     ) ;

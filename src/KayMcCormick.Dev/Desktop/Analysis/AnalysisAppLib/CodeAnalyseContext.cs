@@ -22,7 +22,7 @@ namespace AnalysisAppLib
 {
     internal class CodeAnalyseContext : ICodeAnalyseContext
     {
-        // ReSharper disable once UnusedMember.Local
+        
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         public void Deconstruct (

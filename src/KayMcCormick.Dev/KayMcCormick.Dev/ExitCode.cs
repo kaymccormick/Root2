@@ -7,7 +7,7 @@ namespace KayMcCormick.Dev
     public enum ExitCode
     {
         /// <summary>Successful exit.</summary>
-        // ReSharper disable once UnusedMember.Global
+        
         Success = 0
 
        ,
@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev
        ,
 
         /// <summary>Invalid arguments to application.</summary>
-        // ReSharper disable once UnusedMember.Global
+        
         ArgumentsError = 2
             ,
         /// <summary>

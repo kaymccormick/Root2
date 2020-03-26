@@ -27,7 +27,7 @@ namespace KayMcCormick.Dev
 
         private static BinaryFormatter _binaryFormatter = new BinaryFormatter ( ) ;
 
-        // ReSharper disable once UnusedMember.Global
+        
         /// <summary>
         /// 
         /// </summary>

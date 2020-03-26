@@ -177,7 +177,7 @@ namespace AnalysisAppLib
                 NLogNamespace + '.' + LoggerClassName ;
 
 
-            // ReSharper disable once SuggestBaseTypeForParameter
+            
             private static bool CheckSymbol (
                 IMethodSymbol             methSym
               , params INamedTypeSymbol[] t1
@@ -188,7 +188,7 @@ namespace AnalysisAppLib
             }
 
             private static bool CheckTypeSymbol (
-                // ReSharper disable once SuggestBaseTypeForParameter
+                
                 INamedTypeSymbol                      cType
               , [ NotNull ] params INamedTypeSymbol[] t1
             )
@@ -366,7 +366,7 @@ namespace AnalysisAppLib
                      && MethodSymbol != null
                      && MethodSymbol.Parameters.Any ( ) )
                 {
-                    // ReSharper disable once RedundantAssignment
+                    
                     exceptionArg = IsException (
                                                 NamedTypeSymbol
                                               , MethodSymbol.Parameters.First ( ).Type

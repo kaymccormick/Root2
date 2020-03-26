@@ -1,8 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.Linq ;
-using System.Reflection ;
-using System.Runtime.ExceptionServices ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -176,7 +174,7 @@ namespace ConsoleApp1
             foreach ( var browserNode in browserNodeCollection )
             {
                 i += 1 ;
-                // ReSharper disable once LocalizableElement
+                
                 Console.WriteLine ( $"{i}: {browserNode.Name}" ) ;
                 nodes.Add ( browserNode ) ;
                 if ( browserNode is IProjectBrowserNode project )
@@ -229,7 +227,16 @@ namespace ConsoleApp1
             Console.ReadLine ( ) ;
 
             //    ITargetBlock <RejectedItem> rejectTarget = new ActionBlock < RejectedItem > (item => Console.WriteLine($"Reject: {item.Statement}"));
-            await command2.Value.Value.AnalyzeCommandAsync(projectNode ) ;
+            if ( command2 != null )
+            {
+                await command2.Value.Value.AnalyzeCommandAsync ( projectNode ) ;
+            }
+            else
+            {
+                Console.WriteLine ( "No commnad" ) ;
+                return 1 ;
+            }
+
             return 0 ;
         }
 
@@ -237,25 +244,6 @@ namespace ConsoleApp1
         {
         }
 
-        // ReSharper disable once UnusedMember.Local
-        private static void CurrentDomainOnFirstChanceException (
-            object                        sender
-          , FirstChanceExceptionEventArgs e
-        )
-        {
-            if ( e.Exception is ReflectionTypeLoadException r )
-            {
-                var i = 0 ;
-                foreach ( var rLoaderException in r.LoaderExceptions )
-                {
-                    Console.WriteLine ( rLoaderException.Message ) ;
-                    Console.WriteLine ( r.Types[ i ] ) ;
-                    i += 1 ;
-                }
-            }
-
-            Console.WriteLine ( "FIRST CHANCE EXCEPTION\n" + e.Exception ) ;
-        }
     }
 
 }

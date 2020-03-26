@@ -106,7 +106,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         /// The default value of the layout is: <v>${longdate}|${level:uppercase=true}|${logger}|${message:withexception=true}</v>
         /// </remarks>
         /// <docgen category="Layout Options" order="1" />
-        // ReSharper disable once UnusedMember.Global
+        
         public Layout Layout
         {
             get { return _xunitTarget?.Layout ; }
@@ -140,7 +140,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         }
 
 
-        // ReSharper disable once IdentifierTypo
+        
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose ( )

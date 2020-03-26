@@ -21,7 +21,7 @@ namespace ProjLib
 {
     public class Visitor4 : CSharpSyntaxWalker
     {
-        // ReSharper disable once NotAccessedField.Local
+        
         private readonly TaskScheduler          _t ;
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer          _ctl ;

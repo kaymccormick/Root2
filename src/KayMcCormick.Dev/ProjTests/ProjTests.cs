@@ -79,8 +79,8 @@ namespace ProjTests
       , IClassFixture < ProjectFixture >
       , IDisposable
     {
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once InconsistentNaming
+        
+        
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
 
@@ -756,7 +756,7 @@ namespace ProjTests
         }
     }
 
-    // ReSharper disable once ClassNeverInstantiated.Global
+    
     public class RoutedExecutionResultEventArgs : RoutedEventArgs
     {
         private readonly dynamic _result ;
@@ -769,5 +769,5 @@ namespace ProjTests
         public dynamic Result { get { return _result ; } }
     }
     
-    // ReSharper disable once UnusedType.Global
+    
 }

@@ -21,7 +21,7 @@ using JetBrains.Annotations ;
 
 namespace AnalysisAppLib
 {
-    // ReSharper disable once UnusedType.Global
+    
     public sealed class FileSystemAppExplorerItem : AppExplorerItem , INotifyPropertyChanged
     {
         private string                        _name ;
@@ -72,7 +72,7 @@ namespace AnalysisAppLib
             _fullName = fi.FullName ;
         }
 
-        // ReSharper disable once ArrangeAccessorOwnerBody
+        
         public bool IsHidden
             => ( _fileAttributes & FileAttributes.Hidden ) == FileAttributes.Hidden ;
 
@@ -113,8 +113,8 @@ namespace AnalysisAppLib
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once UnusedMember.Local
+        
+        
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;

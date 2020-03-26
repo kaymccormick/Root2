@@ -5,41 +5,41 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    // ReSharper disable once UnusedType.Global
+    
     public enum ConfigurationSource
     {
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         AppConfig,
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         EnvironmentVariable,
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         Win32Registry,
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         Compilation,
     }
 
     /// <summary>
     /// 
     /// </summary>
-    // ReSharper disable once UnusedType.Global
+    
     public enum ConfigurationSetting
     {
         /// <summary>
         /// 
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         LogsRootDirectory,
     }
 

@@ -206,7 +206,7 @@ namespace AnalysisControls.ViewModel
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
-        // ReSharper disable once UnusedMember.Local
+        
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
@@ -220,7 +220,7 @@ namespace AnalysisControls.ViewModel
         public StringObservableCollection Lines
         {
             get { return ( StringObservableCollection ) GetValue ( LinesProperty ) ; }
-            // ReSharper disable once UnusedMember.Global
+            
             set { SetValue ( LinesProperty , value ) ; }
         }
 
@@ -236,7 +236,7 @@ namespace AnalysisControls.ViewModel
         public DynamicObservableCollection Results
         {
             get { return ( DynamicObservableCollection ) GetValue ( ResultsProperty ) ; }
-            // ReSharper disable once UnusedMember.Global
+            
             set { SetValue ( ResultsProperty , value ) ; }
         }
 

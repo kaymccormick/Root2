@@ -42,18 +42,18 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        // ReSharper disable once EventNeverSubscribedTo.Global
+        
         public virtual event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         public virtual void Initialize ( ) { }
 
         /// <summary>
         /// </summary>
         /// <param name="appModule"></param>
-        // ReSharper disable once UnusedMember.Global
+        
         public abstract void AddModule ( IModule appModule ) ;
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         /// todo call from wpf
-        // ReSharper disable once UnusedMember.Global
+        
         public virtual void Shutdown ( ) { }
 
         /// <summary>

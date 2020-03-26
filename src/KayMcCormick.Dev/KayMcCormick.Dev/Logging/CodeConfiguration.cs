@@ -13,7 +13,7 @@ namespace KayMcCormick.Dev.Logging
         ///     Initializes a new instance of the
         ///     <see cref="NLog.Config.LoggingConfiguration" /> class.
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        
         public CodeConfiguration() { }
 
         /// <summary>

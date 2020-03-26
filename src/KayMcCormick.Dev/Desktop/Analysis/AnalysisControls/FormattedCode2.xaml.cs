@@ -11,7 +11,7 @@ using NLog ;
 using ProjLib ;
 using ProjLib.Interfaces ;
 using Color = System.Windows.Media.Color ;
-// ReSharper disable All
+
 
 namespace AnalysisControls
 {

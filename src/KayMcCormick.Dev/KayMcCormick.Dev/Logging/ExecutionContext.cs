@@ -8,7 +8,7 @@
 
     {
 
-        // ReSharper disable once UnusedMember.Global
+        
         Application Application { get; }
 
     }

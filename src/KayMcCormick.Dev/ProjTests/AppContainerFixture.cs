@@ -30,8 +30,8 @@ namespace ProjTests
     {
         private readonly IMessageSink _sink ;
 
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once InternalOrPrivateMemberNotDocumented
+        
+        
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly ApplicationInstanceBase _applicationInstance ;

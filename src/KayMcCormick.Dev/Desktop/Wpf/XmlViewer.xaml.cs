@@ -31,7 +31,7 @@ namespace KayMcCormick.Lib.Wpf
 
         public XmlDocument XmlDocument
         {
-            // ReSharper disable once UnusedMember.Global
+            
             get => ( XmlDocument ) GetValue ( XmlDocumentProperty ) ;
             set => SetValue ( XmlDocumentProperty , value ) ;
         }

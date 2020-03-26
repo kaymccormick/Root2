@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
-    // ReSharper disable once UnusedType.Global
+    
     public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
     {
         #region Overrides of JsonConverter<SyntaxToken>

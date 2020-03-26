@@ -68,7 +68,7 @@ namespace LeafService
         }
         #endregion
 
-        // ReSharper disable once UnusedParameter.Global
+        
         public bool Start ( HostControl hostControl )
         {
             Logger.Info($"{nameof(LeafService1)} Start command received.");
@@ -293,7 +293,7 @@ namespace LeafService
         {
             var typ = e.Entry.EntryType ;
             var level = LogLevel.Info ;
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            
             switch ( typ )
             {
                 case EventLogEntryType.Error :
@@ -338,7 +338,7 @@ namespace LeafService
             l.Write ( l.LogEventInfo.FormattedMessage ) ;
         }
 
-        // ReSharper disable once UnusedParameter.Global
+        
         public bool Stop ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Stop command received." ) ;
@@ -352,7 +352,7 @@ namespace LeafService
             return true ;
         }
 
-        // ReSharper disable once UnusedParameter.Global
+        
         public bool Pause ( HostControl hostControl )
         {
             foreach ( var service1 in _services )
@@ -366,7 +366,7 @@ namespace LeafService
             return true ;
         }
 
-        // ReSharper disable once UnusedParameter.Global
+        
         public bool Continue ( HostControl hostControl )
         {
             foreach ( var service1 in _services )
@@ -380,8 +380,8 @@ namespace LeafService
             return true ;
         }
 
-        // ReSharper disable once UnusedMethodReturnValue.Global
-        // ReSharper disable once UnusedParameter.Global
+        
+        
         public bool Shutdown ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Shutdown command received." ) ;
