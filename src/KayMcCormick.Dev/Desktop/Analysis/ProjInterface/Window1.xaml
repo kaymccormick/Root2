@@ -11,22 +11,21 @@
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
                  WindowStyle="ToolWindow"
                  mc:Ignorable="d"
-                 
+
                  FontSize="14.0"
                  Title="Window1" Height="1000" Width="1300">
   <kmWpf:AppWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml"/>
-          <ResourceDictionary>
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+        <ResourceDictionary>
           <Style TargetType="Window">
             <Setter Property="WindowStyle" Value="None" />
-            <Setter Property="AllowsTransparency" Value="True" />
+            <Setter Property="AllowsTransparency"
+                    Value="True" />
             <Setter Property="Background" Value="Olive" />
           </Style>
-          <local:DictionaryConverter
-            x:Key="DictionaryConverter" />
           <DataTemplate x:Key="Template1">
             <TextBlock
               Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
@@ -136,173 +135,188 @@
   </kmWpf:AppWindow.CommandBindings>
   <kmWpf:AppWindow.Triggers>
   </kmWpf:AppWindow.Triggers>
-  <Border BorderBrush="CadetBlue" BorderThickness="4" CornerRadius="5">
-  <Grid x:Name="Test1">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="50" />
-      <RowDefinition Height="15" />
-      <RowDefinition Height="*" />
-      <RowDefinition Height="Auto" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <Border BorderBrush="Aqua" BorderThickness="1" Grid.Row="0" Grid.Column="0" Padding="3">
-      <Border Background="BlanchedAlmond" Padding="5">
-        <Menu Background ="{x:Null}"  FontSize="18.0">
-          <MenuItem Header="File">
-            <MenuItem.Effect>
-              <BlurEffect Radius="3" RenderingBias="Quality" />
-            </MenuItem.Effect>
-            <MenuItem Header="_Open" Command="Open" />
-            <MenuItem Header="_Quit"
-                      Command="kmWpf:WpfAppCommands.QuitApplication" />
-          </MenuItem>
-          <MenuItem Header="Commands"
-                    ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+  <Border BorderBrush="CadetBlue" BorderThickness="4"
+          CornerRadius="5">
+    <Grid x:Name="Test1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="15" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border BorderBrush="Aqua" BorderThickness="1"
+              Grid.Row="0" Grid.Column="0" Padding="3">
+        <Border Background="BlanchedAlmond" Padding="5">
+          <Menu Background="{x:Null}" FontSize="18.0">
+            <MenuItem Header="File">
+              <MenuItem.Effect>
+                <BlurEffect Radius="3"
+                            RenderingBias="Quality" />
+              </MenuItem.Effect>
+              <MenuItem Header="_Open" Command="Open" />
+              <MenuItem Header="_Quit"
+                        Command="kmWpf:WpfAppCommands.QuitApplication" />
+            </MenuItem>
+            <MenuItem Header="Commands"
+                      ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
 
-            <MenuItem.ItemTemplate>
-              <DataTemplate
-                DataType="kmWpf:IDisplayableAppCommand">
-                <MenuItem Header="{Binding DisplayName}"
-                          Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
-              </DataTemplate>
-            </MenuItem.ItemTemplate>
-          </MenuItem>
-        </Menu>
+              <MenuItem.ItemTemplate>
+                <DataTemplate
+                  DataType="kmWpf:IDisplayableAppCommand">
+                  <MenuItem Header="{Binding DisplayName}"
+                            Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
+                </DataTemplate>
+              </MenuItem.ItemTemplate>
+            </MenuItem>
+          </Menu>
+        </Border>
       </Border>
-    </Border>
 
 
-    <ToolBarTray Grid.Row="1" Grid.Column="0">
-      <ToolBar Band="1" BandIndex="1">
-        <Button Padding="0"
-                Command="kmWpf:WpfAppCommands.QuitApplication">
-          <Image Source="{StaticResource PowerOffImage}">
-            <Image.Clip>
-              <RectangleGeometry Rect="6,6,28,28" />
-            </Image.Clip>
-            <Image.RenderTransform>
-              <ScaleTransform ScaleX="1.2" ScaleY="1.2"
-                              CenterX="16" CenterY="16" />
-            </Image.RenderTransform>
+      <ToolBarTray Grid.Row="1" Grid.Column="0">
+        <ToolBar Band="1" BandIndex="1">
+          <Button Padding="0"
+                  Command="kmWpf:WpfAppCommands.QuitApplication">
+            <Image Source="{StaticResource PowerOffImage}">
+              <Image.Clip>
+                <RectangleGeometry Rect="6,6,28,28" />
+              </Image.Clip>
+              <Image.RenderTransform>
+                <ScaleTransform ScaleX="1.2" ScaleY="1.2"
+                                CenterX="16" CenterY="16" />
+              </Image.RenderTransform>
 
-          </Image>
-        </Button>
-        <Button Command="kmWpf:WpfAppCommands.LoginAD"
-                Content="Login"
-                IsEnabled="{Binding CanLogin}" />
-        <Canvas Width="60" VerticalAlignment="Stretch"
-                Background="{x:Null}" />
-        <Glyphs
-          FontUri="C:\WINDOWS\Fonts\TIMES.TTF"
-          FontRenderingEmSize="16"
-          StyleSimulations="BoldSimulation"
-          UnicodeString="Hello World!"
-          Fill="Black"
-          OriginX="0"
-          OriginY="20" />
-      </ToolBar>
-    </ToolBarTray>
-    <avalondock:DockingManager Grid.Row="3" Grid.Column="0"
+            </Image>
+          </Button>
+          <Button Command="kmWpf:WpfAppCommands.LoginAD"
+                  Content="Login"
+                  IsEnabled="{Binding CanLogin}" />
+          <Canvas Width="60" VerticalAlignment="Stretch"
+                  Background="{x:Null}" />
+          <Glyphs
+            FontUri="C:\WINDOWS\Fonts\TIMES.TTF"
+            FontRenderingEmSize="16"
+            StyleSimulations="BoldSimulation"
+            UnicodeString="Hello World!"
+            Fill="Black"
+            OriginX="0"
+            OriginY="20" />
+        </ToolBar>
+      </ToolBarTray>
+      <avalondock:DockingManager Grid.Row="3"
+                                 Grid.Column="0"
 
-                               AllowMixedOrientation="True"
-                               AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
-                               IconContentTemplate="{DynamicResource DataTemplate1}"
-                               DocumentTitleTemplate="{DynamicResource DataTemplate2}"
-                               DocumentPaneMenuItemHeaderTemplate="{DynamicResource DataTemplate3}"
-                               AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}">
-      <avalondock:DockingManager.DocumentHeaderTemplate>
-        <DataTemplate
-          DataType="{x:Type avalondock:LayoutDocument}">
-          <StackPanel Opacity="1.0"
-                      Orientation="Horizontal">
-            <Image Source="{Binding IconSource}"
-                   Margin="6,4,4,0" />
-            <TextBlock Text="{Binding Title}"
-                       VerticalAlignment="Center" />
-          </StackPanel>
-        </DataTemplate>
-      </avalondock:DockingManager.DocumentHeaderTemplate>
-      <avalondock:LayoutRoot>
-        <avalondock:LayoutPanel Orientation="Horizontal">
-          <avalondock:LayoutAnchorablePane DockWidth="300" />
-          <avalondock:LayoutDocumentPaneGroup>
-            <avalondock:LayoutDocumentPane x:Name="docpane">
-              <avalondock:LayoutDocument Title="Browser"
-                                         IconSource="{StaticResource BrowserIcon}"
-                                         x:Name="FrameDocument">
-                <Frame Background="{x:Null}"
-                  Navigating="BrowserFrame_OnNavigating"
-                  x:Name="BrowserFrame" Source="Home.xaml" />
-              </avalondock:LayoutDocument>
-              <avalondock:LayoutDocument>
+                                 AllowMixedOrientation="True"
+                                 AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
+                                 IconContentTemplate="{DynamicResource DataTemplate1}"
+                                 DocumentTitleTemplate="{DynamicResource DataTemplate2}"
+                                 DocumentPaneMenuItemHeaderTemplate="{DynamicResource DataTemplate3}"
+                                 AnchorTemplate="{DynamicResource LayoutAnchorControlControlTemplate1}">
+        <avalondock:DockingManager.DocumentHeaderTemplate>
+          <DataTemplate
+            DataType="{x:Type avalondock:LayoutDocument}">
+            <StackPanel Opacity="1.0"
+                        Orientation="Horizontal">
+              <Image Source="{Binding IconSource}"
+                     Margin="6,4,4,0" />
+              <TextBlock Text="{Binding Title}"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+          </DataTemplate>
+        </avalondock:DockingManager.DocumentHeaderTemplate>
+        <avalondock:LayoutRoot>
+          <avalondock:LayoutPanel Orientation="Horizontal">
+            <avalondock:LayoutAnchorablePane
+              DockWidth="300" />
+            <avalondock:LayoutDocumentPaneGroup>
+              <avalondock:LayoutDocumentPane
+                x:Name="docpane">
+                <avalondock:LayoutDocument Title="Browser"
+                                           IconSource="{StaticResource BrowserIcon}"
+                                           x:Name="FrameDocument">
+                  <Frame Background="{x:Null}"
+                         Navigating="BrowserFrame_OnNavigating"
+                         x:Name="BrowserFrame"
+                         Source="Home.xaml" />
+                </avalondock:LayoutDocument>
+                <avalondock:LayoutDocument>
                   <Grid>
                     <Grid.CommandBindings>
-                      <CommandBinding Command="kmWpf:WpfAppCommands.Execute" Executed="ExecutePythonCode"/>
+                      <CommandBinding
+                        Command="kmWpf:WpfAppCommands.Execute"
+                        Executed="ExecutePythonCode" />
                     </Grid.CommandBindings>
-                    <Grid.RowDefinitions><RowDefinition Height="Auto"/>
-                      <RowDefinition Height="*"></RowDefinition>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto" />
+                      <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                    <ToolBarTray><ToolBar Band="1" BandIndex="1">
-      <Button Content="Run" Command="kmWpf:WpfAppCommands.Execute"></Button>
-                    </ToolBar></ToolBarTray>
-                <avalonEdit:TextEditor Grid.Row="1" Grid.Column="1"
-                  xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-                  Name="textEditor"
-                  SyntaxHighlighting="C#"
-                  FontFamily="Consolas"
-                  FontSize="10pt"/>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ToolBarTray>
+                      <ToolBar Band="1" BandIndex="1">
+                        <Button Content="Run"
+                                Command="kmWpf:WpfAppCommands.Execute" />
+                      </ToolBar>
+                    </ToolBarTray>
+                    <avalonEdit:TextEditor Grid.Row="1"
+                                           Grid.Column="1"
+                                           xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                                           Name="textEditor"
+                                           SyntaxHighlighting="C#"
+                                           FontFamily="Consolas"
+                                           FontSize="10pt" />
                   </Grid>
                 </avalondock:LayoutDocument>
-              <avalondock:LayoutAnchorable Title="Files"
-                                           IconSource="{StaticResource FilesIcon}"
-                                           ContentId="fileBrowser">
-                <Grid Opacity="1.0">
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                  </Grid.RowDefinitions>
-                  <TextBox Grid.Row="0"
-                           x:Name="pathTextBox"
-                           Margin="3"
-                           Text="{Binding ElementName=explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                           anal:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
-                  <Explorer
-                    ItemsSource="{Binding RootCollection}"
-                    Grid.Row="1" x:Name="explorer"
-                    Margin="3,0,3,0"
-                    ItemContextMenu="{StaticResource itemContextMenu}"
-                    ListContextMenu="{StaticResource listContextMenu}" />
-                </Grid>
-              </avalondock:LayoutAnchorable>
-            </avalondock:LayoutDocumentPane>
-          </avalondock:LayoutDocumentPaneGroup>
-        </avalondock:LayoutPanel>
-        <avalondock:LayoutRoot.LeftSide>
-          <avalondock:LayoutAnchorSide>
-            <avalondock:LayoutAnchorGroup>
-              <avalondock:LayoutAnchorable
-                Title="Components">
-                <ListBox Name="viewList"
-                         ItemsSource="{Binding Path=Views}"
-                         ItemTemplate="{StaticResource Template1}">
-                  <ListBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="Open"
-                                CommandParameter="{Binding ElementName=viewList,Path=SelectedItem}" />
-                  </ListBox.InputBindings>
-                </ListBox>
-              </avalondock:LayoutAnchorable>
-            </avalondock:LayoutAnchorGroup>
-          </avalondock:LayoutAnchorSide>
-        </avalondock:LayoutRoot.LeftSide>
-      </avalondock:LayoutRoot>
-    </avalondock:DockingManager>
-    <StatusBar Grid.Row="4" Grid.Column="0">
-    
-    </StatusBar>
-  </Grid>
+                <avalondock:LayoutAnchorable Title="Files"
+                                             IconSource="{StaticResource FilesIcon}"
+                                             ContentId="fileBrowser">
+                  <Grid Opacity="1.0">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto" />
+                      <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0"
+                             x:Name="pathTextBox"
+                             Margin="3"
+                             Text="{Binding ElementName=explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                             anal:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                    <Explorer
+                      ItemsSource="{Binding RootCollection}"
+                      Grid.Row="1" x:Name="explorer"
+                      Margin="3,0,3,0"
+                      ItemContextMenu="{StaticResource itemContextMenu}"
+                      ListContextMenu="{StaticResource listContextMenu}" />
+                  </Grid>
+                </avalondock:LayoutAnchorable>
+              </avalondock:LayoutDocumentPane>
+            </avalondock:LayoutDocumentPaneGroup>
+          </avalondock:LayoutPanel>
+          <avalondock:LayoutRoot.LeftSide>
+            <avalondock:LayoutAnchorSide>
+              <avalondock:LayoutAnchorGroup>
+                <avalondock:LayoutAnchorable
+                  Title="Components">
+                  <ListBox Name="viewList"
+                           ItemsSource="{Binding Path=Views}"
+                           ItemTemplate="{StaticResource Template1}">
+                    <ListBox.InputBindings>
+                      <KeyBinding Key="Enter"
+                                  Command="Open"
+                                  CommandParameter="{Binding ElementName=viewList,Path=SelectedItem}" />
+                    </ListBox.InputBindings>
+                  </ListBox>
+                </avalondock:LayoutAnchorable>
+              </avalondock:LayoutAnchorGroup>
+            </avalondock:LayoutAnchorSide>
+          </avalondock:LayoutRoot.LeftSide>
+        </avalondock:LayoutRoot>
+      </avalondock:DockingManager>
+      <StatusBar Grid.Row="4" Grid.Column="0" />
+    </Grid>
   </Border>
 </kmWpf:AppWindow>

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../../build</KmGlobalOutputPath>
+    <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\test\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{94530180-751F-4A72-A747-637D066EF5A9}</ProjectGuid>
@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="DefaultObjectIdProviderTests.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 
 [assembly: AssemblyProduct("ConsoleApp1")]
-[assembly: AssemblyCulture("en_US")]
+[assembly: AssemblyCulture("")]
 [assembly: AssemblyCompany("Kay McCormick")]
 [assembly: AssemblyCopyright("Copyright © Kay McCormick 2020")]
 [assembly: AssemblyTrademark("")]

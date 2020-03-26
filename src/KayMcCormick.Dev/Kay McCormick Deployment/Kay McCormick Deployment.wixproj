@@ -36,6 +36,14 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\WpfExplorer\Explorer\Explorer.csproj">
+      <Name>Explorer</Name>
+      <Project>{03fb5d97-71e4-4304-b52f-6836605398b5}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\AnalysisServiceLibrary\AnalysisServiceLibrary.csproj">
       <Name>AnalysisServiceLibrary</Name>
       <Project>{1f5d1b87-40ff-42c0-88d9-874162e5d234}</Project>
