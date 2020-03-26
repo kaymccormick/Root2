@@ -17,6 +17,7 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.StackTrace ;
 using NLog ;
 
 namespace AnalysisAppLib

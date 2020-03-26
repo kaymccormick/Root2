@@ -14,11 +14,21 @@ using System.ComponentModel.Composition ;
 
 namespace KayMcCormick.Dev.Attributes
 {
+    /// <summary>
+    /// Metadata atttribute to indicate the title of a component or command. Intended for user dusplay. Right now is transferred from views to menu commands.
+    /// </summary>
     [ MetadataAttribute ]
     public class TitleMetadataAttribute : Attribute
     {
+        /// <summary>
+        /// Title
+        /// </summary>
         public string Title { get ; private set ; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="title"></param>
         public TitleMetadataAttribute ( string title ) { Title = title ; }
     }
 }

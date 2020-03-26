@@ -107,18 +107,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\PushContextAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
-    <Compile Include="LegacyAppBuildModule.cs" />
+    <Compile Include="Logging\LegacyAppBuildModule.cs" />
     <Compile Include="AppBuild\ILoggerTracker.cs" />
-    <Compile Include="AppInfoService.cs" />
-    <Compile Include="AppInfraException.cs" />
-    <Compile Include="Application.cs" />
-    <Compile Include="ApplicationInstance.cs" />
-    <Compile Include="ApplicationInstanceBase.cs" />
-    <Compile Include="ApplicationInstanceConfiguration.cs" />
-    <Compile Include="ApplicationInstanceException.cs" />
-    <Compile Include="ApplicationInstanceHost.cs" />
-    <Compile Include="AppStartupEventArgs.cs" />
+    <Compile Include="Application\ApplicationInstance.cs" />
+    <Compile Include="Application\ApplicationInstanceBase.cs" />
+    <Compile Include="Application\ApplicationInstanceConfiguration.cs" />
+    <Compile Include="Application\ApplicationInstanceHost.cs" />
+    <Compile Include="Application\AppStartupEventArgs.cs" />
     <Compile Include="AttributeNotFoundException.cs" />
     <Compile Include="Attributes\ClearLoggingRulesAttribute.cs" />
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
@@ -126,7 +123,7 @@
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
     <Compile Include="HashtableConverter.cs" />
     <Compile Include="IViewWithTitle.cs" />
-    <Compile Include="LogEventInstanceObservableCollection.cs" />
+    <Compile Include="Logging\LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Connected Services\CentralServiceReference\Reference.cs">
@@ -155,13 +152,15 @@
     <Compile Include="IocModule.cs" />
     <Compile Include="Logging\AppFileTarget.cs" />
     <Compile Include="Logging\DictConverterFactory.cs" />
+    <Compile Include="Logging\MyCacheTarget.cs" />
     <Compile Include="Logging\MyLayout.cs" />
     <Compile Include="Logging\MyLog4JXmlEventLayoutRenderer.cs" />
     <Compile Include="Logging\ProtoLogger.cs" />
     <Compile Include="Serialization\JsonTypeConverter.cs" />
     <Compile Include="Serialization\JsonTypeConverterFactory.cs" />
     <Compile Include="Serialization\JsonTypeInfoConverter.cs" />
-    <Compile Include="ServiceImpl\CentralService.cs" />
+    <Compile Include="Service\AppInfoService.cs" />
+    <Compile Include="Service\CentralService.cs" />
     <Compile Include="Interfaces\ICentralService.cs" />
     <Compile Include="Interfaces\IHaveObjectId.cs" />
     <Compile Include="InfraModule.cs" />
@@ -169,13 +168,13 @@
     <Compile Include="Interfaces\IObjectIdProvider.cs" />
     <Compile Include="Interfaces\RegisterApplicationInstanceResponse.cs" />
     <Compile Include="IView.cs" />
-    <Compile Include="LogEventInstance.cs" />
-    <Compile Include="LoggerEventArgs.cs" />
-    <Compile Include="LoggerSettings.cs" />
-    <Compile Include="LoggerTracker.cs" />
-    <Compile Include="LoggingInterceptor.cs" />
-    <Compile Include="LoggingRuleAttribute.cs" />
-    <Compile Include="LoggingSection.cs" />
+    <Compile Include="Logging\LogEventInstance.cs" />
+    <Compile Include="Logging\LoggerEventArgs.cs" />
+    <Compile Include="Logging\LoggerSettings.cs" />
+    <Compile Include="Logging\LoggerTracker.cs" />
+    <Compile Include="Logging\LoggingInterceptor.cs" />
+    <Compile Include="Logging\LoggingRuleAttribute.cs" />
+    <Compile Include="Logging\LoggingSection.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
@@ -195,18 +194,23 @@
     <Compile Include="Logging\MyLogFactory.cs" />
     <Compile Include="Logging\MyLogger.cs" />
     <Compile Include="Logging\RegConfigSource.cs" />
-    <Compile Include="LogLevelConverter.cs" />
-    <Compile Include="MyCacheTarget.cs" />
-    <Compile Include="MyCacheTarget2.cs" />
+    <Compile Include="Logging\LogLevelConverter.cs" />
+    <Compile Include="Logging\MyCacheTarget2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PushContextAttribute.cs" />
-    <Compile Include="StackTraceEntry.cs" />
-    <Compile Include="StackTraceMethod.cs" />
-    <Compile Include="StackTraceParameter.cs" />
-    <Compile Include="StackTraceParams.cs" />
-    <Compile Include="StackTraceParser.cs" />
-    <Compile Include="StackTraceSourceLocation.cs" />
-    <Compile Include="StackTraceToken.cs" />
+    <Compile Include="Service\AppInstanceInfo.cs" />
+    <Compile Include="Service\AppInstanceInfoRequest.cs" />
+    <Compile Include="Service\AppInstanceInfoResponse.cs" />
+    <Compile Include="Service\IAppInfoService.cs" />
+    <Compile Include="Service\LoggerInfo.cs" />
+    <Compile Include="Service\WireComponentInfo.cs" />
+    <Compile Include="Service\WireInstanceInfo.cs" />
+    <Compile Include="StackTrace\StackTraceEntry.cs" />
+    <Compile Include="StackTrace\StackTraceMethod.cs" />
+    <Compile Include="StackTrace\StackTraceParameter.cs" />
+    <Compile Include="StackTrace\StackTraceParams.cs" />
+    <Compile Include="StackTrace\StackTraceParser.cs" />
+    <Compile Include="StackTrace\StackTraceSourceLocation.cs" />
+    <Compile Include="StackTrace\StackTraceToken.cs" />
     <Compile Include="TestApplicationInstance.cs" />
     <Compile Include="TestLib\BeforeAfterLoggerAttribute.cs" />
     <Compile Include="TestLib\FixtureLogger.cs" />
@@ -267,6 +271,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>3.1.3</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+      <Version>16.5.132</Version>
+    </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.13.1</Version>
     </PackageReference>
@@ -289,9 +296,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\.editorconfig">
-      <Link>.editorconfig</Link>
-    </None>
     <AdditionalFiles Include="..\DependencyValidation1\DependencyValidation1.layerdiagram">
       <Link>DependencyValidation1.layerdiagram</Link>
       <Visible>False</Visible>
@@ -300,7 +304,6 @@
       <Link>DependencyValidation1.layerdiagram</Link>
       <Visible>False</Visible>
     </AdditionalFiles>
-    <None Include="App.config" />
     <None Include="Connected Services\CentralServiceReference\CentralService.wsdl" />
     <None Include="Connected Services\CentralServiceReference\CentralSvc.xsd">
       <SubType>Designer</SubType>

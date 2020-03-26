@@ -39,6 +39,7 @@ using AvalonDock.Layout ;
 using Castle.DynamicProxy ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;

@@ -1,58 +1,48 @@
-﻿using JetBrains.Annotations;
- 
+﻿using JetBrains.Annotations ;
+
 
 namespace KayMcCormick.Dev.Logging
 {
     // TODO implement
-    
-    class RegConfigSource
+
+    internal class RegConfigSource
     {
-        public string PathForLogFile(ILogFileSpecification spec) { return ""; }
+        public string PathForLogFile ( ILogFileSpecification spec ) { return "" ; }
     }
 
 
-    
-
-    
-    public class ExecutionContextImpl : ExecutionContext
+    internal class ExecutionContextImpl : ExecutionContext
 
     {
-
-        public Application Application { get; set; }
-
+        public Application Application { get ; set ; }
     }
 
 
+    /// <summary>
+    /// Enumeration
+    /// </summary>
     public enum Application
-
     {
 
-        
-        MainApplication,
+
+        /// <summary>
+        /// Application 
+        /// </summary>
+        MainApplication ,
 
 
-        
-        Tests,
-
+        Tests
     }
 
     internal interface ILogFileSpecification : ILogEntrySpecification
     {
     }
 
-    internal enum CrosscuttingConcern
-    {
-    }
+    internal enum CrosscuttingConcern { }
 
-    
+
     internal enum FunctionalArea
     {
-         Configuration,
-         UserInterface,
-         DependencyInjection,
-         Model,
-         TypeConversion,
-         Xaml,
-
+        Configuration , UserInterface , DependencyInjection , Model , TypeConversion , Xaml
     }
 }

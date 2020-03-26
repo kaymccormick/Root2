@@ -7,9 +7,9 @@
 
 
     {
-
-        
-        Application Application { get; }
-
+        /// <summary>
+        /// Application execution context.
+        /// </summary>
+        Application Application { get ; }
     }
-}   
+}

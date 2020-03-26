@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 
 namespace KayMcCormick.Dev.AppBuild

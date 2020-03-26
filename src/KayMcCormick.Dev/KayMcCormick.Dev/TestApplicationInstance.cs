@@ -14,6 +14,7 @@ using System.Collections ;
 using System.Collections.Generic ;
 using Autofac ;
 using Autofac.Core ;
+using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev

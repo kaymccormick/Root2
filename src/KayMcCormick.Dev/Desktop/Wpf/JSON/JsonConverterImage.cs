@@ -21,88 +21,37 @@ namespace KayMcCormick.Lib.Wpf.JSON
 {
     public class JsonConverterImage : JsonConverterFactory
     {
-/*        #region Overrides of JsonConverter<ImageSource>
-        public override ImageSource Read (
-            ref Utf8JsonReader    reader
-          , Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
+        #region Overrides of JsonConverter
+        public override bool CanConvert ( Type typeToConvert )
         {
-            return null ;
+            if ( typeof ( ImageSource ).IsAssignableFrom ( typeToConvert ) )
+            {
+                return true ;
+            }
+
+            return false ;
         }
 
-        public override void Write (
-            Utf8JsonWriter        writer
-          , ImageSource           value
-          , JsonSerializerOptions options
-        )
+        public class MyImageSourceConverter : JsonConverter < ImageSource >
         {
-            ValueSerializerAttribute att = ( ValueSerializerAttribute ) value
-                                                                       .GetType ( )
-                                                                       .GetCustomAttribute (
-                                                                                            typeof (
-                                                                                                ValueSerializerAttribute
-                                                                                            )
-                                                                                           ) ;
-            ValueSerializer ser = null ;
-            if ( att != null )
+            private Type                  typeToConvert ;
+            private JsonSerializerOptions options ;
+
+            public MyImageSourceConverter ( Type typeToConvert , JsonSerializerOptions options )
             {
-                if ( att.ValueSerializerType != null )
-                {
-                    ser = ( ValueSerializer ) Activator.CreateInstance ( att.ValueSerializerType ) ;
-                }
+                this.typeToConvert = typeToConvert ;
+                this.options       = options ;
             }
 
-            if ( ser != null )
-            {
-                var p = TypeDescriptor.GetProvider ( value ) ;
-                var t = p.GetTypeDescriptor ( value ) ;
-                var str = ser.ConvertToString ( value , null ) ;
-                if ( str != null )
-                {
-                    writer.WriteStringValue(str);
-                }
-                else
-                {
-                    writer.WriteNullValue();
-                }
-            }
-            else
-            {
-                writer.WriteStringValue(value.ToString());
-            }
-        }
-        #endregion*/
-#region Overrides of JsonConverter
-public override bool CanConvert ( Type typeToConvert )
-{
-    if ( typeof ( ImageSource ).IsAssignableFrom ( typeToConvert ) )
-    {
-        return true ;
-    }
-
-    return false ;
-}
-
-public class MyImageSourceConverter : JsonConverter<ImageSource>
-{
-            private Type typeToConvert;
-            private JsonSerializerOptions options;
-
-            public MyImageSourceConverter(Type typeToConvert, JsonSerializerOptions options)
-            {
-                this.typeToConvert = typeToConvert;
-                this.options = options;
-            }
             #region Overrides of JsonConverter<ImageSource>
             public override ImageSource Read (
-        ref Utf8JsonReader    reader
-      , Type                  typeToConvert
-      , JsonSerializerOptions options
-    )
-    {
-        return null ;
-    }
+                ref Utf8JsonReader    reader
+              , Type                  typeToConvert
+              , JsonSerializerOptions options
+            )
+            {
+                return null ;
+            }
 
             public override void Write (
                 Utf8JsonWriter        writer
@@ -110,54 +59,55 @@ public class MyImageSourceConverter : JsonConverter<ImageSource>
               , JsonSerializerOptions options
             )
             {
-
-                ValueSerializerAttribute att = (ValueSerializerAttribute)value
-                                                                        .GetType()
-                                                                        .GetCustomAttribute(
-                                                                                            typeof(
-                                                                                                ValueSerializerAttribute
-                                                                                            )
-                                                                                           );
-                ValueSerializer ser = null;
-                if (att != null)
+                var att = ( ValueSerializerAttribute ) value
+                                                      .GetType ( )
+                                                      .GetCustomAttribute (
+                                                                           typeof (
+                                                                               ValueSerializerAttribute
+                                                                           )
+                                                                          ) ;
+                ValueSerializer ser = null ;
+                if ( att != null )
                 {
-                    if (att.ValueSerializerType != null)
+                    if ( att.ValueSerializerType != null )
                     {
-                        ser = (ValueSerializer)Activator.CreateInstance(att.ValueSerializerType);
+                        ser = ( ValueSerializer ) Activator.CreateInstance (
+                                                                            att.ValueSerializerType
+                                                                           ) ;
                     }
                 }
 
-                if (ser != null)
+                if ( ser != null )
                 {
-                    var p = TypeDescriptor.GetProvider(value);
-                    var t = p.GetTypeDescriptor(value);
-                    
-                    var str = ser.ConvertToString(value, null);
-                    if (str != null)
+                    var p = TypeDescriptor.GetProvider ( value ) ;
+                    var t = p.GetTypeDescriptor ( value ) ;
+
+                    var str = ser.ConvertToString ( value , null ) ;
+                    if ( str != null )
                     {
-                        writer.WriteStringValue(str);
+                        writer.WriteStringValue ( str ) ;
                     }
                     else
                     {
-                        writer.WriteNullValue();
+                        writer.WriteNullValue ( ) ;
                     }
                 }
                 else
                 {
-                    writer.WriteStringValue(value.ToString());
+                    writer.WriteStringValue ( value.ToString ( ) ) ;
                 }
             }
-    #endregion
-}
-#endregion
-#region Overrides of JsonConverterFactory
-public override System.Text.Json.Serialization.JsonConverter CreateConverter (
-    Type                  typeToConvert
-  , JsonSerializerOptions options
-)
-{
-    return new MyImageSourceConverter ( typeToConvert , options )  ;
-}
-#endregion
+            #endregion
+        }
+        #endregion
+        #region Overrides of JsonConverterFactory
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
+            Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return new MyImageSourceConverter ( typeToConvert , options ) ;
+        }
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System.IO ;
 using Autofac ;
 using Common.Logging ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 using NLog ;
 using Topshelf ;
 using Topshelf.Autofac ;

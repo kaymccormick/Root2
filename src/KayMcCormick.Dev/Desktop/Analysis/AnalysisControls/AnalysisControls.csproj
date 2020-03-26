@@ -58,7 +58,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-  <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\third-party\IronPython\bin\Debug\IronPython.dll</HintPath>
     </Reference>
@@ -68,7 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-  <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\third-party\IronPython\bin\Release\IronPython.dll</HintPath>
     </Reference>
@@ -77,7 +77,7 @@
       <HintPath>..\..\..\..\..\third-party\IronPython\bin\Release\net45\Microsoft.Scripting.dll</HintPath>
     </Reference>
   </ItemGroup>
-<ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -305,6 +305,9 @@
       <Version>3.0.0-beta3.final</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+      <Version>16.5.132</Version>
     </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.13.1</Version>

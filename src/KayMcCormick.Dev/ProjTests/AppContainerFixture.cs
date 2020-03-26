@@ -14,6 +14,8 @@ using System.Threading.Tasks ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using NLog ;
 using Xunit ;

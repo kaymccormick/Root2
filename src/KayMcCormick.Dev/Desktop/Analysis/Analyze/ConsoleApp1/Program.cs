@@ -11,6 +11,7 @@ using Autofac.Core ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 #if COMMANDLINE
 using CommandLine ;
 #endif

@@ -13,6 +13,7 @@ using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;

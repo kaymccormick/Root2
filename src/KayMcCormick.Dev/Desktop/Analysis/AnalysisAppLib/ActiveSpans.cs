@@ -36,6 +36,7 @@ namespace AnalysisAppLib
 
             Remove ( node ) ;
         }
+
         #region Implementation of IEnumerable
         public IEnumerator < KeyValuePair < object , IDictionary < object , ISpanViewModel > > >
             GetEnumerator ( )
@@ -75,7 +76,7 @@ namespace AnalysisAppLib
             KeyValuePair < object , IDictionary < object , ISpanViewModel > > item
         )
         {
-            
+            //KM2020-03-26 ReSharper disable once AssignNullToNotNullAttribute
             return _dictionaryImplementation.Remove ( item ) ;
         }
 

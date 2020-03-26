@@ -19,6 +19,7 @@ using System.Windows.Navigation ;
 using System.Windows.Shapes ;
 
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.StackTrace ;
 using Newtonsoft.Json ;
 
 namespace KayMcCormick.Lib.Wpf

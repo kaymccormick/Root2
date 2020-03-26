@@ -19,6 +19,9 @@ namespace KayMcCormick.Dev.Logging
         }
 
 
+        /// <summary>
+        /// Random test constructor.
+        /// </summary>
         public MyLogger()
 
         {

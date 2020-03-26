@@ -1,37 +1,23 @@
-﻿using System ;
-using System.Collections.Generic ;
-using System.Diagnostics ;
-using System.Linq ;
+﻿using System.Linq ;
 using System.Text.Json ;
 using System.Windows ;
-using System.Windows.Threading ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
 using NLog ;
 using NLog.Targets ;
-using Application = KayMcCormick.Dev.Application ;
 
 namespace ProjInterface
 {
-    public partial class ProjInterfaceApp : BaseApp
+    public sealed partial class ProjInterfaceApp : BaseApp
     {
-        private readonly bool _disableLogging ;
-
-        private readonly List < IModule > appModules = new List < IModule > ( ) ;
-
         private new static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private JsonSerializerOptions _appJsonSerializerOptions ;
-
-        private bool _testMode ;
-
-        private Func < ProjInterfaceApp , ILifetimeScope , bool > _testCallback ;
-
-        public ProjInterfaceApp ( ) : this ( null , false , false , false ) { }
+        public ProjInterfaceApp ( ) : this ( null ) { }
 
         public ProjInterfaceApp (
             ApplicationInstanceBase applicationInstance         = null
@@ -47,7 +33,6 @@ namespace ProjInterface
                  )
 
         {
-            _disableLogging = disableLogging ;
             //PresentationTraceSources.Refresh();
             if ( ! disableLogging )
             {
@@ -58,7 +43,6 @@ namespace ProjInterface
                                              .OfType < MyJsonLayout > ( ) )
                 {
                     var jsonSerializerOptions = myJsonLayout.Options ;
-                    AppJsonSerializerOptions = jsonSerializerOptions ;
                     JsonConverters.AddJsonConverters ( jsonSerializerOptions ) ;
                 }
             }
@@ -66,27 +50,8 @@ namespace ProjInterface
             {
                 var options = new JsonSerializerOptions ( ) ;
                 JsonConverters.AddJsonConverters ( options ) ;
-                AppJsonSerializerOptions = options ;
             }
         }
-
-        public JsonSerializerOptions AppJsonSerializerOptions
-        {
-            get { return _appJsonSerializerOptions ; }
-            set { _appJsonSerializerOptions = value ; }
-        }
-
-        public bool TestMode { get { return _testMode ; } set { _testMode = value ; } }
-
-        public Func < ProjInterfaceApp , ILifetimeScope , bool > TestCallback
-        {
-            get { return _testCallback ; }
-            set { _testCallback = value ; }
-        }
-
-
-        protected override IEnumerable < IModule > GetModules ( ) { return appModules ; }
-
 
         protected override void OnStartup ( StartupEventArgs e )
         {
@@ -112,27 +77,6 @@ namespace ProjInterface
         private void ShowErrorDialog ( string applicationError , string messageText )
         {
             MessageBox.Show ( messageText , applicationError, MessageBoxButton.OK , MessageBoxImage.Error ) ;
-        }
-
-        private void ProjInterfaceApp_OnDispatcherUnhandledException (
-            object                                sender
-          , DispatcherUnhandledExceptionEventArgs e
-        )
-        {
-            if ( e.Exception is InvalidCastException )
-            {
-                Logger.Fatal ( "First chance exception: " + e.Exception.ToString ( ) ) ;
-                // e.Handled = true ;
-                return ;
-            }
-
-            Debug.WriteLine ( e.ToString ( ) ) ;
-            if ( ! TestMode )
-            {
-                MessageBox.Show ( e.Exception.Message , "Error" ) ;
-            }
-
-            Current.Shutdown ( ) ;
         }
     }
 

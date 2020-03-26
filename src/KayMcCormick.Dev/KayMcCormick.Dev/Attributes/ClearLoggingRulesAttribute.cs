@@ -12,12 +12,13 @@
 using System ;
 using System.Linq ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 
 namespace KayMcCormick.Dev.Attributes
 {
     /// <summary>
-    /// 
+    /// Clear all logging rules attribute
     /// </summary>
     
     public class ClearLoggingRulesAttribute : LoggingAttribute

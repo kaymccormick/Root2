@@ -5,6 +5,7 @@ using NLog ;
 using System ;
 using System.ServiceModel ;
 using ConfigTest.ServiceReference1 ;
+using KayMcCormick.Dev.Application ;
 using NLog.LogReceiverService ;
 using AppInstanceInfoRequest = KayMcCormick.Dev.ServiceReference1.AppInstanceInfoRequest ;
 

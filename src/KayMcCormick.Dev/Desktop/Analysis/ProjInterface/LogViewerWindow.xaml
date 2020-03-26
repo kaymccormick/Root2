@@ -7,6 +7,7 @@
                  xmlns:projInterface="clr-namespace:ProjInterface"
                  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
                  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+                 xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
                  Name="logViewerWindow"
                  mc:Ignorable="d"
                  Title="Log Viewer Window" Height="450"
@@ -249,7 +250,7 @@
       </Setter>
     </Style>
     <DataTemplate x:Key="PropertiesTemplate"
-                  DataType="{x:Type dev:LogEventInstance}">
+                  DataType="{x:Type logging:LogEventInstance}">
       <TextBlock Text="{Binding Properties.Count}" />
     </DataTemplate>
     <DataTemplate

@@ -15,6 +15,7 @@ using Autofac.Features.AttributeFilters ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using NLog ;

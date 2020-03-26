@@ -61,6 +61,9 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         bool? LogThrowExceptions { get ; }
 
+        /// <summary>
+        /// Enable XML File target
+        /// </summary>
         bool IsEnabledXmlFileTarget { get ; set ; }
     }
 }

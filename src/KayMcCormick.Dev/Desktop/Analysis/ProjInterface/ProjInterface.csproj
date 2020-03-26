@@ -244,6 +244,9 @@
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal">
       <Version>2.8.0-preview</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+      <Version>16.5.132</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Win32.Primitives">
       <Version>4.3.0</Version>
     </PackageReference>

@@ -2,6 +2,7 @@
 using System.ComponentModel ;
 using System.Threading.Tasks ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib.ViewModel
 {

@@ -1,7 +1,5 @@
 ﻿using System ;
-using System.Threading ;
 using System.Threading.Tasks ;
-using System.Windows.Threading ;
 using Autofac ;
 using JetBrains.Annotations ;
 using ProjInterface ;
@@ -55,8 +53,7 @@ namespace ProjTests
         public void Action ( )
         {
             _projInterfaceApp = new ProjInterfaceApp();
-            _projInterfaceApp.InitializeComponent();
-            _projInterfaceApp.TestMode = true;
+            // _projInterfaceApp.InitializeComponent();
         }
 
         public async Task DisposeAsync ( ) { }

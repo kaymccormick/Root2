@@ -10,6 +10,7 @@ using CommandLine ;
 using CommandLine.Text ;
 #endif
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Tracing ;
 using NLog ;

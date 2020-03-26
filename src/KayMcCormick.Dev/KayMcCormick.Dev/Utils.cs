@@ -13,6 +13,8 @@ using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Xml.Serialization ;
+using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.StackTrace ;
 using KayMcCormick.Dev.Tracing ;
 
 namespace KayMcCormick.Dev

@@ -87,6 +87,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+      <Version>16.5.132</Version>
+    </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.7.0</Version>
     </PackageReference>

@@ -18,6 +18,7 @@ using System.Threading ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
