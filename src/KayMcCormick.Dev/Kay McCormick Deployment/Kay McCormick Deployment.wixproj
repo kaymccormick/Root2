@@ -32,7 +32,6 @@
     <LinkerAdditionalOptions>-sval</LinkerAdditionalOptions>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="File1.wxs" />
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>

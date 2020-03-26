@@ -29,7 +29,6 @@ namespace AddInService1V1
               , Publisher   = "Kay McCormick"
               , Version     = "1.0"
             ) ]
-    [ UsedImplicitly ]
     public class AddInService1V1 : IService1
     {
         private static Logger Logger = LogManager.CreateNullLogger() ;
@@ -697,7 +696,7 @@ public class LogEventInstance
     public IDictionary < string , object > UnknownFields { get ; } =
         new Dictionary < string , object > ( ) ;
 
-    public void AddUnknown ( string field , in JsonElement elem )
+    public void AddUnknown ( string field , JsonElement elem )
     {
         UnknownFields[ field ] = elem ;
     }
