@@ -24,11 +24,11 @@ namespace TestApp
         public DockLayout()
         {
             InitializeComponent();
-            Explorer explorer = new Explorer();
-            explorer.BeginInit();
-            explorer.EndInit();
-            var x = explorer.TreeView.Parent ;
-            test.Content = explorer.TreeView ;
+            // Explorer explorer = new Explorer();
+            // explorer.BeginInit();
+            // explorer.EndInit();
+            // var x = explorer.TreeView.Parent ;
+            // test.Content = explorer.TreeView ;
         }
 
         private void BrowserFrame_OnNavigating ( object sender , NavigatingCancelEventArgs e ) { }

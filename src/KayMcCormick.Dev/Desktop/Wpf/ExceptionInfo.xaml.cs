@@ -17,7 +17,7 @@ using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using System.Windows.Navigation ;
 using System.Windows.Shapes ;
-using DynamicData ;
+
 using KayMcCormick.Dev ;
 using Newtonsoft.Json ;
 
@@ -85,7 +85,11 @@ namespace KayMcCormick.Lib.Wpf
                     }
                 }
 
-                Entries.AddRange ( Utils.ParseStackTrace ( stackTrace ) ) ;
+                foreach ( var stackTraceEntry in Utils.ParseStackTrace ( stackTrace ) )
+                {
+                    Entries.Add ( stackTraceEntry ) ;
+                }
+                
             }
         }
     }

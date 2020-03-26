@@ -47,8 +47,6 @@
                       IsEnabled="{Binding CanCreateLink}" />
           </ContextMenu>
 
-          <BitmapImage UriSource="Assets/shell32_329.ico"
-                       x:Key="PowerOffImage" />
 
           <ControlTemplate x:Key="ControlTemplate1">
             <Border BorderThickness="50" BorderBrush="Red">

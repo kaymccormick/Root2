@@ -10,8 +10,7 @@
   xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
   xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
   xmlns:projInterface="clr-namespace:ProjInterface"
-  xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
-  xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging">
+  >
 
   <kmWpf:BaseApp.Resources>
 

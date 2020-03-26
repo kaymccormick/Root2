@@ -5,25 +5,15 @@ using System.Linq ;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Threading ;
-using AnalysisAppLib ;
-using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
-using AnalysisControls.Interfaces ;
 using Autofac ;
 using Autofac.Core ;
-#if COMMANDLINE
-using CommandLine ;
-using CommandLine.Text ;
-#endif
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
-using KayMcCormick.Lib.Wpf.JSON ;
-#if MSBUILDLOCATOR
-using Microsoft.Build.Locator ;
-#endif
 using NLog ;
 using NLog.Targets ;
+using Application = KayMcCormick.Dev.Application ;
 
 namespace ProjInterface
 {
@@ -41,10 +31,6 @@ namespace ProjInterface
 
         private Func < ProjInterfaceApp , ILifetimeScope , bool > _testCallback ;
 
-#if COMMANDLINE
-private Type[] _optionTypes ;
-        private Options _options ;
-#endif
         public ProjInterfaceApp ( ) : this ( null , false , false , false ) { }
 
         public ProjInterfaceApp (
@@ -82,46 +68,6 @@ private Type[] _optionTypes ;
                 JsonConverters.AddJsonConverters ( options ) ;
                 AppJsonSerializerOptions = options ;
             }
-
-#if false
-            var instances = MSBuildLocator.QueryVisualStudioInstances ( ).ToList ( ) ;
-            foreach ( var inst in instances )
-            {
-                Logger.Info (
-                             "{name} {type} {msbuildpath} {version} {vspath}"
-       , inst.Name
-       , inst.DiscoveryType.ToString ( )
-       , inst.MSBuildPath
-       , inst.Version
-       , inst.VisualStudioRootPath
-                            ) ;
-            }
-
-            if ( instances.Any (
-                                ( instance )
-                                    => instance.Version.Major == 16 && instance.Version.Minor == 4
-                               ) )
-            {
-                var visualStudioInstance = instances.First ( ) ;
-            }
-
-            //MSBuildLocator.RegisterInstance(visualStudioInstance);
-            // var reg = MSBuildLocator.RegisterDefaults();
-            MSBuildLocator.RegisterMSBuildPath (
-                                                @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
-                                               ) ;
-            // Logger.Debug("Registering MSBuild  instance {vs} - {path}", reg.Name, reg.MSBuildPath);
-#endif
-#if false
-            PresentationTraceSources.Refresh();
-            var bs = PresentationTraceSources.DataBindingSource;
-            bs.Switch.Level = SourceLevels.Verbose ;
-            bs.Listeners.Add(new BreakTraceListener());
-            var nLogTraceListener = new NLogTraceListener ( ) ;
-            nLogTraceListener.Filter = new MyTraceFilter ( ) ;
-            bs.Listeners.Add ( nLogTraceListener ) ;
-
-#endif
         }
 
         public JsonSerializerOptions AppJsonSerializerOptions
@@ -144,17 +90,7 @@ private Type[] _optionTypes ;
 
         protected override void OnStartup ( StartupEventArgs e )
         {
-#if DEBUG
-            var start = DateTime.Now ;
-#endif
             base.OnStartup ( e ) ;
-
-            //Trace.Listeners.Add ( new NLogTraceListener ( ) ) ;
-
-
-#if COMMANDLINE
-            ArgParseResult.WithParsed < Options > ( TakeOptions ) ;
-#endif
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
 
             var lifetimeScope = Scope ;
@@ -174,89 +110,26 @@ private Type[] _optionTypes ;
             }
 #endif
 
-            if ( TestMode )
+            if ( ! lifetimeScope.IsRegistered <Zoo > ( ) )
             {
-                Logger.Info ( "In test mode calling into callback." ) ;
-                var exitApplication = TestCallback ( this , lifetimeScope ) ;
-                if ( exitApplication )
-                {
-                    Dispatcher.BeginInvokeShutdown ( DispatcherPriority.Send ) ;
-                }
-            }
-            else
-            {
-                var windowType = typeof ( Window1 ) ;
-                try
-                {
-                    var mainWindow = ( Window ) lifetimeScope.Resolve ( windowType ) ;
-                    mainWindow.Show ( ) ;
-                }
-                catch ( Exception ex )
-                {
-                    Logger.Error ( ex , ex.ToString ( ) ) ;
-                    Utils.HandleInnerExceptions ( ex ) ;
-                    if ( ! TestMode )
-                    {
-                        MessageBox.Show ( ex.Message , "Error" ) ;
-                    }
-
-                    Shutdown ( ( int ) ExitCode.ExceptionalError ) ;
-                }
+                ShowErrorDialog (
+                                 ProjInterface
+                                    .Properties.Resources
+                                    .ProjInterfaceApp_OnStartup_Application_Error
+                               , "Error in compile-time configuration. Please contact your local administrator."
+                                ) ;
+                System.Windows.Application.Current.Shutdown(255);
             }
 
-
-#if DEBUG
-            var elapsed = DateTime.Now - start ;
-            Logger.Info ( "Initialization took {elapsed} time." , elapsed ) ;
-#endif
+            var mainWindow = lifetimeScope.Resolve <Window1>(  ) ;
+            mainWindow.Show ( ) ;
         }
 
-
-#if COMMANDLINE
-protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
-        private void TakeOptions ( Options obj ) { _options = obj ; }
-
-        public override Type[] OptionTypes => new [] { typeof(Options) } ;
-#endif
-#if false
-        protected override void OnArgumentParseError ( IEnumerable < object > obj )
+        private void ShowErrorDialog ( string applicationError , string messageText )
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(typeof(Usage));
-            var usages1 = CommandLine.Text.HelpText
-                                     .UsageTextAs(ArgParseResult, example => example);
-            Logger.Debug(String.Join(", ", usages1.ToList().ConvertAll<string>(input =>
-                                                                                        TypeDescriptor.GetConverter(typeof(UsageInfo)).ConvertToString(input))));
+            MessageBox.Show ( messageText , applicationError, MessageBoxButton.OK , MessageBoxImage.Error ) ;
+        }
 
-            IEnumerable<Usage> usages = usages1
-                                       .ToList().ConvertAll<Usage>(input => (Usage)converter.ConvertFrom(input));
-            Window w = new Window();
-            var ctrl = new CommandLineParserMessages
-                       { Usages = new UsagesFreezableCollection(usages) };
-            w.Content = ctrl;
-            w.ShowDialog();
-//            ErrorExit(ExitCode.ArgumentsError);
-            StringBuilder b = new StringBuilder(200);
-
-            var r = new StringReader(b.ToString());
-            try
-            {
-                string s ;
-                while ( ( s = r.ReadLine ( ) ) != null )
-                {
-                    Logger.Error ( s ) ;
-                }
-
-                MessageBox.Show ( b.ToString ( ) , "Help text" ) ;
-                ErrorExit ( ExitCode.ArgumentsError ) ;
-            }
-            catch ( Exception ex )
-            {
-                Logger.Error ( "Exception {exception}" , ex ) ;
-
-                ErrorExit ( ExitCode.ArgumentsError ) ;
-            }
-}
-#endif
         private void ProjInterfaceApp_OnDispatcherUnhandledException (
             object                                sender
           , DispatcherUnhandledExceptionEventArgs e
@@ -279,13 +152,4 @@ protected override void OnArgumentParseError ( IEnumerable < object > obj ) { }
         }
     }
 
-
-#if COMMANDLINE
-    public class Options : BaseOptions
-    {
-        [ Option ( 'b' ) ]
-        public bool BatchMode { get ; set ; }
-
-    }
-#endif
 }
