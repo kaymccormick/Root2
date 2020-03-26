@@ -48,7 +48,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="defaultMaxCount"></param>
         /// <returns></returns>
-        [UsedImplicitly]
+        
         public static MyCacheTarget2 GetInstance(int defaultMaxCount)
         {
             

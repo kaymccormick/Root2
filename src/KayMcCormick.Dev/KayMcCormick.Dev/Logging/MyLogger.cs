@@ -7,7 +7,7 @@ namespace KayMcCormick.Dev.Logging
     /// 
     /// </summary>
     public class MyLogger : Logger
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MyLogger'
+
     {
         /// <summary>Raises the event when the logger is reconfigured.</summary>
         /// <param name="e">Event arguments</param>
@@ -18,9 +18,9 @@ namespace KayMcCormick.Dev.Logging
                         "Cheese", "Food");
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MyLogger.MyLogger()'
+
         public MyLogger()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MyLogger.MyLogger()'
+
         {
             SetProperty(
                         "Cheese", "Food");

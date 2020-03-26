@@ -157,7 +157,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        [SuppressMessage("ReSharper", "CollectionNeverQueried.Global")] public IList<LoggerInfo> LoggerInfos { get; } = new List<LoggerInfo>();
+         public IList<LoggerInfo> LoggerInfos { get; } = new List<LoggerInfo>();
 
         /// <summary>
         /// 
@@ -168,7 +168,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    [UsedImplicitly]
+    
     public class AppInstanceInfoRequest
     {
     }

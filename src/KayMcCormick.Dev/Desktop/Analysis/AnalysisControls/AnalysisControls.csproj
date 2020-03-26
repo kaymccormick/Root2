@@ -89,6 +89,7 @@
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="EventRaisingStreamWriter.cs" />
+    <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="IPythonVariable.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="PythonControl.xaml.cs">
       <DependentUpon>PythonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PythonViewModel.cs" />
+    <Compile Include="ViewModel\PythonViewModel.cs" />
     <Compile Include="StringObservableCollection.cs" />
     <Compile Include="Views\NodePanel.cs" />
     <Compile Include="FormattedCode.xaml.cs">
@@ -108,7 +109,6 @@
     <Compile Include="FormattedCode2.xaml.cs">
       <DependentUpon>FormattedCode2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MainStatusBar.xaml.cs">
       <DependentUpon>MainStatusBar.xaml</DependentUpon>
     </Compile>

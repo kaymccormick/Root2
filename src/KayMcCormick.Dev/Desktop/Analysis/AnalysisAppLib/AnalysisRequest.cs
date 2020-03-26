@@ -8,7 +8,7 @@ namespace AnalysisAppLib
     }
 
 #if VERSIONCONTROL
-    [ UsedImplicitly ]
+    
     class PipelineRemoteSource : Pipeline
     {
         #region Overrides of PipeLine

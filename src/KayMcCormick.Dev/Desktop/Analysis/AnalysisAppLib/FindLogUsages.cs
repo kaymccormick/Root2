@@ -70,16 +70,16 @@ namespace AnalysisAppLib
                         if ( t == null )
                         {
                             return Array.Empty < ILogInvocation > ( ) ;
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
+
                         }
 
                         var t2 = LogUsages.GetILoggerSymbol ( model ) ;
                         if ( t2 == null )
                         {
                             return Array.Empty < ILogInvocation > ( ) ;
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
+
                         }
 
                         var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
@@ -228,9 +228,9 @@ namespace AnalysisAppLib
                                  ) ;
 
                     Logger.Info (
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                                  "symbol info is {node}"
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
                                , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
@@ -244,9 +244,9 @@ namespace AnalysisAppLib
                                  // TODO optimize
                                  && CheckSymbol ( methodSymbol , t ) ;
 #if TRACE
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                     Logger.Debug ( "result is {result}" , result ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
 #endif
                     return Tuple.Create ( result , methodSymbol , n1 ) ;
                 }
@@ -263,9 +263,9 @@ namespace AnalysisAppLib
                                                                               ) ;
                 }
 
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                 throw new Exception ( "Error" ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
             }
 
             [ CanBeNull ]

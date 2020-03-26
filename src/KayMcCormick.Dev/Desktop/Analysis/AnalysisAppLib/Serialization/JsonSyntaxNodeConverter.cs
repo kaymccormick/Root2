@@ -77,9 +77,9 @@ namespace AnalysisAppLib.Serialization
                     {
                         foreach ( var dExternAliase in d.ExternAliases )
                         {
-#pragma warning disable CA1305 // Specify IFormatProvider
+
                             Logger.Info ( "{x}" , dExternAliase ) ;
-#pragma warning restore CA1305 // Specify IFormatProvider
+
                         }
                     }
 

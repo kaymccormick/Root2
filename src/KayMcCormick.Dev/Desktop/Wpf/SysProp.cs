@@ -55,11 +55,11 @@ namespace KayMcCormick.Lib.Wpf
         public bool FlatMenu { [ SecurityCritical ] get; set; }
 
         
-#pragma warning disable CS1574 // XML comment has cref attribute 'RECT' that could not be resolved
+
         /// <summary>Gets the size of the work area on the primary display monitor. </summary>
         /// <returns>A <see cref="RECT" /> structure that receives the work area coordinates, expressed as virtual screen coordinates.</returns>
         [ Category( "Layout" ) ]
-#pragma warning restore CS1574 // XML comment has cref attribute 'RECT' that could not be resolved
+
         public Rect WorkArea { get; set; }
 
         /// <summary>Gets the <see cref="System.Windows.ResourceKey" /> for the <see cref="System.Windows.SystemParameters.DropShadow"/> property. </summary>
@@ -1061,11 +1061,11 @@ namespace KayMcCormick.Lib.Wpf
         public ResourceKey VirtualScreenTopKey { get; set; }
 
         
-#pragma warning disable CS1574 // XML comment has cref attribute 'FocusVisualStyle' that could not be resolved
+
         /// <summary>Gets the <see cref="System.Windows.ResourceKey" /> for the <see cref="FocusVisualStyle" /> property. </summary>
         /// <returns>The resource key.</returns>
         public ResourceKey FocusVisualStyleKey { get; set; }
-#pragma warning restore CS1574 // XML comment has cref attribute 'FocusVisualStyle' that could not be resolved
+
 
         /// <summary>Gets the <see cref="System.Windows.ResourceKey" /> for the <see cref="System.Windows.SystemParameters.NavigationChromeStyleKey"/> property. </summary>
         /// <returns>A resource key.</returns>

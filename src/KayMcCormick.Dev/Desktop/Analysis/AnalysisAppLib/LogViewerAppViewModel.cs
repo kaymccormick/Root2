@@ -16,9 +16,9 @@ using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
 {
-#pragma warning disable DV2002 // Unmapped types
+
     public class LogViewerAppViewModel : IViewModel
-#pragma warning restore DV2002 // Unmapped types
+
 
     {
         private ObservableCollection < LogViewModel > _logViewModels =

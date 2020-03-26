@@ -18,7 +18,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// Refactoring for logging.
     /// </summary>
-    [ UsedImplicitly ]
+    
     public class RefactorLogUsage : CodeRefactoringProvider
     {
         /// <summary>
@@ -47,12 +47,12 @@ namespace AnalysisAppLib
             if ( model != null )
             {
                 // ReSharper disable once UnusedVariable
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
+
 
 
                 // var query = Common.Query1 ( root 
                     // , model ) ;
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
+
             }
         }
     }

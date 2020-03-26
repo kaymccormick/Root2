@@ -11,8 +11,8 @@ namespace KayMcCormick.Lib.Wpf
     public partial class XmlViewer : UserControl
     {
         /// <summary>Identifies the <see cref="XmlDocument"/> dependency property.</summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("WpfAnalyzers.DependencyProperty", "WPF0005:Name of PropertyChangedCallback should match registered name.", Justification = "<Pending>")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("WpfAnalyzers.DependencyProperty", "WPF0023:The callback is trivial, convert to lambda.", Justification = "<Pending>")]
+        
+        
         public static readonly DependencyProperty XmlDocumentProperty =
             DependencyProperty.Register (
                                          nameof(XmlDocument)
@@ -23,9 +23,9 @@ namespace KayMcCormick.Lib.Wpf
                                                                       , FrameworkPropertyMetadataOptions
                                                                            .None
                                                                       , PropertyChangedCallback
-#pragma warning disable WPF0006 // Name of CoerceValueCallback should match registered name.
+
                                                                       , CoerceValueCallback
-#pragma warning restore WPF0006 // Name of CoerceValueCallback should match registered name.
+
                                                                        )
                                         ) ;
 

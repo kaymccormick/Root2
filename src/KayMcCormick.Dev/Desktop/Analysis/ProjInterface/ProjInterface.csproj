@@ -95,11 +95,9 @@
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InputBindingsManager.cs" />
     <Compile Include="ITakesHwnd.cs" />
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="DictionaryConverter.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IconsSource.cs" />
     <Compile Include="IIconsSource.cs" />
     <Compile Include="JsonFrameworkElementConverter.cs" />
@@ -188,7 +186,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdaptiveCards.Rendering.Html">

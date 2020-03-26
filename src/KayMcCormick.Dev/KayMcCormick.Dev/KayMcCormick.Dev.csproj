@@ -46,7 +46,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>0</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
@@ -150,7 +150,6 @@
     <Compile Include="ExecutionContextImpl.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="FunctionalArea.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IHaveLogger.cs" />
     <Compile Include="InfoContext.cs" />
     <Compile Include="IocModule.cs" />
@@ -181,7 +180,6 @@
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
     <Compile Include="Logging\ExecutionContext.cs" />
-    <Compile Include="Logging\GlobalSuppressions.cs" />
     <Compile Include="Logging\IConfigSource.cs" />
     <Compile Include="Logging\ILogEntrySpecification.cs" />
     <Compile Include="Logging\ILoggingConfiguration.cs" />

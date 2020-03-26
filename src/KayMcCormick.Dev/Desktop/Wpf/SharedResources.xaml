@@ -316,6 +316,8 @@
            TargetType="{x:Type ToolBarTray}">
       <Setter Property="Background" Value="Plum" />
     </Style>
+
+    
     <collections:Hashtable x:Key="IconsResources">
       <BitmapImage UriSource="Assets/FolderClosed_16x.png"
                    x:Key="{x:Type io:Directory}" />
@@ -350,7 +352,27 @@
                    x:Key=".sln" />
     </collections:Hashtable>
 
-    <Style x:Key="ScrollBarLineButton"
+    <ContextMenu x:Key="itemContextMenu">
+      <MenuItem Header="Open" IsEnabled="{Binding CanOpen}" />
+      <MenuItem Header="Delete"
+                IsEnabled="{Binding CanDelete}" />
+      <MenuItem Header="Rename"
+                IsEnabled="{Binding CanRename}" />
+    </ContextMenu>
+    <ContextMenu x:Key="listContextMenu">
+      <MenuItem Header="New Folder"
+                IsEnabled="{Binding CanCreateFolder}" />
+      <MenuItem Header="New Link"
+                IsEnabled="{Binding CanCreateLink}" />
+    </ContextMenu>
+
+    <DataTemplate x:Key="Template1">
+      <TextBlock
+        Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
+    </DataTemplate>
+
+
+<Style x:Key="ScrollBarLineButton"
            TargetType="{x:Type RepeatButton}">
       <Setter Property="SnapsToDevicePixels"
               Value="True" />
@@ -390,8 +412,7 @@
         </Setter.Value>
       </Setter>
     </Style>
-
-    <Style x:Key="ScrollBarPageButton"
+<Style x:Key="ScrollBarPageButton"
            TargetType="{x:Type RepeatButton}">
       <Setter Property="SnapsToDevicePixels"
               Value="True" />
@@ -546,4 +567,14 @@
         </Trigger>
       </Style.Triggers>
     </Style>
-  </ResourceDictionary>
+
+    <BitmapImage UriSource="Assets/shell32_329.ico"
+                 x:Key="PowerOffImage" />
+    <BitmapImage
+      UriSource="Assets/ASPWebSite_16x.png"
+      x:Key="BrowserIcon" />
+    <BitmapImage
+      UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png"
+      x:Key="FilesIcon" />
+
+</ResourceDictionary>

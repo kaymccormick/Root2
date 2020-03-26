@@ -22,9 +22,9 @@ namespace ProjLib
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
             Logger.Trace ( "{methodName}" , nameof ( Load ) ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
 
         }
         #endregion

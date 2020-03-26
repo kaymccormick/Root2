@@ -25,19 +25,24 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     public sealed class AllResourcesTreeViewModel
     {
-        private readonly ILifetimeScope _lifetimeScope ;
+        private readonly ILifetimeScope    _lifetimeScope ;
         private readonly IObjectIdProvider _idProvider ;
 
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
-        private ResourceNodeInfo                          _appNode ;
-        private ObservableCollection < ResourceNodeInfo > _allResourcesItemList = new ObservableCollection < ResourceNodeInfo > ();
+        private ResourceNodeInfo _appNode ;
 
-        public AllResourcesTreeViewModel ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider)
+        private ObservableCollection < ResourceNodeInfo > _allResourcesItemList =
+            new ObservableCollection < ResourceNodeInfo > ( ) ;
+
+        public AllResourcesTreeViewModel (
+            ILifetimeScope    lifetimeScope
+          , IObjectIdProvider idProvider
+        )
         {
             _lifetimeScope = lifetimeScope ;
-            _idProvider = idProvider ;
+            _idProvider    = idProvider ;
             PopulateResourcesTree ( ) ;
         }
 
@@ -45,19 +50,25 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             try
             {
-                // PopulateObjects ( ) ;
+                if ( IsEnabledPopulateObjects )
+                {
+                    PopulateObjects ( ) ;
+                }
+
                 PopulateLifetimeScope ( ) ;
 
                 PopulateAppNode ( ) ;
             }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+
             // ReSharper disable once RedundantCatchClause
             catch ( Exception ex )
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+
             {
                 throw ;
             }
         }
+
+        public bool IsEnabledPopulateObjects { get ; set ; }
 
         // ReSharper disable once UnusedMember.Local
         private void PopulateObjects ( )
@@ -87,28 +98,38 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void PopulateInstances (ResourceNodeInfo res, IComponentRegistration registration )
+        private void PopulateInstances (
+            ResourceNodeInfo       res
+          , IComponentRegistration registration
+        )
         {
             var n = CreateNode ( res , "Instances" , null , false ) ;
             foreach ( var instanceInfo in
                 _idProvider.GetInstanceByComponentRegistration ( registration ) )
             {
                 var key = _idProvider.GetObjectInstanceIdentifier ( instanceInfo.Instance ) ;
-                CreateNode ( n , new CompositeResourceNodeKey(key, instanceInfo.Instance), instanceInfo.Parameters , true );
-                
+                CreateNode (
+                            n
+                          , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
+                          , instanceInfo.Parameters
+                          , true
+                           ) ;
             }
         }
 
         [ NotNull ]
         private ResourceNodeInfo CreateNode (
             [ CanBeNull ] ResourceNodeInfo parent
-          , object           key
-          , object           data
-          , bool?             isValueChildren = null
+          , object                         key
+          , object                         data
+          , bool ?                         isValueChildren = null
         )
         {
-            var wrapped = WrapValue(data);
-            var r = new ResourceNodeInfo { Key = key , Data = wrapped, IsValueChildren = isValueChildren } ;
+            var wrapped = WrapValue ( data ) ;
+            var r = new ResourceNodeInfo
+                    {
+                        Key = key , Data = wrapped , IsValueChildren = isValueChildren
+                    } ;
             if ( parent == null )
             {
                 AllResourcesCollection.Add ( r ) ;
@@ -149,14 +170,13 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             var current = Application.Current ;
             _appNode = CreateNode ( null , "Application" , current , false ) ;
-            
+
             if ( current == null )
             {
                 return ;
             }
 
-            var appResources =
-                CreateNode ( _appNode , "Resources" , current.Resources , true ) ;
+            var appResources = CreateNode ( _appNode , "Resources" , current.Resources , true ) ;
             AddResourceNodeInfos ( appResources ) ;
 
             Debug.WriteLine ( Thread.CurrentThread.ManagedThreadId ) ;
@@ -177,7 +197,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             set { _allResourcesItemList = value ; }
         }
 
-        private  void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
+        private void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
         {
             if ( resNode == null )
             {
@@ -185,7 +205,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
 
             var resNodeData = resNode.Data ;
-            ResourceDictionary res = ( ResourceDictionary ) resNodeData ;
+            var res = ( ResourceDictionary ) resNodeData ;
             resNode.SourceUri = res?.Source ;
 
             if ( res == null )
@@ -230,8 +250,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
                 if ( haveResourcesResource.Value is FrameworkTemplate ft )
                 {
-                    var resourcesNode =
-                        CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
+                    var resourcesNode = CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
                     AddResourceNodeInfos ( resourcesNode ) ;
                 }
 
@@ -290,9 +309,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         private void HandleWindow ( [ NotNull ] Window w )
         {
-            var winNode = CreateNode(_appNode,
-                              w.GetType ( )
-                            ,  new ControlWrap < Window > ( w ));
+            var winNode = CreateNode (
+                                      _appNode
+                                    , w.GetType ( )
+                                    , new ControlWrap < Window > ( w )
+                                     ) ;
             winNode.TemplateKey = "WindowTemplate" ;
 
 

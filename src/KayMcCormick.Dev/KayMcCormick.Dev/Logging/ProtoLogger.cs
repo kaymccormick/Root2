@@ -40,7 +40,7 @@ namespace KayMcCormick.Dev.Logging
             return encoding.GetBytes ( _layout.Render ( arg ) ) ;
         }
 
-        [ SuppressMessage ( "ReSharper" , "UnusedMember.Global" ) ]
+        
         public ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
         {
             _udpClient  = udpClient ;

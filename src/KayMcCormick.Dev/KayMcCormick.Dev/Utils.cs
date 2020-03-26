@@ -34,7 +34,7 @@ namespace KayMcCormick.Dev
         /// <param name="e"></param>
         /// <param name="level"></param>
         /// <param name="logger"></param>
-        [ UsedImplicitly ]
+        
         [ SuppressMessage (
                               "Design"
                             , "CA1031:Do not catch general exception types"
@@ -97,7 +97,7 @@ namespace KayMcCormick.Dev
         private static void DoDump (
             IndentedTextWriter     dumpConfig
           , IDictionary            doDumpConfig
-          , [ UsedImplicitly ] int depth = 0
+          ,  int depth = 0
         )
         {
             foreach ( var key in doDumpConfig.Keys )

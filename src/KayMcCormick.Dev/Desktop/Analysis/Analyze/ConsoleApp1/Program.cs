@@ -24,10 +24,10 @@ using Module = Autofac.Module ;
 
 namespace ConsoleApp1
 {
-    [ UsedImplicitly ]
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
+    
+
     internal class AppContext
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
+
     {
         public ILifetimeScope Scope { get ; }
 

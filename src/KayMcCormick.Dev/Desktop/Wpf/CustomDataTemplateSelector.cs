@@ -19,9 +19,9 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-#pragma warning disable DV2002 // Unmapped types
+
     public class CustomDataTemplateSelector : DataTemplateSelector
-#pragma warning restore DV2002 // Unmapped types
+
     {
         #region Overrides of DataTemplateSelector
         public override DataTemplate SelectTemplate ( [ NotNull ] object item , DependencyObject container )

@@ -18,7 +18,7 @@ using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {
-    [ UsedImplicitly ]
+    
     internal class SpanTT : ToolTip
     {
         public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }

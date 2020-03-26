@@ -68,7 +68,7 @@ namespace ProjLib {
         ///{
         ///    public static class AttachedProps
         ///    {
-        ///        [System.Diagnostics.CodeAnalysis.SuppressMessage(&quot;WpfAnalyzers.DependencyProperty&quot;, &quot;WPF0023:The callback is trivial, convert to lambda.&quot;, Justification = &quot;&lt;Pending&gt;&quot;)]
+        ///        
         ///        public static readonly DependencyProperty PropertiesCollectionProperty =
         ///            DependencyProperty.RegisterAttached (
         ///                                                 &quot;PropertiesCollection&quot;

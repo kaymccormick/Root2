@@ -51,9 +51,9 @@ namespace AnalysisAppLib
             var pipeline = _acceptorBlock ;
             if ( pipeline == null )
             {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                 throw new AnalyzeException ( "Pipeline is null" ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
             }
 
             // RejectDestination = rejectTarget ;
@@ -81,9 +81,9 @@ namespace AnalysisAppLib
             var req = new AnalysisRequest { Info = projectNode } ;
             if ( ! pipeline.Post ( req ) )
             {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                 throw new AnalyzeException ( "Post failed" ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
             }
 
             await HandlePipelineResultAsync ( _finalBlock ) ;

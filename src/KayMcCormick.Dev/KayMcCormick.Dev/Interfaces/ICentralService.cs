@@ -24,12 +24,12 @@ namespace KayMcCormick.Dev.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    [UsedImplicitly]
+    
     public class RegisterApplicationInstanceRequest
     {
         /// <summary>
         /// 
         /// </summary>
-        [UsedImplicitly] public Url EndpointUrl { get; set; }
+         public Url EndpointUrl { get; set; }
     }
 }

@@ -50,6 +50,6 @@
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-    <anal:PythonControl/> 
+    <local:DockLayout/>
   </Grid>
 </kmWpf:AppWindow>

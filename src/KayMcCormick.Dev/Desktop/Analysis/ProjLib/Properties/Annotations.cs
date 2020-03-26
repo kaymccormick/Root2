@@ -24,7 +24,7 @@ using System ;
 
 // ReSharper disable InheritdocConsiderUsage
 
-#pragma warning disable 1591
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -418,9 +418,9 @@ namespace ProjLib.Properties
       TargetFlags = targetFlags;
     }
 
-    [UsedImplicitly] public ImplicitUseKindFlags UseKindFlags { get; }
+     public ImplicitUseKindFlags UseKindFlags { get; }
 
-    [UsedImplicitly] public ImplicitUseTargetFlags TargetFlags { get; }
+     public ImplicitUseTargetFlags TargetFlags { get; }
   }
 
   /// <summary>

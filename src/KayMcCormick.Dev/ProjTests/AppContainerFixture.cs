@@ -25,7 +25,7 @@ namespace ProjTests
     /// <summary>Test fixture configured to supply the primary application container from Autofac.</summary>
     /// <seealso cref="Xunit.IAsyncLifetime" />
     /// <seealso cref="LegacyAppBuildModule"/>
-    [ UsedImplicitly ]
+    
     public class AppContainerFixture : IAsyncLifetime
     {
         private readonly IMessageSink _sink ;
@@ -56,9 +56,9 @@ namespace ProjTests
         /// </summary>
         public Task InitializeAsync ( )
         {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
             _sink.OnMessage ( new DiagnosticMessage ( "Initializing container." ) ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
             _lifetimeScope = _applicationInstance.GetLifetimeScope ( ) ;
             return Task.CompletedTask ;
         }

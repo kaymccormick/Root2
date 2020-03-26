@@ -34,9 +34,9 @@ namespace KayMcCormick.Dev
         private static readonly Logger Logger = LogManager.GetLogger ( "ContainerHelper" ) ;
         private static readonly Random Random = new Random ( ) ;
 
-#pragma warning restore CA2211 // Non-constant fields should not be visible
 
-#pragma warning restore 169
+
+
 
         /// <summary>Property name used to propagate the value of <see cref="DoInterception"/>.</summary>
         public const string InterceptProperty = "Intercept" ;

@@ -77,7 +77,6 @@
     <Compile Include="BuildTool.cs" />
     <Compile Include="FailedBuildException.cs" />
     <Compile Include="FilePaths.cs" />
-    <Compile Include="GlobalSuppressions2.cs" />
     <Compile Include="DetailedOperation.cs" />
     <Compile Include="Interfaces\ICodeRenderer.cs" />
     <Compile Include="Interfaces\IDetailedOperation.cs" />

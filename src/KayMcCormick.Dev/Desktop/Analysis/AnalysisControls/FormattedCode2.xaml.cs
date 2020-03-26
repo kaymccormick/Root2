@@ -178,15 +178,15 @@ namespace AnalysisControls
     {
         public SColor? fg ;
         public SColor? bg ;
-#pragma warning disable CS0649 // Field 'StyleInfo.italics' is never assigned to, and will always have its default value false
+
         public bool italics ;
-#pragma warning restore CS0649 // Field 'StyleInfo.italics' is never assigned to, and will always have its default value false
-#pragma warning disable CS0649 // Field 'StyleInfo.bold' is never assigned to, and will always have its default value false
+
+
         public bool bold ;
-#pragma warning restore CS0649 // Field 'StyleInfo.bold' is never assigned to, and will always have its default value false
-#pragma warning disable CS0649 // Field 'StyleInfo.underline' is never assigned to, and will always have its default value false
+
+
         public bool underline ;
-#pragma warning restore CS0649 // Field 'StyleInfo.underline' is never assigned to, and will always have its default value false
+
 
         public StyleInfo With ( StyleInfo value )
         {

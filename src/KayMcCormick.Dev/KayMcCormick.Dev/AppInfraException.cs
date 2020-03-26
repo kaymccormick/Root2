@@ -7,7 +7,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    [UsedImplicitly]
+    
     [Serializable]
     public class AppInfraException : Exception
     {

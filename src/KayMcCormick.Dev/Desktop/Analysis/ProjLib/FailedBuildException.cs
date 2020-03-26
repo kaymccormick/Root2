@@ -21,15 +21,15 @@ namespace ProjLib
         public FailedBuildException ( ) {
         }
 
-        [ UsedImplicitly ]
+        
         public FailedBuildException ( string message ) : base ( message )
         {
         }
-        [UsedImplicitly]
+        
         public FailedBuildException ( string message , Exception innerException ) : base ( message , innerException )
         {
         }
-        [UsedImplicitly]
+        
         protected FailedBuildException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
         {
         }

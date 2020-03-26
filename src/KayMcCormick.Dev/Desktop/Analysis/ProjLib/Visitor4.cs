@@ -86,15 +86,15 @@ namespace ProjLib
                 {
                     if ( _curLine >= 0 )
                     {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                         Logger.Trace ( "Insert New line {line}" , _curLine ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
                     }
                 }
 #if DEBUG
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                 Logger.Trace ( "New line {line}" , line ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
 #endif
 #if DEBUG
                 Logger.Trace ( $"create new paragraph" ) ;

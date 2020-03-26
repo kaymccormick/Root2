@@ -200,7 +200,7 @@ namespace KayMcCormick.Lib.Wpf
             // Container.Children.Add ( ) ;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
+        
         private void GenerateControlsForType ( [ NotNull ] Type myType , [ NotNull ] IAddChild addChild , bool toolTip )
         {
             if ( myType == null )

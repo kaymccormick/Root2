@@ -19,9 +19,9 @@ using System.Windows.Markup ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-#pragma warning disable DV2002 // Unmapped types
+
     public static class TemplateSelectorHelper
-#pragma warning restore DV2002 // Unmapped types
+
     {
         public static DataTemplate HelpSelectDataTemplate (
             object                                            item

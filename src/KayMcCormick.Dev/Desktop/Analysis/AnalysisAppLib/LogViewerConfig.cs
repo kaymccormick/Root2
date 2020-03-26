@@ -11,9 +11,9 @@
 #endregion
 namespace AnalysisAppLib
 {
-#pragma warning disable DV2002 // Unmapped types
+
     public class LogViewerConfig
-#pragma warning restore DV2002 // Unmapped types
+
     {
         private int _port ;
 

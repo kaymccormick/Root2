@@ -31,6 +31,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
 using AvalonDock ;
@@ -59,7 +60,7 @@ using File = System.IO.File ;
 namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
-    [ UsedImplicitly ]
+    
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
       , ICollectionFixture < AppFixture >
     {
@@ -87,7 +88,7 @@ namespace ProjTests
 
         private readonly                    ITestOutputHelper _output ;
         private readonly                    LoggingFixture    _loggingFixture ;
-        [ UsedImplicitly ] private readonly ProjectFixture    _projectFixture ;
+         private readonly ProjectFixture    _projectFixture ;
         private readonly                    AppFixture        _appFixture ;
         private                             ILifetimeScope    _testScope ;
         private JsonSerializerOptions _testJsonSerializerOptions ;

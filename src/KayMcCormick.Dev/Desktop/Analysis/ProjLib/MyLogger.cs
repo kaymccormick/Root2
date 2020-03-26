@@ -64,7 +64,7 @@ namespace ProjLib
             }
         }
 
-        [ UsedImplicitly ]
+        
         private void EventSourceOnTaskFinished ( object sender , TaskFinishedEventArgs e )
         {
             LB ( e ).Write ( );
@@ -116,7 +116,7 @@ namespace ProjLib
             lb.Write ( ) ;
         }
 
-        [ UsedImplicitly ]
+        
         private void EventSourceOnMessageRaised ( object sender , BuildMessageEventArgs e )
         {
             if ( e.SenderName    == "RestoreTask"
@@ -183,7 +183,7 @@ namespace ProjLib
             LB ( e ).Level ( LogLevel.Warn ).Write ( ) ;
         }
 
-        [ UsedImplicitly ]
+        
         private void EventSourceOnTaskStarted ( object sender , TaskStartedEventArgs e )
         {
             LB ( e )

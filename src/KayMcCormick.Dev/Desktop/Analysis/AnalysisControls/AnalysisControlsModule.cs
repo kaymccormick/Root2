@@ -15,6 +15,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using AnalysisAppLib.ViewModel ;
+using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Lib.Wpf ;
@@ -28,7 +29,8 @@ namespace AnalysisControls
         protected override void Load ( ContainerBuilder builder )
         {
 
-
+            builder.RegisterType < TypesView > ( ).AsImplementedInterfaces ( ) ;
+            builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
             // builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
             builder.Register (
                               ( c , p ) => {

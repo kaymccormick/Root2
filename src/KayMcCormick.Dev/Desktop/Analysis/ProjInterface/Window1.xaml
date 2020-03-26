@@ -7,6 +7,7 @@
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
                  xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
+                 xmlns:anal="http://kaymccormick.com/xaml/analysis"
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
                  WindowStyle="ToolWindow"
                  mc:Ignorable="d"
@@ -24,9 +25,6 @@
             <Setter Property="AllowsTransparency" Value="True" />
             <Setter Property="Background" Value="Olive" />
           </Style>
-          <BitmapImage
-            UriSource="Assets/ASPWebSite_16x.png"
-            x:Key="BrowserIcon" />
           <local:DictionaryConverter
             x:Key="DictionaryConverter" />
           <DataTemplate x:Key="Template1">
@@ -49,9 +47,6 @@
                       IsEnabled="{Binding CanCreateLink}" />
           </ContextMenu>
 
-          <BitmapImage
-            UriSource="Assets/LaunchSamplingTargets/3x/Artboard 1xxhdpi.png"
-            x:Key="FilesIcon" />
           <BitmapImage UriSource="Assets/shell32_329.ico"
                        x:Key="PowerOffImage" />
 
@@ -276,7 +271,7 @@
                            x:Name="pathTextBox"
                            Margin="3"
                            Text="{Binding ElementName=explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                           local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                           anal:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
                   <Explorer
                     ItemsSource="{Binding RootCollection}"
                     Grid.Row="1" x:Name="explorer"

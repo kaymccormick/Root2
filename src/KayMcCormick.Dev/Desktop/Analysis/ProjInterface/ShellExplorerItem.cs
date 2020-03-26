@@ -141,9 +141,9 @@ namespace ProjInterface
         private static readonly Logger      Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly        ImageSource _fileInfoSmallIcon ;
         private readonly        object      _shellItem ;
-#pragma warning disable 649
+
         private string _link ;
-#pragma warning restore 649
+
 
         private List < ShellExplorerItem > _internalChildrenList ;
 
@@ -234,9 +234,9 @@ namespace ProjInterface
         {
             get
             {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                 LB(  ).Message( nameof ( HasChildren ) ).Write();
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
                 if ( _shellItem is ShellFolder f )
                 {
                     return PopulateChildren ( f ) ;
@@ -252,9 +252,9 @@ namespace ProjInterface
         {
             get
             {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
                 LB(  ).Message(nameof( Children ) ).Write();
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
                 if ( _internalChildrenList != null )
                 {
                     return _internalChildrenList ;

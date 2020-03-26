@@ -186,7 +186,7 @@ namespace KayMcCormick.Lib.Wpf
 
 
         // ReSharper disable once UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
+        
         private string FormatReturnValue ( IInvocation invocation , object r )
         {
             return FormatValue ( r , out _ ) ;
@@ -224,7 +224,7 @@ namespace KayMcCormick.Lib.Wpf
 
 
         // ReSharper disable once UnusedMember.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
+        
         private static string FormatValue < T > ( IEnumerable < T > r , out bool b1 )
         {
             b1 = true ;
@@ -767,9 +767,9 @@ namespace KayMcCormick.Lib.Wpf
         }
     }
 
-#pragma warning disable DV2002 // Unmapped types
+
     internal class StackInfo
-#pragma warning restore DV2002 // Unmapped types
+
     {
         public bool Written ;
 

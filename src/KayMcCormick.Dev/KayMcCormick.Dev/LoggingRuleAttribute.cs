@@ -68,7 +68,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="classLoggerType"></param>
         /// <param name="logLevel"></param>
-        [UsedImplicitly]
+        
         public LoggingRuleAttribute([NotNull] Type classLoggerType, [NotNull] string logLevel)
         {
             if (logLevel == null)

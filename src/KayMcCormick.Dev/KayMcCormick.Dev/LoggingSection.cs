@@ -10,7 +10,7 @@ namespace KayMcCormick.Dev
     /// <summary>Configuration section handler for container helper settings.</summary>
     /// <seealso cref="System.Configuration.ConfigurationSection" />
     [ConfigTarget( typeof ( LoggerSettings ))]
-    [ UsedImplicitly ]
+    
     public class LoggingSection : ConfigurationSection
 
     {

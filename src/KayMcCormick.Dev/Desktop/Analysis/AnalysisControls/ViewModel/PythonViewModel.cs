@@ -1,21 +1,21 @@
-﻿using AnalysisAppLib.ViewModel ;
-using IronPython.Hosting ;
-using Microsoft.Scripting.Hosting ;
-using System ;
+﻿using System ;
 using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
+using System.Diagnostics ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Documents ;
+using AnalysisAppLib.ViewModel ;
 using Autofac ;
+using IronPython.Hosting ;
 using JetBrains.Annotations ;
-using Vanara.Extensions.Reflection ;
+using Microsoft.Scripting.Hosting ;
 
-namespace AnalysisControls
+namespace AnalysisControls.ViewModel
 {
     public sealed class PythonViewModel : DependencyObject
       , IViewModel
@@ -31,7 +31,6 @@ namespace AnalysisControls
 
         private readonly ScriptEngine _py ;
         private readonly ScriptScope  _scope ;
-
 
         public PythonViewModel ( ILifetimeScope scope , [ NotNull ] IEnumerable < IPythonVariable > vars )
         {
@@ -50,7 +49,7 @@ namespace AnalysisControls
                 {
                     continue ;
                 }
-
+                Debug.WriteLine ($"populating variale {pythonVariable.VariableName}"  );
                 _scope.SetVariable (
                                     pythonVariable.VariableName
                                   , pythonVariable.GetVariableValue ( )

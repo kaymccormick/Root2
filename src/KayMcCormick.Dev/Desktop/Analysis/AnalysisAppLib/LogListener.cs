@@ -22,11 +22,11 @@ using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
 {
-#pragma warning disable CA1001 // Types that own disposable fields should be disposable
-#pragma warning disable DV2002 // Unmapped types
+
+
     public class LogListener : IDisposable
-#pragma warning restore DV2002 // Unmapped types
-#pragma warning restore CA1001 // Types that own disposable fields should be disposable
+
+
     {
         private const string log4jNsPrefix = "log4j" ;
         private const string nlogNsPrefix  = "nlog" ;
@@ -150,9 +150,9 @@ namespace AnalysisAppLib
                                                  , xmlParserContext
                                                   ) )
             {
-#pragma warning disable CA3075 // Insecure DTD processing in XML
+
                 var document = new XmlDocument ( ) ;
-#pragma warning restore CA3075 // Insecure DTD processing in XML
+
                 document.Load ( reader ) ;
 
                 instance = new LogEventInstance ( ) ;

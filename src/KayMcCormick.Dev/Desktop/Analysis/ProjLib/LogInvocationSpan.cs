@@ -35,14 +35,14 @@ namespace ProjLib
                                                                            => argument.GetJSON( argument )
                                                                       )
                                            ) ;
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
             Logger.Info ( "{disp}" , _displayString ) ;
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+
         }
 
-#pragma warning disable CS0169 // The field 'LogInvocationSpan._getResource' is never used
+
         private Func < object , object > _getResource ;
-#pragma warning restore CS0169 // The field 'LogInvocationSpan._getResource' is never used
+
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private string                   _displayString ;

@@ -29,7 +29,7 @@ namespace KayMcCormick.Dev.TestLib
         /// <summary>
         /// 
         /// </summary>
-        [UsedImplicitly] public LogLevel Level { get => LogLevel; set => LogLevel = value; }
+         public LogLevel Level { get => LogLevel; set => LogLevel = value; }
 
         /// <summary>
         ///     This method is called after the test method is executed.

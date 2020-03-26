@@ -107,7 +107,6 @@
       <DependentUpon>ExceptionInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="GetTypeConverter.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HandleExceptionImpl.cs" />
     <Compile Include="IHandleException.cs" />
     <Compile Include="IControlView.cs" />

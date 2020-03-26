@@ -6,7 +6,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    [UsedImplicitly]
+    
     public class InfraModule : Module
     {
         #region Overrides of Module

@@ -314,8 +314,7 @@
            TargetType="{x:Type ToolBarTray}">
       <Setter Property="Background" Value="Plum" />
     </Style>
-    <BitmapImage UriSource="Assets/shell32_329.ico"
-                 x:Key="PowerOffImage" />
+    
     <BitmapImage
       UriSource="Assets/LaunchSamplingTargets/2x/Artboard 1xhdpi.png"
       x:Key="FilesIcon_" />

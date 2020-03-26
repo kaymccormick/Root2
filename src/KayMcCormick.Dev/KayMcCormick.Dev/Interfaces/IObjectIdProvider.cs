@@ -26,13 +26,13 @@ namespace KayMcCormick.Dev.Interfaces
         /// <summary>Gets the instance by component registration.</summary>
         /// <param name="reg">The reg.</param>
         /// <returns></returns>
-        [UsedImplicitly]
+        
         IList<InstanceInfo> GetInstanceByComponentRegistration(IComponentRegistration reg);
 
         /// <summary>Gets the instance count.</summary>
         /// <param name="reg">The reg.</param>
         /// <returns></returns>
-        [UsedImplicitly]
+        
         int GetInstanceCount(IComponentRegistration reg);
 
         /// <summary>Gets the object instances.</summary>

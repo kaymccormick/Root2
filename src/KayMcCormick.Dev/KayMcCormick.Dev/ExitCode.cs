@@ -3,7 +3,7 @@
 namespace KayMcCormick.Dev
 {
     /// <summary>Exit status of application.</summary>
-    [UsedImplicitly]
+    
     public enum ExitCode
     {
         /// <summary>Successful exit.</summary>
@@ -13,7 +13,7 @@ namespace KayMcCormick.Dev
        ,
 
         /// <summary>General error.</summary>
-        [UsedImplicitly] GeneralError = 1
+         GeneralError = 1
 
        ,
 
@@ -24,6 +24,6 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        [UsedImplicitly] ExceptionalError
+         ExceptionalError
     }
 }

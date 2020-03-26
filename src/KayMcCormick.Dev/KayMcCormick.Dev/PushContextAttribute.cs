@@ -17,7 +17,7 @@ namespace KayMcCormick.Dev
     public class PushContextAttribute : Attribute
 
     {
-        [ SuppressMessage ( "ReSharper" , "InternalOrPrivateMemberNotDocumented" ) ]
+        
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         // ReSharper disable once InternalOrPrivateMemberNotDocumented
@@ -66,7 +66,7 @@ namespace KayMcCormick.Dev
         ///     This method is called after the test method is executed.
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
-        [ UsedImplicitly ]
+        
         // ReSharper disable once UnusedParameter.Global
         public void After ( [ NotNull ] MethodInfo methodUnderTest )
         {
@@ -79,7 +79,7 @@ namespace KayMcCormick.Dev
         ///     This method is called before the test method is executed.
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
-        [ UsedImplicitly ]
+        
         public void Before ( MethodInfo methodUnderTest )
         {
             var instances =

@@ -18,7 +18,7 @@ namespace AnalysisControls.Converters
         public static readonly HierarchyConverter Default = new HierarchyConverter();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
-        [ SuppressMessage ( "ReSharper" , "UnusedVariable" ) ]
+        
         public object Convert (
             object      value
           , [NotNull]Type        targetType

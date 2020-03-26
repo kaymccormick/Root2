@@ -7,7 +7,7 @@ using KayMcCormick.Lib.Wpf ;
 namespace AnalysisControls.Views
 {
     [TitleMetadata("TEst View 1")]
-    [ UsedImplicitly ]
+    
     public partial class TestViewWithTitle : UserControl, IViewWithTitle, IControlView
     {
         private string _viewTitle = "Test View 1";

@@ -82,9 +82,9 @@ namespace ProjLib
 //                Console.WriteLine("The query API is not registered. Assuming no instances are installed.");
                 return 0;
             }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+
             catch (Exception ex)
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+
             {
 //                Console.Error.WriteLine($"Error 0x{ex.HResult:x8}: {ex.Message}");
                 throw;

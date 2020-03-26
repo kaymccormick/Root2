@@ -17,16 +17,16 @@ namespace KayMcCormick.Dev.Logging
     /// <summary>
     /// 
     /// </summary>
-    [UsedImplicitly]
+    
     public class AppLoggingConfiguration : ILoggingConfiguration
     {
         private static readonly ILoggingConfiguration _default =
             new AppLoggingConfiguration { IsEnabledConsoleTarget = false , MinLogLevel = LogLevel.Info, IsEnabledDebuggerTarget = true } ;
 
         private bool? _isEnabledEventLogTarget = false ;
-#pragma warning disable 649
+
         private bool? _isEnabledCacheTarget ;
-#pragma warning restore 649
+
         private LogLevel _minLogLevel ;
         private string _debuggerTargetName ;
         private int ? _nLogViewerPort ;

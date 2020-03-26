@@ -7,6 +7,7 @@ using System.Windows.Interop ;
 using System.Windows.Navigation ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;

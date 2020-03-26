@@ -59,7 +59,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        [ UsedImplicitly ]
+        
         public virtual ILifetimeScope GetLifetimeScope ( )
         {
             throw new NotImplementedException();

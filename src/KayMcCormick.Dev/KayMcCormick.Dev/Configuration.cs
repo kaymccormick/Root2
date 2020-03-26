@@ -51,7 +51,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        [UsedImplicitly]
+        
         void LoadConfiguration();
     }
 

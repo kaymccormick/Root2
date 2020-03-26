@@ -5,7 +5,7 @@ namespace WpfApp2
 {
     public static class AttachedProps
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("WpfAnalyzers.DependencyProperty", "WPF0023:The callback is trivial, convert to lambda.", Justification = "<Pending>")]
+        
         public static readonly DependencyProperty PropertiesCollectionProperty =
             DependencyProperty.RegisterAttached (
                                                  "PropertiesCollection"

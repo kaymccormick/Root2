@@ -12,7 +12,7 @@ namespace AnalysisAppLib.Syntax
     /// <summary>
     /// Transforms for Code Analysis nodes.
     /// </summary>
-    [ SuppressMessage ( "ReSharper" , "UnusedVariable" ) ]
+    
     public static class Transforms
     {
         /// <summary>Transforms the expr.</summary>

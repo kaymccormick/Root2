@@ -27,11 +27,11 @@ namespace KayMcCormick.Lib.Wpf
                 throw new ArgumentNullException ( nameof ( container ) ) ;
             }
 
-#pragma warning disable CA1305 // Specify IFormatProvider
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
+
             Logger.Debug ( "item is {item}" , item );
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
-#pragma warning restore CA1305 // Specify IFormatProvider
+
+
 
             var fe = ( FrameworkElement ) container ;
 

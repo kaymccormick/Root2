@@ -26,7 +26,7 @@ namespace KayMcCormick.Dev
 {
     /// <summary>
     /// </summary>
-    [ UsedImplicitly ]
+    
     public class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
         private readonly        bool                    _disableLogging ;

@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    [UsedImplicitly]
+    
     [Serializable]
     public class ApplicationInstanceException : Exception
     {

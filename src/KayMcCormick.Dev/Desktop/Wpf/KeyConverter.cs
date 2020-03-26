@@ -20,7 +20,7 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-#pragma warning disable CA1305 // Specify IFormatProvider
+
             Logger.Info (
                          "{method} {value} {valueType} {targetType} {parameter} {parameterType}"
                        , nameof ( Convert )
@@ -30,7 +30,7 @@ namespace KayMcCormick.Lib.Wpf
                        , parameter?.ToString ( ) ?? ""
                        , parameter?.GetType ( ).FullName ?? ""
                         );
-#pragma warning restore CA1305 // Specify IFormatProvider
+
 
             if ( targetType == typeof ( string ) )
             {

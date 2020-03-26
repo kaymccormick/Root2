@@ -17,7 +17,7 @@ namespace KayMcCormick.Dev.Logging
         ///         cref="System.Object" />
         ///     class.
         /// </summary>
-        [UsedImplicitly]
+        
         public LoggerProxyHelper(ProxyGenerator generator) { Generator = generator; }
 
         /// <summary>

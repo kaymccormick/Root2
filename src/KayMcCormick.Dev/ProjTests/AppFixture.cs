@@ -9,7 +9,7 @@ using Xunit ;
 
 namespace ProjTests
 {
-    [ UsedImplicitly ]
+    
     public sealed class AppFixture : IAsyncLifetime
     {
         private ProjInterfaceApp _projInterfaceApp ;
