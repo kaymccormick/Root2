@@ -28,7 +28,9 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
+#if MIGRADOC
 using MigraDoc.DocumentObjectModel.Internals ;
+#endif
 using NLog ;
 using ProjLib ;
 using Logger = NLog.Logger ;
@@ -53,9 +55,9 @@ namespace ProjInterface
     public class ProjInterfaceModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        #region Overrides of Module
+#region Overrides of Module
         protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
-        #endregion
+#endregion
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {

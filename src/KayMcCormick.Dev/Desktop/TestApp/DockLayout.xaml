@@ -116,9 +116,12 @@
             </avalondock:LayoutAnchorablePane>
             <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane x:Name="docpane">
+                <avalondock:LayoutDocument Title="AnyConsole">
+                  
+                </avalondock:LayoutDocument>
                 <avalondock:LayoutDocument Title="Browser"
-                                         IconSource="{StaticResource BrowserIcon}"
-                                         x:Name="FrameDocument">
+                                           IconSource="{StaticResource BrowserIcon}"
+                                           x:Name="FrameDocument">
                   <Frame Background="{x:Null}"
                   Navigating="BrowserFrame_OnNavigating"
                   x:Name="BrowserFrame" Source="Home.xaml" />
