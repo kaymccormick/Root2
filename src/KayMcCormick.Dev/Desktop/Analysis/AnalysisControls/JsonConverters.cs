@@ -3,10 +3,15 @@ using System.Text.Json ;
 using AnalysisAppLib.Serialization ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf.JSON ;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    ///   <para>Ckass to add supported converters for System.Text.Json that incorporate both Code Analyzers / Roslyn and WPF functions.</para>
+    ///   <para></para>
+    /// </summary>
     public static class JsonConverters
     {
         [ NotNull ]

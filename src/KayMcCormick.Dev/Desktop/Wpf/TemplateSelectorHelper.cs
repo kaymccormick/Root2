@@ -19,7 +19,7 @@ using System.Windows.Markup ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-
+    /// <summary>Helper class for template selection. Not yet optimized but has a variety of template selection methods to facilitate a wide range of applications.</summary>
     public static class TemplateSelectorHelper
 
     {
@@ -47,14 +47,15 @@ namespace KayMcCormick.Lib.Wpf
             if ( item != null )
             {
                 var t = item.GetType ( ) ;
-                while ( t != typeof(object) )
+                while ( t != typeof ( object ) )
                 {
-                    resourceKeys.Add(new DataTemplateKey(t));
+                    resourceKeys.Add ( new DataTemplateKey ( t ) ) ;
                     if ( t != null )
                     {
                         t = t.BaseType ;
                     }
                 }
+
                 resourceKeys.AddRange (
                                        item.GetType ( )
                                            .GetInterfaces ( )
@@ -78,7 +79,7 @@ namespace KayMcCormick.Lib.Wpf
                                     )
                             .Where ( Predicate2 )
                             .FirstOrDefault ( ) ;
-                if ( tuple1 != null  )
+                if ( tuple1 != null )
                 {
                     returnVal = tuple1.Item3 ;
                     Debug.WriteLine ( "Obtained template" ) ;
@@ -90,7 +91,6 @@ namespace KayMcCormick.Lib.Wpf
                     {
                         Debug.WriteLine ( ex.ToString ( ) ) ;
                     }
-                        
                 }
             }
 
@@ -112,7 +112,7 @@ namespace KayMcCormick.Lib.Wpf
             return returnVal ;
         }
 
-        private static bool Predicate2 ( Tuple < object , FrameworkElement , DataTemplate> arg )
+        private static bool Predicate2 ( Tuple < object , FrameworkElement , DataTemplate > arg )
         {
             var (item1 , item2 , item3) = arg ;
             Debug.WriteLine ( item1 ) ;

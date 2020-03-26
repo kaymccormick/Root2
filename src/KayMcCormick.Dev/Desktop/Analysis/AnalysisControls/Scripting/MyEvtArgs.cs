@@ -1,6 +1,6 @@
 ﻿using System ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Scripting
 {
     public class MyEvtArgs < T > : EventArgs
     {

@@ -593,35 +593,7 @@ namespace ProjTests
                 Debug.WriteLine ( "Exception: " + ex ) ;
             }
         }
-
-        [ WpfFact ]
-        public void TestFormattedCodeControl ( )
-        {
-            var codeControl = new FormattedCode ( ) ;
-            //FormattdCode1.SetValue(ComboBox.Edit.Editable)
-
-            var sourceText = LibResources.Program_Parse ;
-            codeControl.SourceCode = sourceText ;
-            var w = new Window { Content = codeControl } ;
-
-            var context = ( ISemanticModelContext ) AnalysisService.Parse ( sourceText , "test1" ) ;
-            var syntaxTree = context.CurrentModel.SyntaxTree ;
-            var model = context.CurrentModel ;
-            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
-            Logger.Info ( "Context is {Context}" , context.ToString ( ) ) ;
-            codeControl.SyntaxTree            = syntaxTree ;
-            codeControl.Model                 = model ;
-            codeControl.CompilationUnitSyntax = compilationUnitSyntax ;
-            codeControl.Refresh ( ) ;
-
-            // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
-            // File.WriteAllText ( @"c:\data\out.xaml", argument1 ) ;
-            // Logger.Info ( "xaml = {xaml}" , argument1 ) ;
-            // var tree = Transforms.TransformTree ( context.SyntaxTree ) ;
-            // Logger.Info ( "Tree is {tree}" , tree ) ;
-            w.ShowDialog ( ) ;
-        }
-
+        
         [ WpfFact ]
         public void TestFormattedCodeControl2 ( )
         {

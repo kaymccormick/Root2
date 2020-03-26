@@ -10,6 +10,7 @@ using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Documents ;
 using AnalysisAppLib.ViewModel ;
+using AnalysisControls.Scripting ;
 using Autofac ;
 using IronPython.Hosting ;
 using JetBrains.Annotations ;

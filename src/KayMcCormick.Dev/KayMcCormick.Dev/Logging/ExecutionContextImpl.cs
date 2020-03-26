@@ -1,6 +1,4 @@
-﻿using KayMcCormick.Dev.Logging ;
-
-namespace KayMcCormick.Dev
+﻿namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// 

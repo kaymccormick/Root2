@@ -15,6 +15,7 @@ using Autofac.Features.Decorators ;
 using Autofac.Integration.Mef ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Configuration ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.StackTrace ;
 using Microsoft.Extensions.DependencyInjection ;

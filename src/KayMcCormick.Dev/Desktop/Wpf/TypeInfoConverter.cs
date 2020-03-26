@@ -5,6 +5,9 @@ using System.Windows.Data ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+
+    /// <summary>Helper converter to get info on types.</summary>
+    /// <seealso cref="System.Windows.Data.IValueConverter" />
     public class TypeInfoConverter : IValueConverter
 
     {

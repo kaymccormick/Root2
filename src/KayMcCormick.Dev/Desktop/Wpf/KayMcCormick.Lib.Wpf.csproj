@@ -130,7 +130,6 @@
     <Compile Include="ResourceTemplateSelector.cs" />
     <Compile Include="ResourceTreeViewItemTemplateSelector.cs" />
     <Compile Include="ResourceViewItemContainerStyleSelector.cs" />
-    <Compile Include="SysProp.cs" />
     <Compile Include="SystemParametersControl.xaml.cs">
       <DependentUpon>SystemParametersControl.xaml</DependentUpon>
     </Compile>

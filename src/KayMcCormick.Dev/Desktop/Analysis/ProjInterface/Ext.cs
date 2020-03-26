@@ -1,13 +1,15 @@
-﻿namespace ProjLib
+﻿using System.Threading ;
+
+namespace ProjInterface
 {
     public static class Ext
     {
-#if false
+
         public static SynchronizationContextAwaiter GetAwaiter(this SynchronizationContext context)
         {
             return new SynchronizationContextAwaiter(context);
         
 }
-#endif
+
     }
 }

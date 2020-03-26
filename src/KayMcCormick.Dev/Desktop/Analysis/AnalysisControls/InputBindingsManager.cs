@@ -15,6 +15,10 @@ using System.Windows.Input ;
 
 namespace AnalysisControls
 {
+
+    /// <summary>
+    ///   <para>Helper class for wpf explorere</para>
+    /// </summary>
     public static class InputBindingsManager
     {
         public static readonly DependencyProperty UpdatePropertySourceWhenEnterPressedProperty =

@@ -90,18 +90,11 @@
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="MruItem.cs" />
     <Compile Include="MyLogger.cs" />
-    <Compile Include="MyLogger2.cs" />
-    <Compile Include="DesignRuntimeStatus.cs" />
-    <Compile Include="Ext.cs" />
     <Compile Include="IMruItems.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
     <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
-    <EmbeddedResource Include="Program-Parse.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Compile Include="ProjectHandler.cs" />
     <Compile Include="ProjLibModule.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="LibResources.Designer.cs">

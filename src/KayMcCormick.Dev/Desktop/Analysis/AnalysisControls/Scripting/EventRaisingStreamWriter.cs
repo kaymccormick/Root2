@@ -1,8 +1,9 @@
 ﻿using System ;
 using System.IO ;
 
-namespace AnalysisControls
+namespace AnalysisControls.Scripting
 {
+    /* fOR PYTHON SUTFF */
     public class EventRaisingStreamWriter : StreamWriter
     {
         public event EventHandler < MyEvtArgs < string > > StringWritten ;

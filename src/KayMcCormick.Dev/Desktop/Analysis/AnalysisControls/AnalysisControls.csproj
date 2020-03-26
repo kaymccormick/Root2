@@ -108,24 +108,21 @@
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
-    <Compile Include="EventRaisingStreamWriter.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
-    <Compile Include="IPythonVariable.cs" />
     <Compile Include="JsonConverters.cs" />
-    <Compile Include="MyEvtArgs.cs" />
     <Compile Include="NullStream.cs" />
     <Compile Include="ProvideCompilationUnitSyntax.cs" />
     <Compile Include="PythonControl.xaml.cs">
       <DependentUpon>PythonControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Scripting\EventRaisingStreamWriter.cs" />
+    <Compile Include="Scripting\IPythonVariable.cs" />
+    <Compile Include="Scripting\MyEvtArgs.cs" />
     <Compile Include="ViewModel\PythonViewModel.cs" />
     <Compile Include="StringObservableCollection.cs" />
     <Compile Include="Views\NodePanel.cs" />
-    <Compile Include="FormattedCode.xaml.cs">
-      <DependentUpon>FormattedCode.xaml</DependentUpon>
-    </Compile>
     <Compile Include="FormattedCode2.xaml.cs">
       <DependentUpon>FormattedCode2.xaml</DependentUpon>
     </Compile>
@@ -139,12 +136,8 @@
     <Compile Include="SpanToolTip.cs" />
     <Compile Include="StatusBarItemContentTemplateSelector.cs" />
     <Compile Include="SymbolControl.cs" />
-    <Compile Include="Views\TestViewWithTitle.xaml.cs">
-      <DependentUpon>TestViewWithTitle.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Token.cs" />
     <Compile Include="ToolTips.cs" />
-    <Compile Include="ValueTemplateItemSelector.cs" />
     <Compile Include="Views\SyntaxPanel.xaml.cs">
       <DependentUpon>SyntaxPanel.xaml</DependentUpon>
     </Compile>
@@ -158,10 +151,6 @@
     <Page Include="AnalysisControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FormattedCode.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="FormattedCode2.xaml">
       <Generator>MSBuild:Compile</Generator>

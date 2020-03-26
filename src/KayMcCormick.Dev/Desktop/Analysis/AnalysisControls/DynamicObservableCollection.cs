@@ -15,6 +15,5 @@ namespace AnalysisControls
 {
     public sealed class DynamicObservableCollection : ObservableCollection < dynamic >
     {
-
     }
 }

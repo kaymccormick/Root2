@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace AnalysisControls
+namespace AnalysisControls.Scripting
 {
     public interface IPythonVariable
     {

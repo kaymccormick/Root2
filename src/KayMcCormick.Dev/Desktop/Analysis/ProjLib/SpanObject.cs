@@ -15,22 +15,18 @@ using ProjLib.Interfaces ;
 
 namespace ProjLib
 {
-    public class SpanObject < T > : ISpanViewModel, ISpanObject <T>
+    public class SpanObject < T > : ISpanViewModel , ISpanObject < T >
     {
-        private T                                     _instance ;
-        public SpanObject (
-            TextSpan                              span
-          , T                                     instance
-        )
+        private T _instance ;
+
+        public SpanObject ( TextSpan span , T instance )
         {
-            Span               = span ;
-            _instance          = instance ;
-            
+            Span      = span ;
+            _instance = instance ;
         }
 
-        
 
-        public T Instance { get => _instance ; set => _instance = value ; }
+        public T Instance { get { return _instance ; } set { _instance = value ; } }
 
         public object getInstance ( ) { return Instance ; }
 

@@ -22,6 +22,7 @@ using NLog ;
 
 namespace AnalysisControls
 {
+    // ReSharper disable once UnusedType.Global
     public class Visitor3 : CSharpSyntaxWalker
     {
         public MyFlowDocumentScrollViewer FlowViewer { get ; }

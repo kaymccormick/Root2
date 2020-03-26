@@ -22,10 +22,7 @@ namespace ProjLib
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )
         {
-
             Logger.Trace ( "{methodName}" , nameof ( Load ) ) ;
-
-
         }
         #endregion
     }

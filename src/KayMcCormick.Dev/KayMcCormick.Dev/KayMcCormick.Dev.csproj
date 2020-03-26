@@ -109,6 +109,10 @@
   <ItemGroup>
     <Compile Include="Attributes\PushContextAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
+    <Compile Include="Configuration\ConfigurationSource.cs" />
+    <Compile Include="Configuration\ContainerHelperSection.cs" />
+    <Compile Include="Configuration\ContainerHelperSettings.cs" />
+    <Compile Include="Logging\ExecutionContextImpl.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />
     <Compile Include="AppBuild\ILoggerTracker.cs" />
     <Compile Include="Application\ApplicationInstance.cs" />
@@ -121,7 +125,6 @@
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
     <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
-    <Compile Include="HashtableConverter.cs" />
     <Compile Include="IViewWithTitle.cs" />
     <Compile Include="Logging\LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
@@ -136,15 +139,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="ContainerHelperSection.cs" />
-    <Compile Include="ContainerHelperSettings.cs" />
     <Compile Include="ContextStack.cs" />
     <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
     <Compile Include="DuplicateKeyException.cs" />
-    <Compile Include="EventTimeConverter.cs" />
-    <Compile Include="ExecutionContextImpl.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="FunctionalArea.cs" />
     <Compile Include="IHaveLogger.cs" />
@@ -156,6 +155,8 @@
     <Compile Include="Logging\MyLayout.cs" />
     <Compile Include="Logging\MyLog4JXmlEventLayoutRenderer.cs" />
     <Compile Include="Logging\ProtoLogger.cs" />
+    <Compile Include="Serialization\EventTimeConverter.cs" />
+    <Compile Include="Serialization\HashtableConverter.cs" />
     <Compile Include="Serialization\JsonTypeConverter.cs" />
     <Compile Include="Serialization\JsonTypeConverterFactory.cs" />
     <Compile Include="Serialization\JsonTypeInfoConverter.cs" />
