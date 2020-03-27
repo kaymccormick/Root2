@@ -22,6 +22,7 @@ using AnalysisControls.Views ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf ;

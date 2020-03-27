@@ -11,11 +11,11 @@ namespace KayMcCormick.Dev.Logging
     }
 
 
-    internal class ExecutionContextImpl : ExecutionContext
-
-    {
-        public Application Application { get ; set ; }
-    }
+    // internal class ExecutionContextImpl : ExecutionContext
+    //
+    // {
+    //     public Application Application { get ; set ; }
+    // }
 
 
     /// <summary>

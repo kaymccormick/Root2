@@ -144,27 +144,27 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
+    <ProjectReference Include="..\..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
+    <ProjectReference Include="..\..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\ProjInterface\ProjInterface.csproj">
+    <ProjectReference Include="..\..\Desktop\Analysis\ProjInterface\ProjInterface.csproj">
       <Project>{4451ad21-ad52-49f1-874b-0bbab2d4df95}</Project>
       <Name>ProjInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\ProjLib\ProjLib.csproj">
+    <ProjectReference Include="..\..\Desktop\Analysis\ProjLib\ProjLib.csproj">
       <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
       <Name>ProjLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
+    <ProjectReference Include="..\..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>
     </ProjectReference>
-    <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+    <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>

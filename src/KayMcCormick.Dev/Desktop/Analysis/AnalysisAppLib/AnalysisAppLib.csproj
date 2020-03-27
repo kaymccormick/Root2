@@ -153,10 +153,6 @@
     <Compile Include="ViewModel\TypesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AnalysisServiceLibrary\AnalysisServiceLibrary.csproj">
-      <Project>{1F5D1B87-40FF-42C0-88D9-874162E5D234}</Project>
-      <Name>AnalysisServiceLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>

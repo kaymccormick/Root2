@@ -108,11 +108,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
+    <ProjectReference Include="..\..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
       <Project>{0381d4d0-945e-4340-b974-9d07b2830d4f}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
+    <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
