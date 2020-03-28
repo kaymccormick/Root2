@@ -46,6 +46,7 @@ using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Moq ;
@@ -80,19 +81,19 @@ namespace ProjTests
       , IClassFixture < ProjectFixture >
       , IDisposable
     {
-        
-        
+
+
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
-        private readonly                    ITestOutputHelper _output ;
-        private readonly                    LoggingFixture    _loggingFixture ;
-         private readonly ProjectFixture    _projectFixture ;
-        private readonly                    AppFixture        _appFixture ;
-        private                             ILifetimeScope    _testScope ;
-        private JsonSerializerOptions _testJsonSerializerOptions ;
+        private readonly ITestOutputHelper     _output ;
+        private readonly LoggingFixture        _loggingFixture ;
+        private readonly ProjectFixture        _projectFixture ;
+        private readonly AppFixture            _appFixture ;
+        private          ILifetimeScope        _testScope ;
+        private          JsonSerializerOptions _testJsonSerializerOptions ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
@@ -124,21 +125,23 @@ namespace ProjTests
         public void TEstTypesview ( )
         {
             ITypesViewModel viewModel = new TypesViewModel ( ) ;
-            TypesView typesView = new TypesView(viewModel);
+            TypesView typesView = new TypesView ( viewModel ) ;
             Window w = new Window { Content = typesView } ;
             w.ShowDialog ( ) ;
         }
+
         [ WpfFact ]
         public void TestJsonSerialization ( )
         {
             var w = new Window ( ) ;
             var options = new JsonSerializerOptions ( ) { WriteIndented = true } ;
-            options.Converters.Add (new JsonFrameworkElementConverter(_output));
+            options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
             options.WriteIndented = true ;
             var json = JsonSerializer.Serialize ( w , options ) ;
-            File.WriteAllText( @"C:\data\out.json" , json ) ;
+            File.WriteAllText ( @"C:\data\out.json" , json ) ;
             _output.WriteLine ( json ) ;
-            var parsed = JsonSerializer.Deserialize < Dictionary < string , JsonElement > > ( json ) ;
+            var parsed =
+                JsonSerializer.Deserialize < Dictionary < string , JsonElement > > ( json ) ;
 
         }
 
@@ -215,8 +218,10 @@ namespace ProjTests
         [ WpfFact ]
         public void TestResourcesTree1 ( )
         {
-            using (
-                var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( _output.WriteLine ) ) )
+            using ( var instance =
+                new ApplicationInstance (
+                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                        ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.Initialize ( ) ;
@@ -250,7 +255,10 @@ namespace ProjTests
         {
             // var x = new TestApplication ( ) ;
             Debug.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
-            using ( var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( _output.WriteLine ) ) )
+            using ( var instance =
+                new ApplicationInstance (
+                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                        ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
@@ -343,7 +351,10 @@ namespace ProjTests
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
-            using ( var instance = new ApplicationInstance ( new ApplicationInstanceConfiguration ( _output.WriteLine ) ) )
+            using ( var instance =
+                new ApplicationInstance (
+                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                        ) )
             {
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.Initialize ( ) ;
@@ -359,7 +370,7 @@ namespace ProjTests
                 DumpTree ( tree , model.AllResourcesCollection ) ;
 
             }
-        
+
         }
 
         private void DumpTree (
@@ -407,7 +418,11 @@ namespace ProjTests
             }
         }
 
-        public JsonSerializerOptions TestJsonSerializerOptions { get { return _testJsonSerializerOptions ; } set { _testJsonSerializerOptions = value ; } }
+        public JsonSerializerOptions TestJsonSerializerOptions
+        {
+            get { return _testJsonSerializerOptions ; }
+            set { _testJsonSerializerOptions = value ; }
+        }
 
         [ Fact ]
         public void TestModule1 ( )
@@ -593,7 +608,7 @@ namespace ProjTests
                 Debug.WriteLine ( "Exception: " + ex ) ;
             }
         }
-        
+
         [ WpfFact ]
         public void TestFormattedCodeControl2 ( )
         {
@@ -681,7 +696,7 @@ namespace ProjTests
         [ Fact ]
         public void TestColorConverter ( )
         {
-            ColorConverter c = new ColorConverter();
+            ColorConverter c = new ColorConverter ( ) ;
         }
 
         public delegate void RoutedExecutionResultEventHandler (
@@ -710,11 +725,20 @@ namespace ProjTests
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
+
+                var vs = DependencyPropertyHelper.GetValueSource (
+                                                                  p
+                                                                , PythonViewModel.InputLineProperty
+                                                                 ) ;
+                Logger.Debug ( "Value source is {vs}" ,             vs ) ;
+                Logger.Debug ( "Current inputline is {inputLine}" , p.InputLine ) ;
                 var pInputLine = "\"hello\"" ;
-                p.InputLine = pInputLine ;
+                p.SetCurrentValue ( PythonViewModel.InputLineProperty , pInputLine ) ;
+                //p.InputLine = pInputLine ;
                 p.TakeLine ( p.InputLine ) ;
-                p.HistoryUp();
-                Assert.Equal(pInputLine, p.InputLine);
+                Assert.Equal ( "" , p.InputLine ) ;
+                p.HistoryUp ( ) ;
+                Assert.Equal ( pInputLine , p.InputLine ) ;
             }
         }
 
@@ -727,9 +751,37 @@ namespace ProjTests
                 _loggingFixture.SetOutputHelper ( null ) ;
             }
         }
+
+        [ WpfFact ]
+        public void TestView1 ( )
+        {
+            using ( var instance =
+                new ApplicationInstance (
+                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                        ) )
+            {
+                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.Initialize ( ) ;
+                var lifetimescope = instance.GetLifetimeScope ( ) ;
+
+                BinaryFormatter xx = new BinaryFormatter();
+                var ee = new Exception ( ) ;
+                MemoryStream s = new MemoryStream();
+                xx.Serialize (s, ee  ) ;
+                s.Flush();
+                s.Seek ( 0 , SeekOrigin.Begin ) ;
+                var bytes = new byte[s.Length];
+                var sLength = (int)s.Length;
+                var read = s.Read(bytes, 0, sLength) ;
+
+                var view = lifetimescope.Resolve < EventLogView > ( ) ;
+                Assert.NotNull ( view.ViewModel ) ;
+                Window w = new Window() { Content = view };
+                w.ShowDialog ( ) ;
+            }
+        }
     }
 
-    
     public class RoutedExecutionResultEventArgs : RoutedEventArgs
     {
         private readonly dynamic _result ;

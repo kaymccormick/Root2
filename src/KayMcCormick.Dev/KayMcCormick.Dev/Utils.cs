@@ -210,75 +210,87 @@ namespace KayMcCormick.Dev
             }
 
             var s = new MemoryStream ( ) ;
-            _binaryFormatter.Serialize ( s , eException ) ;
-            var bytes = new byte[ s.Length ] ;
-            var sLength = ( int ) s.Length ;
-            s.Read ( bytes , 0 , sLength ) ;
-
-            var parsed = new ParsedExceptions ( ) ;
-
-            void HandleException ( Exception exception1 , ParsedExceptions parsedEx )
+            try
             {
-                var set = new HashSet < Exception > ( ) ;
-                while (exception1 != null
-                        && ! set.Contains (exception1) )
+                _binaryFormatter.Serialize ( s , eException ) ;
+                s.Flush();
+                s.Seek ( 0 , SeekOrigin.Begin ) ;
+                var bytes = new byte[ s.Length ] ;
+                var sLength = ( int ) s.Length ;
+
+                s.Read ( bytes , 0 , sLength ) ;
+
+                var parsed = new ParsedExceptions ( ) ;
+
+                void HandleException ( Exception exception1 , ParsedExceptions parsedEx )
                 {
-                    if ( ! string.IsNullOrEmpty (exception1.StackTrace ) )
+                    var set = new HashSet < Exception > ( ) ;
+                    while ( exception1 != null
+                            && ! set.Contains ( exception1 ) )
                     {
-                        var parsed1 = ParseStackTrace(exception1.StackTrace ) ;
-                        var si = new ParsedStackInfo(
+                        if ( ! string.IsNullOrEmpty ( exception1.StackTrace ) )
+                        {
+                            var parsed1 = ParseStackTrace ( exception1.StackTrace ) ;
+                            var si = new ParsedStackInfo (
+                                                          parsed1
+                                                        , exception1
+                                                         .GetType ( )
+                                                         .AssemblyQualifiedName
+                                                        , exception1.Message
+                                                         ) ;
+                            parsedEx.ParsedList.Add ( si ) ;
+                        }
+
+                        set.Add ( exception1 ) ;
+                        exception1 = exception1.InnerException ;
+                    }
+                }
+
+                if ( eException is AggregateException ag )
+                {
+                    var flattened = ag.Flatten ( ) ;
+                    Exception ex = flattened ;
+                    if ( ! string.IsNullOrEmpty ( ex.StackTrace ) )
+                    {
+                        var parsed1 = ParseStackTrace ( ex.StackTrace ) ;
+                        var si = new ParsedStackInfo (
                                                       parsed1
-                                                    , exception1.GetType ( ).AssemblyQualifiedName
-                                                    , exception1.Message
+                                                    , ex.GetType ( ).AssemblyQualifiedName
+                                                    , ex.Message
                                                      ) ;
-                        parsedEx.ParsedList.Add ( si ) ;
+                        parsed.ParsedList.Add ( si ) ;
                     }
 
-                    set.Add (exception1) ;
-                    exception1 = exception1.InnerException ;
+                    var ex1 = flattened.InnerExceptions ;
+                    foreach ( var exception in ex1 )
+                    {
+                        HandleException ( exception , parsed ) ;
+                    }
                 }
-            }
-
-            if ( eException is AggregateException ag )
-            {
-                var flattened = ag.Flatten ( ) ;
-                Exception ex = flattened ;
-                if ( ! string.IsNullOrEmpty ( ex.StackTrace ) )
+                else
                 {
-                    var parsed1 = ParseStackTrace ( ex.StackTrace ) ;
-                    var si = new ParsedStackInfo (
-                                                  parsed1
-                                                , ex.GetType ( ).AssemblyQualifiedName
-                                                , ex.Message
-                                                 ) ;
-                    parsed.ParsedList.Add ( si ) ;
+                    HandleException ( eException , parsed ) ;
                 }
 
-                var ex1 = flattened.InnerExceptions ;
-                foreach ( var exception in ex1 )
-                {
-                    HandleException ( exception , parsed ) ;
-                }
-            }
-            else
+                var serializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
+                var sw = new StringWriter ( ) ;
+                serializer.Serialize ( sw , parsed ) ;
+                PROVIDER_GUID.EventWriteEXCEPTION_RAISED_EVENT (
+                                                                eException
+                                                                   .GetType ( )
+                                                                   .AssemblyQualifiedName
+                                                              , eException.StackTrace
+                                                                ?? "No stacktrace"
+                                                              , eException.Message
+                                                              , ( uint ) s.Length
+                                                              , bytes
+                                                              , sw.ToString ( )
+                                                               ) ;
+                Debug.WriteLine ( eException.ToString ( ) ) ;
+            } catch(Exception ex)
             {
-                HandleException (eException , parsed );
-            }
 
-            var serializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
-            var sw = new StringWriter ( ) ;
-            serializer.Serialize ( sw , parsed ) ;
-            PROVIDER_GUID.EventWriteEXCEPTION_RAISED_EVENT (
-                                                            eException
-                                                               .GetType ( )
-                                                               .AssemblyQualifiedName
-                                                          , eException.StackTrace ?? "No stacktrace"
-                                                          , eException.Message
-                                                          , ( uint ) s.Length
-                                                          , bytes
-                                                          , sw.ToString ( )
-                                                           ) ;
-            Debug.WriteLine ( eException.ToString ( ) ) ;
+            }
         }
     }
 }

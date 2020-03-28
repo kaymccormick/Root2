@@ -112,7 +112,6 @@
     <Compile Include="ShellExplorerItem.cs" />
     <Compile Include="ShellExplorerItemProvider.cs" />
     <Compile Include="SynchronizationContextAwaiter.cs" />
-    <Compile Include="Triple.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
@@ -220,7 +219,7 @@
       <Version>1.2.6</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>3.6.0-1.final</Version>
+      <Version>3.6.0-2.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
       <Version>3.0.0-beta2.final</Version>

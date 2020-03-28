@@ -66,7 +66,7 @@ namespace AnalysisControls.ViewModel
 
         public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument();
 
-        private static readonly DependencyProperty InputLineProperty =
+        public static readonly DependencyProperty InputLineProperty =
             DependencyProperty.Register (
                                          nameof ( InputLine )
                                        , typeof ( string )
@@ -84,9 +84,12 @@ namespace AnalysisControls.ViewModel
           , DependencyPropertyChangedEventArgs e
         )
         {
+            Debug.WriteLine (
+                             $"input line changed. old = {e.OldValue}, new = {e.NewValue}");
+
         }
 
-        private static readonly DependencyProperty LinesProperty =
+        public static readonly DependencyProperty LinesProperty =
             DependencyProperty.Register (
                                          "Lines"
                                        , typeof ( StringObservableCollection )
@@ -98,7 +101,7 @@ namespace AnalysisControls.ViewModel
                                                                       , OnLinesChanged
                                                                        )
                                         ) ;
-        private static readonly DependencyProperty ResultsProperty =
+        public  static readonly DependencyProperty ResultsProperty =
             DependencyProperty.Register(
                                         "Results"
                                       , typeof(DynamicObservableCollection)
@@ -118,6 +121,7 @@ namespace AnalysisControls.ViewModel
           , DependencyPropertyChangedEventArgs e
         )
         {
+            Debug.WriteLine ( "Lines changed" ) ;
             var x = ( PythonViewModel ) d ;
             var old = ( StringObservableCollection ) e.OldValue ;
             if ( old != null )
@@ -134,9 +138,12 @@ namespace AnalysisControls.ViewModel
           , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
+            Debug.WriteLine($"In {nameof(OnLinesCOllectionChanged)}");
             if ( e.Action == NotifyCollectionChangedAction.Add )
             {
-                linesCollectionView.MoveCurrentTo ( e.NewStartingIndex + e.NewItems.Count - 1 ) ;
+                var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
+                Debug.WriteLine ( $"Moving current to ${new1}" ) ;
+                linesCollectionView.MoveCurrentTo (new1 ) ;
             }
         }
 
@@ -157,8 +164,8 @@ namespace AnalysisControls.ViewModel
 
         public void TakeLine ( string text )
         {
-            Lines.Add ( text ) ;
-            //linesCollectionView.MoveCurrentToLast ( ) ;
+            Lines.Add ( "") ;
+            linesCollectionView.MoveCurrentToLast ( ) ;
             FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
             string strRep = null ;
             dynamic result = null ;
@@ -253,16 +260,23 @@ namespace AnalysisControls.ViewModel
                 SetCurrentValue(ResultsProperty, new DynamicObservableCollection());
             }
 
-            BindingOperations.SetBinding (
-                                          this
-                                        , InputLineProperty
-                                        , new Binding ( )
-                                          {
-                                              Source = linesCollectionView
-                                            , Path   = new PropertyPath ( "/" )
-                                          }
-                                         ) ;
+            Lines.Add ( "#test" ) ;
+            // var bindingBase = new Binding ( )
+                              // {
+                                  // Source = linesCollectionView
+                                // , Path   = new PropertyPath ( "CurrentItem" ),
+                                  // Mode   = BindingMode.TwoWay
+                              // } ;
+            // Debug.WriteLine ( $"binding is {bindingBase}" ) ;
+            // BindingOperations.SetBinding (
+                                          // this
+                                        // , InputLineProperty
+                                        // , bindingBase
+                                         // ) ;
+            var il = GetValue ( InputLineProperty ) ;
+            Debug.WriteLine ( $"value of input line is {il}" ) ;
             linesCollectionView.MoveCurrentToLast ( ) ;
+            Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
         }
         #endregion
 

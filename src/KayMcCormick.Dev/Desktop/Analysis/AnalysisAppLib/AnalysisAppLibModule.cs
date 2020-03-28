@@ -1,5 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
@@ -11,6 +13,7 @@ using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Core.Registration ;
 using Autofac.Features.AttributeFilters ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -26,6 +29,28 @@ namespace AnalysisAppLib
     public sealed class AnalysisAppLibModule : IocModule
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        #region Overrides of Module
+        protected override void AttachToComponentRegistration (
+            IComponentRegistryBuilder componentRegistry
+          , IComponentRegistration    registration
+        )
+        {
+            registration.Activated += ( sender , args ) => {
+                Debug.WriteLine ( "activated" ) ;
+                var inst = args.Instance ;
+                if ( inst is IViewModel
+                     && inst is ISupportInitialize x )
+                {
+                    Debug.WriteLine ( "calling init on instance" ) ;
+                    x.BeginInit ( ) ;
+                    x.EndInit ( ) ;
+                }
+            };
+
+        }
+        
+        #endregion
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {

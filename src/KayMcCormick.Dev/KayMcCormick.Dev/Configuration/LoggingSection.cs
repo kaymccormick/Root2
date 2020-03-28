@@ -1,9 +1,10 @@
 ﻿using System.Configuration ;
 using System.Diagnostics ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 
-namespace KayMcCormick.Dev.Logging
+namespace KayMcCormick.Dev.Configuration
 {
     /// <summary>Configuration section handler for container helper settings.</summary>
     /// <seealso cref="System.Configuration.ConfigurationSection" />

@@ -1,27 +1,15 @@
 ﻿using System ;
-using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.IO ;
-using System.Linq ;
-using System.Runtime.InteropServices ;
-using System.Text ;
 using System.Text.Json ;
-using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Data ;
-using System.Windows.Documents ;
 using System.Windows.Input ;
-using System.Windows.Media ;
-using System.Windows.Media.Imaging ;
-using System.Windows.Navigation ;
-using System.Windows.Shapes ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
 using AnalysisControls.Views ;
 using Autofac ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
@@ -39,7 +27,7 @@ namespace TestApp
     public partial class MainWindow : AppWindow , IDisposable
     {
         private static MainWindow _instance ;
-        private        TestAppApp _testAppApp ;
+        private readonly TestAppApp _testAppApp ;
 #if ENABLE_CONSOLE
         private Kernel32.SafeHFILE _consoleScreenBuffer ;
         private HFILE _stdHandle ;
@@ -113,7 +101,15 @@ namespace TestApp
         public MainWindow ( ) : this ( null ) { }
 
         #region Overrides of FrameworkElement
-        public override void OnApplyTemplate ( ) { base.OnApplyTemplate ( ) ; }
+        public override void OnApplyTemplate ( )
+        {
+            PaneService p = new PaneService();
+            var pane = p.GetPane ( ) ;
+            TextBlock b = new TextBlock ( ) { Text = "Hello" , FontSize = 48 } ;
+            pane.AddChild ( b ) ;
+            //LayoutService x = new LayoutService(dockLayout);
+
+        }
         #endregion
 
         #region IDisposable

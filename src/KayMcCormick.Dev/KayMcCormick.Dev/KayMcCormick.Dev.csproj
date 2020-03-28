@@ -112,6 +112,7 @@
     <Compile Include="Configuration\ConfigurationSource.cs" />
     <Compile Include="Configuration\ContainerHelperSection.cs" />
     <Compile Include="Configuration\ContainerHelperSettings.cs" />
+    <Compile Include="Configuration\LoggingSection.cs" />
     <Compile Include="Logging\ExecutionContextImpl.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />
     <Compile Include="AppBuild\ILoggerTracker.cs" />
@@ -175,7 +176,6 @@
     <Compile Include="Logging\LoggerTracker.cs" />
     <Compile Include="Logging\LoggingInterceptor.cs" />
     <Compile Include="Logging\LoggingRuleAttribute.cs" />
-    <Compile Include="Logging\LoggingSection.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />

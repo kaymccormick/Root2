@@ -50,6 +50,6 @@
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-    <local:DockLayout/>
+    <local:DockLayout x:Name="_dockLayout"/>
   </Grid>
 </kmWpf:AppWindow>

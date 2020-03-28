@@ -111,7 +111,7 @@
         </avalondock:DockingManager.DocumentHeaderTemplate>
         <avalondock:LayoutRoot>
           <avalondock:LayoutPanel Orientation="Horizontal">
-            <avalondock:LayoutAnchorablePane DockWidth="300">
+            <avalondock:LayoutAnchorablePane x:Name="leftPane" x:FieldModifier="public" DockWidth="300">
               <avalondock:LayoutAnchorable x:Name="test"></avalondock:LayoutAnchorable>
             </avalondock:LayoutAnchorablePane>
             <avalondock:LayoutDocumentPaneGroup>

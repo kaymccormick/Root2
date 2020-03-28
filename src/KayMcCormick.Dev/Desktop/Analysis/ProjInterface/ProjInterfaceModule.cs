@@ -28,6 +28,7 @@ using ExplorerCtrl ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 #if MIGRADOC
 using MigraDoc.DocumentObjectModel.Internals ;
@@ -53,82 +54,36 @@ namespace ProjInterface
 #else
 #endif
 
-    public class ProjInterfaceModule : IocModule
+    public sealed class ProjInterfaceModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-#region Overrides of Module
-        protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
-#endregion
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            Logger.Trace (
+                          $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
+                         ) ;
+            builder.RegisterType < PaneService > ( ) ;
             builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
             builder.RegisterType < PythonViewModel > ( )
                    .AsSelf ( )
                    .SingleInstance ( ) ; //.AutoActivate();
-            builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > (
-                                                                                    ( c , p , item )
-                                                                                        => {
-                                                                                        if ( ! item
-                                                                                              .Metadata
-                                                                                              .TryGetValue (
-                                                                                                            "VariableName"
-                                                                                                          , out
-                                                                                                            var
-                                                                                                                name
-                                                                                                           ) )
-                                                                                        {
-                                                                                            item
-                                                                                               .Metadata
-                                                                                               .TryGetValue (
-                                                                                                             "Identifier"
-                                                                                                           , out
-                                                                                                             name
-                                                                                                            ) ;
-                                                                                        }
-
-                                                                                        var r =
-                                                                                            new
-                                                                                            PythonVariable
-                                                                                            {
-                                                                                                VariableName
-                                                                                                    = (
-                                                                                                        string
-                                                                                                    ) name
-                                                                                              , ValueLambda
-                                                                                                    = ( )
-                                                                                                        => item
-                                                                                                          .Value
-                                                                                                          .Value
-                                                                                            } ;
-                                                                                        return r ;
-                                                                                    }
-                                                                                   ) ;
-
+            builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > ( Adapter ) ;
+            builder.RegisterType < EventLogView > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterType < EventLogViewModel > ( ) ;
             builder.RegisterBuildCallback (
                                            scope => {
                                                var py = scope.Resolve < PythonViewModel > ( ) ;
-                                               if ( py is ISupportInitialize init )
+                                               if ( ! ( py is ISupportInitialize init ) )
                                                {
-                                                   init.BeginInit ( ) ;
-                                                   init.EndInit ( ) ;
+                                                   return ;
                                                }
+
+                                               init.BeginInit ( ) ;
+                                               init.EndInit ( ) ;
                                            }
                                           ) ;
 
-            // builder.Register(
-            //                  (c, p) => {
-            //                      var listView = Func(c, p);
-            //                      return new ContentControlView() { Content = listView };
-            //                  })
-            //        .WithMetadata("Title", "Syntax Token View")
-            //        .As<IControlView>();
-            // builder.RegisterType<PythonViewModel>().AsSelf();
-
-            Logger.Trace ( "Load" ) ;
-            Logger.Warn (
-                         $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
-                        ) ;
             builder.RegisterModule < AnalysisAppLibModule > ( ) ;
             builder.RegisterModule < ProjLibModule > ( ) ;
             LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
@@ -147,21 +102,13 @@ namespace ProjInterface
                                                                              return r ;
                                                                          }
                                                                         ) ;
-            LogRegistration (
-                             typeof ( AllResourcesTree )
-                           , typeof ( UserControl )
-                           , "AsSelf"
-                           , typeof ( IViewWithTitle )
-                            ) ;
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
 
-            LogRegistration ( typeof ( AllResourcesTreeViewModel ) , "AsSelf" ) ;
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
-            LogRegistration ( typeof ( IconsSource ) , typeof ( IIconsSource ) ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
             //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
 
@@ -184,40 +131,7 @@ namespace ProjInterface
                .As < IDisplayable > ( ) ;
             builder
                .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                    Func < LayoutDocumentPane , IDisplayableAppCommand > > (
-                                                                            ( c , p , metaFunc )
-                                                                                => {
-                                                                                metaFunc
-                                                                                   .Metadata
-                                                                                   .TryGetValue (
-                                                                                                 "Title"
-                                                                                               , out
-                                                                                                 var
-                                                                                                     titleo
-                                                                                                ) ;
-                                                                                var title =
-                                                                                    ( string )
-                                                                                    titleo
-                                                                                    ?? "no title" ;
-
-                                                                                return (
-                                                                                    LayoutDocumentPane
-                                                                                        pane
-                                                                                ) => (
-                                                                                    IDisplayableAppCommand
-                                                                                ) new
-                                                                                    LambdaAppCommand (
-                                                                                                      title
-                                                                                                    , CommandFunc
-                                                                                                    , Tuple
-                                                                                                         .Create (
-                                                                                                                  metaFunc
-                                                                                                                     .Value
-                                                                                                                , pane
-                                                                                                                 )
-                                                                                                     ) ;
-                                                                            }
-                                                                           )
+                    Func < LayoutDocumentPane , IDisplayableAppCommand > > ( Func )
                .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
             builder.Register (
@@ -226,6 +140,44 @@ namespace ProjInterface
                              )
                    .As < IViewWithTitle > ( )
                    .As < LogViewerControl > ( ) ;
+        }
+
+        private Func < LayoutDocumentPane , IDisplayableAppCommand > Func (
+            IComponentContext                                   c
+          , IEnumerable < Parameter >                           p
+          , Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
+        )
+        {
+            metaFunc.Metadata.TryGetValue ( "Title" , out var titleo ) ;
+            var title = ( string ) titleo ?? "no title" ;
+
+            return ( LayoutDocumentPane pane )
+                => ( IDisplayableAppCommand ) new LambdaAppCommand (
+                                                                    title
+                                                                  , CommandFunc
+                                                                  , Tuple.Create (
+                                                                                  metaFunc.Value
+                                                                                , pane
+                                                                                 )
+                                                                   ) ;
+        }
+
+        private IPythonVariable Adapter (
+            IComponentContext         c
+          , IEnumerable < Parameter > p
+          , Meta < Lazy < object > >  item
+        )
+        {
+            if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )
+            {
+                item.Metadata.TryGetValue ( "Identifier" , out name ) ;
+            }
+
+            var r = new PythonVariable
+                    {
+                        VariableName = ( string ) name , ValueLambda = ( ) => item.Value.Value
+                    } ;
+            return r ;
         }
 
         private static IAppCommandResult CommandFunc ( [ NotNull ] LambdaAppCommand command )

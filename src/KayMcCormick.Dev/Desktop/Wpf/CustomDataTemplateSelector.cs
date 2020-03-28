@@ -24,11 +24,11 @@ namespace KayMcCormick.Lib.Wpf
 
     {
         #region Overrides of DataTemplateSelector
-        public override DataTemplate SelectTemplate ( [ NotNull ] object item , DependencyObject container )
+        public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
             if ( item == null )
             {
-                throw new ArgumentNullException ( nameof ( item ) ) ;
+                return null ;
             }
 
             Func < object , DependencyObject, DataTemplate > baseFunc = base.SelectTemplate ;

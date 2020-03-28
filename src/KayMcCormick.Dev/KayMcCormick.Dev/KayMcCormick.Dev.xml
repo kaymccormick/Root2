@@ -177,6 +177,30 @@
             
             </summary>
         </member>
+        <member name="T:KayMcCormick.Dev.Configuration.LoggingSection">
+            <summary>Configuration section handler for container helper settings.</summary>
+            <seealso cref="T:System.Configuration.ConfigurationSection" />
+        </member>
+        <member name="P:KayMcCormick.Dev.Configuration.LoggingSection.IsEnabledConsoleTarget">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Configuration.LoggingSection.IsEnabledCacheTarget">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Configuration.LoggingSection.LogThrowExceptions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:KayMcCormick.Dev.Configuration.LoggingSection.MinLogLevel">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:KayMcCormick.Dev.Logging.ExecutionContextImpl">
             <summary>
             
@@ -706,30 +730,6 @@
             </summary>
             <param name="context"></param>
             <returns></returns>
-        </member>
-        <member name="T:KayMcCormick.Dev.Logging.LoggingSection">
-            <summary>Configuration section handler for container helper settings.</summary>
-            <seealso cref="T:System.Configuration.ConfigurationSection" />
-        </member>
-        <member name="P:KayMcCormick.Dev.Logging.LoggingSection.IsEnabledConsoleTarget">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:KayMcCormick.Dev.Logging.LoggingSection.IsEnabledCacheTarget">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:KayMcCormick.Dev.Logging.LoggingSection.LogThrowExceptions">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:KayMcCormick.Dev.Logging.LoggingSection.MinLogLevel">
-            <summary>
-            
-            </summary>
         </member>
         <member name="T:KayMcCormick.Dev.Logging.AppLoggingConfigHelper">
             <summary>Static class containing logging configuration methods</summary>
