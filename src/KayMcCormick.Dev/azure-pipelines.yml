@@ -31,11 +31,6 @@ steps:
   persistCredentials: true
   clean: true
 
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
 - task: CopyFilesOverSSH@0
   inputs:
     sshEndpoint: 'xx1'
@@ -45,6 +40,12 @@ steps:
     readyTimeout: '20000'
     failOnEmptySource: true
     
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
 - task: VSBuild@1
   inputs:
     msbuildArgs: "/p:KmGlobalOutputPath=$(KmGlobalOutputPath)"
