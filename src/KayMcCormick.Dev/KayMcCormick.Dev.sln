@@ -77,8 +77,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "Desktop\TestApp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjTests", "Tests\ProjTests\ProjTests.csproj", "{6D7202D1-954A-4431-B733-6B47F17B2A02}"
 EndProject
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "Docs", "Docs\Docs.shfbproj", "{FA438012-E41B-4BDD-8391-8616D20FDCF8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -301,18 +299,6 @@ Global
 		{6D7202D1-954A-4431-B733-6B47F17B2A02}.Release|x64.Build.0 = Release|x64
 		{6D7202D1-954A-4431-B733-6B47F17B2A02}.Release|x86.ActiveCfg = Release|x86
 		{6D7202D1-954A-4431-B733-6B47F17B2A02}.Release|x86.Build.0 = Release|x86
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Debug|x64.Build.0 = Debug|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Debug|x86.Build.0 = Debug|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Release|x64.ActiveCfg = Release|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Release|x64.Build.0 = Release|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Release|x86.ActiveCfg = Release|Any CPU
-		{FA438012-E41B-4BDD-8391-8616D20FDCF8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

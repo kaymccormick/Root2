@@ -90,11 +90,16 @@ namespace AnalysisAppLib.ViewModel
                                          case "see" :
                                          r = new Crossref ( ) ;
                                          break ;
+                                         case "paramref": r = new Paramref ( ) ;
+                                             break ;
+                                         case "c": r = new Code ( ) ;
+                                             break ;
+                                         case "para": r = new Para ( ) ;
+                                             break;
                                          default :
                                              throw new UnrecognizedElementException (
-                                                                                     element
-                                                                                        .Name
-                                                                                        .LocalName
+                                                                                     element.ToString()
+                                                                                     
                                                                                     ) ;
 
                                      }
@@ -323,6 +328,14 @@ namespace AnalysisAppLib.ViewModel
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    public class Paramref
+    {
+    }
+
+    public class Code
+    {
     }
 
     public class Crossref
