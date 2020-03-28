@@ -80,27 +80,32 @@ namespace AnalysisAppLib.ViewModel
                 var name = xmlElement.GetAttribute ( "name" ) ;
                 xmlElement.WriteTo(new MyWriter());
                 XDocument doc = XDocument.Parse ( xmlElement.OuterXml ) ;
-                doc.Elements ( "summary" )
-                   .Elements ( )
-                   .Select (
-                            element => {
-                                object r = null ;
-                                switch ( element.Name.LocalName )
-                                {
-                                    case "see" :
-                                        r = new Crossref ( ) ;
-                                        break ;
-                                    default :
-                                        throw new UnrecognizedElementException (
-                                                                                element
-                                                                                   .Name.LocalName
-                                                                               ) ;
+                if ( doc.Element("member").Elements ( "summary" )
+                        .Elements ( )
+                        .Select (
+                                 element => {
+                                     object r = null ;
+                                     switch ( element.Name.LocalName )
+                                     {
+                                         // case "see" :
+                                         // r = new Crossref ( ) ;
+                                         // break ;
+                                         default :
+                                             throw new UnrecognizedElementException (
+                                                                                     element
+                                                                                        .Name
+                                                                                        .LocalName
+                                                                                    ) ;
 
-                                }
+                                     }
 
-                                return r ;
-                            }
-                           ) ;
+                                     return r ;
+                                 }
+                                )
+                        .Any ( o => o == null ) )
+                {
+                    throw new UnrecognizedElementException(name);
+                }
                 
                 var kind = name[ 0 ] ;
                 var type = name.Substring ( 2 ) ;
