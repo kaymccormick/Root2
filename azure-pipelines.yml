@@ -29,6 +29,12 @@ steps:
   submodules: true
   persistCredentials: true
   clean: true
+    
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
 
 - task: CopyFilesOverSSH@0
   inputs:
@@ -38,12 +44,6 @@ steps:
     targetFolder: '$(Build.SourcesDirectory)\third-party'
     readyTimeout: '20000'
     failOnEmptySource: true
-    
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
 
 - task: VSBuild@1
   inputs:
