@@ -27,6 +27,7 @@ using System.Windows.Controls ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
@@ -825,9 +826,35 @@ namespace ProjTests
             TypesViewModel t = new TypesViewModel();
 
         }
+
+        [Fact]
+        public void TestXmlDoc ( )
+        {
+            var x = TypesViewModel.LoadDoc ( ) ;
+            var y  = TypesViewModel.DocMembers ( x ) ;
+            foreach ( var codeElementDocumentation in y.Select ( TypesViewModel.HandleDocElement ) )
+            {
+                if ( codeElementDocumentation != null )
+                {
+                    Debug.WriteLine ( codeElementDocumentation ) ;
+                }
+            }
+            // var x = TypesViewModel.LoadXmlDoc ( ) ;
+            // foreach ( var keyValuePair in x )
+            // {
+                // foreach ( var valuePair in keyValuePair.Value.MethodDocumentation )
+                // {
+                    // foreach ( var methodDocInfo in valuePair.Value )
+                    // {
+                        // Debug.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
+                    // }
+                // }
+            // }
+
+        }
     }
 
-
+    
 
     public class RoutedExecutionResultEventArgs : RoutedEventArgs
     {
