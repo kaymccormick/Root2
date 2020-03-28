@@ -29,8 +29,14 @@ namespace KayMcCormick.Lib.Wpf.View
         }
         public EventLogView() : this(null)
         {
-            
         }
+
+        #region Overrides of FrameworkElement
+        public override void OnApplyTemplate ( )
+        {
+            ViewModel.View = this ;
+        }
+        #endregion
 
         #region Implementation of IView<out EventLogViewModel>
         public EventLogViewModel ViewModel { get ; }

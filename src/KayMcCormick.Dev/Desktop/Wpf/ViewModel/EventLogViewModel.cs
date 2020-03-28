@@ -19,30 +19,58 @@ using System.Linq ;
 using System.Runtime.Remoting.Metadata.W3cXsd2001 ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
+using System.Windows ;
+using System.Windows.Data ;
+using System.Windows.Input ;
 using System.Xml.Serialization ;
 using AnalysisAppLib.ViewModel ;
 using KayMcCormick.Dev.Application ;
+using KayMcCormick.Lib.Wpf.View ;
 
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
-    public class EventLogViewModel : IViewModel, ISupportInitialize
+    public class EventLogViewModel : IViewModel , ISupportInitialize
     {
+        public ICollectionView EventLogCollectionView
+        {
+            get { return CollectionViewSource.GetDefaultView ( EventLogEntryCollection ) ; }
+        }
+
+        private readonly PaneService   _panelService ;
+        private readonly LayoutService _layoutService ;
+        private          EventLogView  _view ;
         #region Implementation of ISerializable
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
-        #region Implementation of ISupportInitialize
+
+        public EventLogViewModel ( PaneService panelService , LayoutService layoutService )
+        {
+            _panelService  = panelService ;
+            _layoutService = layoutService ;
+        }
+
         public void BeginInit ( ) { }
 
         public void EndInit ( )
         {
             EventLog eventLog = new EventLog ( "Application" ) ;
             var eventLogEntries = eventLog.Entries.OfType < EventLogEntry > ( )
-                                          .Where(( entry , i ) => entry.TimeWritten >= DateTime.Parse("March 27, 2020 8:15:00 PM"))
-                                          .Where ( entry => entry.Source == "Kay McCormick" && entry.InstanceId == 8 ).OrderByDescending(entry => entry.TimeWritten) ;
+                                          .Where (
+                                                  ( entry , i )
+                                                      => entry.TimeWritten
+                                                         >= DateTime.Parse (
+                                                                            "March 27, 2020 8:15:00 PM"
+                                                                           )
+                                                 )
+                                          .Where (
+                                                  entry => entry.Source        == "Kay McCormick"
+                                                           && entry.InstanceId == 8
+                                                 )
+                                          .OrderByDescending ( entry => entry.TimeWritten ) ;
             foreach ( var eventLogEntry in eventLogEntries )
             {
-                Debug.WriteLine (eventLogEntry.TimeWritten  );
-                var parsedEventLogEntry = new ParsedEventLogEntry(eventLogEntry) ;
+                Debug.WriteLine ( eventLogEntry.TimeWritten ) ;
+                var parsedEventLogEntry = new ParsedEventLogEntry ( eventLogEntry ) ;
                 if ( parsedEventLogEntry.Exception1 != null )
                 {
                     EventLogEntryCollection.Add ( parsedEventLogEntry ) ;
@@ -50,16 +78,85 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        public ObservableCollection <ParsedEventLogEntry> EventLogEntryCollection { get ; } = new ObservableCollection < ParsedEventLogEntry > ();
-        
-        #endregion
+        public ObservableCollection < ParsedEventLogEntry > EventLogEntryCollection { get ; } =
+            new ObservableCollection < ParsedEventLogEntry > ( ) ;
+
+        public EventLogView View
+        {
+            get => _view ;
+            set
+            {
+                _view = value ;
+                _view.AddHandler (
+                                  CommandManager.PreviewCanExecuteEvent
+                                , new CanExecuteRoutedEventHandler ( Target )
+                                 ) ;
+                _view.AddHandler (
+                                  CommandManager.PreviewExecutedEvent
+                                , new ExecutedRoutedEventHandler ( PreviewExecuted )
+                                 ) ;
+                foreach ( var routedEvent in EventManager.GetRoutedEvents ( ) )
+                {
+                    Debug.WriteLine ( routedEvent.OwnerType.FullName ) ;
+                    Debug.WriteLine ( routedEvent.RoutingStrategy ) ;
+                    Debug.WriteLine ( routedEvent.Name ) ;
+                }
+            }
+        }
+
+        private void Target ( object sender , CanExecuteRoutedEventArgs e )
+        {
+            return ;
+            if ( e.Command is RoutedUICommand rc )
+            {
+                Debug.WriteLine($"PreviewCanExecute - {rc.Text} - {rc.Name}");
+            } else if ( e.Command is RoutedCommand rc2 )
+            {
+                Debug.WriteLine ($"PreviewCanExecute - {rc2.Name}"  );
+            }
+            else
+            {
+                Debug.WriteLine ( $"PreviewCanExecute - {e.Command}" ) ;
+            }
+            
+        }
+
+        private void PreviewExecuted ( object sender , ExecutedRoutedEventArgs e )
+        {
+            if ( e.Command == ApplicationCommands.Open )
+            {
+                Debug.WriteLine(e.OriginalSource);
+                Debug.WriteLine ( e.Source ) ;
+                Debug.WriteLine(sender);
+                Debug.WriteLine(EventLogCollectionView.CurrentPosition);
+            }
+            if (e.Command is RoutedUICommand rc)
+            {
+                Debug.WriteLine($"PreviewExecuted - {rc.Text} - {rc.Name}");
+            }
+            else if (e.Command is RoutedCommand rc2)
+            {
+                Debug.WriteLine($"PreviewExecuted- {rc2.Name}");
+            }
+            else
+            {
+                Debug.WriteLine($"PreviewExecuted- {e.Command}");
+            }
+
+
+        }
+
     }
 
-    public class ParsedEventLogEntry
+    public sealed class ParsedEventLogEntry
     {
-        private EventLogEntry _logEntry ;
+        private readonly EventLogEntry _logEntry ;
 
-        public DateTime TimeWritten => _logEntry.TimeWritten ;
+        public DateTime TimeWritten
+        {
+            get { return _logEntry.TimeWritten ; }
+        }
+
         public ParsedEventLogEntry ( EventLogEntry logEntry )
         {
             _logEntry = logEntry ;

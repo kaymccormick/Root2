@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Diagnostics ;
+using System.Runtime.Serialization ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
@@ -35,7 +36,6 @@ namespace ProjInterface
             {
                 throw new ArgumentNullException ( nameof ( lifetimeScope ) ) ;
             }
-
             if ( viewModel == null )
             {
                 throw new ArgumentNullException ( nameof ( viewModel ) ) ;
@@ -43,11 +43,26 @@ namespace ProjInterface
 
             var lf = lifetimeScope.BeginLifetimeScope(
                                                       builder => {
+                                                          builder.RegisterInstance (
+                                                                                    new
+                                                                                        LayoutService (
+                                                                                                       leftAnchorablePane
+                                                                                                      )
+                                                                                   )
+                                                                 .SingleInstance ( ) ;
+                                                          builder.RegisterInstance (
+                                                                                    new
+                                                                                        PaneService ( )
+                                                                                   )
+                                                                 .SingleInstance ( ) ;
                                                           builder.RegisterType<HandleExceptionImpl>()
                                                                  .As<IHandleException>().InstancePerLifetimeScope();
                                                       }
                                                      );
             SetValue(AttachedProperties.LifetimeScopeProperty, lf);
+            lifetimeScope.ResolveOperationBeginning += (sender, args) => {
+                throw new AppComponentException("New lifetime scope should be used instead.");
+            };
 
             ViewModel = viewModel ;
             var wih = new WindowInteropHelper ( this ) ;
@@ -178,6 +193,24 @@ namespace ProjInterface
             var scope = (ILifetimeScope)GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
             var model = scope.Resolve < PythonViewModel > ( ) ;
             model.ExecutePythonScript ( textEditor.Text ) ;
+        }
+    }
+
+    public class AppComponentException : Exception
+    {
+        public AppComponentException ( ) {
+        }
+
+        public AppComponentException ( string message ) : base ( message )
+        {
+        }
+
+        public AppComponentException ( string message , Exception innerException ) : base ( message , innerException )
+        {
+        }
+
+        protected AppComponentException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        {
         }
     }
 }

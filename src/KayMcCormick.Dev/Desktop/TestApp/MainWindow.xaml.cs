@@ -107,7 +107,9 @@ namespace TestApp
             var pane = p.GetPane ( ) ;
             TextBlock b = new TextBlock ( ) { Text = "Hello" , FontSize = 48 } ;
             pane.AddChild ( b ) ;
-            //LayoutService x = new LayoutService(dockLayout);
+
+            LayoutService x = new LayoutService(_dockLayout.leftPane);
+            x.AddToLayout(pane);
 
         }
         #endregion

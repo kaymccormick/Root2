@@ -32,7 +32,7 @@ namespace KayMcCormick.Lib.Wpf
     }
     public class PaneService
     {
-        public IAddChild GetPane ( )
+        public PaneWrapper GetPane ( )
         {
 //            LayoutAnchorablePane model = new LayoutAnchorablePane();
             var pane = new LayoutAnchorable();

@@ -52,6 +52,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Moq ;
 using NLog ;
 using NLog.Layouts ;
+using NLog.Targets ;
 using ProjInterface ;
 using ProjLib ;
 using Xunit ;
@@ -359,6 +360,22 @@ namespace ProjTests
                 instance.AddModule ( new ProjInterfaceModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
+
+                foreach (var myJsonLayout in LogManager
+                                            .Configuration.AllTargets
+                                            .OfType<TargetWithLayout>()
+                                            .Select(t => t.Layout)
+                                            .OfType<MyJsonLayout>())
+                {
+                    var jsonSerializerOptions = myJsonLayout.Options;
+                    var options = new JsonSerializerOptions();
+                    foreach ( var jsonConverter in jsonSerializerOptions.Converters )
+                    {
+                        options.Converters.Add (jsonConverter  );
+                    }
+                    JsonConverters.AddJsonConverters(options);
+                    myJsonLayout.Options = options ;
+                }
 
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
@@ -726,6 +743,9 @@ namespace ProjTests
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
 
+                var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
+                var json = JsonSerializer.Serialize ( p , options) ;
+                Debug.WriteLine ( json ) ;
                 var vs = DependencyPropertyHelper.GetValueSource (
                                                                   p
                                                                 , PythonViewModel.InputLineProperty

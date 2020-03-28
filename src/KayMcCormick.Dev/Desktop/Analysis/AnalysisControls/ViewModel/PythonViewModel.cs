@@ -6,6 +6,7 @@ using System.Diagnostics ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
+using System.Text.Json.Serialization ;
 using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Documents ;
@@ -23,11 +24,13 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitialize
     {
+        [JsonIgnore]
         public ICollectionView linesCollectionView
         {
             get { return CollectionViewSource.GetDefaultView ( Lines ) ; }
         }
 
+        [JsonIgnore]
         public ILifetimeScope Scope { get ; }
 
         private readonly ScriptEngine _py ;
@@ -64,6 +67,7 @@ namespace AnalysisControls.ViewModel
             _py.Runtime.IO.SetOutput ( ms , outputWr ) ;
         }
 
+        [JsonIgnore]
         public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument();
 
         public static readonly DependencyProperty InputLineProperty =
@@ -225,6 +229,7 @@ namespace AnalysisControls.ViewModel
             linesCollectionView.MoveCurrentToNext ( ) ;
         }
 
+        [JsonIgnore]
         public StringObservableCollection Lines
         {
             get { return ( StringObservableCollection ) GetValue ( LinesProperty ) ; }
@@ -232,15 +237,17 @@ namespace AnalysisControls.ViewModel
             set { SetValue ( LinesProperty , value ) ; }
         }
 
+        [JsonIgnore]
         public string InputLine
         {
             get { return ( string ) GetValue ( InputLineProperty ) ; }
             set { SetValue ( InputLineProperty , value ) ; }
         }
 
-        #region Implementation of ISupportInitialize
+        
         public void BeginInit ( ) { }
 
+        [JsonIgnore]
         public DynamicObservableCollection Results
         {
             get { return ( DynamicObservableCollection ) GetValue ( ResultsProperty ) ; }
@@ -278,7 +285,7 @@ namespace AnalysisControls.ViewModel
             linesCollectionView.MoveCurrentToLast ( ) ;
             Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
         }
-        #endregion
+        
 
         public void ExecutePythonScript ( string textEditorText )
         {

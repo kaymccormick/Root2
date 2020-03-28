@@ -68,7 +68,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        public bool IsEnabledPopulateObjects { get ; set ; }
+        public bool IsEnabledPopulateObjects { get ; set ; } = true ;
 
         
         private void PopulateObjects ( )

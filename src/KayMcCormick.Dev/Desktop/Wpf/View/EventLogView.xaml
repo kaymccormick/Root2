@@ -8,7 +8,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-    <ListView ItemsSource="{Binding EventLogEntryCollection}">
+    <ListView ItemsSource="{Binding EventLogCollectionView}">
+      <ListView.InputBindings>
+        <KeyBinding Key="Enter" Command="Open"></KeyBinding>
+        <MouseBinding MouseAction="LeftDoubleClick" Command="Open"/>
+      </ListView.InputBindings>
       <ListView.View>
         <GridView>
           <GridViewColumn Header="Time Written" DisplayMemberBinding="{Binding TimeWritten}"></GridViewColumn>

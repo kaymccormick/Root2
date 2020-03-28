@@ -63,7 +63,7 @@ namespace ProjInterface
             Logger.Trace (
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
-            builder.RegisterType < PaneService > ( ) ;
+            //builder.RegisterType < PaneService > ( ) ;
             builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
             builder.RegisterType < PythonViewModel > ( )
                    .AsSelf ( )
