@@ -221,57 +221,7 @@ namespace KayMcCormick.Dev
 
                 s.Read ( bytes , 0 , sLength ) ;
 
-                var parsed = new ParsedExceptions ( ) ;
-
-                void HandleException ( Exception exception1 , ParsedExceptions parsedEx )
-                {
-                    var set = new HashSet < Exception > ( ) ;
-                    while ( exception1 != null
-                            && ! set.Contains ( exception1 ) )
-                    {
-                        if ( ! string.IsNullOrEmpty ( exception1.StackTrace ) )
-                        {
-                            var parsed1 = ParseStackTrace ( exception1.StackTrace ) ;
-                            var si = new ParsedStackInfo (
-                                                          parsed1
-                                                        , exception1
-                                                         .GetType ( )
-                                                         .AssemblyQualifiedName
-                                                        , exception1.Message
-                                                         ) ;
-                            parsedEx.ParsedList.Add ( si ) ;
-                        }
-
-                        set.Add ( exception1 ) ;
-                        exception1 = exception1.InnerException ;
-                    }
-                }
-
-                if ( eException is AggregateException ag )
-                {
-                    var flattened = ag.Flatten ( ) ;
-                    Exception ex = flattened ;
-                    if ( ! string.IsNullOrEmpty ( ex.StackTrace ) )
-                    {
-                        var parsed1 = ParseStackTrace ( ex.StackTrace ) ;
-                        var si = new ParsedStackInfo (
-                                                      parsed1
-                                                    , ex.GetType ( ).AssemblyQualifiedName
-                                                    , ex.Message
-                                                     ) ;
-                        parsed.ParsedList.Add ( si ) ;
-                    }
-
-                    var ex1 = flattened.InnerExceptions ;
-                    foreach ( var exception in ex1 )
-                    {
-                        HandleException ( exception , parsed ) ;
-                    }
-                }
-                else
-                {
-                    HandleException ( eException , parsed ) ;
-                }
+                var parsed = GenerateParsedException ( eException ) ;
 
                 var serializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
                 var sw = new StringWriter ( ) ;
@@ -292,6 +242,61 @@ namespace KayMcCormick.Dev
             {
 
             }
+        }
+
+        public static ParsedExceptions GenerateParsedException ( Exception eException )
+        {
+            var parsed = new ParsedExceptions ( ) ;
+
+            void HandleException ( Exception exception1 , ParsedExceptions parsedEx )
+            {
+                var set = new HashSet < Exception > ( ) ;
+                while ( exception1 != null
+                        && ! set.Contains ( exception1 ) )
+                {
+                    if ( ! string.IsNullOrEmpty ( exception1.StackTrace ) )
+                    {
+                        var parsed1 = ParseStackTrace ( exception1.StackTrace ) ;
+                        var si = new ParsedStackInfo (
+                                                      parsed1
+                                                    , exception1.GetType ( ).AssemblyQualifiedName
+                                                    , exception1.Message
+                                                     ) ;
+                        parsedEx.ParsedList.Add ( si ) ;
+                    }
+
+                    set.Add ( exception1 ) ;
+                    exception1 = exception1.InnerException ;
+                }
+            }
+
+            if ( eException is AggregateException ag )
+            {
+                var flattened = ag.Flatten ( ) ;
+                Exception ex = flattened ;
+                if ( ! string.IsNullOrEmpty ( ex.StackTrace ) )
+                {
+                    var parsed1 = ParseStackTrace ( ex.StackTrace ) ;
+                    var si = new ParsedStackInfo (
+                                                  parsed1
+                                                , ex.GetType ( ).AssemblyQualifiedName
+                                                , ex.Message
+                                                 ) ;
+                    parsed.ParsedList.Add ( si ) ;
+                }
+
+                var ex1 = flattened.InnerExceptions ;
+                foreach ( var exception in ex1 )
+                {
+                    HandleException ( exception , parsed ) ;
+                }
+            }
+            else
+            {
+                HandleException ( eException , parsed ) ;
+            }
+
+            return parsed ;
         }
     }
 }

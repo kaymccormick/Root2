@@ -11,7 +11,6 @@
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
                  WindowStyle="ToolWindow"
                  mc:Ignorable="d"
-
                  FontSize="14.0"
                  Title="Window1" Height="1000" Width="1300">
   <kmWpf:AppWindow.Resources>

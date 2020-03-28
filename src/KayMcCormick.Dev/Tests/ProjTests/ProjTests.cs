@@ -63,7 +63,6 @@ using File = System.IO.File ;
 namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
-    
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
       , ICollectionFixture < AppFixture >
     {
@@ -82,8 +81,6 @@ namespace ProjTests
       , IClassFixture < ProjectFixture >
       , IDisposable
     {
-
-
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
 
@@ -126,8 +123,8 @@ namespace ProjTests
         public void TEstTypesview ( )
         {
             ITypesViewModel viewModel = new TypesViewModel ( ) ;
-            TypesView typesView = new TypesView ( viewModel ) ;
-            Window w = new Window { Content = typesView } ;
+            var typesView = new TypesView ( viewModel ) ;
+            var w = new Window { Content = typesView } ;
             w.ShowDialog ( ) ;
         }
 
@@ -143,7 +140,6 @@ namespace ProjTests
             _output.WriteLine ( json ) ;
             var parsed =
                 JsonSerializer.Deserialize < Dictionary < string , JsonElement > > ( json ) ;
-
         }
 
         [ WpfFact ]
@@ -361,19 +357,20 @@ namespace ProjTests
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
-                foreach (var myJsonLayout in LogManager
-                                            .Configuration.AllTargets
-                                            .OfType<TargetWithLayout>()
-                                            .Select(t => t.Layout)
-                                            .OfType<MyJsonLayout>())
+                foreach ( var myJsonLayout in LogManager
+                                             .Configuration.AllTargets
+                                             .OfType < TargetWithLayout > ( )
+                                             .Select ( t => t.Layout )
+                                             .OfType < MyJsonLayout > ( ) )
                 {
-                    var jsonSerializerOptions = myJsonLayout.Options;
-                    var options = new JsonSerializerOptions();
+                    var jsonSerializerOptions = myJsonLayout.Options ;
+                    var options = new JsonSerializerOptions ( ) ;
                     foreach ( var jsonConverter in jsonSerializerOptions.Converters )
                     {
-                        options.Converters.Add (jsonConverter  );
+                        options.Converters.Add ( jsonConverter ) ;
                     }
-                    JsonConverters.AddJsonConverters(options);
+
+                    JsonConverters.AddJsonConverters ( options ) ;
                     myJsonLayout.Options = options ;
                 }
 
@@ -385,9 +382,7 @@ namespace ProjTests
                 var tree = new AllResourcesTree ( model ) ;
 
                 DumpTree ( tree , model.AllResourcesCollection ) ;
-
             }
-
         }
 
         private void DumpTree (
@@ -713,7 +708,7 @@ namespace ProjTests
         [ Fact ]
         public void TestColorConverter ( )
         {
-            ColorConverter c = new ColorConverter ( ) ;
+            var c = new ColorConverter ( ) ;
         }
 
         public delegate void RoutedExecutionResultEventHandler (
@@ -744,7 +739,7 @@ namespace ProjTests
                 var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
 
                 var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
-                var json = JsonSerializer.Serialize ( p , options) ;
+                var json = JsonSerializer.Serialize ( p , options ) ;
                 Debug.WriteLine ( json ) ;
                 var vs = DependencyPropertyHelper.GetValueSource (
                                                                   p
@@ -775,7 +770,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TestExceptionUserControl ( )
         {
-            Window w = new Window ( ) ;
+            var w = new Window ( ) ;
             Exception ex = new AggregateException (
                                                    new ArgumentException (
                                                                           "Boo"
@@ -785,7 +780,13 @@ namespace ProjTests
                                                                          )
                                                  , new InvalidOperationException ( "boo2" )
                                                   ) ;
-            w.Content = new ExceptionUserControl { DataContext = ex } ;
+            var dd = new ExceptionDataInfo ( )
+                     {
+                         Exception = ex
+                       , ParsedExceptions = Utils.GenerateParsedException(ex)
+                     } ;
+
+            w.Content = new ExceptionUserControl { DataContext = dd } ;
             w.ShowDialog ( ) ;
         }
 
@@ -801,19 +802,19 @@ namespace ProjTests
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
-                BinaryFormatter xx = new BinaryFormatter();
+                var xx = new BinaryFormatter ( ) ;
                 var ee = new Exception ( ) ;
-                MemoryStream s = new MemoryStream();
-                xx.Serialize (s, ee  ) ;
-                s.Flush();
+                var s = new MemoryStream ( ) ;
+                xx.Serialize ( s , ee ) ;
+                s.Flush ( ) ;
                 s.Seek ( 0 , SeekOrigin.Begin ) ;
-                var bytes = new byte[s.Length];
-                var sLength = (int)s.Length;
-                var read = s.Read(bytes, 0, sLength) ;
+                var bytes = new byte[ s.Length ] ;
+                var sLength = ( int ) s.Length ;
+                var read = s.Read ( bytes , 0 , sLength ) ;
 
                 var view = lifetimescope.Resolve < EventLogView > ( ) ;
                 Assert.NotNull ( view.ViewModel ) ;
-                Window w = new Window() { Content = view };
+                var w = new Window ( ) { Content = view } ;
                 w.ShowDialog ( ) ;
             }
         }
@@ -823,13 +824,15 @@ namespace ProjTests
     {
         private readonly dynamic _result ;
 
-        public RoutedExecutionResultEventArgs ( RoutedEvent routedEvent , object source, dynamic result ) : base ( routedEvent , source )
+        public RoutedExecutionResultEventArgs (
+            RoutedEvent routedEvent
+          , object      source
+          , dynamic     result
+        ) : base ( routedEvent , source )
         {
             _result = result ;
         }
 
         public dynamic Result { get { return _result ; } }
     }
-    
-    
 }

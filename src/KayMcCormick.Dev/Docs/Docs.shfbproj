@@ -35,7 +35,7 @@
 <DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Dev.xml" />
 <DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.dll" />
 <DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.xml" /></DocumentationSources>
-    <HelpFileFormat>Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, Visual Basic, Visual Basic Usage, Managed C++, F#, XAML Usage, X#</SyntaxFilters>
     <PresentationStyle>VS2013</PresentationStyle>
     <CleanIntermediates>True</CleanIntermediates>

@@ -6,7 +6,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:KayMcCormick.Lib.Wpf"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
-  DataContext="{Binding RelativeSource={RelativeSource Self},Path=DesignException}"
+  d:DataContext="{Binding RelativeSource={RelativeSource Self},Path=DataInfo}"
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
 
@@ -19,35 +19,77 @@
           Source="ResourcesTemplates.xaml" />
         <ResourceDictionary Source="ResourcesMisc.xaml" />
         <ResourceDictionary>
-
+          <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="32pt" />
+          </Style>
           <local:BlocksConverter x:Key="BlocksConverter" />
-          <DataTemplate DataType="{x:Type system:Exception}">
+          <DataTemplate
+            DataType="{x:Type system:Exception}">
             <StackPanel Background="Aqua">
-              <TextBlock Text="Template" TextDecorations="Underline"/>
+              <TextBlock Text="Template"
+                         TextDecorations="Underline" />
               <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Message: "/>
-                <TextBlock Text="{Binding Message}"></TextBlock>
+                <TextBlock Text="Message: " />
+                <TextBlock Text="{Binding Message}" />
               </StackPanel>
-              <Expander ExpandDirection="Down" IsExpanded="False" Content="{Binding InnerException}" Header="Inner Exception"/>
+              <Expander Margin="40,20,0,0"
+                        ExpandDirection="Down"
+                        IsExpanded="False"
+                        Content="{Binding InnerException}"
+                        Header="Inner Exception"
+                        ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}" />
             </StackPanel>
           </DataTemplate>
         </ResourceDictionary>
-        </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
   <StackPanel Orientation="Vertical">
-    <ContentControl Content="{Binding}" ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}"></ContentControl>
-    <TextElement.FontSize>32</TextElement.FontSize>
-    
-    <TextBlock TextWrapping="WrapWithOverflow"
-      Text="Message: " />
-    <TextBlock
-      Text="{Binding Message,FallbackValue=No Message}" />
-    <TextBlock Text="{Binding HResult,StringFormat={}{0:X8}}" />
-    <TextBlock
-      Text="Inner Exception: " />
-    <Border BorderBrush="Coral" BorderThickness="3" MinHeight="40">
-    <ContentControl ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}" Content="{Binding InnerException}"></ContentControl>
-    </Border>
+    <ContentControl Content="{Binding Exception}"
+                    ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}" />
+    <ItemsControl ItemsSource="{Binding ParsedExceptions}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <ItemsControl ItemsSource="{Binding ParsedList}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Type" />
+                    <TextBlock
+                      Text="{Binding Path=TypeName}" />
+                  </StackPanel>
+                  <ItemsControl
+                    ItemsSource="{Binding StackTraceEntries}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel
+                          Orientation="Horizontal">
+                          <TextBlock Text="Stack Frame: " />
+                          <TextBlock
+                            Text="{Binding Path=Type.Text}" />
+                          <TextBlock Text="." />
+                          <TextBlock
+                            Text="{Binding Path=Method.Text}" />
+                          <TextBlock FontStyle="Italic"
+                                     Text="{Binding Path=ParameterList.Text}" />
+                          <TextBlock
+                            FontFamily="Courier New"
+                            Text="{Binding Path=File.Text}" />
+                          <TextBlock>:</TextBlock>
+                          <TextBlock
+                            FontFamily="Courier New"
+                            Text="{Binding Path=Line.Text}" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
   </StackPanel>
 </UserControl>

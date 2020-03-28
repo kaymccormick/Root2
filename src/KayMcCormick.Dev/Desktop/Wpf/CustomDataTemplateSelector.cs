@@ -20,15 +20,24 @@ using JetBrains.Annotations ;
 namespace KayMcCormick.Lib.Wpf
 {
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class CustomDataTemplateSelector : DataTemplateSelector
 
     {
         #region Overrides of DataTemplateSelector
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
             if ( item == null )
             {
-                return null ;
+                return base.SelectTemplate ( item , container ) ;
             }
 
             Func < object , DependencyObject, DataTemplate > baseFunc = base.SelectTemplate ;

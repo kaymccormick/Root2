@@ -1,6 +1,8 @@
 ﻿using System ;
+using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.IO ;
+using System.Linq ;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -10,6 +12,7 @@ using AnalysisControls ;
 using AnalysisControls.Views ;
 using Autofac ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
@@ -26,7 +29,7 @@ namespace TestApp
     /// </summary>
     public partial class MainWindow : AppWindow , IDisposable
     {
-        private static MainWindow _instance ;
+        private static   MainWindow _instance ;
         private readonly TestAppApp _testAppApp ;
 #if ENABLE_CONSOLE
         private Kernel32.SafeHFILE _consoleScreenBuffer ;
@@ -80,17 +83,17 @@ namespace TestApp
 #if ENABLE_CONSOLE
             var writeConsole = Kernel32.WriteConsole(
                                                      _consoleScreenBuffer
-                                               , message
-                                               , (uint)message.Length
-                                               , out uint writen
-                                               , IntPtr.Zero
+                                       , message
+                                       , (uint)message.Length
+                                       , out uint writen
+                                       , IntPtr.Zero
                                                     );
             writeConsole = Kernel32.WriteConsole(
                                                      _consoleScreenBuffer
-                                               , "\n\r"
-                                               , 2
-                                               , out  writen
-                                               , IntPtr.Zero
+                                       , "\n\r"
+                                       , 2
+                                       , out  writen
+                                       , IntPtr.Zero
                                                     );
 
             Debug.WriteLine ($"{writen} bytes written to console"  );
@@ -103,14 +106,37 @@ namespace TestApp
         #region Overrides of FrameworkElement
         public override void OnApplyTemplate ( )
         {
-            PaneService p = new PaneService();
+            var p = new PaneService ( ) ;
             var pane = p.GetPane ( ) ;
-            TextBlock b = new TextBlock ( ) { Text = "Hello" , FontSize = 48 } ;
+            var b = new ExceptionUserControl ( )
+                    {
+                        DataContext = new ExceptionDataInfo ( )
+                                      {
+                                          Exception = new InvalidOperationException ( )
+                                        , ParsedExceptions = new ParsedExceptions
+                                                             {
+                                                                 ParsedList =
+                                                                     new
+                                                                     List < ParsedStackInfo > ( )
+                                                                     {
+                                                                         new ParsedStackInfo
+                                                                         {
+                                                                             StackTraceEntries =
+                                                                                 Utils
+                                                                                    .ParseStackTrace (
+                                                                                                      Environment
+                                                                                                         .StackTrace
+                                                                                                     )
+                                                                                    .ToList ( )
+                                                                         }
+                                                                     }
+                                                             }
+                                      }
+                    } ;
+
             pane.AddChild ( b ) ;
-
-            LayoutService x = new LayoutService(_dockLayout.leftPane);
-            x.AddToLayout(pane);
-
+            var x = new LayoutService ( _dockLayout.leftPane ) ;
+            x.AddToLayout ( pane ) ;
         }
         #endregion
 
@@ -162,9 +188,9 @@ namespace TestApp
             try
             {
                 var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
-                options.Converters.Add(new JsonTypeConverterFactory());
-                options.Converters.Add(new JsonTypeInfoConverter());
-                
+                options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+                options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
+
                 options.WriteIndented = true ;
                 var json = JsonSerializer.Serialize ( typesView.ViewModel , options ) ;
                 File.WriteAllText ( @"C:\data\logs\viewmodel.json" , json ) ;
@@ -179,19 +205,21 @@ namespace TestApp
         {
             try
             {
-                var options = JsonConverters.CreateJsonSerializeOptions();
-                options.Converters.Add(new JsonTypeConverterFactory());
-                options.Converters.Add(new JsonTypeInfoConverter());
+                var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
+                options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+                options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
 
-                options.WriteIndented = true;
+                options.WriteIndented = true ;
                 var model =
-                    JsonSerializer.Deserialize<TypesViewModel> ( File.ReadAllText (
-                                                                   @"C:\data\logs\viewmodel.json"
-                                                                  ) );
+                    JsonSerializer.Deserialize < TypesViewModel > (
+                                                                   File.ReadAllText (
+                                                                                     @"C:\data\logs\viewmodel.json"
+                                                                                    )
+                                                                  ) ;
             }
-            catch (JsonException ex)
+            catch ( JsonException ex )
             {
-                MessageBox.Show("Json failure", ex.Message);
+                MessageBox.Show ( "Json failure" , ex.Message ) ;
             }
         }
     }

@@ -152,10 +152,13 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             if ( e.Command == ApplicationCommands.Open )
             {
                 var paneWrapper = _panelService.GetPane ( ) ;
-                ExceptionUserControl uc = new ExceptionUserControl();
-                uc.DataContext =
-                    ( ( ParsedEventLogEntry ) ( ( ListView ) e.OriginalSource ).SelectedItem )
-                   .Exception1 ;
+                ExceptionUserControl uc = new ExceptionUserControl
+                                          {
+                                              DataContext =
+                                                  ( ( ParsedEventLogEntry )
+                                                      ( ( ListView ) e.OriginalSource )
+                                                     .SelectedItem ).Exception1
+                                          } ;
                 // paneWrapper.AddChild(uc);
                 // _layoutService.AddToLayout ( paneWrapper ) ;
                 Window w = new Window { Content = uc } ;
