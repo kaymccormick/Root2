@@ -61,6 +61,7 @@ namespace AnalysisAppLib.ViewModel
 
         private XmlDocument _docuDoc ;
         private Dictionary < string , TypeDocInfo > _docDict ;
+        private HashSet<string> _unknownElems ;
 
         public TypesViewModel ( )
         {
@@ -68,6 +69,7 @@ namespace AnalysisAppLib.ViewModel
             var xml =
                 @"c:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisAppLib\doc.xml" ;
 
+            _unknownElems = new HashSet < string > ( ) ;
             _docDict = new Dictionary < string , TypeDocInfo > ( ) ;
             _docuDoc = new XmlDocument ( ) ;
             _docuDoc.Load ( xml ) ;
@@ -96,11 +98,17 @@ namespace AnalysisAppLib.ViewModel
                                              break ;
                                          case "para": r = new Para ( ) ;
                                              break;
+                                         case "seealso": r = new Seealso ( ) ;
+                                             break ;
+                                         case "em": r = new Em ( ) ;
+                                             break ;
                                          default :
-                                             throw new UnrecognizedElementException (
-                                                                                     element.ToString()
+                                             _unknownElems.Add ( element.Name.LocalName ) ;
+                                             break ;
+                                             // throw new UnrecognizedElementException (
+                                                                                     // element.ToString()
                                                                                      
-                                                                                    ) ;
+                                                                                    // ) ;
 
                                      }
 
@@ -109,7 +117,7 @@ namespace AnalysisAppLib.ViewModel
                                 )
                         .Any ( o => o == null ) )
                 {
-                    throw new UnrecognizedElementException(name);
+                 //   throw new UnrecognizedElementException(name);
                 }
                 
                 var kind = name[ 0 ] ;
@@ -167,6 +175,8 @@ namespace AnalysisAppLib.ViewModel
 
                 Debug.WriteLine ( type ) ;
             }
+
+            Debug.WriteLine ( string.Join ( ";" , _unknownElems ) ) ;
 
             var rootR = typeof ( CSharpSyntaxNode ) ;
             _nodeTypes = rootR.Assembly.GetExportedTypes ( )
@@ -328,6 +338,18 @@ namespace AnalysisAppLib.ViewModel
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    public class Em
+    {
+    }
+
+    public class Seealso
+    {
+    }
+
+    public class Para
+    {
     }
 
     public class Paramref
