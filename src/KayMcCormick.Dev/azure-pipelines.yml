@@ -36,7 +36,15 @@ steps:
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
-
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'xx1'
+    sourceFolder: 'c:\third-party'
+    contents: '**'
+    targetFolder: '$(Build.SourcesDirectory)\third-party'
+    readyTimeout: '20000'
+    failOnEmptySource: true
+    
 - task: VSBuild@1
   inputs:
     msbuildArgs: "/p:KmGlobalOutputPath=$(KmGlobalOutputPath)"
