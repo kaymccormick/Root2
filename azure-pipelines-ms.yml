@@ -6,58 +6,63 @@
 trigger:
   branches:
     include:
-    - addin
+    - reanalyze
   paths:
     include:
     - '*'
     exclude:
     - azure-pipelines-1.yml
-    - azure-pipelines.yml
     - azure-pipelines-1.yml
     - azure-pipelines-1-exo.yml
 
 pool:
-  vmImage: 'windows-latest'
+  name: exo
 
 variables:
-  solution: 'src/KayMcCormick.Dev/ManagedProd.sln'
+  solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
   buildPlatform: 'x86'
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
   KmGlobalOutputPath: $(Build.BinariesDirectory)
 
 steps:
 - checkout: self
-  submodules: false
+  submodules: true
   persistCredentials: true
+  clean: true
 
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'xx1'
+    sourceFolder: 'c:\third-party'
+    contents: '**'
+    targetFolder: '$(Build.SourcesDirectory)\third-party'
+    readyTimeout: '20000'
+    failOnEmptySource: true
+    
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
   inputs:
-    command: 'restore'
     restoreSolution: '$(solution)'
-    feedsToUse: config
-
 
 - task: VSBuild@1
   inputs:
-    msbuildArgs: "/p:KmGlobalOutputPath=$(KmGlobalOutputPath) -interactive:false"
+    msbuildArgs: "/p:KmGlobalOutputPath=$(KmGlobalOutputPath)"
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     createLogFile: true
     logFileVerbosity: 'diagnostic'
 
-  
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)\bin'
-    includeRootFolder: true
+    rootFolderOrFile: '$(Build.BinariesDirectory)'
+    includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
     verbose: true
-  
+
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
