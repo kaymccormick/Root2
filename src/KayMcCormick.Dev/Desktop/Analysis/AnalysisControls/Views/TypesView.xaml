@@ -52,7 +52,9 @@
       DataType="{x:Type syntax1:AppTypeInfo}"
       ItemsSource="{Binding SubTypeInfos}">
       <TextBlock Text="{Binding Title}"
-                 Style="{StaticResource S1}" />
+                 Style="{StaticResource S1}">
+        <TextBlock.ToolTip><TextBlock Text="{Binding DocInfo}"/></TextBlock.ToolTip>
+      </TextBlock>
     </HierarchicalDataTemplate>
     <DataTemplate DataType="{x:Type syntax1:AppMethodInfo}">
       <ContentControl Content="{Binding MethodInfo}"/>

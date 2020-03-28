@@ -25,6 +25,7 @@ using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Xml.Serialization ;
 using AnalysisAppLib.ViewModel ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Lib.Wpf.View ;
 
@@ -152,13 +153,21 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             if ( e.Command == ApplicationCommands.Open )
             {
                 var paneWrapper = _panelService.GetPane ( ) ;
+                var parsedEventLogEntry = ( ParsedEventLogEntry )
+                    ( ( ListView ) e.OriginalSource )
+                   .SelectedItem ;
+                var exception1 = parsedEventLogEntry.Exception1 ;
                 ExceptionUserControl uc = new ExceptionUserControl
                                           {
                                               DataContext =
-                                                  ( ( ParsedEventLogEntry )
-                                                      ( ( ListView ) e.OriginalSource )
-                                                     .SelectedItem ).Exception1
+                                                  new ExceptionDataInfo
+                                                  {
+                                                      Exception =
+                                                          exception1
+                                                          , ParsedExceptions = parsedEventLogEntry.Parsed
+                                                  }
                                           } ;
+
                 // paneWrapper.AddChild(uc);
                 // _layoutService.AddToLayout ( paneWrapper ) ;
                 Window w = new Window { Content = uc } ;

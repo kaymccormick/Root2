@@ -74,11 +74,9 @@
                           <TextBlock FontStyle="Italic"
                                      Text="{Binding Path=ParameterList.Text}" />
                           <TextBlock
-                            FontFamily="Courier New"
                             Text="{Binding Path=File.Text}" />
                           <TextBlock>:</TextBlock>
                           <TextBlock
-                            FontFamily="Courier New"
                             Text="{Binding Path=Line.Text}" />
                         </StackPanel>
                       </DataTemplate>

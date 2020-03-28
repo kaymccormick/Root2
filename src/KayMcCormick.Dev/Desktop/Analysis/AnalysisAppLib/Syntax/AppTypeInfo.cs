@@ -19,6 +19,7 @@ using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
+using System.Xml ;
 using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Syntax
@@ -167,6 +168,8 @@ namespace AnalysisAppLib.Syntax
         }
 
         public uint ? ColorValue { get { return _colorValue ; } set { _colorValue = value ; } }
+
+        public XmlElement DocInfo { get ; set ; }
 
         public event PropertyChangedEventHandler PropertyChanged ;
 

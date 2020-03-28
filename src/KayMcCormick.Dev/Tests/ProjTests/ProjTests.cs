@@ -818,7 +818,16 @@ namespace ProjTests
                 w.ShowDialog ( ) ;
             }
         }
+
+        [ Fact ]
+        public void TestModel ( )
+        {
+            TypesViewModel t = new TypesViewModel();
+
+        }
     }
+
+
 
     public class RoutedExecutionResultEventArgs : RoutedEventArgs
     {

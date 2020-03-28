@@ -450,7 +450,7 @@ namespace KayMcCormick.Lib.Wpf
     ///     Source = &quot; ResourcesTemplates.xaml&quot; /&gt;
     ///    &lt;ResourceDictionary Source = &quot; ResourcesMisc.xaml&quot; /&gt;
     /// </remarks>
-    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="System.Windows.Con   trols.UserControl" />
     /// <seealso cref="KayMcCormick.Dev.IViewWithTitle" />
     /// <seealso cref="KayMcCormick.Dev.IView{KayMcCormick.Lib.Wpf.ViewModel.AllResourcesTreeViewModel}" />
     /// <seealso cref="KayMcCormick.Lib.Wpf.IControlView" />

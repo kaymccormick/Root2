@@ -32,9 +32,10 @@
     </TransformComponentArguments>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Lib.Wpf.xml" />
-<DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Dev.xml" />
-<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.dll" />
-<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Dev.xml" />
+      <DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.dll" />
+      <DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.xml" />
+    </DocumentationSources>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, Visual Basic, Visual Basic Usage, Managed C++, F#, XAML Usage, X#</SyntaxFilters>
     <PresentationStyle>VS2013</PresentationStyle>
@@ -111,6 +112,11 @@
     <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
+      <Name>KayMcCormick.Lib.Wpf</Name>
+      <Project>{3434e74c-d7b5-4315-a8e1-51dbce878199}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Name>KayMcCormick.Dev</Name>
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
