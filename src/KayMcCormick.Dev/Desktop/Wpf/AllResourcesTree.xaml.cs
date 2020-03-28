@@ -440,10 +440,22 @@ namespace KayMcCormick.Lib.Wpf
     }
 #endif
 
-    /// <summary>
-    /// Control for displaying all known resources to the application.
-    /// </summary>
-    [ TitleMetadata ( "Resources Explorer" ) ]
+    /// <summary>Control for displaying all known resources to the application.</summary>
+    ///   <remarks>
+    ///     This control is a UserControl which contains a merged dictionary with the following resources:
+    ///           &lt;ResourceDictionary.MergedDictionaries&gt;
+    ///     &lt;ResourceDictionary
+    ///    Source = &quot; SharedResources.xaml&quot; /&gt;
+    ///     &lt;ResourceDictionary
+    ///     Source = &quot; ResourcesTemplates.xaml&quot; /&gt;
+    ///    &lt;ResourceDictionary Source = &quot; ResourcesMisc.xaml&quot; /&gt;
+    /// </remarks>
+    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="KayMcCormick.Dev.IViewWithTitle" />
+    /// <seealso cref="KayMcCormick.Dev.IView{KayMcCormick.Lib.Wpf.ViewModel.AllResourcesTreeViewModel}" />
+    /// <seealso cref="KayMcCormick.Lib.Wpf.IControlView" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
+    [TitleMetadata ( "Resources Explorer" ) ]
     public partial class AllResourcesTree : UserControl
       , IViewWithTitle
       , IView < AllResourcesTreeViewModel >,

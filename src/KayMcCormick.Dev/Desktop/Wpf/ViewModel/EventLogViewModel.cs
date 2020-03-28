@@ -20,6 +20,7 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001 ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Windows ;
+using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Xml.Serialization ;
@@ -29,6 +30,9 @@ using KayMcCormick.Lib.Wpf.View ;
 
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class EventLogViewModel : IViewModel , ISupportInitialize
     {
         public ICollectionView EventLogCollectionView
@@ -40,17 +44,33 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         private readonly LayoutService _layoutService ;
         private          EventLogView  _view ;
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="panelService"></param>
+        /// <param name="layoutService"></param>
         public EventLogViewModel ( PaneService panelService , LayoutService layoutService )
         {
             _panelService  = panelService ;
             _layoutService = layoutService ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void BeginInit ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void EndInit ( )
         {
             EventLog eventLog = new EventLog ( "Application" ) ;
@@ -78,9 +98,15 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < ParsedEventLogEntry > EventLogEntryCollection { get ; } =
             new ObservableCollection < ParsedEventLogEntry > ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public EventLogView View
         {
             get => _view ;
@@ -125,6 +151,15 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             if ( e.Command == ApplicationCommands.Open )
             {
+                var paneWrapper = _panelService.GetPane ( ) ;
+                ExceptionUserControl uc = new ExceptionUserControl();
+                uc.DataContext =
+                    ( ( ParsedEventLogEntry ) ( ( ListView ) e.OriginalSource ).SelectedItem )
+                   .Exception1 ;
+                // paneWrapper.AddChild(uc);
+                // _layoutService.AddToLayout ( paneWrapper ) ;
+                Window w = new Window { Content = uc } ;
+                w.ShowDialog ( ) ;
                 Debug.WriteLine(e.OriginalSource);
                 Debug.WriteLine ( e.Source ) ;
                 Debug.WriteLine(sender);
@@ -148,15 +183,25 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class ParsedEventLogEntry
     {
         private readonly EventLogEntry _logEntry ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime TimeWritten
         {
             get { return _logEntry.TimeWritten ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logEntry"></param>
         public ParsedEventLogEntry ( EventLogEntry logEntry )
         {
             _logEntry = logEntry ;
@@ -186,7 +231,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                                 MemoryStream ms = new MemoryStream ( bytes ) ;
                                 IFormatter f = new BinaryFormatter ( ) ;
                                 var exception = f.Deserialize ( ms ) ;
-                                Exception1 = exception ;
+                                Exception1 = ( Exception ) exception ;
 
                             }
                         }
@@ -201,8 +246,14 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         }
 
-        public object Exception1 { get ; set ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Exception Exception1 { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ParsedExceptions Parsed { get ; set ; }
     }
 }

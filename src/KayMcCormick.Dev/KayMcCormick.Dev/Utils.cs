@@ -215,6 +215,7 @@ namespace KayMcCormick.Dev
                 _binaryFormatter.Serialize ( s , eException ) ;
                 s.Flush();
                 s.Seek ( 0 , SeekOrigin.Begin ) ;
+                
                 var bytes = new byte[ s.Length ] ;
                 var sLength = ( int ) s.Length ;
 

@@ -9,6 +9,7 @@
     <AutoGenerateBindingRedirects>$(KmLibBindRedir)</AutoGenerateBindingRedirects>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\lib\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
+    <DocOutputPath>$(KmGlobalOutputPath)\doc\</DocOutputPath>
     <ProjectGuid>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -17,7 +18,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <DocumentationFile>KayMcCormick.Dev.xml</DocumentationFile>
+    <DocumentationFile>$(DocOutputPath)KayMcCormick.Dev.xml</DocumentationFile>
     <GenerateDocumentation>true</GenerateDocumentation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">

@@ -1,0 +1,53 @@
+﻿<UserControl
+  x:Class="KayMcCormick.Lib.Wpf.ExceptionUserControl"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:KayMcCormick.Lib.Wpf"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  DataContext="{Binding RelativeSource={RelativeSource Self},Path=DesignException}"
+  mc:Ignorable="d"
+  d:DesignHeight="450" d:DesignWidth="800">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="SharedResources.xaml" />
+        <ResourceDictionary
+          Source="ResourcesTemplates.xaml" />
+        <ResourceDictionary Source="ResourcesMisc.xaml" />
+        <ResourceDictionary>
+
+          <local:BlocksConverter x:Key="BlocksConverter" />
+          <DataTemplate DataType="{x:Type system:Exception}">
+            <StackPanel Background="Aqua">
+              <TextBlock Text="Template" TextDecorations="Underline"/>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Message: "/>
+                <TextBlock Text="{Binding Message}"></TextBlock>
+              </StackPanel>
+              <Expander ExpandDirection="Down" IsExpanded="False" Content="{Binding InnerException}" Header="Inner Exception"/>
+            </StackPanel>
+          </DataTemplate>
+        </ResourceDictionary>
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <StackPanel Orientation="Vertical">
+    <ContentControl Content="{Binding}" ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}"></ContentControl>
+    <TextElement.FontSize>32</TextElement.FontSize>
+    
+    <TextBlock TextWrapping="WrapWithOverflow"
+      Text="Message: " />
+    <TextBlock
+      Text="{Binding Message,FallbackValue=No Message}" />
+    <TextBlock Text="{Binding HResult,StringFormat={}{0:X8}}" />
+    <TextBlock
+      Text="Inner Exception: " />
+    <Border BorderBrush="Coral" BorderThickness="3" MinHeight="40">
+    <ContentControl ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}" Content="{Binding InnerException}"></ContentControl>
+    </Border>
+  </StackPanel>
+</UserControl>

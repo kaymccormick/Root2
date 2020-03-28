@@ -31,9 +31,10 @@
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\KayMcCormick.Dev\bin\x86\Release\KayMcCormick.Dev.xml" />
-      <DocumentationSource sourceFile="..\KayMcCormick.Dev\bin\x86\Release\KayMcCormick.Dev.dll" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Lib.Wpf.xml" />
+<DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Dev.xml" />
+<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.dll" />
+<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.xml" /></DocumentationSources>
     <HelpFileFormat>Website</HelpFileFormat>
     <SyntaxFilters>C#, Visual Basic, Visual Basic Usage, Managed C++, F#, XAML Usage, X#</SyntaxFilters>
     <PresentationStyle>VS2013</PresentationStyle>

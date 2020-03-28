@@ -773,6 +773,23 @@ namespace ProjTests
         }
 
         [ WpfFact ]
+        public void TestExceptionUserControl ( )
+        {
+            Window w = new Window ( ) ;
+            Exception ex = new AggregateException (
+                                                   new ArgumentException (
+                                                                          "Boo"
+                                                                        , "param"
+                                                                        , new
+                                                                              InvalidOperationException ( )
+                                                                         )
+                                                 , new InvalidOperationException ( "boo2" )
+                                                  ) ;
+            w.Content = new ExceptionUserControl { DataContext = ex } ;
+            w.ShowDialog ( ) ;
+        }
+
+        [ WpfFact ]
         public void TestView1 ( )
         {
             using ( var instance =

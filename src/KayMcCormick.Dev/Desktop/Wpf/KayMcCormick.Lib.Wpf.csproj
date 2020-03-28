@@ -7,6 +7,7 @@
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\lib\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
+    <DocOutputPath>$(KmGlobalOutputPath)\doc\</DocOutputPath>
     <ProjectGuid>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -15,6 +16,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <DocumentationFile>$(DocOutputPath)KayMcCormick.Lib.Wpf.xml</DocumentationFile>
+    <GenerateDocumentation>true</GenerateDocumentation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,8 +83,12 @@
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppCommand.cs" />
+    <Compile Include="BlocksConverter.cs" />
     <Compile Include="ColorConverter.cs" />
     <Compile Include="ContentControlView.cs" />
+    <Compile Include="ExceptionUserControl.xaml.cs">
+      <DependentUpon>ExceptionUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="JSON\JsonBrushConverter.cs" />
     <Compile Include="JSON\JsonConverterImage.cs" />
     <Compile Include="JSON\JsonConverterResourceDictionary.cs" />
@@ -217,6 +224,10 @@
     <Page Include="AllResourcesTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExceptionUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedResources.xaml">
       <Generator>MSBuild:Compile</Generator>

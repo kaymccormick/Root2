@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Collections ;
+using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.Diagnostics ;
 using System.Threading ;
@@ -18,6 +19,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 
@@ -81,7 +83,24 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 foreach ( var instanceInfo in c.Instances )
                 {
                     var n3 = CreateNode ( n2 , instanceInfo , instanceInfo , true ) ;
-                    CreateNode ( n3 , instanceInfo.Instance , instanceInfo.Instance , false ) ;
+                    var type = instanceInfo.Instance.GetType() ;
+                    if ( type.IsGenericType
+                         && type.GetGenericTypeDefinition ( ) == typeof ( Meta <> ) )
+                    {
+                        IDictionary <string, object> metadata = ( IDictionary < string , object > ) type.GetProperty ( "Metadata" ).GetValue(instanceInfo.Instance) ;
+                        var c4 = CreateNode ( n3 , "Metadata" , metadata, true) ;
+                        foreach ( var keyValuePair in metadata )
+                        {
+                            CreateNode (
+                                                 c4
+                                               , keyValuePair.Key
+                                               , keyValuePair.Value
+                                               , false
+                                                ) ;
+
+                        }
+                    }
+                    CreateNode ( n3 , key : instanceInfo.Instance , data : instanceInfo.Instance , false ) ;
                     if ( instanceInfo.Instance is FrameworkElement fe )
                     {
                         var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
@@ -318,7 +337,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
 
             var winRes = CreateNode ( winNode , "Resources" , w.Resources , true ) ;
-            AddResourceNodeInfos ( winRes ) ;
+//            AddResourceNodeInfos ( winRes ) ;
         }
     }
 }

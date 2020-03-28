@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Markup ;
 using AvalonDock.Controls ;
 using AvalonDock.Layout ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -40,15 +41,27 @@ namespace KayMcCormick.Lib.Wpf
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class LayoutService
     {
-        private LayoutAnchorablePane _anchorablePane ;
+        private readonly LayoutAnchorablePane _anchorablePane ;
 
-        public LayoutService ( LayoutAnchorablePane anchorablePane )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="anchorablePane"></param>
+        public LayoutService ( [ NotNull ] LayoutAnchorablePane anchorablePane )
         {
             _anchorablePane = anchorablePane ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wrapper"></param>
+        /// <param name="makeActive"></param>
         public void AddToLayout ( PaneWrapper wrapper, bool makeActive = true )
         {
             _anchorablePane.Children.Add (wrapper.Anchorable  );
