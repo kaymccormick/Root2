@@ -87,9 +87,9 @@ namespace AnalysisAppLib.ViewModel
                                      object r = null ;
                                      switch ( element.Name.LocalName )
                                      {
-                                         // case "see" :
-                                         // r = new Crossref ( ) ;
-                                         // break ;
+                                         case "see" :
+                                         r = new Crossref ( ) ;
+                                         break ;
                                          default :
                                              throw new UnrecognizedElementException (
                                                                                      element
