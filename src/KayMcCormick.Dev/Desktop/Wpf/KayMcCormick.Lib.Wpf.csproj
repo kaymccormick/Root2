@@ -86,6 +86,7 @@
     <Compile Include="BlocksConverter.cs" />
     <Compile Include="ColorConverter.cs" />
     <Compile Include="ContentControlView.cs" />
+    <Compile Include="DictionaryConverter.cs" />
     <Compile Include="ExceptionUserControl.xaml.cs">
       <DependentUpon>ExceptionUserControl.xaml</DependentUpon>
     </Compile>

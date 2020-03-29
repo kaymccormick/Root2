@@ -77,16 +77,8 @@ namespace KayMcCormick.Lib.Wpf
             Debug.WriteLine ( "t: " + t?.ToString ( ) ?? "null" ) ;
             PopulateControl ( ( Type)t ) ;
         }
-
-        /// <summary>Gets or sets the type to be rendered.</summary>
-        /// <value>The type to render in the control.</value>
-        public Type RenderedType
-        {
-            
-            get => GetValue ( RenderedTypeProperty ) as Type ;
-            set => SetValue ( RenderedTypeProperty , value ) ;
-        }
-
+        
+        
         /// <summary>Gets or sets the name of the target frame (unused).</summary>
         /// <value>The name of the target.</value>
         

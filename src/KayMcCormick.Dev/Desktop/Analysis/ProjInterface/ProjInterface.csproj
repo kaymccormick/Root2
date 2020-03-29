@@ -98,7 +98,6 @@
     </Compile>
     <Compile Include="ITakesHwnd.cs" />
     <Compile Include="BreakTraceListener.cs" />
-    <Compile Include="DictionaryConverter.cs" />
     <Compile Include="IconsSource.cs" />
     <Compile Include="IIconsSource.cs" />
     <Compile Include="JsonFrameworkElementConverter.cs" />

@@ -367,6 +367,7 @@
                 IsEnabled="{Binding CanCreateLink}" />
     </ContextMenu>
 
+    <wpf:DictionaryConverter x:Key="DictionaryConverter"/>
     <DataTemplate x:Key="Template1">
       <TextBlock
         Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />

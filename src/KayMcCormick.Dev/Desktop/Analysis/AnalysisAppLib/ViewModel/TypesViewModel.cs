@@ -73,6 +73,8 @@ namespace AnalysisAppLib.ViewModel
                               .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
                               .ToList ( ) ;
             Root = CollectTypeInfos ( null , rootR ) ;
+
+            _docs.TryGetValue ( typeof ( SyntaxFactory ).FullName , out var si ) ;
             var methodInfos = typeof ( SyntaxFactory )
                              .GetMethods ( BindingFlags.Static | BindingFlags.Public )
                              .ToList ( ) ;
@@ -83,7 +85,28 @@ namespace AnalysisAppLib.ViewModel
                                                           ) )
             {
                 var info = map[ methodInfo.ReturnType ] ;
-                info.FactoryMethods.Add ( new AppMethodInfo { MethodInfo = methodInfo } ) ;
+                var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
+                if ( si != null
+                     && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var mdoc ) )
+                {
+                    var p = string.Join ( "," , methodInfo
+                                               .GetParameters ( )
+                                               .Select (
+                                                        parameterInfo
+                                                            => parameterInfo.ParameterType.FullName
+                                                       )) ;
+                    Debug.WriteLine($"xx: {p}");
+                    foreach ( var methodDocumentation in mdoc )
+                    {
+                        Debug.WriteLine ( methodDocumentation.Parameters ) ;
+                        if ( methodDocumentation.Parameters == p )
+                        {
+                            Debug.WriteLine($"Docs for {methodInfo}");
+                            appMethodInfo.XmlDoc = methodDocumentation ;
+                        }
+                    }
+                }
+                info.FactoryMethods.Add ( appMethodInfo ) ;
                 Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
@@ -117,9 +140,9 @@ namespace AnalysisAppLib.ViewModel
                             if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
                                  && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                             {
-                                Debug.WriteLine (
-                                                 $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
-                                                ) ;
+                                // Debug.WriteLine (
+                                                 // $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
+                                                // ) ;
                                 isList   = true ;
                                 typeInfo = map[ targ ] ;
                             }
@@ -142,9 +165,18 @@ namespace AnalysisAppLib.ViewModel
                             continue ;
                         }
 
+                        PropertyDocumentation propDoc = null ;
+                        if ( pair.Value.Type != null && _docs.TryGetValue ( pair.Value.Type.FullName , out var info ) )
+                        {
+                            if(info.PropertyDocumentation.TryGetValue ( propertyInfo.Name, out propDoc))
+                            {
+
+                            }
+                        }
                         pair.Value.Components.Add (
                                                    new ComponentInfo ( )
                                                    {
+                                                       XmlDoc = propDoc,
                                                        IsSelfOwned    = true
                                                      , OwningTypeInfo = pair.Value
                                                      , IsList         = isList
@@ -258,7 +290,7 @@ namespace AnalysisAppLib.ViewModel
                 var leftParen = type.IndexOf ( '(' ) ;
                 var rightParen = type.LastIndexOf ( ')' ) ;
 
-                parameters = type.Substring ( leftParen , rightParen - leftParen ) ;
+                parameters = type.Substring ( leftParen + 1, rightParen - leftParen -1) ;
                 type       = type.Substring ( 0 ,         leftParen ) ;
             }
 
@@ -266,7 +298,7 @@ namespace AnalysisAppLib.ViewModel
             if ( kind    == 'M'
                  || kind == 'P'|| kind == 'F' )
             {
-                memberName = type.Substring ( type.LastIndexOf ( '.' ) ) ;
+                memberName = type.Substring ( type.LastIndexOf ( '.' )+1 ) ;
                 type       = type.Substring ( 0 , type.LastIndexOf ( '.' ) ) ;
             }
 
@@ -307,7 +339,7 @@ namespace AnalysisAppLib.ViewModel
                             r = new Summary ( element.Nodes ( ).Select ( Selector ) ) ;
                             break ;
                         case "see" :
-                            r = new Crossref ( element.Nodes ( ).Select ( Selector ) ) ;
+                            r = new Crossref ( element.Attribute(XName.Get("cref", ""))?.Value ?? "") ;
                             break ;
                         case "paramref" :
                             r = new Paramref ( element.Nodes ( ).Select ( Selector ) ) ;
@@ -345,7 +377,7 @@ namespace AnalysisAppLib.ViewModel
 
                     if ( r != null )
                     {
-                        Debug.WriteLine ( r.ToString ( ) ) ;
+                        // Debug.WriteLine ( r.ToString ( ) ) ;
                     }
 
                     return r ;
@@ -617,12 +649,11 @@ namespace AnalysisAppLib.ViewModel
 
     public class Crossref : XmlDocElement
     {
-        // public Crossref ( XElement element ) : base ( element )
-        // {
-        // }
+        private readonly string _xRefId ;
 
+        public Crossref ( string xRefId) : base ( ) { _xRefId = xRefId ; }
 
-        public Crossref ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public string XRefId { get { return _xRefId ; } }
     }
 
     public class XmlDocElement
@@ -635,6 +666,11 @@ namespace AnalysisAppLib.ViewModel
         public XmlDocElement ( IEnumerable < XmlDocElement > elements )
         {
             _elements = elements.ToList ( ) ;
+        }
+
+        protected XmlDocElement ( )
+        {
+            _elements = new List < XmlDocElement > ();
         }
 
         public List < XmlDocElement > Elements { get { return _elements ; } }

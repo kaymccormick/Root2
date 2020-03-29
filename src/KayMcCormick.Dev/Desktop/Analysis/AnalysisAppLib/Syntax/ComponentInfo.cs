@@ -12,11 +12,15 @@
 #endregion
 using System ;
 using System.Text.Json.Serialization ;
+using AnalysisAppLib.ViewModel ;
 
 namespace AnalysisAppLib.Syntax
 {
     public class ComponentInfo
     {
+        public ComponentInfo ( ) {
+        }
+
         private bool _isSelfOwned
             ;
         private string      _propertyName ;
@@ -37,5 +41,7 @@ namespace AnalysisAppLib.Syntax
         public bool IsSelfOwned { get { return _isSelfOwned ; } set { _isSelfOwned = value ; } }
 
         public bool IsPersisted { get { return _isPersisted ; } set { _isPersisted = value ; } }
+
+        public MemberBaseDocumentation XmlDoc { get ; set ; }
     }
 }

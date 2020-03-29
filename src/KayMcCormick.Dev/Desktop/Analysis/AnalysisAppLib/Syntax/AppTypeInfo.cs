@@ -206,5 +206,7 @@ namespace AnalysisAppLib.Syntax
                                                                                   IsOptional = info.IsOptional
                                                                               }
                                                                      ) ;
+
+        public MethodDocumentation XmlDoc { get ; set ; }
     }
 }
