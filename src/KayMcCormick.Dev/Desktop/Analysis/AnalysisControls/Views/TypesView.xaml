@@ -9,6 +9,7 @@
              xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              mc:Ignorable="d" FontSize="20"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -44,20 +45,64 @@
         <DataTrigger
           Binding="{Binding Path=Type.IsAbstract}"
           Value="True">
-          <Setter Property="Background" Value="{Binding ColorValue,Converter={StaticResource ColorConverter}}" />
+          <Setter Property="Background"
+                  Value="{Binding ColorValue,Converter={StaticResource ColorConverter}}" />
         </DataTrigger>
       </Style.Triggers>
     </Style>
+    <DataTemplate DataType="{x:Type viewModel:Summary}">
+      <GroupBox Header="Summary"><ItemsControl ItemsSource="{Binding Elements}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl></GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewModel:XmlDocText}">
+      <TextBlock Text="{Binding}" />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewModel:Em}">
+      <TextBlock FontStyle="Italic" Text="{Binding}" />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewModel:Code}">
+      <TextBlock FontFamily="Lucida Console" Text="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:Para}" >
+      <StackPanel Orientation="Vertical" Margin="0,10,0,10">
+        <ItemsControl ItemsSource="{Binding Elements}">
+          <ItemsPanelTemplate>
+            <WrapPanel/>
+          </ItemsPanelTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </DataTemplate>
+      
+    <DataTemplate
+      DataType="{x:Type viewModel:TypeDocumentation}">
+      <WrapPanel>
+        <ItemsControl ItemsSource="{Binding Path=XmlDoc}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </WrapPanel>
+    </DataTemplate>
     <HierarchicalDataTemplate
       DataType="{x:Type syntax1:AppTypeInfo}"
       ItemsSource="{Binding SubTypeInfos}">
       <TextBlock Text="{Binding Title}"
                  Style="{StaticResource S1}">
-        <TextBlock.ToolTip><TextBlock Text="{Binding DocInfo}"/></TextBlock.ToolTip>
+        <TextBlock.ToolTip>
+          <ContentControl Content="{Binding DocInfo}" />
+        </TextBlock.ToolTip>
       </TextBlock>
     </HierarchicalDataTemplate>
     <DataTemplate DataType="{x:Type syntax1:AppMethodInfo}">
-      <ContentControl Content="{Binding MethodInfo}"/>
+      <ContentControl Content="{Binding MethodInfo}" />
     </DataTemplate>
     <DataTemplate DataType="{x:Type reflection:MethodInfo}">
       <Border BorderBrush="Black" BorderThickness="0,0,0,1"
@@ -90,8 +135,7 @@
                         ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <StackPanel Orientation="Vertical">
-                </StackPanel>
+                <StackPanel Orientation="Vertical" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -136,7 +180,8 @@
             <Style.Triggers>
               <DataTrigger Binding="{Binding IsSelfOwned}"
                            Value="false">
-                <Setter Property="Background" Value="{Binding Path=OwningTypeInfo.ColorValue,Converter={StaticResource ColorConverter}}" />
+                <Setter Property="Background"
+                        Value="{Binding Path=OwningTypeInfo.ColorValue,Converter={StaticResource ColorConverter}}" />
               </DataTrigger>
             </Style.Triggers>
           </Style>
@@ -144,7 +189,8 @@
         <Run Text="{Binding Path=PropertyName}" />
         <Run Text=": " />
         <Run Text="{Binding Path=TypeInfo.Title}" />
-        <CheckBox Content="Persist" IsChecked="{Binding IsPersisted}"/>
+        <CheckBox Content="Persist"
+                  IsChecked="{Binding IsPersisted}" />
       </TextBlock>
     </DataTemplate>
   </UserControl.Resources>
@@ -155,7 +201,7 @@
       <RowDefinition Height="*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    
+
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="6*" />
       <ColumnDefinition Width="10*" />
@@ -177,10 +223,11 @@
                   ItemTemplateSelector="{StaticResource CustomDataTemplateSelector}">
       <ItemsControl.Template>
         <ControlTemplate TargetType="ItemsControl">
-        <ScrollViewer>
-          <ItemsPresenter/>
-        </ScrollViewer>
-        </ControlTemplate></ItemsControl.Template>
+          <ScrollViewer>
+            <ItemsPresenter />
+          </ScrollViewer>
+        </ControlTemplate>
+      </ItemsControl.Template>
     </ItemsControl>
     <ListBox Grid.Row="2" Grid.Column="1" Margin="10"
              ItemsSource="{Binding ElementName=tv,Path=SelectedItem.AllComponents}" />

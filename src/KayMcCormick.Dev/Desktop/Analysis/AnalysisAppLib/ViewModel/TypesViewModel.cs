@@ -58,15 +58,15 @@ namespace AnalysisAppLib.ViewModel
         private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
 #endif
 
-        private HashSet < string >                  _unknownElems ;
-        private Dictionary < string , TypeDocInfo > _typeDocInfos ;
+        private HashSet < string > _unknownElems ;
+
+        private Dictionary < string , TypeDocInfo > _docs ;
 
         public TypesViewModel ( )
         {
             //var path = Path.ChangeExtension ( typeof ( CSharpSyntaxNode ).Assembly.Location , ".xml" ) ;
-            _typeDocInfos = LoadXmlDoc ( ) ;
+            _docs = LoadXmlDoc ( ) ;
 
-            Debug.WriteLine ( string.Join ( ";" , _unknownElems ) ) ;
 
             var rootR = typeof ( CSharpSyntaxNode ) ;
             _nodeTypes = rootR.Assembly.GetExportedTypes ( )
@@ -158,28 +158,73 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
+        [ NotNull ]
         public static Dictionary < string , TypeDocInfo > LoadXmlDoc ( )
         {
             var docDict = new Dictionary < string , TypeDocInfo > ( ) ;
             var doc = LoadDoc ( ) ;
-            if ( doc.DocumentElement != null )
+            if ( doc.DocumentElement == null )
             {
-                foreach ( var xmlElement in DocMembers ( doc ) )
+                throw new InvalidOperationException ( ) ;
+            }
+
+            foreach ( var xmlElement in DocMembers ( doc ) )
+            {
+                var elem = HandleDocElement ( xmlElement ) ;
+                if ( ! docDict.TryGetValue ( elem.Type , out var info ) )
                 {
-                    var elem = HandleDocElement ( xmlElement ) ;
+                    info                 = new TypeDocInfo ( ) ;
+                    docDict[ elem.Type ] = info ;
+                }
+
+                switch ( elem )
+                {
+                    case FieldDocumentation fieldDocumentation :
+                        info.FieldDocumentation[ fieldDocumentation.MemberName ] =
+                            fieldDocumentation ;
+                        break ;
+                    case MethodDocumentation methodDocumentation :
+                        if ( ! info.MethodDocumentation.TryGetValue (
+                                                                     methodDocumentation.MemberName
+                                                                   , out var docs
+                                                                    ) )
+                        {
+                            docs =
+                                new List < MethodDocumentation > ( ) ;
+                            info.MethodDocumentation[ methodDocumentation.MemberName ] = docs ;
+                        }
+
+                        docs.Add ( methodDocumentation ) ;
+                        break ;
+                    case PropertyDocumentation propertyDocumentation :
+                        info.PropertyDocumentation[ propertyDocumentation.MemberName ] =
+                            propertyDocumentation ;
+
+                        break ;
+                    case TypeDocumentation typeDocumentation :
+                        info.TypeDocumentation = typeDocumentation ;
+                        break ;
+                    default : throw new ArgumentOutOfRangeException ( nameof ( elem ) ) ;
                 }
             }
 
             return docDict ;
         }
 
-        public static IEnumerable < XmlElement > DocMembers ( XmlDocument doc )
+        [ NotNull ]
+        public static IEnumerable < XmlElement > DocMembers ( [ NotNull ] XmlDocument doc )
         {
+            if ( doc.DocumentElement == null )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
+
             return doc.DocumentElement.ChildNodes.OfType < XmlElement > ( )
                       .First ( child => child.Name == "members" )
                       .ChildNodes.OfType < XmlElement > ( ) ;
         }
 
+        [ NotNull ]
         public static XmlDocument LoadDoc ( )
         {
             var xml =
@@ -189,16 +234,22 @@ namespace AnalysisAppLib.ViewModel
             return docuDoc ;
         }
 
-        public static CodeElementDocumentation HandleDocElement ( XmlElement xmlElement )
+        [ NotNull ]
+        public static CodeElementDocumentation HandleDocElement (
+            [ NotNull ] XmlElement xmlElement
+        )
         {
+            if ( xmlElement == null )
+            {
+                throw new ArgumentNullException ( nameof ( xmlElement ) ) ;
+            }
+
             var elementId = xmlElement.GetAttribute ( "name" ) ;
             xmlElement.WriteTo ( new MyWriter ( ) ) ;
             var doc = XDocument.Parse ( xmlElement.OuterXml ) ;
-            var xNodes = doc.Element ( "member" ).Nodes ( ) ;
+            var xNodes = doc.Element ( "member" )?.Nodes ( ) ;
 
-            var xmlDoc = xNodes.Select ( Selector ) ;
-#if false
-#endif
+            var xmlDoc = ( xNodes ?? throw new InvalidOperationException ( ) ).Select ( Selector ) ;
             var kind = elementId[ 0 ] ;
             var type = elementId.Substring ( 2 ) ;
             string parameters = null ;
@@ -212,53 +263,49 @@ namespace AnalysisAppLib.ViewModel
             }
 
             string memberName = null ;
-            if ( kind == 'M' || kind == 'P' )
+            if ( kind    == 'M'
+                 || kind == 'P'|| kind == 'F' )
             {
                 memberName = type.Substring ( type.LastIndexOf ( '.' ) ) ;
-                type   = type.Substring ( 0 , type.LastIndexOf ( '.' ) ) ;
+                type       = type.Substring ( 0 , type.LastIndexOf ( '.' ) ) ;
             }
 
-            if ( kind == 'T' )
+            switch ( kind )
             {
-                return new TypeDocumentation ( elementId , type , xmlDoc ) ;
+                case 'T' : return new TypeDocumentation ( elementId , type , xmlDoc ) ;
+                case 'M' :
+                    return new MethodDocumentation (
+                                                    elementId
+                                                  , type
+                                                  , memberName
+                                                  , parameters
+                                                  , xmlDoc
+                                                   ) ;
+                case 'P' :
+                    return new PropertyDocumentation ( elementId , type , memberName , xmlDoc ) ;
+                case 'F' :
+                    return new FieldDocumentation ( elementId , type , memberName , xmlDoc ) ;
+                default : throw new InvalidOperationException ( kind.ToString ( ) ) ;
             }
-            else if ( kind == 'M' )
-            {
-                return new MethodDocumentation (
-                                                elementId
-                                              , type
-                                              , memberName
-                                              , parameters
-                                              , xmlDoc
-                                                 ) ;
-            } else if ( kind == 'P' )
-            {
-
-                return new PropertyDocumentation ( elementId , type , memberName , xmlDoc ) ;
-            }
-
-            return null ;
         }
 
         [ CanBeNull ]
         public static XmlDocElement Selector ( [ NotNull ] XNode node )
         {
-            Debug.WriteLine ( node.GetType ( ).FullName ) ;
             switch ( node )
             {
-                case XComment xComment :   break ;
-                case XCData xcData :
-                    return new XmlDocText(xcData.Value);
-                
+                case XComment xComment : break ;
+                case XCData xcData :     return new XmlDocText ( xcData.Value ) ;
+
                 case XDocument xDocument : break ;
                 case XElement element :
                 {
                     XmlDocElement r = null ;
                     switch ( element.Name.LocalName )
                     {
-                            case "summary":
-                                r = new Summary (element.Nodes().Select(Selector));
-                                break ;
+                        case "summary" :
+                            r = new Summary ( element.Nodes ( ).Select ( Selector ) ) ;
+                            break ;
                         case "see" :
                             r = new Crossref ( element.Nodes ( ).Select ( Selector ) ) ;
                             break ;
@@ -311,7 +358,7 @@ namespace AnalysisAppLib.ViewModel
                 default : break ;
             }
 
-            throw new UnrecognizedElementException (node.GetType().FullName ) ;
+            throw new UnrecognizedElementException ( node.GetType ( ).FullName ) ;
         }
 
         public AppTypeInfo Root
@@ -340,24 +387,21 @@ namespace AnalysisAppLib.ViewModel
             set { _hierarchyColors = value ; }
         }
 
+        [ NotNull ]
         private AppTypeInfo CollectTypeInfos (
             AppTypeInfo parentTypeInfo
           , Type        rootR
           , int         level = 0
         )
         {
-            // _docuDoc.SelectSingleNode (
-            // "//member[starts-with(@name, '" + path + "')]/summary"
-            // ) ;
+            TypeDocumentation docNode = null ;
 
-
-            XmlElement docNode = null ;
-            if ( new Dictionary < string , TypeDocInfo > ( ).TryGetValue (
-                                                                          rootR.FullName
-                                                                        , out var info
-                                                                         ) )
+            if ( _docs.TryGetValue (
+                                    rootR.FullName ?? throw new InvalidOperationException ( )
+                                  , out var info
+                                   ) )
             {
-                docNode = ( XmlElement ) info.TypeDocumentation ;
+                docNode = info.TypeDocumentation ;
             }
 
             var r = new AppTypeInfo ( )
@@ -390,57 +434,89 @@ namespace AnalysisAppLib.ViewModel
         }
     }
 
-    public class PropertyDocumentation : CodeElementDocumentation
+    public class MemberBaseDocumentation : CodeElementDocumentation
+    {
+        protected string _memberName ;
+
+        protected MemberBaseDocumentation (
+            string                        elementId
+          , [ NotNull ] string                        type
+          , [ NotNull ] string                        memberName
+          , IEnumerable < XmlDocElement > xmlDocElements
+        ) : base ( elementId , xmlDocElements )
+        {
+            Type       = type ?? throw new ArgumentNullException ( nameof ( type ) ) ;
+            MemberName = memberName ?? throw new ArgumentNullException ( nameof ( memberName ) ) ;
+        }
+
+        public string MemberName { get { return _memberName ; } set { _memberName = value ; } }
+    }
+
+    public sealed class FieldDocumentation : MemberBaseDocumentation
+    {
+        public FieldDocumentation (
+            string                        elementId
+          , string                        type
+          , string                        memberName
+          , IEnumerable < XmlDocElement > xmlDocElements
+        ) : base ( elementId , type , memberName , xmlDocElements )
+        {
+        }
+    }
+
+    public class PropertyDocumentation : MemberBaseDocumentation
     {
         public PropertyDocumentation (
             string                        elementId
           , string                        type
           , string                        memberName
           , IEnumerable < XmlDocElement > xmlDoc
-        ) : base ( elementId , xmlDoc )
+        ) : base ( elementId , type , memberName , xmlDoc )
         {
-            _type = type ;
-            MemberName = memberName ;
         }
     }
 
-    public class TypeDocumentation : CodeElementDocumentation
+    public sealed class TypeDocumentation : CodeElementDocumentation
     {
         public TypeDocumentation (
             string                        elementId
           , string                        type
           , IEnumerable < XmlDocElement > xmlDoc
-        ) : base ( elementId, xmlDoc )
+        ) : base ( elementId , xmlDoc )
         {
-            _type = type ;
+            Type = type ;
         }
     }
 
     public class CodeElementDocumentation
     {
-        protected string                        _type ;
-        protected IEnumerable < XmlDocElement > _xmlDoc ;
-        private   string                        _elementId ;
-        protected string _memberName ;
+        protected string                 _type ;
+        protected List < XmlDocElement > _xmlDoc ;
+        private   string                 _elementId ;
 
-        protected CodeElementDocumentation ( string elementId , IEnumerable < XmlDocElement > xmlDoc )
+        protected CodeElementDocumentation (
+            string                        elementId
+          , IEnumerable < XmlDocElement > xmlDoc
+        )
         {
-            _xmlDoc = xmlDoc ;
+            _xmlDoc   = xmlDoc.ToList ( ) ;
             ElementId = elementId ;
         }
 
         public string ElementId { get { return _elementId ; } set { _elementId = value ; } }
 
-        protected string MemberName { get { return _memberName ; } set { _memberName = value ; } }
+        public string Type { get { return _type ; } set { _type = value ; } }
+
+        public IEnumerable < XmlDocElement > XmlDoc { get { return _xmlDoc ; } }
 
         public override string ToString ( )
         {
             return
-                $" {GetType ( ).Name}{nameof ( ElementId )}: {ElementId}, {nameof ( _xmlDoc )}: {string.Join ( "" , _xmlDoc ?? Enumerable.Empty < XmlDocElement > ( ) )}," ;
+                $" {GetType ( ).Name}{nameof ( ElementId )}: {ElementId}, {nameof ( XmlDoc )}: {string.Join ( "" , XmlDoc ?? Enumerable.Empty < XmlDocElement > ( ) )}," ;
         }
     }
 
-    public class MethodDocumentation : CodeElementDocumentation
+    public sealed class MethodDocumentation : MemberBaseDocumentation
     {
         private readonly string _parameters ;
 
@@ -450,10 +526,8 @@ namespace AnalysisAppLib.ViewModel
           , string                        member
           , string                        parameters
           , IEnumerable < XmlDocElement > xmlDoc
-        ) : base ( elementId, xmlDoc )
+        ) : base ( elementId , type , member , xmlDoc )
         {
-            _type       = type ;
-            _memberName     = member ;
             _parameters = parameters ;
         }
 
@@ -469,7 +543,8 @@ namespace AnalysisAppLib.ViewModel
             this.text = text ;
         }
 
-        public string Text { get { return text ; } }
+        public          string Text         { get { return text ; } }
+        public override string ToString ( ) { return $"{Text}" ; }
     }
 
     public class Typeparamref : XmlDocElement
@@ -552,15 +627,21 @@ namespace AnalysisAppLib.ViewModel
 
     public class XmlDocElement
     {
-        private readonly List< XmlDocElement > _elements ;
-        private readonly XElement                      _element ;
+        private readonly List < XmlDocElement > _elements ;
+        private readonly XElement               _element ;
 
-        public XmlDocElement ( XElement                      element ) { _element   = element ; }
-        public XmlDocElement ( IEnumerable < XmlDocElement > elements ) { _elements = elements.ToList() ; }
+        public XmlDocElement ( XElement element ) { _element = element ; }
+
+        public XmlDocElement ( IEnumerable < XmlDocElement > elements )
+        {
+            _elements = elements.ToList ( ) ;
+        }
+
+        public List < XmlDocElement > Elements { get { return _elements ; } }
 
         public override string ToString ( )
         {
-            return GetType ( ).Name + string.Join ( "" , _elements ) ;
+            return $"[{GetType ( ).Name}] {string.Join ( " " , Elements )}" ;
         }
     }
 
@@ -662,16 +743,16 @@ namespace AnalysisAppLib.ViewModel
 
     public class TypeDocInfo
     {
-        private object                 typeDocumentation ;
+        private TypeDocumentation      typeDocumentation ;
         private List < MethodDocInfo > constructorDocumentation = new List < MethodDocInfo > ( ) ;
 
-        private Dictionary < string , List < MethodDocInfo > > methodDocumentation =
-            new Dictionary < string , List < MethodDocInfo > > ( ) ;
+        private Dictionary < string , List < MethodDocumentation > > methodDocumentation =
+            new Dictionary < string , List < MethodDocumentation > > ( ) ;
 
-        private Dictionary < string , List < MemberDocInfo > > propertyDocumentation =
-            new Dictionary < string , List < MemberDocInfo > > ( ) ;
+        private Dictionary < string , PropertyDocumentation > propertyDocumentation =
+            new Dictionary < string , PropertyDocumentation > ( ) ;
 
-        public object TypeDocumentation
+        public TypeDocumentation TypeDocumentation
         {
             get { return typeDocumentation ; }
             set { typeDocumentation = value ; }
@@ -683,17 +764,20 @@ namespace AnalysisAppLib.ViewModel
             set { constructorDocumentation = value ; }
         }
 
-        public Dictionary < string , List < MethodDocInfo > > MethodDocumentation
+        public Dictionary < string , List < MethodDocumentation > > MethodDocumentation
         {
             get { return methodDocumentation ; }
             set { methodDocumentation = value ; }
         }
 
-        public Dictionary < string , List < MemberDocInfo > > PropertyDocumentation
+        public Dictionary < string , PropertyDocumentation > PropertyDocumentation
         {
             get { return propertyDocumentation ; }
             set { propertyDocumentation = value ; }
         }
+
+        public Dictionary<string,  FieldDocumentation> FieldDocumentation { get ; set ; } = new Dictionary < string , FieldDocumentation > ();
+
     }
 
     public class DocInfo

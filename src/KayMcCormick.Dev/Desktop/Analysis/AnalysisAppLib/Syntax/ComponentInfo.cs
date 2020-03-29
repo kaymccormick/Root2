@@ -1,4 +1,5 @@
-﻿#region header
+﻿
+#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
