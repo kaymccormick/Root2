@@ -480,12 +480,12 @@ namespace KayMcCormick.Dev.Logging
             #endregion
             t.Add ( MyFileTarget ( ) ) ;
             var jsonFileTarget = JsonFileTarget ( ) ;
-            _dict[ LogLevel.Debug ].Add ( jsonFileTarget ) ;
+            _dict[ LogLevel.Trace ].Add ( jsonFileTarget ) ;
 
-            var jsonNetworkTarget = new NetworkTarget ( "jsonNet" ) ;
-            jsonNetworkTarget.Layout = new MyJsonLayout ( ) ;
-            SetupNetworkTarget ( jsonNetworkTarget , "udp://127.0.0.1:5110" ) ;
-            t.Add ( jsonNetworkTarget ) ;
+            // var jsonNetworkTarget = new NetworkTarget ( "jsonNet" ) ;
+            // jsonNetworkTarget.Layout = new MyJsonLayout ( ) ;
+            // SetupNetworkTarget ( jsonNetworkTarget , "udp://127.0.0.1:5110" ) ;
+            // t.Add ( jsonNetworkTarget ) ;
 
             var byType = new Dictionary < Type , int > ( ) ;
             var keys = _dict.Keys.ToList ( ) ;

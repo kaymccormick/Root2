@@ -2,6 +2,7 @@
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Text.Json ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
@@ -99,7 +100,11 @@ namespace KayMcCormick.Lib.Wpf
                                          .Select ( t => t.Layout )
                                          .OfType < MyJsonLayout > ( ) )
             {
-                var options = myJsonLayout.CreateJsonSerializerOptions ( ) ;
+                var options = new JsonSerializerOptions();
+                foreach ( var optionsConverter in myJsonLayout.Options.Converters )
+                {
+                    options.Converters.Add (optionsConverter  );
+                }
                 options.Converters.Add ( new DataTemplateKeyConverter ( ) ) ;
                 myJsonLayout.Options = options ;
             }

@@ -162,6 +162,7 @@ namespace ProjInterface
                                                                    ) ;
         }
 
+        [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext         c
           , IEnumerable < Parameter > p

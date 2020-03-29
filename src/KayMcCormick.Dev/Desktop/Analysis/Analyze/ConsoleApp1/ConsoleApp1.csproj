@@ -97,6 +97,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ConsoleMenu-choice">
+      <Version>1.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator">
       <Version>1.2.6</Version>
     </PackageReference>

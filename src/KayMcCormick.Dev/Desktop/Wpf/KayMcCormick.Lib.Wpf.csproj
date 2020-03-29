@@ -191,6 +191,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting">
+      <Version>3.6.0-2.final</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>3.0.0-beta3.final</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -206,11 +209,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>16.5.132</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
       <Version>16.5.132</Version>
     </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.13.1</Version>
+    </PackageReference>
+    <PackageReference Include="ReactiveUI.WPF">
+      <Version>11.2.3</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>
@@ -428,6 +437,10 @@
   <ItemGroup>
     <Folder Include="Assets\New folder\" />
     <Folder Include="UserControl\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD.png" />
+    <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD_color.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
