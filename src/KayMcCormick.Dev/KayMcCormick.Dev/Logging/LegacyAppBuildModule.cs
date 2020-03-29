@@ -164,7 +164,12 @@ namespace KayMcCormick.Dev.Logging
                                                                ) ;
 
             reg.Activated += ( o , eventArgs ) => {
-                Logger.Trace ( "Activated {desc} (sender={sender}, instance={instance})", DescribeComponent(eventArgs.Component), o, eventArgs.Instance) ;
+                object instanceDesc = eventArgs.Instance ;
+                if ( eventArgs.Instance is Delegate )
+                {
+                    instanceDesc = eventArgs.Instance.ToString ( ) ;
+                }
+                Logger.Trace ( "Activated {desc} (sender={sender}, instance={instance})", DescribeComponent(eventArgs.Component), o, instanceDesc) ;
             } ;
         }
 

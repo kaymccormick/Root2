@@ -45,11 +45,12 @@
               </viewModel:SyntaxPanelViewModel>
             </views:SyntaxPanel.ViewModel>
           </views:SyntaxPanel>
+          <local:DockLayout x:Name="_dockLayout" x:Key="DockLayout"/>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-    <local:DockLayout x:Name="_dockLayout"/>
+    <StaticResource ResourceKey="ctrl1"/>
   </Grid>
 </kmWpf:AppWindow>

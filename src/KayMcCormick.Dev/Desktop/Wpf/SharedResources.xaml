@@ -575,10 +575,15 @@
   <BitmapImage BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
                UriSource="Assets/ASPWebSite_16x.png"
                x:Key="BrowserIcon" />
-  <BitmapImage BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
-      UriSource="Assets/LaunchSamplingTargets/3x/Artboard1xxhdpi.png"
-      x:Key="FilesIcon" />
-
+    <BitmapImage BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+                 UriSource="Assets/LaunchSamplingTargets/3x/Artboard1xxhdpi.png"
+                 x:Key="FilesIcon" />
+    <BitmapImage BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+                 UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD.png"
+                 x:Key="helpStatus" />
+    <BitmapImage BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+                 UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
+                 x:Key="helpStatusColor" />
 
 
 </ResourceDictionary>

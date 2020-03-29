@@ -135,8 +135,8 @@ namespace TestApp
                     } ;
 
             pane.AddChild ( b ) ;
-            var x = new LayoutService ( _dockLayout.leftPane ) ;
-            x.AddToLayout ( pane ) ;
+            //var x = new LayoutService ( _dockLayout.leftPane ) ;
+            //x.AddToLayout ( pane ) ;
         }
         #endregion
 
@@ -192,7 +192,7 @@ namespace TestApp
                 options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
 
                 options.WriteIndented = true ;
-                var json = JsonSerializer.Serialize ( typesView.ViewModel , options ) ;
+                var json = JsonSerializer.Serialize ( typesView.ViewModel.Root, options ) ;
                 File.WriteAllText ( @"C:\data\logs\viewmodel.json" , json ) ;
             }
             catch ( JsonException ex )

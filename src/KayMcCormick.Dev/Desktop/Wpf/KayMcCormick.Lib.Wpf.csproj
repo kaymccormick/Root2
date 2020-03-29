@@ -429,5 +429,9 @@
     <Folder Include="Assets\New folder\" />
     <Folder Include="UserControl\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD.png" />
+    <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD_color.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

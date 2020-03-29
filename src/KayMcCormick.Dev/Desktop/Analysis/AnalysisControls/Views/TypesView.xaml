@@ -328,7 +328,7 @@
           <kmWpf:MethodInfoConverter
             x:Key="MethodInfoConverter" />
           <kmWpf:ColorConverter x:Key="ColorConverter" />
-          <Style x:Key="S2" TargetType="TextBlock">
+          <Style x:Key="S2" TargetType="WrapPanel">
             <Style.Triggers>
               <DataTrigger Binding="{Binding Path=DocInfo}" Value="{x:Null}">
                 <Setter Property="Visibility" Value="Hidden"/>
@@ -446,11 +446,11 @@
                     Content="{Binding DocInfo}" />
                 </TextBlock.ToolTip>
               </TextBlock>
-              <TextBlock Style="{StaticResource S2}" Grid.ZIndex="100" Grid.Column="0"
+              <WrapPanel Style="{StaticResource S2}" Grid.ZIndex="100" Grid.Column="0"
                          Grid.Row="0"
                          HorizontalAlignment="Right" Margin="10,0,10,0">
-                ?
-              </TextBlock>
+                <Image Source="{StaticResource helpStatusColor}"/>
+              </WrapPanel>
             </Grid>
           </HierarchicalDataTemplate>
           <DataTemplate
