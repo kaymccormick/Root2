@@ -9,9 +9,11 @@
                  xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
                  xmlns:anal="http://kaymccormick.com/xaml/analysis"
                  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
+                 Foreground="DarkOrange"
                  WindowStyle="ToolWindow"
                  mc:Ignorable="d"
                  FontSize="14.0"
+                 Background="#121212"
                  Title="Window1" Height="1000" Width="1300">
   <kmWpf:AppWindow.Resources>
     <ResourceDictionary>
@@ -84,7 +86,6 @@
             x:Key="LayoutAnchorControlControlTemplate1"
             TargetType="{x:Type avalondock:LayoutAnchorControl}">
             <Border
-
               CornerRadius="3"
               BorderBrush="#FF59C873"
               BorderThickness="5" Margin="8" Padding="2">
@@ -231,7 +232,7 @@
           <avalondock:LayoutPanel Orientation="Horizontal">
             <avalondock:LayoutAnchorablePane
               x:Name="leftAnchorablePane"
-              DockWidth="300" />
+              DockWidth="200" />
             <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane
                 x:Name="docpane">
