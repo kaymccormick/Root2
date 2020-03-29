@@ -131,16 +131,6 @@
     <Compile Include="Logging\LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="Connected Services\CentralServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Connected Services\ServiceReference1\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="ContextStack.cs" />
     <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
     <Compile Include="DebugUtils.cs" />
@@ -232,6 +222,9 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="netstandard" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Autofac">
       <Version>5.1.2</Version>
     </PackageReference>
@@ -306,80 +299,11 @@
       <Link>DependencyValidation1.layerdiagram</Link>
       <Visible>False</Visible>
     </AdditionalFiles>
-    <None Include="Connected Services\CentralServiceReference\CentralService.wsdl" />
-    <None Include="Connected Services\CentralServiceReference\CentralSvc.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\CentralServiceReference\CentralSvc1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\CentralServiceReference\CentralSvc2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\CentralServiceReference\CentralSvc3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\CentralServiceReference\CentralSvc4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\CentralServiceReference\CentralSvc5.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\CentralServiceReference\KayMcCormick.Dev.CentralServiceReference.RegisterApplicationInstanceResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\App2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference1\AppInfoService.wsdl" />
-    <None Include="Connected Services\ServiceReference1\KayMcCormick.Dev.ServiceReference1.AppInstanceInfoResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="keypair.snk" />
     <None Include="WCF.config" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Connected Services\CentralServiceReference\" />
-    <WCFMetadataStorage Include="Connected Services\ServiceReference1\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference1\App.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference1\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference1\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference1\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\CentralServiceReference\CentralSvc.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\CentralServiceReference\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\CentralServiceReference\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\CentralServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Container\" />
