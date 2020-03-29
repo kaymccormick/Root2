@@ -14,27 +14,41 @@ using System.Net ;
 using System.Net.Sockets ;
 using System.Text ;
 using NLog ;
+using NLog.LayoutRenderers ;
 using NLog.Layouts ;
 
 namespace KayMcCormick.Dev.Logging
 {
-    internal class ProtoLogger
+    internal sealed class ProtoLogger
     {
         private readonly Func < LogEventInfo , byte[] > _getBytes ;
         private readonly IPEndPoint                     _ipEndPoint ;
         private readonly Layout                         _layout ;
         private readonly UdpClient                      _udpClient ;
 
+        private static readonly ProtoLogger _instance = new ProtoLogger();
+
+        private static readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer =
+            new MyLog4JXmlEventLayoutRenderer();
+
+        public static Layout XmlEventLayout { get; } = new MyLayout(_xmlEventLayoutRenderer);
+
+        public static ProtoLogger Instance { get { return _instance ; } }
+
         public ProtoLogger ( )
         {
             _udpClient  = AppLoggingConfigHelper.UdpClient ;
             _ipEndPoint = AppLoggingConfigHelper.IpEndPoint ;
-            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
+            _layout     = XmlEventLayout ;
+            if ( _layout == null )
+            {
+                throw new InvalidOperationException ( "LAyout is null" ) ;
+            }
             _getBytes   = DefaultGetBytes ;
         }
 
 
-        public ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
+        private ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
         {
             _udpClient  = udpClient ;
             _ipEndPoint = ipEndPoint ;

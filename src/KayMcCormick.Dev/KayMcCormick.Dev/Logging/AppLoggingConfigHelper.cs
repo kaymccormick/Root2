@@ -29,6 +29,7 @@ using NLog.Config ;
 using NLog.LayoutRenderers ;
 using NLog.Layouts ;
 using NLog.Targets ;
+
 /* test 123 */
 /* test 123 */
 /* test 123 */
@@ -120,7 +121,7 @@ namespace KayMcCormick.Dev.Logging
             new MyLog4JXmlEventLayoutRenderer ( ) ;
 
         private static          NetworkTarget jsonNetworkTarget ;
-        private static readonly ProtoLogger   _protoLogger = new ProtoLogger ( ) ;
+        private static readonly ProtoLogger   _protoLogger = ProtoLogger.Instance ;
 
         private static readonly Action < LogEventInfo > _protoLogAction = _protoLogger.LogAction ;
 
@@ -268,7 +269,7 @@ namespace KayMcCormick.Dev.Logging
 #if FIELD_ACCESS
             var fieldInfo = typeof ( LogManager ).GetField (
                                                             "factory"
-                                              , BindingFlags.Static
+                                          , BindingFlags.Static
                                                             | BindingFlags.NonPublic
                                                            ) ;
             if ( fieldInfo != null )
@@ -437,7 +438,7 @@ namespace KayMcCormick.Dev.Logging
 , EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
 , IncludeEventProperties = true
-               ,
+             ,
                                 } ;
             }
                 

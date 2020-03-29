@@ -42,9 +42,10 @@ namespace KayMcCormick.Dev.Application
             _disableServiceHost =
                 applicationInstanceConfiguration.DisableServiceHost ;
             var serviceCollection = new ServiceCollection ( ) ;
+            ProtoLogger protoLogger = ProtoLogger.Instance;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
-                var loadedConfigs = LoadConfiguration ( AppLoggingConfigHelper.ProtoLogDelegate ) ;
+                var loadedConfigs = LoadConfiguration (  ) ;
                 applicationInstanceConfiguration.Configs =
                     applicationInstanceConfiguration.Configs != null
                         ? ( ( IEnumerable < object > ) applicationInstanceConfiguration.Configs )
