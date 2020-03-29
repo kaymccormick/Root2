@@ -91,14 +91,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\Desktop\Analysis\ProjLib\ProjLib.csproj">
-      <Name>ProjLib</Name>
-      <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Name>KayMcCormick.Lib.Wpf</Name>
       <Project>{3434e74c-d7b5-4315-a8e1-51dbce878199}</Project>

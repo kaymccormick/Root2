@@ -158,7 +158,6 @@
     <Compile Include="ViewModel\ISyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\ITypesViewModel.cs" />
-    <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\SyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\TypesViewModel.cs" />

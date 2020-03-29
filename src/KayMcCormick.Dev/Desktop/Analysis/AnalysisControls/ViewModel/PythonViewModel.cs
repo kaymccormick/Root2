@@ -17,6 +17,7 @@ using AnalysisControls.Scripting ;
 using Autofac ;
 using IronPython.Hosting ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using Microsoft.Scripting.Hosting ;
 
 namespace AnalysisControls.ViewModel

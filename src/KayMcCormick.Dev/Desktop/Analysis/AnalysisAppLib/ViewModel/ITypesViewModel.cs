@@ -10,6 +10,7 @@
 // ---
 #endregion
 using AnalysisAppLib.Syntax ;
+using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib.ViewModel
 {

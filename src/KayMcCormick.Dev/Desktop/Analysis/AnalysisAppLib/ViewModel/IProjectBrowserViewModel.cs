@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+using KayMcCormick.Dev ;
+
 namespace AnalysisAppLib.ViewModel
 {
     public interface IProjectBrowserViewModel : IViewModel

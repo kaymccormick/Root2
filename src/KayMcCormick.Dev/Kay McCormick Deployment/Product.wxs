@@ -4,8 +4,7 @@
   <?define KayMcCormick.Dev_TargetDir=$(var.KayMcCormick.Dev.TargetDir)?>
   <!-- <?define KmGlobalOutputPath_TargetDir=$(var.KmGlobalOutputPath)?> -->
 <?define ProjInterface_TargetDir=$(var.ProjInterface.TargetDir)?>
-<?define ProjLib_TargetDir=$(var.ProjLib.TargetDir)?>
-<?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
+  <?define KayMcCormick.Lib.Wpf_TargetDir=$(var.KayMcCormick.Lib.Wpf.TargetDir)?>
 <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?>
 <?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?>
 <?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?>
@@ -158,9 +157,6 @@
       </Component>
       <Component Id="ProjInterface.exe.config" Guid="F63B16D2-D9A7-4E55-8D06-D92DA516B779">
         <File KeyPath="yes" Id="ProjInterface.exe.config" Name="ProjInterface.exe.config" Source="$(var.ProjInterface_TargetDir)ProjInterface.exe.config" />
-      </Component>
-      <Component Id="ProjLib.dll" Guid="4BB3307E-D03B-4FA2-B053-8465D5E36AA3">
-        <File KeyPath="yes" Id="ProjLib.dll" Name="ProjLib.dll" Source="$(var.ProjLib_TargetDir)ProjLib.dll" />
       </Component>
       <Component Id="KayMcCormick.Lib.Wpf.dll" Guid="F78EC651-F4BD-4078-A1D4-C00BDD04A452">
         <File KeyPath="yes" Id="KayMcCormick.Lib.Wpf.dll" Name="KayMcCormick.Lib.Wpf.dll" Source="$(var.KayMcCormick.Lib.Wpf_TargetDir)KayMcCormick.Lib.Wpf.dll" />

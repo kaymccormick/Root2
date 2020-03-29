@@ -27,11 +27,11 @@ using System.Windows.Controls ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
-using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
+using AnalysisControls.Properties ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
@@ -55,7 +55,6 @@ using NLog ;
 using NLog.Layouts ;
 using NLog.Targets ;
 using ProjInterface ;
-using ProjLib ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
@@ -450,7 +449,7 @@ namespace ProjTests
         public void DeserializeLog ( )
         {
             var ctx = ( ICompilationUnitRootContext ) AnalysisService.Parse (
-                                                                             LibResources
+                                                                             Resources
                                                                                 .Program_Parse
                                                                            , "test"
                                                                             ) ;
@@ -634,7 +633,7 @@ namespace ProjTests
             } ;
             //FormattdCode1.SetValue(ComboBox.Edit.Editable)
 
-            var sourceText = LibResources.Program_Parse ;
+            var sourceText = Resources.Program_Parse ;
             codeControl.SourceCode = sourceText ;
 
             var context = ( ISemanticModelContext ) AnalysisService.Parse ( sourceText , "test1" ) ;
@@ -693,10 +692,10 @@ namespace ProjTests
         [ Fact ]
         public void TestRewrite ( )
         {
-            var ctx = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
+            var ctx = AnalysisService.Parse ( Resources.Program_Parse , "test" ) ;
             var comp = ctx.CompilationUnit ;
             var tree = ctx.CurrentModel.SyntaxTree ;
-            var codeAnalyseContext = AnalysisService.Parse ( LibResources.Program_Parse , "test" ) ;
+            var codeAnalyseContext = AnalysisService.Parse ( Resources.Program_Parse , "test" ) ;
             // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
             // var s = new StringWriter ( ) ;
             // using ( var fileStream = File.OpenWrite ( @"out.cs" ) )

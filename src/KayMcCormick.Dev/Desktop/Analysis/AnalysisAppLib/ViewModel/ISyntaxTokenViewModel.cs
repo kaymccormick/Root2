@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel ;
 using AnalysisAppLib.Syntax ;
+using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib.ViewModel
 {

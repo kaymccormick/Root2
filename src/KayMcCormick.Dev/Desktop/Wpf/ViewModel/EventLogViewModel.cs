@@ -10,13 +10,11 @@
 // ---
 #endregion
 using System ;
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
-using System.Runtime.Remoting.Metadata.W3cXsd2001 ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Windows ;
@@ -24,7 +22,6 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Xml.Serialization ;
-using AnalysisAppLib.ViewModel ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Lib.Wpf.View ;

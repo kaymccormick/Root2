@@ -1,9 +1,8 @@
+#if false
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
 using System.Windows.Media ;
-using ProjLib ;
-using ProjLib.Interfaces ;
 
 namespace ProjInterface
 {
@@ -43,3 +42,4 @@ namespace ProjInterface
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { throw new NotImplementedException ( ) ; }
     }
 }
+#endif
