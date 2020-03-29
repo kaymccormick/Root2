@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Desktop\Analysis\Analyze\ConsoleApp1\ConsoleApp1.csproj", "{FAD293B8-C008-4243-88FC-A3A8A01DB52D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjLib", "Desktop\Analysis\ProjLib\ProjLib.csproj", "{558E1C70-3D0F-4124-B115-91C35FE19379}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjInterface", "Desktop\Analysis\ProjInterface\ProjInterface.csproj", "{4451AD21-AD52-49F1-874B-0BBAB2D4DF95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KayMcCormick.Lib.Wpf", "Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj", "{3434E74C-D7B5-4315-A8E1-51DBCE878199}"
@@ -18,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisControls", "Desktop\Analysis\AnalysisControls\AnalysisControls.csproj", "{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeafService", "Services\LeafService\LeafService.csproj", "{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisAppLib", "Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj", "{0381D4D0-945E-4340-B974-9D07B2830D4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,17 +40,6 @@ Global
 		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x64.Build.0 = Release|x64
 		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x86.ActiveCfg = Release|x86
 		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x86.Build.0 = Release|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Debug|Any CPU.Build.0 = Debug|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Debug|x64.ActiveCfg = Debug|x64
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Debug|x64.Build.0 = Debug|x64
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Debug|x86.ActiveCfg = Debug|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Debug|x86.Build.0 = Debug|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Release|Any CPU.ActiveCfg = Release|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Release|x64.ActiveCfg = Release|x64
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Release|x64.Build.0 = Release|x64
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Release|x86.ActiveCfg = Release|x86
-		{558E1C70-3D0F-4124-B115-91C35FE19379}.Release|x86.Build.0 = Release|x86
 		{4451AD21-AD52-49F1-874B-0BBAB2D4DF95}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{4451AD21-AD52-49F1-874B-0BBAB2D4DF95}.Debug|Any CPU.Build.0 = Debug|x86
 		{4451AD21-AD52-49F1-874B-0BBAB2D4DF95}.Debug|x64.ActiveCfg = Debug|x64
@@ -116,6 +105,16 @@ Global
 		{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}.Release|x64.Build.0 = Release|x64
 		{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}.Release|x86.ActiveCfg = Release|x86
 		{0F1983A4-F3A8-4340-8F91-1FEA45B798FB}.Release|x86.Build.0 = Release|x86
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Debug|x64.ActiveCfg = Debug|x64
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Debug|x64.Build.0 = Debug|x64
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Debug|x86.ActiveCfg = Debug|x86
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Debug|x86.Build.0 = Debug|x86
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|Any CPU.ActiveCfg = Release|x86
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x64.ActiveCfg = Release|x64
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x64.Build.0 = Release|x64
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x86.ActiveCfg = Release|x86
+		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
