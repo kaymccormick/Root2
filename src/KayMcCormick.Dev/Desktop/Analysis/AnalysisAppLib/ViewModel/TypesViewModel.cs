@@ -30,7 +30,7 @@ using System.Xml.Linq ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    public class TypesViewModel : ITypesViewModel , INotifyPropertyChanged
+    public sealed class TypesViewModel : ITypesViewModel , INotifyPropertyChanged
     {
         private bool _showBordersIsChecked = false ;
 
@@ -48,9 +48,9 @@ namespace AnalysisAppLib.ViewModel
                              }
                             ) { Type = typeof ( CSharpSyntaxNode ) } ;
 
-        private List < Type >                     _nodeTypes ;
-        private Dictionary < Type , AppTypeInfo > map = new Dictionary < Type , AppTypeInfo > ( ) ;
-        private Dictionary < Type , AppTypeInfo > otherTyps =
+        private readonly List < Type >                     _nodeTypes ;
+        private readonly Dictionary < Type , AppTypeInfo > map = new Dictionary < Type , AppTypeInfo > ( ) ;
+        private readonly Dictionary < Type , AppTypeInfo > otherTyps =
             new Dictionary < Type , AppTypeInfo > ( ) ;
 #if false
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -58,9 +58,7 @@ namespace AnalysisAppLib.ViewModel
         private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
 #endif
 
-        private HashSet < string > _unknownElems ;
-
-        private Dictionary < string , TypeDocInfo > _docs ;
+        private readonly Dictionary < string , TypeDocInfo > _docs ;
 
         public TypesViewModel ( )
         {
@@ -74,6 +72,7 @@ namespace AnalysisAppLib.ViewModel
                               .ToList ( ) ;
             Root = CollectTypeInfos ( null , rootR ) ;
 
+            // ReSharper disable once AssignNullToNotNullAttribute
             _docs.TryGetValue ( typeof ( SyntaxFactory ).FullName , out var si ) ;
             var methodInfos = typeof ( SyntaxFactory )
                              .GetMethods ( BindingFlags.Static | BindingFlags.Public )
@@ -342,7 +341,7 @@ namespace AnalysisAppLib.ViewModel
                             r = new Crossref ( element.Attribute(XName.Get("cref", ""))?.Value ?? "") ;
                             break ;
                         case "paramref" :
-                            r = new Paramref ( element.Nodes ( ).Select ( Selector ) ) ;
+                            r = new Paramref (element.Attribute(XName.Get("name", ""))?.Value ?? "") ;
                             break ;
                         case "c" :
                             r = new Code ( element.Nodes ( ).Select ( Selector ) ) ;
@@ -361,10 +360,10 @@ namespace AnalysisAppLib.ViewModel
                             r = new Pre ( element.Nodes ( ).Select ( Selector ) ) ;
                             break ;
                         case "a" :
-                            r = new Anchor ( element.Nodes ( ).Select ( Selector ) ) ;
+                            r = new Anchor (element.Attribute(XName.Get("href", ""))?.Value ?? "",  element.Nodes ( ).Select ( Selector ) ) ;
                             break ;
                         case "typeparamref" :
-                            r = new Typeparamref ( element.Nodes ( ).Select ( Selector ) ) ;
+                            r = new Typeparamref (element.Attribute(XName.Get("name", ""))?.Value ?? "") ;
                             break ;
                         case "param" :
                             r = new Param ( element.Nodes ( ).Select ( Selector ) ) ;
@@ -460,7 +459,7 @@ namespace AnalysisAppLib.ViewModel
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
-        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
@@ -581,7 +580,10 @@ namespace AnalysisAppLib.ViewModel
 
     public class Typeparamref : XmlDocElement
     {
-        public Typeparamref ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        private readonly string _typeParamName ;
+        public Typeparamref ( string typeParamName ) { _typeParamName = typeParamName ; }
+
+        public string TypeParamName { get { return _typeParamName ; } }
     }
 
     public class Example : XmlDocElement
@@ -600,9 +602,14 @@ namespace AnalysisAppLib.ViewModel
 
     public class Anchor : XmlDocElement
     {
-        public Anchor ( XElement element ) : base ( element ) { }
+        private readonly string _href ;
+        
+        public Anchor ( string href, IEnumerable < XmlDocElement > elements ) : base ( elements )
+        {
+            _href = href ;
+        }
 
-        public Anchor ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public string Href { get { return _href ; } }
     }
 
     public class Pre : XmlDocElement
@@ -635,9 +642,10 @@ namespace AnalysisAppLib.ViewModel
 
     public class Paramref : XmlDocElement
     {
-        public Paramref ( XElement element ) : base ( element ) { }
+        private readonly string _paramName ;
+        public Paramref ( string paramName ) { _paramName = paramName ; }
 
-        public Paramref ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public string ParamName { get { return _paramName ; } }
     }
 
     public class Code : XmlDocElement

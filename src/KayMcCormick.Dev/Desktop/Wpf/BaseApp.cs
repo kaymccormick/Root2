@@ -51,6 +51,7 @@ namespace KayMcCormick.Lib.Wpf
           , bool                    disableRuntimeConfiguration = false
           , bool                    disableServiceHost          = false
           , IModule[]               modules                     = null
+          , Action                  initAction= null
         )
         {
             _disableLogging = disableLogging ;
@@ -88,6 +89,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
+            initAction?.Invoke();
             _applicationInstance.Initialize ( ) ;
             _applicationInstance.Startup ( ) ;
             _scope = _applicationInstance.GetLifetimeScope ( ) ;

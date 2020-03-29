@@ -19,6 +19,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Core.Lifetime ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
@@ -57,7 +58,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                     PopulateObjects ( ) ;
                 }
 
-                PopulateLifetimeScope ( ) ;
+                PopulateLifetimeScope ( _lifetimeScope , CreateNode ( null , "LifetimeScope" , _lifetimeScope , true ) ) ;
 
                 PopulateAppNode ( ) ;
             }
@@ -101,6 +102,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                         }
                     }
                     CreateNode ( n3 , key : instanceInfo.Instance , data : instanceInfo.Instance , false ) ;
+                    if ( instanceInfo.Instance is LifetimeScope ls)
+                    {
+                    }
                     if ( instanceInfo.Instance is FrameworkElement fe )
                     {
                         var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
@@ -162,17 +166,16 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             return r ;
         }
 
-        private void PopulateLifetimeScope ( )
+        private void PopulateLifetimeScope ( ILifetimeScope lifetimeScope , ResourceNodeInfo node )
         {
-            var n = CreateNode ( null , "LifetimeScope" , _lifetimeScope , true ) ;
             var regs = CreateNode (
-                                   n
-                                 , nameof ( _lifetimeScope.ComponentRegistry.Registrations )
-                                 , _lifetimeScope.ComponentRegistry.Registrations
+                                   node
+                                 , nameof ( lifetimeScope.ComponentRegistry.Registrations )
+                                 , lifetimeScope.ComponentRegistry.Registrations
                                  , true
                                   ) ;
 
-            foreach ( var reg in _lifetimeScope.ComponentRegistry.Registrations )
+            foreach ( var reg in lifetimeScope.ComponentRegistry.Registrations )
             {
                 var n2 = CreateNode ( regs , reg ,        reg ,          true ) ;
                 var s = CreateNode ( n2 ,    "Services" , reg.Services , true ) ;
@@ -182,6 +185,16 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 }
 
                 // PopulateInstances ( n2 , reg ) ;
+            }
+
+            if ( lifetimeScope is LifetimeScope ls )
+            {
+                var parentScope = ls.ParentLifetimeScope ;
+                if ( parentScope != null )
+                {
+                    var parent = CreateNode ( node , "ParentLifetimeScope" , ls , true ) ;
+                    PopulateLifetimeScope ( parentScope , parent ) ;
+                }
             }
         }
 
@@ -317,7 +330,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         [ CanBeNull ]
         private static object WrapValue ( object data )
         {
-            object wrapped = null ;
+            object wrapped = data ;
             if ( data is UIElement uie )
             {
                 wrapped = new ControlWrap < UIElement > ( uie ) ;

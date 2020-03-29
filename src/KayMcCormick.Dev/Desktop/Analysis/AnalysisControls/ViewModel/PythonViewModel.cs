@@ -7,6 +7,8 @@ using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
+using System.Threading ;
+using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Documents ;
@@ -31,33 +33,35 @@ namespace AnalysisControls.ViewModel
         }
 
         [JsonIgnore]
-        public ILifetimeScope Scope { get ; }
+        public ILifetimeScope Scope { get ; set ; }
 
-        private readonly ScriptEngine _py ;
-        private readonly ScriptScope  _scope ;
+        private ScriptEngine _py ;
+        private ScriptScope  _pyScope ;
 
         public PythonViewModel ( ILifetimeScope scope , [ NotNull ] IEnumerable < IPythonVariable > vars )
         {
             Scope = scope ;
+            PythonInit ( scope , vars ) ;
+        }
+
+        private void PythonInit ( ILifetimeScope scope , IEnumerable < IPythonVariable > vars )
+        {
             _py   = Python.CreateEngine ( ) ;
 
-            _scope = _py.CreateScope ( ) ;
-
-            _scope.SetVariable ( "viewModel" , this ) ;
-            _scope.SetVariable ( "scope" ,     scope ) ;
+            _pyScope = _py.CreateScope ( ) ;
+            _pyScope.SetVariable ( "viewModel" , this ) ;
+            _pyScope.SetVariable ( "scope" ,     scope ) ;
 
             foreach ( var pythonVariable in vars )
             {
                 if ( string.IsNullOrEmpty ( pythonVariable.VariableName )
-                     || _scope.TryGetVariable ( pythonVariable.VariableName , out _ ) )
+                     || _pyScope.TryGetVariable ( pythonVariable.VariableName , out _ ) )
                 {
                     continue ;
                 }
-                Debug.WriteLine ($"populating variale {pythonVariable.VariableName}"  );
-                _scope.SetVariable (
-                                    pythonVariable.VariableName
-                                  , pythonVariable.GetVariableValue ( )
-                                   ) ;
+
+                Debug.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
+                _pyScope.SetVariable ( pythonVariable.VariableName , pythonVariable.GetVariableValue ( ) ) ;
             }
 
             var ms = new MemoryStream ( ) ;
@@ -175,7 +179,7 @@ namespace AnalysisControls.ViewModel
             dynamic result = null ;
             try
             {
-                result = _py.Execute ( text , _scope ) ;
+                result = _py.Execute ( text , _pyScope ) ;
                 Results.Add(result);
             }
             catch ( Exception ex )
@@ -284,8 +288,15 @@ namespace AnalysisControls.ViewModel
             Debug.WriteLine ( $"value of input line is {il}" ) ;
             linesCollectionView.MoveCurrentToLast ( ) ;
             Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
+
+            //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
         }
-        
+
+        private int RunPython ( object state )
+        {
+            return 0;
+        }
+
 
         public void ExecutePythonScript ( string textEditorText )
         {

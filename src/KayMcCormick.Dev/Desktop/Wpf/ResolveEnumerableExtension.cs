@@ -19,11 +19,12 @@ using System.Xaml ;
 using Autofac ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using NLog ;
 using IEnumerable = System.Collections.IEnumerable ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    [ MarkupExtensionReturnType ( typeof ( IEnumerable) ) ]
+    [ MarkupExtensionReturnType ( typeof ( IEnumerable ) ) ]
     public class ResolveEnumerableExtension : MarkupExtension
     {
         private Type _componentType ;
@@ -37,10 +38,13 @@ namespace KayMcCormick.Lib.Wpf
         //                                , typeof ( ResolveEnumerableExtension )
         //
         //                                 ) ;
-        private Type _parameterType ;
+        private Type   _parameterType ;
         private object _parameterValue ;
 
-        public ResolveEnumerableExtension ( Type componentType ) { _componentType = componentType ; }
+        public ResolveEnumerableExtension ( Type componentType )
+        {
+            _componentType = componentType ;
+        }
 
         public Type ComponentType
         {
@@ -48,7 +52,7 @@ namespace KayMcCormick.Lib.Wpf
             set { _componentType = value ; }
         }
 
-        public object ParameterValue    
+        public object ParameterValue
         {
             get { return _parameterValue ; }
             set { _parameterValue = value ; }
@@ -61,88 +65,108 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Overrides of MarkupExtension
-        public override object
-            
-            ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
+        public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
-            if ( serviceProvider == null )
+            var resolveEnumerableExtensionName = "ResolveEnumerableExtension" ;
+            GlobalDiagnosticsContext.Set ( "CurrentOperation" , resolveEnumerableExtensionName ) ;
+            using ( MappedDiagnosticsLogicalContext.SetScoped (
+                                                               "CurrentOperation"
+                                                             , resolveEnumerableExtensionName
+                                                              ) )
             {
-                throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
-            }
-
-            
-            var p = ( IAmbientProvider ) serviceProvider.GetService (
-                                                                     typeof ( IAmbientProvider )
-                                                                    ) ;
-            ILifetimeScope scope = null ;
-            var service = serviceProvider.GetService ( typeof ( IProvideValueTarget ) ) ;
-            if ( service != null )
-            {
-                var pp = ( IProvideValueTarget ) service ;
-
-                var o = pp.TargetObject ;
-                if ( o is DependencyObject d )
+                try
                 {
-                    scope = ( ILifetimeScope ) d.GetValue (
-                                                           AttachedProperties.LifetimeScopeProperty
-                                                          ) ;
-                }
-            }
-
-            if ( scope == null )
-            {
-                var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
-                if ( svc != null )
-                {
-                    var rootP = ( IRootObjectProvider ) svc ;
-                    if ( rootP.RootObject is DependencyObject d )
+                    if ( serviceProvider == null )
                     {
-                        scope = ( ILifetimeScope ) d.GetValue (
-                                                               AttachedProperties
-                                                                  .LifetimeScopeProperty
-                                                              ) ;
-                    }
-                }
-            }
-
-            if ( scope != null )
-            {
-                var funcType = typeof ( Func < , > ).MakeGenericType ( ParameterType, ComponentType ) ;
-                var enumerablefuncType = typeof ( IEnumerable <> ).MakeGenericType ( funcType ) ;
-                var p1= (IEnumerable)scope.Resolve ( enumerablefuncType ) ;
-                IList l = new ArrayList();
-                foreach ( var x in p1 )
-                {
-                    try
-                    {
-                        var x1 = ( Delegate ) x ;
-                        var result = x1.DynamicInvoke ( ParameterValue ) ;
-                        l.Add ( result ) ;
-                    }
-                    catch ( Exception ex )
-                    {
-                        Debug.WriteLine(ex.ToString());
-                    }
-                }
-
-                return l ;
-                var provideValue = scope.Resolve (
-                                                  typeof ( IEnumerable <> ).MakeGenericType ( ComponentType )
-                                                 ) ;
-                if ( provideValue is IEnumerable e )
-                {
-                    foreach ( var o in e )
-                    {
-                        l.Add ( o ) ;
+                        throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
                     }
 
-                    
+
+                    var p = ( IAmbientProvider ) serviceProvider.GetService (
+                                                                             typeof (
+                                                                                 IAmbientProvider )
+                                                                            ) ;
+                    ILifetimeScope scope = null ;
+                    var service = serviceProvider.GetService ( typeof ( IProvideValueTarget ) ) ;
+                    if ( service != null )
+                    {
+                        var pp = ( IProvideValueTarget ) service ;
+
+                        var o = pp.TargetObject ;
+                        if ( o is DependencyObject d )
+                        {
+                            scope = ( ILifetimeScope ) d.GetValue (
+                                                                   AttachedProperties
+                                                                      .LifetimeScopeProperty
+                                                                  ) ;
+                        }
+                    }
+
+                    if ( scope == null )
+                    {
+                        var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
+                        if ( svc != null )
+                        {
+                            var rootP = ( IRootObjectProvider ) svc ;
+                            if ( rootP.RootObject is DependencyObject d )
+                            {
+                                scope = ( ILifetimeScope ) d.GetValue (
+                                                                       AttachedProperties
+                                                                          .LifetimeScopeProperty
+                                                                      ) ;
+                            }
+                        }
+                    }
+
+                    if ( scope != null )
+                    {
+                        var funcType =
+                            typeof ( Func < , > ).MakeGenericType (
+                                                                   ParameterType
+                                                                 , ComponentType
+                                                                  ) ;
+                        var enumerablefuncType =
+                            typeof ( IEnumerable <> ).MakeGenericType ( funcType ) ;
+                        var p1 = ( IEnumerable ) scope.Resolve ( enumerablefuncType ) ;
+                        IList l = new ArrayList ( ) ;
+                        foreach ( var x in p1 )
+                        {
+                            try
+                            {
+                                var x1 = ( Delegate ) x ;
+                                var result = x1.DynamicInvoke ( ParameterValue ) ;
+                                l.Add ( result ) ;
+                            }
+                            catch ( Exception ex )
+                            {
+                                Debug.WriteLine ( ex.ToString ( ) ) ;
+                            }
+                        }
+
+                        return l ;
+                        var provideValue = scope.Resolve (
+                                                          typeof ( IEnumerable <> )
+                                                             .MakeGenericType ( ComponentType )
+                                                         ) ;
+                        if ( provideValue is IEnumerable e )
+                        {
+                            foreach ( var o in e )
+                            {
+                                l.Add ( o ) ;
+                            }
+                        }
+
+                        return l ;
+                    }
+                    else
+                    {
+                        throw new Exception ( "No lifetime scope" ) ;
+                    }
                 }
-                return l;
-            }
-            else
-            {
-                throw new Exception ( "No lifetime scope" ) ;
+                finally
+                {
+                    GlobalDiagnosticsContext.Remove("CurrentOperation");
+                }
             }
         }
         #endregion

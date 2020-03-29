@@ -97,6 +97,7 @@
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="Syntax\PojoCompilationUnit.cs" />
+    <Compile Include="TypeWriter.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
     <Compile Include="CodeAnalyseContext.cs" />
     <Compile Include="CodeAnalyseContext2.cs" />

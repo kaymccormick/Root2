@@ -30,20 +30,31 @@ namespace ProjInterface
                 , disableRuntimeConfiguration
                 , disableServiceHost
                 , new IModule[] { new ProjInterfaceModule ( ) , new AnalysisControlsModule ( ) }
+                  , () => PopulateJsonConverters(disableLogging)
                  )
 
         {
             //PresentationTraceSources.Refresh();
+            //pulateJsonConverters ( disableLogging ) ;
+        }
+
+        private static void PopulateJsonConverters ( bool disableLogging )
+        {
             if ( ! disableLogging )
             {
                 foreach ( var myJsonLayout in LogManager
-                                             .Configuration.AllTargets
-                                             .OfType < TargetWithLayout > ( )
+                                             .Configuration.AllTargets.OfType < TargetWithLayout > ( )
                                              .Select ( t => t.Layout )
                                              .OfType < MyJsonLayout > ( ) )
                 {
-                    var jsonSerializerOptions = myJsonLayout.Options ;
-                    JsonConverters.AddJsonConverters ( jsonSerializerOptions ) ;
+                    var options = new JsonSerializerOptions();
+                    foreach ( var optionsConverter in myJsonLayout.Options.Converters )
+                    {
+                        options.Converters.Add ( optionsConverter ) ;
+                    }
+
+                    JsonConverters.AddJsonConverters ( options ) ;
+                    myJsonLayout.Options = options ;
                 }
             }
             else

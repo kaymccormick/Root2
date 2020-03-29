@@ -13,6 +13,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <ResourceDictionary>
+      
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
@@ -327,8 +328,17 @@
           <kmWpf:MethodInfoConverter
             x:Key="MethodInfoConverter" />
           <kmWpf:ColorConverter x:Key="ColorConverter" />
+          <Style x:Key="S2" TargetType="TextBlock">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Path=DocInfo}" Value="{x:Null}">
+                <Setter Property="Visibility" Value="Hidden"/>
+              </DataTrigger>
+              </Style.Triggers>
+          </Style>
           <Style x:Key="S1" TargetType="TextBlock">
             <Style.Triggers>
+              <DataTrigger Binding="{Binding Path=DocInfo}" Value="{x:Null}">
+              </DataTrigger>
               <DataTrigger
                 Binding="{Binding Path=Type.IsAbstract}"
                 Value="True">
@@ -436,7 +446,7 @@
                     Content="{Binding DocInfo}" />
                 </TextBlock.ToolTip>
               </TextBlock>
-              <TextBlock Grid.ZIndex="100" Grid.Column="0"
+              <TextBlock Style="{StaticResource S2}" Grid.ZIndex="100" Grid.Column="0"
                          Grid.Row="0"
                          HorizontalAlignment="Right" Margin="10,0,10,0">
                 ?

@@ -47,6 +47,7 @@ namespace AnalysisControls
             jsonSerializerOptions.Converters.Add (new JsonLifetimeScopeConverter()  );
             jsonSerializerOptions.Converters.Add(new JsonComponentRegistrationConverterFactory());
             jsonSerializerOptions.Converters.Add(new JsonIViewModelConverterFactory());
+
             //jsonSerializerOptions.Converters.Add ( new JsonFrameworkElementConverter ( ) ) ;
         }
     }

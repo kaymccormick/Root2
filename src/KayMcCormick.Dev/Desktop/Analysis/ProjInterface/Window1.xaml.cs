@@ -41,7 +41,7 @@ namespace ProjInterface
                 throw new ArgumentNullException ( nameof ( viewModel ) ) ;
             }
 
-            var lf = lifetimeScope.BeginLifetimeScope(
+            var lf = lifetimeScope.BeginLifetimeScope("Window1 lifetimescope",
                                                       builder => {
                                                           builder.RegisterInstance (
                                                                                     new

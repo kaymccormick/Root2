@@ -41,7 +41,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>Property name used to propagate the value of <see cref="DoInterception"/>.</summary>
         public const string InterceptProperty = "Intercept" ;
 
-        #region Overrides of Module
+        
         /// <summary>
         /// 
         /// </summary>
@@ -56,8 +56,7 @@ namespace KayMcCormick.Dev.Logging
 
             AppBuild ( assembliesToScan , builder ) ;
         }
-        #endregion
-
+        
         private void AppBuild (
             IEnumerable < Assembly > assembliesToScan
           , [ NotNull ] ContainerBuilder         builder
@@ -70,7 +69,7 @@ namespace KayMcCormick.Dev.Logging
 
             builder.Properties[ AssembliesForScanningProperty ] = GetAssembliesForScanning ( ) ;
             #region Autofac Modules
-            builder.RegisterModule < AttributedMetadataModule > ( ) ;
+            // builder.RegisterModule < AttributedMetadataModule > ( ) ;
             builder.RegisterModule < IdGeneratorModule > ( ) ;
 #if MENUS_ENABLE
             builder.RegisterModule < > ( ) ;
@@ -94,9 +93,7 @@ namespace KayMcCormick.Dev.Logging
 
             LogStuff ( ref i ) ;
 
-            #region Assembly scanning
-            
-            #endregion
+          
             #region Interceptors
             if ( DoInterception )
             {
@@ -167,7 +164,7 @@ namespace KayMcCormick.Dev.Logging
                                                                ) ;
 
             reg.Activated += ( o , eventArgs ) => {
-                Logger.Trace ( $"Activated {DescribeComponent ( eventArgs.Component )} (sender={o}, instance={eventArgs.Instance})" ) ;
+                Logger.Trace ( "Activated {desc} (sender={sender}, instance={instance})", DescribeComponent(eventArgs.Component), o, eventArgs.Instance) ;
             } ;
         }
 
