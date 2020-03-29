@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Xml ;
 using System.Xml.Linq ;
+using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
@@ -64,6 +65,9 @@ namespace AnalysisAppLib.ViewModel
 
         private readonly Dictionary < string , TypeDocInfo > _docs ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypesViewModel ( )
         {
             //var path = Path.ChangeExtension ( typeof ( CSharpSyntaxNode ).Assembly.Location , ".xml" ) ;
@@ -282,10 +286,9 @@ namespace AnalysisAppLib.ViewModel
         [ NotNull ]
         public static XmlDocument LoadDoc ( )
         {
-            var xml =
-                @"c:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisAppLib\doc.xml" ;
+            var xml = Resources.doc ;
             var docuDoc = new XmlDocument ( ) ;
-            docuDoc.Load ( xml ) ;
+            docuDoc.LoadXml(xml);
             return docuDoc ;
         }
 
@@ -440,6 +443,9 @@ namespace AnalysisAppLib.ViewModel
             throw new UnrecognizedElementException ( node.GetType ( ).FullName ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AppTypeInfo Root
         {
             get { return root ; }
@@ -673,6 +679,9 @@ namespace AnalysisAppLib.ViewModel
             _parameters = parameters ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Parameters { get { return _parameters ; } }
     }
 
@@ -711,6 +720,9 @@ namespace AnalysisAppLib.ViewModel
         /// <param name="typeParamName"></param>
         public Typeparamref ( string typeParamName ) { _typeParamName = typeParamName ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string TypeParamName { get { return _typeParamName ; } }
     }
 
@@ -724,6 +736,9 @@ namespace AnalysisAppLib.ViewModel
         public Example ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Param : XmlDocElement
     {
         /// <summary>
@@ -754,20 +769,18 @@ namespace AnalysisAppLib.ViewModel
     /// </summary>
     public class Pre : XmlDocElement
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elements"></param>
         public Pre ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
-        public Pre ( XElement element ) : base ( element ) { }
     }
 
     /// <summary>
     /// </summary>
     public class Em : XmlDocElement
     {
-        /// <summary>
-        /// </summary>
-        /// <param name="element"></param>
-        public Em ( XElement element ) : base ( element ) { }
-
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
@@ -826,11 +839,21 @@ namespace AnalysisAppLib.ViewModel
     {
         private readonly string _xRefId ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xRefId"></param>
         public Crossref ( string xRefId ) { _xRefId = xRefId ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string XRefId { get { return _xRefId ; } }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class XmlDocElement
     {
         private readonly XElement               _element ;
@@ -838,13 +861,23 @@ namespace AnalysisAppLib.ViewModel
 
         public XmlDocElement ( XElement element ) { _element = element ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elements"></param>
         public XmlDocElement ( IEnumerable < XmlDocElement > elements )
         {
             _elements = elements.ToList ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected XmlDocElement ( ) { _elements = new List < XmlDocElement > ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List < XmlDocElement > Elements { get { return _elements ; } }
 
         public override string ToString ( )
@@ -853,11 +886,17 @@ namespace AnalysisAppLib.ViewModel
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Summary : XmlDocElement
     {
         public Summary ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class UnrecognizedElementException : Exception
     {
         public UnrecognizedElementException ( ) { }

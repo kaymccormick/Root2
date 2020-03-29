@@ -7,7 +7,9 @@ using System.Xml ;
 namespace KayMcCormick.Lib.Wpf.Xaml
 {
     /// <summary>
+    /// A converter which generates XAML for the given value and produces an XML Document for use.
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class XamlXmlDocumentConverter : IValueConverter
     {
         #region Implementation of IValueConverter

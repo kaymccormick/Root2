@@ -609,7 +609,7 @@
                 VerticalAlignment="Center"
                 VerticalContentAlignment="Center"
                 Content="Show Content Borders"
-                IsChecked="{Binding ShowBordersIsChecked}" />
+                IsChecked="{Binding ShowBordersIsChecked}" Foreground="#FF873BBC" />
     </StackPanel>
     <ItemsControl Grid.Row="1" Grid.Column="1" Margin="10"
                   x:Name="factoryMethods"

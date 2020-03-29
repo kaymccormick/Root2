@@ -24,15 +24,33 @@ using XamlWriter = System.Xaml.XamlWriter ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum WriteContext { PropertyName , PropertyValue , InArray }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonFrameworkElementConverter : JsonConverterFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="output"></param>
         public JsonFrameworkElementConverter ( ITestOutputHelper output ) { Output = output ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITestOutputHelper Output { get ; }
 
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
             if ( typeof ( FrameworkElement ).IsAssignableFrom ( typeToConvert ) )
@@ -44,7 +62,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
         #endregion
 
-        internal class JsonWriter : XamlWriter
+        internal sealed class JsonWriter : XamlWriter
         {
             private readonly MemoryStream      _memoryStream ;
             private readonly ITestOutputHelper _output ;
