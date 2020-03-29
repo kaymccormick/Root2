@@ -22,11 +22,9 @@ using NLog ;
 namespace AnalysisControls
 {
     /// <summary>
-    /// 
     /// </summary>
     public sealed class Visitor4 : CSharpSyntaxWalker
     {
-        
         private readonly TaskScheduler          _t ;
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer          _ctl ;
@@ -39,11 +37,10 @@ namespace AnalysisControls
 #else
         private static Logger Logger = LogManager.CreateNullLogger();
 #endif
-        private readonly List < double >  _lineStart = new List < double > ( ) ;
+        private readonly List < double > _lineStart = new List < double > ( ) ;
 
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="t"></param>
         /// <param name="ctx"></param>
@@ -57,7 +54,6 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
@@ -68,7 +64,6 @@ namespace AnalysisControls
 
         #region Overrides of CSharpSyntaxWalker
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="node"></param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -89,10 +84,7 @@ namespace AnalysisControls
 
             base.Visit ( node ) ;
 
-            _ctx.Post (
-                       state => _ctl.EndNode ( node )
-                     , null
-                      ) ;
+            _ctx.Post ( state => _ctl.EndNode ( node ) , null ) ;
         }
 
         private void RecordLocation ( [ NotNull ] Location getLocation , out bool newLine )
@@ -110,9 +102,7 @@ namespace AnalysisControls
                 {
                     if ( _curLine >= 0 )
                     {
-
                         Logger.Trace ( "Insert New line {line}" , _curLine ) ;
-
                     }
                 }
 #if DEBUG
@@ -132,17 +122,14 @@ namespace AnalysisControls
                 Logger.Trace ( "add to blocks" ) ;
 
                 _isAtStartOfLine = true ;
-                
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public List < double > LineStart => _lineStart ;
+        public List < double > LineStart { get { return _lineStart ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="token"></param>
         public override void VisitToken ( SyntaxToken token )
@@ -172,7 +159,7 @@ namespace AnalysisControls
             }
 
             _ctx.Post (
-                       ( state ) => {
+                       state => {
                            if ( newLine )
                            {
                                _ctl.NewLine ( ) ;
@@ -212,7 +199,7 @@ namespace AnalysisControls
             }
 
             _ctx.Post (
-                       ( state ) => {
+                       state => {
                            if ( newLine )
                            {
                                _ctl.NewLine ( ) ;

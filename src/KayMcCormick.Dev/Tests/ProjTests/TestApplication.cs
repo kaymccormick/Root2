@@ -16,13 +16,13 @@ namespace ProjTests
 {
     public class TestApplication : Application
     {
-        private TaskCompletionSource < bool > _tcs ;
-        public  TaskCompletionSource < bool > TCS { get { return _tcs ; } set { _tcs = value ; } }
+        public TaskCompletionSource < bool > TCS { get ; set ; }
+
         #region Overrides of Application
         protected override void OnExit ( ExitEventArgs e )
         {
             base.OnExit ( e ) ;
-            _tcs.TrySetResult ( true ) ;
+            TCS.TrySetResult ( true ) ;
         }
 
         protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }

@@ -4,10 +4,9 @@ using System.Windows.Markup ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
-    [ContentProperty(nameof(Content))]
-    public class ContentControlView : ContentControl, IControlView 
+    [ ContentProperty ( nameof ( Content ) ) ]
+    public class ContentControlView : ContentControl , IControlView
     {
     }
 }

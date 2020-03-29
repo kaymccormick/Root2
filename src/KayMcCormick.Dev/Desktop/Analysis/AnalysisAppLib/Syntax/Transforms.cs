@@ -9,9 +9,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 namespace AnalysisAppLib.Syntax
 {
     /// <summary>
-    /// Transforms for Code Analysis nodes.
+    ///     Transforms for Code Analysis nodes.
     /// </summary>
-    
     public static class Transforms
     {
         /// <summary>Transforms the expr.</summary>
@@ -98,8 +97,7 @@ namespace AnalysisAppLib.Syntax
                         return new
                                {
                                    ac.RawKind
-                                 , Kind = ac.Kind ( ).ToString ( )
-                                   
+                                 , Kind     = ac.Kind ( ).ToString ( )
                                  , InitExpr = ac.Initializer.Expressions.Select ( TransformExpr )
                                  , ac.Type.ElementType
                                  , RankSpec = ac.Type.RankSpecifiers.Select (
@@ -315,7 +313,6 @@ namespace AnalysisAppLib.Syntax
                                                                          recursivePatternSyntax
                                                                             .PropertyPatternClause
                                                                         )
-                               
                              , Type = TransformTypeSyntax ( recursivePatternSyntax.Type )
                            } ;
                 case VarPatternSyntax varPatternSyntax :
@@ -405,7 +402,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform operator token.
+        ///     Transform operator token.
         /// </summary>
         /// <param name="condOperatorToken"></param>
         /// <returns></returns>
@@ -415,7 +412,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform <see cref="ParameterSyntax"/>
+        ///     Transform <see cref="ParameterSyntax" />
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -436,7 +433,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform identifier.
+        ///     Transform identifier.
         /// </summary>
         /// <param name="argIdentifier"></param>
         /// <returns></returns>
@@ -451,10 +448,9 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform TypeSyntax
+        ///     Transform TypeSyntax
         /// </summary>
         /// <param name="argType"></param>
-        /// 
         /// <returns></returns>
         public static object TransformTypeSyntax ( [ NotNull ] TypeSyntax argType )
         {
@@ -501,7 +497,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform NameSyntax
+        ///     Transform NameSyntax
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -515,7 +511,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform SimpleNameSyntax
+        ///     Transform SimpleNameSyntax
         /// </summary>
         /// <param name="simple"></param>
         /// <returns></returns>
@@ -536,7 +532,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform an IdentifierNameSyntax to an appropriate structure.
+        ///     Transform an IdentifierNameSyntax to an appropriate structure.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -551,7 +547,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform GenericNameSyntax
+        ///     Transform GenericNameSyntax
         /// </summary>
         /// <param name="gen"></param>
         /// <returns></returns>
@@ -575,7 +571,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform TypeSyntax as a GenericNameTypeArgument.
+        ///     Transform TypeSyntax as a GenericNameTypeArgument.
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -585,7 +581,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform a statement (simply calls ToString())
+        ///     Transform a statement (simply calls ToString())
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -667,7 +663,7 @@ namespace AnalysisAppLib.Syntax
 
 
         /// <summary>
-        /// Transform keywords <see cref="SyntaxToken"/>
+        ///     Transform keywords <see cref="SyntaxToken" />
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
@@ -677,7 +673,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform <see cref="InterpolatedStringContentSyntax"/>
+        ///     Transform <see cref="InterpolatedStringContentSyntax" />
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -701,11 +697,10 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// Transform method symbol.
+        ///     Transform method symbol.
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        
         public static object TransformMethodSymbol ( [ NotNull ] IMethodSymbol method )
         {
             if ( method == null )
@@ -828,7 +823,6 @@ namespace AnalysisAppLib.Syntax
                     return new
                            {
                                Statements =
-                                   
                                    baseMethodDeclarationSyntax.Body.Statements.Select (
                                                                                        TransformStatement
                                                                                       )
@@ -1428,7 +1422,6 @@ namespace AnalysisAppLib.Syntax
                      , Kind = arg.Kind ( ).ToString ( )
                      , Name = TransformNameSyntax ( arg.Name )
                      , ArgumentList =
-                           
                            arg.ArgumentList.Arguments.Select ( TransformAttributeArgumentSyntax )
                    } ;
         }

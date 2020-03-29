@@ -1,13 +1,11 @@
 ﻿namespace KayMcCormick.Dev.Service
 {
     /// <summary>
-    /// 
     /// </summary>
-    public class WireInstanceInfo
+    public sealed class WireInstanceInfo
     {
         /// <summary>
-        /// 
         /// </summary>
-        public string Desc { get; set; }
+        public string Desc { get ; set ; }
     }
 }

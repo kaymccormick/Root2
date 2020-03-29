@@ -1,11 +1,9 @@
 using System ;
 using System.Globalization ;
-using System.Windows ;
 using System.Windows.Data ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-
     /// <summary>Helper converter to get info on types.</summary>
     /// <seealso cref="System.Windows.Data.IValueConverter" />
     public class TypeInfoConverter : IValueConverter
@@ -13,7 +11,6 @@ namespace KayMcCormick.Lib.Wpf
     {
         #region Implementation of IValueConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -27,9 +24,13 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-            Type source = ( Type ) value ;
-            if ( value == null ) return null;
-            if ( (string)parameter == "Interfaces" )
+            var source = ( Type ) value ;
+            if ( value == null )
+            {
+                return null ;
+            }
+
+            if ( ( string ) parameter == "Interfaces" )
             {
                 return source.GetInterfaces ( ) ;
             }
@@ -38,14 +39,21 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
         #endregion
     }
 }

@@ -26,7 +26,7 @@ namespace AnalysisAppLib
             private set ;
         }
 
-        
+
         private readonly List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
 
         private DataflowLinkOptions _linkOptions =
@@ -172,6 +172,7 @@ namespace AnalysisAppLib
             }
 
 
+            [ NotNull ]
             public static TransformManyBlock < Workspace , Document > SolutionDocumentsBlock ( )
             {
                 return new TransformManyBlock < Workspace , Document > (
@@ -216,8 +217,7 @@ namespace AnalysisAppLib
 
         internal static class DataflowBlocks
         {
-            private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
+            [ NotNull ]
             public static TransformManyBlock < Document , ILogInvocation > FindLogUsages1 (
                 Func < ILogInvocation >      invocationFactory
               , BufferBlock < RejectedItem > rejectBlock
@@ -282,6 +282,5 @@ namespace AnalysisAppLib
 
     public class MyTest
     {
-
     }
 }

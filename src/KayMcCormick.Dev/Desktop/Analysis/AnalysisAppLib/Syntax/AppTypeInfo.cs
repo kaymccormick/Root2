@@ -24,48 +24,50 @@ using JetBrains.Annotations ;
 namespace AnalysisAppLib.Syntax
 {
     /// <summary>
-    ///   <para>Represents a Syntax Node type in the application.</para>
-    ///   <para></para>
+    ///     <para>Represents a Syntax Node type in the application.</para>
+    ///     <para></para>
     /// </summary>
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
-        private Type                   _type ;
-        private string                 _title ;
-        private ObservableCollection < AppMethodInfo >    _factoryMethods = new ObservableCollection < AppMethodInfo > ( ) ;
-        private ObservableCollection < ComponentInfo > _components     = new ObservableCollection < ComponentInfo > ( ) ;
-        private AppTypeInfo _parentInfo ;
         private readonly ObservableCollection < AppTypeInfo > _subTypeInfos ;
-        private int _hierarchyLevel ;
-        private uint? _colorValue ;
+        private          uint ?                               _colorValue ;
+
+        private ObservableCollection < ComponentInfo > _components =
+            new ObservableCollection < ComponentInfo > ( ) ;
+
+        private ObservableCollection < AppMethodInfo > _factoryMethods =
+            new ObservableCollection < AppMethodInfo > ( ) ;
+
+        private int         _hierarchyLevel ;
+        private AppTypeInfo _parentInfo ;
+        private string      _title ;
+        private Type        _type ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="subTypeInfos"></param>
         public AppTypeInfo ( ObservableCollection < AppTypeInfo > subTypeInfos = null )
         {
-
             if ( subTypeInfos == null )
             {
                 subTypeInfos = new ObservableCollection < AppTypeInfo > ( ) ;
             }
 
-            subTypeInfos.CollectionChanged += ( sender , args ) => OnPropertyChanged ( nameof ( SubTypeInfos ) ) ;
-            _components.CollectionChanged +=
-                ( sender , args ) => OnPropertyChanged ( nameof ( Components ) ) ;
-            _factoryMethods.CollectionChanged +=( sender , args ) => OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
+            subTypeInfos.CollectionChanged += ( sender , args )
+                => OnPropertyChanged ( nameof ( SubTypeInfos ) ) ;
+            _components.CollectionChanged += ( sender , args )
+                => OnPropertyChanged ( nameof ( Components ) ) ;
+            _factoryMethods.CollectionChanged += ( sender , args )
+                => OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
             _subTypeInfos = subTypeInfos ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public AppTypeInfo ( ) :this(null) {
-        }
+        public AppTypeInfo ( ) : this ( null ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         public Type Type
         {
@@ -73,14 +75,13 @@ namespace AnalysisAppLib.Syntax
             set
             {
                 _type = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
                 var title = _type.Name.Replace ( "Syntax" , "" ) ;
                 Title = Regex.Replace ( title , "([a-z])([A-Z])" , @"$1 $2" ) ;
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public string Title
         {
@@ -88,17 +89,15 @@ namespace AnalysisAppLib.Syntax
             set
             {
                 _title = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public ObservableCollection < AppTypeInfo > SubTypeInfos { get { return _subTypeInfos ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public ObservableCollection < AppMethodInfo > FactoryMethods
         {
@@ -106,59 +105,57 @@ namespace AnalysisAppLib.Syntax
             set
             {
                 _factoryMethods = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        [JsonIgnore]
+        [ JsonIgnore ]
         public ObservableCollection < ComponentInfo > Components
         {
             get { return _components ; }
             set
             {
                 _components = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         [ NotNull ] public IEnumerable < ComponentInfo > AllComponents
         {
             get
             {
                 var type = ParentInfo ;
-                IEnumerable < ComponentInfo > allComponentInfos =
-                    Components?.ToList() ?? Enumerable.Empty < ComponentInfo > ( ) ;
+                var allComponentInfos =
+                    Components?.ToList ( ) ?? Enumerable.Empty < ComponentInfo > ( ) ;
                 while ( type != null )
                 {
                     allComponentInfos = allComponentInfos.Concat (
-                                              type.Components.Select (
-                                                                                 info
-                                                                                     => new
-                                                                                        ComponentInfo
-                                                                                        {
-                                                                                            OwningTypeInfo
-                                                                                                = info
-                                                                                                   .OwningTypeInfo
-                                                                                          , IsList =
-                                                                                                info
-                                                                                                   .IsList
-                                                                                          , IsSelfOwned
-                                                                                                = false
-                                                                                          , PropertyName
-                                                                                                = info
-                                                                                                   .PropertyName
-                                                                                          , TypeInfo
-                                                                                                = info
-                                                                                                   .TypeInfo
-                                                                                        }
-                                                                                )
-                                             ) ;
+                                                                  type.Components.Select (
+                                                                                          info
+                                                                                              => new
+                                                                                                 ComponentInfo
+                                                                                                 {
+                                                                                                     OwningTypeInfo
+                                                                                                         = info
+                                                                                                            .OwningTypeInfo
+                                                                                                   , IsList
+                                                                                                         = info
+                                                                                                            .IsList
+                                                                                                   , IsSelfOwned
+                                                                                                         = false
+                                                                                                   , PropertyName
+                                                                                                         = info
+                                                                                                            .PropertyName
+                                                                                                   , TypeInfo
+                                                                                                         = info
+                                                                                                            .TypeInfo
+                                                                                                 }
+                                                                                         )
+                                                                 ) ;
                     type = type.ParentInfo ;
                 }
 
@@ -167,24 +164,19 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        [JsonIgnore]
+        [ JsonIgnore ]
         public AppTypeInfo ParentInfo
         {
-            get
-            {
-                return _parentInfo ;
-            }
+            get { return _parentInfo ; }
             set
             {
                 _parentInfo = value ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public int HierarchyLevel
         {
@@ -193,17 +185,14 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public uint ? ColorValue { get { return _colorValue ; } set { _colorValue = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public TypeDocumentation DocInfo { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
@@ -215,39 +204,33 @@ namespace AnalysisAppLib.Syntax
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public sealed class AppMethodInfo
     {
         private MethodInfo _methodInfo ;
 
         /// <summary>
-        /// 
         /// </summary>
-        [JsonIgnore]
+        [ JsonIgnore ]
         public MethodInfo MethodInfo { get { return _methodInfo ; } set { _methodInfo = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        [ CanBeNull ] public Type ReflectedType => MethodInfo.ReflectedType ;
+        [ CanBeNull ] public Type ReflectedType { get { return MethodInfo.ReflectedType ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public Type DeclaringType => MethodInfo.DeclaringType ;
+        public Type DeclaringType { get { return MethodInfo.DeclaringType ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public string MethodName => MethodInfo.Name ;
+        public string MethodName { get { return MethodInfo.Name ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public Type ReturnType => MethodInfo.ReturnType ;
+        public Type ReturnType { get { return MethodInfo.ReturnType ; } }
+
         /// <summary>
-        /// 
         /// </summary>
         public IEnumerable < AppParameterInfo > Parameters
         {
@@ -267,7 +250,6 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public MethodDocumentation XmlDoc { get ; set ; }
     }

@@ -2,10 +2,18 @@
 
 namespace AnalysisControls.Scripting
 {
-    public class MyEvtArgs < T > : EventArgs
+    /// <summary>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public sealed class MyEvtArgs < T > : EventArgs
     {
-        public T Value { get ; private set ; }
-
+        /// <summary>
+        /// </summary>
+        /// <param name="value"></param>
         public MyEvtArgs ( T value ) { Value = value ; }
+
+        /// <summary>
+        /// </summary>
+        public T Value { get ; }
     }
 }

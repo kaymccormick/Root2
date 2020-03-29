@@ -1,7 +1,7 @@
-﻿using KayMcCormick.Dev ;
-using NLog ;
-using System ;
+﻿using System ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
+using NLog ;
 
 namespace ConfigTest
 {
@@ -39,7 +39,7 @@ namespace ConfigTest
             x.Initialize ( ) ;
             x.Startup ( ) ;
             Utils.PerformLogConfigDump ( Console.Out ) ;
-            Logger.Info ( "{test}" , new Test1 ( ) { Test2 = new Test2 ( ) { Hello = "derp" } } ) ;
+            Logger.Info ( "{test}" , new Test1 { Test2 = new Test2 { Hello = "derp" } } ) ;
             LogManager.GetCurrentClassLogger ( ).Info ( "Test log message" ) ;
             // using ( var client = new AppInfoServiceClient ( ) )
             // {

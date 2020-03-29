@@ -7,4 +7,4 @@
   xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
   xmlns:projInterface="clr-namespace:ProjInterface"
   xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib">
-  </ResourceDictionary>
+</ResourceDictionary>

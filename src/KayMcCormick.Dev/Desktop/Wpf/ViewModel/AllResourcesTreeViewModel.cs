@@ -27,23 +27,18 @@ using KayMcCormick.Dev.Interfaces ;
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
-    /// 
     /// </summary>
     public sealed class AllResourcesTreeViewModel
     {
-        private readonly ILifetimeScope    _lifetimeScope ;
-        private readonly IObjectIdProvider _idProvider ;
-
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
+        private readonly IObjectIdProvider _idProvider ;
+        private readonly ILifetimeScope    _lifetimeScope ;
+
         private ResourceNodeInfo _appNode ;
 
-        private ObservableCollection < ResourceNodeInfo > _allResourcesItemList =
-            new ObservableCollection < ResourceNodeInfo > ( ) ;
-
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
@@ -57,34 +52,38 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             PopulateResourcesTree ( ) ;
         }
 
-        private void PopulateResourcesTree ( )
-        {
-            try
-            {
-                if ( IsEnabledPopulateObjects )
-                {
-                    PopulateObjects ( ) ;
-                }
-
-                PopulateLifetimeScope ( _lifetimeScope , CreateNode ( null , "LifetimeScope" , _lifetimeScope , true ) ) ;
-
-                PopulateAppNode ( ) ;
-            }
-
-            
-            catch ( Exception ex )
-
-            {
-                throw ;
-            }
-        }
-
         /// <summary>
-        /// 
         /// </summary>
         public bool IsEnabledPopulateObjects { get ; set ; } = true ;
 
-        
+        /// <summary>
+        /// </summary>
+        public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
+        {
+            get { return _allResourcesCollection ; }
+        }
+
+        /// <summary>
+        /// </summary>
+        public ObservableCollection < ResourceNodeInfo > AllResourcesItemList { get ; set ; } =
+            new ObservableCollection < ResourceNodeInfo > ( ) ;
+
+        private void PopulateResourcesTree ( )
+        {
+            if ( IsEnabledPopulateObjects )
+            {
+                PopulateObjects ( ) ;
+            }
+
+            PopulateLifetimeScope (
+                                   _lifetimeScope
+                                 , CreateNode ( null , "LifetimeScope" , _lifetimeScope , true )
+                                  ) ;
+
+            PopulateAppNode ( ) ;
+        }
+
+
         private void PopulateObjects ( )
         {
             var n1 = CreateNode ( null , "Objects" , null , false ) ;
@@ -95,27 +94,30 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 foreach ( var instanceInfo in c.Instances )
                 {
                     var n3 = CreateNode ( n2 , instanceInfo , instanceInfo , true ) ;
-                    var type = instanceInfo.Instance.GetType() ;
+                    var type = instanceInfo.Instance.GetType ( ) ;
                     if ( type.IsGenericType
                          && type.GetGenericTypeDefinition ( ) == typeof ( Meta <> ) )
                     {
-                        IDictionary <string, object> metadata = ( IDictionary < string , object > ) type.GetProperty ( "Metadata" ).GetValue(instanceInfo.Instance) ;
-                        var c4 = CreateNode ( n3 , "Metadata" , metadata, true) ;
+                        var metadata = ( IDictionary < string , object > ) type
+                                                                          .GetProperty (
+                                                                                        "Metadata"
+                                                                                       )
+                                                                          .GetValue (
+                                                                                     instanceInfo
+                                                                                        .Instance
+                                                                                    ) ;
+                        var c4 = CreateNode ( n3 , "Metadata" , metadata , true ) ;
                         foreach ( var keyValuePair in metadata )
                         {
-                            CreateNode (
-                                                 c4
-                                               , keyValuePair.Key
-                                               , keyValuePair.Value
-                                               , false
-                                                ) ;
-
+                            CreateNode ( c4 , keyValuePair.Key , keyValuePair.Value , false ) ;
                         }
                     }
-                    CreateNode ( n3 , key : instanceInfo.Instance , data : instanceInfo.Instance , false ) ;
-                    if ( instanceInfo.Instance is LifetimeScope ls)
+
+                    CreateNode ( n3 , instanceInfo.Instance , instanceInfo.Instance , false ) ;
+                    if ( instanceInfo.Instance is LifetimeScope ls )
                     {
                     }
+
                     if ( instanceInfo.Instance is FrameworkElement fe )
                     {
                         var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
@@ -131,7 +133,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        
+
         private void PopulateInstances (
             ResourceNodeInfo       res
           , IComponentRegistration registration
@@ -173,7 +175,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 parent.Children.Add ( r ) ;
             }
 
-            _allResourcesItemList.Add ( r ) ;
+            AllResourcesItemList.Add ( r ) ;
             return r ;
         }
 
@@ -229,23 +231,6 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
-        {
-            get { return _allResourcesCollection ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection < ResourceNodeInfo > AllResourcesItemList
-        {
-            get { return _allResourcesItemList ; }
-            set { _allResourcesItemList = value ; }
-        }
-
         private void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
         {
             if ( resNode == null )
@@ -281,14 +266,13 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 {
                     switch ( rkey )
                     {
-                        
                         case ComponentResourceKey componentResourceKey : break ;
 
-                        
+
                         case ItemContainerTemplateKey itemContainerTemplateKey : break ;
-                        
+
                         case DataTemplateKey dataTemplateKey : break ;
-                        
+
                         case TemplateKey templateKey : break ;
                         default :
                             key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
@@ -347,7 +331,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         [ CanBeNull ]
         private static object WrapValue ( object data )
         {
-            object wrapped = data ;
+            var wrapped = data ;
             if ( data is UIElement uie )
             {
                 wrapped = new ControlWrap < UIElement > ( uie ) ;

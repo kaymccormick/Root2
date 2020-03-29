@@ -1,14 +1,11 @@
 ﻿namespace KayMcCormick.Dev.Service
 {
     /// <summary>
-    /// 
     /// </summary>
-    public class LoggerInfo
+    public sealed class LoggerInfo
     {
         /// <summary>
-        /// 
         /// </summary>
-        public string TargetName { get; set; }
-
+        public string TargetName { get ; set ; }
     }
 }

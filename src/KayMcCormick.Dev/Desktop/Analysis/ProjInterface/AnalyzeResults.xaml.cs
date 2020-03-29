@@ -1,17 +1,12 @@
-﻿using System.Windows;
+﻿using System.Windows ;
 
 namespace ProjInterface
 {
     /// <summary>
-    /// Interaction logic for AnalyzeResults.xaml
+    ///     Interaction logic for AnalyzeResults.xaml
     /// </summary>
     public partial class AnalyzeResults : Window
     {
-        
-        public AnalyzeResults ( )
-        {
-            
-            InitializeComponent();
-        }
+        public AnalyzeResults ( ) { InitializeComponent ( ) ; }
     }
 }

@@ -15,20 +15,16 @@ using System.Text ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
-using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-
     /// <summary>
-    /// 
     /// </summary>
     public class CustomDataTemplateSelector : DataTemplateSelector
 
     {
         #region Overrides of DataTemplateSelector
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="container"></param>
@@ -40,7 +36,7 @@ namespace KayMcCormick.Lib.Wpf
                 return base.SelectTemplate ( item , container ) ;
             }
 
-            Func < object , DependencyObject, DataTemplate > baseFunc = base.SelectTemplate ;
+            Func < object , DependencyObject , DataTemplate > baseFunc = base.SelectTemplate ;
             var itemRepr = item.ToString ( ) ;
             if ( itemRepr.Length > 40 )
             {
@@ -51,13 +47,17 @@ namespace KayMcCormick.Lib.Wpf
             var containerRepr = new StringBuilder ( container.ToString ( ) ) ;
             if ( container is FrameworkElement fe )
             {
-                object name = null;
+                object name = null ;
                 while ( fe != null )
                 {
                     name = fe.GetValue ( FrameworkElement.NameProperty ) ;
-                    if (! String.IsNullOrEmpty(( string ) name)) break ;
+                    if ( ! string.IsNullOrEmpty ( ( string ) name ) )
+                    {
+                        break ;
+                    }
+
                     var orig = fe ;
-                    FrameworkElement visualParent = ( FrameworkElement ) VisualTreeHelper.GetParent ( fe ) ;
+                    var visualParent = ( FrameworkElement ) VisualTreeHelper.GetParent ( fe ) ;
                     //fe = ( FrameworkElement ) LogicalTreeHelper.GetParent ( fe ) ;
                     fe = visualParent ;
                     // fe = ( FrameworkElement ) fe.Parent ;
@@ -74,10 +74,12 @@ namespace KayMcCormick.Lib.Wpf
                     containerRepr.Append ( fe.GetType ( ).FullName ) ;
                 }
             }
+
             Debug.WriteLine (
                              $"{GetType ( ).FullName} calling TemplateSelectorHelper.HelpSelectDataTemplate with {itemRepr}, {containerRepr} and base.SelectTemplate"
                             ) ;
-            var template = TemplateSelectorHelper.HelpSelectDataTemplate ( item , container , baseFunc ) ;
+            var template =
+                TemplateSelectorHelper.HelpSelectDataTemplate ( item , container , baseFunc ) ;
             return template ;
         }
         #endregion

@@ -17,9 +17,9 @@ namespace ProjInterface
         /// <returns>A converted value. If the method returns <see langword="null" />, the valid null value is used.</returns>
         public object Convert (
             object      value
-          , Type        targetType
-          , object      parameter
-          , CultureInfo culture
+      , Type        targetType
+      , object      parameter
+      , CultureInfo culture
         )
         {
             IMruItem item = ( IMruItem ) value ;

@@ -7,7 +7,6 @@ using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
 using AnalysisAppLib.ViewModel ;
-using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Features.Metadata ;
@@ -23,46 +22,55 @@ namespace ProjInterface
     [ TitleMetadata ( "Docking window" ) ]
     public sealed partial class Window1 : AppWindow , IViewWithTitle , IView < DockWindowViewModel >
     {
-        private readonly string              _viewTitle = "Docking window" ;
-        private DockWindowViewModel _viewModel ;
+        private static readonly Logger Logger =
+            LogManager.GetCurrentClassLogger ( ) ;
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly string              _viewTitle = "Docking window" ;
+        private          DockWindowViewModel _viewModel ;
 
         public Window1 ( ) { InitializeComponent ( ) ; }
 
-        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope , [ NotNull ] DockWindowViewModel viewModel )
+        public Window1 (
+            [ NotNull ] ILifetimeScope      lifetimeScope
+          , [ NotNull ] DockWindowViewModel viewModel
+        )
         {
             if ( lifetimeScope == null )
             {
                 throw new ArgumentNullException ( nameof ( lifetimeScope ) ) ;
             }
+
             if ( viewModel == null )
             {
                 throw new ArgumentNullException ( nameof ( viewModel ) ) ;
             }
 
-            var lf = lifetimeScope.BeginLifetimeScope("Window1 lifetimescope",
-                                                      builder => {
-                                                          builder.RegisterInstance (
-                                                                                    new
-                                                                                        LayoutService (
-                                                                                                       leftAnchorablePane
-                                                                                                      )
-                                                                                   )
-                                                                 .SingleInstance ( ) ;
-                                                          builder.RegisterInstance (
-                                                                                    new
-                                                                                        PaneService ( )
-                                                                                   )
-                                                                 .SingleInstance ( ) ;
-                                                          builder.RegisterType<HandleExceptionImpl>()
-                                                                 .As<IHandleException>().InstancePerLifetimeScope();
-                                                      }
-                                                     );
-            SetValue(AttachedProperties.LifetimeScopeProperty, lf);
-            lifetimeScope.ResolveOperationBeginning += (sender, args) => {
-                throw new AppComponentException("New lifetime scope should be used instead.");
-            };
+            var lf = lifetimeScope.BeginLifetimeScope (
+                                                       "Window1 lifetimescope"
+                                                     , builder => {
+                                                           builder.RegisterInstance (
+                                                                                     new
+                                                                                         LayoutService (
+                                                                                                        leftAnchorablePane
+                                                                                                       )
+                                                                                    )
+                                                                  .SingleInstance ( ) ;
+                                                           builder.RegisterInstance (
+                                                                                     new
+                                                                                         PaneService ( )
+                                                                                    )
+                                                                  .SingleInstance ( ) ;
+                                                           builder
+                                                              .RegisterType < HandleExceptionImpl
+                                                               > ( )
+                                                              .As < IHandleException > ( )
+                                                              .InstancePerLifetimeScope ( ) ;
+                                                       }
+                                                      ) ;
+            SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
+            lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
+                throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
+            } ;
 
             ViewModel = viewModel ;
             var wih = new WindowInteropHelper ( this ) ;
@@ -71,48 +79,6 @@ namespace ProjInterface
             InitializeComponent ( ) ;
         }
 
-        #region Overrides of FrameworkElement
-        public override void OnApplyTemplate ( )
-        {
-            base.OnApplyTemplate ( ) ;
-           
-
-            AddHandler (
-                        TypeControl.TypeActivatedEvent
-                      , new TypeControl.TypeActivatedEventHandler ( Target )
-                       ) ;
-        }
-
-        private void Target ( object sender , [ NotNull ] TypeActivatedEventArgs e )
-        {
-            if ( e == null )
-            {
-                throw new ArgumentNullException ( nameof ( e ) ) ;
-            }
-
-            BrowserFrame.NavigationService.Navigate (
-                                                     new Page ( )
-                                                     {
-                                                         Content = new TypeInfoControl ( )
-                                                                   {
-                                                                       DataContext = e.ActivatedType
-                                                                   }
-                                                         // Content = new TypeControl ( )
-                                                         //           {
-                                                         //               RenderedType =
-                                                         //                   e.ActivatedType
-                                                         //           }
-                                                     }
-                                                    ) ;
-
-            docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
-            Debug.WriteLine ( e.ActivatedType.FullName ) ;
-        }
-        #endregion
-        #region Implementation of IView1
-        public string ViewTitle { get { return _viewTitle ; } }
-        #endregion
-
         #region Implementation of IView<out DockWindowViewModel>
         public DockWindowViewModel ViewModel
         {
@@ -120,8 +86,14 @@ namespace ProjInterface
             set { _viewModel = value ; }
         }
         #endregion
+        #region Implementation of IView1
+        public string ViewTitle { get { return _viewTitle ; } }
+        #endregion
 
-        private void CommandBinding_OnExecuted ( object sender , [ NotNull ] ExecutedRoutedEventArgs e )
+        private void CommandBinding_OnExecuted (
+            object                              sender
+          , [ NotNull ] ExecutedRoutedEventArgs e
+        )
         {
             if ( e == null )
             {
@@ -153,11 +125,13 @@ namespace ProjInterface
 
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
-            System.Windows.Application.Current.Shutdown ( ) ;
+            Application.Current.Shutdown ( ) ;
         }
 
-        private void BrowserFrame_OnNavigating ( object sender , [ NotNull ]
-                                                 NavigatingCancelEventArgs e )
+        private void BrowserFrame_OnNavigating (
+            object                                sender
+          , [ NotNull ] NavigatingCancelEventArgs e
+        )
         {
             if ( e == null )
             {
@@ -169,47 +143,91 @@ namespace ProjInterface
             if ( e.ExtraData is NavState n )
             {
                 t = n.RenderedType ;
-            } else if ( uri != null
-                        && uri.IsAbsoluteUri
-                        && uri.Scheme == "obj" )
+            }
+            else if ( uri != null
+                      && uri.IsAbsoluteUri
+                      && uri.Scheme == "obj" )
             {
                 var stringToUnescape = uri.AbsolutePath.Substring ( 1 ) ;
                 var unescapeDataString = Uri.UnescapeDataString ( stringToUnescape ) ;
-                t=  Type.GetType ( unescapeDataString ) ;
+                t = Type.GetType ( unescapeDataString ) ;
             }
-            if(t != null) {
+
+            if ( t != null )
+            {
                 if ( BrowserFrame.Content is TypeInfoControl tic )
                 {
                     tic.DataContext              = t ;
                     docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
-                    e.Cancel = true ;
-                    
+                    e.Cancel                     = true ;
                 }
             }
         }
 
         private void ExecutePythonCode ( object sender , ExecutedRoutedEventArgs e )
         {
-            var scope = (ILifetimeScope)GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
+            var scope = ( ILifetimeScope ) GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
             var model = scope.Resolve < PythonViewModel > ( ) ;
             model.ExecutePythonScript ( textEditor.Text ) ;
         }
+
+        #region Overrides of FrameworkElement
+        public override void OnApplyTemplate ( )
+        {
+            base.OnApplyTemplate ( ) ;
+
+
+            AddHandler (
+                        TypeControl.TypeActivatedEvent
+                      , new TypeControl.TypeActivatedEventHandler ( Target )
+                       ) ;
+        }
+
+        private void Target ( object sender , [ NotNull ] TypeActivatedEventArgs e )
+        {
+            if ( e == null )
+            {
+                throw new ArgumentNullException ( nameof ( e ) ) ;
+            }
+
+            BrowserFrame.NavigationService.Navigate (
+                                                     new Page
+                                                     {
+                                                         Content = new TypeInfoControl
+                                                                   {
+                                                                       DataContext = e.ActivatedType
+                                                                   }
+                                                         // Content = new TypeControl ( )
+                                                         //           {
+                                                         //               RenderedType =
+                                                         //                   e.ActivatedType
+                                                         //           }
+                                                     }
+                                                    ) ;
+
+            docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+            Debug.WriteLine ( e.ActivatedType.FullName ) ;
+        }
+        #endregion
     }
 
     public class AppComponentException : Exception
     {
-        public AppComponentException ( ) {
-        }
+        public AppComponentException ( ) { }
 
-        public AppComponentException ( string message ) : base ( message )
+        public AppComponentException ( string message ) : base ( message ) { }
+
+        public AppComponentException ( string message , Exception innerException ) : base (
+                                                                                           message
+                                                                                         , innerException
+                                                                                          )
         {
         }
 
-        public AppComponentException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected AppComponentException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected AppComponentException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
         }
     }

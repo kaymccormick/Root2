@@ -8,7 +8,6 @@ using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using Autofac.Core.Registration ;
 using Autofac.Core.Resolving ;
-using Autofac.Extras.AttributeMetadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.AppBuild ;
 using KayMcCormick.Dev.Interfaces ;
@@ -35,15 +34,14 @@ namespace KayMcCormick.Dev.Logging
         private static readonly Random Random = new Random ( ) ;
 
 
-
-
-
-        /// <summary>Property name used to propagate the value of <see cref="DoInterception"/>.</summary>
+        /// <summary>
+        ///     Property name used to propagate the value of
+        ///     <see cref="DoInterception" />.
+        /// </summary>
         public const string InterceptProperty = "Intercept" ;
 
-        
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="builder"></param>
         protected override void Load ( ContainerBuilder builder )
@@ -56,10 +54,10 @@ namespace KayMcCormick.Dev.Logging
 
             AppBuild ( assembliesToScan , builder ) ;
         }
-        
+
         private void AppBuild (
-            IEnumerable < Assembly > assembliesToScan
-          , [ NotNull ] ContainerBuilder         builder
+            IEnumerable < Assembly >     assembliesToScan
+          , [ NotNull ] ContainerBuilder builder
         )
         {
             // Set the property in order to propagate the settings.
@@ -93,7 +91,7 @@ namespace KayMcCormick.Dev.Logging
 
             LogStuff ( ref i ) ;
 
-          
+
             #region Interceptors
             if ( DoInterception )
             {
@@ -130,9 +128,7 @@ namespace KayMcCormick.Dev.Logging
 
             #region Callbacks
             builder.RegisterBuildCallback ( c => Logger.Info ( "Container built." ) ) ;
-            builder.RegisterCallback (
-                                      ConfigurationCallback
-                                     ) ;
+            builder.RegisterCallback ( ConfigurationCallback ) ;
             #endregion
         }
 
@@ -146,8 +142,10 @@ namespace KayMcCormick.Dev.Logging
             registry.Registered += OnRegistryOnRegistered ;
         }
 
-        private void OnRegistryOnRegistered ( object sender , [ NotNull ]
-                                              ComponentRegisteredEventArgs args )
+        private void OnRegistryOnRegistered (
+            object                                   sender
+          , [ NotNull ] ComponentRegisteredEventArgs args
+        )
         {
             if ( args == null )
             {
@@ -164,17 +162,23 @@ namespace KayMcCormick.Dev.Logging
                                                                ) ;
 
             reg.Activated += ( o , eventArgs ) => {
-                object instanceDesc = eventArgs.Instance ;
+                var instanceDesc = eventArgs.Instance ;
                 if ( eventArgs.Instance is Delegate )
                 {
                     instanceDesc = eventArgs.Instance.ToString ( ) ;
                 }
-                Logger.Trace ( "Activated {desc} (sender={sender}, instance={instance})", DescribeComponent(eventArgs.Component), o, instanceDesc) ;
+
+                Logger.Trace (
+                              "Activated {desc} (sender={sender}, instance={instance})"
+                            , DescribeComponent ( eventArgs.Component )
+                            , o
+                            , instanceDesc
+                             ) ;
             } ;
         }
 
         private void SetupContainerOnResolveOperationBeginning (
-            object                             sender
+            object                                         sender
           , [ NotNull ] ResolveOperationBeginningEventArgs e
         )
         {
@@ -200,10 +204,15 @@ namespace KayMcCormick.Dev.Logging
             Logger.Info ( $"{nameof ( ResolveOperationOnCurrentOperationEnding )}" ) ;
         }
 
-        /// <summary>Gets or sets a value indicating whether install interceptors for built objects.</summary>
+        /// <summary>
+        ///     Gets or sets a value indicating whether install interceptors for
+        ///     built objects.
+        /// </summary>
         /// <value>
-        ///   <see language="true"/> to perform interception; otherwise, <see language="false"/>.</value>
-        
+        ///     <see language="true" /> to perform interception; otherwise,
+        ///     <see language="false" />.
+        /// </value>
+
         public bool DoInterception { get ; set ; } = true ;
 
         /// <summary>
@@ -211,18 +220,22 @@ namespace KayMcCormick.Dev.Logging
         ///     registration.
         /// </summary>
         /// <value>
-        ///     <see language="true"/> to trace conditional registration; otherwise,
-        ///     <see language="false"/>.
+        ///     <see language="true" /> to trace conditional registration; otherwise,
+        ///     <see language="false" />.
         /// </value>
-        
+
         public static bool DoTraceConditionalRegistration { get ; set ; }
 
-        /// <summary>Gets or sets a value indicating whether to proxy the ContainerBuilder.</summary>
+        /// <summary>
+        ///     Gets or sets a value indicating whether to proxy the
+        ///     ContainerBuilder.
+        /// </summary>
         /// <value>
-        ///     <see language="true"/> to proxy builder; otherwise, <see language="false"/>.
+        ///     <see language="true" /> to proxy builder; otherwise,
+        ///     <see language="false" />.
         /// </value>
-        
-        
+
+
         public bool DoProxyBuilder { get ; set ; } = true ;
 
         /// <summary>Gets the assemblies for scanning.</summary>
@@ -239,12 +252,17 @@ namespace KayMcCormick.Dev.Logging
             return GetAssembliesForScanningViaTypes ( ) ;
         }
 
-        /// <summary>Gets or sets a value indicating whether [get assemblies via references].</summary>
+        /// <summary>
+        ///     Gets or sets a value indicating whether [get assemblies via
+        ///     references].
+        /// </summary>
         /// <value>
-        ///   <see language="true"/> if [get assemblies via references]; otherwise, <see language="false"/>.</value>
+        ///     <see language="true" /> if [get assemblies via references]; otherwise,
+        ///     <see language="false" />.
+        /// </value>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for GetAssembliesViaReferences
-        
+
         public bool GetAssembliesViaReferences { get ; set ; }
 
         /// <summary>Gets the assemblies for scanning.</summary>
@@ -269,15 +287,15 @@ namespace KayMcCormick.Dev.Logging
             Type[] ary = { typeof ( IHaveObjectId ) , typeof ( LegacyAppBuildModule ) } ;
             var forScanning = ary.Select ( ( type , i ) => type.Assembly ).ToList ( ) ;
             // Logger.Info (
-                         // "Assemblies "
-                         // + string.Join (
-                                        // ", "
-                                      // , forScanning.Select (
-                                                            // ( assembly , i1 )
-                                                                // => assembly.GetName ( ).Name
-                                                           // )
-                                       // )
-                        // ) ;
+            // "Assemblies "
+            // + string.Join (
+            // ", "
+            // , forScanning.Select (
+            // ( assembly , i1 )
+            // => assembly.GetName ( ).Name
+            // )
+            // )
+            // ) ;
             return forScanning ;
         }
 
@@ -314,7 +332,7 @@ namespace KayMcCormick.Dev.Logging
             return $" CompReg w({eventArgsComponent.Id}, {debugDesc})" ;
         }
 
-        
+
         /// <summary>Dumps the specified component registry registration.</summary>
         /// <param name="componentRegistryRegistration">
         ///     The component registry
@@ -369,24 +387,22 @@ namespace KayMcCormick.Dev.Logging
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public class IdGeneratorModule : Module
         {
-            
-            private new static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+            private new static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
             /// <summary>Gets or sets the default object.</summary>
             /// <value>The default object.</value>
             /// <autogeneratedoc />
             /// TODO Edit XML Comment Template for DefaultObject
-            public DefaultObjectIdProvider DefaultObject { get; set; }
+            public DefaultObjectIdProvider DefaultObject { get ; set ; }
 
             /// <summary>Gets or sets the generator.</summary>
             /// <value>The generator.</value>
             /// <autogeneratedoc />
             /// TODO Edit XML Comment Template for Generator
-            public ObjectIDGenerator Generator { get; set; }
+            public ObjectIDGenerator Generator { get ; set ; }
 
             /// <summary>Override to add registrations to the container.</summary>
             /// <remarks>
@@ -396,19 +412,19 @@ namespace KayMcCormick.Dev.Logging
             ///     The builder through which components can be
             ///     registered.
             /// </param>
-            protected override void Load(ContainerBuilder builder)
+            protected override void Load ( ContainerBuilder builder )
             {
                 //var obIdGenerator = new ObjectIDGenerator();
-                Logger.Trace($"Load {nameof( LegacyAppBuildModule.IdGeneratorModule)}");
+                Logger.Trace ( $"Load {nameof ( IdGeneratorModule )}" ) ;
 
 
-                Generator = new ObjectIDGenerator();
+                Generator = new ObjectIDGenerator ( ) ;
                 //builder.RegisterInstance ( generator ).As < ObjectIDGenerator > ( ) ;
                 //			builder.RegisterType < ObjectIDGenerator > ( ).InstancePerLifetimeScope ( ).AsSelf ( ) ;
-                DefaultObject = new DefaultObjectIdProvider(Generator);
-                builder.RegisterInstance(DefaultObject)
-                       .As<IObjectIdProvider>()
-                       .SingleInstance();
+                DefaultObject = new DefaultObjectIdProvider ( Generator ) ;
+                builder.RegisterInstance ( DefaultObject )
+                       .As < IObjectIdProvider > ( )
+                       .SingleInstance ( ) ;
                 // builder.RegisterType < DefaultObjectIdProvider > ( )
                 //        .As < IObjectIdProvider > ( )
                 //        .InstancePerLifetimeScope ( ) ;
@@ -425,63 +441,62 @@ namespace KayMcCormick.Dev.Logging
             /// </remarks>
             /// <param name="componentRegistry">The component registry.</param>
             /// <param name="registration">The registration to attach functionality to.</param>
-            protected override void AttachToComponentRegistration(
-                IComponentRegistryBuilder componentRegistry
-              , [ CanBeNull ] IComponentRegistration    registration
+            protected override void AttachToComponentRegistration (
+                IComponentRegistryBuilder            componentRegistry
+              , [ CanBeNull ] IComponentRegistration registration
             )
             {
-                if (registration != null)
+                if ( registration != null )
                 {
-                    registration.Preparing  += RegistrationOnPreparing;
-                    registration.Activating += RegistrationOnActivating;
+                    registration.Preparing  += RegistrationOnPreparing ;
+                    registration.Activating += RegistrationOnActivating ;
                 }
             }
 
-            private void RegistrationOnActivating(object sender, ActivatingEventArgs<object> e)
+            private void RegistrationOnActivating (
+                object                         sender
+              , ActivatingEventArgs < object > e
+            )
             {
+                var inst = e.Instance ;
 
-                var inst = e.Instance;
+                Logger.Trace (
+                              $"{nameof ( RegistrationOnActivating )} {e.Component.DebugFormat ( )}"
+                             ) ;
+                if ( e.Component.Services.Any (
+                                               service => {
+                                                   var typedService = service as TypedService ;
+                                                   // Logger.Trace ( typedService ) ;
+                                                   if ( typedService == null )
+                                                   {
+                                                       return false ;
+                                                   }
 
-                Logger.Trace(
-                             $"{nameof(RegistrationOnActivating)} {e.Component.DebugFormat()}"
-                            );
-                if (e.Component.Services.Any(
-                                             service =>
-                                             {
-                                                 var typedService = service as TypedService;
-                                                 // Logger.Trace ( typedService ) ;
-                                                 if (typedService == null)
-                                                 {
-                                                     return false;
-                                                 }
-
-                                                 var typedServiceServiceType =
-                                                     typedService.ServiceType;
-                                                 return typedServiceServiceType
-                                                        == typeof(ObjectIDGenerator);
-                                             }
-                                            ))
+                                                   var typedServiceServiceType =
+                                                       typedService.ServiceType ;
+                                                   return typedServiceServiceType
+                                                          == typeof ( ObjectIDGenerator ) ;
+                                               }
+                                              ) )
                 {
-                    Logger.Debug($"Departing {nameof(RegistrationOnActivating)} early.");
-                    return;
+                    Logger.Debug ( $"Departing {nameof ( RegistrationOnActivating )} early." ) ;
+                    return ;
                 }
 
                 //var provider = e.Context.Resolve < IObjectIdProvider > ( ) ;
                 var provideObjectInstanceIdentifier =
-                    DefaultObject.ProvideObjectInstanceIdentifier(
-                                                                  inst
-                                                                , e.Component
-                                                                , e.Parameters
-                                                                 );
-                if (inst is IHaveObjectId x)
+                    DefaultObject.ProvideObjectInstanceIdentifier (
+                                                                   inst
+                                                                 , e.Component
+                                                                 , e.Parameters
+                                                                  ) ;
+                if ( inst is IHaveObjectId x )
                 {
-                    x.InstanceObjectId = provideObjectInstanceIdentifier;
+                    x.InstanceObjectId = provideObjectInstanceIdentifier ;
                 }
             }
 
-            private void RegistrationOnPreparing(object sender, PreparingEventArgs e)
-            {
-            }
+            private void RegistrationOnPreparing ( object sender , PreparingEventArgs e ) { }
         }
     }
 }

@@ -49,7 +49,10 @@ namespace ProjInterface
             return ExplorerItemType.File ;
         }
 
-        [ CanBeNull ] public ImageSource Icon { get { return GetItemImageSourceIcon ( _itemImpl ) ; } }
+        [ CanBeNull ] public ImageSource Icon
+        {
+            get { return GetItemImageSourceIcon ( _itemImpl ) ; }
+        }
 
         [ CanBeNull ]
         private static ImageSource GetItemImageSourceIcon ( AppExplorerItem itemImpl )

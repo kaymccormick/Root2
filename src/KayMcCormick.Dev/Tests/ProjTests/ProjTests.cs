@@ -58,15 +58,13 @@ using ProjInterface ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
-using File = System.IO.File ;
 
 namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
       , ICollectionFixture < AppFixture >
-    {
-    }
+    {}
 
     [ Collection ( "GeneralPurpose" ) ]
     [ ClearLoggingRules ]
@@ -132,7 +130,7 @@ namespace ProjTests
         public void TestJsonSerialization ( )
         {
             var w = new Window ( ) ;
-            var options = new JsonSerializerOptions ( ) { WriteIndented = true } ;
+            var options = new JsonSerializerOptions { WriteIndented = true } ;
             options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
             options.WriteIndented = true ;
             var json = JsonSerializer.Serialize ( w , options ) ;
@@ -780,7 +778,7 @@ namespace ProjTests
                                                                          )
                                                  , new InvalidOperationException ( "boo2" )
                                                   ) ;
-            var dd = new ExceptionDataInfo ( )
+            var dd = new ExceptionDataInfo
                      {
                          Exception = ex
                        , ParsedExceptions = Utils.GenerateParsedException(ex)
@@ -814,7 +812,7 @@ namespace ProjTests
 
                 var view = lifetimescope.Resolve < EventLogView > ( ) ;
                 Assert.NotNull ( view.ViewModel ) ;
-                var w = new Window ( ) { Content = view } ;
+                var w = new Window { Content = view } ;
                 w.ShowDialog ( ) ;
             }
         }
@@ -822,7 +820,7 @@ namespace ProjTests
         [ Fact ]
         public void TestModel ( )
         {
-            TypesViewModel t = new TypesViewModel();
+            var t = new TypesViewModel();
 
         }
 

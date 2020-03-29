@@ -1,14 +1,19 @@
 ﻿using System ;
 using System.IO ;
+using JetBrains.Annotations ;
 
 namespace AnalysisControls.Scripting
 {
     /* fOR PYTHON SUTFF */
+    /// <summary>
+    /// </summary>
     public class EventRaisingStreamWriter : StreamWriter
     {
-        public event EventHandler < MyEvtArgs < string > > StringWritten ;
+        public EventRaisingStreamWriter ( [ NotNull ] Stream s ) : base ( s ) { }
 
-        public EventRaisingStreamWriter ( Stream s ) : base ( s ) { }
+        /// <summary>
+        /// </summary>
+        public event EventHandler < MyEvtArgs < string > > StringWritten ;
 
         private void LaunchEvent ( string txtWritten )
         {

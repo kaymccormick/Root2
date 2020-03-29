@@ -29,32 +29,15 @@ using KayMcCormick.Lib.Wpf.View ;
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
-    /// 
     /// </summary>
     public class EventLogViewModel : IViewModel , ISupportInitialize
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ICollectionView EventLogCollectionView
-        {
-            get { return CollectionViewSource.GetDefaultView ( EventLogEntryCollection ) ; }
-        }
-
-        private readonly PaneService   _panelService ;
         private readonly LayoutService _layoutService ;
-        private          EventLogView  _view ;
-        #region Implementation of ISerializable
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
+
+        private readonly PaneService  _panelService ;
+        private          EventLogView _view ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="panelService"></param>
         /// <param name="layoutService"></param>
@@ -65,16 +48,51 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// </summary>
+        public ICollectionView EventLogCollectionView
+        {
+            get { return CollectionViewSource.GetDefaultView ( EventLogEntryCollection ) ; }
+        }
+
+        /// <summary>
+        /// </summary>
+        public ObservableCollection < ParsedEventLogEntry > EventLogEntryCollection { get ; } =
+            new ObservableCollection < ParsedEventLogEntry > ( ) ;
+
+        /// <summary>
+        /// </summary>
+        public EventLogView View
+        {
+            get { return _view ; }
+            set
+            {
+                _view = value ;
+                _view.AddHandler (
+                                  CommandManager.PreviewCanExecuteEvent
+                                , new CanExecuteRoutedEventHandler ( Target )
+                                 ) ;
+                _view.AddHandler (
+                                  CommandManager.PreviewExecutedEvent
+                                , new ExecutedRoutedEventHandler ( PreviewExecuted )
+                                 ) ;
+                foreach ( var routedEvent in EventManager.GetRoutedEvents ( ) )
+                {
+                    Debug.WriteLine ( routedEvent.OwnerType.FullName ) ;
+                    Debug.WriteLine ( routedEvent.RoutingStrategy ) ;
+                    Debug.WriteLine ( routedEvent.Name ) ;
+                }
+            }
+        }
+
+        /// <summary>
         /// </summary>
         public void BeginInit ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         public void EndInit ( )
         {
-            EventLog eventLog = new EventLog ( "Application" ) ;
+            var eventLog = new EventLog ( "Application" ) ;
             var eventLogEntries = eventLog.Entries.OfType < EventLogEntry > ( )
                                           .Where (
                                                   ( entry , i )
@@ -99,53 +117,29 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
+        #region Implementation of ISerializable
         /// <summary>
-        /// 
         /// </summary>
-        public ObservableCollection < ParsedEventLogEntry > EventLogEntryCollection { get ; } =
-            new ObservableCollection < ParsedEventLogEntry > ( ) ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public EventLogView View
-        {
-            get => _view ;
-            set
-            {
-                _view = value ;
-                _view.AddHandler (
-                                  CommandManager.PreviewCanExecuteEvent
-                                , new CanExecuteRoutedEventHandler ( Target )
-                                 ) ;
-                _view.AddHandler (
-                                  CommandManager.PreviewExecutedEvent
-                                , new ExecutedRoutedEventHandler ( PreviewExecuted )
-                                 ) ;
-                foreach ( var routedEvent in EventManager.GetRoutedEvents ( ) )
-                {
-                    Debug.WriteLine ( routedEvent.OwnerType.FullName ) ;
-                    Debug.WriteLine ( routedEvent.RoutingStrategy ) ;
-                    Debug.WriteLine ( routedEvent.Name ) ;
-                }
-            }
-        }
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
 
         private void Target ( object sender , CanExecuteRoutedEventArgs e )
         {
             return ;
             if ( e.Command is RoutedUICommand rc )
             {
-                Debug.WriteLine($"PreviewCanExecute - {rc.Text} - {rc.Name}");
-            } else if ( e.Command is RoutedCommand rc2 )
+                Debug.WriteLine ( $"PreviewCanExecute - {rc.Text} - {rc.Name}" ) ;
+            }
+            else if ( e.Command is RoutedCommand rc2 )
             {
-                Debug.WriteLine ($"PreviewCanExecute - {rc2.Name}"  );
+                Debug.WriteLine ( $"PreviewCanExecute - {rc2.Name}" ) ;
             }
             else
             {
                 Debug.WriteLine ( $"PreviewCanExecute - {e.Command}" ) ;
             }
-            
         }
 
         private void PreviewExecuted ( object sender , ExecutedRoutedEventArgs e )
@@ -153,65 +147,50 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             if ( e.Command == ApplicationCommands.Open )
             {
                 var paneWrapper = _panelService.GetPane ( ) ;
-                var parsedEventLogEntry = ( ParsedEventLogEntry )
-                    ( ( ListView ) e.OriginalSource )
-                   .SelectedItem ;
+                var parsedEventLogEntry =
+                    ( ParsedEventLogEntry ) ( ( ListView ) e.OriginalSource ).SelectedItem ;
                 var exception1 = parsedEventLogEntry.Exception1 ;
-                ExceptionUserControl uc = new ExceptionUserControl
-                                          {
-                                              DataContext =
-                                                  new ExceptionDataInfo
-                                                  {
-                                                      Exception =
-                                                          exception1
-                                                          , ParsedExceptions = parsedEventLogEntry.Parsed
-                                                  }
-                                          } ;
+                var uc = new ExceptionUserControl
+                         {
+                             DataContext = new ExceptionDataInfo
+                                           {
+                                               Exception        = exception1
+                                             , ParsedExceptions = parsedEventLogEntry.Parsed
+                                           }
+                         } ;
 
                 // paneWrapper.AddChild(uc);
                 // _layoutService.AddToLayout ( paneWrapper ) ;
-                Window w = new Window { Content = uc } ;
+                var w = new Window { Content = uc } ;
                 w.ShowDialog ( ) ;
-                Debug.WriteLine(e.OriginalSource);
+                Debug.WriteLine ( e.OriginalSource ) ;
                 Debug.WriteLine ( e.Source ) ;
-                Debug.WriteLine(sender);
-                Debug.WriteLine(EventLogCollectionView.CurrentPosition);
+                Debug.WriteLine ( sender ) ;
+                Debug.WriteLine ( EventLogCollectionView.CurrentPosition ) ;
             }
-            if (e.Command is RoutedUICommand rc)
+
+            if ( e.Command is RoutedUICommand rc )
             {
-                Debug.WriteLine($"PreviewExecuted - {rc.Text} - {rc.Name}");
+                Debug.WriteLine ( $"PreviewExecuted - {rc.Text} - {rc.Name}" ) ;
             }
-            else if (e.Command is RoutedCommand rc2)
+            else if ( e.Command is RoutedCommand rc2 )
             {
-                Debug.WriteLine($"PreviewExecuted- {rc2.Name}");
+                Debug.WriteLine ( $"PreviewExecuted- {rc2.Name}" ) ;
             }
             else
             {
-                Debug.WriteLine($"PreviewExecuted- {e.Command}");
+                Debug.WriteLine ( $"PreviewExecuted- {e.Command}" ) ;
             }
-
-
         }
-
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public sealed class ParsedEventLogEntry
     {
         private readonly EventLogEntry _logEntry ;
 
         /// <summary>
-        /// 
-        /// </summary>
-        public DateTime TimeWritten
-        {
-            get { return _logEntry.TimeWritten ; }
-        }
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="logEntry"></param>
         public ParsedEventLogEntry ( EventLogEntry logEntry )
@@ -222,8 +201,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 if ( _logEntry.ReplacementStrings.Length >= 6 )
                 {
                     var item5 = _logEntry.ReplacementStrings[ 5 ] ;
-                    XmlSerializer deSerializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
-                    StringReader sr = new StringReader ( item5 ) ;
+                    var deSerializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
+                    var sr = new StringReader ( item5 ) ;
                     Parsed = ( ParsedExceptions ) deSerializer.Deserialize ( sr ) ;
                     var item4 = _logEntry.ReplacementStrings[ 4 ] ;
 
@@ -233,38 +212,37 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                         {
                             if ( item4.Length == nbytes * 2 )
                             {
-                                byte[] bytes = new byte[ item4.Length / 2 ] ;
-                                for ( int i = 0 ; i < item4.Length ; i += 2 )
+                                var bytes = new byte[ item4.Length / 2 ] ;
+                                for ( var i = 0 ; i < item4.Length ; i += 2 )
                                 {
                                     bytes[ i / 2 ] =
                                         Convert.ToByte ( item4.Substring ( i , 2 ) , 16 ) ;
                                 }
 
-                                MemoryStream ms = new MemoryStream ( bytes ) ;
+                                var ms = new MemoryStream ( bytes ) ;
                                 IFormatter f = new BinaryFormatter ( ) ;
                                 var exception = f.Deserialize ( ms ) ;
                                 Exception1 = ( Exception ) exception ;
-
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch ( Exception ex )
                     {
-                        Debug.WriteLine(ex.ToString());
+                        Debug.WriteLine ( ex.ToString ( ) ) ;
                     }
-
                 }
             }
-
         }
 
         /// <summary>
-        /// 
+        /// </summary>
+        public DateTime TimeWritten { get { return _logEntry.TimeWritten ; } }
+
+        /// <summary>
         /// </summary>
         public Exception Exception1 { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
         public ParsedExceptions Parsed { get ; set ; }
     }

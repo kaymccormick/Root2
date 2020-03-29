@@ -1,14 +1,12 @@
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
     /// </summary>
     public sealed class AnalysisRequest
     {
         private IProjectBrowserNode projectInfo ;
 
         /// <summary>
-        /// 
         /// </summary>
         public IProjectBrowserNode Info
         {
@@ -18,7 +16,6 @@ namespace AnalysisAppLib
     }
 
 #if VERSIONCONTROL
-    
     class PipelineRemoteSource : Pipeline
     {
         #region Overrides of PipeLine

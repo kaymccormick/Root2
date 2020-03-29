@@ -7,12 +7,9 @@ using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
-using System.Threading ;
-using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Documents ;
-using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Scripting ;
 using Autofac ;
 using IronPython.Hosting ;
@@ -27,27 +24,135 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitialize
     {
-        [JsonIgnore]
-        public ICollectionView linesCollectionView
-        {
-            get { return CollectionViewSource.GetDefaultView ( Lines ) ; }
-        }
+        public static readonly DependencyProperty InputLineProperty =
+            DependencyProperty.Register (
+                                         nameof ( InputLine )
+                                       , typeof ( string )
+                                       , typeof ( PythonViewModel )
+                                       , new FrameworkPropertyMetadata (
+                                                                        ""
+                                                                      , FrameworkPropertyMetadataOptions
+                                                                           .None
+                                                                      , OnInputLineChanged
+                                                                       )
+                                        ) ;
 
-        [JsonIgnore]
-        public ILifetimeScope Scope { get ; set ; }
+        public static readonly DependencyProperty LinesProperty =
+            DependencyProperty.Register (
+                                         "Lines"
+                                       , typeof ( StringObservableCollection )
+                                       , typeof ( PythonViewModel )
+                                       , new FrameworkPropertyMetadata (
+                                                                        null
+                                                                      , FrameworkPropertyMetadataOptions
+                                                                           .None
+                                                                      , OnLinesChanged
+                                                                       )
+                                        ) ;
+
+        public static readonly DependencyProperty ResultsProperty =
+            DependencyProperty.Register (
+                                         "Results"
+                                       , typeof ( DynamicObservableCollection )
+                                       , typeof ( PythonViewModel )
+                                       , new FrameworkPropertyMetadata (
+                                                                        null
+                                                                      , FrameworkPropertyMetadataOptions
+                                                                           .None
+                                                                      , OnResultsChanged
+                                                                       )
+                                        ) ;
 
         private ScriptEngine _py ;
         private ScriptScope  _pyScope ;
 
-        public PythonViewModel ( ILifetimeScope scope , [ NotNull ] IEnumerable < IPythonVariable > vars )
+        public PythonViewModel (
+            ILifetimeScope                              scope
+          , [ NotNull ] IEnumerable < IPythonVariable > vars
+        )
         {
             Scope = scope ;
             PythonInit ( scope , vars ) ;
         }
 
+        [ JsonIgnore ]
+        public ICollectionView linesCollectionView
+        {
+            get { return CollectionViewSource.GetDefaultView ( Lines ) ; }
+        }
+
+        [ JsonIgnore ]
+        public ILifetimeScope Scope { get ; set ; }
+
+        [ JsonIgnore ]
+        public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument ( ) ;
+
+        [ JsonIgnore ]
+        public StringObservableCollection Lines
+        {
+            get { return ( StringObservableCollection ) GetValue ( LinesProperty ) ; }
+            set { SetValue ( LinesProperty , value ) ; }
+        }
+
+        [ JsonIgnore ]
+        public string InputLine
+        {
+            get { return ( string ) GetValue ( InputLineProperty ) ; }
+            set { SetValue ( InputLineProperty , value ) ; }
+        }
+
+        [ JsonIgnore ]
+        public DynamicObservableCollection Results
+        {
+            get { return ( DynamicObservableCollection ) GetValue ( ResultsProperty ) ; }
+            set { SetValue ( ResultsProperty , value ) ; }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+
+        public void BeginInit ( ) { }
+
+        public void EndInit ( )
+        {
+            if ( Lines == null )
+            {
+                SetCurrentValue ( LinesProperty , new StringObservableCollection ( ) ) ;
+            }
+
+            if ( Results == null )
+            {
+                SetCurrentValue ( ResultsProperty , new DynamicObservableCollection ( ) ) ;
+            }
+
+            Lines.Add ( "#test" ) ;
+            // var bindingBase = new Binding ( )
+            // {
+            // Source = linesCollectionView
+            // , Path   = new PropertyPath ( "CurrentItem" ),
+            // Mode   = BindingMode.TwoWay
+            // } ;
+            // Debug.WriteLine ( $"binding is {bindingBase}" ) ;
+            // BindingOperations.SetBinding (
+            // this
+            // , InputLineProperty
+            // , bindingBase
+            // ) ;
+            var il = GetValue ( InputLineProperty ) ;
+            Debug.WriteLine ( $"value of input line is {il}" ) ;
+            linesCollectionView.MoveCurrentToLast ( ) ;
+            Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
+
+            //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
+        }
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
+
         private void PythonInit ( ILifetimeScope scope , IEnumerable < IPythonVariable > vars )
         {
-            _py   = Python.CreateEngine ( ) ;
+            _py = Python.CreateEngine ( ) ;
 
             _pyScope = _py.CreateScope ( ) ;
             _pyScope.SetVariable ( "viewModel" , this ) ;
@@ -62,7 +167,10 @@ namespace AnalysisControls.ViewModel
                 }
 
                 Debug.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
-                _pyScope.SetVariable ( pythonVariable.VariableName , pythonVariable.GetVariableValue ( ) ) ;
+                _pyScope.SetVariable (
+                                      pythonVariable.VariableName
+                                    , pythonVariable.GetVariableValue ( )
+                                     ) ;
             }
 
             var ms = new MemoryStream ( ) ;
@@ -72,58 +180,20 @@ namespace AnalysisControls.ViewModel
             _py.Runtime.IO.SetOutput ( ms , outputWr ) ;
         }
 
-        [JsonIgnore]
-        public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument();
-
-        public static readonly DependencyProperty InputLineProperty =
-            DependencyProperty.Register (
-                                         nameof ( InputLine )
-                                       , typeof ( string )
-                                       , typeof ( PythonViewModel )
-                                       , new FrameworkPropertyMetadata (
-                                                                        ""
-                                                                      , FrameworkPropertyMetadataOptions
-                                                                           .None
-                                                                      , OnInputLineChanged
-                                                                       )
-                                        ) ;
-
         private static void OnInputLineChanged (
             DependencyObject                   d
           , DependencyPropertyChangedEventArgs e
         )
         {
-            Debug.WriteLine (
-                             $"input line changed. old = {e.OldValue}, new = {e.NewValue}");
-
+            Debug.WriteLine ( $"input line changed. old = {e.OldValue}, new = {e.NewValue}" ) ;
         }
 
-        public static readonly DependencyProperty LinesProperty =
-            DependencyProperty.Register (
-                                         "Lines"
-                                       , typeof ( StringObservableCollection )
-                                       , typeof ( PythonViewModel )
-                                       , new FrameworkPropertyMetadata (
-                                                                        null
-                                                                      , FrameworkPropertyMetadataOptions
-                                                                           .None
-                                                                      , OnLinesChanged
-                                                                       )
-                                        ) ;
-        public  static readonly DependencyProperty ResultsProperty =
-            DependencyProperty.Register(
-                                        "Results"
-                                      , typeof(DynamicObservableCollection)
-                                      , typeof(PythonViewModel)
-                                      , new FrameworkPropertyMetadata(
-                                                                      null
-                                                                    , FrameworkPropertyMetadataOptions
-                                                                         .None
-                                                                    , OnResultsChanged
-                                                                     )
-                                       );
-
-        private static void OnResultsChanged ( DependencyObject d , DependencyPropertyChangedEventArgs e ) { }
+        private static void OnResultsChanged (
+            DependencyObject                   d
+          , DependencyPropertyChangedEventArgs e
+        )
+        {
+        }
 
         private static void OnLinesChanged (
             DependencyObject                   d
@@ -147,12 +217,12 @@ namespace AnalysisControls.ViewModel
           , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
-            Debug.WriteLine($"In {nameof(OnLinesCOllectionChanged)}");
+            Debug.WriteLine ( $"In {nameof ( OnLinesCOllectionChanged )}" ) ;
             if ( e.Action == NotifyCollectionChangedAction.Add )
             {
                 var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
                 Debug.WriteLine ( $"Moving current to ${new1}" ) ;
-                linesCollectionView.MoveCurrentTo (new1 ) ;
+                linesCollectionView.MoveCurrentTo ( new1 ) ;
             }
         }
 
@@ -167,13 +237,9 @@ namespace AnalysisControls.ViewModel
             FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( eValue ) ) ) ;
         }
 
-        #region Implementation of ISerializable
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
-
         public void TakeLine ( string text )
         {
-            Lines.Add ( "") ;
+            Lines.Add ( "" ) ;
             linesCollectionView.MoveCurrentToLast ( ) ;
             FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
             string strRep = null ;
@@ -181,7 +247,7 @@ namespace AnalysisControls.ViewModel
             try
             {
                 result = _py.Execute ( text , _pyScope ) ;
-                Results.Add(result);
+                Results.Add ( result ) ;
             }
             catch ( Exception ex )
             {
@@ -193,7 +259,6 @@ namespace AnalysisControls.ViewModel
                 try
                 {
                     strRep = result?.__repr__ ( result ) ?? "None" ;
-
                 }
                 catch ( Exception ex )
 
@@ -202,12 +267,13 @@ namespace AnalysisControls.ViewModel
                     {
                         strRep = result.ToString ( ) ;
                     }
-                    catch ( Exception ex2)
+                    catch ( Exception ex2 )
                     {
                         strRep = result.__name__ ;
                     }
                 }
             }
+
             if ( strRep != null )
             {
                 FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( strRep ) ) ) ;
@@ -220,89 +286,20 @@ namespace AnalysisControls.ViewModel
             //TextInput = history[ historyPos.Value ] ;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged ;
-
         [ NotifyPropertyChangedInvocator ]
-        
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
-        public void HistoryDown ( )
-        {
-            linesCollectionView.MoveCurrentToNext ( ) ;
-        }
+        public void HistoryDown ( ) { linesCollectionView.MoveCurrentToNext ( ) ; }
 
-        [JsonIgnore]
-        public StringObservableCollection Lines
-        {
-            get { return ( StringObservableCollection ) GetValue ( LinesProperty ) ; }
-            
-            set { SetValue ( LinesProperty , value ) ; }
-        }
-
-        [JsonIgnore]
-        public string InputLine
-        {
-            get { return ( string ) GetValue ( InputLineProperty ) ; }
-            set { SetValue ( InputLineProperty , value ) ; }
-        }
-
-        
-        public void BeginInit ( ) { }
-
-        [JsonIgnore]
-        public DynamicObservableCollection Results
-        {
-            get { return ( DynamicObservableCollection ) GetValue ( ResultsProperty ) ; }
-            
-            set { SetValue ( ResultsProperty , value ) ; }
-        }
-
-        public void EndInit ( )
-        {
-            if ( Lines == null )
-            {
-                SetCurrentValue ( LinesProperty , new StringObservableCollection ( ) ) ;
-            }
-
-            if ( Results == null )
-            {
-                SetCurrentValue(ResultsProperty, new DynamicObservableCollection());
-            }
-
-            Lines.Add ( "#test" ) ;
-            // var bindingBase = new Binding ( )
-                              // {
-                                  // Source = linesCollectionView
-                                // , Path   = new PropertyPath ( "CurrentItem" ),
-                                  // Mode   = BindingMode.TwoWay
-                              // } ;
-            // Debug.WriteLine ( $"binding is {bindingBase}" ) ;
-            // BindingOperations.SetBinding (
-                                          // this
-                                        // , InputLineProperty
-                                        // , bindingBase
-                                         // ) ;
-            var il = GetValue ( InputLineProperty ) ;
-            Debug.WriteLine ( $"value of input line is {il}" ) ;
-            linesCollectionView.MoveCurrentToLast ( ) ;
-            Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
-
-            //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
-        }
-
-        private int RunPython ( object state )
-        {
-            return 0;
-        }
+        private int RunPython ( object state ) { return 0 ; }
 
 
         public void ExecutePythonScript ( string textEditorText )
         {
             var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
-
         }
     }
 

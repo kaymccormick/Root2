@@ -6,6 +6,6 @@ namespace AnalysisAppLib.ViewModel
 {
     public interface ISyntaxTokenViewModel : IViewModel
     {
-        ObservableCollection<SyntaxItem> SyntaxItems { get; }
+        ObservableCollection < SyntaxItem > SyntaxItems { get ; }
     }
 }

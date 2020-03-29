@@ -1,18 +1,15 @@
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
-using System.Windows.Input ;
 
 namespace KayMcCormick.Lib.Wpf.Xaml
 {
     /// <summary>
-    /// 
     /// </summary>
     public class AppCommandConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -26,14 +23,13 @@ namespace KayMcCormick.Lib.Wpf.Xaml
           , CultureInfo culture
         )
         {
-            IAppCommand command = ( IAppCommand ) value ;
-            IHandleException exceptionHandleException = ( IHandleException ) parameter ;
-            WrappedAppCommand x = new WrappedAppCommand ( command , exceptionHandleException ) ;
-            return ( ICommand ) x.Command ;
+            var command = ( IAppCommand ) value ;
+            var exceptionHandleException = ( IHandleException ) parameter ;
+            var x = new WrappedAppCommand ( command , exceptionHandleException ) ;
+            return x.Command ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -52,6 +48,3 @@ namespace KayMcCormick.Lib.Wpf.Xaml
         #endregion
     }
 }
-
-
-    

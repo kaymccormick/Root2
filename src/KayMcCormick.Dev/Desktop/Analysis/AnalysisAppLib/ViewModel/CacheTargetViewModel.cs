@@ -16,7 +16,6 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Text.Json ;
 using System.Windows.Threading ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib.ViewModel
@@ -29,6 +28,8 @@ namespace AnalysisAppLib.ViewModel
             new LogEventInstanceObservableCollection ( ) ;
 
         public CacheTargetViewModel ( MyCacheTarget2 cacheTarget ) { _cacheTarget = cacheTarget ; }
+
+        public LogEventInstanceObservableCollection Events { get { return _events ; } }
 
         public void Attach ( )
         {
@@ -60,7 +61,5 @@ namespace AnalysisAppLib.ViewModel
                                      }
                                     ) ;
         }
-
-        public LogEventInstanceObservableCollection Events { get { return _events ; } }
     }
 }

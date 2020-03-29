@@ -1,13 +1,11 @@
 ﻿namespace KayMcCormick.Dev.Service
 {
     /// <summary>
-    /// 
     /// </summary>
-    public class AppInstanceInfoResponse
+    public sealed class AppInstanceInfoResponse
     {
         /// <summary>
-        /// 
         /// </summary>
-        public AppInstanceInfo Info { get; set; }
+        public AppInstanceInfo Info { get ; set ; }
     }
 }

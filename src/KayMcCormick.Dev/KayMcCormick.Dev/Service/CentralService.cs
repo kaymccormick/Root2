@@ -13,36 +13,32 @@ using System ;
 using System.ServiceModel ;
 using KayMcCormick.Dev.Interfaces ;
 
-namespace KayMcCormick.Dev.ServiceImpl {
+namespace KayMcCormick.Dev.Service
+{
     /// <summary>
-    /// 
     /// </summary>
 #if NETFRAMEWORK
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ ServiceBehavior ( InstanceContextMode = InstanceContextMode.Single ) ]
 #endif
-    public sealed class CentralService : ICentralService, IDisposable
+    public sealed class CentralService : ICentralService , IDisposable
     {
         #region Implementation of ICentralService
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public RegisterApplicationInstanceResponse RegisterApplicationInstance(
+        public RegisterApplicationInstanceResponse RegisterApplicationInstance (
             RegisterApplicationInstanceRequest request
         )
         {
-            return null;
+            return null ;
         }
         #endregion
 
         #region IDisposable
         /// <summary>
-        /// 
         /// </summary>
-        public void Dispose ( )
-        {
-        }
+        public void Dispose ( ) { }
         #endregion
     }
 }

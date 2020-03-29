@@ -11,7 +11,6 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Text ;
@@ -21,6 +20,7 @@ using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
 using Xunit.Abstractions ;
+using XamlWriter = System.Xaml.XamlWriter ;
 
 namespace ProjInterface
 {
@@ -28,9 +28,10 @@ namespace ProjInterface
 
     public class JsonFrameworkElementConverter : JsonConverterFactory
     {
+        public JsonFrameworkElementConverter ( ITestOutputHelper output ) { Output = output ; }
+
         public ITestOutputHelper Output { get ; }
 
-        public JsonFrameworkElementConverter ( ITestOutputHelper output ) { Output = output ; }
         #region Overrides of JsonConverter
         public override bool CanConvert ( Type typeToConvert )
         {
@@ -42,81 +43,19 @@ namespace ProjInterface
             return false ;
         }
         #endregion
-        #region Overrides of JsonConverterFactory
-        public override JsonConverter CreateConverter (
-            Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
+
+        internal class JsonWriter : XamlWriter
         {
-            return new FrameworkElementJsonConverter ( typeToConvert , Output ) ;
-        }
-
-        private class FrameworkElementJsonConverter : JsonConverter < FrameworkElement >
-        {
-            private readonly ITestOutputHelper _output ;
-
-            public FrameworkElementJsonConverter ( Type typeToConvert , ITestOutputHelper output )
-            {
-                _output = output ;
-            }
-
-            #region Overrides of JsonConverter<FrameworkElement>
-            public override FrameworkElement Read (
-                ref Utf8JsonReader    reader
-              , Type                  typeToConvert
-              , JsonSerializerOptions options
-            )
-            {
-                return null ;
-            }
-
-            public override void Write (
-                Utf8JsonWriter        writer
-              , FrameworkElement      value
-              , JsonSerializerOptions options
-            )
-            {
-                // writer.WriteStartObject();
-                // writer.WriteString ( "FrameworkElement", value.GetType().AssemblyQualifiedName ) ;
-                var xamlSchemaContext = new XamlSchemaContext ( ) ;
-
-                using ( var r = new XamlObjectReader (
-                                                      value
-                                                    , xamlSchemaContext
-                                                    , new XamlObjectReaderSettings ( )
-                                                     ) )
-                {
-                    var memoryStream = new MemoryStream ( ) ;
-                    var x = new Utf8JsonWriter ( memoryStream ) ;
-                    x.WriteStartObject ( ) ;
-                    var xamlWriter = new JsonWriter (
-                                                     x
-                                                   , xamlSchemaContext
-                                                   , r
-                                                   , WriteContext.PropertyName
-                                                   , memoryStream
-                                                   , _output
-                                                    ) ;
-                    XamlServices.Transform ( r , xamlWriter ) ;
-                    writer.WriteEndObject ( ) ;
-                }
-            }
-            #endregion
-        }
-        #endregion
-
-        internal class JsonWriter : System.Xaml.XamlWriter
-        {
-            private readonly Utf8JsonWriter    _writer ;
-            private          XamlSchemaContext _schemaContext ;
-            private readonly XamlObjectReader  _xamlObjectReader ;
             private readonly MemoryStream      _memoryStream ;
             private readonly ITestOutputHelper _output ;
-            private          bool              _wroteNull ;
-            private          bool              _inObject ;
-            private          bool              _inMember ;
+            private readonly Utf8JsonWriter    _writer ;
+            private readonly XamlObjectReader  _xamlObjectReader ;
 
-            private Stack < WriteContext > _context = new Stack < WriteContext > ( ) ;
+            private readonly Stack < WriteContext > _context = new Stack < WriteContext > ( ) ;
+            private          bool                   _inMember ;
+            private          bool                   _inObject ;
+            private readonly XamlSchemaContext      _schemaContext ;
+            private          bool                   _wroteNull ;
 
             public JsonWriter (
                 Utf8JsonWriter    writer
@@ -253,10 +192,10 @@ namespace ProjInterface
 
             public override void WriteEndMember ( )
             {
-                _output.WriteLine(
-                                  $"{nameof(WriteEndMember)}: {_context.Count.ToString()}"
-                                 );
-                
+                _output.WriteLine (
+                                   $"{nameof ( WriteEndMember )}: {_context.Count.ToString ( )}"
+                                  ) ;
+
                 if ( ! _context.Any ( ) )
                 {
                     _writer.Flush ( ) ;
@@ -302,9 +241,9 @@ namespace ProjInterface
 
             public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration )
             {
-                _output.WriteLine(
-                                  $"{nameof(WriteNamespace)}: {_context.Count.ToString()}"
-                                 );
+                _output.WriteLine (
+                                   $"{nameof ( WriteNamespace )}: {_context.Count.ToString ( )}"
+                                  ) ;
 
 
                 switch ( _context.Peek ( ) )
@@ -327,6 +266,69 @@ namespace ProjInterface
             public override XamlSchemaContext SchemaContext { get { return _schemaContext ; } }
             #endregion
         }
+
+        #region Overrides of JsonConverterFactory
+        public override JsonConverter CreateConverter (
+            Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return new FrameworkElementJsonConverter ( typeToConvert , Output ) ;
+        }
+
+        private class FrameworkElementJsonConverter : JsonConverter < FrameworkElement >
+        {
+            private readonly ITestOutputHelper _output ;
+
+            public FrameworkElementJsonConverter ( Type typeToConvert , ITestOutputHelper output )
+            {
+                _output = output ;
+            }
+
+            #region Overrides of JsonConverter<FrameworkElement>
+            public override FrameworkElement Read (
+                ref Utf8JsonReader    reader
+              , Type                  typeToConvert
+              , JsonSerializerOptions options
+            )
+            {
+                return null ;
+            }
+
+            public override void Write (
+                Utf8JsonWriter        writer
+              , FrameworkElement      value
+              , JsonSerializerOptions options
+            )
+            {
+                // writer.WriteStartObject();
+                // writer.WriteString ( "FrameworkElement", value.GetType().AssemblyQualifiedName ) ;
+                var xamlSchemaContext = new XamlSchemaContext ( ) ;
+
+                using ( var r = new XamlObjectReader (
+                                                      value
+                                                    , xamlSchemaContext
+                                                    , new XamlObjectReaderSettings ( )
+                                                     ) )
+                {
+                    var memoryStream = new MemoryStream ( ) ;
+                    var x = new Utf8JsonWriter ( memoryStream ) ;
+                    x.WriteStartObject ( ) ;
+                    var xamlWriter = new JsonWriter (
+                                                     x
+                                                   , xamlSchemaContext
+                                                   , r
+                                                   , WriteContext.PropertyName
+                                                   , memoryStream
+                                                   , _output
+                                                    ) ;
+                    XamlServices.Transform ( r , xamlWriter ) ;
+                    writer.WriteEndObject ( ) ;
+                }
+            }
+            #endregion
+        }
+        #endregion
     }
 
     public class ProjInterfaceAppConverter : JsonConverter < ProjInterfaceApp >

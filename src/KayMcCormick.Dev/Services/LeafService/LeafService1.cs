@@ -9,13 +9,6 @@
 // 
 // ---
 #endregion
-using Common.Logging ;
-using KayMcCormick.Dev.Interfaces ;
-using KayMcCormick.Dev.Logging ;
-using LeafHVA1 ;
-using NLog ;
-using NLog.Fluent ;
-using NLog.Targets ;
 using System ;
 using System.AddIn.Hosting ;
 using System.Collections.Generic ;
@@ -28,9 +21,16 @@ using System.ServiceModel ;
 using System.ServiceModel.Channels ;
 using System.Threading ;
 using System.Timers ;
+using Common.Logging ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Interfaces ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Service ;
+using LeafHVA1 ;
+using NLog ;
+using NLog.Fluent ;
 using NLog.LogReceiverService ;
+using NLog.Targets ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;
 using LogManager = NLog.LogManager ;
@@ -40,19 +40,23 @@ namespace LeafService
 {
     internal sealed class LeafService1 : IDisposable
     {
-        private static readonly Logger Logger        = LogManager.GetLogger ( "RelayLogger" ) ;
-        private static readonly Logger ServiceLogger = LogManager.GetCurrentClassLogger ( ) ;
-        private readonly        ILog   _commonLogger ;
+        private static readonly Logger Logger =
+            LogManager.GetLogger ( "RelayLogger" ) ;
+
+        private static readonly Logger ServiceLogger =
+            LogManager.GetCurrentClassLogger ( ) ;
+
+        private readonly ILog               _commonLogger ;
+        private readonly List < IService1 > _services = new List < IService1 > ( ) ;
+        private          AddInProcess       _addInProcess ;
 #pragma warning disable CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
         private CentralService _centralService ;
 #pragma warning restore CS0649 // Field 'LeafService1._centralService' is never assigned to, and will always have its default value null
 #pragma warning disable CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
         private ServiceHost _svcHost ;
 #pragma warning restore CS0649 // Field 'LeafService1._svcHost' is never assigned to, and will always have its default value null
-        private ServiceHost        _svcReceiver ;
-        private Timer              _timer ;
-        private readonly List < IService1 > _services = new List < IService1 > ( ) ;
-        private AddInProcess _addInProcess ;
+        private ServiceHost _svcReceiver ;
+        private Timer       _timer ;
 
         public LeafService1 ( ILog commonLogger ) { _commonLogger = commonLogger ; }
 
@@ -68,12 +72,12 @@ namespace LeafService
         }
         #endregion
 
-        
+
         public bool Start ( HostControl hostControl )
         {
-            Logger.Info($"{nameof(LeafService1)} Start command received.");
+            Logger.Info ( $"{nameof ( LeafService1 )} Start command received." ) ;
             InitializeAddin ( ) ;
-            
+
 
             var f = new LogFactory < MyLogger > ( ) ;
 
@@ -84,18 +88,18 @@ namespace LeafService
                                  new NLogTraceListener
                                  {
                                      AutoLoggerName = false
-                                   , Filter         = new LeafServiceTraceFilter ( )
-                                   , Name           = "test1"
-                                   , TraceOutputOptions =
+                               , Filter = new LeafServiceTraceFilter ( )
+                               , Name = "test1"
+                               , TraceOutputOptions =
                                          TraceOptions.Callstack | TraceOptions.LogicalOperationStack
-                                   , LogFactory = f
+                               , LogFactory = f
                                  }
                                 ) ;
 #endif
 
             RemoveOrUpdateServiceTarget ( ) ;
 
-            
+
 
             InitializeWfcServices ( ) ;
 
@@ -223,7 +227,7 @@ namespace LeafService
             const string pipelineDir = "Pipeline" ;
             var root = Path.Combine ( baseDir , pipelineDir ) ;
             var warnings = AddInStore.Update ( root ) ;
-            Logger.Debug( "pipeline directory is {dir}" , root ) ;
+            Logger.Debug ( "pipeline directory is {dir}" , root ) ;
             foreach ( var warning in warnings )
             {
                 Logger.Warn ( warning ) ;
@@ -252,11 +256,14 @@ namespace LeafService
             foreach ( var addInToken in tokens )
             {
                 var service1 =
-                    addInToken.Activate < IService1 > ( _addInProcess , AddInSecurityLevel.FullTrust ) ;
-             
-                Console.WriteLine(_addInProcess.IsCurrentProcess);
-                Console.WriteLine(_addInProcess.ProcessId);
-             
+                    addInToken.Activate < IService1 > (
+                                                       _addInProcess
+                                                     , AddInSecurityLevel.FullTrust
+                                                      ) ;
+
+                Console.WriteLine ( _addInProcess.IsCurrentProcess ) ;
+                Console.WriteLine ( _addInProcess.ProcessId ) ;
+
                 _services.Add ( service1 ) ;
                 bool success ;
                 try
@@ -265,7 +272,7 @@ namespace LeafService
                 }
                 catch ( Exception ex )
                 {
-                    throw new AddInException ( "Add-in failed to start" + ex.ToString ( ) ) ;
+                    throw new AddInException ( "Add-in failed to start" + ex ) ;
                 }
 
                 if ( ! success )
@@ -286,14 +293,14 @@ namespace LeafService
         {
             Logger.Debug ( "Timer elapsed" ) ;
             var proc = Process.GetProcessById ( _addInProcess.ProcessId ) ;
-            Logger.Warn ( "proc is {proc}", proc ) ;
+            Logger.Warn ( "proc is {proc}" , proc ) ;
         }
 
         private void EOnEntryWritten ( object sender , EntryWrittenEventArgs e )
         {
             var typ = e.Entry.EntryType ;
             var level = LogLevel.Info ;
-            
+
             switch ( typ )
             {
                 case EventLogEntryType.Error :
@@ -338,7 +345,7 @@ namespace LeafService
             l.Write ( l.LogEventInfo.FormattedMessage ) ;
         }
 
-        
+
         public bool Stop ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Stop command received." ) ;
@@ -352,7 +359,7 @@ namespace LeafService
             return true ;
         }
 
-        
+
         public bool Pause ( HostControl hostControl )
         {
             foreach ( var service1 in _services )
@@ -366,7 +373,7 @@ namespace LeafService
             return true ;
         }
 
-        
+
         public bool Continue ( HostControl hostControl )
         {
             foreach ( var service1 in _services )
@@ -380,8 +387,7 @@ namespace LeafService
             return true ;
         }
 
-        
-        
+
         public bool Shutdown ( HostControl hostControl )
         {
             ServiceLogger.Trace ( $"{nameof ( LeafService1 )} Shutdown command received." ) ;
@@ -417,7 +423,7 @@ namespace LeafService
 
     internal class LeafServiceTraceFilter : TraceFilter
     {
-#region Overrides of TraceFilter
+        #region Overrides of TraceFilter
         public override bool ShouldTrace (
             TraceEventCache cache
           , string          source
@@ -431,7 +437,7 @@ namespace LeafService
         {
             return true ;
         }
-#endregion
+        #endregion
     }
 
     [ ServiceBehavior ( AddressFilterMode = AddressFilterMode.Any ) ]
@@ -442,7 +448,7 @@ namespace LeafService
 
         public LogReceiver ( ) { CLogger.Warn ( "In constructor" ) ; }
 
-#region Implementation of ILogReceiverServer
+        #region Implementation of ILogReceiverServer
         public void ProcessLogMessages ( NLogEvents nEvents )
         {
             CLogger.Warn ( $"Received {nEvents.Events.Length} events" ) ;
@@ -479,6 +485,6 @@ namespace LeafService
                 logger.Log ( ev ) ;
             }
         }
-#endregion
+        #endregion
     }
 }

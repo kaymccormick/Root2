@@ -19,18 +19,16 @@ using KayMcCormick.Dev.Service ;
 namespace KayMcCormick.Dev.Application
 {
     /// <summary>
-    /// 
     /// </summary>
     public sealed class ApplicationInstanceHost : IDisposable
     {
+        private readonly Uri            _baseAddresses ;
+        private readonly AppInfoService _service ;
 #if NETFRAMEWORK
         private ServiceHost _host ;
 #endif
-        private readonly AppInfoService _service ;
-        private readonly Uri            _baseAddresses ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="container"></param>
         public ApplicationInstanceHost ( [ NotNull ] IContainer container )
@@ -47,8 +45,19 @@ namespace KayMcCormick.Dev.Application
             _baseAddresses = new Uri ( "http://localhost:8736/ProjInterface/App" ) ;
         }
 
+        #region IDisposable
         /// <summary>
-        /// 
+        /// </summary>
+        public void Dispose ( )
+        {
+#if NETFRAMEWORK
+            var disposable = _host as IDisposable ;
+            disposable?.Dispose ( ) ;
+#endif
+        }
+        #endregion
+
+        /// <summary>
         /// </summary>
         public void HostOpen ( )
         {
@@ -64,18 +73,5 @@ namespace KayMcCormick.Dev.Application
             }
 #endif
         }
-
-        #region IDisposable
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose ( )
-        {
-#if NETFRAMEWORK
-            var disposable = _host as IDisposable ;
-            disposable?.Dispose ( ) ;
-#endif
-        }
-        #endregion
     }
 }

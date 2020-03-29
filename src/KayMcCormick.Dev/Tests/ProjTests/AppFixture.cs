@@ -7,14 +7,9 @@ using Xunit ;
 
 namespace ProjTests
 {
-    
     public sealed class AppFixture : IAsyncLifetime
     {
         private ProjInterfaceApp _projInterfaceApp ;
-
-        public AppFixture ( )
-        {
-        }
 
         public ProjInterfaceApp InterfaceApp
         {
@@ -48,21 +43,15 @@ namespace ProjTests
         public void Dispose ( ) { _projInterfaceApp.Dispose ( ) ; }
         #endregion
         #region Implementation of IAsyncLifetime
-        public Task InitializeAsync ( )
-        {
-            return Task.CompletedTask ;
-        }
+        public Task InitializeAsync ( ) { return Task.CompletedTask ; }
 
         public void Action ( )
         {
-            _projInterfaceApp = new ProjInterfaceApp();
+            _projInterfaceApp = new ProjInterfaceApp ( ) ;
             // _projInterfaceApp.InitializeComponent();
         }
 
-        public Task DisposeAsync ( )
-        {
-            return Task.CompletedTask ;
-        }
+        public Task DisposeAsync ( ) { return Task.CompletedTask ; }
         #endregion
     }
 }

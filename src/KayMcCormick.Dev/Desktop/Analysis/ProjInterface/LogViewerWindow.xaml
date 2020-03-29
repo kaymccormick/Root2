@@ -263,9 +263,10 @@
       <TextBlock MinWidth="80" Text="{Binding DisplayName}" />
     </HierarchicalDataTemplate>
     <DataTemplate x:Key="Selected">
-      <projInterface:LogViewerControl DataContext="{Binding}"
-                              VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch" />
+      <projInterface:LogViewerControl
+        DataContext="{Binding}"
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch" />
     </DataTemplate>
     <DataTemplate x:Key="MenuTemplate1">
       <TextBlock Text="{Binding Path=DisplayName}" />

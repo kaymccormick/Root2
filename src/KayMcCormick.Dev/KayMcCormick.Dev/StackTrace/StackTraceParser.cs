@@ -27,9 +27,8 @@ namespace KayMcCormick.Dev.StackTrace
 
 
     /// <summary>
-    /// 
     /// </summary>
-    public partial class StackTraceParser
+    public class StackTraceParser
     {
         private const string Space    = @"[\x20\t]" ;
         private const string NotSpace = @"[^\x20\t]" ;
@@ -105,7 +104,6 @@ namespace KayMcCormick.Dev.StackTrace
                                                         ) ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="text"></param>
         /// <param name="selector"></param>
@@ -143,7 +141,6 @@ namespace KayMcCormick.Dev.StackTrace
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="text"></param>
         /// <param name="tokenSelector"></param>

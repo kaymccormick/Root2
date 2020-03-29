@@ -10,22 +10,18 @@
 // ---
 #endregion
 using System ;
-using System.Collections ;
 using System.ComponentModel ;
 using System.ComponentModel.Design.Serialization ;
 using System.Globalization ;
-using System.Reflection ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class ResolveUiComponentTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="destinationType"></param>
@@ -37,7 +33,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="culture"></param>
@@ -71,20 +66,19 @@ namespace KayMcCormick.Lib.Wpf
                                             ) ;
             }
 
-            return ( object ) new InstanceDescriptor (
-                                                      ( MemberInfo )
-                                                      typeof ( ResolveUiComponentExtension )
-                                                         .GetConstructor (
-                                                                          new Type[ 1 ]
-                                                                          {
-                                                                              typeof ( object )
-                                                                          }
-                                                                         )
-                                                    , ( ICollection ) new object[ 1 ]
-                                                                      {
-                                                                          extension.ComponentType
-                                                                      }
-                                                     ) ;
+            return new InstanceDescriptor (
+                                           typeof ( ResolveUiComponentExtension ).GetConstructor (
+                                                                                                  new
+                                                                                                  Type
+                                                                                                  [ 1 ]
+                                                                                                  {
+                                                                                                      typeof
+                                                                                                      ( object
+                                                                                                      )
+                                                                                                  }
+                                                                                                 )
+                                         , new object[ 1 ] { extension.ComponentType }
+                                          ) ;
         }
         #endregion
     }

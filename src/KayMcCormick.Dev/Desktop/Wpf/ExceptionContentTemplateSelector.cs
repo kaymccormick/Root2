@@ -1,16 +1,9 @@
 namespace KayMcCormick.Lib.Wpf
 {
-
     /// <summary>
-    /// 
     /// </summary>
-    public class ExceptionContentTemplateSelector : CustomDataTemplateSelector
+    public sealed class ExceptionContentTemplateSelector : CustomDataTemplateSelector
 
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ExceptionContentTemplateSelector ( ) {
-        }
     }
 }

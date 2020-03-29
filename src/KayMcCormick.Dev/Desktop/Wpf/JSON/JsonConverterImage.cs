@@ -20,13 +20,25 @@ using System.Windows.Media ;
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonConverterImage : JsonConverterFactory
     {
+        #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
+            Type                  typeToConvert
+          , JsonSerializerOptions options
+        )
+        {
+            return new MyImageSourceConverter ( typeToConvert , options ) ;
+        }
+        #endregion
         #region Overrides of JsonConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
@@ -41,15 +53,13 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public class MyImageSourceConverter : JsonConverter < ImageSource >
         {
-            private Type                  typeToConvert ;
             private JsonSerializerOptions options ;
+            private Type                  typeToConvert ;
 
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
@@ -61,7 +71,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             #region Overrides of JsonConverter<ImageSource>
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="reader"></param>
             /// <param name="typeToConvert"></param>
@@ -77,7 +86,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
             }
 
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>
@@ -127,21 +135,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 }
             }
             #endregion
-        }
-        #endregion
-        #region Overrides of JsonConverterFactory
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
-            Type                  typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return new MyImageSourceConverter ( typeToConvert , options ) ;
         }
         #endregion
     }

@@ -18,24 +18,16 @@ using System.Windows.Markup ;
 using System.Xaml ;
 using Autofac ;
 using JetBrains.Annotations ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-using IEnumerable = System.Collections.IEnumerable ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     [ MarkupExtensionReturnType ( typeof ( IEnumerable ) ) ]
     public class ResolveEnumerableExtension : MarkupExtension
     {
         private Type _componentType ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ResolveEnumerableExtension ( ) { }
 
         // public static readonly DependencyProperty ParameterProperty =
         //     DependencyProperty.Register (
@@ -48,7 +40,10 @@ namespace KayMcCormick.Lib.Wpf
         private object _parameterValue ;
 
         /// <summary>
-        /// 
+        /// </summary>
+        public ResolveEnumerableExtension ( ) { }
+
+        /// <summary>
         /// </summary>
         /// <param name="componentType"></param>
         public ResolveEnumerableExtension ( Type componentType )
@@ -57,7 +52,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public Type ComponentType
         {
@@ -66,7 +60,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public object ParameterValue
         {
@@ -75,7 +68,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public Type ParameterType
         {
@@ -85,7 +77,6 @@ namespace KayMcCormick.Lib.Wpf
 
         #region Overrides of MarkupExtension
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
@@ -191,7 +182,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
                 finally
                 {
-                    GlobalDiagnosticsContext.Remove("CurrentOperation");
+                    GlobalDiagnosticsContext.Remove ( "CurrentOperation" ) ;
                 }
             }
         }
