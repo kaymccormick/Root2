@@ -29,6 +29,9 @@ namespace KayMcCormick.Lib.Wpf
                                                                        )
                                         ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public XmlDocument XmlDocument
         {
             
@@ -52,8 +55,15 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public XmlViewer ( ) { InitializeComponent ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
         public void BindXMLDocument ( XmlDocument document )
         {
             if ( document == null )

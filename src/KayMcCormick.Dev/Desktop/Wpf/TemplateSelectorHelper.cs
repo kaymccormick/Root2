@@ -23,6 +23,14 @@ namespace KayMcCormick.Lib.Wpf
     public static class TemplateSelectorHelper
 
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <param name="baseMethod"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static DataTemplate HelpSelectDataTemplate (
             object                                            item
           , DependencyObject                                  container

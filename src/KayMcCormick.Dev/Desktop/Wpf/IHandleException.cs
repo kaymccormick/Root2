@@ -18,6 +18,10 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public interface IHandleException
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exception"></param>
         void HandleException ( Exception exception ) ;
     }
 }

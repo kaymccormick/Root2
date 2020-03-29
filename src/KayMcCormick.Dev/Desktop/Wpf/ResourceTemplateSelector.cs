@@ -20,6 +20,9 @@ using NLog ;
 namespace KayMcCormick.Lib.Wpf
 {
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ResourceTemplateSelector : DataTemplateSelector
 
     {
@@ -30,6 +33,12 @@ namespace KayMcCormick.Lib.Wpf
 #endif
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
             if ( item == null )
@@ -114,6 +123,9 @@ namespace KayMcCormick.Lib.Wpf
             return returnVal ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual string TemplatePartName { get ; set ; }
 
 

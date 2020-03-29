@@ -15,6 +15,13 @@ namespace KayMcCormick.Lib.Wpf
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ownerType"></param>
+        /// <param name="haveResources"></param>
+        /// <param name="resourcesCollection"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public  static void CollectResources (
             Type                                  ownerType
           , [ NotNull ] FrameworkElement                      haveResources
@@ -38,6 +45,14 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="res"></param>
+        /// <param name="resourcesCollection"></param>
+        /// <param name="parent"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void AddResourceInfos (
             [ NotNull ] Type                                  type
           , [ NotNull ] ResourceDictionary                    res

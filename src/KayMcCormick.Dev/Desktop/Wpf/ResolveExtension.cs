@@ -12,16 +12,29 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ TypeConverter ( typeof ( ResolveTypeConverter ) ) ]
     [ MarkupExtensionReturnType ( typeof ( object ) ) ]
     public class ResolveExtension : MarkupExtension
     {
         private Type _componentType ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ResolveExtension ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="componentType"></param>
         public ResolveExtension ( Type componentType ) { _componentType = componentType ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ComponentType
         {
             get { return _componentType ; }
@@ -29,6 +42,13 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Overrides of MarkupExtension
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
         public override object
             
             ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
@@ -85,9 +105,18 @@ namespace KayMcCormick.Lib.Wpf
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ResolveTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="destinationType"></param>
+        /// <returns></returns>
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
             return destinationType == typeof ( InstanceDescriptor )
@@ -95,6 +124,16 @@ namespace KayMcCormick.Lib.Wpf
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="culture"></param>
+        /// <param name="value"></param>
+        /// <param name="destinationType"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public override object ConvertTo (
             ITypeDescriptorContext context
           , CultureInfo            culture

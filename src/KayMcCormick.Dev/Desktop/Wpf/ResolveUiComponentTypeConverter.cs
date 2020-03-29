@@ -18,15 +18,34 @@ using System.Reflection ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ResolveUiComponentTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="destinationType"></param>
+        /// <returns></returns>
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
             return destinationType == typeof ( InstanceDescriptor )
                    || base.CanConvertTo ( context , destinationType ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="culture"></param>
+        /// <param name="value"></param>
+        /// <param name="destinationType"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public override object ConvertTo (
             ITypeDescriptorContext context
           , CultureInfo            culture

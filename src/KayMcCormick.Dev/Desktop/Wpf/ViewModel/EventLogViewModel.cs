@@ -36,6 +36,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
     /// </summary>
     public class EventLogViewModel : IViewModel , ISupportInitialize
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ICollectionView EventLogCollectionView
         {
             get { return CollectionViewSource.GetDefaultView ( EventLogEntryCollection ) ; }

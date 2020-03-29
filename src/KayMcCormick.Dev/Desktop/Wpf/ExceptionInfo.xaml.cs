@@ -40,9 +40,15 @@ namespace KayMcCormick.Lib.Wpf
         private static Exception ex =
             ( Exception ) f.Deserialize ( new MemoryStream ( Encoding.UTF8.GetBytes ( xml ) ) ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ExceptionInfo ( ) { InitializeComponent ( ) ; }
 
         #region Overrides of FrameworkElement
+        /// <summary>
+        /// 
+        /// </summary>
         public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
@@ -56,8 +62,14 @@ namespace KayMcCormick.Lib.Wpf
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Exception Ex { get { return ex ; } set { ex = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < StackTraceEntry > Entries
         {
             get { return entries ; }
@@ -93,9 +105,5 @@ namespace KayMcCormick.Lib.Wpf
                 
             }
         }
-    }
-
-    public class MyFrame
-    {
     }
 }

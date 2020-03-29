@@ -17,9 +17,19 @@ using Microsoft.CodeAnalysis ;
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
     {
         #region Overrides of JsonConverter<SyntaxToken>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override SyntaxToken Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -29,6 +39,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
             return default ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
         public override void Write (
             Utf8JsonWriter        writer
           , SyntaxToken           value

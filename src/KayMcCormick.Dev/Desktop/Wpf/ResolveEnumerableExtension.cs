@@ -24,11 +24,17 @@ using IEnumerable = System.Collections.IEnumerable ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ MarkupExtensionReturnType ( typeof ( IEnumerable ) ) ]
     public class ResolveEnumerableExtension : MarkupExtension
     {
         private Type _componentType ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ResolveEnumerableExtension ( ) { }
 
         // public static readonly DependencyProperty ParameterProperty =
@@ -41,23 +47,36 @@ namespace KayMcCormick.Lib.Wpf
         private Type   _parameterType ;
         private object _parameterValue ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="componentType"></param>
         public ResolveEnumerableExtension ( Type componentType )
         {
             _componentType = componentType ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ComponentType
         {
             get { return _componentType ; }
             set { _componentType = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object ParameterValue
         {
             get { return _parameterValue ; }
             set { _parameterValue = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ParameterType
         {
             get { return _parameterType ; }
@@ -65,6 +84,13 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Overrides of MarkupExtension
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
         public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
             var resolveEnumerableExtensionName = "ResolveEnumerableExtension" ;

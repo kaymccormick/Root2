@@ -57,6 +57,9 @@ namespace KayMcCormick.Lib.Wpf
         public static readonly RoutedUICommand VisitType =
             new RoutedUICommand ( "VisitType" , nameof ( VisitType ) , typeof ( WpfAppCommands ) ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedUICommand LoginAD =
             new RoutedUICommand(
                                 "Login to 365"
@@ -64,6 +67,9 @@ namespace KayMcCormick.Lib.Wpf
                               , typeof(WpfAppCommands)
                                );
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedUICommand Execute =
             new RoutedUICommand(
                                 "Execute code"

@@ -21,7 +21,13 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public partial class TypeInfoControl : UserControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Type DesignContext => typeof ( TypeInfoControl ) ;
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeInfoControl()
         {
             InitializeComponent();

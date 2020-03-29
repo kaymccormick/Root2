@@ -16,6 +16,9 @@ using JsonConverter = System.Text.Json.Serialization.JsonConverter ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonResourceKeyWrapperConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
@@ -35,17 +38,31 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
-            return new JsonResourceKeyWrapaperConverter ( typeToConvert , options ) ;
+            return new JsonResourceKeyWrapperConverter ( typeToConvert , options ) ;
         }
 
-        public class JsonResourceKeyWrapaperConverter : JsonConverter < IResourceKeyWrapper1 >
+        /// <summary>
+        /// 
+        /// </summary>
+        public class JsonResourceKeyWrapperConverter : JsonConverter < IResourceKeyWrapper1 >
         {
-            public JsonResourceKeyWrapaperConverter (
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
+            public JsonResourceKeyWrapperConverter (
                 Type                  typeToConvert
               , JsonSerializerOptions options
             )
@@ -53,6 +70,13 @@ namespace KayMcCormick.Lib.Wpf.JSON
             }
 
             #region Overrides of JsonConverter<IResourceKeyWrapper1>
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="reader"></param>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
+            /// <returns></returns>
             public override IResourceKeyWrapper1 Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -62,6 +86,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 return null ;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="writer"></param>
+            /// <param name="value"></param>
+            /// <param name="options"></param>
             public override void Write (
                 Utf8JsonWriter        writer
               , IResourceKeyWrapper1  value

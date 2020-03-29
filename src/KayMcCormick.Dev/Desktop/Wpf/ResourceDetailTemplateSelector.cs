@@ -2,6 +2,9 @@ using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ResourceDetailTemplateSelector : ResourceTemplateSelector
 
     {
@@ -12,6 +15,9 @@ namespace KayMcCormick.Lib.Wpf
         #endregion
 
         #region Overrides of ResourceTemplateSelector
+        /// <summary>
+        /// 
+        /// </summary>
         public override string TemplatePartName => "Detail" ;
         #endregion
     }

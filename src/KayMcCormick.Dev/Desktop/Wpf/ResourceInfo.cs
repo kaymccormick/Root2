@@ -10,6 +10,9 @@ namespace KayMcCormick.Lib.Wpf
     {
         private ResourceDictionary _parent ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ContainingType { get ; }
 
         /// <summary>
@@ -23,6 +26,14 @@ namespace KayMcCormick.Lib.Wpf
             Value  = value ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resourcesSource"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="containingType"></param>
+        /// <param name="parent"></param>
         public ResourceInfo (
             Uri                resourcesSource
           , object             key
@@ -35,6 +46,9 @@ namespace KayMcCormick.Lib.Wpf
             Parent = parent ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ResourceDictionary Parent { get { return _parent ; } set { _parent = value ; } }
 
         /// <summary>Gets the source.</summary>

@@ -26,6 +26,9 @@ using KayMcCormick.Dev.Interfaces ;
 
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class AllResourcesTreeViewModel
     {
         private readonly ILifetimeScope    _lifetimeScope ;
@@ -39,6 +42,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         private ObservableCollection < ResourceNodeInfo > _allResourcesItemList =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lifetimeScope"></param>
+        /// <param name="idProvider"></param>
         public AllResourcesTreeViewModel (
             ILifetimeScope    lifetimeScope
           , IObjectIdProvider idProvider
@@ -71,6 +79,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsEnabledPopulateObjects { get ; set ; } = true ;
 
         
@@ -218,11 +229,17 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
         {
             get { return _allResourcesCollection ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < ResourceNodeInfo > AllResourcesItemList
         {
             get { return _allResourcesItemList ; }

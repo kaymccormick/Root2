@@ -19,10 +19,22 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [TypeConverter( typeof(ResolveUiComponentTypeConverter))]
     [MarkupExtensionReturnType( typeof(UIElement))]
     public class ResolveUiComponentExtension : MarkupExtension
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static ResolveUiComponentExtension CreateInstance ( )
+        {
+            return new ResolveUiComponentExtension ( ) ;
+        }
+
         // public T FromResolveUiComponentExtension < T > () where T : DependencyObject
         // {
             // return (T)_lifetimeScope.Resolve(_componentType);
@@ -35,23 +47,39 @@ namespace KayMcCormick.Lib.Wpf
         private ILifetimeScope _lifetimeScope ;
         private string _name ;
 
-        public ResolveUiComponentExtension ( ) {
+        /// <summary>
+        /// 
+        /// </summary>
+        private ResolveUiComponentExtension ( ) {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="componentType"></param>
         public ResolveUiComponentExtension (Type componentType ) { _componentType = componentType ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ComponentType
         {
             get { return _componentType ; }
             set { _componentType = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ILifetimeScope LifetimeScope
         {
             get { return _lifetimeScope ; }
             set { _lifetimeScope = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name {
             get {
                 return _name;
@@ -60,6 +88,13 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Overrides of MarkupExtension
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
         public override object 
             
             ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )

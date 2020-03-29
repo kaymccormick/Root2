@@ -21,6 +21,9 @@ namespace KayMcCormick.Lib.Wpf
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedEvent TypeActivatedEvent =
             EventManager.RegisterRoutedEvent (
                                               "TypeActivated"
@@ -294,6 +297,11 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public delegate void TypeActivatedEventHandler(object sender, TypeActivatedEventArgs e);
         private void HyperLinkOnRequestNavigate ( object sender , RequestNavigateEventArgs e )
         {
@@ -361,23 +369,39 @@ namespace KayMcCormick.Lib.Wpf
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class TypeActivatedEventArgs : RoutedEventArgs
     {
         private Type _sourceType ;
         private Type _activatedType ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="routedEvent"></param>
+        /// <param name="source"></param>
+        /// <param name="sourceType"></param>
+        /// <param name="activatedType"></param>
         public TypeActivatedEventArgs ( RoutedEvent routedEvent , object source , Type sourceType , Type activatedType ) : base ( routedEvent , source )
         {
             _sourceType = sourceType ;
             _activatedType = activatedType ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ActivatedType
         {
             get { return _activatedType ; }
             set { _activatedType = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type SourceType { get { return _sourceType ; } set { _sourceType = value ; } }
     }
 }

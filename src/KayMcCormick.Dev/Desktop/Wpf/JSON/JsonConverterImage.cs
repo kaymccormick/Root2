@@ -25,6 +25,11 @@ namespace KayMcCormick.Lib.Wpf.JSON
     public class JsonConverterImage : JsonConverterFactory
     {
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
             if ( typeof ( ImageSource ).IsAssignableFrom ( typeToConvert ) )
@@ -35,11 +40,19 @@ namespace KayMcCormick.Lib.Wpf.JSON
             return false ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class MyImageSourceConverter : JsonConverter < ImageSource >
         {
             private Type                  typeToConvert ;
             private JsonSerializerOptions options ;
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
             public MyImageSourceConverter ( Type typeToConvert , JsonSerializerOptions options )
             {
                 this.typeToConvert = typeToConvert ;
@@ -47,6 +60,13 @@ namespace KayMcCormick.Lib.Wpf.JSON
             }
 
             #region Overrides of JsonConverter<ImageSource>
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="reader"></param>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
+            /// <returns></returns>
             public override ImageSource Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -56,6 +76,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 return null ;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="writer"></param>
+            /// <param name="value"></param>
+            /// <param name="options"></param>
             public override void Write (
                 Utf8JsonWriter        writer
               , ImageSource           value
@@ -104,6 +130,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

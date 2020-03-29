@@ -9,6 +9,9 @@ using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ResourceTreeViewItemTemplateSelector : DataTemplateSelector
 
     {
@@ -20,6 +23,13 @@ namespace KayMcCormick.Lib.Wpf
 
 
         #region Overrides of DataTemplateSelector
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public override DataTemplate SelectTemplate ( object item , [ NotNull ] DependencyObject container )
         {
             if ( container == null )
