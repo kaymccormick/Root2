@@ -22,7 +22,7 @@ using System.Xaml ;
 using Xunit.Abstractions ;
 using XamlWriter = System.Xaml.XamlWriter ;
 
-namespace ProjInterface
+namespace KayMcCormick.Lib.Wpf.JSON
 {
     public enum WriteContext { PropertyName , PropertyValue , InArray }
 
@@ -268,7 +268,7 @@ namespace ProjInterface
         }
 
         #region Overrides of JsonConverterFactory
-        public override JsonConverter CreateConverter (
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )
@@ -331,10 +331,20 @@ namespace ProjInterface
         #endregion
     }
 
-    public class ProjInterfaceAppConverter : JsonConverter < ProjInterfaceApp >
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ProjInterfaceAppConverter : JsonConverter < Application>
     {
         #region Overrides of JsonConverter<ProjInterfaceApp>
-        public override ProjInterfaceApp Read (
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public override Application  Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
           , JsonSerializerOptions options
@@ -343,14 +353,20 @@ namespace ProjInterface
             return null ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
         public override void Write (
             Utf8JsonWriter        writer
-          , ProjInterfaceApp      value
+          , Application      value
           , JsonSerializerOptions options
         )
         {
             writer.WriteStartObject ( ) ;
-            writer.WriteString ( "ApplicationType" , value.GetType ( ).FullName ) ;
+            writer.WriteString ( ( string ) "ApplicationType" , ( string ) value.GetType ( ).FullName ) ;
             writer.WriteEndObject ( ) ;
         }
         #endregion

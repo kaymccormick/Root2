@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContainerFixture.cs" />
-    <Compile Include="AppFixture.cs" />
     <Compile Include="ContainerTests.cs" />
     <Compile Include="ProjectFixture.cs" />
     <Compile Include="ProjTests.cs" />
@@ -151,10 +150,6 @@
     <ProjectReference Include="..\..\Desktop\Analysis\AnalysisControls\AnalysisControls.csproj">
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Desktop\Analysis\ProjInterface\ProjInterface.csproj">
-      <Project>{4451ad21-ad52-49f1-874b-0bbab2d4df95}</Project>
-      <Name>ProjInterface</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>

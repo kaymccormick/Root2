@@ -26,17 +26,31 @@ namespace KayMcCormick.Dev.Logging
         private readonly Layout                         _layout ;
         private readonly UdpClient                      _udpClient ;
 
-        private static readonly ProtoLogger _instance = new ProtoLogger();
+        private static ProtoLogger _instance ;
 
-        private static readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer =
-            new MyLog4JXmlEventLayoutRenderer();
+        private readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer ;
+        
 
-        public static Layout XmlEventLayout { get; } = new MyLayout(_xmlEventLayoutRenderer);
+        public Layout XmlEventLayout { get ; }
 
-        public static ProtoLogger Instance { get { return _instance ; } }
+        public static ProtoLogger Instance
+        {
+            get
+            {
+                if ( _instance == null )
+                {
+                    _instance = new ProtoLogger();
+                }
+
+                return _instance ;
+            }
+        }
 
         public ProtoLogger ( )
         {
+            _xmlEventLayoutRenderer =
+                new MyLog4JXmlEventLayoutRenderer();
+            XmlEventLayout = new MyLayout(_xmlEventLayoutRenderer);
             _udpClient  = AppLoggingConfigHelper.UdpClient ;
             _ipEndPoint = AppLoggingConfigHelper.IpEndPoint ;
             _layout     = XmlEventLayout ;
@@ -44,7 +58,8 @@ namespace KayMcCormick.Dev.Logging
             {
                 throw new InvalidOperationException ( "LAyout is null" ) ;
             }
-            _getBytes   = DefaultGetBytes ;
+
+            _getBytes = DefaultGetBytes ;
         }
 
 
@@ -67,6 +82,23 @@ namespace KayMcCormick.Dev.Logging
             var bytes = _getBytes ( info ) ;
             var nBytes = bytes.Length ;
             _udpClient.Send ( bytes , nBytes , _ipEndPoint ) ;
+        }
+
+        public static readonly Action < LogEventInfo > _protoLogAction = Instance.LogAction ;
+
+        /// <summary>
+        /// </summary>
+        public static LogDelegates.LogMethod ProtoLogDelegate { get ; } = ProtoLogMessage ;
+
+        private static void ProtoLogMessage ( string message )
+        {
+            _protoLogAction (
+                             LogEventInfo.Create (
+                                                  LogLevel.Warn
+                                                , typeof ( AppLoggingConfigHelper ).FullName
+                                                , message
+                                                 )
+                            ) ;
         }
     }
 }

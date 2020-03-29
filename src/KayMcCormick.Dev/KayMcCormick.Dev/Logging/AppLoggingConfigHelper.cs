@@ -121,9 +121,6 @@ namespace KayMcCormick.Dev.Logging
             new MyLog4JXmlEventLayoutRenderer ( ) ;
 
         private static          NetworkTarget jsonNetworkTarget ;
-        private static readonly ProtoLogger   _protoLogger = ProtoLogger.Instance ;
-
-        private static readonly Action < LogEventInfo > _protoLogAction = _protoLogger.LogAction ;
 
         //private static string _chainsawHost = PublicFacingHostAddress;
         private static readonly string _chainsawHost = "10.25.0.102" ;
@@ -194,10 +191,6 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// </summary>
         public static Layout XmlEventLayout { get ; } = new MyLayout ( _xmlEventLayoutRenderer ) ;
-
-        /// <summary>
-        /// </summary>
-        public static LogDelegates.LogMethod ProtoLogDelegate { get ; } = ProtoLogMessage ;
 
         /// <summary>
         /// </summary>
@@ -773,8 +766,8 @@ namespace KayMcCormick.Dev.Logging
             try
             {
                 var logMethod = slogMethod != null
-                                    ? slogMethod + ProtoLogDelegate
-                                    : ProtoLogDelegate ;
+                                    ? slogMethod + ProtoLogger.ProtoLogDelegate
+                                    : ProtoLogger.ProtoLogDelegate ;
                 if ( ! _numTimesConfigured.HasValue )
                 {
                     _numTimesConfigured = 1 ;
@@ -836,7 +829,7 @@ namespace KayMcCormick.Dev.Logging
             catch ( SecurityException ex )
             {
                 System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
-                ProtoLogDelegate ( ex.ToString ( ) ) ;
+                ProtoLogger.ProtoLogDelegate ( ex.ToString ( ) ) ;
             }
 
             return null ;
@@ -906,17 +899,6 @@ namespace KayMcCormick.Dev.Logging
             }
 
             return null ;
-        }
-
-        private static void ProtoLogMessage ( string message )
-        {
-            _protoLogAction (
-                             LogEventInfo.Create (
-                                                  LogLevel.Warn
-                                                , typeof ( AppLoggingConfigHelper ).FullName
-                                                , message
-                                                 )
-                            ) ;
         }
 
         /// <summary>

@@ -100,7 +100,6 @@
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="IconsSource.cs" />
     <Compile Include="IIconsSource.cs" />
-    <Compile Include="JsonFrameworkElementConverter.cs" />
     <Compile Include="LogViewerControl.xaml.cs" />
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="MruBackground.cs" />

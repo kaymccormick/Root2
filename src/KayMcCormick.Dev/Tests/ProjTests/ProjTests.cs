@@ -47,6 +47,7 @@ using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -54,7 +55,6 @@ using Moq ;
 using NLog ;
 using NLog.Layouts ;
 using NLog.Targets ;
-using ProjInterface ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
@@ -63,7 +63,7 @@ namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
-      , ICollectionFixture < AppFixture >
+      
     {}
 
     [ Collection ( "GeneralPurpose" ) ]
@@ -87,7 +87,7 @@ namespace ProjTests
         private readonly ITestOutputHelper     _output ;
         private readonly LoggingFixture        _loggingFixture ;
         private readonly ProjectFixture        _projectFixture ;
-        private readonly AppFixture            _appFixture ;
+        
         private          ILifetimeScope        _testScope ;
         private          JsonSerializerOptions _testJsonSerializerOptions ;
 
@@ -96,14 +96,14 @@ namespace ProjTests
             ITestOutputHelper            output
           , [ CanBeNull ] LoggingFixture loggingFixture
           , ProjectFixture               projectFixture
-          , AppFixture                   appFixture
+          
         )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             _projectFixture                              =  projectFixture ;
-            _appFixture                                  =  appFixture ;
+            
 
             if ( ! _disableLogging )
             {
@@ -218,7 +218,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisControlsModule( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 LogManager.ThrowExceptions = true ;
@@ -255,7 +255,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
@@ -330,7 +330,6 @@ namespace ProjTests
             w.Close ( ) ;
         }
 
-        private ProjInterfaceApp CreateProjInterfaceApp ( ) { return _appFixture.InterfaceApp ; }
 
         private int CountChildren ( [ NotNull ] DependencyObject tv )
         {
@@ -351,7 +350,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
@@ -437,7 +436,7 @@ namespace ProjTests
         [ Fact ]
         public void TestModule1 ( )
         {
-            var module = new ProjInterfaceModule ( ) ;
+            var module = new AnalysisAppLibModule( ) ;
 
             var mock = new Mock < ContainerBuilder > ( ) ;
             mock.Setup ( cb => module.DoLoad ( cb ) ) ;
@@ -731,7 +730,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisControlsModule());
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
@@ -796,7 +795,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 

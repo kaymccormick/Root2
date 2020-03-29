@@ -94,6 +94,7 @@
     <Compile Include="JSON\JsonConverterResourceDictionary.cs" />
     <Compile Include="JSON\JsonDependencyPropertyConverter.cs" />
     <Compile Include="JSON\JsonFontFamilyConverter.cs" />
+    <Compile Include="JSON\JsonFrameworkElementConverter.cs" />
     <Compile Include="JSON\JsonResourceKeyWrapperConverterFactory.cs" />
     <Compile Include="JSON\JsonSolidColorBrushConverter.cs" />
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />

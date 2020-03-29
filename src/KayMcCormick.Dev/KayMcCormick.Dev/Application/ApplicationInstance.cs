@@ -45,7 +45,7 @@ namespace KayMcCormick.Dev.Application
             ProtoLogger protoLogger = ProtoLogger.Instance;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
-                var loadedConfigs = LoadConfiguration (  ) ;
+                var loadedConfigs = LoadConfiguration (  ProtoLogger.ProtoLogDelegate) ;
                 applicationInstanceConfiguration.Configs =
                     applicationInstanceConfiguration.Configs != null
                         ? ( ( IEnumerable < object > ) applicationInstanceConfiguration.Configs )
