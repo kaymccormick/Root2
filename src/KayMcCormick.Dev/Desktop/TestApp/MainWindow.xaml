@@ -7,7 +7,6 @@
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
                  xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
-                 xmlns:anal="http://kaymccormick.com/xaml/analysis"
                  mc:Ignorable="d"
                  Title="MainWindow" Height="450"
                  Width="800">
@@ -17,40 +16,29 @@
         <ResourceDictionary
           Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
         <ResourceDictionary>
-          <views:TypesView VerticalAlignment="Stretch"
-                           HorizontalAlignment="Stretch"
-                           x:Key="ctrl1">
-            <views:TypesView.CommandBindings>
-              <CommandBinding Command="Save"
-                              Executed="CommandBinding_OnExecuted" />
-              <CommandBinding Command="Open"
-                              Executed="CommandBinding_OnExecuted2" />
-            </views:TypesView.CommandBindings>
-            <views:TypesView.InputBindings>
-              <KeyBinding Key="S" Modifiers="Control"
-                          Command="Save" />
-              <KeyBinding Key="L" Modifiers="Control"
-                          Command="Open" />
-            </views:TypesView.InputBindings>
-            <views:TypesView.ViewModel>
-              <viewModel:TypesViewModel />
-            </views:TypesView.ViewModel>
-          </views:TypesView>
-          <views:SyntaxPanel x:Key="SyntaxPanel">
-            <views:SyntaxPanel.ViewModel>
-              <viewModel:SyntaxPanelViewModel>
-                <viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
-                  <anal:ProvideCompilationUnitSyntax />
-                </viewModel:SyntaxPanelViewModel.CompilationUnitSyntax>
-              </viewModel:SyntaxPanelViewModel>
-            </views:SyntaxPanel.ViewModel>
-          </views:SyntaxPanel>
-          <local:DockLayout x:Name="_dockLayout" x:Key="DockLayout"/>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-    <StaticResource ResourceKey="ctrl1"/>
+    <views:TypesView VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch"
+                     >
+      <views:TypesView.CommandBindings>
+        <CommandBinding Command="Save"
+                        Executed="CommandBinding_OnExecuted" />
+        <CommandBinding Command="Open"
+                        Executed="CommandBinding_OnExecuted2" />
+      </views:TypesView.CommandBindings>
+      <views:TypesView.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control"
+                    Command="Save" />
+        <KeyBinding Key="L" Modifiers="Control"
+                    Command="Open" />
+      </views:TypesView.InputBindings>
+      <views:TypesView.ViewModel>
+        <viewModel:TypesViewModel />
+      </views:TypesView.ViewModel>
+    </views:TypesView>
   </Grid>
 </kmWpf:AppWindow>

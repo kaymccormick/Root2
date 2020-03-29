@@ -59,5 +59,32 @@ namespace AnalysisControls.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to using System;
+        ///using System.Collections.Generic;
+        ///using System.Linq;
+        ///using System.Text;
+        ///using System.Threading.Tasks;
+        ///using NLog ;
+        ///
+        ///namespace LogTest
+        ///{
+        ///    public static class Program
+        ///    {
+        ///        private static readonly  Logger Logger = LogManager.GetCurrentClassLogger();
+        ///        static void Main(string[] args) {
+        ///            Action&lt;string&gt; xx = Logger.Info;
+        ///            xx(&quot;hi&quot;);
+        ///            Logger.Debug ( $&quot;Hello {1}&quot; ) ;
+        ///            try {
+        ///                string xxx = null;
+        ///                [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Program_Parse {
+            get {
+                return ResourceManager.GetString("Program_Parse", resourceCulture);
+            }
+        }
     }
 }

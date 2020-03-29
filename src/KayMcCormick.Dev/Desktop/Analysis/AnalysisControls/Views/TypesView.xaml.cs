@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel ;
-using System.Diagnostics;
+using System.Diagnostics ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -15,16 +15,24 @@ namespace AnalysisControls.Views
     /// <summary>
     /// Interaction logic for Types.xaml
     /// </summary>
-    [TitleMetadata("Types view")]
-    public sealed partial class TypesView : UserControl , IView < ITypesViewModel > , IViewWithTitle, IControlView, INotifyPropertyChanged
+    [ TitleMetadata ( "Types view" ) ]
+    public sealed partial class TypesView : UserControl
+      , IView < ITypesViewModel >
+      , IViewWithTitle
+      , IControlView
+      , INotifyPropertyChanged
     {
-        public TypesView ( ) {
-            InitializeComponent();
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public TypesView ( ) { InitializeComponent ( ) ; }
 
         private ITypesViewModel _viewModel ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewModel"></param>
         public TypesView ( ITypesViewModel viewModel )
         {
             _viewModel = viewModel ;
@@ -32,6 +40,9 @@ namespace AnalysisControls.Views
         }
 
         #region Overrides of FrameworkElement
+        /// <summary>
+        /// 
+        /// </summary>
         public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
@@ -41,20 +52,23 @@ namespace AnalysisControls.Views
         private void DumpVisualRects ( [ NotNull ] DependencyObject reference )
         {
             var childrenCount = VisualTreeHelper.GetChildrenCount ( reference ) ;
-            for ( int i = 0 ; i < childrenCount ; i ++ )
+            for ( var i = 0 ; i < childrenCount ; i ++ )
             {
                 var dependencyObject = VisualTreeHelper.GetChild ( reference , i ) ;
-                Visual v = ( Visual ) dependencyObject ;
+                var v = ( Visual ) dependencyObject ;
                 var contentBounds = VisualTreeHelper.GetContentBounds ( v ) ;
                 Debug.WriteLine (
                                  $"{v}{i} {contentBounds.Left},{contentBounds.Top} - {contentBounds.Right},{contentBounds.Bottom}"
                                 ) ;
-                DumpVisualRects(v);
+                DumpVisualRects ( v ) ;
             }
         }
         #endregion
 
         #region Implementation of IView<ITypesViewModel>
+        /// <summary>
+        /// 
+        /// </summary>
         public ITypesViewModel ViewModel
         {
             get { return _viewModel ; }
@@ -62,18 +76,21 @@ namespace AnalysisControls.Views
             {
                 _viewModel = value ;
                 Debug.WriteLine ( "Set viewModel" ) ;
-                OnPropertyChanged();
+                OnPropertyChanged ( ) ;
             }
         }
         #endregion
 
         #region Implementation of IView1
-        [ NotNull ] public string ViewTitle
-        {
-            get { return "Types View" ; }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ NotNull ] public string ViewTitle { get { return "Types View" ; } }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]

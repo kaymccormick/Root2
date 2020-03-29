@@ -7,11 +7,9 @@ using System.Linq ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization ;
-using System.Runtime.Serialization.Formatters.Binary ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
-using Autofac.Features.Decorators ;
 using Autofac.Integration.Mef ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
@@ -26,7 +24,7 @@ namespace KayMcCormick.Dev.Application
     /// <summary>
     /// </summary>
     
-    public class ApplicationInstance : ApplicationInstanceBase , IDisposable
+    public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
         private readonly        bool                    _disableLogging ;
         private readonly        bool                    _disableServiceHost ;
@@ -34,15 +32,9 @@ namespace KayMcCormick.Dev.Application
         private                 IContainer              _container ;
         private                 ApplicationInstanceHost _host ;
         private                 ILifetimeScope          _lifetimeScope ;
-        private static readonly BinaryFormatter         _binaryFormatter = new BinaryFormatter ( ) ;
 
         /// <summary>
         /// </summary>
-        /// <param name="logMethod"></param>
-        /// <param name="configs"></param>
-        /// <param name="disableLogging"></param>
-        /// <param name="disableRuntimeConfiguration"></param>
-        /// <param name="disableServiceHost"></param>
         public ApplicationInstance (
             [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
         ) : base ( applicationInstanceConfiguration.LogMethod )
@@ -107,7 +99,7 @@ namespace KayMcCormick.Dev.Application
 
         private static void CurrentDomain_FirstChanceException (
             object                        sender
-          , FirstChanceExceptionEventArgs e
+          , [ NotNull ] FirstChanceExceptionEventArgs e
         )
         {
             Utils.LogParsedExceptions ( e.Exception ) ;
@@ -153,6 +145,7 @@ namespace KayMcCormick.Dev.Application
         /// 
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public override ILifetimeScope GetLifetimeScope ( )
         {
             if ( _lifetimeScope != null )
@@ -172,6 +165,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         protected override IContainer BuildContainer ( )
         {
             var builder = new ContainerBuilder ( ) ;
@@ -226,7 +220,7 @@ namespace KayMcCormick.Dev.Application
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        protected override IEnumerable LoadConfiguration ( LogDelegates.LogMethod logMethod2 )
+        protected sealed override IEnumerable LoadConfiguration ( LogDelegates.LogMethod logMethod2 )
         {
             if ( logMethod2 == null )
             {
@@ -307,63 +301,6 @@ namespace KayMcCormick.Dev.Application
             return ConfigSettings ;
         }
 
-        
-        private void DebugServices ( IComponentContext c )
-        {
-            foreach ( var componentRegistryRegistration in c.ComponentRegistry.Registrations )
-            {
-                Logger.Debug (
-                              "services: {services}"
-                            , string.Join (
-                                           ", "
-                                         , componentRegistryRegistration.Services.Select (
-                                                                                          service
-                                                                                              => {
-                                                                                              switch
-                                                                                              ( service
-                                                                                              )
-                                                                                              {
-                                                                                                  case
-                                                                                                      KeyedService
-                                                                                                      _ :
-                                                                                                      break ;
-                                                                                                  case
-                                                                                                      TypedService
-                                                                                                      typedService
-                                                                                                      :
-                                                                                                      return
-                                                                                                          typedService
-                                                                                                             .ServiceType
-                                                                                                             .FullName ;
-                                                                                                  case
-                                                                                                      UniqueService
-                                                                                                      _ :
-                                                                                                      break ;
-                                                                                                  case
-                                                                                                      DecoratorService
-                                                                                                      _ :
-                                                                                                      break ;
-                                                                                                  default
-                                                                                                      :
-                                                                                                      throw
-                                                                                                          new
-                                                                                                              ArgumentOutOfRangeException (
-                                                                                                                                           nameof
-                                                                                                                                           ( service
-                                                                                                                                           )
-                                                                                                                                          ) ;
-                                                                                              }
-
-                                                                                              return
-                                                                                                  service
-                                                                                                     .Description ;
-                                                                                          }
-                                                                                         )
-                                          )
-                             ) ;
-            }
-        }
-
 
         #region IDisposable
         #endregion
@@ -376,7 +313,7 @@ namespace KayMcCormick.Dev.Application
     public class ContainerBuildException : Exception
     {
         /// <summary>
-        /// PArameterless constructor.
+        /// Parameterless constructor.
         /// </summary>
         public ContainerBuildException ( ) { }
 
@@ -414,7 +351,7 @@ namespace KayMcCormick.Dev.Application
     /// <summary>
     /// New app module to replace crussty old app module. Work in progress.
     /// </summary>
-    public class NouveauAppModule : IocModule
+    public sealed class NouveauAppModule : IocModule
     {
         #region Overrides of IocModule
         /// <summary>
@@ -436,13 +373,8 @@ namespace KayMcCormick.Dev.Application
     /// <summary>
     /// 
     /// </summary>
-    public class ParsedExceptions
+    public sealed class ParsedExceptions
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ParsedExceptions ( ) { }
-
         private List < ParsedStackInfo > _parsedList = new List < ParsedStackInfo > ( ) ;
 
         /// <summary>
@@ -458,7 +390,7 @@ namespace KayMcCormick.Dev.Application
     /// <summary>
     /// 
     /// </summary>
-    public class ParsedStackInfo
+    public sealed class ParsedStackInfo
     {
         /// <summary>
         /// 
@@ -476,7 +408,7 @@ namespace KayMcCormick.Dev.Application
         /// <param name="typeName"></param>
         /// <param name="exMessage"></param>
         public ParsedStackInfo (
-            IEnumerable < StackTraceEntry > parsed
+            [ NotNull ] IEnumerable < StackTraceEntry > parsed
           , string                          typeName
           , string                          exMessage
         )
@@ -494,11 +426,6 @@ namespace KayMcCormick.Dev.Application
             get { return _stackTraceEntries ; }
             set { _stackTraceEntries = value ; }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Message { get { return _exMessage ; } }
 
         /// <summary>
         /// 
