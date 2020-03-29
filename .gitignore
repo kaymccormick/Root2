@@ -47,3 +47,4 @@ TestResult.xml
 /build.old/test/Debug/x86/Tests
 /build.old
 /src/KayMcCormick.Dev/CompatLib1/CompatLib1.vcxproj.filters
+/third-party/IronPython
