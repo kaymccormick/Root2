@@ -228,7 +228,7 @@ namespace AnalysisAppLib
 
                 Task < IEnumerable < ILogInvocation > > Transform ( Document document )
                 {
-                    return flu.FindUsagesFunc ( document , rejectBlock ) ;
+                    return flu.FindUsagesFuncAsync ( document , rejectBlock ) ;
                 }
 
                 var findLogUsagesBlock =

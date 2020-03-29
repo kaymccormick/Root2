@@ -44,6 +44,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>..\..\..\..\..\build\lib\Debug\x86\AnalysisControls\AnalysisControls.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>MSBUILDLOCATOR</DefineConstants>
@@ -147,6 +148,7 @@
     <Compile Include="Views\Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Visitor4.cs" />
     <Page Include="AnalysisControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -258,10 +260,6 @@
     <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLib.csproj">
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjLib\ProjLib.csproj">
-      <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
-      <Name>ProjLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

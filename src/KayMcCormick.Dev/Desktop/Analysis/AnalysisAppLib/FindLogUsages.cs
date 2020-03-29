@@ -41,8 +41,9 @@ namespace AnalysisAppLib
         }
 
 
-        public async Task < IEnumerable < ILogInvocation > > FindUsagesFunc (
-            Document                     d
+        [ ItemNotNull ]
+        public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
+            [ NotNull ] Document                     d
           , BufferBlock < RejectedItem > rejectBlock
         )
         {
@@ -54,7 +55,7 @@ namespace AnalysisAppLib
                     Logger.Trace (
                                   "[{id}] Entering {funcName}"
                                 , Thread.CurrentThread.ManagedThreadId
-                                , nameof ( FindUsagesFunc )
+                                , nameof ( FindUsagesFuncAsync )
                                  ) ;
 #endif
                     var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
@@ -179,8 +180,8 @@ namespace AnalysisAppLib
 
             
             private static bool CheckSymbol (
-                IMethodSymbol             methSym
-              , params INamedTypeSymbol[] t1
+                [ NotNull ] IMethodSymbol             methSym
+              , [ NotNull ] params INamedTypeSymbol[] t1
             )
             {
                 var cType = methSym.ContainingType ;
@@ -311,9 +312,9 @@ namespace AnalysisAppLib
             public InvocationParams (
                 SyntaxTree                                  syntaxTree
               , SemanticModel                               model
-              , SyntaxNode                                  relevantNode
-              , Tuple < bool , IMethodSymbol , SyntaxNode > tuple
-              , INamedTypeSymbol                            namedTypeSymbol
+              , [ CanBeNull ] SyntaxNode                                  relevantNode
+              , [ NotNull ] Tuple < bool , IMethodSymbol , SyntaxNode > tuple
+              , [ NotNull ] INamedTypeSymbol                            namedTypeSymbol
             )
             {
                 if ( tuple is null )
@@ -359,6 +360,7 @@ namespace AnalysisAppLib
 
             private INamedTypeSymbol NamedTypeSymbol { get ; }
 
+            [ CanBeNull ]
             internal object ProcessInvocation ( Func < ILogInvocation > invocationFactory )
             {
                 var exceptionArg = false ;
@@ -568,7 +570,7 @@ namespace AnalysisAppLib
             }
 
             private static bool IsException (
-                INamedTypeSymbol exceptionType
+                [ CanBeNull ] INamedTypeSymbol exceptionType
               , ITypeSymbol      baseType
             )
             {
@@ -591,7 +593,7 @@ namespace AnalysisAppLib
                 return isException ;
             }
 
-            private class LogMessageRepr
+            private sealed class LogMessageRepr
             {
                 public LogMessageRepr ( bool isMessageTemplate , object constantMessage )
                 {

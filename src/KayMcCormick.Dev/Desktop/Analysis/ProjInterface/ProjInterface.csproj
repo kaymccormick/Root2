@@ -303,10 +303,6 @@
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjLib\ProjLib.csproj">
-      <Project>{558E1C70-3D0F-4124-B115-91C35FE19379}</Project>
-      <Name>ProjLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSON\" />

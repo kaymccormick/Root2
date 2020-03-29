@@ -75,27 +75,21 @@
     <Compile Include="AppStatus.cs" />
     <Compile Include="BuildResults.cs" />
     <Compile Include="BuildTool.cs" />
-    <Compile Include="FailedBuildException.cs" />
     <Compile Include="FilePaths.cs" />
     <Compile Include="DetailedOperation.cs" />
-    <Compile Include="Interfaces\ICodeRenderer.cs" />
     <Compile Include="Interfaces\IDetailedOperation.cs" />
     <Compile Include="Interfaces\IFormattedCode.cs" />
     <Compile Include="Interfaces\IItemInfo.cs" />
     <Compile Include="Interfaces\IMruItem.cs" />
     <Compile Include="Interfaces\IProjectInfo.cs" />
     <Compile Include="Interfaces\IRuntimestatus.cs" />
-    <Compile Include="Interfaces\ISpanObject.cs" />
-    <Compile Include="Interfaces\ISpanToolTipViewModel.cs" />
     <Compile Include="Interfaces\IVsInstance.cs" />
     <Compile Include="MruItem.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="IMruItems.cs" />
     <Compile Include="IVsInstanceCollector.cs" />
-    <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="MostRecentlyUsedAdapater.cs" />
     <Compile Include="MruItemProvider.cs" />
-    <Compile Include="ProjLibModule.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="LibResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -111,16 +105,8 @@
       <Visible>False</Visible>
     </AdditionalFiles>
     <None Include="Resources\AttachedProps.cs" />
-    <Compile Include="SpanObject.cs" />
-    <Compile Include="SpanToolTipViewModel.cs" />
-    <Compile Include="SyntaxNodeSpanObject.cs" />
-    <Compile Include="TokenSpanObject.cs" />
-    <Compile Include="TransformArgs.cs" />
-    <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="LogInvocationAnnotationHandler.cs" />
     <Compile Include="VersionControl.cs" />
-    <Compile Include="Visitor2.cs" />
-    <Compile Include="Visitor4.cs" />
     <Compile Include="VisualStudioInstancesCollection.cs" />
     <Compile Include="VsCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,7 +18,7 @@ namespace AnalysisAppLib.Dataflow
         {
             var findusages = new FindLogUsages ( invocationFactory ) ;
             _rejectBlock   = new BufferBlock < RejectedItem > ( ) ;
-            _transformFunc = document => findusages.FindUsagesFunc ( document , RejectBlock ) ;
+            _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock ) ;
         }
 
         public BufferBlock < RejectedItem > RejectBlock { get { return _rejectBlock ; } }

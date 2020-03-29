@@ -156,10 +156,6 @@
       <Project>{4451ad21-ad52-49f1-874b-0bbab2d4df95}</Project>
       <Name>ProjInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Desktop\Analysis\ProjLib\ProjLib.csproj">
-      <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
-      <Name>ProjLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>

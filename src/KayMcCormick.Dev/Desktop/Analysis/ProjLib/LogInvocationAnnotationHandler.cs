@@ -1,7 +1,4 @@
-﻿// TODO FIXME
-#if LOGANNOTATIONS
-
-#region header
+﻿#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -13,42 +10,45 @@
 // ---
 #endregion
 using System.Linq ;
+using AnalysisAppLib ;
 using Microsoft.CodeAnalysis ;
+using Newtonsoft.Json ;
 using NLog ;
 
 namespace ProjLib
 {
     public class LogInvocationAnnotationHandler : Visitor2
     {
+        private object _logInvAnno ;
 
         public override void DefaultVisit ( SyntaxNode node )
         {
-            var logInvAnno_ = node.GetAnnotations("LogInvocation");
-            SyntaxAnnotation logInvAnno = null;
+            var logInvAnno_ = node.GetAnnotations ( "LogInvocation" ) ;
+            SyntaxAnnotation logInvAnno = null ;
             if ( logInvAnno_.Any ( ) )
 
             {
                 logInvAnno = logInvAnno_.First ( ) ;
-                var inv = JsonConvert.DeserializeObject < LogInvocation > ( logInvAnno.Data ) ;
+                var inv = JsonConvert.DeserializeObject < ILogInvocation > ( logInvAnno.Data ) ;
                 if ( inv != null )
                 {
-                    inv.CurrentModel = Model ;
-                    inv.MethodSymbol = Enumerable.FirstOrDefault < IMethodSymbol > (
-                                                                                    Model
-                                                                                       .Compilation
-                                                                                       .GetTypeByMetadataName (
-                                                                                                               inv
-                                                                                                                  .LoggerType
-                                                                                                              )
-                                                                                       .GetMembers (
-                                                                                                    inv
-                                                                                                       .MethodName
-                                                                                                   )
-                                                                                       .OfType <
-                                                                                            IMethodSymbol
-                                                                                        > ( )
-                                                                                   ) ;
-                    ProjLib.ActiveSpans[ logInvAnno ] = new LogInvocationSpan ( node.Span, inv ) ;
+                    //inv.CurrentModel = Model ;
+                    // inv.MethodSymbol = Enumerable.FirstOrDefault < IMethodSymbol > (
+                    // Model
+                    // .Compilation
+                    // .GetTypeByMetadataName (
+                    // inv
+                    // .LoggerType
+                    // )
+                    // .GetMembers (
+                    // inv
+                    // .MethodName
+                    // )
+                    // .OfType <
+                    // IMethodSymbol
+                    // > ( )
+                    // ) ;
+                    ProjLib.ActiveSpans[ logInvAnno ] = new LogInvocationSpan ( node.Span , inv ) ;
                 }
                 else
                 {
@@ -58,22 +58,15 @@ namespace ProjLib
 
             base.DefaultVisit ( node ) ;
 
-            if (logInvAnno != null)
+            if ( logInvAnno != null )
             {
-                ProjLib.ActiveSpans.Remove(logInvAnno);
+                ActiveSpans.Remove ( logInvAnno ) ;
             }
-
         }
 
 
-        public LogInvocationAnnotationHandler ( ) : base ( null )
-{
-
-}
+        public LogInvocationAnnotationHandler ( ) : base ( null ) { }
 
         public object logInvAnno { get { return _logInvAnno ; } set { _logInvAnno = value ; } }
-
     }
-
 }
-#endif

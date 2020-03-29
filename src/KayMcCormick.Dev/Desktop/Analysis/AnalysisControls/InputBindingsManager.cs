@@ -9,18 +9,23 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Input ;
+using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
 
     /// <summary>
-    ///   <para>Helper class for wpf explorere</para>
+    ///   <para>Helper class for wpf explorer</para>
     /// </summary>
     public static class InputBindingsManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty UpdatePropertySourceWhenEnterPressedProperty =
             DependencyProperty.RegisterAttached (
                                                  "UpdatePropertySourceWhenEnterPressed"
@@ -36,16 +41,26 @@ namespace AnalysisControls
 
         static InputBindingsManager ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dp"></param>
+        /// <param name="value"></param>
         public static void SetUpdatePropertySourceWhenEnterPressed (
-            DependencyObject   dp
+            [ NotNull ] DependencyObject   dp
           , DependencyProperty value
         )
         {
             dp.SetValue ( UpdatePropertySourceWhenEnterPressedProperty , value ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dp"></param>
+        /// <returns></returns>
         public static DependencyProperty
-            GetUpdatePropertySourceWhenEnterPressed ( DependencyObject dp )
+            GetUpdatePropertySourceWhenEnterPressed ( [ NotNull ] DependencyObject dp )
         {
             return ( DependencyProperty ) dp.GetValue (
                                                        UpdatePropertySourceWhenEnterPressedProperty
@@ -75,7 +90,7 @@ namespace AnalysisControls
             }
         }
 
-        private static void HandlePreviewKeyDown ( object sender , KeyEventArgs e )
+        private static void HandlePreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
             if ( e.Key == Key.Enter )
             {
@@ -83,9 +98,9 @@ namespace AnalysisControls
             }
         }
 
-        private static void DoUpdateSource ( object source )
+        private static void DoUpdateSource ( [ NotNull ] object source )
         {
-            var property = GetUpdatePropertySourceWhenEnterPressed ( source as DependencyObject ) ;
+            var property = GetUpdatePropertySourceWhenEnterPressed ( source as DependencyObject ?? throw new InvalidOperationException ( ) ) ;
             if ( property == null )
             {
                 return ;

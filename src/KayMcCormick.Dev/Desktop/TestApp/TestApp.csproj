@@ -166,10 +166,6 @@
       <Project>{bcf8f7fb-8c2a-4583-8f62-eadee645243c}</Project>
       <Name>AnalysisControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Analysis\ProjLib\ProjLib.csproj">
-      <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
-      <Name>ProjLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Wpf\KayMcCormick.Lib.Wpf.csproj">
       <Project>{3434e74c-d7b5-4315-a8e1-51dbce878199}</Project>
       <Name>KayMcCormick.Lib.Wpf</Name>

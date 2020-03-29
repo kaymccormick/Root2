@@ -13,9 +13,19 @@ using Microsoft.CodeAnalysis.Text ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ISpanViewModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         object   getInstance();
+        /// <summary>
+        /// 
+        /// </summary>
         TextSpan Span { get; }
 
     }

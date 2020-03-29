@@ -42,6 +42,7 @@
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>..\..\..\..\..\build\lib\Debug\x86\AnalysisAppLib\AnalysisAppLib.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>
@@ -85,6 +86,9 @@
     <Compile Include="GenericAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
+    <Compile Include="ICodeRenderer.cs" />
+    <Compile Include="ISpanObject.cs" />
+    <Compile Include="LogInvocationSpan.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,9 +98,14 @@
     <Compile Include="RejectedItem.cs" />
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
     <Compile Include="Serialization\LogInvocationConverter.cs" />
+    <Compile Include="SpanObject.cs" />
+    <Compile Include="SpanToolTipViewModel.cs" />
+    <Compile Include="SyntaxNodeSpanObject.cs" />
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="Syntax\PojoCompilationUnit.cs" />
+    <Compile Include="TokenSpanObject.cs" />
+    <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
     <Compile Include="CodeAnalyseContext.cs" />
@@ -110,7 +119,6 @@
     <Compile Include="Syntax\SyntaxItem.cs" />
     <Compile Include="Syntax\AppTypeInfo.cs" />
     <Compile Include="Syntax\ComponentInfo.cs" />
-    <Compile Include="ViewModel\ApplicationViewModel.cs" />
     <Compile Include="ViewModel\DockWindowViewModel.cs" />
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="FileSystemExplorerItemProvider.cs" />
@@ -146,13 +154,15 @@
     <Compile Include="UnableToInitializeWorkspace.cs" />
     <Compile Include="UnsupportedExpressionTypeSyntaxException.cs" />
     <Compile Include="ViewerLoggerInfo.cs" />
-    <Compile Include="ViewModel\IApplicationViewModel.cs" />
+    <Compile Include="ViewModel\ISpanToolTipViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\ITypesViewModel.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />
+    <Compile Include="ViewModel\SyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\TypesViewModel.cs" />
+    <Compile Include="Visitor2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">

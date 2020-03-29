@@ -34,7 +34,6 @@ using KayMcCormick.Lib.Wpf.ViewModel ;
 using MigraDoc.DocumentObjectModel.Internals ;
 #endif
 using NLog ;
-using ProjLib ;
 using Logger = NLog.Logger ;
 
 namespace ProjInterface
@@ -85,7 +84,6 @@ namespace ProjInterface
                                           ) ;
 
             builder.RegisterModule < AnalysisAppLibModule > ( ) ;
-            builder.RegisterModule < ProjLibModule > ( ) ;
             LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
@@ -142,31 +140,31 @@ namespace ProjInterface
                    .As < LogViewerControl > ( ) ;
         }
 
+        [ NotNull ]
         private Func < LayoutDocumentPane , IDisplayableAppCommand > Func (
             IComponentContext                                   c
           , IEnumerable < Parameter >                           p
-          , Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
+          , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
         )
         {
             metaFunc.Metadata.TryGetValue ( "Title" , out var titleo ) ;
             var title = ( string ) titleo ?? "no title" ;
 
-            return ( LayoutDocumentPane pane )
-                => ( IDisplayableAppCommand ) new LambdaAppCommand (
-                                                                    title
-                                                                  , CommandFunc
-                                                                  , Tuple.Create (
-                                                                                  metaFunc.Value
-                                                                                , pane
-                                                                                 )
-                                                                   ) ;
+            return pane => ( IDisplayableAppCommand ) new LambdaAppCommand (
+                                                                            title
+                                                                          , CommandFunc
+                                                                          , Tuple.Create (
+                                                                                          metaFunc.Value
+                                                                                        , pane
+                                                                                         )
+                                                                           ) ;
         }
 
         [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext         c
           , IEnumerable < Parameter > p
-          , Meta < Lazy < object > >  item
+          , [ NotNull ] Meta < Lazy < object > >  item
         )
         {
             if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )
@@ -196,7 +194,7 @@ namespace ProjInterface
 
         [ NotNull ]
         private static LambdaAppCommand LambdaAppCommandAdapter (
-            Meta < Lazy < IViewWithTitle > > view
+            [ NotNull ] Meta < Lazy < IViewWithTitle > > view
           , object                           obj = null
         )
         {

@@ -12,9 +12,9 @@
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
 using JetBrains.Annotations ;
-using ProjLib.Interfaces ;
 
 namespace AnalysisControls
 {
@@ -28,10 +28,16 @@ namespace AnalysisControls
         public ISpanToolTipViewModel ViewModel { get ; set ; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class SpanToolTip : UserControl , ISpanToolTip
     {
         public StackPanel Panel { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SpanToolTip ( )
         {
             InitializeComponent ( ) ;

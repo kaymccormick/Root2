@@ -173,10 +173,6 @@
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Analysis\ProjLib\ProjLib.csproj">
-      <Project>{558E1C70-3D0F-4124-B115-91C35FE19379}</Project>
-      <Name>ProjLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock">

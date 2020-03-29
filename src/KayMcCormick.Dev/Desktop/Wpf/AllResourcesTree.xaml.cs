@@ -8,6 +8,7 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
@@ -458,7 +459,7 @@ namespace KayMcCormick.Lib.Wpf
     ///     Source = &quot; ResourcesTemplates.xaml&quot; /&gt;
     ///    &lt;ResourceDictionary Source = &quot; ResourcesMisc.xaml&quot; /&gt;
     /// </remarks>
-    /// <seealso cref="System.Windows.Con   trols.UserControl" />
+    /// <seealso cref="System.Windows.Controls.UserControl" />
     /// <seealso cref="KayMcCormick.Dev.IViewWithTitle" />
     /// <seealso cref="KayMcCormick.Dev.IView{KayMcCormick.Lib.Wpf.ViewModel.AllResourcesTreeViewModel}" />
     /// <seealso cref="KayMcCormick.Lib.Wpf.IControlView" />
@@ -486,7 +487,7 @@ namespace KayMcCormick.Lib.Wpf
         /// 
         /// </summary>
         /// <param name="value"></param>
-        protected override void AddChild ( object value )
+        protected override void AddChild ( [ NotNull ] object value )
         {
             Logger.Warn (
                          "{method} {value}"

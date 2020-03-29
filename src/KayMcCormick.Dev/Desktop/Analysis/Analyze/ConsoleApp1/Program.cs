@@ -10,10 +10,11 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
 using ConsoleMenu ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
 using Microsoft.Build.Locator ;
 using NLog ;
-using ProjLib ;
+
 using Module = Autofac.Module ;
 
 namespace ConsoleApp1
@@ -86,7 +87,6 @@ namespace ConsoleApp1
             {
                 appinst.AddModule ( new AppModule ( ) ) ;
                 appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                appinst.AddModule ( new ProjLibModule ( ) ) ;
                 ILifetimeScope scope ;
                 try
                 {
@@ -134,7 +134,7 @@ namespace ConsoleApp1
             // ) ;
         }
 
-        private static async Task < int > MainCommandAsync ( AppContext context )
+        private static async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
         {
 #if MSBUILDLOCATOR
             // var instances = MSBuildLocator.RegisterDefaults ( ) ;
@@ -148,30 +148,33 @@ namespace ConsoleApp1
                                                                                     .VisualStudioSetup
                                                                          }
                                                                         ) ;
-            var nameLEn = vsInstances.Select ( instance => instance.Name.Length )
-                       .OrderByDescending ( i1 => i1 )
-                       .First ( ) ;
+            var visualStudioInstances = vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
             string RenderFunc ( VisualStudioInstance inst1 ) => $"* {inst1.Name,-30} {inst1.Version.Major:00}.{inst1.Version.Minor:00}.{inst1.Version.Build:00000}.{inst1.Version.MinorRevision:0000}  [{inst1.VisualStudioRootPath}]" ;
-            var choices = vsInstances.Select (
-                                              x => new MenuWrapper < VisualStudioInstance > (
-                                                                                             x
-                                                                                           , RenderFunc
-                                                                                            )
-                                             ) ;
+            var choices = visualStudioInstances.Select (
+                                                        x => new MenuWrapper < VisualStudioInstance > (
+                                                                                                       x
+                                                                                                     , RenderFunc
+                                                                                                      )
+                                                       ) ;
             menu.Config.SelectedAppearence =
                 new Configuration.SelectedColor ( ) { BackgroundColor = ConsoleColor.Yellow } ;
             var selected = menu.Render ( choices ) ;
+#if false
             var i2 = (
-                         from inst in vsInstances
+                         from inst in visualStudioInstances
                          where inst.Version.Major == 15
                          orderby inst.Version descending
                          select inst ).FirstOrDefault ( ) ;
 
             if ( i2 != null )
             {
+#endif
+            var i2 = selected.Instance ;
                 Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
                 MSBuildLocator.RegisterInstance ( i2 ) ;
-            }
+#if false
+        }
+#endif
             Console.WriteLine("");
 
 #endif
@@ -261,8 +264,10 @@ namespace ConsoleApp1
             _renderFunc = renderFunc ;
         }
 
+        public T Instance { get { return _instance ; } }
+
         #region Overrides of Object
-        public override string ToString ( ) { return _renderFunc ( _instance ) ; }
+        public override string ToString ( ) { return _renderFunc ( Instance ) ; }
         #endregion
     }
 }

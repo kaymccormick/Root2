@@ -62,12 +62,7 @@ namespace KayMcCormick.Lib.Wpf
         [ Category( "Appearance" ) ]
         public bool FlatMenu { [ SecurityCritical ] get; set; }
 
-        
-
-        /// <summary>Gets the size of the work area on the primary display monitor. </summary>
-        /// <returns>A <see cref="RECT" /> structure that receives the work area coordinates, expressed as virtual screen coordinates.</returns>
         [ Category( "Layout" ) ]
-
         public Rect WorkArea { get; set; }
 
         /// <summary>Gets the <see cref="System.Windows.ResourceKey" /> for the <see cref="System.Windows.SystemParameters.DropShadow"/> property. </summary>

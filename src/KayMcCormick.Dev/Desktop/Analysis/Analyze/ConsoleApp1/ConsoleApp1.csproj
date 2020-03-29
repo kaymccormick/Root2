@@ -91,10 +91,6 @@
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ProjLib\ProjLib.csproj">
-      <Project>{558e1c70-3d0f-4124-b115-91c35fe19379}</Project>
-      <Name>ProjLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ConsoleMenu-choice">
