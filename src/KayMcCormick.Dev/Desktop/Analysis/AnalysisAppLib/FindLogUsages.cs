@@ -28,18 +28,29 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
-    internal class FindLogUsages
+    /// <summary>
+    /// </summary>
+    public class FindLogUsages
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly Func < ILogInvocation > _invocationFactory ;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="invocationFactory"></param>
         public FindLogUsages ( Func < ILogInvocation > invocationFactory )
         {
             _invocationFactory = invocationFactory ;
         }
 
 
+        /// <summary>
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="rejectBlock"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         [ ItemNotNull ]
         public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
             [ NotNull ] Document         d
@@ -64,66 +75,13 @@ namespace AnalysisAppLib
 
                     if ( model != null )
                     {
-                        var exceptionType =
-                            model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
-                        var t = LogUsages.GetNLogSymbol ( model ) ;
-                        if ( t == null )
-                        {
-                            return Array.Empty < ILogInvocation > ( ) ;
-                        }
-
-                        var t2 = LogUsages.GetILoggerSymbol ( model ) ;
-                        if ( t2 == null )
-                        {
-                            return Array.Empty < ILogInvocation > ( ) ;
-                        }
-
-                        var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
-                        var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
-                        return (
-                                   from node in root.DescendantNodes ( ) //.AsParallel ( )
-                                   let t_ = t
-                                   let t2_ = t2
-                                   let builderSymbol = logBuilderSymbol
-                                   let tree_ = tree
-                                   let model_ = model
-                                   let exType = exceptionType
-                                   where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression
-                                         || node.RawKind
-                                         == ( ushort ) SyntaxKind.ObjectCreationExpression
-                                   let @out =
-                                       LogUsages.CheckInvocationExpression (
-                                                                            node
-                                                                          , model_
-                                                                          , builderSymbol
-                                                                          , t_
-                                                                          , t2_
-                                                                           )
-                                   where @out.Item1
-                                   let statement =
-                                       node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                                   let result =
-                                       new InvocationParams (
-                                                             tree_
-                                                           , model_
-                                                           , statement
-                                                           , @out
-                                                           , exType
-                                                            ).ProcessInvocation (
-                                                                                 _invocationFactory
-                                                                                )
-                                   select result is ILogInvocation inv
-                                              ? inv
-                                              : ( object ) rejectBlock.Post (
-                                                                             result is RejectedItem
-                                                                                 rj
-                                                                                 ? rj
-                                                                                 : new
-                                                                                     RejectedItem (
-                                                                                                   statement
-                                                                                                  )
-                                                                            ) ).OfType <
-                            ILogInvocation > ( ) ;
+                        return await Process (
+                                              _invocationFactory
+                                            , model
+                                            , tree
+                                            , root
+                       ,                      rejectBlock.Post
+                                             ) ;
                     }
                 }
                 catch ( Exception ex )
@@ -134,6 +92,72 @@ namespace AnalysisAppLib
             }
 
             throw new InvalidOperationException ( ) ;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="invocationFactory"></param>
+        /// <param name="model"></param>
+        /// <param name="tree"></param>
+        /// <param name="root"></param>
+        /// <param name="RejectAction"></param>
+        /// <returns></returns>
+        public static async Task < IEnumerable < ILogInvocation > > Process (
+            Func < ILogInvocation >      invocationFactory
+          , SemanticModel                model
+          , SyntaxTree                   tree
+          , SyntaxNode root
+          , Func < RejectedItem , bool > RejectAction
+        )
+        {
+            var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
+            var t = LogUsages.GetNLogSymbol ( model ) ;
+            if ( t == null )
+            {
+                return Array.Empty < ILogInvocation > ( ) ;
+            }
+
+            var t2 = LogUsages.GetILoggerSymbol ( model ) ;
+            if ( t2 == null )
+            {
+                return Array.Empty < ILogInvocation > ( ) ;
+            }
+
+            var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
+            return (
+                       from node in root.DescendantNodes ( ) //.AsParallel ( )
+                       let t_ = t
+                       let t2_ = t2
+                       let builderSymbol = logBuilderSymbol
+                       let tree_ = tree
+                       let model_ = model
+                       let exType = exceptionType
+                       where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
+                             || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
+                       let @out =
+                           LogUsages.CheckInvocationExpression (
+                                                                node
+                                                              , model_
+                                                              , builderSymbol
+                                                              , t_
+                                                              , t2_
+                                                               )
+                       where @out.Item1
+                       let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
+                       let result = new InvocationParams (
+                                                          tree_
+                                                        , model_
+                                                        , statement
+                                                        , @out
+                                                        , exType
+                                                         ).ProcessInvocation ( invocationFactory )
+                       select result is ILogInvocation inv
+                                  ? inv
+                                  : ( object ) RejectAction (
+                                                             result is RejectedItem rj
+                                                                 ? rj
+                                                                 : new RejectedItem ( statement )
+                                                            ) ).OfType < ILogInvocation > ( ) ;
         }
 
         private static bool Predicate ( [ NotNull ] SyntaxNode arg1 , int arg2 )
@@ -476,11 +500,12 @@ namespace AnalysisAppLib
                 }
 
                 var relevantNode = RelevantNode ;
+                var location = relevantNode.GetLocation ( ) ;
                 var sourceLocation = Tree.FilePath
                                      + ":"
-                                     + ( relevantNode.GetLocation ( )
-                                                     .GetMappedLineSpan ( )
-                                                     .StartLinePosition.Line
+                                     + ( location
+                                        .GetMappedLineSpan ( )
+                                        .StartLinePosition.Line
                                          + 1 ) ;
 
                 object t1 ;
@@ -494,6 +519,7 @@ namespace AnalysisAppLib
                 }
 
                 var debugInvo = invocationFactory ( ) ;
+                debugInvo.Location = location ;
                 debugInvo.SourceLocation = sourceLocation ;
                 debugInvo.LoggerType     = methodSymbol.ContainingType.MetadataName ;
                 debugInvo.MethodDisplayName = methodSymbol.ContainingType.MetadataName
@@ -597,5 +623,7 @@ namespace AnalysisAppLib
                 public object ConstantMessage { get ; set ; }
             }
         }
+
+        
     }
 }
