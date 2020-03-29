@@ -68,9 +68,9 @@ namespace ProjInterface
                                                        }
                                                       ) ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
-            lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
-                throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
-            } ;
+            // lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
+                // throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
+            // } ;
 
             ViewModel = viewModel ;
             var wih = new WindowInteropHelper ( this ) ;

@@ -17,8 +17,18 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AnalysisService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        /// <param name="syntaxTree"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static CSharpCompilation CreateCompilation (
             [ NotNull ] string     assemblyName
           , [ NotNull ] SyntaxTree syntaxTree
@@ -54,6 +64,13 @@ namespace AnalysisAppLib
             return compilation ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="compilation"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static ICodeAnalyseContext CreateFromCompilation (
             [ NotNull ] SyntaxTree        syntaxTree
           , [ NotNull ] CSharpCompilation compilation
@@ -79,6 +96,14 @@ namespace AnalysisAppLib
                                           ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="assemblyName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static ICodeAnalyseContext Parse (
             [ NotNull ] string code
           , [ NotNull ] string assemblyName

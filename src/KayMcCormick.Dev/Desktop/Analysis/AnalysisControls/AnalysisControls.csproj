@@ -7,12 +7,14 @@
     <KmGlobalOutputPath Condition=" '$(KmGlobalOutputPath)' == '' ">$(MSBuildProjectDirectory)/../../../../../build</KmGlobalOutputPath>
     <IntermediateOutputPath>$(KmGlobalOutputPath)\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutputPath>$(KmGlobalOutputPath)\lib\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
+    <DocOutputPath>$(KmGlobalOutputPath)\doc\</DocOutputPath>
     <ProjectGuid>{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}</ProjectGuid>
     <OutputType>library</OutputType>
     <RootNamespace>AnalysisControls</RootNamespace>
     <AssemblyName>AnalysisControls</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <DocumentationFile>$(DocOutputPath)KayMcCormick.Dev.xml</DocumentationFile>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <Deterministic>true</Deterministic>
@@ -44,7 +46,6 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\..\..\..\build\lib\Debug\x86\AnalysisControls\AnalysisControls.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>MSBUILDLOCATOR</DefineConstants>

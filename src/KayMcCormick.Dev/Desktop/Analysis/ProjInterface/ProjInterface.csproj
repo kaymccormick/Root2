@@ -118,9 +118,6 @@
       <DependentUpon>MSBuild.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjCommands.cs" />
-    <Compile Include="VsInstancePanel.xaml.cs">
-      <DependentUpon>VsInstancePanel.xaml</DependentUpon>
-    </Compile>
     <Page Include="AnalyzeResults.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -149,10 +146,6 @@
       <DependentUpon>ProjInterfaceApp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="VsInstancePanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

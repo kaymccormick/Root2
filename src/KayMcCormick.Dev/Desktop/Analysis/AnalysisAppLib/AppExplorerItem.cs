@@ -15,6 +15,9 @@ using System.IO ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class AppExplorerItem
     {
         public abstract string Name { get ; }

@@ -17,12 +17,13 @@
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    <FlowDocumentScrollViewer Background="Chocolate"
+    <FlowDocumentScrollViewer Background="DarkOliveGreen"
                               Grid.Row="0" Grid.Column="0"
                               Grid.RowSpan="2">
 
       <FlowDocumentScrollViewer.Document>
-        <FlowDocument Background="Chocolate" Name="flow" />
+        <FlowDocument Background="DarkOliveGreen"
+                      Name="flow" />
       </FlowDocumentScrollViewer.Document>
     </FlowDocumentScrollViewer>
     <Border Padding="20" Grid.Row="2" Grid.Column="0"
