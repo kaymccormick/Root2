@@ -13,13 +13,17 @@ namespace AnalysisControls
 {
     /// <summary>
     ///     <para>
-    ///         Ckass to add supported converters for System.Text.Json that
+    ///         Class to add supported converters for System.Text.Json that
     ///         incorporate both Code Analyzers / Roslyn and WPF functions.
     ///     </para>
     ///     <para></para>
     /// </summary>
     public static class JsonConverters
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [ NotNull ]
         public static JsonSerializerOptions CreateJsonSerializeOptions ( )
         {
@@ -28,6 +32,11 @@ namespace AnalysisControls
             return r ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void AddJsonConverters (
             [ NotNull ] JsonSerializerOptions jsonSerializerOptions
         )
@@ -53,8 +62,8 @@ namespace AnalysisControls
                                                   new JsonComponentRegistrationConverterFactory ( )
                                                  ) ;
             jsonSerializerOptions.Converters.Add ( new JsonIViewModelConverterFactory ( ) ) ;
-
-            //jsonSerializerOptions.Converters.Add ( new JsonFrameworkElementConverter ( ) ) ;
+            jsonSerializerOptions.Converters.Add (new JsonLazyConverterFactory()  );
+            jsonSerializerOptions.Converters.Add ( new JsonSimpleFrameworkElementConverterFactory());
         }
     }
 

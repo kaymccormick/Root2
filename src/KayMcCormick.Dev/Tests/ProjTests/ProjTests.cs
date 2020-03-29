@@ -63,8 +63,9 @@ namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
-      
-    {}
+
+    {
+    }
 
     [ Collection ( "GeneralPurpose" ) ]
     [ ClearLoggingRules ]
@@ -84,26 +85,25 @@ namespace ProjTests
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
-        private readonly ITestOutputHelper     _output ;
-        private readonly LoggingFixture        _loggingFixture ;
-        private readonly ProjectFixture        _projectFixture ;
-        
-        private          ILifetimeScope        _testScope ;
-        private          JsonSerializerOptions _testJsonSerializerOptions ;
+        private readonly ITestOutputHelper _output ;
+        private readonly LoggingFixture    _loggingFixture ;
+        private readonly ProjectFixture    _projectFixture ;
+
+        private ILifetimeScope        _testScope ;
+        private JsonSerializerOptions _testJsonSerializerOptions ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
             ITestOutputHelper            output
           , [ CanBeNull ] LoggingFixture loggingFixture
           , ProjectFixture               projectFixture
-          
         )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             _projectFixture                              =  projectFixture ;
-            
+
 
             if ( ! _disableLogging )
             {
@@ -218,7 +218,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new AnalysisControlsModule( ) ) ;
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 LogManager.ThrowExceptions = true ;
@@ -255,7 +255,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new AnalysisAppLibModule( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
@@ -350,7 +350,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new AnalysisAppLibModule( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
@@ -436,7 +436,7 @@ namespace ProjTests
         [ Fact ]
         public void TestModule1 ( )
         {
-            var module = new AnalysisAppLibModule( ) ;
+            var module = new AnalysisAppLibModule ( ) ;
 
             var mock = new Mock < ContainerBuilder > ( ) ;
             mock.Setup ( cb => module.DoLoad ( cb ) ) ;
@@ -446,8 +446,7 @@ namespace ProjTests
         public void DeserializeLog ( )
         {
             var ctx = ( ICompilationUnitRootContext ) AnalysisService.Parse (
-                                                                             Resources
-                                                                                .Program_Parse
+                                                                             Resources.Program_Parse
                                                                            , "test"
                                                                             ) ;
             var info1 = LogEventInfo.Create ( LogLevel.Debug , "test" , "test" ) ;
@@ -730,7 +729,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new AnalysisControlsModule());
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
@@ -779,8 +778,7 @@ namespace ProjTests
                                                   ) ;
             var dd = new ExceptionDataInfo
                      {
-                         Exception = ex
-                       , ParsedExceptions = Utils.GenerateParsedException(ex)
+                         Exception = ex , ParsedExceptions = Utils.GenerateParsedException ( ex )
                      } ;
 
             w.Content = new ExceptionUserControl { DataContext = dd } ;
@@ -795,7 +793,7 @@ namespace ProjTests
                                          new ApplicationInstanceConfiguration ( _output.WriteLine )
                                         ) )
             {
-                instance.AddModule ( new AnalysisAppLibModule( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
@@ -816,18 +814,37 @@ namespace ProjTests
             }
         }
 
+        [ WpfFact ]
+        public void TEstWriteBrush ( )
+        {
+            var brushConverter = new JsonBrushConverter ( ) ;
+            var opt = new JsonSerializerOptions ( ) ;
+            opt.Converters.Add ( brushConverter ) ;
+            var brush = new SolidColorBrush ( Colors.Blue ) ;
+            var json = JsonSerializer.Serialize ( brush , opt ) ;
+            Logger.Info ( "json is {json}" , json ) ;
+            var b = new LinearGradientBrush (
+                                             Colors.Blue
+                                           , Colors.Green
+                                           , new Point ( 0 ,  0 )
+                                           , new Point ( 10 , 10 )
+                                            ) ;
+            Debug.WriteLine ( JsonSerializer.Serialize ( b , opt ) ) ;
+        }
+
+
         [ Fact ]
         public void TestModel ( )
         {
-            var t = new TypesViewModel();
-
+            var t = new TypesViewModel ( ) ;
         }
 
-        [Fact]
+
+        [ Fact ]
         public void TestXmlDoc ( )
         {
             var x = TypesViewModel.LoadDoc ( ) ;
-            var y  = TypesViewModel.DocMembers ( x ) ;
+            var y = TypesViewModel.DocMembers ( x ) ;
             foreach ( var codeElementDocumentation in y.Select ( TypesViewModel.HandleDocElement ) )
             {
                 if ( codeElementDocumentation != null )
@@ -835,22 +852,21 @@ namespace ProjTests
                     Debug.WriteLine ( codeElementDocumentation ) ;
                 }
             }
+
             // var x = TypesViewModel.LoadXmlDoc ( ) ;
             // foreach ( var keyValuePair in x )
             // {
-                // foreach ( var valuePair in keyValuePair.Value.MethodDocumentation )
-                // {
-                    // foreach ( var methodDocInfo in valuePair.Value )
-                    // {
-                        // Debug.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
-                    // }
-                // }
+            // foreach ( var valuePair in keyValuePair.Value.MethodDocumentation )
+            // {
+            // foreach ( var methodDocInfo in valuePair.Value )
+            // {
+            // Debug.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
             // }
-
+            // }
+            // }
         }
     }
 
-    
 
     public class RoutedExecutionResultEventArgs : RoutedEventArgs
     {

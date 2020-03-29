@@ -155,7 +155,7 @@ namespace KayMcCormick.Dev.Logging
 
             var reg = args.ComponentRegistration ;
             var activatorLimitType = reg.Activator.LimitType ;
-            Logger.Trace ( "Registered " + activatorLimitType ) ;
+            Logger.Trace ( "Registered {limitType}", activatorLimitType ) ;
             PROVIDER_GUID.EventWriteEVENT_COMPONENT_REGISTERED (
                                                                 activatorLimitType
                                                                    .AssemblyQualifiedName
@@ -165,8 +165,13 @@ namespace KayMcCormick.Dev.Logging
             reg.Activated += ( o , eventArgs ) => {
                 var instanceDesc = eventArgs.Instance ;
                 var type = eventArgs.Instance.GetType ( ) ;
-                if ( type.IsGenericType
-                     && type.GetGenericTypeDefinition ( ) == typeof ( Meta <> ) )
+                if ( type.IsArray
+                     && typeof ( Delegate ).IsAssignableFrom ( type.GetElementType ( ) ) )
+                {
+                    instanceDesc = eventArgs.Instance.ToString ( ) ;
+                }
+                else if ( type.IsGenericType
+                          && type.GetGenericTypeDefinition ( ) == typeof ( Meta <> ) )
                 {
                     var x = type.GetGenericArguments ( )[ 0 ] ;
                     if ( typeof ( Delegate ).IsAssignableFrom ( x ) )

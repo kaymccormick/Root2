@@ -440,6 +440,12 @@ namespace KayMcCormick.Dev.Logging
                         {
                             JsonSerializer.Serialize ( writer , t , typeof ( Type ) , options ) ;
                         }
+                        else if ( p.Value.GetType ( ).IsGenericType
+                                  && p.Value.GetType ( ).GetGenericTypeDefinition ( )
+                                  == typeof ( Lazy <> ) )
+                        {
+                            writer.WriteStringValue ( p.Value.ToString ( ) ) ;
+                        }
                         else
                         {
                             try
