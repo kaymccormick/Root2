@@ -16,9 +16,19 @@ using System.Windows ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DataTemplateKeyConverter : JsonConverter<DataTemplateKey>
     {
         #region Overrides of JsonConverter<DataTemplateKey>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override DataTemplateKey Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

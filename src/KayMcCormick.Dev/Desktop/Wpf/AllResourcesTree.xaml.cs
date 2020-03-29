@@ -15,11 +15,17 @@ using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+#if CUSTOM_TREEVIEW
     public class TreeViewItem1 : TreeViewItem
     {
         private bool _hasEffectiveKeyboardFocus ;
         private bool _isEnabledCore ;
         #region Overrides of ItemsControl
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="item"></param>
         protected override void PrepareContainerForItemOverride (
             DependencyObject element
           , object           item
@@ -399,7 +405,6 @@ namespace KayMcCormick.Lib.Wpf
         #endregion
     }
 
-#if CUSTOM_TREEVIEW
     public class TreeView1 : TreeView
     {
     #region Overrides of TreeView
@@ -436,6 +441,9 @@ namespace KayMcCormick.Lib.Wpf
     #endregion
     }
 #else
+    /// <summary>
+    /// 
+    /// </summary>
     public class TreeView1 : TreeView {
     }
 #endif
@@ -464,12 +472,20 @@ namespace KayMcCormick.Lib.Wpf
         private static readonly Logger Logger     = LogManager.GetCurrentClassLogger ( ) ;
         private                 string _viewTitle = "Resources Explorer" ;
 #region Overrides of ContentControl
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override bool ShouldSerializeContent ( )
         {
             Logger.Warn ( nameof ( ShouldSerializeContent ) ) ;
             return base.ShouldSerializeContent ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         protected override void AddChild ( object value )
         {
             Logger.Warn (
@@ -480,18 +496,32 @@ namespace KayMcCormick.Lib.Wpf
             base.AddChild ( value ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
         protected override void AddText ( string text )
         {
             Logger.Warn ( nameof ( AddText ) ) ;
             base.AddText ( text ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldContent"></param>
+        /// <param name="newContent"></param>
         protected override void OnContentChanged ( object oldContent , object newContent )
         {
             Logger.Warn ( nameof ( OnContentChanged ) ) ;
             base.OnContentChanged ( oldContent , newContent ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldContentTemplate"></param>
+        /// <param name="newContentTemplate"></param>
         protected override void OnContentTemplateChanged (
             DataTemplate oldContentTemplate
           , DataTemplate newContentTemplate
@@ -502,6 +532,11 @@ namespace KayMcCormick.Lib.Wpf
             base.OnContentTemplateChanged ( oldContentTemplate , newContentTemplate ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldContentTemplateSelector"></param>
+        /// <param name="newContentTemplateSelector"></param>
         protected override void OnContentTemplateSelectorChanged (
             DataTemplateSelector oldContentTemplateSelector
           , DataTemplateSelector newContentTemplateSelector
@@ -515,6 +550,11 @@ namespace KayMcCormick.Lib.Wpf
                                                   ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldContentStringFormat"></param>
+        /// <param name="newContentStringFormat"></param>
         protected override void OnContentStringFormatChanged (
             string oldContentStringFormat
           , string newContentStringFormat
@@ -526,6 +566,11 @@ namespace KayMcCormick.Lib.Wpf
         }
 #endregion
 #region Overrides of Control
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldTemplate"></param>
+        /// <param name="newTemplate"></param>
         protected override void OnTemplateChanged (
             ControlTemplate oldTemplate
           , ControlTemplate newTemplate
@@ -536,78 +581,154 @@ namespace KayMcCormick.Lib.Wpf
             base.OnTemplateChanged ( oldTemplate , newTemplate ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constraint"></param>
+        /// <returns></returns>
         protected override Size MeasureOverride ( Size constraint )
         {
             return base.MeasureOverride ( constraint ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arrangeBounds"></param>
+        /// <returns></returns>
         protected override Size ArrangeOverride ( Size arrangeBounds )
         {
             return base.ArrangeOverride ( arrangeBounds ) ;
         }
 #endregion
 #region Overrides of FrameworkElement
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldStyle"></param>
+        /// <param name="newStyle"></param>
         protected override void OnStyleChanged ( Style oldStyle , Style newStyle )
         {
             base.OnStyleChanged ( oldStyle , newStyle ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="child"></param>
         protected override void ParentLayoutInvalidated ( UIElement child )
         {
             base.ParentLayoutInvalidated ( child ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void OnApplyTemplate ( ) { base.OnApplyTemplate ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         protected override Visual GetVisualChild ( int index )
         {
             return base.GetVisualChild ( index ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPropertyChanged ( DependencyPropertyChangedEventArgs e )
         {
             base.OnPropertyChanged ( e ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldParent"></param>
         protected override void OnVisualParentChanged ( DependencyObject oldParent )
         {
             base.OnVisualParentChanged ( oldParent ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected override DependencyObject GetUIParentCore ( )
         {
             return base.GetUIParentCore ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sizeInfo"></param>
         protected override void OnRenderSizeChanged ( SizeChangedInfo sizeInfo )
         {
             base.OnRenderSizeChanged ( sizeInfo ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="layoutSlotSize"></param>
+        /// <returns></returns>
         protected override Geometry GetLayoutClip ( Size layoutSlotSize )
         {
             return base.GetLayoutClip ( layoutSlotSize ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnGotFocus ( RoutedEventArgs e ) { base.OnGotFocus ( e ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void BeginInit ( ) { base.BeginInit ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void EndInit ( ) { base.EndInit ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnInitialized ( EventArgs e ) { base.OnInitialized ( e ) ; }
 #endregion
 #region Overrides of UIElement
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="drawingContext"></param>
         protected override void OnRender ( DrawingContext drawingContext )
         {
             base.OnRender ( drawingContext ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hitTestParameters"></param>
+        /// <returns></returns>
         protected override HitTestResult HitTestCore ( PointHitTestParameters hitTestParameters )
         {
             return base.HitTestCore ( hitTestParameters ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hitTestParameters"></param>
+        /// <returns></returns>
         protected override GeometryHitTestResult HitTestCore (
             GeometryHitTestParameters hitTestParameters
         )
@@ -616,6 +737,11 @@ namespace KayMcCormick.Lib.Wpf
         }
 #endregion
 #region Overrides of Visual
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="visualAdded"></param>
+        /// <param name="visualRemoved"></param>
         protected override void OnVisualChildrenChanged (
             DependencyObject visualAdded
           , DependencyObject visualRemoved
@@ -624,12 +750,22 @@ namespace KayMcCormick.Lib.Wpf
             base.OnVisualChildrenChanged ( visualAdded , visualRemoved ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldDpi"></param>
+        /// <param name="newDpi"></param>
         protected override void OnDpiChanged ( DpiScale oldDpi , DpiScale newDpi )
         {
             base.OnDpiChanged ( oldDpi , newDpi ) ;
         }
 #endregion
 #region Overrides of DependencyObject
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dp"></param>
+        /// <returns></returns>
         protected override bool ShouldSerializeProperty ( DependencyProperty dp )
         {
             return base.ShouldSerializeProperty ( dp ) ;
@@ -648,10 +784,16 @@ namespace KayMcCormick.Lib.Wpf
         }
 
 #region Implementation of IView1
+        /// <summary>
+        /// 
+        /// </summary>
         public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
 #endregion
 
 #region Implementation of IView<out AllResourcesTreeViewModel>
+        /// <summary>
+        /// 
+        /// </summary>
         public AllResourcesTreeViewModel ViewModel
         {
             get { return _viewModel ; }

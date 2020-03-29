@@ -76,7 +76,7 @@ namespace AnalysisAppLib
             KeyValuePair < object , IDictionary < object , ISpanViewModel > > item
         )
         {
-            //KM2020-03-26 ReSharper disable once AssignNullToNotNullAttribute
+            // ReSharper disable once AssignNullToNotNullAttribute
             return _dictionaryImplementation.Remove ( item ) ;
         }
 

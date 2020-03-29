@@ -31,6 +31,9 @@ namespace KayMcCormick.Dev.Logging
         MainApplication ,
 
 
+        /// <summary>
+        /// Tests
+        /// </summary>
         Tests
     }
 

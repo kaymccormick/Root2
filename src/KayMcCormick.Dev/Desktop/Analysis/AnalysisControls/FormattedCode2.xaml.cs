@@ -165,7 +165,7 @@ namespace AnalysisControls
             _container = _stack.Pop();
 
             var n = c1 ;
-            SyntaxNode n2 = ( SyntaxNode ) (n as Panel ).Tag ;
+            SyntaxNode n2 = ( SyntaxNode ) (n as Panel )?.Tag ;
             Logger.Info ( "{x} {y}" , n2?.Kind ( ) , node?.Kind ( ) ) ;
 //            Debug.Assert ( object.ReferenceEquals(n , node ) );
 

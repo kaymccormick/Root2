@@ -19,6 +19,11 @@ namespace KayMcCormick.Lib.Wpf.JSON
     public class JsonResourceKeyWrapperConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
             if ( typeof ( IResourceKeyWrapper1 ).IsAssignableFrom ( typeToConvert ) )

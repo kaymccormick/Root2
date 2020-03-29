@@ -6,10 +6,21 @@ using System.Windows.Media ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ColorConverter : IValueConverter
     {
 
         #region Implementation of IValueConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object Convert (
             object      value
           , Type        targetType
@@ -31,6 +42,14 @@ namespace KayMcCormick.Lib.Wpf
             return new SolidColorBrush(Colors.Transparent);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
         #endregion
     }

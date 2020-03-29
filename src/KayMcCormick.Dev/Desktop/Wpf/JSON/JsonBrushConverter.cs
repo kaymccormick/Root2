@@ -17,9 +17,17 @@ using System.Windows.Media ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonBrushConverter : JsonConverterFactory
     {
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
             if ( typeof ( Brush ).IsAssignableFrom ( typeToConvert ) )
@@ -31,6 +39,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -39,10 +53,25 @@ namespace KayMcCormick.Lib.Wpf.JSON
             return new JsonBrushConverter1 ( typeToConvert , options ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class JsonBrushConverter1 : JsonConverter < Brush >
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
             public JsonBrushConverter1 ( Type typeToConvert , JsonSerializerOptions options ) { }
             #region Overrides of JsonConverter<Brush>
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="reader"></param>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
+            /// <returns></returns>
             public override Brush Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -52,6 +81,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 return null ;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="writer"></param>
+            /// <param name="value"></param>
+            /// <param name="options"></param>
             public override void Write (
                 Utf8JsonWriter        writer
               , Brush                 value

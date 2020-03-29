@@ -8,6 +8,9 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AttachedProperties
     {
         /// <summary>The lifetime scope changed event</summary>

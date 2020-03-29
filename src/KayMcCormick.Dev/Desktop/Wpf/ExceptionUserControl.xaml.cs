@@ -80,9 +80,18 @@ namespace KayMcCormick.Lib.Wpf
         public ExceptionUserControl ( ) { InitializeComponent ( ) ; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExceptionDataInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Exception Exception { get ; set ; }
+        /// <summary>
+        /// 
+        /// </summary>
         public ParsedExceptions ParsedExceptions { get ; set ; }
     }
 }

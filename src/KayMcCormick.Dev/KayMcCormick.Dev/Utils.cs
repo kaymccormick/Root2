@@ -244,6 +244,11 @@ namespace KayMcCormick.Dev
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eException"></param>
+        /// <returns></returns>
         public static ParsedExceptions GenerateParsedException ( Exception eException )
         {
             var parsed = new ParsedExceptions ( ) ;

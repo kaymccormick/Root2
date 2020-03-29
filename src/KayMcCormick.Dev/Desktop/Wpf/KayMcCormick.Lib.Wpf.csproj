@@ -83,7 +83,6 @@
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppCommand.cs" />
-    <Compile Include="BlocksConverter.cs" />
     <Compile Include="ColorConverter.cs" />
     <Compile Include="ContentControlView.cs" />
     <Compile Include="DictionaryConverter.cs" />

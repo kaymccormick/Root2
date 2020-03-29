@@ -13,6 +13,9 @@ using System ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IHandleException
     {
         void HandleException ( Exception exception ) ;

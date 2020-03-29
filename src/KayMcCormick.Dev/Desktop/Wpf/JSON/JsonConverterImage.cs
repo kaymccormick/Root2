@@ -19,6 +19,9 @@ using System.Windows.Media ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonConverterImage : JsonConverterFactory
     {
         #region Overrides of JsonConverter

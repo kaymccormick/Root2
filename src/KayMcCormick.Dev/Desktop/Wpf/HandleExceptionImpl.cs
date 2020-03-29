@@ -19,9 +19,16 @@ using System.Xml.Serialization ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class HandleExceptionImpl : IHandleException
     {
         #region Implementation of IHandleException
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exception"></param>
         public void HandleException ( Exception exception )
         {
             if ( exception != null )

@@ -44,8 +44,20 @@ namespace KayMcCormick.Lib.Wpf
         private Type[]                  _optionType ;
         private ParserResult < object > _argParseResult ;
 #endif
+        /// <summary>
+        /// 
+        /// </summary>
         protected BaseApp ( ) : this ( null , false , false , false ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationInstance"></param>
+        /// <param name="disableLogging"></param>
+        /// <param name="disableRuntimeConfiguration"></param>
+        /// <param name="disableServiceHost"></param>
+        /// <param name="modules"></param>
+        /// <param name="initAction"></param>
         protected BaseApp (
             ApplicationInstanceBase applicationInstance         = null
           , bool                    disableLogging              = false
@@ -110,16 +122,28 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
         public virtual ILifetimeScope BeginLifetimeScope ( object tag )
         {
             return Scope.BeginLifetimeScope ( tag ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public virtual ILifetimeScope BeginLifetimeScope ( )
         {
             return Scope.BeginLifetimeScope ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual ILifetimeScope Scope { get { return _scope ; } set { _scope = value ; } }
 
         /// <summary>Gets a value indicating whether [do tracing].</summary>
@@ -130,6 +154,9 @@ namespace KayMcCormick.Lib.Wpf
         /// TODO Edit XML Comment Template for DoTracing
         protected virtual bool DoTracing { get ; } = false ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual void SetupTracing ( )
         {
             PresentationTraceSources.Refresh ( ) ;
@@ -154,14 +181,24 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual LogDelegates.LogMethod DebugLog { get ; set ; }
 
         /// <summary>Gets the configuration settings.</summary>
         /// <value>The configuration settings.</value>
         public virtual List < object > ConfigSettings { get ; } = new List < object > ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual ILogger Logger { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exitCode"></param>
         protected virtual void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
         {
             var code = Convert.ChangeType ( exitCode , exitCode.GetTypeCode ( ) ) ;
@@ -180,18 +217,30 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected virtual IEnumerable < IModule > GetModules ( )
         {
             return Array.Empty < IModule > ( ) ;
         }
 
         #region Overrides of Application
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnExit ( ExitEventArgs e )
         {
             base.OnExit ( e ) ;
             _createdAppInstance?.Dispose ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnStartup ( StartupEventArgs e )
         {
             base.OnStartup ( e ) ;
@@ -222,6 +271,9 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         #endregion
 
         #region IDisposable
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void Dispose ( ) { _applicationInstance?.Dispose ( ) ; }
         #endregion
     }

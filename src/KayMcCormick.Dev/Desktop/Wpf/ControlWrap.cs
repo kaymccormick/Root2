@@ -17,18 +17,36 @@ using System.Windows.Media.Imaging ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ControlWrap<T> : IWrap<T>, IWrap1 where T : UIElement
     {
         private object _controlObject ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonIgnore]
         public T Control { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ControlWrap ( ) {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
         public ControlWrap ( T c ) { Control = c ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonIgnore]
         public ImageSource Image
         {
@@ -60,12 +78,21 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Implementation of IWrap1
+        /// <summary>
+        /// 
+        /// </summary>
         public object ControlObject => Control ;
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IWrap1
     {
+        /// <summary>
+        /// 
+        /// </summary>
         object ControlObject { get ; }
     }
 }

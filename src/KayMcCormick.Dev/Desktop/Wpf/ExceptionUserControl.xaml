@@ -22,7 +22,6 @@
           <Style TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="32pt" />
           </Style>
-          <local:BlocksConverter x:Key="BlocksConverter" />
           <DataTemplate
             DataType="{x:Type system:Exception}">
             <StackPanel Background="Aqua">
