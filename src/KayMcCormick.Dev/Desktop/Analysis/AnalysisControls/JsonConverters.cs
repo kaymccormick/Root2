@@ -2,10 +2,8 @@ using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using AnalysisAppLib.Serialization ;
-using AnalysisAppLib.ViewModel ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
-using Autofac.Core.Registration ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
@@ -14,19 +12,25 @@ using KayMcCormick.Lib.Wpf.JSON ;
 namespace AnalysisControls
 {
     /// <summary>
-    ///   <para>Ckass to add supported converters for System.Text.Json that incorporate both Code Analyzers / Roslyn and WPF functions.</para>
-    ///   <para></para>
+    ///     <para>
+    ///         Ckass to add supported converters for System.Text.Json that
+    ///         incorporate both Code Analyzers / Roslyn and WPF functions.
+    ///     </para>
+    ///     <para></para>
     /// </summary>
     public static class JsonConverters
     {
         [ NotNull ]
         public static JsonSerializerOptions CreateJsonSerializeOptions ( )
         {
-            var r = new JsonSerializerOptions();
+            var r = new JsonSerializerOptions ( ) ;
             AddJsonConverters ( r ) ;
             return r ;
         }
-        public static void AddJsonConverters ( [ NotNull ] JsonSerializerOptions jsonSerializerOptions )
+
+        public static void AddJsonConverters (
+            [ NotNull ] JsonSerializerOptions jsonSerializerOptions
+        )
         {
             if ( jsonSerializerOptions == null )
             {
@@ -44,9 +48,11 @@ namespace AnalysisControls
                                                   new JsonResourceKeyWrapperConverterFactory ( )
                                                  ) ;
             jsonSerializerOptions.Converters.Add ( new JsonBrushConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add (new JsonLifetimeScopeConverter()  );
-            jsonSerializerOptions.Converters.Add(new JsonComponentRegistrationConverterFactory());
-            jsonSerializerOptions.Converters.Add(new JsonIViewModelConverterFactory());
+            jsonSerializerOptions.Converters.Add ( new JsonLifetimeScopeConverter ( ) ) ;
+            jsonSerializerOptions.Converters.Add (
+                                                  new JsonComponentRegistrationConverterFactory ( )
+                                                 ) ;
+            jsonSerializerOptions.Converters.Add ( new JsonIViewModelConverterFactory ( ) ) ;
 
             //jsonSerializerOptions.Converters.Add ( new JsonFrameworkElementConverter ( ) ) ;
         }
@@ -69,10 +75,17 @@ namespace AnalysisControls
             return new JsonIViewModelConverter ( ) ;
         }
 
-        private sealed class JsonIViewModelConverter : JsonConverter<IViewModel>
+        private sealed class JsonIViewModelConverter : JsonConverter < IViewModel >
         {
             #region Overrides of JsonConverter<IViewModel>
-            public override IViewModel Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
+            public override IViewModel Read (
+                ref Utf8JsonReader    reader
+              , Type                  typeToConvert
+              , JsonSerializerOptions options
+            )
+            {
+                return null ;
+            }
 
             public override void Write (
                 Utf8JsonWriter        writer
@@ -80,7 +93,7 @@ namespace AnalysisControls
               , JsonSerializerOptions options
             )
             {
-                writer.WriteStringValue(value.ToString());
+                writer.WriteStringValue ( value.ToString ( ) ) ;
             }
             #endregion
         }
@@ -106,12 +119,12 @@ namespace AnalysisControls
           , JsonSerializerOptions options
         )
         {
-            return new JsonComponentRegistrationConverter();
+            return new JsonComponentRegistrationConverter ( ) ;
         }
         #endregion
     }
 
-    public class JsonComponentRegistrationConverter : JsonConverter<IComponentRegistration>
+    public class JsonComponentRegistrationConverter : JsonConverter < IComponentRegistration >
     {
         #region Overrides of JsonConverter<ComponentRegistration>
         public override IComponentRegistration Read (
@@ -124,17 +137,17 @@ namespace AnalysisControls
         }
 
         public override void Write (
-            Utf8JsonWriter        writer
+            Utf8JsonWriter         writer
           , IComponentRegistration value
-          , JsonSerializerOptions options
+          , JsonSerializerOptions  options
         )
         {
-            writer.WriteStringValue(value.ToString());
+            writer.WriteStringValue ( value.ToString ( ) ) ;
         }
         #endregion
     }
 
-    public class JsonLifetimeScopeConverter : JsonConverter<LifetimeScope>
+    public class JsonLifetimeScopeConverter : JsonConverter < LifetimeScope >
     {
         #region Overrides of JsonConverter<LifetimeScope>
         public override LifetimeScope Read (
@@ -152,7 +165,7 @@ namespace AnalysisControls
           , JsonSerializerOptions options
         )
         {
-            writer.WriteStringValue(value.ToString());
+            writer.WriteStringValue ( value.ToString ( ) ) ;
         }
         #endregion
     }

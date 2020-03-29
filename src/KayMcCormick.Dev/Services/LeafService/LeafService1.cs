@@ -29,7 +29,7 @@ using System.ServiceModel.Channels ;
 using System.Threading ;
 using System.Timers ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev.ServiceImpl ;
+using KayMcCormick.Dev.Service ;
 using NLog.LogReceiverService ;
 using Topshelf ;
 using LogLevel = NLog.LogLevel ;

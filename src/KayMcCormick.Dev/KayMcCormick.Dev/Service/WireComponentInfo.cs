@@ -4,20 +4,17 @@ using System.Collections.Generic ;
 namespace KayMcCormick.Dev.Service
 {
     /// <summary>
-    /// 
     /// </summary>
     public class WireComponentInfo
     {
-        private readonly List<WireInstanceInfo> _instances = new List<WireInstanceInfo>();
+        private readonly List < WireInstanceInfo > _instances = new List < WireInstanceInfo > ( ) ;
 
         /// <summary>
-        /// 
         /// </summary>
-        public List<WireInstanceInfo> Instances => _instances;
+        public List < WireInstanceInfo > Instances { get { return _instances ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get ; set ; }
     }
 }

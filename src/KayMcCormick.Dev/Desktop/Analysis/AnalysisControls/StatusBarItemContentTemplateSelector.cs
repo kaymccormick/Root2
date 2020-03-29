@@ -14,9 +14,10 @@ namespace AnalysisControls
         {
             try
             {
-                if ( item != null ) {
+                if ( item != null )
+                {
                     var type = item.GetType ( ) ;
-                    
+
                     var cType = container.GetType ( ) ;
                     foreach ( DictionaryEntry currentResource in Application.Current.Resources )
                     {
@@ -27,8 +28,9 @@ namespace AnalysisControls
                                 if ( t.IsAssignableFrom ( type ) )
                                 {
                                     var currentClassLogger = logger ;
-                                    currentClassLogger
-                                       .Info ( $"{currentResource.Key} is candidate" ) ;
+                                    currentClassLogger.Info (
+                                                             $"{currentResource.Key} is candidate"
+                                                            ) ;
                                     return dt ;
                                 }
                             }
@@ -37,9 +39,11 @@ namespace AnalysisControls
                 }
             }
             catch ( Exception ex )
-            { logger.Warn ( ex , ex.ToString ( ) ) ;
+            {
+                logger.Warn ( ex , ex.ToString ( ) ) ;
             }
-            return base.SelectTemplate(item, container);
+
+            return base.SelectTemplate ( item , container ) ;
         }
         #endregion
     }

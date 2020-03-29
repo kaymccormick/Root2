@@ -19,12 +19,15 @@ namespace AnalysisAppLib.ViewModel
 {
     public sealed class LoginAuthenticationViewModel : IViewModel
     {
-        private readonly Func<string, GraphServiceClient> _graphFunc;
-        private readonly IPublicClientApplication         _publicClient;
+        private readonly Func < string , GraphServiceClient > _graphFunc ;
+        private readonly IPublicClientApplication             _publicClient ;
 
-        public LoginAuthenticationViewModel ( Func < string , GraphServiceClient > graphFunc , IPublicClientApplication publicClient )
+        public LoginAuthenticationViewModel (
+            Func < string , GraphServiceClient > graphFunc
+          , IPublicClientApplication             publicClient
+        )
         {
-            _graphFunc = graphFunc ;
+            _graphFunc    = graphFunc ;
             _publicClient = publicClient ;
         }
 
@@ -32,28 +35,30 @@ namespace AnalysisAppLib.ViewModel
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }
+
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly IEnumerable < IExplorerItemProvider > _providers ;
-        
+
         private readonly IEnumerable < Meta < Lazy < IViewWithTitle > > > _views ;
-        private          IAccount                                 _account ;
+        private          IAccount                                         _account ;
 
         private string _defaultInputPath =
             Environment.GetFolderPath ( Environment.SpecialFolder.MyDocuments ) ;
 
-        private IntPtr             _hWnd ;
-        private IDictionary        _iconsResources ;
         private GraphServiceClient _graphClient ;
 
-        private ObservableCollection < AppExplorerItem > _rootCollection =
+        private IntPtr      _hWnd ;
+        private IDictionary _iconsResources ;
+
+        private readonly ObservableCollection < AppExplorerItem > _rootCollection =
             new ObservableCollection < AppExplorerItem > ( ) ;
 
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IViewWithTitle > > > views
-          , IEnumerable < IExplorerItemProvider >    providers
+          , IEnumerable < IExplorerItemProvider >            providers
         )
         {
             _views     = views ;
@@ -89,6 +94,12 @@ namespace AnalysisAppLib.ViewModel
             set { _defaultInputPath = value ; }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
+
 
         public async Task Request1 ( )
 
@@ -104,8 +115,6 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged ;
-
         public void SethWnd ( IntPtr value ) { _hWnd = value ; }
 
         [ NotifyPropertyChangedInvocator ]
@@ -113,9 +122,5 @@ namespace AnalysisAppLib.ViewModel
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-
-        #region Implementation of ISerializable
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
     }
 }

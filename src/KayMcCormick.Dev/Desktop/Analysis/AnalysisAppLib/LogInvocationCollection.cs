@@ -15,7 +15,7 @@ using JetBrains.Annotations ;
 
 namespace AnalysisAppLib
 {
-    public class LogInvocationCollection : ObservableCollection<ILogInvocation>
+    public class LogInvocationCollection : ObservableCollection < ILogInvocation >
     {
         #region Overrides of ObservableCollection<ILogInvocation>
         protected override void InsertItem ( int index , [ NotNull ] ILogInvocation item )

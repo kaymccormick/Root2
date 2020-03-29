@@ -17,9 +17,9 @@ namespace AnalysisAppLib
 {
     public interface ILogInvocationArgument
     {
-        string GetJSON ( ILogInvocationArgument arg );
-        void SetJSON(string value);
-
         object Pojo { get ; set ; }
+
+        string GetJSON ( ILogInvocationArgument arg ) ;
+        void   SetJSON ( string                 value ) ;
     }
 }

@@ -15,29 +15,31 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib
 {
-    
     public class CodeAnalyseContext2 : ICodeAnalyseContext
     {
+        private CompilationUnitSyntax _compilationUnit ;
+
         public CodeAnalyseContext2 ( SemanticModel currentModel )
         {
-            _currentModel = currentModel ;
-            _syntaxTree = _currentModel.SyntaxTree ;
-            _compilationUnit = _syntaxTree.GetCompilationUnitRoot ( ) ;
+            CurrentModel     = currentModel ;
+            SyntaxTree       = CurrentModel.SyntaxTree ;
+            _compilationUnit = SyntaxTree.GetCompilationUnitRoot ( ) ;
         }
 
-        private SyntaxTree _syntaxTree ;
-        private CompilationUnitSyntax _compilationUnit ;
-        private SemanticModel _currentModel ;
         #region Implementation of ISyntaxTreeContext
-        public SyntaxTree SyntaxTree { get => _syntaxTree ; set => _syntaxTree = value ; }
+        public SyntaxTree SyntaxTree { get ; set ; }
         #endregion
 
         #region Implementation of ICompilationUnitRootContext
-        public CompilationUnitSyntax CompilationUnit { get => _compilationUnit ; set => _compilationUnit = value ; }
+        public CompilationUnitSyntax CompilationUnit
+        {
+            get { return _compilationUnit ; }
+            set { _compilationUnit = value ; }
+        }
         #endregion
 
         #region Implementation of ISemanticModelContext
-        public SemanticModel CurrentModel { get => _currentModel ; set => _currentModel = value ; }
+        public SemanticModel CurrentModel { get ; set ; }
         #endregion
     }
 }

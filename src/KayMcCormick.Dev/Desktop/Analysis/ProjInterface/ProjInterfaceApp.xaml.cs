@@ -4,7 +4,6 @@ using System.Windows ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
@@ -30,7 +29,7 @@ namespace ProjInterface
                 , disableRuntimeConfiguration
                 , disableServiceHost
                 , new IModule[] { new ProjInterfaceModule ( ) , new AnalysisControlsModule ( ) }
-                  , () => PopulateJsonConverters(disableLogging)
+                , ( ) => PopulateJsonConverters ( disableLogging )
                  )
 
         {
@@ -43,11 +42,12 @@ namespace ProjInterface
             if ( ! disableLogging )
             {
                 foreach ( var myJsonLayout in LogManager
-                                             .Configuration.AllTargets.OfType < TargetWithLayout > ( )
+                                             .Configuration.AllTargets
+                                             .OfType < TargetWithLayout > ( )
                                              .Select ( t => t.Layout )
                                              .OfType < MyJsonLayout > ( ) )
                 {
-                    var options = new JsonSerializerOptions();
+                    var options = new JsonSerializerOptions ( ) ;
                     foreach ( var optionsConverter in myJsonLayout.Options.Converters )
                     {
                         options.Converters.Add ( optionsConverter ) ;
@@ -70,25 +70,28 @@ namespace ProjInterface
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
 
             var lifetimeScope = Scope ;
-            if ( ! lifetimeScope.IsRegistered <Window1 > ( ) )
+            if ( ! lifetimeScope.IsRegistered < Window1 > ( ) )
             {
                 ShowErrorDialog (
-                                 ProjInterface
-                                    .Properties.Resources
-                                    .ProjInterfaceApp_OnStartup_Application_Error
+                                 ProjInterface.Properties.Resources
+                                              .ProjInterfaceApp_OnStartup_Application_Error
                                , "Error in compile-time configuration. Please contact your local administrator."
                                 ) ;
-                System.Windows.Application.Current.Shutdown(255);
+                Current.Shutdown ( 255 ) ;
             }
 
-            var mainWindow = lifetimeScope.Resolve <Window1>(  ) ;
+            var mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
             mainWindow.Show ( ) ;
         }
 
         private void ShowErrorDialog ( string applicationError , string messageText )
         {
-            MessageBox.Show ( messageText , applicationError, MessageBoxButton.OK , MessageBoxImage.Error ) ;
+            MessageBox.Show (
+                             messageText
+                           , applicationError
+                           , MessageBoxButton.OK
+                           , MessageBoxImage.Error
+                            ) ;
         }
     }
-
 }

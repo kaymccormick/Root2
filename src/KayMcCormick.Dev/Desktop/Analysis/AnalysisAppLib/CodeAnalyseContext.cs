@@ -1,5 +1,4 @@
-﻿
-#region header
+﻿#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -22,25 +21,12 @@ namespace AnalysisAppLib
 {
     internal class CodeAnalyseContext : ICodeAnalyseContext
     {
-        
+        public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
+
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public void Deconstruct (
-            out SyntaxTree            syntaxTree
-          , out SemanticModel         model
-          , out CompilationUnitSyntax compilationUnitSyntax
-        )
-        {
-            syntaxTree = this.SyntaxTree ;
-            model = CurrentModel;
-            compilationUnitSyntax = CompilationUnit;
-        }
-        public override string ToString ( )
-        {
-            return $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes().Count()} nodes" ;
-        }
-
-        private readonly string _assemblyName ;
+        private readonly string                         _assemblyName ;
+        private readonly Lazy < CompilationUnitSyntax > _lazy ;
 
         protected SemanticModel _currentModel ;
 
@@ -48,34 +34,61 @@ namespace AnalysisAppLib
 
         protected SyntaxNode node ;
 
-        private readonly SyntaxTree _syntaxTree ;
-        private readonly Lazy < CompilationUnitSyntax > _lazy ;
 
-        public delegate ISyntaxTreeContext Factory1(string code , string assemblyName) ;
-
-        
         public CodeAnalyseContext (
-            SemanticModel         currentModel
-          , StatementSyntax       statement
-          , SyntaxNode            node
-          , SyntaxTree            syntaxTree
-           , string assemblyName
-        ) : this( assemblyName )
+            SemanticModel   currentModel
+          , StatementSyntax statement
+          , SyntaxNode      node
+          , SyntaxTree      syntaxTree
+          , string          assemblyName
+        ) : this ( assemblyName )
         {
             _currentModel = currentModel ;
             _statement    = statement ;
             Node          = node ;
-            
-            _syntaxTree    = syntaxTree ;
+
+            SyntaxTree = syntaxTree ;
         }
 
 
         private CodeAnalyseContext ( string assemblyName )
         {
             _assemblyName = assemblyName ;
-            _lazy = new Lazy<CompilationUnitSyntax>(
-                                                    ValueFactory
-                                                   );
+            _lazy         = new Lazy < CompilationUnitSyntax > ( ValueFactory ) ;
+        }
+
+        public StatementSyntax Statement
+        {
+            get { return _statement ; }
+            set { _statement = value ; }
+        }
+
+        public SyntaxNode Node { get { return node ; } set { node = value ; } }
+
+
+        public SemanticModel CurrentModel
+        {
+            get { return _currentModel ; }
+            set { _currentModel = value ; }
+        }
+
+        public SyntaxTree SyntaxTree { get ; }
+
+        public void Deconstruct (
+            out SyntaxTree            syntaxTree
+          , out SemanticModel         model
+          , out CompilationUnitSyntax compilationUnitSyntax
+        )
+        {
+            syntaxTree            = SyntaxTree ;
+            model                 = CurrentModel ;
+            compilationUnitSyntax = CompilationUnit ;
+        }
+
+        public override string ToString ( )
+        {
+            return
+                $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes ( ).Count ( )} nodes" ;
         }
 
         public static ISyntaxTreeContext FromSyntaxTree (
@@ -100,27 +113,15 @@ namespace AnalysisAppLib
             return FromSyntaxTree ( tree , assemblyName , opts ) ;
         }
 
-        public StatementSyntax Statement { get => _statement ; set => _statement = value ; }
-
-       
-        public SemanticModel CurrentModel { get => _currentModel ; set => _currentModel = value ; }
-
-        public SyntaxNode Node { get => node ; set => node = value ; }
-
-        public SyntaxTree SyntaxTree => _syntaxTree ;
-
         #region Implementation of ICompilationUnitRootContext
-        public CompilationUnitSyntax CompilationUnit
+        public CompilationUnitSyntax CompilationUnit { get { return _lazy.Value ; } }
+
+        public CompilationUnitSyntax Lazy { get { return _lazy.Value ; } }
+
+        private CompilationUnitSyntax ValueFactory ( )
         {
-            get
-            {
-                return _lazy.Value ;
-            }
+            return SyntaxTree.GetCompilationUnitRoot ( ) ;
         }
-
-        public CompilationUnitSyntax Lazy => _lazy.Value ;
-
-        private CompilationUnitSyntax ValueFactory ( ) { return _syntaxTree.GetCompilationUnitRoot ( ) ; }
         #endregion
     }
 }

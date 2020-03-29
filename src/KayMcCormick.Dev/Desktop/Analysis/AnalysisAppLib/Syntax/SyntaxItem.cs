@@ -16,12 +16,12 @@ namespace AnalysisAppLib.Syntax
 {
     public sealed class SyntaxItem
     {
+        private ushort        _rawKind ;
         private SyntaxToken ? _token ;
-        private ushort _rawKind ;
 
         public SyntaxKind SyntaxKind { get ; set ; }
 
-        public SyntaxToken ? Token { get => _token ; set => _token = value ; }
+        public SyntaxToken ? Token { get { return _token ; } set { _token = value ; } }
 
         public ushort RawKind { get { return _rawKind ; } set { _rawKind = value ; } }
     }

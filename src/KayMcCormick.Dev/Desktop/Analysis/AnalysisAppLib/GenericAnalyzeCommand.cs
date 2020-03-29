@@ -11,29 +11,24 @@
 #endregion
 using System ;
 using System.Linq ;
-using System.Text.Json ;
-using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.StackTrace ;
 using NLog ;
 
 namespace AnalysisAppLib
 {
-    public class GenericAnalyzeCommand < TOutput > : IAnalyzeCommand2<TOutput>
+    public class GenericAnalyzeCommand < TOutput > : IAnalyzeCommand2 < TOutput >
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         private readonly ITargetBlock < AnalysisRequest > _acceptorBlock ;
         private readonly ISourceBlock < TOutput >         _outputBlock ;
-
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        private          ActionBlock < TOutput >          _actionBlock ;
+        private          IDataflowBlock                   _finalBlock ;
 
 
         private ITargetBlock < RejectedItem > _rejectDestination ;
-        private ActionBlock < TOutput >       _actionBlock ;
-        private IDataflowBlock                _finalBlock ;
 
         public GenericAnalyzeCommand (
             ITargetBlock < AnalysisRequest > acceptorBlock
@@ -45,16 +40,12 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of IAnalyzeCommand
-        public async Task AnalyzeCommandAsync (
-            IProjectBrowserNode           projectNode
-        )
+        public async Task AnalyzeCommandAsync ( IProjectBrowserNode projectNode )
         {
             var pipeline = _acceptorBlock ;
             if ( pipeline == null )
             {
-
                 throw new AnalyzeException ( "Pipeline is null" ) ;
-
             }
 
             // RejectDestination = rejectTarget ;
@@ -82,9 +73,7 @@ namespace AnalysisAppLib
             var req = new AnalysisRequest { Info = projectNode } ;
             if ( ! pipeline.Post ( req ) )
             {
-
                 throw new AnalyzeException ( "Post failed" ) ;
-
             }
 
             await HandlePipelineResultAsync ( _finalBlock ) ;
@@ -178,7 +167,8 @@ namespace AnalysisAppLib
         public GenericAnalyzeCommandImpl (
             ITargetBlock < AnalysisRequest > acceptorBlock
           , ISourceBlock < object >          outputBlock
-        ) : base ( acceptorBlock , outputBlock ) {
+        ) : base ( acceptorBlock , outputBlock )
+        {
         }
     }
 }

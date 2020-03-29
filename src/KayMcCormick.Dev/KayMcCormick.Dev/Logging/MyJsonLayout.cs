@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System.Text.Json ;
-using Autofac ;
 using KayMcCormick.Dev.Serialization ;
 using NLog ;
 using NLog.Layouts ;
@@ -18,16 +17,14 @@ using NLog.Layouts ;
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public class MyJsonLayout : Layout
     {
-        private JsonSerializerOptions options;
+        private JsonSerializerOptions options ;
 
         /// <summary>
-        /// 
         /// </summary>
-        public MyJsonLayout()
+        public MyJsonLayout ( )
         {
             var jsonSerializerOptions = CreateJsonSerializerOptions ( ) ;
             //options.Converters.Add ( new DictConverterFactory ( ) ) ;
@@ -35,32 +32,29 @@ namespace KayMcCormick.Dev.Logging
         }
 
         /// <summary>
-        /// 
+        /// </summary>
+        public JsonSerializerOptions Options { get { return options ; } set { options = value ; } }
+
+        /// <summary>
         /// </summary>
         /// <returns></returns>
         public JsonSerializerOptions CreateJsonSerializerOptions ( )
         {
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
-            
+
             jsonSerializerOptions.Converters.Add ( new JsonConverterLogEventInfo ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
             return jsonSerializerOptions ;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public JsonSerializerOptions Options { get => options; set => options = value; }
-
         #region Overrides of Layout
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="logEvent"></param>
         /// <returns></returns>
-        protected override string GetFormattedMessage(LogEventInfo logEvent)
+        protected override string GetFormattedMessage ( LogEventInfo logEvent )
         {
-            return JsonSerializer.Serialize(logEvent, Options);
+            return JsonSerializer.Serialize ( logEvent , Options ) ;
         }
         #endregion
     }

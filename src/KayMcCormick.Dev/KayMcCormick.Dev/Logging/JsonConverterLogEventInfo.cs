@@ -21,13 +21,11 @@ using NLog ;
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonConverterLogEventInfo : JsonConverter < LogEventInfo >
     {
         #region Overrides of JsonConverter<LogEventInfo>
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
@@ -377,7 +375,6 @@ namespace KayMcCormick.Dev.Logging
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>

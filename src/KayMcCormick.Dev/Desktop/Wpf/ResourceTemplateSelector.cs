@@ -19,9 +19,7 @@ using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-
     /// <summary>
-    /// 
     /// </summary>
     public class ResourceTemplateSelector : DataTemplateSelector
 
@@ -34,7 +32,6 @@ namespace KayMcCormick.Lib.Wpf
 
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="container"></param>
@@ -91,14 +88,8 @@ namespace KayMcCormick.Lib.Wpf
 
             if ( resourceKeys.Any ( ) )
             {
-                returnVal = resourceKeys
-                           .Select < object , DataTemplate > (
-                                                              ( k ) => TryFindDataTemplate (
-                                                                                            fe
-                                                                                          , k
-                                                                                           )
-                                                             )
-                           .FirstOrDefault ( template => template != null ) ;
+                returnVal = resourceKeys.Select ( k => TryFindDataTemplate ( fe , k ) )
+                                        .FirstOrDefault ( template => template != null ) ;
                 if ( returnVal != null )
                 {
                     Logger.Debug ( "OBtained template" ) ;
@@ -124,7 +115,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public virtual string TemplatePartName { get ; set ; }
 

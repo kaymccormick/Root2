@@ -12,12 +12,13 @@ namespace ProjInterface
                                 ) ;
 
         public static readonly RoutedUICommand NewAdHocWorkspace = new RoutedUICommand (
-                                                                               "New Ad-hoc Workspace"
-                                                                             , nameof (
-                                                                                   NewAdHocWorkspace
-                                                                               )
-                                                                             , typeof ( ProjCommands
-                                                                               )
-                                                                              ) ;
+                                                                                        "New Ad-hoc Workspace"
+                                                                                      , nameof (
+                                                                                            NewAdHocWorkspace
+                                                                                        )
+                                                                                      , typeof (
+                                                                                            ProjCommands
+                                                                                        )
+                                                                                       ) ;
     }
 }

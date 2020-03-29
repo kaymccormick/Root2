@@ -11,12 +11,10 @@
 #endregion
 using System.Collections.ObjectModel ;
 using System.Runtime.Serialization ;
-using AnalysisAppLib.ViewModel ;
 using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
 {
-
     public class LogViewerAppViewModel : IViewModel
 
 
@@ -26,8 +24,8 @@ namespace AnalysisAppLib
 
         public ObservableCollection < LogViewModel > LogViewModels
         {
-            get => _logViewModels ;
-            set => _logViewModels = value ;
+            get { return _logViewModels ; }
+            set { _logViewModels = value ; }
         }
 
         #region Implementation of ISerializable

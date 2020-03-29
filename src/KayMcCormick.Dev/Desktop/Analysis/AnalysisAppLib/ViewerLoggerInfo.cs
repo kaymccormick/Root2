@@ -16,31 +16,35 @@ namespace AnalysisAppLib
 {
     public class ViewerLoggerInfo
     {
+        private readonly IDictionary < string , ViewerLoggerInfo > _childrenLoggers =
+            new Dictionary < string , ViewerLoggerInfo > ( ) ;
+
+        private string _displayName ;
+        private string _loggerName ;
+        private string _partName ;
+
+        private ObservableCollection < ViewerLoggerInfo > children =
+            new ObservableCollection < ViewerLoggerInfo > ( ) ;
+
         private bool isExpanded = true ;
 
-        private ObservableCollection<ViewerLoggerInfo> children = new ObservableCollection < ViewerLoggerInfo > ();
         public IDictionary < string , ViewerLoggerInfo > ChildrenLoggers
         {
-            get => _childrenLoggers ;
+            get { return _childrenLoggers ; }
         }
 
         public string LoggerName { get { return _loggerName ; } set { _loggerName = value ; } }
 
         public ObservableCollection < ViewerLoggerInfo > Children
         {
-            get => children ;
-            set => children = value ;
+            get { return children ; }
+            set { children = value ; }
         }
 
         public string PartName { get { return _partName ; } set { _partName = value ; } }
 
         public string DisplayName { get { return _displayName ; } set { _displayName = value ; } }
 
-        public bool IsExpanded { get => isExpanded ; set => isExpanded = value ; }
-
-        private IDictionary< string, ViewerLoggerInfo > _childrenLoggers = new Dictionary < string , ViewerLoggerInfo > ();
-        private string                            _loggerName ;
-        private string                            _partName ;
-        private string                            _displayName ;
+        public bool IsExpanded { get { return isExpanded ; } set { isExpanded = value ; } }
     }
 }

@@ -19,7 +19,7 @@ namespace AnalysisAppLib
     {
         private SyntaxKind _kind ;
 
-        
+
         public SyntaxNodeSpanObject ( TextSpan span , SyntaxNode instance ) : base (
                                                                                     span
                                                                                   , instance
@@ -28,6 +28,6 @@ namespace AnalysisAppLib
             _kind = instance.Kind ( ) ;
         }
 
-        public SyntaxKind Kind { get => _kind ; set => _kind = value ; }
+        public SyntaxKind Kind { get { return _kind ; } set { _kind = value ; } }
     }
 }

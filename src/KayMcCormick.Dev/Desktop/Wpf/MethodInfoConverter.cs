@@ -1,19 +1,16 @@
 using System ;
 using System.Globalization ;
-using System.Reflection;
-using System.Windows ;
+using System.Reflection ;
 using System.Windows.Data ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class MethodInfoConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -27,13 +24,13 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-            MethodInfo methodInfo = ( MethodInfo ) value ;
+            var methodInfo = ( MethodInfo ) value ;
             if ( value == null )
             {
                 return "(null)" ;
             }
 
-            if ((string)parameter == "Parameters" )
+            if ( ( string ) parameter == "Parameters" )
             {
                 return methodInfo.GetParameters ( ) ;
             }
@@ -42,14 +39,21 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
         #endregion
     }
 }

@@ -1,12 +1,7 @@
 ﻿using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Logging ;
-
 using NLog ;
 using System ;
-using System.ServiceModel ;
-using ConfigTest.ServiceReference1 ;
 using KayMcCormick.Dev.Application ;
-using NLog.LogReceiverService ;
 
 namespace ConfigTest
 {
@@ -16,10 +11,10 @@ namespace ConfigTest
 
         private static void Main ( )
         {
-            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
-{
-Console.WriteLine(a.GetName());
-}
+            foreach ( var a in AppDomain.CurrentDomain.GetAssemblies ( ) )
+            {
+                Console.WriteLine ( a.GetName ( ) ) ;
+            }
             // ServiceReference1.LogReceiverServerClient client1 = new LogReceiverServerClient(new WSDualHttpBinding(), new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/"));
             // var nLogEvent = new NLogEvent ( )
             //                 {
@@ -33,9 +28,12 @@ Console.WriteLine(a.GetName());
 
             var x = new ApplicationInstance (
                                              new ApplicationInstanceConfiguration (
-                                                                                   message => {
-                                                                                       Console.Error.WriteLine ( message ) ;
-                                                                                   }
+                                                                                   message
+                                                                                       => Console
+                                                                                         .Error
+                                                                                         .WriteLine (
+                                                                                                     message
+                                                                                                    )
                                                                                   )
                                             ) ;
             x.Initialize ( ) ;

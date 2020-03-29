@@ -1,30 +1,29 @@
 ﻿namespace KayMcCormick.Dev.Configuration
 {
     /// <summary>
-    /// 
     /// </summary>
-    
     public enum ConfigurationSource
     {
         /// <summary>
-        /// 
         /// </summary>
-        
-        AppConfig,
+        AppConfig
+
+       ,
+
         /// <summary>
-        /// 
         /// </summary>
-        
-        EnvironmentVariable,
+        EnvironmentVariable
+
+       ,
+
         /// <summary>
-        /// 
         /// </summary>
-        
-        Win32Registry,
+        Win32Registry
+
+       ,
+
         /// <summary>
-        /// 
         /// </summary>
-        
-        Compilation,
+        Compilation
     }
 }

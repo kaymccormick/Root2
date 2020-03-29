@@ -18,80 +18,69 @@ using System.Windows.Media.Imaging ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
-    /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ControlWrap<T> : IWrap<T>, IWrap1 where T : UIElement
+    public class ControlWrap < T > : IWrap < T > , IWrap1
+        where T : UIElement
     {
         private object _controlObject ;
 
         /// <summary>
-        /// 
         /// </summary>
-        [JsonIgnore]
-        public T Control { get ; }
+        public ControlWrap ( ) { }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public ControlWrap ( ) {
-        }
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="c"></param>
         public ControlWrap ( T c ) { Control = c ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        [JsonIgnore]
+        [ JsonIgnore ]
+        public T Control { get ; }
+
+        /// <summary>
+        /// </summary>
+        [ JsonIgnore ]
         public ImageSource Image
         {
             get
             {
                 try
                 {
-                    if ( ( object ) this.Control is FrameworkElement fe )
+                    if ( ( object ) Control is FrameworkElement fe )
                     {
-                        RenderTargetBitmap renderTargetBitmap =
-                            new RenderTargetBitmap (
-                                                    ( int ) fe.ActualWidth
-                                                  , ( int ) fe.ActualHeight
-                                                  , 96
-                                                  , 96
-                                                  , PixelFormats.Pbgra32
-                                                   ) ;
+                        var renderTargetBitmap = new RenderTargetBitmap (
+                                                                         ( int ) fe.ActualWidth
+                                                                       , ( int ) fe.ActualHeight
+                                                                       , 96
+                                                                       , 96
+                                                                       , PixelFormats.Pbgra32
+                                                                        ) ;
                         renderTargetBitmap.Render ( Control ) ;
                         return renderTargetBitmap ;
                     }
                 }
                 catch ( Exception )
                 {
-                
                 }
-                return new BitmapImage();
-                
+
+                return new BitmapImage ( ) ;
             }
         }
 
         #region Implementation of IWrap1
         /// <summary>
-        /// 
         /// </summary>
-        public object ControlObject => Control ;
+        public object ControlObject { get { return Control ; } }
         #endregion
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public interface IWrap1
     {
         /// <summary>
-        /// 
         /// </summary>
         object ControlObject { get ; }
     }

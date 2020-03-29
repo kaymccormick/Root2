@@ -7,21 +7,24 @@ using Microsoft.CodeAnalysis ;
 namespace AnalysisAppLib.Dataflow
 {
     public sealed class FindLogUsagesFuncProvider : DataflowTransformFuncProvider <
-        Document , ILogInvocation >, IHaveRejectBlock
+            Document , ILogInvocation >
+      , IHaveRejectBlock
     {
         private readonly Func < Document , Task < IEnumerable < ILogInvocation > > >
             _transformFunc ;
 
-        private readonly BufferBlock < RejectedItem > _rejectBlock ;
-
         public FindLogUsagesFuncProvider ( Func < ILogInvocation > invocationFactory )
         {
             var findusages = new FindLogUsages ( invocationFactory ) ;
-            _rejectBlock   = new BufferBlock < RejectedItem > ( ) ;
+            RejectBlock    = new BufferBlock < RejectedItem > ( ) ;
             _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock ) ;
         }
 
-        public BufferBlock < RejectedItem > RejectBlock { get { return _rejectBlock ; } }
+        public BufferBlock < RejectedItem > RejectBlock { get ; }
+
+        #region Implementation of IHaveRejectBlock
+        public ISourceBlock < RejectedItem > GetRejectBlock ( ) { return RejectBlock ; }
+        #endregion
 
         public override Func < Document , IEnumerable < ILogInvocation > > GetTransformFunction ( )
         {
@@ -47,9 +50,5 @@ namespace AnalysisAppLib.Dataflow
         {
             return _transformFunc ;
         }
-
-        #region Implementation of IHaveRejectBlock
-        public ISourceBlock <RejectedItem> GetRejectBlock ( ) { return _rejectBlock ; }
-        #endregion
     }
 }

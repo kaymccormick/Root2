@@ -17,7 +17,6 @@ namespace AnalysisAppLib
 {
     public abstract class AppExplorerItem
     {
-
         public abstract string Name { get ; }
 
         public abstract string FullName { get ; }
@@ -32,13 +31,12 @@ namespace AnalysisAppLib
 
         public abstract bool HasChildren { get ; }
 
-        public abstract IEnumerable < AppExplorerItem> Children { get ; }
+        public abstract IEnumerable < AppExplorerItem > Children { get ; }
 
         public abstract object Extension { get ; }
 
-        public abstract void Push ( Stream stream , string path ) ;
-        public abstract void Pull ( string path , Stream stream ) ;
+        public abstract void Push ( Stream         stream , string path ) ;
+        public abstract void Pull ( string         path ,   Stream stream ) ;
         public abstract void CreateFolder ( string path ) ;
-
     }
 }

@@ -9,48 +9,59 @@
 // 
 // ---
 #endregion
-using JetBrains.Annotations;
 using NLog ;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
-    
     public class AppLoggingConfiguration : ILoggingConfiguration
     {
         private static readonly ILoggingConfiguration _default =
-            new AppLoggingConfiguration { IsEnabledConsoleTarget = false , MinLogLevel = LogLevel.Info, IsEnabledDebuggerTarget = true } ;
+            new AppLoggingConfiguration
+            {
+                IsEnabledConsoleTarget  = false
+              , MinLogLevel             = LogLevel.Info
+              , IsEnabledDebuggerTarget = true
+            } ;
 
-        private bool? _isEnabledEventLogTarget = false ;
+        private int ?  _chainsawPort ;
+        private string _debuggerTargetName ;
 
-        private bool? _isEnabledCacheTarget ;
+        private bool ? _isEnabledCacheTarget ;
+        private bool ? _isEnabledDebuggerTarget ;
+
+        private bool ? _isEnabledEventLogTarget = false ;
+        private bool ? _logThrowExceptions ;
 
         private LogLevel _minLogLevel ;
-        private string _debuggerTargetName ;
-        private int ? _nLogViewerPort ;
-        private int ? _chainsawPort ;
-        private bool ? _isEnabledDebuggerTarget ;
-        private bool ? _logThrowExceptions ;
+        private int ?    _nLogViewerPort ;
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString ( )
+        {
+            return
+                $"{nameof ( IsEnabledConsoleTarget )}: {IsEnabledConsoleTarget}, {nameof ( IsEnabledEventLogTarget )}: {IsEnabledEventLogTarget}, {nameof ( IsEnabledCacheTarget )}: {IsEnabledCacheTarget}, {nameof ( IsEnabledDebuggerTarget )}: {IsEnabledDebuggerTarget}, {nameof ( DebuggerTargetName )}: {DebuggerTargetName}, {nameof ( NLogViewerPort )}: {NLogViewerPort}, {nameof ( ChainsawPort )}: {ChainsawPort}, {nameof ( MinLogLevel )}: {MinLogLevel}" ;
+        }
 
         #region Implementation of ILoggingConfiguration
         /// <summary>
-        /// 
         /// </summary>
-        public bool? IsEnabledConsoleTarget { get; set; } 
+        public bool ? IsEnabledConsoleTarget { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool? IsEnabledEventLogTarget { get => _isEnabledEventLogTarget ;
-            set => _isEnabledEventLogTarget = value ;
+        public bool ? IsEnabledEventLogTarget
+        {
+            get { return _isEnabledEventLogTarget ; }
+            set { _isEnabledEventLogTarget = value ; }
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool? IsEnabledCacheTarget => _isEnabledCacheTarget;
+        public bool ? IsEnabledCacheTarget { get { return _isEnabledCacheTarget ; } }
 
         /// <summary>Gets or sets the is enabled debugger target.</summary>
         /// <value>The is enabled debugger target.</value>
@@ -58,53 +69,46 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for IsEnabledDebuggerTarget
         public bool ? IsEnabledDebuggerTarget
         {
-            get => _isEnabledDebuggerTarget ;
-            set => _isEnabledDebuggerTarget = value ;
+            get { return _isEnabledDebuggerTarget ; }
+            set { _isEnabledDebuggerTarget = value ; }
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public string DebuggerTargetName => _debuggerTargetName ;
+        public string DebuggerTargetName { get { return _debuggerTargetName ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public int ? NLogViewerPort { get => _nLogViewerPort ; set => _nLogViewerPort = value ; }
+        public int ? NLogViewerPort
+        {
+            get { return _nLogViewerPort ; }
+            set { _nLogViewerPort = value ; }
+        }
 
         /// <summary>
-        /// 
         /// </summary>
-        public int? ChainsawPort { get => _chainsawPort ; set => _chainsawPort = value ; }
+        public int ? ChainsawPort { get { return _chainsawPort ; } set { _chainsawPort = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool ? LogThrowExceptions { get { return _logThrowExceptions ; } set { _logThrowExceptions = value ; } }
+        public bool ? LogThrowExceptions
+        {
+            get { return _logThrowExceptions ; }
+            set { _logThrowExceptions = value ; }
+        }
 
         /// <summary>
-        /// Enavle the xml File target
+        ///     Enavle the xml File target
         /// </summary>
         public bool IsEnabledXmlFileTarget { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public LogLevel MinLogLevel { get => _minLogLevel ; set => _minLogLevel = value ; }
+        public LogLevel MinLogLevel { get { return _minLogLevel ; } set { _minLogLevel = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public static ILoggingConfiguration Default => _default ;
+        public static ILoggingConfiguration Default { get { return _default ; } }
         #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString ( )
-        {
-            return $"{nameof ( IsEnabledConsoleTarget )}: {IsEnabledConsoleTarget}, {nameof ( IsEnabledEventLogTarget )}: {IsEnabledEventLogTarget}, {nameof ( IsEnabledCacheTarget )}: {IsEnabledCacheTarget}, {nameof ( IsEnabledDebuggerTarget )}: {IsEnabledDebuggerTarget}, {nameof ( DebuggerTargetName )}: {DebuggerTargetName}, {nameof ( NLogViewerPort )}: {NLogViewerPort}, {nameof ( ChainsawPort )}: {ChainsawPort}, {nameof ( MinLogLevel )}: {MinLogLevel}" ;
-        }
     }
 }

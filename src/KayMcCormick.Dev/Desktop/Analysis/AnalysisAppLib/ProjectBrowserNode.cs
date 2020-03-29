@@ -14,19 +14,19 @@ using AnalysisAppLib.Projects ;
 
 namespace AnalysisAppLib
 {
-    public class ProjectBrowserNode : BrowserNode, IProjectBrowserNode, IBrowserNode
+    public class ProjectBrowserNode : BrowserNode , IProjectBrowserNode , IBrowserNode
     {
-        private string _solutionPath ;
         private string _platform ;
+        private string _solutionPath ;
 
         public Uri RepositoryUrl { get ; set ; }
 
-        public string Platform
-        {
-            get => _platform ;
-            set { _platform = value ; }
-        }
+        public string Platform { get { return _platform ; } set { _platform = value ; } }
 
-        public string SolutionPath { get { return _solutionPath ; } set { _solutionPath = value ; } }
+        public string SolutionPath
+        {
+            get { return _solutionPath ; }
+            set { _solutionPath = value ; }
+        }
     }
 }

@@ -6,34 +6,25 @@ namespace AnalysisAppLib
 {
     internal class LogInvocationArgument : ILogInvocationArgument
     {
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-
+        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
         private readonly ArgumentSyntax _syntax ;
+
+        private string jSON ;
 
         public LogInvocationArgument ( ArgumentSyntax syntax )
         {
             _syntax = syntax ;
-            var jsonOut = Transforms.TransformExpr(syntax.Expression);
-            Pojo = jsonOut;
+            var jsonOut = Transforms.TransformExpr ( syntax.Expression ) ;
+            Pojo = jsonOut ;
         }
 
-        
-        public LogInvocationArgument ( ) {
-        }
 
-        private string jSON;
+        public LogInvocationArgument ( ) { }
 
-        public string GetJSON ( ILogInvocationArgument arg )
-        {
-            return jSON;
-        }
+        public string GetJSON ( ILogInvocationArgument arg ) { return jSON ; }
 
-        public void SetJSON(string value)
-        {
-            jSON = value;
-        }
+        public void SetJSON ( string value ) { jSON = value ; }
 
         public object Pojo { get ; set ; }
-
     }
 }

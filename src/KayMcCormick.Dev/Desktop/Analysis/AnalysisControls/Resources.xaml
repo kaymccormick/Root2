@@ -3,7 +3,7 @@
   xmlns:mcacs="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -19,7 +19,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EqualsGreaterThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.EqualsGreaterThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -35,7 +35,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EqualsEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.EqualsEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -51,7 +51,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExclamationEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExclamationEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -67,7 +67,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MinusGreaterThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.MinusGreaterThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -83,7 +83,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QuestionQuestionToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.QuestionQuestionToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -99,7 +99,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ColonColonToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.ColonColonToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -115,7 +115,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PlusPlusToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.PlusPlusToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -131,7 +131,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MinusMinusToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.MinusMinusToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -147,7 +147,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AmpersandAmpersandToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.AmpersandAmpersandToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -163,7 +163,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BarBarToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.BarBarToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -179,7 +179,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanLessThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanLessThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -195,7 +195,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlProcessingInstructionEndToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlProcessingInstructionEndToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -211,7 +211,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlProcessingInstructionStartToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlProcessingInstructionStartToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -227,7 +227,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlCDataEndToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlCDataEndToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -243,7 +243,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlCDataStartToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlCDataStartToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -259,7 +259,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlCommentEndToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlCommentEndToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -275,7 +275,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlCommentStartToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlCommentStartToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -291,7 +291,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanSlashToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanSlashToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -307,7 +307,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SlashGreaterThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.SlashGreaterThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -323,7 +323,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DotDotToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.DotDotToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -339,7 +339,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SlashToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.SlashToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -355,7 +355,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.HashToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.HashToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -371,7 +371,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QuestionToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.QuestionToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -387,7 +387,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DotToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.DotToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -396,10 +396,10 @@
         <SolidColorBrush>#FF000000</SolidColorBrush>
       </Setter.Value>
     </Setter>
-    <Setter Property="TextElement.FontWeight" Value="Bold"/>
+    <Setter Property="TextElement.FontWeight" Value="Bold" />
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GreaterThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.GreaterThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -415,7 +415,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CommaToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CommaToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -431,7 +431,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -447,7 +447,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SingleQuoteToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.SingleQuoteToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -463,7 +463,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DoubleQuoteToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.DoubleQuoteToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -479,7 +479,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SemicolonToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.SemicolonToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -495,7 +495,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ColonToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.ColonToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -511,7 +511,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BackslashToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.BackslashToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -527,7 +527,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BarToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.BarToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -543,7 +543,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CloseBracketToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CloseBracketToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -559,7 +559,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OpenBracketToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.OpenBracketToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -575,7 +575,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CloseBraceToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CloseBraceToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -591,7 +591,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OpenBraceToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.OpenBraceToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -607,7 +607,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.EqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -623,7 +623,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PlusToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.PlusToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -639,7 +639,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MinusToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.MinusToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -655,7 +655,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CloseParenToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CloseParenToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -671,7 +671,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OpenParenToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.OpenParenToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -687,7 +687,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AsteriskToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.AsteriskToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -703,7 +703,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AmpersandToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.AmpersandToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -719,7 +719,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CaretToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CaretToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -735,7 +735,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PercentToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.PercentToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -751,7 +751,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DollarToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.DollarToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -767,7 +767,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExclamationToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExclamationToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -783,7 +783,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TildeToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.TildeToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -799,7 +799,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NullableDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.NullableDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -815,7 +815,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SuppressNullableWarningExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SuppressNullableWarningExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -831,7 +831,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ImplicitStackAllocArrayCreationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ImplicitStackAllocArrayCreationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -847,7 +847,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ThrowExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ThrowExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -863,7 +863,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefType}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -879,7 +879,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -895,7 +895,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DeclarationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.DeclarationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -911,7 +911,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VarPattern}">
+    x:Key="{x:Static mcacs:SyntaxKind.VarPattern}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -927,7 +927,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SwitchExpressionArm}">
+    x:Key="{x:Static mcacs:SyntaxKind.SwitchExpressionArm}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -943,7 +943,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SwitchExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SwitchExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -959,7 +959,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DiscardPattern}">
+    x:Key="{x:Static mcacs:SyntaxKind.DiscardPattern}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -975,7 +975,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PositionalPatternClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.PositionalPatternClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -991,7 +991,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.Subpattern}">
+    x:Key="{x:Static mcacs:SyntaxKind.Subpattern}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1007,7 +1007,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PropertyPatternClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.PropertyPatternClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1023,7 +1023,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RecursivePattern}">
+    x:Key="{x:Static mcacs:SyntaxKind.RecursivePattern}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1039,7 +1039,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DiscardDesignation}">
+    x:Key="{x:Static mcacs:SyntaxKind.DiscardDesignation}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1055,7 +1055,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhenClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhenClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1071,7 +1071,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CasePatternSwitchLabel}">
+    x:Key="{x:Static mcacs:SyntaxKind.CasePatternSwitchLabel}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1087,7 +1087,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConstantPattern}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConstantPattern}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1103,7 +1103,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DeclarationPattern}">
+    x:Key="{x:Static mcacs:SyntaxKind.DeclarationPattern}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1119,7 +1119,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ParamsKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ParamsKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1135,7 +1135,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ForEachVariableStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ForEachVariableStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1151,7 +1151,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ParenthesizedVariableDesignation}">
+    x:Key="{x:Static mcacs:SyntaxKind.ParenthesizedVariableDesignation}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1167,7 +1167,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SingleVariableDesignation}">
+    x:Key="{x:Static mcacs:SyntaxKind.SingleVariableDesignation}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1183,7 +1183,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TupleExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.TupleExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1199,7 +1199,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TupleElement}">
+    x:Key="{x:Static mcacs:SyntaxKind.TupleElement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1215,7 +1215,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TupleType}">
+    x:Key="{x:Static mcacs:SyntaxKind.TupleType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1231,7 +1231,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LoadDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.LoadDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1247,7 +1247,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ShebangDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.ShebangDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1263,7 +1263,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolationFormatClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolationFormatClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1279,7 +1279,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolationAlignmentClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolationAlignmentClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1295,7 +1295,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringText}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringText}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1311,7 +1311,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.Interpolation}">
+    x:Key="{x:Static mcacs:SyntaxKind.Interpolation}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1327,7 +1327,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArrowExpressionClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArrowExpressionClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1343,7 +1343,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IncompleteMember}">
+    x:Key="{x:Static mcacs:SyntaxKind.IncompleteMember}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1359,7 +1359,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeParameter}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeParameter}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1375,7 +1375,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeParameterList}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeParameterList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1391,7 +1391,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.Parameter}">
+    x:Key="{x:Static mcacs:SyntaxKind.Parameter}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1407,7 +1407,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BracketedParameterList}">
+    x:Key="{x:Static mcacs:SyntaxKind.BracketedParameterList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1423,7 +1423,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ParameterList}">
+    x:Key="{x:Static mcacs:SyntaxKind.ParameterList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1439,7 +1439,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UnknownAccessorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.UnknownAccessorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1455,7 +1455,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RemoveAccessorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.RemoveAccessorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1471,7 +1471,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AddAccessorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.AddAccessorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1487,7 +1487,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SetAccessorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.SetAccessorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1503,7 +1503,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GetAccessorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.GetAccessorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1519,7 +1519,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AccessorList}">
+    x:Key="{x:Static mcacs:SyntaxKind.AccessorList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1535,7 +1535,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IndexerDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.IndexerDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1551,7 +1551,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EventDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.EventDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1567,7 +1567,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PropertyDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.PropertyDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1583,7 +1583,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DestructorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.DestructorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1599,7 +1599,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ThisConstructorInitializer}">
+    x:Key="{x:Static mcacs:SyntaxKind.ThisConstructorInitializer}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1615,7 +1615,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BaseConstructorInitializer}">
+    x:Key="{x:Static mcacs:SyntaxKind.BaseConstructorInitializer}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1631,7 +1631,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConstructorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConstructorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1647,7 +1647,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConversionOperatorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConversionOperatorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1663,7 +1663,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OperatorDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.OperatorDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1679,7 +1679,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MethodDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.MethodDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1695,7 +1695,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EventFieldDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.EventFieldDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1711,7 +1711,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FieldDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.FieldDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1727,7 +1727,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EnumMemberDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.EnumMemberDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1743,7 +1743,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExplicitInterfaceSpecifier}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExplicitInterfaceSpecifier}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1759,7 +1759,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeConstraint}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeConstraint}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1775,7 +1775,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StructConstraint}">
+    x:Key="{x:Static mcacs:SyntaxKind.StructConstraint}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1791,7 +1791,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ClassConstraint}">
+    x:Key="{x:Static mcacs:SyntaxKind.ClassConstraint}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1807,7 +1807,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConstructorConstraint}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConstructorConstraint}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1823,7 +1823,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeParameterConstraintClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeParameterConstraintClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1839,7 +1839,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SimpleBaseType}">
+    x:Key="{x:Static mcacs:SyntaxKind.SimpleBaseType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1855,7 +1855,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BaseList}">
+    x:Key="{x:Static mcacs:SyntaxKind.BaseList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1871,7 +1871,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DelegateDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.DelegateDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1887,7 +1887,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EnumDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.EnumDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1903,7 +1903,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterfaceDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterfaceDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1919,7 +1919,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StructDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.StructDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1935,7 +1935,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ClassDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.ClassDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1951,7 +1951,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NameEquals}">
+    x:Key="{x:Static mcacs:SyntaxKind.NameEquals}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1967,7 +1967,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AttributeArgument}">
+    x:Key="{x:Static mcacs:SyntaxKind.AttributeArgument}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1983,7 +1983,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AttributeArgumentList}">
+    x:Key="{x:Static mcacs:SyntaxKind.AttributeArgumentList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -1999,7 +1999,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.Attribute}">
+    x:Key="{x:Static mcacs:SyntaxKind.Attribute}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2015,7 +2015,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AttributeTargetSpecifier}">
+    x:Key="{x:Static mcacs:SyntaxKind.AttributeTargetSpecifier}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2031,7 +2031,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AttributeList}">
+    x:Key="{x:Static mcacs:SyntaxKind.AttributeList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2047,7 +2047,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExternAliasDirective}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExternAliasDirective}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2063,7 +2063,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UsingDirective}">
+    x:Key="{x:Static mcacs:SyntaxKind.UsingDirective}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2079,7 +2079,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NamespaceDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.NamespaceDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2095,7 +2095,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GlobalStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.GlobalStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2111,7 +2111,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CompilationUnit}">
+    x:Key="{x:Static mcacs:SyntaxKind.CompilationUnit}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2127,7 +2127,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LocalFunctionStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.LocalFunctionStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2143,7 +2143,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FinallyClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.FinallyClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2159,7 +2159,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CatchFilterClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.CatchFilterClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2175,7 +2175,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CatchDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.CatchDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2191,7 +2191,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CatchClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.CatchClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2207,7 +2207,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TryStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.TryStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2223,7 +2223,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DefaultSwitchLabel}">
+    x:Key="{x:Static mcacs:SyntaxKind.DefaultSwitchLabel}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2239,7 +2239,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CaseSwitchLabel}">
+    x:Key="{x:Static mcacs:SyntaxKind.CaseSwitchLabel}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2255,7 +2255,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SwitchSection}">
+    x:Key="{x:Static mcacs:SyntaxKind.SwitchSection}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2271,7 +2271,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SwitchStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.SwitchStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2287,7 +2287,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElseClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElseClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2303,7 +2303,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IfStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.IfStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2319,7 +2319,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LockStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.LockStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2335,7 +2335,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UnsafeStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.UnsafeStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2351,7 +2351,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UncheckedStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.UncheckedStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2367,7 +2367,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CheckedStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.CheckedStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2383,7 +2383,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FixedStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.FixedStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2399,7 +2399,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UsingStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.UsingStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2415,7 +2415,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ForEachStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ForEachStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2431,7 +2431,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ForStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ForStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2447,7 +2447,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DoStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.DoStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2463,7 +2463,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhileStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhileStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2479,7 +2479,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ThrowStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ThrowStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2495,7 +2495,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.YieldBreakStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.YieldBreakStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2511,7 +2511,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.YieldReturnStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.YieldReturnStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2527,7 +2527,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ReturnStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ReturnStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2543,7 +2543,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ContinueStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ContinueStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2559,7 +2559,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BreakStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.BreakStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2575,7 +2575,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GotoDefaultStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.GotoDefaultStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2591,7 +2591,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GotoCaseStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.GotoCaseStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2607,7 +2607,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GotoStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.GotoStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2623,7 +2623,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LabeledStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.LabeledStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2639,7 +2639,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EmptyStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.EmptyStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2655,7 +2655,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExpressionStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExpressionStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2671,7 +2671,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EqualsValueClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.EqualsValueClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2687,7 +2687,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VariableDeclarator}">
+    x:Key="{x:Static mcacs:SyntaxKind.VariableDeclarator}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2703,7 +2703,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VariableDeclaration}">
+    x:Key="{x:Static mcacs:SyntaxKind.VariableDeclaration}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2719,7 +2719,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LocalDeclarationStatement}">
+    x:Key="{x:Static mcacs:SyntaxKind.LocalDeclarationStatement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2735,7 +2735,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.Block}">
+    x:Key="{x:Static mcacs:SyntaxKind.Block}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2751,7 +2751,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QueryContinuation}">
+    x:Key="{x:Static mcacs:SyntaxKind.QueryContinuation}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2767,7 +2767,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GroupClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.GroupClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2783,7 +2783,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SelectClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.SelectClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2799,7 +2799,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DescendingOrdering}">
+    x:Key="{x:Static mcacs:SyntaxKind.DescendingOrdering}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2815,7 +2815,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AscendingOrdering}">
+    x:Key="{x:Static mcacs:SyntaxKind.AscendingOrdering}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2831,7 +2831,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OrderByClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.OrderByClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2847,7 +2847,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhereClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhereClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2863,7 +2863,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.JoinIntoClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.JoinIntoClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2879,7 +2879,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.JoinClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.JoinClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2895,7 +2895,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LetClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.LetClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2911,7 +2911,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FromClause}">
+    x:Key="{x:Static mcacs:SyntaxKind.FromClause}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2927,7 +2927,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QueryBody}">
+    x:Key="{x:Static mcacs:SyntaxKind.QueryBody}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2943,7 +2943,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QueryExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.QueryExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2959,7 +2959,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefTypeExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefTypeExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2975,7 +2975,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefValueExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefValueExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -2991,7 +2991,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MakeRefExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.MakeRefExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3007,7 +3007,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DefaultExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.DefaultExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3023,7 +3023,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UncheckedExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.UncheckedExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3039,7 +3039,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CheckedExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.CheckedExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3055,7 +3055,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SizeOfExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SizeOfExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3071,7 +3071,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeOfExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeOfExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3087,7 +3087,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DefaultLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.DefaultLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3103,7 +3103,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NullLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.NullLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3119,7 +3119,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FalseLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.FalseLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3135,7 +3135,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TrueLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.TrueLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3151,7 +3151,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CharacterLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.CharacterLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3167,7 +3167,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StringLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.StringLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3183,7 +3183,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NumericLiteralExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.NumericLiteralExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3199,7 +3199,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArgListExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArgListExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3215,7 +3215,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BaseExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.BaseExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3231,7 +3231,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ThisExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ThisExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3247,7 +3247,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IndexExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.IndexExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3263,7 +3263,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AwaitExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AwaitExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3279,7 +3279,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PostDecrementExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.PostDecrementExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3295,7 +3295,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PostIncrementExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.PostIncrementExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3311,7 +3311,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AddressOfExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AddressOfExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3327,7 +3327,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PointerIndirectionExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.PointerIndirectionExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3343,7 +3343,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PreDecrementExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.PreDecrementExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3359,7 +3359,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PreIncrementExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.PreIncrementExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3375,7 +3375,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LogicalNotExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LogicalNotExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3391,7 +3391,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BitwiseNotExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.BitwiseNotExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3407,7 +3407,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UnaryMinusExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.UnaryMinusExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3423,7 +3423,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UnaryPlusExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.UnaryPlusExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3439,7 +3439,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CoalesceAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.CoalesceAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3455,7 +3455,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RightShiftAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.RightShiftAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3471,7 +3471,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LeftShiftAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LeftShiftAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3487,7 +3487,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OrAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.OrAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3503,7 +3503,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExclusiveOrAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExclusiveOrAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3519,7 +3519,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AndAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AndAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3535,7 +3535,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ModuloAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ModuloAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3551,7 +3551,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DivideAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.DivideAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3567,7 +3567,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MultiplyAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.MultiplyAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3583,7 +3583,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SubtractAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SubtractAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3599,7 +3599,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AddAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AddAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3615,7 +3615,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SimpleAssignmentExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SimpleAssignmentExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3631,7 +3631,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElementBindingExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElementBindingExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3647,7 +3647,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MemberBindingExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.MemberBindingExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3663,7 +3663,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConditionalAccessExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConditionalAccessExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3679,7 +3679,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PointerMemberAccessExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.PointerMemberAccessExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3695,7 +3695,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SimpleMemberAccessExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SimpleMemberAccessExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3711,7 +3711,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CoalesceExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.CoalesceExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3727,7 +3727,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AsExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AsExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3743,7 +3743,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IsExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.IsExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3759,7 +3759,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GreaterThanOrEqualExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.GreaterThanOrEqualExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3775,7 +3775,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GreaterThanExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.GreaterThanExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3791,7 +3791,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanOrEqualExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanOrEqualExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3807,7 +3807,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3823,7 +3823,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NotEqualsExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.NotEqualsExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3839,7 +3839,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EqualsExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.EqualsExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3855,7 +3855,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExclusiveOrExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExclusiveOrExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3871,7 +3871,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BitwiseAndExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.BitwiseAndExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3887,7 +3887,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BitwiseOrExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.BitwiseOrExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3903,7 +3903,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LogicalAndExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LogicalAndExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3919,7 +3919,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LogicalOrExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LogicalOrExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3935,7 +3935,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RightShiftExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.RightShiftExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3951,7 +3951,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LeftShiftExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.LeftShiftExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3967,7 +3967,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ModuloExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ModuloExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3983,7 +3983,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DivideExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.DivideExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -3999,7 +3999,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MultiplyExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.MultiplyExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4015,7 +4015,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SubtractExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SubtractExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4031,7 +4031,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AddExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AddExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4047,7 +4047,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RangeExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.RangeExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4063,7 +4063,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IsPatternExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.IsPatternExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4079,7 +4079,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ImplicitElementAccess}">
+    x:Key="{x:Static mcacs:SyntaxKind.ImplicitElementAccess}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4095,7 +4095,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4111,7 +4111,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OmittedArraySizeExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.OmittedArraySizeExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4127,7 +4127,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StackAllocArrayCreationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.StackAllocArrayCreationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4143,7 +4143,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ImplicitArrayCreationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ImplicitArrayCreationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4159,7 +4159,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArrayCreationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArrayCreationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4175,7 +4175,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AnonymousObjectCreationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AnonymousObjectCreationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4191,7 +4191,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ObjectCreationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ObjectCreationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4207,7 +4207,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ComplexElementInitializerExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ComplexElementInitializerExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4223,7 +4223,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AnonymousObjectMemberDeclarator}">
+    x:Key="{x:Static mcacs:SyntaxKind.AnonymousObjectMemberDeclarator}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4239,7 +4239,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArrayInitializerExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArrayInitializerExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4255,7 +4255,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CollectionInitializerExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.CollectionInitializerExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4271,7 +4271,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ObjectInitializerExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ObjectInitializerExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4287,7 +4287,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ParenthesizedLambdaExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ParenthesizedLambdaExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4303,7 +4303,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SimpleLambdaExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.SimpleLambdaExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4319,7 +4319,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AnonymousMethodExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.AnonymousMethodExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4335,7 +4335,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CastExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.CastExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4351,7 +4351,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NameColon}">
+    x:Key="{x:Static mcacs:SyntaxKind.NameColon}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4367,7 +4367,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.Argument}">
+    x:Key="{x:Static mcacs:SyntaxKind.Argument}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4383,7 +4383,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BracketedArgumentList}">
+    x:Key="{x:Static mcacs:SyntaxKind.BracketedArgumentList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4399,7 +4399,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArgumentList}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArgumentList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4415,7 +4415,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElementAccessExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElementAccessExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4431,7 +4431,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InvocationExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.InvocationExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4447,7 +4447,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConditionalExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConditionalExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4463,7 +4463,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ParenthesizedExpression}">
+    x:Key="{x:Static mcacs:SyntaxKind.ParenthesizedExpression}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4479,7 +4479,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OmittedTypeArgument}">
+    x:Key="{x:Static mcacs:SyntaxKind.OmittedTypeArgument}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4495,7 +4495,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NullableType}">
+    x:Key="{x:Static mcacs:SyntaxKind.NullableType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4511,7 +4511,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PointerType}">
+    x:Key="{x:Static mcacs:SyntaxKind.PointerType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4527,7 +4527,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArrayRankSpecifier}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArrayRankSpecifier}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4543,7 +4543,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArrayType}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArrayType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4559,11 +4559,12 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PredefinedType}">
+    x:Key="{x:Static mcacs:SyntaxKind.PredefinedType}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
-    <Setter Property="TextElement.FontFamily" Value="Coutier New"/>
+    <Setter Property="TextElement.FontFamily"
+            Value="Coutier New" />
 
     <Setter Property="Panel.Background">
       <Setter.Value>
@@ -4572,7 +4573,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AliasQualifiedName}">
+    x:Key="{x:Static mcacs:SyntaxKind.AliasQualifiedName}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4588,7 +4589,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeArgumentList}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeArgumentList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4604,7 +4605,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GenericName}">
+    x:Key="{x:Static mcacs:SyntaxKind.GenericName}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4620,7 +4621,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QualifiedName}">
+    x:Key="{x:Static mcacs:SyntaxKind.QualifiedName}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4636,11 +4637,11 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IdentifierName}">
+    x:Key="{x:Static mcacs:SyntaxKind.IdentifierName}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
-    <Setter Property="TextElement.FontStyle" Value="Italic"></Setter>
+    <Setter Property="TextElement.FontStyle" Value="Italic" />
     <Setter Property="TextElement.Foreground">
       <Setter.Value>
         <SolidColorBrush>#FF000000</SolidColorBrush>
@@ -4653,23 +4654,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CrefParameter}">
-    <Style.Resources>
-      <ResourceDictionary />
-    </Style.Resources>
-    <Setter Property="TextElement.Foreground">
-      <Setter.Value>
-        <SolidColorBrush>#FF000000</SolidColorBrush>
-      </Setter.Value>
-    </Setter>
-    <Setter Property="Panel.Background">
-      <Setter.Value>
-        <SolidColorBrush>#FFFFFFFF</SolidColorBrush>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CrefBracketedParameterList}">
+    x:Key="{x:Static mcacs:SyntaxKind.CrefParameter}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4685,7 +4670,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CrefParameterList}">
+    x:Key="{x:Static mcacs:SyntaxKind.CrefBracketedParameterList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4701,7 +4686,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConversionOperatorMemberCref}">
+    x:Key="{x:Static mcacs:SyntaxKind.CrefParameterList}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4717,7 +4702,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OperatorMemberCref}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConversionOperatorMemberCref}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4733,7 +4718,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IndexerMemberCref}">
+    x:Key="{x:Static mcacs:SyntaxKind.OperatorMemberCref}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4749,7 +4734,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NameMemberCref}">
+    x:Key="{x:Static mcacs:SyntaxKind.IndexerMemberCref}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4765,7 +4750,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QualifiedCref}">
+    x:Key="{x:Static mcacs:SyntaxKind.NameMemberCref}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4781,7 +4766,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeCref}">
+    x:Key="{x:Static mcacs:SyntaxKind.QualifiedCref}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4797,7 +4782,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlProcessingInstruction}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeCref}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4813,7 +4798,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlComment}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlProcessingInstruction}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4829,7 +4814,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlCDataSection}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlComment}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4845,7 +4830,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlText}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlCDataSection}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4861,7 +4846,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlPrefix}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlText}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4877,7 +4862,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlName}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlPrefix}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4893,7 +4878,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlNameAttribute}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlName}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4909,7 +4894,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlCrefAttribute}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlNameAttribute}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4925,7 +4910,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlTextAttribute}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlCrefAttribute}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4941,7 +4926,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlEmptyElement}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlTextAttribute}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4957,7 +4942,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlElementEndTag}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlEmptyElement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4973,7 +4958,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlElementStartTag}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlElementEndTag}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -4989,7 +4974,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlElement}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlElementStartTag}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5005,7 +4990,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConflictMarkerTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlElement}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5021,7 +5006,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SkippedTokensTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConflictMarkerTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5037,7 +5022,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BadDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.SkippedTokensTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5053,7 +5038,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ReferenceDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.BadDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5069,7 +5054,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PragmaChecksumDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.ReferenceDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5085,7 +5070,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PragmaWarningDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.PragmaChecksumDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5101,7 +5086,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LineDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.PragmaWarningDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5117,7 +5102,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WarningDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.LineDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5133,7 +5118,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ErrorDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.WarningDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5149,7 +5134,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UndefDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.ErrorDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5165,7 +5150,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DefineDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.UndefDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5181,7 +5166,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndRegionDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.DefineDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5197,7 +5182,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RegionDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndRegionDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5213,7 +5198,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndIfDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.RegionDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5229,7 +5214,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElseDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndIfDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5245,7 +5230,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElifDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElseDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5261,7 +5246,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IfDirectiveTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElifDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5277,7 +5262,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PreprocessingMessageTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.IfDirectiveTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5293,7 +5278,23 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DisabledTextTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.PreprocessingMessageTrivia}">
+    <Style.Resources>
+      <ResourceDictionary />
+    </Style.Resources>
+    <Setter Property="TextElement.Foreground">
+      <Setter.Value>
+        <SolidColorBrush>#FF000000</SolidColorBrush>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Panel.Background">
+      <Setter.Value>
+        <SolidColorBrush>#FFFFFFFF</SolidColorBrush>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style
+    x:Key="{x:Static mcacs:SyntaxKind.DisabledTextTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5309,7 +5310,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MultiLineDocumentationCommentTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.MultiLineDocumentationCommentTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5325,7 +5326,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SingleLineDocumentationCommentTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.SingleLineDocumentationCommentTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5341,7 +5342,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DocumentationCommentExteriorTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.DocumentationCommentExteriorTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5357,7 +5358,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MultiLineCommentTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.MultiLineCommentTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5373,7 +5374,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SingleLineCommentTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.SingleLineCommentTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5389,7 +5390,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhitespaceTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhitespaceTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5405,7 +5406,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndOfLineTrivia}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndOfLineTrivia}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5421,7 +5422,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringTextToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringTextToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5437,7 +5438,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5453,7 +5454,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlTextLiteralNewLineToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlTextLiteralNewLineToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5469,7 +5470,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlTextLiteralToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlTextLiteralToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5485,7 +5486,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.XmlEntityLiteralToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.XmlEntityLiteralToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5501,7 +5502,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StringLiteralToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.StringLiteralToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5517,7 +5518,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CharacterLiteralToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CharacterLiteralToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5533,7 +5534,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NumericLiteralToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.NumericLiteralToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5548,8 +5549,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style 
-         x:Key="{x:Static mcacs:SyntaxKind.IdentifierToken}">
+  <Style
+    x:Key="{x:Static mcacs:SyntaxKind.IdentifierToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5565,7 +5566,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BadToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.BadToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5581,7 +5582,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndOfFileToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndOfFileToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5597,7 +5598,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndOfDocumentationCommentToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndOfDocumentationCommentToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5613,7 +5614,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndOfDirectiveToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndOfDirectiveToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5629,7 +5630,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OmittedArraySizeExpressionToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.OmittedArraySizeExpressionToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5645,7 +5646,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OmittedTypeArgumentToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.OmittedTypeArgumentToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5661,7 +5662,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UnderscoreToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.UnderscoreToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5677,7 +5678,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VarKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.VarKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5693,7 +5694,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AnnotationsKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AnnotationsKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5709,7 +5710,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WarningsKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.WarningsKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5725,7 +5726,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EnableKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.EnableKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5741,7 +5742,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NullableKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.NullableKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5757,7 +5758,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LoadKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.LoadKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5773,7 +5774,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedVerbatimStringStartToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedVerbatimStringStartToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5789,7 +5790,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringEndToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringEndToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5805,7 +5806,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringStartToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterpolatedStringStartToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5821,7 +5822,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ReferenceKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ReferenceKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5837,7 +5838,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RestoreKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.RestoreKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5853,7 +5854,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DisableKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DisableKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5869,7 +5870,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ChecksumKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ChecksumKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5885,7 +5886,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.HiddenKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.HiddenKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5901,7 +5902,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PragmaKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.PragmaKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5917,7 +5918,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LineKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.LineKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5933,7 +5934,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ErrorKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ErrorKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5949,7 +5950,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WarningKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.WarningKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5965,7 +5966,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UndefKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.UndefKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5981,7 +5982,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DefineKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DefineKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -5997,7 +5998,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndRegionKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndRegionKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6013,7 +6014,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RegionKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.RegionKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6029,7 +6030,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EndIfKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.EndIfKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6045,7 +6046,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElifKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElifKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6061,7 +6062,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhenKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhenKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6077,7 +6078,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AwaitKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AwaitKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6093,7 +6094,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AsyncKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AsyncKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6109,7 +6110,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NameOfKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.NameOfKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6125,7 +6126,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DescendingKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DescendingKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6141,7 +6142,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AscendingKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AscendingKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6157,7 +6158,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EqualsKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.EqualsKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6173,7 +6174,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OnKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.OnKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6189,7 +6190,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OrderByKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.OrderByKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6205,7 +6206,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SelectKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.SelectKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6221,7 +6222,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ByKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ByKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6237,7 +6238,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LetKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.LetKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6253,7 +6254,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IntoKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.IntoKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6269,7 +6270,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.JoinKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.JoinKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6285,7 +6286,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GroupKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.GroupKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6301,7 +6302,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FromKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.FromKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6317,7 +6318,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhereKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhereKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6333,7 +6334,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RemoveKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.RemoveKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6349,7 +6350,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AddKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AddKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6365,7 +6366,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SetKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.SetKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6381,7 +6382,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GetKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.GetKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6397,7 +6398,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeVarKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeVarKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6413,7 +6414,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PropertyKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.PropertyKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6429,7 +6430,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ParamKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ParamKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6445,7 +6446,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MethodKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.MethodKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6461,7 +6462,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FieldKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.FieldKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6477,7 +6478,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6493,7 +6494,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ModuleKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ModuleKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6509,7 +6510,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AssemblyKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AssemblyKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6525,7 +6526,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GlobalKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.GlobalKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6541,7 +6542,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AliasKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AliasKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6557,7 +6558,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PartialKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.PartialKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6573,7 +6574,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.YieldKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.YieldKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6589,7 +6590,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ImplicitKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ImplicitKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6605,7 +6606,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExplicitKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExplicitKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6621,7 +6622,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OperatorKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.OperatorKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6637,7 +6638,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UnsafeKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.UnsafeKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6653,7 +6654,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UncheckedKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.UncheckedKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6669,7 +6670,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CheckedKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.CheckedKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6685,7 +6686,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DelegateKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DelegateKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6701,7 +6702,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EnumKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.EnumKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6717,7 +6718,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InterfaceKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.InterfaceKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6733,7 +6734,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StructKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.StructKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6749,7 +6750,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ClassKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ClassKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6765,7 +6766,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UsingKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.UsingKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6781,7 +6782,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NamespaceKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.NamespaceKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6797,7 +6798,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BaseKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.BaseKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6813,7 +6814,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ThisKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ThisKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6829,7 +6830,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefValueKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefValueKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6845,7 +6846,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefTypeKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefTypeKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6861,7 +6862,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MakeRefKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.MakeRefKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6877,7 +6878,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ArgListKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ArgListKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6893,7 +6894,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LessThanLessThanEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.LessThanLessThanEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6909,7 +6910,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AsKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AsKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6925,7 +6926,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IsKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.IsKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6941,7 +6942,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.InKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6957,7 +6958,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OutKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.OutKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6973,7 +6974,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.RefKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.RefKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -6989,7 +6990,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ExternKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ExternKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7005,7 +7006,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.EventKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.EventKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7021,7 +7022,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VirtualKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.VirtualKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7037,7 +7038,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AbstractKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.AbstractKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7053,7 +7054,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.OverrideKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.OverrideKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7069,7 +7070,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NewKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.NewKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7085,7 +7086,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VolatileKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.VolatileKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7101,7 +7102,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StackAllocKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.StackAllocKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7117,7 +7118,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FixedKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.FixedKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7133,7 +7134,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ConstKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ConstKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7149,7 +7150,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SealedKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.SealedKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7165,7 +7166,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ReadOnlyKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ReadOnlyKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7181,7 +7182,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StaticKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.StaticKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7197,7 +7198,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ProtectedKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ProtectedKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7213,7 +7214,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.InternalKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.InternalKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7229,7 +7230,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PrivateKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.PrivateKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7245,7 +7246,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PublicKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.PublicKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7261,7 +7262,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ThrowKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ThrowKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7277,7 +7278,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ReturnKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ReturnKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7293,7 +7294,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ContinueKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ContinueKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7309,7 +7310,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BreakKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.BreakKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7325,7 +7326,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GotoKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.GotoKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7341,7 +7342,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LockKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.LockKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7357,7 +7358,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FinallyKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.FinallyKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7373,7 +7374,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CatchKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.CatchKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7389,7 +7390,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TryKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.TryKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7405,7 +7406,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DefaultKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DefaultKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7421,7 +7422,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CaseKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.CaseKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7437,7 +7438,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SwitchKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.SwitchKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7453,7 +7454,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DoKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DoKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7469,7 +7470,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ForEachKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ForEachKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7485,7 +7486,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ForKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ForKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7501,7 +7502,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.WhileKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.WhileKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7517,7 +7518,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ElseKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ElseKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7533,7 +7534,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IfKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.IfKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7549,7 +7550,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FalseKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.FalseKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7565,7 +7566,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TrueKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.TrueKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7581,7 +7582,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.NullKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.NullKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7597,7 +7598,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SizeOfKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.SizeOfKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7613,7 +7614,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.TypeOfKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.TypeOfKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7629,7 +7630,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ObjectKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ObjectKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7645,7 +7646,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.VoidKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.VoidKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7661,7 +7662,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CharKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.CharKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7677,7 +7678,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.StringKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.StringKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7693,7 +7694,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DecimalKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DecimalKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7709,7 +7710,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.FloatKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.FloatKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7725,7 +7726,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.DoubleKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.DoubleKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7741,7 +7742,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ULongKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ULongKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7757,7 +7758,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.LongKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.LongKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7773,7 +7774,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UIntKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.UIntKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7789,7 +7790,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.IntKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.IntKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7805,7 +7806,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.UShortKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.UShortKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7821,7 +7822,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ShortKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ShortKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7837,7 +7838,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SByteKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.SByteKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7853,7 +7854,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.ByteKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.ByteKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7869,7 +7870,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BoolKeyword}">
+    x:Key="{x:Static mcacs:SyntaxKind.BoolKeyword}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7885,7 +7886,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.QuestionQuestionEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.QuestionQuestionEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7901,7 +7902,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PercentEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.PercentEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7917,7 +7918,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.CaretEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.CaretEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7933,7 +7934,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.MinusEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.MinusEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7949,7 +7950,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.PlusEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.PlusEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7965,7 +7966,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AmpersandEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.AmpersandEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7981,7 +7982,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.BarEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.BarEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -7997,7 +7998,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.AsteriskEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.AsteriskEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -8013,7 +8014,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.SlashEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.SlashEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -8029,7 +8030,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GreaterThanGreaterThanEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.GreaterThanGreaterThanEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -8045,7 +8046,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GreaterThanGreaterThanToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.GreaterThanGreaterThanToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -8061,7 +8062,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.GreaterThanEqualsToken}">
+    x:Key="{x:Static mcacs:SyntaxKind.GreaterThanEqualsToken}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -8077,7 +8078,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.List}">
+    x:Key="{x:Static mcacs:SyntaxKind.List}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>
@@ -8093,7 +8094,7 @@
     </Setter>
   </Style>
   <Style
-         x:Key="{x:Static mcacs:SyntaxKind.None}">
+    x:Key="{x:Static mcacs:SyntaxKind.None}">
     <Style.Resources>
       <ResourceDictionary />
     </Style.Resources>

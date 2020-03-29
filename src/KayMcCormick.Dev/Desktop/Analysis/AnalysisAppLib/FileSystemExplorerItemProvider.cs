@@ -19,6 +19,11 @@ namespace AnalysisAppLib
     {
         private readonly AppExplorerItem root ;
 
+        public FileSystemExplorerItemProvider ( )
+        {
+            root = new FileSystemAppExplorerItem ( DefaultInputPath ) ;
+        }
+
         public string DefaultInputPath { get ; } = Path.Combine (
                                                                  Environment.GetFolderPath (
                                                                                             Environment
@@ -27,10 +32,6 @@ namespace AnalysisAppLib
                                                                                            )
                                                                , @"source\repos"
                                                                 ) ;
-
-        public FileSystemExplorerItemProvider ( ) {
-            root = new FileSystemAppExplorerItem(DefaultInputPath);
-        }
 
         #region Implementation of IExplorerItemProvider
         public IEnumerable < AppExplorerItem > GetRootItems ( ) { yield return root ; }

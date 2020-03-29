@@ -17,28 +17,37 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>Control for displaying runtime type information.</summary>
     public sealed partial class TypeControl : UserControl
     {
-        private const string NavCancelledMessage = @"nav cancelled";
+        /// <summary>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public delegate void TypeActivatedEventHandler (
+            object                 sender
+          , TypeActivatedEventArgs e
+        ) ;
+
+        private const string NavCancelledMessage = @"nav cancelled" ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         /// <summary>
-        /// 
         /// </summary>
         public static readonly RoutedEvent TypeActivatedEvent =
             EventManager.RegisterRoutedEvent (
                                               "TypeActivated"
                                             , RoutingStrategy.Bubble
-                                            , typeof ( TypeActivatedEventHandler)
+                                            , typeof ( TypeActivatedEventHandler )
                                             , typeof ( TypeControl )
                                              ) ;
+
         /// <summary>The rendered type property</summary>
-        public static readonly DependencyProperty
-            RenderedTypeProperty = AttachedProperties.RenderedTypeProperty ;
+        public static readonly DependencyProperty RenderedTypeProperty =
+            AttachedProperties.RenderedTypeProperty ;
 
         /// <summary>The target name property</summary>
         public static readonly DependencyProperty TargetNameProperty =
             DependencyProperty.Register (
-                                         nameof(TargetName)
+                                         nameof ( TargetName )
                                        , typeof ( string )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( string ) )
@@ -47,7 +56,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The target property</summary>
         public static readonly DependencyProperty TargetProperty =
             DependencyProperty.Register (
-                                         nameof(Target)
+                                         nameof ( Target )
                                        , typeof ( Frame )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( Frame ) )
@@ -56,7 +65,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The detailed property</summary>
         public static readonly DependencyProperty DetailedProperty =
             DependencyProperty.Register (
-                                         nameof(Detailed)
+                                         nameof ( Detailed )
                                        , typeof ( bool )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( bool ) )
@@ -65,7 +74,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>The target detailed property</summary>
         public static readonly DependencyProperty TargetDetailedProperty =
             DependencyProperty.Register (
-                                         nameof(TargetDetailed)
+                                         nameof ( TargetDetailed )
                                        , typeof ( bool )
                                        , typeof ( TypeControl )
                                        , new PropertyMetadata ( default ( bool ) )
@@ -77,26 +86,26 @@ namespace KayMcCormick.Lib.Wpf
             RenderedTypeChanged += OnRenderedTypeChanged ;
             InitializeComponent ( ) ;
             var t = GetValue ( RenderedTypeProperty ) ;
-            Debug.WriteLine ( "t: " + t?.ToString ( ) ?? "null" ) ;
-            PopulateControl ( ( Type)t ) ;
+            Debug.WriteLine ( "t: " + t ?? "null" ) ;
+            PopulateControl ( ( Type ) t ) ;
         }
-        
-        
+
+
         /// <summary>Gets or sets the name of the target frame (unused).</summary>
         /// <value>The name of the target.</value>
-        
+
         public string TargetName
         {
-            get => ( string ) GetValue ( TargetNameProperty ) ;
-            set => SetValue ( TargetNameProperty , value ) ;
+            get { return ( string ) GetValue ( TargetNameProperty ) ; }
+            set { SetValue ( TargetNameProperty , value ) ; }
         }
 
         /// <summary>Gets or sets the target for any navigation.</summary>
         /// <value>The target.</value>
         public Frame Target
         {
-            get => ( Frame ) GetValue ( TargetProperty ) ;
-            set => SetValue ( TargetProperty , value ) ;
+            get { return ( Frame ) GetValue ( TargetProperty ) ; }
+            set { SetValue ( TargetProperty , value ) ; }
         }
 
         /// <summary>
@@ -104,22 +113,27 @@ namespace KayMcCormick.Lib.Wpf
         ///     <see cref="TypeControl" /> is in its detailed form.
         /// </summary>
         /// <value>
-        ///     <see language="true"/> if detailed; otherwise, <see language="false"/>.
+        ///     <see language="true" /> if detailed; otherwise, <see language="false" />
+        ///     .
         /// </value>
         public bool Detailed
         {
-            get => ( bool ) GetValue ( DetailedProperty ) ;
-            set => SetValue ( DetailedProperty , value ) ;
+            get { return ( bool ) GetValue ( DetailedProperty ) ; }
+            set { SetValue ( DetailedProperty , value ) ; }
         }
 
-        /// <summary>Gets or sets a value indicating whether followed links will be detailed.</summary>
+        /// <summary>
+        ///     Gets or sets a value indicating whether followed links will be
+        ///     detailed.
+        /// </summary>
         /// <value>
-        ///     <see language="true"/> if [target detailed]; otherwise, <see language="false"/>.
+        ///     <see language="true" /> if [target detailed]; otherwise,
+        ///     <see language="false" />.
         /// </value>
         public bool TargetDetailed
         {
-            get => ( bool ) GetValue ( TargetDetailedProperty ) ;
-            set => SetValue ( TargetDetailedProperty , value ) ;
+            get { return ( bool ) GetValue ( TargetDetailedProperty ) ; }
+            set { SetValue ( TargetDetailedProperty , value ) ; }
         }
 
         /// <summary>Gets or sets the flow document.</summary>
@@ -130,8 +144,8 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>Occurs when rendered type is changed.</summary>
         public event RoutedPropertyChangedEventHandler < Type > RenderedTypeChanged
         {
-            add => AddHandler ( AttachedProperties.RenderedTypeChangedEvent , value ) ;
-            remove => RemoveHandler (AttachedProperties.RenderedTypeChangedEvent , value ) ;
+            add { AddHandler ( AttachedProperties.RenderedTypeChangedEvent , value ) ; }
+            remove { RemoveHandler ( AttachedProperties.RenderedTypeChangedEvent , value ) ; }
         }
 
         private void OnRenderedTypeChanged (
@@ -145,19 +159,19 @@ namespace KayMcCormick.Lib.Wpf
         private void PopulateControl ( Type myType )
         {
             IAddChild addChild ;
-            Debug.WriteLine( myType?.FullName ?? "null" ) ;
+            Debug.WriteLine ( myType?.FullName ?? "null" ) ;
             if ( Detailed )
             {
                 var paragraph = new Paragraph ( ) ;
                 FlowDocument = new FlowDocument ( paragraph ) ;
                 var reader = new FlowDocumentReader { Document = FlowDocument } ;
                 addChild = paragraph ;
-                SetCurrentValue(ContentProperty, reader) ;
+                SetCurrentValue ( ContentProperty , reader ) ;
             }
             else
             {
                 addChild = new TextBlock ( ) ;
-                SetCurrentValue(ContentProperty, addChild) ;
+                SetCurrentValue ( ContentProperty , addChild ) ;
 
                 // Container.Children.Clear();
                 // Container.Children.Add ( block ) ;
@@ -195,8 +209,12 @@ namespace KayMcCormick.Lib.Wpf
             // Container.Children.Add ( ) ;
         }
 
-        
-        private void GenerateControlsForType ( [ NotNull ] Type myType , [ NotNull ] IAddChild addChild , bool toolTip )
+
+        private void GenerateControlsForType (
+            [ NotNull ] Type      myType
+          , [ NotNull ] IAddChild addChild
+          , bool                  toolTip
+        )
         {
             if ( myType == null )
             {
@@ -217,8 +235,13 @@ namespace KayMcCormick.Lib.Wpf
             {
                 hyperLink.Foreground = new SolidColorBrush { Color = Colors.DarkOrange } ;
             }
+
             Uri.TryCreate (
-                           "obj:///" + Uri.EscapeUriString ( myType.AssemblyQualifiedName ?? throw new InvalidOperationException ( ) )
+                           "obj:///"
+                           + Uri.EscapeUriString (
+                                                  myType.AssemblyQualifiedName
+                                                  ?? throw new InvalidOperationException ( )
+                                                 )
                          , UriKind.Absolute
                          , out var res
                           ) ;
@@ -277,32 +300,26 @@ namespace KayMcCormick.Lib.Wpf
             return pp ;
         }
 
-        
+
         private string NameForType ( Type myType )
         {
             // todo move to a better place
-            using (var provider = new CSharpCodeProvider())
+            using ( var provider = new CSharpCodeProvider ( ) )
             {
-                if (myType.IsGenericType)
+                if ( myType.IsGenericType )
                 {
-                    var type = myType.GetGenericTypeDefinition();
-                    myType = type;
+                    var type = myType.GetGenericTypeDefinition ( ) ;
+                    myType = type ;
                 }
 
-                var codeTypeReference = new CodeTypeReference(myType);
-                var q = codeTypeReference;
+                var codeTypeReference = new CodeTypeReference ( myType ) ;
+                var q = codeTypeReference ;
                 //myType.GetGenericTypeParameters()
-                return provider.GetTypeOutput(q);
+                return provider.GetTypeOutput ( q ) ;
                 // return myType.IsGenericType ? myType.GetGenericTypeDefinition ( ).Name : myType.Name ;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public delegate void TypeActivatedEventHandler(object sender, TypeActivatedEventArgs e);
         private void HyperLinkOnRequestNavigate ( object sender , RequestNavigateEventArgs e )
         {
             //
@@ -310,9 +327,9 @@ namespace KayMcCormick.Lib.Wpf
             // {
             // 	Logger.Debug ( "Cant find " + findName) ;
             // }
-            var uie = (ContentElement)sender;
+            var uie = ( ContentElement ) sender ;
             Logger.Debug ( $"{nameof ( HyperLinkOnRequestNavigate )}: Uri={e.Uri}" ) ;
-            
+
             try
             {
                 var navigationService = NavigationService ( ) ;
@@ -321,30 +338,35 @@ namespace KayMcCormick.Lib.Wpf
                 {
                     var targetDetailed = Detailed || TargetDetailed ;
                     var value = uie.GetValue ( AttachedProperties.RenderedTypeProperty ) as Type ;
-                    var typeControl2 = new KayMcCormick.Lib.Wpf.TypeControl2 ( ) ;
-                    typeControl2.SetValue (AttachedProperties.RenderedTypeProperty , value ) ;
+                    var typeControl2 = new TypeControl2 ( ) ;
+                    typeControl2.SetValue ( AttachedProperties.RenderedTypeProperty , value ) ;
                     var navigationState = new NavState
                                           {
                                               Detailed = targetDetailed , RenderedType = value
                                           } ;
                     if ( ! navigationService.Navigate ( typeControl2 , navigationState ) )
                     {
-                        Logger.Info(NavCancelledMessage) ;
+                        Logger.Info ( NavCancelledMessage ) ;
                     }
 
                     e.Handled = true ;
                 }
                 else
                 {
-                    var uri = (Uri)uie.GetValue(Hyperlink.NavigateUriProperty);
-                    var stringToUnescape = uri.AbsolutePath.Substring(1);
-                    var unescapeDataString = Uri.UnescapeDataString(stringToUnescape);
-                    Type t = Type.GetType(unescapeDataString);
+                    var uri = ( Uri ) uie.GetValue ( Hyperlink.NavigateUriProperty ) ;
+                    var stringToUnescape = uri.AbsolutePath.Substring ( 1 ) ;
+                    var unescapeDataString = Uri.UnescapeDataString ( stringToUnescape ) ;
+                    var t = Type.GetType ( unescapeDataString ) ;
 
-                    var value1 = uie.GetValue(AttachedProperties.RenderedTypeProperty) as Type;
-                    RaiseEvent(
-                               new TypeActivatedEventArgs(TypeActivatedEvent, sender, value1, t)
-                              );
+                    var value1 = uie.GetValue ( AttachedProperties.RenderedTypeProperty ) as Type ;
+                    RaiseEvent (
+                                new TypeActivatedEventArgs (
+                                                            TypeActivatedEvent
+                                                          , sender
+                                                          , value1
+                                                          , t
+                                                           )
+                               ) ;
                 }
             }
             catch ( Exception ex )
@@ -370,28 +392,30 @@ namespace KayMcCormick.Lib.Wpf
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public class TypeActivatedEventArgs : RoutedEventArgs
     {
-        private Type _sourceType ;
         private Type _activatedType ;
+        private Type _sourceType ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="routedEvent"></param>
         /// <param name="source"></param>
         /// <param name="sourceType"></param>
         /// <param name="activatedType"></param>
-        public TypeActivatedEventArgs ( RoutedEvent routedEvent , object source , Type sourceType , Type activatedType ) : base ( routedEvent , source )
+        public TypeActivatedEventArgs (
+            RoutedEvent routedEvent
+          , object      source
+          , Type        sourceType
+          , Type        activatedType
+        ) : base ( routedEvent , source )
         {
-            _sourceType = sourceType ;
+            _sourceType    = sourceType ;
             _activatedType = activatedType ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public Type ActivatedType
         {
@@ -400,7 +424,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public Type SourceType { get { return _sourceType ; } set { _sourceType = value ; } }
     }

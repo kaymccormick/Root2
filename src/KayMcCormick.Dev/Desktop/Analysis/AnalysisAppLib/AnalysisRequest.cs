@@ -1,10 +1,20 @@
 namespace AnalysisAppLib
 {
-    public class AnalysisRequest
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class AnalysisRequest
     {
         private IProjectBrowserNode projectInfo ;
 
-        public IProjectBrowserNode Info { get => projectInfo ; set => projectInfo = value ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IProjectBrowserNode Info
+        {
+            get { return projectInfo ; }
+            set { projectInfo = value ; }
+        }
     }
 
 #if VERSIONCONTROL

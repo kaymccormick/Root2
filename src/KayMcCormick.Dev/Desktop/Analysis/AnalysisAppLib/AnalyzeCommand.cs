@@ -16,7 +16,6 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.StackTrace ;
 using NLog ;
 
@@ -39,18 +38,14 @@ namespace AnalysisAppLib
             var pipeline = _pipeline ;
             if ( pipeline == null )
             {
-
                 throw new AnalyzeException ( "Pipeline is null" ) ;
-
             }
 
             pipeline.BuildPipeline ( ) ;
             var pInstance = pipeline.PipelineInstance ;
             if ( pInstance == null )
             {
-
                 throw new AnalyzeException ( "pipeline instance is null" ) ;
-
             }
 
             RejectDestination = rejectTarget ;
@@ -71,9 +66,7 @@ namespace AnalysisAppLib
             var req = new AnalysisRequest { Info = projectNode } ;
             if ( ! pInstance.Post ( req ) )
             {
-
                 throw new AnalyzeException ( "Post failed" ) ;
-
             }
 
             await HandlePipelineResultAsync ( actionBlock ) ;

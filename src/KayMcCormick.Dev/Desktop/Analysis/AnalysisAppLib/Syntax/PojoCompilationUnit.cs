@@ -1,21 +1,10 @@
 using System.Collections.Generic ;
 
-
-
 namespace AnalysisAppLib.Syntax
 {
     public class PojoCompilationUnit
     {
-        public PojoCompilationUnit ( ) {
-        }
-
-        public List < object > Usings { get ; }
-
-        public List < object > ExternAliases { get ; }
-
-        public List < object > AttributeLists { get ; }
-
-        public List < object > Members { get ; }
+        public PojoCompilationUnit ( ) { }
 
         public PojoCompilationUnit (
             List < object > Usings
@@ -29,5 +18,13 @@ namespace AnalysisAppLib.Syntax
             this.AttributeLists = AttributeLists ;
             Members             = members ;
         }
+
+        public List < object > Usings { get ; }
+
+        public List < object > ExternAliases { get ; }
+
+        public List < object > AttributeLists { get ; }
+
+        public List < object > Members { get ; }
     }
 }

@@ -11,7 +11,6 @@
 #endregion
 namespace AnalysisAppLib
 {
-
     public class LogViewerConfig
 
     {

@@ -1,7 +1,4 @@
-﻿using JetBrains.Annotations ;
-
-
-namespace KayMcCormick.Dev.Logging
+﻿namespace KayMcCormick.Dev.Logging
 {
     // TODO implement
 
@@ -19,20 +16,20 @@ namespace KayMcCormick.Dev.Logging
 
 
     /// <summary>
-    /// Enumeration
+    ///     Enumeration
     /// </summary>
     public enum Application
     {
-
-
         /// <summary>
-        /// Application 
+        ///     Application
         /// </summary>
-        MainApplication ,
+        MainApplication
+
+       ,
 
 
         /// <summary>
-        /// Tests
+        ///     Tests
         /// </summary>
         Tests
     }

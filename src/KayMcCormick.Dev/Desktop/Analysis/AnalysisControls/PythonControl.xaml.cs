@@ -10,57 +10,59 @@ using KayMcCormick.Lib.Wpf ;
 namespace AnalysisControls
 {
     /// <summary>
-    /// Interaction logic for PythonControl.xaml
+    ///     Interaction logic for PythonControl.xaml
     /// </summary>
-    [TitleMetadata("Python")]
-    public partial class PythonControl : UserControl , IView < PythonViewModel >, IView1, IControlView
+    [ TitleMetadata ( "Python" ) ]
+    public partial class PythonControl : UserControl
+      , IView < PythonViewModel >
+      , IView1
+      , IControlView
     {
         private readonly ILifetimeScope _scope ;
-        private PythonViewModel _viewModel ;
 
-        public PythonControl ( ) : this(null, null) {
-        }
+        public PythonControl ( ) : this ( null , null ) { }
 
-        public PythonControl (ILifetimeScope scope, PythonViewModel viewModel )
+        public PythonControl ( ILifetimeScope scope , PythonViewModel viewModel )
         {
-            _scope = scope ;
-            _viewModel = viewModel ;
+            _scope    = scope ;
+            ViewModel = viewModel ;
             InitializeComponent ( ) ;
-            
-            _viewModel.FlowDOcument = flow ;
+
+            ViewModel.FlowDOcument = flow ;
         }
+
+        #region Implementation of IView<out PythonViewModel>
+        public PythonViewModel ViewModel { get ; }
+        #endregion
 
         private void UIElement_OnKeyDown ( object sender , KeyEventArgs e )
         {
             if ( e.Key == Key.Enter )
             {
                 Debug.WriteLine ( "rceived key " + e.Key ) ;
-                var textBox = ( ( TextBox ) sender ) ;
+                var textBox = ( TextBox ) sender ;
                 ViewModel.TakeLine ( textBox.Text ) ;
                 textBox.Text = "" ;
-            } else if ( e.Key == Key.Up )
+            }
+            else if ( e.Key == Key.Up )
             {
                 ViewModel.HistoryUp ( ) ;
             }
         }
 
-        #region Implementation of IView<out PythonViewModel>
-        public PythonViewModel ViewModel { get { return _viewModel ; } }
-        #endregion
-
         private void UIElement_OnPreviewKeyDown ( object sender , KeyEventArgs e )
         {
-            Debug.WriteLine("rceived key " + e.Key);
+            Debug.WriteLine ( "rceived key " + e.Key ) ;
             if ( e.Key == Key.Up )
             {
-                ViewModel.HistoryUp();
+                ViewModel.HistoryUp ( ) ;
                 e.Handled = true ;
-            } else if ( e.Key == Key.Down )
+            }
+            else if ( e.Key == Key.Down )
             {
                 ViewModel.HistoryDown ( ) ;
                 e.Handled = true ;
             }
-
         }
     }
 }

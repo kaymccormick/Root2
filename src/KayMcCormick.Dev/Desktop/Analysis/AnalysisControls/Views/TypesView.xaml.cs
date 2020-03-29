@@ -13,7 +13,7 @@ using KayMcCormick.Lib.Wpf ;
 namespace AnalysisControls.Views
 {
     /// <summary>
-    /// Interaction logic for Types.xaml
+    ///     Interaction logic for Types.xaml
     /// </summary>
     [ TitleMetadata ( "Types view" ) ]
     public sealed partial class TypesView : UserControl
@@ -22,15 +22,13 @@ namespace AnalysisControls.Views
       , IControlView
       , INotifyPropertyChanged
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public TypesView ( ) { InitializeComponent ( ) ; }
-
         private ITypesViewModel _viewModel ;
 
         /// <summary>
-        /// 
+        /// </summary>
+        public TypesView ( ) { InitializeComponent ( ) ; }
+
+        /// <summary>
         /// </summary>
         /// <param name="viewModel"></param>
         public TypesView ( ITypesViewModel viewModel )
@@ -39,9 +37,39 @@ namespace AnalysisControls.Views
             InitializeComponent ( ) ;
         }
 
+        /// <summary>
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of IView<ITypesViewModel>
+        /// <summary>
+        /// </summary>
+        public ITypesViewModel ViewModel
+        {
+            get { return _viewModel ; }
+            set
+            {
+                _viewModel = value ;
+                Debug.WriteLine ( "Set viewModel" ) ;
+                OnPropertyChanged ( ) ;
+            }
+        }
+        #endregion
+
+        #region Implementation of IView1
+        /// <summary>
+        /// </summary>
+        [ NotNull ] public string ViewTitle { get { return "Types View" ; } }
+        #endregion
+
+        [ NotifyPropertyChangedInvocator ]
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
+
         #region Overrides of FrameworkElement
         /// <summary>
-        /// 
         /// </summary>
         public override void OnApplyTemplate ( )
         {
@@ -64,39 +92,5 @@ namespace AnalysisControls.Views
             }
         }
         #endregion
-
-        #region Implementation of IView<ITypesViewModel>
-        /// <summary>
-        /// 
-        /// </summary>
-        public ITypesViewModel ViewModel
-        {
-            get { return _viewModel ; }
-            set
-            {
-                _viewModel = value ;
-                Debug.WriteLine ( "Set viewModel" ) ;
-                OnPropertyChanged ( ) ;
-            }
-        }
-        #endregion
-
-        #region Implementation of IView1
-        /// <summary>
-        /// 
-        /// </summary>
-        [ NotNull ] public string ViewTitle { get { return "Types View" ; } }
-        #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged ;
-
-        [ NotifyPropertyChangedInvocator ]
-        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
-        {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
     }
 }

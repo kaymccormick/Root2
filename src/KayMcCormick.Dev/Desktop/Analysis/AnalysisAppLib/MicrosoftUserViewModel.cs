@@ -15,7 +15,6 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
-using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.Graph ;
@@ -25,12 +24,10 @@ namespace AnalysisAppLib
 {
     public class MicrosoftUserViewModel : IViewModel , INotifyPropertyChanged
     {
-        public bool CanLogin { get { return Account == null ; } }
-
-        private IAccount                             _account ;
-        private GraphServiceClient                   _graphClient ;
-        private Func < string , GraphServiceClient > _graphFunc ;
-        private IPublicClientApplication             _publicClient ;
+        private          IAccount                             _account ;
+        private          GraphServiceClient                   _graphClient ;
+        private readonly Func < string , GraphServiceClient > _graphFunc ;
+        private readonly IPublicClientApplication             _publicClient ;
 
         public MicrosoftUserViewModel (
             [ NotNull ] Func < Guid , IPublicClientApplication > publicClientFunc
@@ -46,6 +43,46 @@ namespace AnalysisAppLib
             _publicClient =
                 publicClientFunc ( Guid.Parse ( "73d9e90c-5cd2-4fd7-9e36-4faab9404a7c" ) ) ;
         }
+
+        public bool CanLogin { get { return Account == null ; } }
+
+        public IAccount Account
+        {
+            get { return _account ; }
+            private set
+            {
+                if ( Equals ( value , _account ) )
+                {
+                    return ;
+                }
+
+                _account = value ;
+
+                OnPropertyChanged ( ) ;
+            }
+        }
+
+
+        public GraphServiceClient GraphClient
+        {
+            get { return _graphClient ; }
+            set
+            {
+                if ( Equals ( value , _graphClient ) )
+                {
+                    return ;
+                }
+
+                _graphClient = value ;
+                OnPropertyChanged ( ) ;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
 
         public async Task Login ( )
         {
@@ -92,50 +129,10 @@ namespace AnalysisAppLib
             return true ;
         }
 
-        public IAccount Account
-        {
-            get { return _account ; }
-            private set
-            {
-                if ( Equals ( value , _account ) )
-                {
-                    return ;
-                }
-
-                _account = value ;
-
-                OnPropertyChanged ( ) ;
-            }
-        }
-
-
-        public GraphServiceClient GraphClient
-        {
-            get { return _graphClient ; }
-            set
-            {
-                if ( Equals ( value , _graphClient ) )
-                {
-                    return ;
-                }
-
-                _graphClient = value ;
-                OnPropertyChanged ( ) ;
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged ;
-
         [ NotifyPropertyChangedInvocator ]
         protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-
-        #region Implementation of ISerializable
-        public void GetObjectData ( SerializationInfo info , StreamingContext context )
-        {
-        }
-        #endregion
     }
 }

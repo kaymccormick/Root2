@@ -14,10 +14,8 @@ using System ;
 namespace KayMcCormick.Dev.Application
 {
     /// <summary>
-    /// 
     /// </summary>
     public class AppStartupEventArgs : EventArgs
     {
-
     }
 }

@@ -23,22 +23,18 @@ namespace KayMcCormick.Dev.Logging
         bool ? IsEnabledConsoleTarget { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
         bool ? IsEnabledEventLogTarget { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
         bool ? IsEnabledCacheTarget { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
         [ CanBeNull ] LogLevel MinLogLevel { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
         bool ? IsEnabledDebuggerTarget { get ; }
 
@@ -47,22 +43,21 @@ namespace KayMcCormick.Dev.Logging
         string DebuggerTargetName { get ; }
 
         /// <summary>
-        /// NLog viewer port
+        ///     NLog viewer port
         /// </summary>
-        int? NLogViewerPort { get ; }
+        int ? NLogViewerPort { get ; }
 
         /// <summary>
-        /// Chainsaw port
+        ///     Chainsaw port
         /// </summary>
-        int? ChainsawPort { get ;  }
+        int ? ChainsawPort { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        bool? LogThrowExceptions { get ; }
+        bool ? LogThrowExceptions { get ; }
 
         /// <summary>
-        /// Enable XML File target
+        ///     Enable XML File target
         /// </summary>
         bool IsEnabledXmlFileTarget { get ; set ; }
     }

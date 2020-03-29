@@ -17,14 +17,12 @@ using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
-
     /// <summary>
-    ///   <para>Helper class for wpf explorer</para>
+    ///     <para>Helper class for wpf explorer</para>
     /// </summary>
     public static class InputBindingsManager
     {
         /// <summary>
-        /// 
         /// </summary>
         public static readonly DependencyProperty UpdatePropertySourceWhenEnterPressedProperty =
             DependencyProperty.RegisterAttached (
@@ -33,34 +31,31 @@ namespace AnalysisControls
                                                , typeof ( InputBindingsManager )
                                                , new PropertyMetadata (
                                                                        null
-
                                                                      , OnUpdatePropertySourceWhenEnterPressedPropertyChanged
-
                                                                       )
                                                 ) ;
 
         static InputBindingsManager ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="dp"></param>
         /// <param name="value"></param>
         public static void SetUpdatePropertySourceWhenEnterPressed (
-            [ NotNull ] DependencyObject   dp
-          , DependencyProperty value
+            [ NotNull ] DependencyObject dp
+          , DependencyProperty           value
         )
         {
             dp.SetValue ( UpdatePropertySourceWhenEnterPressedProperty , value ) ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="dp"></param>
         /// <returns></returns>
-        public static DependencyProperty
-            GetUpdatePropertySourceWhenEnterPressed ( [ NotNull ] DependencyObject dp )
+        public static DependencyProperty GetUpdatePropertySourceWhenEnterPressed (
+            [ NotNull ] DependencyObject dp
+        )
         {
             return ( DependencyProperty ) dp.GetValue (
                                                        UpdatePropertySourceWhenEnterPressedProperty
@@ -100,7 +95,11 @@ namespace AnalysisControls
 
         private static void DoUpdateSource ( [ NotNull ] object source )
         {
-            var property = GetUpdatePropertySourceWhenEnterPressed ( source as DependencyObject ?? throw new InvalidOperationException ( ) ) ;
+            var property =
+                GetUpdatePropertySourceWhenEnterPressed (
+                                                         source as DependencyObject
+                                                         ?? throw new InvalidOperationException ( )
+                                                        ) ;
             if ( property == null )
             {
                 return ;

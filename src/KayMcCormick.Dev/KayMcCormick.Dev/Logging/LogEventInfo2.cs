@@ -14,12 +14,10 @@ using NLog ;
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public class LogEventInfo2 : LogEventInfo
     {
         /// <summary>
-        /// 
         /// </summary>
         public new int SequenceID { get ; set ; }
     }

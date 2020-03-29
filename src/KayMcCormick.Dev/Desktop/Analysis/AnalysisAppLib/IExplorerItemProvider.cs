@@ -13,7 +13,8 @@ using System.Collections.Generic ;
 
 namespace AnalysisAppLib
 {
-    public interface IExplorerItemProvider {
+    public interface IExplorerItemProvider
+    {
         IEnumerable < AppExplorerItem > GetRootItems ( ) ;
     }
 }

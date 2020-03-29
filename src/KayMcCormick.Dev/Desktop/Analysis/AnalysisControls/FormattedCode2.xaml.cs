@@ -10,31 +10,47 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-using Color = System.Windows.Media.Color ;
-
 
 namespace AnalysisControls
 {
     /// <summary>
-    /// Interaction logic for FormattedCode.xaml
+    ///     Interaction logic for FormattedCode.xaml
     /// </summary>
     public partial class FormattedCode2 : UserControl , ICodeRenderer
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly        Stack < IAddChild > _stack = new Stack < IAddChild > ( ) ;
+        private readonly        Visitor4            _visitor3 ;
+
+        private readonly Color[] colors =
+        {
+            Colors.Red , Colors.Green , Colors.Aqua , Colors.BlueViolet , Colors.Chocolate
+        } ;
+
+        private readonly StyleInfo curSi = new StyleInfo ( ) ;
 
         private readonly Dictionary < ushort , StyleInfo > ss =
             new Dictionary < ushort , StyleInfo > ( ) ;
 
+        private CompilationUnitSyntax _compilationUnitSyntax ;
+        private IAddChild             _container ;
+        private SemanticModel         _model ;
+
+
+        private string     _sourceCode ;
+        private SyntaxTree _syntaxTree ;
+
+        private int colorI ;
+
         /// <summary>
-        /// 
         /// </summary>
         public FormattedCode2 ( )
         {
             InitializeComponent ( ) ;
             ss[ ( ushort ) SyntaxKind.PrivateKeyword ] =
-                new StyleInfo ( ) { fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
+                new StyleInfo { fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
             ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
-                new StyleInfo ( ) { bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
+                new StyleInfo { bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
             //_container = rootPanel ;
             var wrapPanel = new WrapPanel ( ) ;
             Content    = wrapPanel ;
@@ -42,41 +58,19 @@ namespace AnalysisControls
             _visitor3  = new Visitor4 ( null , new DispatcherSynchronizationContext ( ) , this ) ;
         }
 
-
-        private          string                _sourceCode ;
-        private          SyntaxTree            _syntaxTree ;
-        private          SemanticModel         _model ;
-        private          CompilationUnitSyntax _compilationUnitSyntax ;
-        private          IAddChild             _container ;
-        private readonly Visitor4              _visitor3 ;
-        private readonly Stack < IAddChild >   _stack = new Stack < IAddChild > ( ) ;
-        private readonly StyleInfo             curSi  = new StyleInfo ( ) ;
-
-        private readonly Color[] colors = new[]
-                                          {
-                                              Colors.Red , Colors.Green , Colors.Aqua
-                                            , Colors.BlueViolet , Colors.Chocolate
-                                          } ;
-
-        private int colorI ;
-
         /// <summary>
-        /// 
         /// </summary>
         public string SourceCode { get { return _sourceCode ; } set { _sourceCode = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public SyntaxTree SyntaxTree { get { return _syntaxTree ; } set { _syntaxTree = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public SemanticModel Model { get { return _model ; } set { _model = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public CompilationUnitSyntax CompilationUnitSyntax
         {
@@ -85,24 +79,6 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public void Refresh ( ) { Visit ( ) ; }
-
-        private void Visit ( )
-        {
-            if ( CompilationUnitSyntax != null )
-            {
-                _visitor3.DefaultVisit ( CompilationUnitSyntax ) ;
-            }
-
-            // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
-            // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
-            // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;
-        }
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
@@ -133,7 +109,6 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
@@ -144,7 +119,6 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public void NewLine ( )
         {
@@ -154,7 +128,6 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="node"></param>
         public void StartNode ( [ NotNull ] SyntaxNode node )
@@ -162,13 +135,13 @@ namespace AnalysisControls
             SolidColorBrush x = null ;
             var bdr = new Border ( ) ;
 
-            var c = new WrapPanel ( ) { Tag = node , Margin = new Thickness ( 2 ) } ;
+            var c = new WrapPanel { Tag = node , Margin = new Thickness ( 2 ) } ;
             bdr.Child           =  c ;
             bdr.BorderBrush     =  new SolidColorBrush ( colors[ colorI % colors.Length ] ) ;
             colorI              += 1 ;
             bdr.BorderThickness =  new Thickness ( 1 ) ;
             bdr.Margin          =  new Thickness ( 2 ) ;
-            bdr.ToolTip         =  new ToolTip ( ) { Content = node.Kind ( ) } ;
+            bdr.ToolTip         =  new ToolTip { Content = node.Kind ( ) } ;
             //var c2 = new StackPanel ( ) ;
             //c.Children.Add ( c2 ) ;
             _container?.AddChild ( bdr ) ;
@@ -200,7 +173,6 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="node"></param>
         public void EndNode ( [ CanBeNull ] SyntaxNode node )
@@ -214,17 +186,33 @@ namespace AnalysisControls
             Logger.Info ( "{x} {y}" , n2?.Kind ( ) , node?.Kind ( ) ) ;
 //            Debug.Assert ( object.ReferenceEquals(n , node ) );
         }
+
+        /// <summary>
+        /// </summary>
+        public void Refresh ( ) { Visit ( ) ; }
+
+        private void Visit ( )
+        {
+            if ( CompilationUnitSyntax != null )
+            {
+                _visitor3.DefaultVisit ( CompilationUnitSyntax ) ;
+            }
+
+            // var flowViewerScrollViewer = ( UIElement ) ( FlowViewer?.ScrollViewer ) ?? ( FlowViewer ) ;
+            // var adornerLayer = AdornerLayer.GetAdornerLayer ( FlowViewer ) ;
+            // adornerLayer?.Add ( new LineNumberAdorner ( flowViewerScrollViewer ) ) ;
+        }
     }
 
     internal class StyleInfo
     {
-        public SColor ? fg ;
         public SColor ? bg ;
 
+
+        public bool     bold ;
+        public SColor ? fg ;
+
         public bool italics ;
-
-
-        public bool bold ;
 
 
         public bool underline ;
@@ -233,7 +221,7 @@ namespace AnalysisControls
         [ NotNull ]
         public StyleInfo With ( [ NotNull ] StyleInfo value )
         {
-            return new StyleInfo ( ) { bg = value.bg ?? bg , fg = value.bg ?? fg } ;
+            return new StyleInfo { bg = value.bg ?? bg , fg = value.bg ?? fg } ;
         }
     }
 

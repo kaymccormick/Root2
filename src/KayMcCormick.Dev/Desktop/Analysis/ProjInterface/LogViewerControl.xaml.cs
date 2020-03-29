@@ -17,10 +17,13 @@ using KayMcCormick.Lib.Wpf ;
 namespace ProjInterface
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    ///     Interaction logic for UserControl1.xaml
     /// </summary>
     [ TitleMetadata ( "Log Viewer" ) ]
-    public partial class LogViewerControl : UserControl , INotifyPropertyChanged , IViewWithTitle, IControlView
+    public partial class LogViewerControl : UserControl
+      , INotifyPropertyChanged
+      , IViewWithTitle
+      , IControlView
     {
         private readonly LogViewerConfig _config ;
         private          ICollectionView _defView ;
@@ -44,6 +47,12 @@ namespace ProjInterface
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of IView1
+        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        #endregion
+
         private void DefViewOnCollectionChanged (
             object                           sender
           , NotifyCollectionChangedEventArgs e
@@ -52,15 +61,6 @@ namespace ProjInterface
             Debug.WriteLine ( e.Action ) ;
         }
 
-        #region Overrides of FrameworkElement
-        protected override void OnInitialized ( EventArgs e )
-        {
-            base.OnInitialized ( e ) ;
-            lv.SelectionChanged += LvOnSelectionChanged ;
-        }
-
-        private void LvOnSelectionChanged ( object sender , SelectionChangedEventArgs e ) { }
-        #endregion
         #region Overrides of FrameworkElement
         public override void OnApplyTemplate ( )
         {
@@ -144,16 +144,20 @@ namespace ProjInterface
             e.Handled = true ;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged ;
-
         [ NotifyPropertyChangedInvocator ]
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
-        #region Implementation of IView1
-        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        #region Overrides of FrameworkElement
+        protected override void OnInitialized ( EventArgs e )
+        {
+            base.OnInitialized ( e ) ;
+            lv.SelectionChanged += LvOnSelectionChanged ;
+        }
+
+        private void LvOnSelectionChanged ( object sender , SelectionChangedEventArgs e ) { }
         #endregion
     }
 }

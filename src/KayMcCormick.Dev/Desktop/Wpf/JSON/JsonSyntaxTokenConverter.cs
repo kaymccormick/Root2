@@ -16,15 +16,12 @@ using Microsoft.CodeAnalysis ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
-    
     /// <summary>
-    /// 
     /// </summary>
     public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
     {
         #region Overrides of JsonConverter<SyntaxToken>
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
@@ -40,7 +37,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>
@@ -51,7 +47,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
           , JsonSerializerOptions options
         )
         {
-            
         }
         #endregion
     }

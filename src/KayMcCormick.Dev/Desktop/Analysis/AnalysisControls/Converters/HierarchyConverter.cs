@@ -1,9 +1,8 @@
 using System ;
 using System.Collections ;
-using System.Diagnostics.CodeAnalysis ;
 using System.Globalization ;
 using System.Windows.Data ;
-using JetBrains.Annotations;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -11,19 +10,18 @@ using NLog ;
 
 namespace AnalysisControls.Converters
 {
-    [ValueConversion( typeof(CSharpSyntaxNode), typeof(string))]
-    [ValueConversion( typeof(CSharpSyntaxNode), typeof(IEnumerable))]
+    [ ValueConversion ( typeof ( CSharpSyntaxNode ) , typeof ( string ) ) ]
+    [ ValueConversion ( typeof ( CSharpSyntaxNode ) , typeof ( IEnumerable ) ) ]
     public sealed class HierarchyConverter : IValueConverter
     {
-        public static readonly HierarchyConverter Default = new HierarchyConverter();
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        public static readonly  HierarchyConverter Default = new HierarchyConverter ( ) ;
+        private static readonly Logger             Logger  = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
-        
         public object Convert (
-            object      value
-          , [NotNull]Type        targetType
-          , object      parameter
-          , CultureInfo culture
+            object           value
+          , [ NotNull ] Type targetType
+          , object           parameter
+          , CultureInfo      culture
         )
         {
             if ( value == null )
@@ -31,21 +29,19 @@ namespace AnalysisControls.Converters
                 if ( targetType == typeof ( string ) )
                 {
                     return "<null>" ;
+                }
 
-                }
-                else
-                {
-                    return Array.Empty < object > ( ) ;
-                }
+                return Array.Empty < object > ( ) ;
             }
-            if (targetType == null)
+
+            if ( targetType == null )
             {
-                throw new ArgumentNullException(nameof(targetType));
+                throw new ArgumentNullException ( nameof ( targetType ) ) ;
             }
 
             Logger.Debug ( "{type} {type2}" , value?.GetType ( ).FullName , targetType.FullName ) ;
             var cs = ( CSharpSyntaxNode ) value ;
-            { 
+            {
                 if ( targetType == typeof ( string ) )
                 {
                     switch ( cs )
@@ -1569,6 +1565,7 @@ namespace AnalysisControls.Converters
                     {
                         return null ;
                     }
+
                     return cs.ChildNodes ( ) ;
                 }
 

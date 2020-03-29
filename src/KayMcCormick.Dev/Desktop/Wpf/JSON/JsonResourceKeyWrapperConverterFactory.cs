@@ -12,18 +12,15 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using JsonConverter = System.Text.Json.Serialization.JsonConverter ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonResourceKeyWrapperConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
@@ -39,7 +36,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
         #region Overrides of JsonConverterFactory
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
@@ -53,12 +49,10 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public class JsonResourceKeyWrapperConverter : JsonConverter < IResourceKeyWrapper1 >
         {
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
@@ -71,7 +65,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             #region Overrides of JsonConverter<IResourceKeyWrapper1>
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="reader"></param>
             /// <param name="typeToConvert"></param>
@@ -87,7 +80,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
             }
 
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>

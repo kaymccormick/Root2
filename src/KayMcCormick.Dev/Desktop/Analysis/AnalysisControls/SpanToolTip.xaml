@@ -11,8 +11,10 @@
   <UserControl.Resources>
   </UserControl.Resources>
   <DockPanel LastChildFill="True">
-    <StatusBar DockPanel.Dock="Bottom"><StatusBarItem Content="{Binding Path=Location}"></StatusBarItem></StatusBar>
-    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=analysisControls:SpanTT}, Path=Spans}"></ItemsControl>
+    <StatusBar DockPanel.Dock="Bottom">
+      <StatusBarItem Content="{Binding Path=Location}" />
+    </StatusBar>
+    <ItemsControl
+      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=analysisControls:SpanTT}, Path=Spans}" />
   </DockPanel>
 </UserControl>
-  

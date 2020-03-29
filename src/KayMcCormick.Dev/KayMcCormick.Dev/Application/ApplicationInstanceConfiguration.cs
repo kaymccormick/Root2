@@ -15,23 +15,27 @@ using KayMcCormick.Dev.Logging ;
 namespace KayMcCormick.Dev.Application
 {
     /// <summary>
-    /// 
     /// </summary>
     public class ApplicationInstanceConfiguration
     {
         private readonly LogDelegates.LogMethod _logMethod ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="logMethod"></param>
         /// <param name="configs"></param>
         /// <param name="disableLogging"></param>
         /// <param name="disableRuntimeConfiguration"></param>
         /// <param name="disableServiceHost"></param>
-        public ApplicationInstanceConfiguration ( LogDelegates.LogMethod logMethod , IEnumerable configs = null , bool disableLogging = false , bool disableRuntimeConfiguration = false , bool disableServiceHost = false )
+        public ApplicationInstanceConfiguration (
+            LogDelegates.LogMethod logMethod
+          , IEnumerable            configs                     = null
+          , bool                   disableLogging              = false
+          , bool                   disableRuntimeConfiguration = false
+          , bool                   disableServiceHost          = false
+        )
         {
-            _logMethod                   = logMethod ;
+            _logMethod                  = logMethod ;
             Configs                     = configs ;
             DisableLogging              = disableLogging ;
             DisableRuntimeConfiguration = disableRuntimeConfiguration ;
@@ -39,28 +43,23 @@ namespace KayMcCormick.Dev.Application
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public LogDelegates.LogMethod LogMethod { get { return _logMethod ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public IEnumerable Configs { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool DisableLogging { get ; private set ; }
+        public bool DisableLogging { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool DisableRuntimeConfiguration { get ; private set ; }
+        public bool DisableRuntimeConfiguration { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool DisableServiceHost { get ; private set ; }
+        public bool DisableServiceHost { get ; }
     }
 }

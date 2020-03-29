@@ -11,5 +11,5 @@
 #endregion
 namespace AnalysisAppLib
 {
-    public enum ResultStatus { Failed , Success, Pending , None }
+    public enum ResultStatus { Failed , Success , Pending , None }
 }

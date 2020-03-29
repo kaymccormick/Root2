@@ -30,11 +30,10 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
+using NLog ;
 #if MIGRADOC
 using MigraDoc.DocumentObjectModel.Internals ;
 #endif
-using NLog ;
-using Logger = NLog.Logger ;
 
 namespace ProjInterface
 {
@@ -142,8 +141,8 @@ namespace ProjInterface
 
         [ NotNull ]
         private Func < LayoutDocumentPane , IDisplayableAppCommand > Func (
-            IComponentContext                                   c
-          , IEnumerable < Parameter >                           p
+            IComponentContext                                               c
+          , IEnumerable < Parameter >                                       p
           , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
         )
         {
@@ -154,7 +153,8 @@ namespace ProjInterface
                                                                             title
                                                                           , CommandFunc
                                                                           , Tuple.Create (
-                                                                                          metaFunc.Value
+                                                                                          metaFunc
+                                                                                             .Value
                                                                                         , pane
                                                                                          )
                                                                            ) ;
@@ -162,9 +162,9 @@ namespace ProjInterface
 
         [ NotNull ]
         private IPythonVariable Adapter (
-            IComponentContext         c
-          , IEnumerable < Parameter > p
-          , [ NotNull ] Meta < Lazy < object > >  item
+            IComponentContext                    c
+          , IEnumerable < Parameter >            p
+          , [ NotNull ] Meta < Lazy < object > > item
         )
         {
             if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )
@@ -195,7 +195,7 @@ namespace ProjInterface
         [ NotNull ]
         private static LambdaAppCommand LambdaAppCommandAdapter (
             [ NotNull ] Meta < Lazy < IViewWithTitle > > view
-          , object                           obj = null
+          , object                                       obj = null
         )
         {
             view.Metadata.TryGetValue ( "Title" , out var title ) ;
@@ -206,7 +206,7 @@ namespace ProjInterface
 
             return new LambdaAppCommand (
                                          title.ToString ( )
-                                       , ( command ) => {
+                                       , command => {
                                              try
                                              {
                                                  if ( view.Value.Value is Window w )

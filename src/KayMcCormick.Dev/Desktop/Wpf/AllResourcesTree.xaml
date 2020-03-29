@@ -13,14 +13,14 @@
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
-      <ResourceDictionary>
-        <ResourceDictionary.MergedDictionaries>
-          <ResourceDictionary
-            Source="SharedResources.xaml" />
-          <ResourceDictionary
-            Source="ResourcesTemplates.xaml" />
-          <ResourceDictionary Source="ResourcesMisc.xaml" />
-          <ResourceDictionary>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="SharedResources.xaml" />
+        <ResourceDictionary
+          Source="ResourcesTemplates.xaml" />
+        <ResourceDictionary Source="ResourcesMisc.xaml" />
+        <ResourceDictionary>
           <Style TargetType="TextBlock">
             <Setter Property="TextWrapping"
                     Value="WrapWithOverflow" />

@@ -15,7 +15,9 @@ using System.ComponentModel ;
 
 namespace AnalysisAppLib
 {
-    public interface IBrowserNodeCollection : ICollection<IBrowserNode>, INotifyCollectionChanged, INotifyPropertyChanged
+    public interface IBrowserNodeCollection : ICollection < IBrowserNode >
+      , INotifyCollectionChanged
+      , INotifyPropertyChanged
     {
     }
 }

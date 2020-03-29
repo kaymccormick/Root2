@@ -4,25 +4,20 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev
 {
-/// <summary>
-/// 
-/// </summary>
-[Serializable
-]    public class UnableToDeserializeLogEventInfo : Exception
+    /// <summary>
+    /// </summary>
+    [ Serializable ] public class UnableToDeserializeLogEventInfo : Exception
     {
         /// <summary>
-        /// 
         /// </summary>
         public UnableToDeserializeLogEventInfo ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         public UnableToDeserializeLogEventInfo ( string message ) : base ( message ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -32,7 +27,6 @@ namespace KayMcCormick.Dev
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>

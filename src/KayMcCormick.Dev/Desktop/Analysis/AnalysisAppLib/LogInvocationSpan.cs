@@ -16,13 +16,20 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
-    public class LogInvocationSpan : SpanObject < ILogInvocation >, ISpanObject <ILogInvocation>
+    public class LogInvocationSpan : SpanObject < ILogInvocation > , ISpanObject < ILogInvocation >
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger() ;
-        public LogInvocationSpan (
-            TextSpan                 span
-          , ILogInvocation            instance
-        ) : base ( span , instance )
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+
+        private readonly string _displayString ;
+
+
+        private Func < object , object > _getResource ;
+
+        public LogInvocationSpan ( TextSpan span , ILogInvocation instance ) : base (
+                                                                                     span
+                                                                                   , instance
+                                                                                    )
         {
             _displayString = Instance.MethodDisplayName
                              + " "
@@ -30,19 +37,13 @@ namespace AnalysisAppLib
                                             ", "
                                           , Instance.Arguments.Select (
                                                                        ( argument , i )
-                                                                           => argument.GetJSON( argument )
+                                                                           => argument.GetJSON (
+                                                                                                argument
+                                                                                               )
                                                                       )
                                            ) ;
 
             Logger.Info ( "{disp}" , _displayString ) ;
-
         }
-
-
-        private Func < object , object > _getResource ;
-
-        
-        
-        private string                   _displayString ;
     }
 }

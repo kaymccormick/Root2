@@ -2,18 +2,15 @@ using System ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonTypeConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
@@ -24,7 +21,6 @@ namespace KayMcCormick.Dev.Serialization
         #endregion
         #region Overrides of JsonConverterFactory
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
@@ -38,7 +34,8 @@ namespace KayMcCormick.Dev.Serialization
             {
                 return new JsonTypeInfoConverter ( ) ;
             }
-            return new JsonTypeConverter();
+
+            return new JsonTypeConverter ( ) ;
         }
         #endregion
     }

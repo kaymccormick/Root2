@@ -17,13 +17,11 @@ using System.Text.Json.Serialization ;
 namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
-    /// 
     /// </summary>
     public class HashtableConverter : JsonConverter < Hashtable >
     {
         #region Overrides of JsonConverter<Hashtable>
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
@@ -39,7 +37,6 @@ namespace KayMcCormick.Dev.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>

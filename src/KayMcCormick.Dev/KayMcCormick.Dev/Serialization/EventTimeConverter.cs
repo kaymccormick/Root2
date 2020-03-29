@@ -15,42 +15,44 @@ using System.Text.Json.Serialization ;
 
 namespace KayMcCormick.Dev.Serialization
 {
-
     /// <summary>
-    /// Basic DAteTime converter that supports broken time parsing.
+    ///     Basic DAteTime converter that supports broken time parsing.
     /// </summary>
-    public class EventTimeConverter : JsonConverter<DateTime>
+    public class EventTimeConverter : JsonConverter < DateTime >
 
     {
         #region Overrides of JsonConverter<DateTime>
-
         /// <summary>
-        /// REad method
+        ///     REad method
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
         public override DateTime Read (
-
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
           , JsonSerializerOptions options
-        ) => DateTime.Parse ( reader.GetString ( ) ) ;
+        )
+        {
+            return DateTime.Parse ( reader.GetString ( ) ) ;
+        }
 
 
         /// <summary>
-        /// Write method
+        ///     Write method
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-
             Utf8JsonWriter        writer
           , DateTime              value
           , JsonSerializerOptions options
-        ) => writer.WriteStringValue ( value ) ;
+        )
+        {
+            writer.WriteStringValue ( value ) ;
+        }
         #endregion
     }
 }

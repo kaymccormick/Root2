@@ -17,13 +17,11 @@ using System.Windows ;
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonDependencyPropertyConverter : JsonConverter < DependencyProperty >
     {
         #region Overrides of JsonConverter<DependencyProperty>
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
@@ -39,7 +37,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>

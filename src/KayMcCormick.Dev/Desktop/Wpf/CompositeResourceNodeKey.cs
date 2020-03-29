@@ -12,15 +12,13 @@
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class CompositeResourceNodeKey
     {
-        private readonly object _key ;
         private readonly object _conjugate ;
+        private readonly object _key ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="key"></param>
         /// <param name="conjugate"></param>
@@ -32,7 +30,6 @@ namespace KayMcCormick.Lib.Wpf
 
         #region Overrides of Object
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public override string ToString ( ) { return $"${_key}:{_conjugate}" ; }

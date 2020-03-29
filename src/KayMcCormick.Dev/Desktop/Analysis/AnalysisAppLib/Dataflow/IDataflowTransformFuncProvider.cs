@@ -10,13 +10,17 @@ namespace AnalysisAppLib.Dataflow
         Func < TSource , IEnumerable < TDest > >          GetTransformFunction ( ) ;
     }
 
-    public delegate TResult TransformFunc<in T, out TResult>(T arg); 
+    public delegate TResult TransformFunc < in T , out TResult > ( T arg ) ;
 
-    public class ConcreteDataflowTransformFuncProvider < TSource , TDest > : IDataflowTransformFuncProvider < TSource , TDest >
+    public class
+        ConcreteDataflowTransformFuncProvider < TSource , TDest > : IDataflowTransformFuncProvider <
+            TSource , TDest >
     {
-        private readonly TransformFunc < TSource , Task<IEnumerable < TDest >> > _func ;
+        private readonly TransformFunc < TSource , Task < IEnumerable < TDest > > > _func ;
 
-        public ConcreteDataflowTransformFuncProvider (TransformFunc < TSource , Task < IEnumerable < TDest > > > func )
+        public ConcreteDataflowTransformFuncProvider (
+            TransformFunc < TSource , Task < IEnumerable < TDest > > > func
+        )
         {
             _func = func ;
         }
@@ -24,7 +28,7 @@ namespace AnalysisAppLib.Dataflow
         #region Implementation of IDataflowTransformFuncProvider<TSource,TDest>
         public Func < TSource , Task < IEnumerable < TDest > > > GetAsyncTransformFunction ( )
         {
-            return ( x ) => _func ( x ) ;
+            return x => _func ( x ) ;
         }
 
         public Func < TSource , IEnumerable < TDest > > GetTransformFunction ( ) { return null ; }

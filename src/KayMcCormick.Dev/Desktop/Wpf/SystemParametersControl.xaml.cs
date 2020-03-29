@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.Diagnostics ;
 using System.Dynamic ;
 using System.Linq ;
 using System.Reflection ;
@@ -1063,7 +1064,6 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns>A resource key.</returns>
         public ResourceKey VirtualScreenTopKey { get; set; }
 
-        
 
         /// <summary>Gets the <see cref="System.Windows.ResourceKey" /> for the <see cref="FocusVisualStyle" /> property. </summary>
         /// <returns>The resource key.</returns>
@@ -1139,7 +1139,7 @@ namespace KayMcCormick.Lib.Wpf
             foreach ( var resKeyProp in resKeyProps )
             {
                 var propertyInfo = typeof ( SysProp ).GetProperty ( resKeyProp.Name ) ;
-                System.Diagnostics.Debug.Assert ( propertyInfo != null ) ;
+                Debug.Assert ( propertyInfo != null ) ;
                 propertyInfo.SetValue ( sysProp , resKeyProp.GetValue ( null ) ) ;
 
 
@@ -1157,7 +1157,7 @@ namespace KayMcCormick.Lib.Wpf
                 else
                 {
                     var propSysProp = typeof ( SysProp ).GetProperty ( barePropName ) ;
-                    System.Diagnostics.Debug.Assert ( propSysProp != null ) ;
+                    Debug.Assert ( propSysProp != null ) ;
                     propSysProp.SetValue ( sysProp , bareProp.GetValue ( null ) ) ;
 
                     var p = new PropertyDefinition { TargetProperties = { barePropName } } ;

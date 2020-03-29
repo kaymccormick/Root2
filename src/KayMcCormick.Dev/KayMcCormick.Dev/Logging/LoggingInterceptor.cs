@@ -4,7 +4,10 @@ using KayMcCormick.Dev.Attributes ;
 
 namespace KayMcCormick.Dev.Logging
 {
-    /// <summary>DynamicProxy interceptor to inject a logger into classes. TODO refactor.</summary>
+    /// <summary>
+    ///     DynamicProxy interceptor to inject a logger into classes. TODO
+    ///     refactor.
+    /// </summary>
     /// <seealso cref="Castle.DynamicProxy.IInterceptor" />
     public class LoggingInterceptor : IInterceptor
     {
@@ -14,7 +17,6 @@ namespace KayMcCormick.Dev.Logging
         /// TODO Edit XML Comment Template for Intercept
         public void Intercept ( IInvocation invocation )
         {
-            
             var customAttributes = Attribute.GetCustomAttributes (
                                                                   invocation
                                                                      .GetConcreteMethodInvocationTarget ( )

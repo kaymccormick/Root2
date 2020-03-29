@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
@@ -19,7 +18,6 @@ using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
-using System.Xml ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 
@@ -41,6 +39,10 @@ namespace AnalysisAppLib.Syntax
         private int _hierarchyLevel ;
         private uint? _colorValue ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="subTypeInfos"></param>
         public AppTypeInfo ( ObservableCollection < AppTypeInfo > subTypeInfos = null )
         {
 
@@ -49,24 +51,25 @@ namespace AnalysisAppLib.Syntax
                 subTypeInfos = new ObservableCollection < AppTypeInfo > ( ) ;
             }
 
-            subTypeInfos.CollectionChanged += ( sender , args ) => {
-                OnPropertyChanged ( nameof ( SubTypeInfos ) ) ;
-            } ;
+            subTypeInfos.CollectionChanged += ( sender , args ) => OnPropertyChanged ( nameof ( SubTypeInfos ) ) ;
             _components.CollectionChanged +=
                 ( sender , args ) => OnPropertyChanged ( nameof ( Components ) ) ;
-            _factoryMethods.CollectionChanged +=( sender , args ) => 
-            {
-                OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
-            };
+            _factoryMethods.CollectionChanged +=( sender , args ) => OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
             _subTypeInfos = subTypeInfos ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AppTypeInfo ( ) :this(null) {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type Type
         {
-            get => _type ;
+            get { return _type ; }
             set
             {
                 _type = value ;
@@ -76,9 +79,12 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Title
         {
-            get => _title ;
+            get { return _title ; }
             set
             {
                 _title = value ;
@@ -86,11 +92,17 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < AppTypeInfo > SubTypeInfos { get { return _subTypeInfos ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < AppMethodInfo > FactoryMethods
         {
-            get => _factoryMethods ;
+            get { return _factoryMethods ; }
             set
             {
                 _factoryMethods = value ;
@@ -98,10 +110,13 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonIgnore]
         public ObservableCollection < ComponentInfo > Components
         {
-            get => _components ;
+            get { return _components ; }
             set
             {
                 _components = value ;
@@ -109,7 +124,10 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
-        public IEnumerable < ComponentInfo > AllComponents
+        /// <summary>
+        /// 
+        /// </summary>
+        [ NotNull ] public IEnumerable < ComponentInfo > AllComponents
         {
             get
             {
@@ -148,6 +166,9 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonIgnore]
         public AppTypeInfo ParentInfo
         {
@@ -162,16 +183,28 @@ namespace AnalysisAppLib.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int HierarchyLevel
         {
             get { return _hierarchyLevel ; }
             set { _hierarchyLevel = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public uint ? ColorValue { get { return _colorValue ; } set { _colorValue = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeDocumentation DocInfo { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
@@ -181,32 +214,61 @@ namespace AnalysisAppLib.Syntax
         }
     }
 
-    public class AppMethodInfo
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class AppMethodInfo
     {
         private MethodInfo _methodInfo ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonIgnore]
         public MethodInfo MethodInfo { get { return _methodInfo ; } set { _methodInfo = value ; } }
 
-        public Type ReflectedType => MethodInfo.ReflectedType ;
+        /// <summary>
+        /// 
+        /// </summary>
+        [ CanBeNull ] public Type ReflectedType => MethodInfo.ReflectedType ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type DeclaringType => MethodInfo.DeclaringType ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string MethodName => MethodInfo.Name ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ReturnType => MethodInfo.ReturnType ;
-        public IEnumerable < AppParameterInfo > Parameters => MethodInfo
-                                                             .GetParameters ( )
-                                                             .Select (
-                                                                      (info, i) => new AppParameterInfo
-                                                                              {
-                                                                                  Index = i,
-                                                                                  ParameterType = info.ParameterType,
-                                                                                  Name = info.Name,
-                                                                                  IsOptional = info.IsOptional
-                                                                              }
-                                                                     ) ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable < AppParameterInfo > Parameters
+        {
+            get
+            {
+                return MethodInfo.GetParameters ( )
+                                 .Select (
+                                          ( info , i ) => new AppParameterInfo
+                                                          {
+                                                              Index         = i
+                                                            , ParameterType = info.ParameterType
+                                                            , Name          = info.Name
+                                                            , IsOptional    = info.IsOptional
+                                                          }
+                                         ) ;
+            }
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MethodDocumentation XmlDoc { get ; set ; }
     }
 }

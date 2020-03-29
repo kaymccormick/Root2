@@ -1,11 +1,12 @@
 ﻿using System ;
+using System.ComponentModel ;
+using System.Diagnostics ;
+using System.Reflection ;
 using JetBrains.Annotations ;
 using NLog ;
 using NLog.Config ;
 using NLog.Layouts ;
 using NLog.Targets ;
-using System.ComponentModel ;
-using System.Reflection ;
 using Xunit.Sdk ;
 
 namespace KayMcCormick.Dev.TestLib
@@ -16,8 +17,8 @@ namespace KayMcCormick.Dev.TestLib
     /// TODO Edit XML Comment Template for BeforeAfterLoggerAttribute
     public class BeforeAfterLoggerAttribute : BeforeAfterTestAttribute
     {
-        private       bool   _disableLogging ;
         private const string Name = "test target" ;
+        private       bool   _disableLogging ;
 
 
         /// <summary>Gets or sets the test logging rule.</summary>
@@ -73,7 +74,7 @@ namespace KayMcCormick.Dev.TestLib
                                                      + methodUnderTest.Name
                                                      + ".txt"
                                                     ) ;
-            System.Diagnostics.Debug.WriteLine ( fileTarget.FileName ) ;
+            Debug.WriteLine ( fileTarget.FileName ) ;
             LogManager.LogFactory.Configuration.AddTarget ( fileTarget ) ;
             var loggingRule = new LoggingRule ( "*" , LogLevel.Trace , fileTarget ) ;
             TestLoggingRule = loggingRule ;

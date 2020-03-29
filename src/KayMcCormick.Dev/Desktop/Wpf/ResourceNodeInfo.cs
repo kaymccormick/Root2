@@ -20,7 +20,6 @@ using JetBrains.Annotations ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class ResourceNodeInfo : INotifyPropertyChanged
     {
@@ -37,13 +36,11 @@ namespace KayMcCormick.Lib.Wpf
         private object _templateKey ;
 
         /// <summary>
-        /// 
         /// </summary>
         [ JsonIgnore ]
         public object Data { get { return _data ; } set { _data = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         [ JsonIgnore ]
         public List < ResourceNodeInfo > Children
@@ -53,42 +50,36 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public Uri SourceUri { get { return _sourceUri ; } set { _sourceUri = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         [ JsonIgnore ]
         public object Key { get { return _key ; } set { _key = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public object TemplateKey { get { return _templateKey ; } set { _templateKey = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public bool IsExpanded
         {
             get { return _internalIsExpanded.GetValueOrDefault ( ) ; }
             set
             {
-                Debug.WriteLine ( $"isExpanded = {value} for {Key.ToString ( )}" ) ;
+                Debug.WriteLine ( $"isExpanded = {value} for {Key}" ) ;
                 _internalIsExpanded = value ;
                 OnPropertyChanged ( ) ;
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public bool ? IsValueChildren
         {
@@ -97,12 +88,10 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public override string ToString ( )
@@ -111,7 +100,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="propertyName"></param>
         [ NotifyPropertyChangedInvocator ]

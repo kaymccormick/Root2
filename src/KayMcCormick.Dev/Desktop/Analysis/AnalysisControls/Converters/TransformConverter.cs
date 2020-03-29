@@ -7,13 +7,15 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisControls.Converters
 {
-
     /// <summary>
-    ///   <para>Value converter for CSharp Syntax nodes - performs a JSON serialization after transforming the nodes to a more concise form.</para>
-    ///   <para></para>
+    ///     <para>
+    ///         Value converter for CSharp Syntax nodes - performs a JSON
+    ///         serialization after transforming the nodes to a more concise form.
+    ///     </para>
+    ///     <para></para>
     /// </summary>
     /// <seealso cref="System.Windows.Data.IValueConverter" />
-    public class TransformConverter : IValueConverter   
+    public class TransformConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         public object Convert (
@@ -23,7 +25,6 @@ namespace AnalysisControls.Converters
           , CultureInfo culture
         )
         {
-         
             try
             {
                 if ( value == null )
@@ -31,7 +32,7 @@ namespace AnalysisControls.Converters
                     return null ;
                 }
 
-                var r = Transforms.TransformSyntaxNode(( SyntaxNode ) value);
+                var r = Transforms.TransformSyntaxNode ( ( SyntaxNode ) value ) ;
                 return JsonSerializer.Serialize ( r ) ;
             }
             catch ( Exception ex )
@@ -41,7 +42,15 @@ namespace AnalysisControls.Converters
         }
 
 
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
         #endregion
     }
 }

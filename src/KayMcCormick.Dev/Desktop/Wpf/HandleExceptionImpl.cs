@@ -15,18 +15,15 @@ using System.IO ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Windows ;
-using System.Xml.Serialization ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class HandleExceptionImpl : IHandleException
     {
         #region Implementation of IHandleException
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="exception"></param>
         public void HandleException ( Exception exception )
@@ -35,13 +32,13 @@ namespace KayMcCormick.Lib.Wpf
             {
                 try
                 {
-                    StreamWriter s1 = new StreamWriter ( @"C:\data\logs\stack.txt" ) ;
+                    var s1 = new StreamWriter ( @"C:\data\logs\stack.txt" ) ;
                     if ( exception.InnerException != null )
                     {
                         s1.Write ( exception.InnerException.StackTrace ) ;
                     }
 
-                    s1.Close();
+                    s1.Close ( ) ;
                     IFormatter formatter = new BinaryFormatter ( ) ;
                     Stream stream = new FileStream (
                                                     @"C:\data\logs\MyFile.bin"
@@ -68,7 +65,7 @@ namespace KayMcCormick.Lib.Wpf
             var w = new Window ( ) ;
             w.MinWidth  = 300 ;
             w.MinHeight = 100 ;
-            w.Content   = new ExceptionInfo ( ) { DataContext = exception } ;
+            w.Content   = new ExceptionInfo { DataContext = exception } ;
             w.ShowDialog ( ) ;
         }
         #endregion

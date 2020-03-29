@@ -18,13 +18,11 @@ using System.Windows.Media ;
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonBrushConverter : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
@@ -40,7 +38,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
         #region Overrides of JsonConverterFactory
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
@@ -54,19 +51,17 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public class JsonBrushConverter1 : JsonConverter < Brush >
         {
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             public JsonBrushConverter1 ( Type typeToConvert , JsonSerializerOptions options ) { }
+
             #region Overrides of JsonConverter<Brush>
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="reader"></param>
             /// <param name="typeToConvert"></param>
@@ -82,7 +77,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
             }
 
             /// <summary>
-            /// 
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>

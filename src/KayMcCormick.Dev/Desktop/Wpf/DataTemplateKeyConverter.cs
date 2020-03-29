@@ -17,13 +17,11 @@ using System.Windows ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
-    public class DataTemplateKeyConverter : JsonConverter<DataTemplateKey>
+    public class DataTemplateKeyConverter : JsonConverter < DataTemplateKey >
     {
         #region Overrides of JsonConverter<DataTemplateKey>
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
@@ -39,7 +37,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>
@@ -50,23 +47,24 @@ namespace KayMcCormick.Lib.Wpf
           , JsonSerializerOptions options
         )
         {
-            writer.WriteStartObject();
+            writer.WriteStartObject ( ) ;
             var dt = value.DataType ;
-            if(dt is Type t)
+            if ( dt is Type t )
             {
                 writer.WritePropertyName ( "DataType" ) ;
-                JsonSerializer.Serialize( writer , t , options ) ;
+                JsonSerializer.Serialize ( writer , t , options ) ;
             }
-            else if(dt != null)
+            else if ( dt != null )
             {
-                writer.WriteString("DataType", dt.ToString());
+                writer.WriteString ( "DataType" , dt.ToString ( ) ) ;
             }
 
             if ( value.Assembly != null )
             {
                 writer.WriteString ( "Assembly" , value.Assembly.FullName ) ;
             }
-            writer.WriteEndObject();
+
+            writer.WriteEndObject ( ) ;
         }
         #endregion
     }

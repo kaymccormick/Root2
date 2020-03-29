@@ -17,14 +17,11 @@ using System.Text.Json.Serialization ;
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
-    
     public class DictConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
@@ -40,7 +37,6 @@ namespace KayMcCormick.Dev.Logging
         #endregion
         #region Overrides of JsonConverterFactory
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
@@ -54,7 +50,6 @@ namespace KayMcCormick.Dev.Logging
         }
 
         /// <summary>
-        /// 
         /// </summary>
         private class Inner : JsonConverter < IDictionary < object , object > >
         {

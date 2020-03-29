@@ -6,7 +6,6 @@ using NLog ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class KeyConverter : IValueConverter
     {
@@ -17,7 +16,6 @@ namespace KayMcCormick.Lib.Wpf
 #endif
         #region Implementation of IValueConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -31,16 +29,15 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-
             Logger.Info (
                          "{method} {value} {valueType} {targetType} {parameter} {parameterType}"
                        , nameof ( Convert )
-                       , value?.ToString ( ) ?? ""
-                       , value?.GetType ( ).FullName ?? ""
-                       , targetType?.FullName ?? ""
-                       , parameter?.ToString ( ) ?? ""
+                       , value?.ToString ( )             ?? ""
+                       , value?.GetType ( ).FullName     ?? ""
+                       , targetType?.FullName            ?? ""
+                       , parameter?.ToString ( )         ?? ""
                        , parameter?.GetType ( ).FullName ?? ""
-                        );
+                        ) ;
 
 
             if ( targetType == typeof ( string ) )
@@ -53,14 +50,21 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
-#endregion
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
+        #endregion
     }
 }

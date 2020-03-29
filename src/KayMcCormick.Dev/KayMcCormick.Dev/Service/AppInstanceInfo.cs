@@ -4,24 +4,22 @@ using System.Collections.Generic ;
 namespace KayMcCormick.Dev.Service
 {
     /// <summary>
-    /// 
     /// </summary>
     public class AppInstanceInfo
     {
-        private readonly List<WireComponentInfo> _componentInfos = new List<WireComponentInfo>();
+        private readonly List < WireComponentInfo > _componentInfos =
+            new List < WireComponentInfo > ( ) ;
 
         /// <summary>
-        /// 
         /// </summary>
-        public DateTime StartupTime { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public IList<LoggerInfo> LoggerInfos { get; } = new List<LoggerInfo>();
+        public DateTime StartupTime { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public List<WireComponentInfo> ComponentInfos => _componentInfos;
+        public IList < LoggerInfo > LoggerInfos { get ; } = new List < LoggerInfo > ( ) ;
+
+        /// <summary>
+        /// </summary>
+        public List < WireComponentInfo > ComponentInfos { get { return _componentInfos ; } }
     }
 }

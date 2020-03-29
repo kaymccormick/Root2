@@ -23,15 +23,14 @@ namespace KayMcCormick.Dev.Application
 {
     /// <summary>
     /// </summary>
-    
     public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
-        private readonly        bool                    _disableLogging ;
-        private readonly        bool                    _disableServiceHost ;
-        private readonly        List < IModule >        _modules = new List < IModule > ( ) ;
-        private                 IContainer              _container ;
-        private                 ApplicationInstanceHost _host ;
-        private                 ILifetimeScope          _lifetimeScope ;
+        private readonly bool                    _disableLogging ;
+        private readonly bool                    _disableServiceHost ;
+        private readonly List < IModule >        _modules = new List < IModule > ( ) ;
+        private          IContainer              _container ;
+        private          ApplicationInstanceHost _host ;
+        private          ILifetimeScope          _lifetimeScope ;
 
         /// <summary>
         /// </summary>
@@ -97,20 +96,11 @@ namespace KayMcCormick.Dev.Application
             }
         }
 
-        private static void CurrentDomain_FirstChanceException (
-            object                        sender
-          , [ NotNull ] FirstChanceExceptionEventArgs e
-        )
-        {
-            Utils.LogParsedExceptions ( e.Exception ) ;
-        }
-
         /// <summary>
         /// </summary>
         public ILogger Logger { get ; }
 
         /// <summary>
-        /// 
         /// </summary>
         public override void Dispose ( )
         {
@@ -119,9 +109,16 @@ namespace KayMcCormick.Dev.Application
             _container?.Dispose ( ) ;
         }
 
+        private static void CurrentDomain_FirstChanceException (
+            object                                    sender
+          , [ NotNull ] FirstChanceExceptionEventArgs e
+        )
+        {
+            Utils.LogParsedExceptions ( e.Exception ) ;
+        }
+
         #region Overrides of ApplicationInstanceBase
         /// <summary>
-        /// 
         /// </summary>
         public override void Initialize ( )
         {
@@ -132,17 +129,14 @@ namespace KayMcCormick.Dev.Application
 
         /// <summary>
         /// </summary>
-        
         public override event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="appModule"></param>
         public override void AddModule ( IModule appModule ) { _modules.Add ( appModule ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         [ NotNull ]
@@ -220,7 +214,7 @@ namespace KayMcCormick.Dev.Application
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        protected sealed override IEnumerable LoadConfiguration ( LogDelegates.LogMethod logMethod2 )
+        protected override IEnumerable LoadConfiguration ( LogDelegates.LogMethod logMethod2 )
         {
             if ( logMethod2 == null )
             {
@@ -307,24 +301,24 @@ namespace KayMcCormick.Dev.Application
     }
 
     /// <summary>
-    /// Fatal error building container. Wraps any autofac exceptions.
+    ///     Fatal error building container. Wraps any autofac exceptions.
     /// </summary>
     [ Serializable ]
     public class ContainerBuildException : Exception
     {
         /// <summary>
-        /// Parameterless constructor.
+        ///     Parameterless constructor.
         /// </summary>
         public ContainerBuildException ( ) { }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="message"></param>
         public ContainerBuildException ( string message ) : base ( message ) { }
 
         /// <summary>
-        /// Constructr
+        ///     Constructr
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -336,7 +330,7 @@ namespace KayMcCormick.Dev.Application
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
@@ -349,13 +343,13 @@ namespace KayMcCormick.Dev.Application
     }
 
     /// <summary>
-    /// New app module to replace crussty old app module. Work in progress.
+    ///     New app module to replace crussty old app module. Work in progress.
     /// </summary>
     public sealed class NouveauAppModule : IocModule
     {
         #region Overrides of IocModule
         /// <summary>
-        /// Our fun custom load method that is public.
+        ///     Our fun custom load method that is public.
         /// </summary>
         /// <param name="builder"></param>
         public override void DoLoad ( ContainerBuilder builder )
@@ -371,14 +365,12 @@ namespace KayMcCormick.Dev.Application
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public sealed class ParsedExceptions
     {
         private List < ParsedStackInfo > _parsedList = new List < ParsedStackInfo > ( ) ;
 
         /// <summary>
-        /// 
         /// </summary>
         public List < ParsedStackInfo > ParsedList
         {
@@ -388,29 +380,27 @@ namespace KayMcCormick.Dev.Application
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public sealed class ParsedStackInfo
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ParsedStackInfo ( ) { }
+        private readonly string _exMessage ;
 
         private readonly string                   _typeName ;
-        private readonly string                   _exMessage ;
         private          List < StackTraceEntry > _stackTraceEntries ;
 
         /// <summary>
-        /// 
+        /// </summary>
+        public ParsedStackInfo ( ) { }
+
+        /// <summary>
         /// </summary>
         /// <param name="parsed"></param>
         /// <param name="typeName"></param>
         /// <param name="exMessage"></param>
         public ParsedStackInfo (
             [ NotNull ] IEnumerable < StackTraceEntry > parsed
-          , string                          typeName
-          , string                          exMessage
+          , string                                      typeName
+          , string                                      exMessage
         )
         {
             _typeName         = typeName ;
@@ -419,7 +409,6 @@ namespace KayMcCormick.Dev.Application
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public List < StackTraceEntry > StackTraceEntries
         {
@@ -428,7 +417,6 @@ namespace KayMcCormick.Dev.Application
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public string TypeName { get { return _typeName ; } }
     }

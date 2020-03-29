@@ -16,7 +16,7 @@ using Microsoft.Build.Locator ;
 
 namespace ProjTests
 {
-    public class ProjectFixture 
+    public class ProjectFixture
     {
 #if MSBUILDLOCATOR
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>

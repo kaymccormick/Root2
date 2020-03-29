@@ -15,14 +15,14 @@ namespace AnalysisAppLib
 {
     public class PipelineResult
     {
-        public ResultStatus Status { get ; }
-
-        public Exception TaskException { get ; }
-
         public PipelineResult ( ResultStatus status , Exception taskException = null )
         {
             Status        = status ;
             TaskException = taskException ;
         }
+
+        public ResultStatus Status { get ; }
+
+        public Exception TaskException { get ; }
     }
 }

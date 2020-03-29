@@ -25,54 +25,84 @@ namespace KayMcCormick.Dev.StackTrace
     #region Imports
     #endregion
 
-    
 
     /// <summary>
     /// 
     /// </summary>
     public partial class StackTraceParser
     {
-        const string Space = @"[\x20\t]";
-        const string NotSpace = @"[^\x20\t]";
+        private const string Space    = @"[\x20\t]" ;
+        private const string NotSpace = @"[^\x20\t]" ;
 
-        static readonly Regex Regex = new Regex(@"
+        private static readonly Regex Regex = new Regex (
+                                                         @"
             ^
-            " + Space + @"*
-            \w+ " + Space + @"+
+            "
+                                                         + Space
+                                                         + @"*
+            \w+ "
+                                                         + Space
+                                                         + @"+
             (?<frame>
-                (?<type> " + NotSpace + @"+ ) \.
-                (?<method> " + NotSpace + @"+? ) " + Space + @"*
-                (?<params>  \( ( " + Space + @"* \)
-                               |                    (?<pt> .+?) " + Space + @"+ (?<pn> .+?)
-                                 (, " + Space + @"* (?<pt> .+?) " + Space + @"+ (?<pn> .+?) )* \) ) )
-                ( " + Space + @"+
+                (?<type> "
+                                                         + NotSpace
+                                                         + @"+ ) \.
+                (?<method> "
+                                                         + NotSpace
+                                                         + @"+? ) "
+                                                         + Space
+                                                         + @"*
+                (?<params>  \( ( "
+                                                         + Space
+                                                         + @"* \)
+                               |                    (?<pt> .+?) "
+                                                         + Space
+                                                         + @"+ (?<pn> .+?)
+                                 (, "
+                                                         + Space
+                                                         + @"* (?<pt> .+?) "
+                                                         + Space
+                                                         + @"+ (?<pn> .+?) )* \) ) )
+                ( "
+                                                         + Space
+                                                         + @"+
                     ( # Microsoft .NET stack traces
-                    \w+ " + Space + @"+
+                    \w+ "
+                                                         + Space
+                                                         + @"+
                     (?<file> ( [a-z] \: # Windows rooted path starting with a drive letter
                              | / )      # *nix rooted path starting with a forward-slash
                              .+? )
-                    \: \w+ " + Space + @"+
+                    \: \w+ "
+                                                         + Space
+                                                         + @"+
                     (?<line> [0-9]+ ) \p{P}?
                     | # Mono stack traces
-                    \[0x[0-9a-f]+\] " + Space + @"+ \w+ " + Space + @"+
+                    \[0x[0-9a-f]+\] "
+                                                         + Space
+                                                         + @"+ \w+ "
+                                                         + Space
+                                                         + @"+
                     <(?<file> [^>]+ )>
                     :(?<line> [0-9]+ )
                     )
                 )?
             )
             \s*
-            $",
-            RegexOptions.IgnoreCase
-            | RegexOptions.Multiline
-            | RegexOptions.ExplicitCapture
-            | RegexOptions.CultureInvariant
-            | RegexOptions.IgnorePatternWhitespace
-            | RegexOptions.Compiled,
-            // Cap the evaluation time to make it obvious should the expression
-            // fall into the "catastrophic backtracking" trap due to over
-            // generalization.
-            // https://github.com/atifaziz/StackTraceParser/issues/4
-            TimeSpan.FromSeconds(5));
+            $"
+                                                       , RegexOptions.IgnoreCase
+                                                         | RegexOptions.Multiline
+                                                         | RegexOptions.ExplicitCapture
+                                                         | RegexOptions.CultureInvariant
+                                                         | RegexOptions.IgnorePatternWhitespace
+                                                         | RegexOptions.Compiled
+                                                        ,
+                                                         // Cap the evaluation time to make it obvious should the expression
+                                                         // fall into the "catastrophic backtracking" trap due to over
+                                                         // generalization.
+                                                         // https://github.com/atifaziz/StackTraceParser/issues/4
+                                                         TimeSpan.FromSeconds ( 5 )
+                                                        ) ;
 
         /// <summary>
         /// 
@@ -82,20 +112,34 @@ namespace KayMcCormick.Dev.StackTrace
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        
-        public static IEnumerable<T> Parse<T>(
-            string text,
-            Func<string, string, string, string, IEnumerable<KeyValuePair<string, string>>, string, string, T> selector)
+        public static IEnumerable < T > Parse < T > (
+            string text
+          , Func < string , string , string , string ,
+                IEnumerable < KeyValuePair < string , string > > , string , string , T > selector
+        )
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if ( selector == null )
+            {
+                throw new ArgumentNullException ( "selector" ) ;
+            }
 
-            return Parse(text, (idx, len, txt) => txt,
-                               (t, m) => new { Type = t, Method = m },
-                               (pt, pn) => new KeyValuePair<string, string>(pt, pn),
-                               
-                               (pl, ps) => new { List = pl, Items = ps },
-                               (fn, ln) => new { File = fn, Line = ln },
-                               (f, tm, p, fl) => selector(f, tm.Type, tm.Method, p.List, p.Items, fl.File, fl.Line));
+            return Parse (
+                          text
+                        , ( idx , len , txt ) => txt
+                        , ( t ,   m ) => new { Type = t , Method = m }
+                        , ( pt ,  pn ) => new KeyValuePair < string , string > ( pt , pn )
+                        , ( pl ,  ps ) => new { List = pl , Items = ps }
+                        , ( fn ,  ln ) => new { File = fn , Line  = ln }
+                        , ( f , tm , p , fl ) => selector (
+                                                           f
+                                                         , tm.Type
+                                                         , tm.Method
+                                                         , p.List
+                                                         , p.Items
+                                                         , fl.File
+                                                         , fl.Line
+                                                          )
+                         ) ;
         }
 
         /// <summary>
@@ -116,42 +160,89 @@ namespace KayMcCormick.Dev.StackTrace
         /// <typeparam name="TFrame"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<TFrame> Parse<TToken, TMethod, TParameters, TParameter, TSourceLocation, TFrame>(
-            string text,
-            Func<int, int, string, TToken> tokenSelector,
-            Func<TToken, TToken, TMethod> methodSelector,
-            Func<TToken, TToken, TParameter> parameterSelector,
-            Func<TToken, IEnumerable<TParameter>, TParameters> parametersSelector,
-            Func<TToken, TToken, TSourceLocation> sourceLocationSelector,
-            Func<TToken, TMethod, TParameters, TSourceLocation, TFrame> selector)
+        public static IEnumerable < TFrame >
+            Parse < TToken , TMethod , TParameters , TParameter , TSourceLocation , TFrame > (
+                string                                text
+              , Func < int , int , string , TToken >  tokenSelector
+              , Func < TToken , TToken , TMethod >    methodSelector
+              , Func < TToken , TToken , TParameter > parameterSelector
+              , Func < TToken , IEnumerable < TParameter > , TParameters >
+                    parametersSelector
+              , Func < TToken , TToken , TSourceLocation >
+                    sourceLocationSelector
+              , Func < TToken , TMethod , TParameters , TSourceLocation , TFrame > selector
+            )
         {
-            if (tokenSelector == null) throw new ArgumentNullException("tokenSelector");
-            if (methodSelector == null) throw new ArgumentNullException("methodSelector");
-            if (parameterSelector == null) throw new ArgumentNullException("parameterSelector");
-            if (parametersSelector == null) throw new ArgumentNullException("parametersSelector");
-            if (sourceLocationSelector == null) throw new ArgumentNullException("sourceLocationSelector");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if ( tokenSelector == null )
+            {
+                throw new ArgumentNullException ( nameof ( tokenSelector ) ) ;
+            }
 
-            return from Match m in Regex.Matches(text)
-                   select m.Groups into groups
-                   let pt = groups["pt"].Captures
-                   let pn = groups["pn"].Captures
-                   select selector(Token(groups["frame"], tokenSelector),
-                                   methodSelector(
-                                       Token(groups["type"], tokenSelector),
-                                       Token(groups["method"], tokenSelector)),
-                                   parametersSelector(
-                                       Token(groups["params"], tokenSelector),
-                                       from i in Enumerable.Range(0, pt.Count)
-                                       select parameterSelector(Token(pt[i], tokenSelector),
-                                                                Token(pn[i], tokenSelector))),
-                                   sourceLocationSelector(Token(groups["file"], tokenSelector),
-                                                          Token(groups["line"], tokenSelector)));
+            if ( methodSelector == null )
+            {
+                throw new ArgumentNullException ( nameof ( methodSelector ) ) ;
+            }
+
+            if ( parameterSelector == null )
+            {
+                throw new ArgumentNullException ( nameof ( parameterSelector ) ) ;
+            }
+
+            if ( parametersSelector == null )
+            {
+                throw new ArgumentNullException ( "parametersSelector" ) ;
+            }
+
+            if ( sourceLocationSelector == null )
+            {
+                throw new ArgumentNullException ( "sourceLocationSelector" ) ;
+            }
+
+            if ( selector == null )
+            {
+                throw new ArgumentNullException ( "selector" ) ;
+            }
+
+            return
+                from Match m in Regex.Matches ( text )
+                select m.Groups
+                into groups
+                let pt = groups[ "pt" ].Captures
+                let pn = groups[ "pn" ].Captures
+                select selector (
+                                 Token ( groups[ "frame" ] , tokenSelector )
+                               , methodSelector (
+                                                 Token ( groups[ "type" ] ,   tokenSelector )
+                                               , Token ( groups[ "method" ] , tokenSelector )
+                                                )
+                               , parametersSelector (
+                                                     Token ( groups[ "params" ] , tokenSelector )
+                                                    ,
+                                                     from i in Enumerable.Range ( 0 , pt.Count )
+                                                     select parameterSelector (
+                                                                               Token (
+                                                                                      pt[ i ]
+                                                                                    , tokenSelector
+                                                                                     )
+                                                                             , Token (
+                                                                                      pn[ i ]
+                                                                                    , tokenSelector
+                                                                                     )
+                                                                              )
+                                                    )
+                               , sourceLocationSelector (
+                                                         Token ( groups[ "file" ] , tokenSelector )
+                                                       , Token ( groups[ "line" ] , tokenSelector )
+                                                        )
+                                ) ;
         }
 
-        static T Token<T>(Capture capture, Func<int, int, string, T> tokenSelector)
+        private static T Token < T > (
+            Capture                         capture
+          , Func < int , int , string , T > tokenSelector
+        )
         {
-            return tokenSelector(capture.Index, capture.Length, capture.Value);
+            return tokenSelector ( capture.Index , capture.Length , capture.Value ) ;
         }
     }
 }

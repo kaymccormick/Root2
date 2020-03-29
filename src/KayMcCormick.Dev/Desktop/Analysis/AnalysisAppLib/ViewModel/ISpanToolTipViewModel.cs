@@ -16,7 +16,6 @@ namespace AnalysisAppLib.ViewModel
 {
     public interface ISpanToolTipViewModel
     {
-        
         List < object > Spans { get ; set ; }
 
         Location Location { get ; set ; }

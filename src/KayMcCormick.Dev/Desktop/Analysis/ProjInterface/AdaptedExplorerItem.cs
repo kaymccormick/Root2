@@ -16,6 +16,7 @@ using System.Linq ;
 using System.Windows.Media ;
 using AnalysisAppLib ;
 using ExplorerCtrl ;
+using JetBrains.Annotations ;
 
 namespace ProjInterface
 {
@@ -26,70 +27,50 @@ namespace ProjInterface
         #region Implementation of IExplorerItem
         public event EventHandler < RefreshEventArgs > Refresh ;
 
-        public string Name
-        {
-            get { return _itemImpl.Name ; }
-        }
+        public string Name { get { return _itemImpl.Name ; } }
 
-        public string FullName
-        {
-            get { return _itemImpl.FullName ; }
-        }
+        public string FullName { get { return _itemImpl.FullName ; } }
 
-        public string Link
-        {
-            get { return _itemImpl.Link ; }
-        }
+        public string Link { get { return _itemImpl.Link ; } }
 
-        public long Size
-        {
-            get { return _itemImpl.Size ; }
-        }
+        public long Size { get { return _itemImpl.Size ; } }
 
-        public DateTime ? Date
-        {
-            get { return _itemImpl.Date ; }
-        }
+        public DateTime ? Date { get { return _itemImpl.Date ; } }
 
-        public ExplorerItemType Type
-        {
-            get => AdaptedExplorerItem.GetExplorerItemType ( _itemImpl ) ;
-        }
+        public ExplorerItemType Type { get { return GetExplorerItemType ( _itemImpl ) ; } }
 
-        private static ExplorerItemType GetExplorerItemType ( AppExplorerItem itemImpl )
+        private static ExplorerItemType GetExplorerItemType ( [ NotNull ] AppExplorerItem itemImpl )
         {
-            if ( itemImpl.IsDirectory ) return ExplorerItemType.Directory ;
+            if ( itemImpl.IsDirectory )
+            {
+                return ExplorerItemType.Directory ;
+            }
+
             return ExplorerItemType.File ;
         }
 
-        public ImageSource Icon => AdaptedExplorerItem.GetItemImageSourceIcon ( _itemImpl ) ;
+        [ CanBeNull ] public ImageSource Icon { get { return GetItemImageSourceIcon ( _itemImpl ) ; } }
 
-        private static ImageSource GetItemImageSourceIcon ( AppExplorerItem itemImpl ) { return null ; }
-
-        public bool IsDirectory
+        [ CanBeNull ]
+        private static ImageSource GetItemImageSourceIcon ( AppExplorerItem itemImpl )
         {
-            get { return _itemImpl.IsDirectory ; }
+            return null ;
         }
 
-        public bool HasChildren
+        public bool IsDirectory { get { return _itemImpl.IsDirectory ; } }
+
+        public bool HasChildren { get { return _itemImpl.HasChildren ; } }
+
+        [ NotNull ] public IEnumerable < IExplorerItem > Children
         {
-            get { return _itemImpl.HasChildren ; }
+            get { return _itemImpl.Children.Select ( item => new AdaptedExplorerItem ( item ) ) ; }
         }
 
-        public IEnumerable < IExplorerItem > Children
-            => _itemImpl.Children.Select ( item => new AdaptedExplorerItem ( item ) ) ;
-
-        public void Push ( Stream stream , string path )
-        {
-
-        }
+        public void Push ( Stream stream , string path ) { }
 
         public void Pull ( string path , Stream stream ) { }
 
-        public void CreateFolder ( string path )
-        {
-
-        }
+        public void CreateFolder ( string path ) { }
         #endregion
     }
 }

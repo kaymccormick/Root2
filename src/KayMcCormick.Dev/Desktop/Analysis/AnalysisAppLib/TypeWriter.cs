@@ -12,7 +12,8 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
-    /// <summary>Class to write type information to XML file.
+    /// <summary>
+    ///     Class to write type information to XML file.
     /// </summary>
     [ SuppressMessage ( "ReSharper" , "UnusedMember.Global" ) ]
     public static class TypeWriter
@@ -28,12 +29,12 @@ namespace AnalysisAppLib
         private const string PropertyElementPropertyNameAttName = "Name" ;
 
         /// <summary>
-        /// Method namespace URI
+        ///     Method namespace URI
         /// </summary>
         public const string MethodNamespaceUri = "http://kaymccormick.com/ns/method" ;
 
         /// <summary>
-        /// Property namespace URI
+        ///     Property namespace URI
         /// </summary>
         public const string PropertyNamespaceUri = "http://kaymccormick.com/ns/property" ;
 
@@ -45,17 +46,17 @@ namespace AnalysisAppLib
         private const string ParameterElementParameterNameAttName = "Name" ;
         private const string ParameterElementParameterTypeAttName = "Type" ;
 
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator ( ) ;
 
         /// <summary>
-        /// Enable proxy
+        ///     Enable proxy
         /// </summary>
         public static bool Proxy { get ; } = false ;
 
-        /// <summary>Get XmlElement for Method
+        /// <summary>
+        ///     Get XmlElement for Method
         /// </summary>
         /// <param name="c"></param>
         /// <param name="c2"></param>
@@ -116,7 +117,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// Main routine to "discover" types and write them out to XML.
+        ///     Main routine to "discover" types and write them out to XML.
         /// </summary>
         /// <param name="style"></param>
         public static void DiscoverTypes ( WriteStyle style )
@@ -166,12 +167,7 @@ namespace AnalysisAppLib
                 foreach ( var m in type.GetMethods ( )
                                        .Where ( ( info , i ) => ! info.IsSpecialName ) )
                 {
-                    var elem = MethodXmlElement (
-                                                 c
-                                               , c2
-                                               , m
-                                               , style
-                                                ) ;
+                    var elem = MethodXmlElement ( c , c2 , m , style ) ;
                     typElement.AppendChild ( elem ) ;
                 }
             }
@@ -202,7 +198,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// Get the document ID for an code elmement.
+        ///     Get the document ID for an code elmement.
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>
@@ -233,7 +229,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// Get a subordinate ID for a generic type.
+        ///     Get a subordinate ID for a generic type.
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
@@ -255,8 +251,9 @@ namespace AnalysisAppLib
                        + "}" ;
             }
 
-            return String.Empty ;
+            return string.Empty ;
         }
+
         private static string SubIdForType ( Type arg )
         {
             if ( arg.IsGenericType )
@@ -356,6 +353,7 @@ namespace AnalysisAppLib
             */
         }
     }
+
     public enum WriteStyle
     {
         /// <summary>
@@ -370,5 +368,4 @@ namespace AnalysisAppLib
         /// </summary>
         Compact = 1
     }
-
 }

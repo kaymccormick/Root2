@@ -17,7 +17,7 @@ namespace AnalysisAppLib
 {
     internal class SpanToolTipViewModel : ISpanToolTipViewModel
     {
-        public List < object > Spans { get ; set ; } = new List < object > ();
+        public List < object > Spans { get ; set ; } = new List < object > ( ) ;
 
         public Location Location { get ; set ; }
     }

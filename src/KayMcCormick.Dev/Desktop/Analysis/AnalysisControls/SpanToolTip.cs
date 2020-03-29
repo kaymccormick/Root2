@@ -14,11 +14,9 @@ using System.Windows.Controls ;
 using System.Windows.Media ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
-using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
-    
     internal class SpanTT : ToolTip
     {
         public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }
@@ -29,21 +27,19 @@ namespace AnalysisControls
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public partial class SpanToolTip : UserControl , ISpanToolTip
     {
-        public StackPanel Panel { get ; set ; }
-
         /// <summary>
-        /// 
         /// </summary>
         public SpanToolTip ( )
         {
             InitializeComponent ( ) ;
-            Content = Panel = new StackPanel ( ) { Orientation = Orientation.Vertical , } ;
+            Content = Panel = new StackPanel { Orientation = Orientation.Vertical } ;
             // Panel.SetValue ( TextElement.FontSizeProperty , 24.0f ) ;
         }
+
+        public StackPanel Panel { get ; set ; }
 
         public void Add ( UIElement o )
         {

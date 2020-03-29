@@ -15,16 +15,24 @@ using System.Runtime.CompilerServices ;
 using System.Threading.Tasks ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
-    public sealed class LogUsageAnalysisViewModel : ILogUsageAnalysisViewModel , INotifyPropertyChanged
+    public sealed class LogUsageAnalysisViewModel : ILogUsageAnalysisViewModel
+      , INotifyPropertyChanged
     {
+        private ObservableCollection < LogEventInstance > _events ;
         private LogInvocationCollection                   _logInvocations ;
         private PipelineResult                            _pipelineResult ;
-        private ObservableCollection < LogEventInstance > _events ;
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        [ NotifyPropertyChangedInvocator ]
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+        }
 
         #region Implementation of ILogUsageAnalysisViewModel
         public LogInvocationCollection LogInvocations
@@ -59,13 +67,5 @@ namespace AnalysisAppLib
 
         public async Task AnalyzeCommand ( object viewCurrentItem ) { }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged ;
-
-        [ NotifyPropertyChangedInvocator ]
-        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
-        {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
     }
 }

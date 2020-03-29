@@ -17,16 +17,36 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    public sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel, INotifyPropertyChanged
+    public sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel , INotifyPropertyChanged
     {
         private CompilationUnitSyntax compilationUnitSyntax ;
         private object                selectedItem ;
-        #region Implementation of ISyntaxPanelViewModel
-        public SyntaxPanelViewModel()
-        {
 
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of INotifyPropertyChanging
+        public event PropertyChangingEventHandler PropertyChanging ;
+        #endregion
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
+
+        [ NotifyPropertyChangedInvocator ]
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-        public SyntaxPanelViewModel ( CompilationUnitSyntax compilationUnitSyntax = null)
+
+        private void OnPropertyChanging ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanging?.Invoke ( this , new PropertyChangingEventArgs ( propertyName ) ) ;
+        }
+
+        #region Implementation of ISyntaxPanelViewModel
+        public SyntaxPanelViewModel ( ) { }
+
+        public SyntaxPanelViewModel ( CompilationUnitSyntax compilationUnitSyntax = null )
         {
             if ( compilationUnitSyntax != null )
             {
@@ -36,21 +56,21 @@ namespace AnalysisAppLib.ViewModel
 
         public CompilationUnitSyntax CompilationUnitSyntax
         {
-            get => compilationUnitSyntax ;
+            get { return compilationUnitSyntax ; }
             set
             {
-                if (!ReferenceEquals(compilationUnitSyntax, value))
+                if ( ! ReferenceEquals ( compilationUnitSyntax , value ) )
                 {
-                    OnPropertyChanging();
-                    compilationUnitSyntax = value;
-                    OnPropertyChanged();
+                    OnPropertyChanging ( ) ;
+                    compilationUnitSyntax = value ;
+                    OnPropertyChanged ( ) ;
                 }
             }
         }
 
         public object SelectedItem
         {
-            get => selectedItem ;
+            get { return selectedItem ; }
             set
             {
                 if ( ! ReferenceEquals ( selectedItem , value ) )
@@ -61,27 +81,6 @@ namespace AnalysisAppLib.ViewModel
                 }
             }
         }
-        #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged ;
-
-        [ NotifyPropertyChangedInvocator ]
-        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
-        {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
-
-        #region Implementation of INotifyPropertyChanging
-        public event PropertyChangingEventHandler PropertyChanging ;
-        #endregion
-
-        private void OnPropertyChanging ([CallerMemberName] string propertyName = null )
-        {
-            PropertyChanging?.Invoke ( this , new PropertyChangingEventArgs(propertyName) ) ;
-        }
-
-        #region Implementation of ISerializable
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }
 }

@@ -21,28 +21,27 @@ namespace AnalysisAppLib
 {
     public class Visitor2 : CSharpSyntaxWalker
     {
+        private static readonly Logger logger =
+            LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly Func <object, ISpanViewModel> _mFunc ;
-
-
-        private static readonly Logger                                logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly Func < string , object , LogBuilder > _message ;
+
+        private readonly Func < object , ISpanViewModel > _mFunc ;
 
         public Visitor2 ( )
         {
-            
-            _message = new LogBuilder(LogManager.GetCurrentClassLogger()).Message ;
+            _message = new LogBuilder ( LogManager.GetCurrentClassLogger ( ) ).Message ;
         }
 
         protected ActiveSpans ActiveSpans { get ; } = new ActiveSpans ( ) ;
 
         // public Dictionary<object, ISpanObject> ActiveSpans { get; } =
         //     new Dictionary<object, ISpanObject>();
-        public override void VisitToken(SyntaxToken toke)
+        public override void VisitToken ( SyntaxToken toke )
         {
             //base.VisitToken ( token ) ;
         }
-        
+
         public override void DefaultVisit ( [ NotNull ] SyntaxNode node )
         {
             if ( node == null )
@@ -50,14 +49,14 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( node ) ) ;
             }
 
-            _message("{method}", nameof(DefaultVisit)).Write();
-            ISpanViewModel model =  _mFunc?.Invoke (node ) ;
-            ActiveSpans.AddSpan ( node , node.Span, model ) ;
+            _message ( "{method}" , nameof ( DefaultVisit ) ).Write ( ) ;
+            var model = _mFunc?.Invoke ( node ) ;
+            ActiveSpans.AddSpan ( node , node.Span , model ) ;
             try
             {
                 var childNodesAndTokens = node.ChildNodesAndTokens ( ).ToList ( ) ;
                 var childCnt = childNodesAndTokens.Count ;
-                int i = 0 ;
+                var i = 0 ;
 
                 do
                 {
@@ -67,27 +66,27 @@ namespace AnalysisAppLib
                     var asNode = child.AsNode ( ) ;
                     if ( asNode != null )
                     {
-                        if ( this.Depth >= SyntaxWalkerDepth.Node )
+                        if ( Depth >= SyntaxWalkerDepth.Node )
                         {
-                            ISpanViewModel model2 = _mFunc?.Invoke(asNode);
-                            ActiveSpans.AddSpan(asNode, asNode.Span, model2);
-                            this.Visit ( asNode ) ;
+                            var model2 = _mFunc?.Invoke ( asNode ) ;
+                            ActiveSpans.AddSpan ( asNode , asNode.Span , model2 ) ;
+                            Visit ( asNode ) ;
                             ActiveSpans.Remove ( asNode ) ;
                         }
                     }
                     else
                     {
-                        if ( this.Depth >= SyntaxWalkerDepth.Token )
+                        if ( Depth >= SyntaxWalkerDepth.Token )
                         {
-
                             var syntaxToken = child.AsToken ( ) ;
-                            if ( _mFunc != null ) {
+                            if ( _mFunc != null )
+                            {
                                 var model1 = _mFunc ( syntaxToken ) ;
-                                ActiveSpans.AddSpan(syntaxToken, syntaxToken.Span, model1);
+                                ActiveSpans.AddSpan ( syntaxToken , syntaxToken.Span , model1 ) ;
                             }
 
-                            this.VisitToken ( syntaxToken ) ;
-                            ActiveSpans.RemoveAll(syntaxToken);
+                            VisitToken ( syntaxToken ) ;
+                            ActiveSpans.RemoveAll ( syntaxToken ) ;
                         }
                     }
                 }
@@ -99,11 +98,8 @@ namespace AnalysisAppLib
             }
             finally
             {
-                ActiveSpans.RemoveAll(node);
+                ActiveSpans.RemoveAll ( node ) ;
             }
         }
-
-        
-
     }
 }

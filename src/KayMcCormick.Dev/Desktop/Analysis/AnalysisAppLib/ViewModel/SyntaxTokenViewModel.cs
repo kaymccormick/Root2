@@ -21,12 +21,9 @@ namespace AnalysisAppLib.ViewModel
 {
     public sealed class SyntaxTokenViewModel : ISyntaxTokenViewModel
     {
-        public ObservableCollection < SyntaxItem > SyntaxItems { get ; } =
-            new ObservableCollection < SyntaxItem > ( ) ;
-
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public SyntaxTokenViewModel( )
+        public SyntaxTokenViewModel ( )
         {
             foreach ( SyntaxKind value in Enum.GetValues ( typeof ( SyntaxKind ) ) )
             {
@@ -43,9 +40,17 @@ namespace AnalysisAppLib.ViewModel
                     }
                 }
 
-                SyntaxItems.Add ( new SyntaxItem ( ) { SyntaxKind = value , Token = token , RawKind = (ushort)value} ) ;
+                SyntaxItems.Add (
+                                 new SyntaxItem
+                                 {
+                                     SyntaxKind = value , Token = token , RawKind = ( ushort ) value
+                                 }
+                                ) ;
             }
         }
+
+        public ObservableCollection < SyntaxItem > SyntaxItems { get ; } =
+            new ObservableCollection < SyntaxItem > ( ) ;
 
         #region Implementation of ISerializable
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }

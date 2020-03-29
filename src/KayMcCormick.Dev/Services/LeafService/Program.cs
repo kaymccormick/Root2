@@ -11,12 +11,33 @@ using Topshelf.Common.Logging ;
 using Topshelf.HostConfigurators ;
 using Topshelf.ServiceConfigurators ;
 using LogLevel = NLog.LogLevel ;
+using LogManager = Common.Logging.LogManager ;
 
 namespace LeafService
 {
     internal class Program : IDisposable
     {
+        private const    string              serviceName = "LeafService" ;
+        private const    string              displayName = "LeafService Service" ;
+        private const    string              description = "A .NET Windows Service." ;
         private readonly ApplicationInstance _appInst ;
+
+        public Program ( )
+        {
+            _appInst = new ApplicationInstance (
+                                                new ApplicationInstanceConfiguration (
+                                                                                      Console
+                                                                                         .Error
+                                                                                         .WriteLine
+                                                                                     )
+                                               ) ;
+        }
+
+        private ILogger Logger { get { return _appInst.Logger ; } }
+
+        #region IDisposable
+        public void Dispose ( ) { _appInst.Dispose ( ) ; }
+        #endregion
 
         private static void Main ( )
         {
@@ -29,20 +50,13 @@ namespace LeafService
             using ( var p = new Program ( ) )
             {
                 p.Run ( ) ;
-                p.Logger.Debug( "Returned from HostFactory.run, preparing to exit." ) ;
+                p.Logger.Debug ( "Returned from HostFactory.run, preparing to exit." ) ;
             }
         }
 
-        const string serviceName = "LeafService";
-        const string displayName = "LeafService Service";
-        const string description = "A .NET Windows Service.";
-
-        public Program ( ) { _appInst = new ApplicationInstance ( new ApplicationInstanceConfiguration ( Console.Error.WriteLine ) ) ; }
-
         private void Run ( )
         {
-            
-            ILog logger = Common.Logging.LogManager.GetLogger < Program > ( ) ;
+            var logger = LogManager.GetLogger < Program > ( ) ;
             AppDomain.CurrentDomain.FirstChanceException += ( sender , args )
                 => Utils.HandleInnerExceptions (
                                                 args.Exception
@@ -53,17 +67,15 @@ namespace LeafService
             _appInst.Logger.Debug ( "Returned from HostFactory.run" ) ;
         }
 
-        private ILogger Logger => _appInst.Logger ;
-
         private void Configure ( HostConfigurator configurator )
         {
             _appInst.Logger.Debug ( "In configurator lambda" ) ;
-            _appInst.AddModule(new LeafServiceModule());
+            _appInst.AddModule ( new LeafServiceModule ( ) ) ;
             /* Initialize builds the container */
             _appInst.Initialize ( ) ;
             configurator.OnException ( HandleException ) ;
             //configurator.UseNLog ( ) ;
-            configurator.UseCommonLogging();
+            configurator.UseCommonLogging ( ) ;
             configurator.UseAutofacContainer ( _appInst.GetLifetimeScope ( ) ) ;
             configurator.Service < LeafService1 > ( ConfigureService ) ;
             configurator.RunAsLocalSystem ( ) ;
@@ -101,7 +113,11 @@ namespace LeafService
 
         private void HandleException ( Exception obj )
         {
-            Logger.Fatal ( obj , "Fatal exception starting/configuring TopShelf: {ex}" , obj.ToString() ) ;
+            Logger.Fatal (
+                          obj
+                        , "Fatal exception starting/configuring TopShelf: {ex}"
+                        , obj.ToString ( )
+                         ) ;
         }
 
         private void ConfigureService ( ServiceConfigurator < LeafService1 > sc )
@@ -118,13 +134,6 @@ namespace LeafService
             // optional, when shutdown is supported
             sc.WhenShutdown ( ( s , hostControl ) => s.Shutdown ( hostControl ) ) ;
         }
-
-        #region IDisposable
-        public void Dispose ( )
-        {
-            _appInst.Dispose ( ) ;
-        }
-        #endregion
     }
 
     internal class LeafServiceModule : Module
@@ -135,8 +144,9 @@ namespace LeafService
             builder.RegisterType < LeafService1 > ( ).AsSelf ( ) ;
             builder.Register (
                               ( context , parameters )
-                                  => Common.Logging.LogManager.GetLogger (typeof(LeafService1))).As<ILog> (  );
-            
+                                  => LogManager.GetLogger ( typeof ( LeafService1 ) )
+                             )
+                   .As < ILog > ( ) ;
         }
         #endregion
     }

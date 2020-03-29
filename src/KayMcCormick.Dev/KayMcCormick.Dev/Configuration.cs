@@ -1,30 +1,21 @@
-﻿using JetBrains.Annotations;
-
-namespace KayMcCormick.Dev
+﻿namespace KayMcCormick.Dev
 {
     /// <summary>
-    /// 
     /// </summary>
-    
     public enum ConfigurationSetting
     {
         /// <summary>
-        /// 
         /// </summary>
-        
-        LogsRootDirectory,
+        LogsRootDirectory
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public interface IConfiguration
     {
         /// <summary>
-        /// 
         /// </summary>
-        
-        void LoadConfiguration();
+        void LoadConfiguration ( ) ;
     }
 
 #if USEREGISTRY

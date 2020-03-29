@@ -2,11 +2,10 @@
 {
     internal interface ILogEntrySpecification
     {
-        
-        FunctionalArea GetFunctionalArea();
-        
-        CrosscuttingConcern GetCrosscuttingConcern();
-        
-        ExecutionContext GetExecutionContext();
+        FunctionalArea GetFunctionalArea ( ) ;
+
+        CrosscuttingConcern GetCrosscuttingConcern ( ) ;
+
+        ExecutionContext GetExecutionContext ( ) ;
     }
 }

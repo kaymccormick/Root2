@@ -1,9 +1,9 @@
-﻿using KayMcCormick.Dev.Logging ;
-using System ;
+﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Reflection ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 
 namespace KayMcCormick.Dev.TestLib
@@ -14,26 +14,32 @@ namespace KayMcCormick.Dev.TestLib
     public static class LogHelper
     {
         private static bool _executed ;
-        private static bool _disableLogging ;
+
+        /// <summary>
+        /// </summary>
+        public static bool Executed { get { return _executed ; } set { _executed = value ; } }
+
+        /// <summary>
+        /// </summary>
+        public static bool DisableLogging { get ; set ; }
 
 
         /// <summary>
-        /// 
         /// </summary>
         public static void DisableLoggingConfiguration ( )
         {
-            _disableLogging = true ;
-            Debug.WriteLine($"{typeof(LogHelper).FullName} - Logging disabled.");
-            Environment.SetEnvironmentVariable(
-                                               AppLoggingConfigHelper.DisableLoggingEnvVar
-                                             , "yes"
-                                              );
-            AppLoggingConfigHelper.Performant = true;
-            LogManager.Configuration          = new CodeConfiguration();
-            Executed = true ;
+            DisableLogging = true ;
+            Debug.WriteLine ( $"{typeof ( LogHelper ).FullName} - Logging disabled." ) ;
+            Environment.SetEnvironmentVariable (
+                                                AppLoggingConfigHelper.DisableLoggingEnvVar
+                                              , "yes"
+                                               ) ;
+            AppLoggingConfigHelper.Performant = true ;
+            LogManager.Configuration          = new CodeConfiguration ( ) ;
+            Executed                          = true ;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="param1"></param>
         public static void EnsureLoggingConfigured ( LogDelegates.LogMethod param1 = null )
@@ -44,7 +50,7 @@ namespace KayMcCormick.Dev.TestLib
             }
 
             Executed = true ;
-            if ( _disableLogging )
+            if ( DisableLogging )
             {
                 return ;
             }
@@ -58,26 +64,15 @@ namespace KayMcCormick.Dev.TestLib
                                                 + ";log"
                                                ) ;
 
-            
+
             AppLoggingConfigHelper.EnsureLoggingConfigured ( param1 ) ;
             LogManager.LogFactory.ThrowExceptions = true ;
         }
 
         /// <summary>
-        /// 
+        ///     Supplied structured logging properties for a particular test method
+        ///     indicated by method.. Supplied properties "TestMethodName", "TestClass",
         /// </summary>
-        public static bool Executed { get { return _executed ; } set { _executed = value ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static bool DisableLogging
-        {
-            get { return _disableLogging ; }
-            set { _disableLogging = value ; }
-        }
-
-        /// <summary>Supplied structured logging properties for a particular test method indicated by method.. Supplied properties "TestMethodName", "TestClass",</summary>
         /// <param name="method">The method.</param>
         /// <param name="stage">The stage.</param>
         /// <returns></returns>

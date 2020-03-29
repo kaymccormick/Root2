@@ -4,12 +4,11 @@ namespace ProjInterface
 {
     public static class Ext
     {
-
-        public static SynchronizationContextAwaiter GetAwaiter(this SynchronizationContext context)
+        public static SynchronizationContextAwaiter GetAwaiter (
+            this SynchronizationContext context
+        )
         {
-            return new SynchronizationContextAwaiter(context);
-        
-}
-
+            return new SynchronizationContextAwaiter ( context ) ;
+        }
     }
 }

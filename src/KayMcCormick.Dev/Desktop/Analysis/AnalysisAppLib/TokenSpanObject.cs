@@ -17,12 +17,11 @@ namespace AnalysisAppLib
 {
     public class TokenSpanObject : SpanObject < SyntaxToken >
     {
-        
         private readonly string _instanceRawKind ;
-        
-        private          readonly string _instanceValueText ;
 
-        
+        private readonly string _instanceValueText ;
+
+
         public TokenSpanObject ( TextSpan span , SyntaxToken instance ) : base ( span , instance )
         {
             _instanceRawKind   = Instance.Kind ( ) + " (" + Instance.RawKind + ")" ;
@@ -40,7 +39,7 @@ namespace AnalysisAppLib
             panel.Children.Add ( toolTipContent ) ;
             if ( Instance.Value != null )
             {
-                panel.Children.Add ( new Label ( ) { Content  = "Value" } ) ;
+                panel.Children.Add ( new Label ( ) { Content = "Value" } ) ;
                 panel.Children.Add ( new TextBlock ( ) { Text = _instanceValueText } ) ;
             }
 

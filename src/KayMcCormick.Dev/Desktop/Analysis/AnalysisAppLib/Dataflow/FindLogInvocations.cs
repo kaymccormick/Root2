@@ -9,7 +9,8 @@ using Microsoft.CodeAnalysis ;
 namespace AnalysisAppLib.Dataflow
 {
     internal class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
-        TransformManyBlock < Document , ILogInvocation > >, IHaveRejectBlock
+            TransformManyBlock < Document , ILogInvocation > >
+      , IHaveRejectBlock
     {
         private readonly Func < ILogInvocation >                                      _factory ;
         private readonly Func < Document , IEnumerable < ILogInvocation > >           _func ;
@@ -20,12 +21,19 @@ namespace AnalysisAppLib.Dataflow
           , Func < ILogInvocation >                                                  factory
         )
         {
-            Debug.WriteLine($"creating {nameof(FindLogInvocations)}");
+            Debug.WriteLine ( $"creating {nameof ( FindLogInvocations )}" ) ;
             _provider = provider ?? throw new ArgumentNullException ( nameof ( provider ) ) ;
             _factory  = factory ;
         }
 
-        
+        #region Implementation of IHaveRejectBlock
+        public ISourceBlock < RejectedItem > GetRejectBlock ( )
+        {
+            return ( ( IHaveRejectBlock ) _provider ).GetRejectBlock ( ) ;
+        }
+        #endregion
+
+
         public override TransformManyBlock < Document , ILogInvocation > GetDataflowBlock ( )
         {
             Func < Document , IEnumerable < ILogInvocation > > func = document
@@ -35,15 +43,10 @@ namespace AnalysisAppLib.Dataflow
                                                                             .GetAsyncTransformFunction ( )
                                                                         ) ;
         }
-
-        #region Implementation of IHaveRejectBlock
-        public ISourceBlock<RejectedItem> GetRejectBlock ( ) { return (( IHaveRejectBlock ) _provider).GetRejectBlock(); }
-        #endregion
     }
 
     public interface IHaveRejectBlock
     {
-        ISourceBlock<RejectedItem> GetRejectBlock();
-
+        ISourceBlock < RejectedItem > GetRejectBlock ( ) ;
     }
 }

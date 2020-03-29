@@ -1,10 +1,5 @@
-﻿using System;
+﻿using System ;
 using System.AddIn.Pipeline ;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel.Channels ;
-using System.Text;
-using System.Threading.Tasks;
 using KayMcCormick.Dev.Logging ;
 using Leaf1Contract ;
 using LeafHVA1 ;
@@ -15,38 +10,42 @@ using NLog.Targets ;
 
 namespace Leaf1HostSideAdapter
 {
-    [HostAdapter]
-    public class Leaf1ContractToViewHostSideAdapter : IService1, IDisposable
+    [ HostAdapter ]
+    public class Leaf1ContractToViewHostSideAdapter : IService1 , IDisposable
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private readonly IService1Contract _service1Contract;
-        private          ContractHandle    _handle;
-        private string loggerName = typeof(Leaf1ContractToViewHostSideAdapter).FullName ;
+        private static   Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private readonly IService1Contract _service1Contract ;
+        private readonly ContractHandle    _handle ;
 
-        public Leaf1ContractToViewHostSideAdapter(IService1Contract service1Contract)
+        private readonly string
+            loggerName = typeof ( Leaf1ContractToViewHostSideAdapter ).FullName ;
+
+        public Leaf1ContractToViewHostSideAdapter ( IService1Contract service1Contract )
         {
-            _service1Contract = service1Contract;
-            _handle           = new ContractHandle(_service1Contract);
+            _service1Contract = service1Contract ;
+            _handle           = new ContractHandle ( _service1Contract ) ;
         }
+
+
+        #region IDisposable
+        public void Dispose ( ) { _handle?.Dispose ( ) ; }
+        #endregion
 
         #region Implementation of IService1
-        public void PerformFunc1()
-        {
-            _service1Contract.PerformFunc1();
-        }
+        public void PerformFunc1 ( ) { _service1Contract.PerformFunc1 ( ) ; }
         #endregion
 
         public bool Start ( )
         {
-            ChainsawTarget target = new ChainsawTarget ( "new" )
-                                    {
-                                        Address = new SimpleLayout ( "udp://10.25.0.102:4111" )
-                                    } ;
+            var target = new ChainsawTarget ( "new" )
+                         {
+                             Address = new SimpleLayout ( "udp://10.25.0.102:4111" )
+                         } ;
             AppLoggingConfigHelper.AddTarget ( target , LogLevel.Trace , false ) ;
             AppLoggingConfigHelper.AddRule (
                                             new LoggingRule ( loggerName , LogLevel.Trace , target )
                                            ) ;
-            LogManager.ReconfigExistingLoggers();
+            LogManager.ReconfigExistingLoggers ( ) ;
             // AppLoggingConfigHelper.EnsureLoggingConfigured ( message => {Console.WriteLine(message); }, new AppLoggingConfiguration() { MinLogLevel = LogLevel.Trace, NLogViewerPort = 12333, ChainsawPort = 4111 } ) ;
             Logger = LogManager.GetLogger ( loggerName ) ;
             Logger.Debug ( "start" ) ;
@@ -60,13 +59,5 @@ namespace Leaf1HostSideAdapter
         public bool Continue ( ) { return _service1Contract.Continue ( ) ; }
 
         public bool Shutdown ( ) { return _service1Contract.Shutdown ( ) ; }
-
-
-        #region IDisposable
-        public void Dispose ( )
-        {
-            _handle?.Dispose ( ) ;
-        }
-        #endregion
     }
 }

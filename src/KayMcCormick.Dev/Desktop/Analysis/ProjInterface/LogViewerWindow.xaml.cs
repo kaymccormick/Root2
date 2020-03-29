@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
+using System.Windows.Controls.Primitives ;
 using AnalysisAppLib ;
 using Autofac ;
 using JetBrains.Annotations ;
@@ -10,21 +11,34 @@ using KayMcCormick.Lib.Wpf ;
 
 namespace ProjInterface
 {
-    [TitleMetadata("Log Viewer Window")]
-
-    public partial class LogViewerWindow : AppWindow, INotifyPropertyChanged, IViewWithTitle, IView<LogViewerAppViewModel>
+    [ TitleMetadata ( "Log Viewer Window" ) ]
+    public partial class LogViewerWindow : AppWindow
+      , INotifyPropertyChanged
+      , IViewWithTitle
+      , IView < LogViewerAppViewModel >
 
     {
         private string _viewTitle ;
-        private LogViewerAppViewModel _logViewerAppViewModel ;
 
-        public LogViewerWindow(ILifetimeScope scope, LogViewerAppViewModel logViewerAppViewModel) : base(scope)
+        public LogViewerWindow (
+            ILifetimeScope        scope
+          , LogViewerAppViewModel logViewerAppViewModel
+        ) : base ( scope )
         {
-            _logViewerAppViewModel = logViewerAppViewModel ;
-            InitializeComponent();
+            ViewModel = logViewerAppViewModel ;
+            InitializeComponent ( ) ;
         }
 
         public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of IView<out LogViewerAppViewModel>
+        public LogViewerAppViewModel ViewModel { get ; set ; }
+        #endregion
+
+
+        #region Implementation of IView1
+        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        #endregion
 
         [ NotifyPropertyChangedInvocator ]
         protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
@@ -39,23 +53,13 @@ namespace ProjInterface
 
         private void ButtonBase_OnClick2 ( object sender , RoutedEventArgs e )
         {
-            int port = int.Parse ( this.port.Text ) ;
-            LogViewModel logViewModel = new LogViewModel();
-            LogListener x = new LogListener(port, logViewModel);
+            var port = int.Parse ( this.port.Text ) ;
+            var logViewModel = new LogViewModel ( ) ;
+            var x = new LogListener ( port , logViewModel ) ;
             logViewModel.DisplayName = port.ToString ( ) ;
-            _logViewerAppViewModel.LogViewModels.Add(logViewModel);
-            mainTabControl.SetCurrentValue(System.Windows.Controls.Primitives.Selector.SelectedItemProperty, logViewModel) ;
-            x.Start();
+            ViewModel.LogViewModels.Add ( logViewModel ) ;
+            mainTabControl.SetCurrentValue ( Selector.SelectedItemProperty , logViewModel ) ;
+            x.Start ( ) ;
         }
-
-
-        #region Implementation of IView1
-        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
-        #endregion
-
-        #region Implementation of IView<out LogViewerAppViewModel>
-        public LogViewerAppViewModel ViewModel { get { return _logViewerAppViewModel ; } set { _logViewerAppViewModel = value ; } }
-        #endregion
     }
-    
 }

@@ -16,23 +16,19 @@ using JetBrains.Annotations ;
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public class LogConfigurationException : Exception
     {
         /// <summary>
-        /// 
         /// </summary>
         public LogConfigurationException ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         public LogConfigurationException ( string message ) : base ( message ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -44,7 +40,6 @@ namespace KayMcCormick.Dev.Logging
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>

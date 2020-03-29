@@ -16,7 +16,9 @@ namespace AnalysisAppLib
     public interface IProjectBrowserNode : IBrowserNode
     {
         Uri RepositoryUrl { get ; }
-        string Platform      { get ; }
-        string SolutionPath  { get ; set ; }
+
+        string Platform { get ; }
+
+        string SolutionPath { get ; set ; }
     }
 }

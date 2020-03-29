@@ -30,10 +30,9 @@ namespace AnalysisAppLib
 {
     internal class FindLogUsages
     {
-        private readonly Func < ILogInvocation > _invocationFactory ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        private readonly Func < ILogInvocation > _invocationFactory ;
 
         public FindLogUsages ( Func < ILogInvocation > invocationFactory )
         {
@@ -43,7 +42,7 @@ namespace AnalysisAppLib
 
         [ ItemNotNull ]
         public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
-            [ NotNull ] Document                     d
+            [ NotNull ] Document         d
           , BufferBlock < RejectedItem > rejectBlock
         )
         {
@@ -71,16 +70,12 @@ namespace AnalysisAppLib
                         if ( t == null )
                         {
                             return Array.Empty < ILogInvocation > ( ) ;
-
-
                         }
 
                         var t2 = LogUsages.GetILoggerSymbol ( model ) ;
                         if ( t2 == null )
                         {
                             return Array.Empty < ILogInvocation > ( ) ;
-
-
                         }
 
                         var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
@@ -93,11 +88,9 @@ namespace AnalysisAppLib
                                    let tree_ = tree
                                    let model_ = model
                                    let exType = exceptionType
-                                   where
-                                       node.RawKind
-                                       == ( ushort ) SyntaxKind.InvocationExpression
-                                       || node.RawKind
-                                       == ( ushort ) SyntaxKind.ObjectCreationExpression
+                                   where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression
+                                         || node.RawKind
+                                         == ( ushort ) SyntaxKind.ObjectCreationExpression
                                    let @out =
                                        LogUsages.CheckInvocationExpression (
                                                                             node
@@ -122,8 +115,8 @@ namespace AnalysisAppLib
                                    select result is ILogInvocation inv
                                               ? inv
                                               : ( object ) rejectBlock.Post (
-                                                                             result is
-                                                                                 RejectedItem rj
+                                                                             result is RejectedItem
+                                                                                 rj
                                                                                  ? rj
                                                                                  : new
                                                                                      RejectedItem (
@@ -178,9 +171,8 @@ namespace AnalysisAppLib
                 NLogNamespace + '.' + LoggerClassName ;
 
 
-            
             private static bool CheckSymbol (
-                [ NotNull ] IMethodSymbol             methSym
+                [ NotNull ]        IMethodSymbol      methSym
               , [ NotNull ] params INamedTypeSymbol[] t1
             )
             {
@@ -189,28 +181,23 @@ namespace AnalysisAppLib
             }
 
             private static bool CheckTypeSymbol (
-                
                 INamedTypeSymbol                      cType
               , [ NotNull ] params INamedTypeSymbol[] t1
             )
             {
                 var r = t1.Any (
-                                symbol => SymbolEqualityComparer.Default.Equals (
-                                                                                 cType
-                                                                               , symbol
-                                                                                )
+                                symbol => SymbolEqualityComparer.Default.Equals ( cType , symbol )
                                ) ;
                 return r ;
             }
 
 
             [ NotNull ]
-            public static Tuple < bool , IMethodSymbol , SyntaxNode >
-                CheckInvocationExpression (
-                    [ NotNull ] SyntaxNode         n1
-                  , [ NotNull ] SemanticModel      currentModel
-                  , params      INamedTypeSymbol[] t
-                )
+            public static Tuple < bool , IMethodSymbol , SyntaxNode > CheckInvocationExpression (
+                [ NotNull ] SyntaxNode         n1
+              , [ NotNull ] SemanticModel      currentModel
+              , params      INamedTypeSymbol[] t
+            )
             {
                 if ( n1 is InvocationExpressionSyntax node )
                 {
@@ -229,9 +216,7 @@ namespace AnalysisAppLib
                                  ) ;
 
                     Logger.Info (
-
                                  "symbol info is {node}"
-
                                , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
@@ -266,7 +251,6 @@ namespace AnalysisAppLib
 
 
                 throw new Exception ( "Error" ) ;
-
             }
 
             [ CanBeNull ]
@@ -281,9 +265,7 @@ namespace AnalysisAppLib
             }
 
             [ CanBeNull ]
-            public static INamedTypeSymbol GetLogBuilderSymbol (
-                [ NotNull ] SemanticModel model
-            )
+            public static INamedTypeSymbol GetLogBuilderSymbol ( [ NotNull ] SemanticModel model )
             {
                 if ( model == null )
                 {
@@ -310,11 +292,11 @@ namespace AnalysisAppLib
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
             public InvocationParams (
-                SyntaxTree                                  syntaxTree
-              , SemanticModel                               model
+                SyntaxTree                                                syntaxTree
+              , SemanticModel                                             model
               , [ CanBeNull ] SyntaxNode                                  relevantNode
-              , [ NotNull ] Tuple < bool , IMethodSymbol , SyntaxNode > tuple
-              , [ NotNull ] INamedTypeSymbol                            namedTypeSymbol
+              , [ NotNull ]   Tuple < bool , IMethodSymbol , SyntaxNode > tuple
+              , [ NotNull ]   INamedTypeSymbol                            namedTypeSymbol
             )
             {
                 if ( tuple is null )
@@ -331,11 +313,9 @@ namespace AnalysisAppLib
                                 , relevantNode.ToString ( )
                                  ) ;
 #endif
-                    Tree = syntaxTree
-                           ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
+                    Tree = syntaxTree ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
 
-                    Model =
-                        model ?? throw new ArgumentNullException ( nameof ( model ) ) ;
+                    Model        = model ?? throw new ArgumentNullException ( nameof ( model ) ) ;
                     RelevantNode = relevantNode ;
                 }
 
@@ -368,7 +348,6 @@ namespace AnalysisAppLib
                      && MethodSymbol != null
                      && MethodSymbol.Parameters.Any ( ) )
                 {
-                    
                     exceptionArg = IsException (
                                                 NamedTypeSymbol
                                               , MethodSymbol.Parameters.First ( ).Type
@@ -388,11 +367,10 @@ namespace AnalysisAppLib
                 {
                     Logger.Trace (
                                   "{params}"
-                                , String.Join (
+                                , string.Join (
                                                ", "
                                              , MethodSymbol.Parameters.Select (
-                                                                               symbol => symbol
-                                                                                  .Name
+                                                                               symbol => symbol.Name
                                                                               )
                                               )
                                  ) ;
@@ -404,11 +382,9 @@ namespace AnalysisAppLib
 #if TRACE
                 Logger.Trace (
                               "params = {params}"
-                            , String.Join (
+                            , string.Join (
                                            ", "
-                                         , methodSymbol.Parameters.Select (
-                                                                           symbol => symbol.Name
-                                                                          )
+                                         , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                           )
                              ) ;
 #endif
@@ -417,16 +393,13 @@ namespace AnalysisAppLib
                 var semanticModel = Model ;
                 if ( msgI != null )
                 {
-                    var fargs = invocation
-                               .ArgumentList.Arguments.Skip ( msgI.Value )
-                               .ToList ( ) ;
+                    var fargs = invocation.ArgumentList.Arguments.Skip ( msgI.Value ).ToList ( ) ;
                     rest = fargs.Skip ( 1 ) ;
                     var msgarg = fargs.First ( ) ;
                     var msgArgExpr = msgarg.Expression ;
                     var msgArgTypeInfo =
                         ModelExtensions.GetTypeInfo ( semanticModel , msgArgExpr ) ;
-                    var symbolInfo =
-                        ModelExtensions.GetSymbolInfo ( semanticModel , msgArgExpr ) ;
+                    var symbolInfo = ModelExtensions.GetSymbolInfo ( semanticModel , msgArgExpr ) ;
                     var arg1sym = symbolInfo.Symbol ;
 #if TRACE
                     if ( arg1sym != null )
@@ -467,7 +440,7 @@ namespace AnalysisAppLib
                             }
                         }
 #if TRACE
-                        Logger.Debug ( "{}" , String.Join ( ", " , o ) ) ;
+                        Logger.Debug ( "{}" , string.Join ( ", " , o ) ) ;
 #endif
                     }
                     else
@@ -571,7 +544,7 @@ namespace AnalysisAppLib
 
             private static bool IsException (
                 [ CanBeNull ] INamedTypeSymbol exceptionType
-              , ITypeSymbol      baseType
+              , ITypeSymbol                    baseType
             )
             {
                 if ( exceptionType == null )
@@ -601,8 +574,7 @@ namespace AnalysisAppLib
                     ConstantMessage   = constantMessage ;
                     if ( IsMessageTemplate )
                     {
-                        MessageTemplate =
-                            MessageTemplate.Parse ( constantMessage.ToString ( ) ) ;
+                        MessageTemplate = MessageTemplate.Parse ( constantMessage.ToString ( ) ) ;
                     }
                 }
 
@@ -618,9 +590,7 @@ namespace AnalysisAppLib
                 {
                     get
                     {
-                        return IsMessageTemplate
-                                   ? MessageTemplate?.Text ?? ""
-                                   : MessageExprPojo ;
+                        return IsMessageTemplate ? MessageTemplate?.Text ?? "" : MessageExprPojo ;
                     }
                 }
 

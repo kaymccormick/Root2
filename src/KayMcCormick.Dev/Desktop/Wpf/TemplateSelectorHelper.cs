@@ -11,7 +11,6 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Linq ;
 using System.Windows ;
@@ -19,12 +18,15 @@ using System.Windows.Markup ;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    /// <summary>Helper class for template selection. Not yet optimized but has a variety of template selection methods to facilitate a wide range of applications.</summary>
+    /// <summary>
+    ///     Helper class for template selection. Not yet optimized but has a
+    ///     variety of template selection methods to facilitate a wide range of
+    ///     applications.
+    /// </summary>
     public static class TemplateSelectorHelper
 
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="container"></param>
@@ -75,15 +77,11 @@ namespace KayMcCormick.Lib.Wpf
             {
                 var tuple1 = resourceKeys
                             .Select (
-                                     ( k ) => Tuple.Create (
-                                                            k
-                                                          , fe
-                                                          , TryFindDataTemplate (
-                                                                                 fe
-                                                                               , k
-                                                                               , predicate
-                                                                                )
-                                                           )
+                                     k => Tuple.Create (
+                                                        k
+                                                      , fe
+                                                      , TryFindDataTemplate ( fe , k , predicate )
+                                                       )
                                     )
                             .Where ( Predicate2 )
                             .FirstOrDefault ( ) ;

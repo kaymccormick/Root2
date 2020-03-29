@@ -9,7 +9,6 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Windows ;
@@ -25,22 +24,24 @@ namespace AnalysisControls
     // ReSharper disable once UnusedType.Global
     public class Visitor3 : CSharpSyntaxWalker
     {
-        public MyFlowDocumentScrollViewer FlowViewer { get ; }
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly FlowDocument _document ;
-        private int _curLine = - 1 ;
-        private bool _isAtStartOfLine = true ;
-        private Paragraph _curBlock ;
-        private Style _curStyle ;
-        private Stack < Style > _styles  = new Stack < Style > ();
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private bool attached ;
+        private readonly FlowDocument    _document ;
+        private          Paragraph       _curBlock ;
+        private          int             _curLine = - 1 ;
+        private          Style           _curStyle ;
+        private          bool            _isAtStartOfLine = true ;
+        private readonly Stack < Style > _styles          = new Stack < Style > ( ) ;
+        private          bool            attached ;
 
-        public Visitor3 ( FlowDocument document , MyFlowDocumentScrollViewer flowViewer ):base(SyntaxWalkerDepth.Trivia)
+        public Visitor3 ( FlowDocument document , MyFlowDocumentScrollViewer flowViewer ) :
+            base ( SyntaxWalkerDepth.Trivia )
         {
             FlowViewer = flowViewer ;
-            _document = document ;
+            _document  = document ;
         }
+
+        public MyFlowDocumentScrollViewer FlowViewer { get ; }
 
         public async Task DefaultVisitAsync ( SyntaxNode node )
         {
@@ -50,14 +51,14 @@ namespace AnalysisControls
         #region Overrides of CSharpSyntaxWalker
         public override void Visit ( SyntaxNode node )
         {
-            RecordLocation(node.GetLocation());
+            RecordLocation ( node.GetLocation ( ) ) ;
             var style = FindStyle ( node ) ;
-            bool doPop = false;
-            if ( style != null ) 
+            var doPop = false ;
+            if ( style != null )
             {
                 Styles.Push ( _curStyle ) ;
-                doPop = true ;
-                _curStyle = new Style(typeof(Run), _curStyle);
+                doPop     = true ;
+                _curStyle = new Style ( typeof ( Run ) , _curStyle ) ;
                 // MergeStyle ( _curStyle , style ) ;
             }
 
@@ -69,12 +70,13 @@ namespace AnalysisControls
 
             var b = VisualTreeHelper.GetDescendantBounds ( FlowViewer ) ;
             Logger.Info ( "bounds is {b}" , b ) ;
-            var fileLinePositionSpan = node.GetLocation().GetMappedLineSpan() ;
-            var x = fileLinePositionSpan.StartLinePosition;
+            var fileLinePositionSpan = node.GetLocation ( ).GetMappedLineSpan ( ) ;
+            var x = fileLinePositionSpan.StartLinePosition ;
             DependencyObject elem = FlowViewer.ScrollViewer ;
-            if ( elem != null ) {
+            if ( elem != null )
+            {
                 var count = VisualTreeHelper.GetChildrenCount ( elem ) ;
-                for ( int i = 0 ; i < count ; i ++ )
+                for ( var i = 0 ; i < count ; i ++ )
                 {
                     elem = FlowViewer ;
                     var child = VisualTreeHelper.GetChild ( elem , 0 ) ;
@@ -83,7 +85,7 @@ namespace AnalysisControls
             }
         }
 
-        public Stack <Style> Styles { get { return _styles ; } } 
+        public Stack < Style > Styles { get { return _styles ; } }
 
         private Style FindStyle ( SyntaxNode node )
         {
@@ -91,55 +93,62 @@ namespace AnalysisControls
             return r as Style ;
         }
 
-        private void RecordLocation(Location getLocation)
+        private void RecordLocation ( Location getLocation )
         {
-            var line = getLocation.GetLineSpan().StartLinePosition.Line;
+            var line = getLocation.GetLineSpan ( ).StartLinePosition.Line ;
             Logger.Trace (
                           "Start position: {start}"
                         , getLocation.GetMappedLineSpan ( ).StartLinePosition
                          ) ;
             Logger.Info ( "{line} > ? {_curLine}" , line , _curLine ) ;
-            if (line > _curLine)
+            if ( line > _curLine )
             {
-                for ( ; _curLine < line - 1; _curLine += 1 )
+                for ( ; _curLine < line - 1 ; _curLine += 1 )
                 {
                     if ( _curLine >= 0 )
                     {
-                        Logger.Warn( "Insert New line {line}" , _curLine ) ;
-                        _document.Blocks.Add ( new Paragraph ( ) { Margin = new Thickness(0)} ) ;
+                        Logger.Warn ( "Insert New line {line}" , _curLine ) ;
+                        _document.Blocks.Add ( new Paragraph { Margin = new Thickness ( 0 ) } ) ;
                     }
                 }
-                Logger.Trace("New line {line}", line);
+
+                Logger.Trace ( "New line {line}" , line ) ;
 
                 if ( _curBlock != null )
                 {
-                    
                     // var rr = _curBlock.Inlines.FirstInline.ContentStart.GetCharacterRect (
-                                                                                 // LogicalDirection
-                                                                                    // .Forward
-                                                                                // ) ;
+                    // LogicalDirection
+                    // .Forward
+                    // ) ;
                     // Logger.Warn ( "{line} {}" , line, rr ) ;
                     // _oldLineStart += _curBlock.LineHeight ;
                 }
 
-                Logger.Warn($"create new paragraph");
-                _curBlock = new Paragraph ( ) { KeepTogether = true, KeepWithNext = true, Margin = new Thickness(0) } ;
+                Logger.Warn ( "create new paragraph" ) ;
+                _curBlock = new Paragraph
+                            {
+                                KeepTogether = true
+                              , KeepWithNext = true
+                              , Margin       = new Thickness ( 0 )
+                            } ;
                 // AdornerDecorator d = new AdornerDecorator();
                 _curLine += 1 ;
                 // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
                 //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
                 //_document.Blocks.Add ( _curBlock ) ;
-                Logger.Warn($"add to blocks");
+                Logger.Warn ( "add to blocks" ) ;
                 _document.Blocks.Add ( _curBlock ) ;
-                if(FlowViewer.ScrollViewer != null && !attached)
+                if ( FlowViewer.ScrollViewer != null
+                     && ! attached )
                 {
-                    FlowViewer.ScrollViewer.ScrollChanged += ScrollViewerOnScrollChanged;
-                    attached = true ;
+                    FlowViewer.ScrollViewer.ScrollChanged += ScrollViewerOnScrollChanged ;
+                    attached                              =  true ;
                 }
+
                 var offset = FlowViewer.ScrollViewer?.HorizontalOffset ;
                 //_curLine = line;
                 Logger.Warn ( "mark at start of line {offset}" , offset ) ;
-                _isAtStartOfLine = true;
+                _isAtStartOfLine = true ;
             }
         }
 
@@ -150,10 +159,10 @@ namespace AnalysisControls
 
         public override void VisitToken ( SyntaxToken token )
         {
-            VisitLeadingTrivia(token);
-            DoToken(token);
-            VisitTrailingTrivia(token);
-            base.VisitToken(token);
+            VisitLeadingTrivia ( token ) ;
+            DoToken ( token ) ;
+            VisitTrailingTrivia ( token ) ;
+            base.VisitToken ( token ) ;
         }
 
         private void DoToken ( SyntaxToken token )
@@ -162,24 +171,26 @@ namespace AnalysisControls
             var text = token.ToString ( ) ;
             if ( _isAtStartOfLine )
             {
-                var startChar = token.GetLocation ( ).GetMappedLineSpan ( ).StartLinePosition.Character ;
+                var startChar = token.GetLocation ( )
+                                     .GetMappedLineSpan ( )
+                                     .StartLinePosition.Character ;
                 if ( startChar > 0 )
                 {
                     LogManager.GetCurrentClassLogger ( ).Info ( "apending {s}" , startChar ) ;
-                    var x = new String ( ' ' , startChar ) ;
+                    var x = new string ( ' ' , startChar ) ;
                     text = x + text ;
                 }
 
                 _isAtStartOfLine = false ;
             }
-            Run run = new Run ( text ) ;
+
+            var run = new Run ( text ) ;
 
 
-            
+
             var resource = _document.TryFindResource ( token.Kind ( ) ) ;
             if ( resource is Style style )
             {
-
             }
 
             _curBlock.Inlines.Add ( run ) ;
@@ -187,13 +198,13 @@ namespace AnalysisControls
 
         private void MergeStyle ( Style curStyle , Style style )
         {
-            foreach (var styleSetter in style.Setters)
+            foreach ( var styleSetter in style.Setters )
             {
-                if (styleSetter is Setter s)
+                if ( styleSetter is Setter s )
                 {
-                    Setter s2 = new Setter(s.Property, s.Value, s.TargetName);
+                    var s2 = new Setter ( s.Property , s.Value , s.TargetName ) ;
 //                    Logger.Info ( "adding setter {s2}" , s2 ) ;
-                    curStyle.Setters.Add(s2);
+                    curStyle.Setters.Add ( s2 ) ;
                     //toRemove.Add(s2);
                 }
             }
@@ -205,21 +216,19 @@ namespace AnalysisControls
             {
                 DoTrivia ( syntaxTrivia ) ;
             }
-
         }
 
         private void DoTrivia ( in SyntaxTrivia syntaxTrivia )
         {
-
             if ( syntaxTrivia.Kind ( ) == SyntaxKind.EndOfLineTrivia )
             {
                 return ;
             }
 
-            RecordLocation(syntaxTrivia.GetLocation());
+            RecordLocation ( syntaxTrivia.GetLocation ( ) ) ;
 
-            var text = syntaxTrivia.ToString(); 
-            if (syntaxTrivia.Kind() == SyntaxKind.WhitespaceTrivia)
+            var text = syntaxTrivia.ToString ( ) ;
+            if ( syntaxTrivia.Kind ( ) == SyntaxKind.WhitespaceTrivia )
             {
                 if ( text.Contains ( "\r" ) )
                 {
@@ -228,17 +237,16 @@ namespace AnalysisControls
             }
 
 
-            Run run = new Run(text);
+            var run = new Run ( text ) ;
             // var resource = _document.TryFindResource(syntaxTrivia.Kind());
-            _curBlock.Inlines.Add(run);
-            
+            _curBlock.Inlines.Add ( run ) ;
         }
 
         private new void VisitTrailingTrivia ( SyntaxToken token )
         {
-            foreach (var syntaxTrivia in token.TrailingTrivia)
+            foreach ( var syntaxTrivia in token.TrailingTrivia )
             {
-                DoTrivia(syntaxTrivia);
+                DoTrivia ( syntaxTrivia ) ;
             }
         }
 

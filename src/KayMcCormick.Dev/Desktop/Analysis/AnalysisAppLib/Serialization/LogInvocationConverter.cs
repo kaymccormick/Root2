@@ -16,7 +16,7 @@ using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Serialization
 {
-    public class LogInvocationConverter : JsonConverter<ILogInvocation>
+    public class LogInvocationConverter : JsonConverter < ILogInvocation >
     {
         #region Overrides of JsonConverter<ILogInvocation>
         public override ILogInvocation Read (
@@ -29,9 +29,9 @@ namespace AnalysisAppLib.Serialization
         }
 
         public override void Write (
-            Utf8JsonWriter        writer
-          , [ NotNull ] ILogInvocation        value
-          , JsonSerializerOptions options
+            Utf8JsonWriter             writer
+          , [ NotNull ] ILogInvocation value
+          , JsonSerializerOptions      options
         )
         {
             if ( value == null )
@@ -39,22 +39,23 @@ namespace AnalysisAppLib.Serialization
                 throw new ArgumentNullException ( nameof ( value ) ) ;
             }
 
-            writer.WriteStartObject();
+            writer.WriteStartObject ( ) ;
             writer.WriteString ( "SourceLocation" , value.SourceLocation ) ;
             writer.WriteString ( "LoggerType" ,     value.LoggerType ) ;
             writer.WriteString ( "MethodName" ,     value.MethodName ) ;
             writer.WriteString ( "Code" ,           value.Code ) ;
             writer.WritePropertyName ( "RelevantNode" ) ;
             JsonSerializer.Serialize ( writer , value.TransformedRelevantNode ) ;
-            writer.WriteString("PrecedingCode",     value.PrecedingCode);
-            writer.WriteString ( "FollowingCode" ,  value.FollowingCode ) ;
+            writer.WriteString ( "PrecedingCode" , value.PrecedingCode ) ;
+            writer.WriteString ( "FollowingCode" , value.FollowingCode ) ;
             writer.WriteStartArray ( "Arguments" ) ;
             foreach ( var logInvocationArgument in value.Arguments )
             {
                 JsonSerializer.Serialize ( writer , logInvocationArgument.Pojo , options ) ;
             }
-            writer.WriteEndArray();
-            writer.WriteEndObject();
+
+            writer.WriteEndArray ( ) ;
+            writer.WriteEndObject ( ) ;
         }
         #endregion
     }

@@ -18,33 +18,38 @@ using System.Net.Sockets ;
 using System.Text ;
 using System.Text.Json ;
 using System.Xml ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
-
-
     public class LogListener : IDisposable
 
 
     {
-        private const string log4jNsPrefix = "log4j" ;
-        private const string nlogNsPrefix  = "nlog" ;
-        private const string loggerAttributeName = "logger";
-        private readonly string[] levels =
-            new[] { "TRACE" , "DEBUG" , "INFO" , "WARN" , "ERROR" , "FATAL" } ;
+        private const string log4jNsPrefix       = "log4j" ;
+        private const string nlogNsPrefix        = "nlog" ;
+        private const string loggerAttributeName = "logger" ;
 
-        private readonly int                   _port ;
-        private readonly LogViewModel          _viewModel ;
-        private          UdpClient             _udpClient ;
-        private          JsonSerializerOptions _options ;
+        private readonly int          _port ;
+        private readonly LogViewModel _viewModel ;
+
+        private readonly string[] levels =
+        {
+            "TRACE" , "DEBUG" , "INFO" , "WARN" , "ERROR" , "FATAL"
+        } ;
+
+        private JsonSerializerOptions _options ;
+        private UdpClient             _udpClient ;
 
         public LogListener ( int port , LogViewModel viewModel )
         {
             _port      = port ;
             _viewModel = viewModel ;
         }
+
+        #region IDisposable
+        public void Dispose ( ) { _udpClient?.Dispose ( ) ; }
+        #endregion
 
         public void Start ( )
         {
@@ -144,22 +149,22 @@ namespace AnalysisAppLib
             LogEventInstance instance ;
             using ( var reader = XmlReader.Create (
                                                    new MemoryStream ( resultBuffer )
-                                                 , new XmlReaderSettings ( )
+                                                 , new XmlReaderSettings
                                                    {
                                                        NameTable = xmlNameTable
                                                    }
                                                  , xmlParserContext
                                                   ) )
             {
-
                 var document = new XmlDocument ( ) ;
 
                 document.Load ( reader ) ;
 
                 instance = new LogEventInstance ( ) ;
                 var elem = document.DocumentElement ;
-                if ( elem != null ) {
-                    var logger = elem.GetAttribute (loggerAttributeName) ;
+                if ( elem != null )
+                {
+                    var logger = elem.GetAttribute ( loggerAttributeName ) ;
                     var level = elem.GetAttribute ( "level" ) ;
                     var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
                     var timestamp = elem.GetAttribute ( "timestamp" ) ;
@@ -253,9 +258,5 @@ namespace AnalysisAppLib
             dtDateTime = dtDateTime.AddMilliseconds ( javaTimeStamp ).ToLocalTime ( ) ;
             return dtDateTime ;
         }
-
-        #region IDisposable
-        public void Dispose ( ) { _udpClient?.Dispose ( ) ; }
-        #endregion
     }
 }

@@ -9,18 +9,15 @@
 // 
 // ---
 #endregion
-using NLog ;
 using NLog.Targets ;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public class AppFileTarget : FileTarget
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="name"></param>
         public AppFileTarget ( string name ) : base ( name )
@@ -28,6 +25,5 @@ namespace KayMcCormick.Dev.Logging
             // ConcurrentWrites = false ;
             // KeepFileOpen = true ;
         }
-        
     }
 }

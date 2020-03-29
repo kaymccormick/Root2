@@ -48,7 +48,10 @@ namespace ProjTests
         public void Dispose ( ) { _projInterfaceApp.Dispose ( ) ; }
         #endregion
         #region Implementation of IAsyncLifetime
-        public async Task InitializeAsync ( ) {  }
+        public Task InitializeAsync ( )
+        {
+            return Task.CompletedTask ;
+        }
 
         public void Action ( )
         {
@@ -56,7 +59,10 @@ namespace ProjTests
             // _projInterfaceApp.InitializeComponent();
         }
 
-        public async Task DisposeAsync ( ) { }
+        public Task DisposeAsync ( )
+        {
+            return Task.CompletedTask ;
+        }
         #endregion
     }
 }

@@ -47,7 +47,9 @@ namespace AnalysisAppLib
                                                                                                      ( Logger
                                                                                                      ).Assembly
                                                                                                       .Location
-                                                                                                )).AddSyntaxTrees(syntaxTree);
+                                                                                                )
+                                                              )
+                                               .AddSyntaxTrees ( syntaxTree ) ;
 
             return compilation ;
         }
@@ -72,22 +74,24 @@ namespace AnalysisAppLib
                                            compilation.GetSemanticModel ( syntaxTree )
                                          , null
                                          , syntaxTree.GetRoot ( )
-                                         , syntaxTree, ""
+                                         , syntaxTree
+                                         , ""
                                           ) ;
         }
 
-        public static ICodeAnalyseContext Parse ( [ NotNull ] string code , [ NotNull ] string assemblyName )
+        public static ICodeAnalyseContext Parse (
+            [ NotNull ] string code
+          , [ NotNull ] string assemblyName
+        )
         {
-            if ( code == null)
+            if ( code == null )
             {
                 throw new ArgumentNullException ( nameof ( code ) ) ;
             }
 
-            if ( String.IsNullOrWhiteSpace ( code ) )
+            if ( string.IsNullOrWhiteSpace ( code ) )
             {
-
                 throw new ArgumentOutOfRangeException ( nameof ( code ) , "Empty code supplied" ) ;
-
             }
 
             if ( assemblyName == null )
@@ -96,8 +100,8 @@ namespace AnalysisAppLib
             }
 
             var syntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
-            var compilation = AnalysisService.CreateCompilation ( assemblyName , syntaxTree ) ;
-            return AnalysisService.CreateFromCompilation ( syntaxTree , compilation ) ;
+            var compilation = CreateCompilation ( assemblyName , syntaxTree ) ;
+            return CreateFromCompilation ( syntaxTree , compilation ) ;
         }
     }
 }

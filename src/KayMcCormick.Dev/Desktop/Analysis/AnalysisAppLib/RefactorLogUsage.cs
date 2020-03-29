@@ -10,19 +10,17 @@
 // ---
 #endregion
 using System.Threading.Tasks ;
-using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CodeRefactorings ;
 
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// Refactoring for logging.
+    ///     Refactoring for logging.
     /// </summary>
-    
     public class RefactorLogUsage : CodeRefactoringProvider
     {
         /// <summary>
-        /// Main refactoring routine.
+        ///     Main refactoring routine.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -46,13 +44,8 @@ namespace AnalysisAppLib
             var model = await document.GetSemanticModelAsync ( cancellationToken ) ;
             if ( model != null )
             {
-                
-
-
-
                 // var query = Common.Query1 ( root 
-                    // , model ) ;
-
+                // , model ) ;
             }
         }
     }

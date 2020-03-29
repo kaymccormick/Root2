@@ -15,7 +15,7 @@ namespace AnalysisAppLib.Projects
     {
         private string _name ;
         #region Implementation of IBrowserNode
-        public string Name { get => _name ; set => _name = value ; }
+        public string Name { get { return _name ; } set { _name = value ; } }
         #endregion
     }
 }

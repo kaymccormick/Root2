@@ -1,9 +1,7 @@
 ﻿using System ;
-using System.Collections ;
 using System.ComponentModel ;
 using System.ComponentModel.Design.Serialization ;
 using System.Globalization ;
-using System.Reflection ;
 using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
@@ -13,52 +11,39 @@ using JetBrains.Annotations ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     [ TypeConverter ( typeof ( ResolveTypeConverter ) ) ]
     [ MarkupExtensionReturnType ( typeof ( object ) ) ]
     public class ResolveExtension : MarkupExtension
     {
-        private Type _componentType ;
-
         /// <summary>
-        /// 
         /// </summary>
         public ResolveExtension ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="componentType"></param>
-        public ResolveExtension ( Type componentType ) { _componentType = componentType ; }
+        public ResolveExtension ( Type componentType ) { ComponentType = componentType ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public Type ComponentType
-        {
-            get { return _componentType ; }
-            set { _componentType = value ; }
-        }
+        public Type ComponentType { get ; set ; }
 
         #region Overrides of MarkupExtension
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public override object
-            
-            ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
+        public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
             if ( serviceProvider == null )
             {
                 throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
             }
 
-            
+
             var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                      typeof ( IAmbientProvider )
                                                                     ) ;
@@ -95,24 +80,20 @@ namespace KayMcCormick.Lib.Wpf
 
             if ( scope != null )
             {
-                return scope.Resolve ( _componentType ) ;
+                return scope.Resolve ( ComponentType ) ;
             }
-            else
-            {
-                throw new Exception ( "No lifetime scope" ) ;
-            }
+
+            throw new Exception ( "No lifetime scope" ) ;
         }
         #endregion
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public class ResolveTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="destinationType"></param>
@@ -125,7 +106,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="culture"></param>
@@ -159,20 +139,17 @@ namespace KayMcCormick.Lib.Wpf
                                             ) ;
             }
 
-            return ( object ) new InstanceDescriptor (
-                                                      ( MemberInfo ) typeof ( ResolveExtension )
-                                                         .GetConstructor (
-                                                                          new Type[ 1 ]
-                                                                          {
-                                                                              typeof ( object )
-                                                                          }
-                                                                         )
-                                                    , ( ICollection ) new object[ 1 ]
-                                                                      {
-                                                                          resolveExtension
-                                                                             .ComponentType
-                                                                      }
-                                                     ) ;
+            return new InstanceDescriptor (
+                                           typeof ( ResolveExtension ).GetConstructor (
+                                                                                       new Type[ 1 ]
+                                                                                       {
+                                                                                           typeof (
+                                                                                               object
+                                                                                           )
+                                                                                       }
+                                                                                      )
+                                         , new object[ 1 ] { resolveExtension.ComponentType }
+                                          ) ;
         }
         #endregion
     }

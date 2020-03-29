@@ -12,8 +12,8 @@
   </UserControl.Resources>
   <DockPanel LastChildFill="True">
     <StatusBar DockPanel.Dock="Bottom">
-      <StatusBarItem Content=""/>
-      </StatusBar>
+      <StatusBarItem Content="" />
+    </StatusBar>
     <ItemsControl
       ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=analysisControls:SpanTT}, Path=Spans}" />
   </DockPanel>

@@ -19,6 +19,33 @@ namespace ProjInterface
 {
     public sealed class IconsSource : IIconsSource
     {
+        private Image       _directoryIcon ;
+        private ImageSource _directoryIconImageSource ;
+        private IDictionary _iconsResources ;
+        private Image       _projectDirectoryIcon ;
+        private ImageSource _projectDirectoryIconImageSource ;
+
+        public IDictionary IconsResources
+        {
+            get { return _iconsResources ; }
+            set
+            {
+                if ( _iconsResources != value )
+                {
+                    _iconsResources = value ;
+                }
+
+                if ( _iconsResources != null )
+                {
+                    DirectoryIcon = new Image
+                                    {
+                                        Source =
+                                            ( ImageSource ) _iconsResources[ typeof ( Directory ) ]
+                                    } ;
+                }
+            }
+        }
+
         public Image ProjectDirectoryIcon
         {
             get
@@ -70,7 +97,8 @@ namespace ProjInterface
             {
                 return ( ImageSource ) IconsResources[ typeof ( File ) ] ;
             }
-            throw new InvalidOperationException();
+
+            throw new InvalidOperationException ( ) ;
         }
 
         public Image DirectoryIcon
@@ -78,32 +106,5 @@ namespace ProjInterface
             get { return _directoryIcon ; }
             set { _directoryIcon = value ; }
         }
-
-        public IDictionary IconsResources
-        {
-            get { return _iconsResources ; }
-            set
-            {
-                if ( _iconsResources != value )
-                {
-                    _iconsResources = value ;
-                }
-
-                if ( _iconsResources != null )
-                {
-                    DirectoryIcon = new Image
-                                    {
-                                        Source =
-                                            ( ImageSource ) _iconsResources[ typeof ( Directory ) ]
-                                    } ;
-                }
-            }
-        }
-
-        private Image       _directoryIcon ;
-        private Image       _projectDirectoryIcon ;
-        private ImageSource _directoryIconImageSource ;
-        private IDictionary _iconsResources ;
-        private ImageSource _projectDirectoryIconImageSource ;
     }
 }

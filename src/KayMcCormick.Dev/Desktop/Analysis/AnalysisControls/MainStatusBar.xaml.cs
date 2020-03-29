@@ -3,13 +3,10 @@
 namespace AnalysisControls
 {
     /// <summary>
-    /// Interaction logic for MainStatusBar.xaml
+    ///     Interaction logic for MainStatusBar.xaml
     /// </summary>
     public partial class MainStatusBar : UserControl
     {
-        public MainStatusBar()
-        {
-            InitializeComponent();
-        }
+        public MainStatusBar ( ) { InitializeComponent ( ) ; }
     }
 }

@@ -1,4 +1,4 @@
-﻿    #region header
+﻿#region header
 // Kay McCormick (mccor)
 // 
 // Analysis

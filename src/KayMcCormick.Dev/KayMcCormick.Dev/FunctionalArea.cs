@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations ;
-
-namespace KayMcCormick.Dev
+﻿namespace KayMcCormick.Dev
 {
     
     internal enum FunctionalArea

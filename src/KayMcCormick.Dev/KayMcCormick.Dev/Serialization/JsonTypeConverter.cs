@@ -17,13 +17,11 @@ using JetBrains.Annotations ;
 namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
-    /// 
     /// </summary>
     public class JsonTypeConverter : JsonConverter < Type >
     {
         #region Overrides of JsonConverter<Type>
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
@@ -39,7 +37,6 @@ namespace KayMcCormick.Dev.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="value"></param>
@@ -60,10 +57,10 @@ namespace KayMcCormick.Dev.Serialization
                 throw new ArgumentNullException ( nameof ( value ) ) ;
             }
 
-            writer.WriteStartObject();
-            writer.WriteString ( "FullName" , value.FullName ) ;
+            writer.WriteStartObject ( ) ;
+            writer.WriteString ( "FullName" ,              value.FullName ) ;
             writer.WriteString ( "AssemblyQualifiedName" , value.AssemblyQualifiedName ) ;
-            writer.WriteEndObject (  );
+            writer.WriteEndObject ( ) ;
         }
         #endregion
     }

@@ -13,7 +13,8 @@ using System.Collections.ObjectModel ;
 
 namespace AnalysisAppLib
 {
-    class BrowserNodeCollection : ObservableCollection<IBrowserNode>, IBrowserNodeCollection
+    internal class BrowserNodeCollection : ObservableCollection < IBrowserNode >
+      , IBrowserNodeCollection
     {
     }
 }

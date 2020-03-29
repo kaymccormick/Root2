@@ -9,13 +9,11 @@ using System.Windows.Markup ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
     public class ControlTemplateConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -34,22 +32,23 @@ namespace KayMcCormick.Lib.Wpf
                 return null ;
             }
 
-            ControlTemplate x = ( ControlTemplate ) value ;
+            var x = ( ControlTemplate ) value ;
             var t = x.Template ;
-            foreach (var fieldInfo in t.GetType()
-                                       .GetFields(
-                                                  BindingFlags.Instance | BindingFlags.NonPublic
-                                                 ))
+            foreach ( var fieldInfo in t.GetType ( )
+                                        .GetFields (
+                                                    BindingFlags.Instance | BindingFlags.NonPublic
+                                                   ) )
             {
-                Debug.WriteLine(fieldInfo.Name);
+                Debug.WriteLine ( fieldInfo.Name ) ;
             }
 
-            foreach (var fieldInfo in t.GetType()
-                                       .GetProperties(
-                                                  BindingFlags.Instance | BindingFlags.NonPublic
-                                                 ))
+            foreach ( var fieldInfo in t.GetType ( )
+                                        .GetProperties (
+                                                        BindingFlags.Instance
+                                                        | BindingFlags.NonPublic
+                                                       ) )
             {
-                Debug.WriteLine(fieldInfo.Name);
+                Debug.WriteLine ( fieldInfo.Name ) ;
             }
 
             try
@@ -57,7 +56,7 @@ namespace KayMcCormick.Lib.Wpf
                 var xaml = XamlWriter.Save ( value ) ;
                 Debug.WriteLine ( xaml ) ;
                 var result = XamlReader.Parse ( xaml ) ;
-                Debug.WriteLine ( $"{result.GetType().FullName}");
+                Debug.WriteLine ( $"{result.GetType ( ).FullName}" ) ;
                 return result ;
             }
             catch ( Exception ex )
@@ -67,14 +66,21 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
         #endregion
     }
 }

@@ -14,7 +14,7 @@ using System.ServiceModel ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
-using KayMcCormick.Dev.ServiceImplementation ;
+using KayMcCormick.Dev.Service ;
 
 namespace KayMcCormick.Dev.Application
 {

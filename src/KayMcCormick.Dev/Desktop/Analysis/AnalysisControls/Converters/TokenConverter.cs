@@ -18,8 +18,10 @@ namespace AnalysisControls.Converters
         {
             if ( value is SyntaxToken x )
             {
-                return x.ToFullString() ;
-            } else if ( value is SyntaxTrivia t)
+                return x.ToFullString ( ) ;
+            }
+
+            if ( value is SyntaxTrivia t )
             {
                 return t.ToString ( ) ;
             }
@@ -33,7 +35,15 @@ namespace AnalysisControls.Converters
             return null ;
         }
 
-        public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }
+        public object ConvertBack (
+            object      value
+          , Type        targetType
+          , object      parameter
+          , CultureInfo culture
+        )
+        {
+            return null ;
+        }
         #endregion
     }
 }

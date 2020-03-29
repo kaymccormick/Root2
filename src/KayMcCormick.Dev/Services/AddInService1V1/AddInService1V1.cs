@@ -1,25 +1,25 @@
-﻿using JetBrains.Annotations;
-using KayMcCormick.Dev.Logging;
-using NLog;
-using ServiceAddIn1;
-using System;
-using System.AddIn;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SqlTypes;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System ;
+using System.AddIn ;
+using System.Collections.Generic ;
+using System.Data ;
+using System.Data.SqlClient ;
+using System.Data.SqlTypes ;
+using System.IO ;
+using System.Linq ;
+using System.Net ;
+using System.Net.Sockets ;
+using System.Runtime.CompilerServices ;
+using System.Runtime.Serialization ;
+using System.Text ;
+using System.Text.Json ;
+using System.Text.Json.Serialization ;
+using System.Threading ;
+using System.Threading.Tasks ;
+using System.Xml ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev.Logging ;
+using NLog ;
+using ServiceAddIn1 ;
 
 namespace AddInService1V1
 {
@@ -31,39 +31,44 @@ namespace AddInService1V1
             ) ]
     public class AddInService1V1 : IService1
     {
-        private static Logger Logger = LogManager.CreateNullLogger() ;
-        private Thread _thread ;
+        private static Logger Logger = LogManager.CreateNullLogger ( ) ;
+        private        Thread _thread ;
         #region Implementation of IService1
         public bool Start ( )
         {
             try
             {
-                AppLoggingConfigHelper.Shutdown();
-                var logger_ = AppLoggingConfigHelper.EnsureLoggingConfigured(
+                AppLoggingConfigHelper.Shutdown ( ) ;
+                var logger_ = AppLoggingConfigHelper.EnsureLoggingConfigured (
+                                                                              message => Console
+                                                                                 .WriteLine (
                                                                                              message
-                                                                                                 => Console.WriteLine(message)
-                                                                                           , new AppLoggingConfiguration()
-                                                                                             {
-                                                                                                 ChainsawPort = 4111
-                                                                                             }
-                                                                                            ) ;
+                                                                                            )
+                                                                            , new
+                                                                              AppLoggingConfiguration
+                                                                              {
+                                                                                  ChainsawPort =
+                                                                                      4111
+                                                                              }
+                                                                             ) ;
                 if ( logger_ == null )
                 {
                     throw new InvalidOperationException ( "" ) ;
                 }
-                Logger = LogManager.GetCurrentClassLogger();
+
+                Logger = LogManager.GetCurrentClassLogger ( ) ;
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
                 //AppLoggingConfigHelper.ProtoLogDelegate ( ex.Message ) ;
                 //return true;
-                throw new InvalidOperationException("Unable to initialize: " + ex.Message, ex ) ;
+                throw new InvalidOperationException ( "Unable to initialize: " + ex.Message , ex ) ;
             }
 
-            Logger?.Debug("Here");
+            Logger?.Debug ( "Here" ) ;
             Console.WriteLine ( "in start" ) ;
             _thread = new Thread ( ThreadProc ) ;
-            _thread.Start();
+            _thread.Start ( ) ;
             return true ;
         }
 
@@ -78,7 +83,6 @@ namespace AddInService1V1
                         DataSource         = @"127.0.0.1\sql2017"
                       , InitialCatalog     = "ProjLob"
                       , IntegratedSecurity = true
-
                     } ;
             var c = b.ConnectionString ;
             var conn = new SqlConnection ( c ) ;
@@ -120,17 +124,16 @@ namespace AddInService1V1
                  ,         conn
                           ) ;
             }
-            
         }
 
         private static void setupTask (
-            IList < Task < UdpReceiveResult > > tasks
-          , int                                  i1
-          , IReadOnlyList < UdpClient > clients
+            IList < Task < UdpReceiveResult > >          tasks
+          , int                                          i1
+          , IReadOnlyList < UdpClient >                  clients
           , IList < ConfiguredTaskAwaitable < object > > continued
-          , StreamWriter                         @out
-          , JsonSerializerOptions                options
-          , SqlConnection                        conn
+          , StreamWriter                                 @out
+          , JsonSerializerOptions                        options
+          , SqlConnection                                conn
         )
         {
             tasks[ i1 ] = clients[ i1 ].ReceiveAsync ( ) ;
@@ -152,7 +155,7 @@ namespace AddInService1V1
 
         private static void HandleResult (
             UdpReceiveResult      result
-          , TextWriter          @out
+          , TextWriter            @out
           , JsonSerializerOptions options
           , SqlConnection         conn
         )
@@ -223,7 +226,7 @@ namespace AddInService1V1
           , string                s
         )
         {
-            LogEventInstance i = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
+            var i = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
             const string tableName = "jsonlog" ;
             const string columnName = "jsondata" ;
             var sql = "INSERT INTO " + tableName + " (" + columnName + ") VALUES (@data)" ;
@@ -249,10 +252,10 @@ namespace AddInService1V1
 
         private void ThreadProc ( )
         {
-            var spin = new SpinWait();
+            var spin = new SpinWait ( ) ;
 
             var task = Run ( ) ;
-            while (true)
+            while ( true )
             {
                 if ( task.Status    == TaskStatus.Canceled
                      || task.Status == TaskStatus.Faulted
@@ -265,16 +268,17 @@ namespace AddInService1V1
                             Logger.Fatal ( task.Exception.GetBaseException ( ).ToString ( ) ) ;
                         }
                     }
+
                     task = Run ( ) ;
                 }
-                spin.SpinOnce();
+
+                spin.SpinOnce ( ) ;
             }
-            
         }
 
         public bool Stop ( )
         {
-            _thread?.Abort();
+            _thread?.Abort ( ) ;
             _thread = null ;
             return true ;
         }
@@ -285,29 +289,32 @@ namespace AddInService1V1
 
         public bool Shutdown ( )
         {
-            _thread?.Abort();
-            _thread = null;
-            return true;
+            _thread?.Abort ( ) ;
+            _thread = null ;
+            return true ;
         }
 
         public void PerformFunc1 ( ) { Console.WriteLine ( "hello" ) ; }
     }
 
-    [Serializable]
+    [ Serializable ]
     public class UnableToInitializeException : Exception
     {
-        public UnableToInitializeException ( ) {
-        }
+        public UnableToInitializeException ( ) { }
 
-        public UnableToInitializeException ( string message ) : base ( message )
+        public UnableToInitializeException ( string message ) : base ( message ) { }
+
+        public UnableToInitializeException ( string message , Exception innerException ) : base (
+                                                                                                 message
+                                                                                               , innerException
+                                                                                                )
         {
         }
 
-        public UnableToInitializeException ( string message , Exception innerException ) : base ( message , innerException )
-        {
-        }
-
-        protected UnableToInitializeException ( [ NotNull ] SerializationInfo info , StreamingContext context ) : base ( info , context )
+        protected UnableToInitializeException (
+            [ NotNull ] SerializationInfo info
+          , StreamingContext              context
+        ) : base ( info , context )
         {
         }
     }
@@ -683,23 +690,28 @@ public class LogEventInstance
 
     private string _callerClassName ;
 
-    public object Level { get => _level ; set => _level = value ; }
+    public object Level { get { return _level ; } set { _level = value ; } }
 
-    public string LoggerName { get => _loggerName ; set => _loggerName = value ; }
+    public string LoggerName { get { return _loggerName ; } set { _loggerName = value ; } }
 
-    public string FormattedMessage { get => _formattedMessage ; set => _formattedMessage = value ; }
+    public string FormattedMessage
+    {
+        get { return _formattedMessage ; }
+        set { _formattedMessage = value ; }
+    }
 
-    public IDictionary < string , object > Properties => _properties ;
+    public IDictionary < string , object > Properties { get { return _properties ; } }
 
-    public string CallerClassName { get => _callerClassName ; set => _callerClassName = value ; }
+    public string CallerClassName
+    {
+        get { return _callerClassName ; }
+        set { _callerClassName = value ; }
+    }
 
     public IDictionary < string , object > UnknownFields { get ; } =
         new Dictionary < string , object > ( ) ;
 
-    public void AddUnknown ( string field , JsonElement elem )
-    {
-        UnknownFields[ field ] = elem ;
-    }
+    public void AddUnknown ( string field , JsonElement elem ) { UnknownFields[ field ] = elem ; }
 
     public override string ToString ( )
     {

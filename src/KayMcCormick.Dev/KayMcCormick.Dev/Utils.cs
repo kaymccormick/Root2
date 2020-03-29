@@ -1,8 +1,4 @@
-﻿using JetBrains.Annotations ;
-using KayMcCormick.Dev.Logging ;
-using NLog ;
-using NLog.Fluent ;
-using System ;
+﻿using System ;
 using System.CodeDom.Compiler ;
 using System.Collections ;
 using System.Collections.Generic ;
@@ -13,30 +9,30 @@ using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Xml.Serialization ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.StackTrace ;
 using KayMcCormick.Dev.Tracing ;
+using NLog ;
+using NLog.Fluent ;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>
-    /// 
     /// </summary>
     public static class Utils
     {
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private static BinaryFormatter _binaryFormatter = new BinaryFormatter ( ) ;
+        private static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter ( ) ;
 
-        
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="e"></param>
         /// <param name="level"></param>
         /// <param name="logger"></param>
-        
         [ SuppressMessage (
                               "Design"
                             , "CA1031:Do not catch general exception types"
@@ -84,7 +80,6 @@ namespace KayMcCormick.Dev
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="out"></param>
         public static void PerformLogConfigDump ( TextWriter @out )
@@ -97,9 +92,9 @@ namespace KayMcCormick.Dev
         }
 
         private static void DoDump (
-            IndentedTextWriter     dumpConfig
-          , IDictionary            doDumpConfig
-          ,  int depth = 0
+            IndentedTextWriter dumpConfig
+          , IDictionary        doDumpConfig
+          , int                depth = 0
         )
         {
             foreach ( var key in doDumpConfig.Keys )
@@ -136,7 +131,6 @@ namespace KayMcCormick.Dev
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
@@ -176,7 +170,7 @@ namespace KayMcCormick.Dev
                                                     , Type          = tm.Type
                                                     , Method        = tm.Method
                                                     , ParameterList = p.List
-                                                    , Parameters    = p.Parameters.ToList (  )
+                                                    , Parameters    = p.Parameters.ToList ( )
                                                     , File          = fl.File
                                                     , Line          = fl.Line
                                                   }
@@ -184,7 +178,6 @@ namespace KayMcCormick.Dev
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="eException"></param>
         public static void LogParsedExceptions ( [ NotNull ] Exception eException )
@@ -213,9 +206,9 @@ namespace KayMcCormick.Dev
             try
             {
                 _binaryFormatter.Serialize ( s , eException ) ;
-                s.Flush();
+                s.Flush ( ) ;
                 s.Seek ( 0 , SeekOrigin.Begin ) ;
-                
+
                 var bytes = new byte[ s.Length ] ;
                 var sLength = ( int ) s.Length ;
 
@@ -238,14 +231,13 @@ namespace KayMcCormick.Dev
                                                               , sw.ToString ( )
                                                                ) ;
                 Debug.WriteLine ( eException.ToString ( ) ) ;
-            } catch(Exception ex)
+            }
+            catch ( Exception ex )
             {
-
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="eException"></param>
         /// <returns></returns>

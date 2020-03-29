@@ -15,51 +15,48 @@ using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading ;
-using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
-    public sealed class LogViewModel : INotifyPropertyChanged, IViewModel
+    public sealed class LogViewModel : INotifyPropertyChanged , IViewModel
     {
-        private LogEventInstanceObservableCollection _logEntries ;
+        private readonly SynchronizationContext                    _context ;
+        private readonly IDictionary < string , ViewerLoggerInfo > _dict ;
+        private          string                                    _displayName ;
 
-        
-        private ObservableCollection < ViewerLoggerInfo > rootNodes ;
-        private IDictionary < string , ViewerLoggerInfo > _dict ;
-        private ViewerLoggerInfo                          rootLogger ;
-        private SynchronizationContext                    _context ;
-        private string                                    _displayName ;
 
         public LogViewModel ( )
         {
             _context = SynchronizationContext.Current ;
-            rootLogger = new ViewerLoggerInfo ( )
+            RootLogger = new ViewerLoggerInfo
                          {
                              LoggerName = "" , PartName = "" , DisplayName = "Root logger"
                          } ;
-            _logEntries = new LogEventInstanceObservableCollection ( ) ;
-            _dict       = new Dictionary < string , ViewerLoggerInfo > ( ) ;
-            rootNodes   = new ObservableCollection < ViewerLoggerInfo > ( ) ;
+            LogEntries = new LogEventInstanceObservableCollection ( ) ;
+            _dict      = new Dictionary < string , ViewerLoggerInfo > ( ) ;
+            RootNodes  = new ObservableCollection < ViewerLoggerInfo > ( ) ;
 
-            rootNodes.Add ( rootLogger ) ;
+            RootNodes.Add ( RootLogger ) ;
 
-            _dict[ "" ] = rootLogger ;
+            _dict[ "" ] = RootLogger ;
         }
 
-        public ViewerLoggerInfo RootLogger
-        {
-            get { return rootLogger ; }
-            set { rootLogger = value ; }
-        }
+        public ViewerLoggerInfo RootLogger { get ; set ; }
 
-        public ObservableCollection < ViewerLoggerInfo > RootNodes { get { return rootNodes ; } }
+        public ObservableCollection < ViewerLoggerInfo > RootNodes { get ; }
 
-        public LogEventInstanceObservableCollection LogEntries { get { return _logEntries ; } }
+        public LogEventInstanceObservableCollection LogEntries { get ; }
 
         public string DisplayName { get { return _displayName ; } set { _displayName = value ; } }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
 
         public void ParseLoggerName ( string loggerName )
         {
@@ -73,14 +70,14 @@ namespace AnalysisAppLib
         {
             var strings = loggerName.Split ( '.' ) ;
             var i = 0 ;
-            var logger = rootLogger ;
+            var logger = RootLogger ;
             var loggerName1 = "" ;
             for ( i = 0 ; i < strings.Length ; i ++ )
             {
                 loggerName1 = loggerName1 + strings[ i ] ;
                 if ( ! logger.ChildrenLoggers.TryGetValue ( strings[ i ] , out var child ) )
                 {
-                    child = new ViewerLoggerInfo ( )
+                    child = new ViewerLoggerInfo
                             {
                                 LoggerName  = loggerName
                               , PartName    = strings[ i ]
@@ -110,25 +107,19 @@ namespace AnalysisAppLib
             //var loggers = logEvent.LoggerName.Split ( '.' ) ;
 
             _context.Post (
-                           ( state ) => {
+                           state => {
                                var logEventLoggerName = logEvent.LoggerName ;
                                ParseLoggerName ( logEventLoggerName ) ;
-                               _logEntries.Add ( logEvent ) ;
+                               LogEntries.Add ( logEvent ) ;
                            }
                          , null
                           ) ;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-
-        #region Implementation of ISerializable
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
     }
 }

@@ -14,10 +14,8 @@ using AnalysisControls.Interfaces ;
 
 namespace AnalysisControls.Views
 {
-    public partial class NodePanel : UserControl, INodePanel
+    public partial class NodePanel : UserControl , INodePanel
     {
-        public NodePanel ( ) {
-            InitializeComponent();
-        }
+        public NodePanel ( ) { InitializeComponent ( ) ; }
     }
 }

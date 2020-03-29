@@ -16,46 +16,81 @@ using NLog ;
 namespace AnalysisControls.Views
 {
     /// <summary>
-    /// Interaction logic for SyntaxPanel.xaml
+    ///     Interaction logic for SyntaxPanel.xaml
     /// </summary>
     [ TitleMetadata ( "Syntax panel" ) ]
-    public sealed partial class SyntaxPanel : UserControl, INotifyPropertyChanged
+    public sealed partial class SyntaxPanel : UserControl
+      , INotifyPropertyChanged
       , IView < ISyntaxPanelViewModel >
       , IViewWithTitle
       , IControlView
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         private ISyntaxPanelViewModel _viewModel ;
 
-        private static readonly Logger
-            Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        public SyntaxPanel ( ): this(null) {
-         
-        }
+        public SyntaxPanel ( ) : this ( null ) { }
 
         public SyntaxPanel ( ISyntaxPanelViewModel viewModel )
         {
             _viewModel = viewModel ;
             if ( _viewModel != null )
             {
-                ViewModel.PropertyChanged  += ViewModelOnPropertyChanged;
-                ViewModel.PropertyChanging += ViewModelOnPropertyChanging;
+                ViewModel.PropertyChanged  += ViewModelOnPropertyChanged ;
+                ViewModel.PropertyChanging += ViewModelOnPropertyChanging ;
             }
-            InitializeComponent ( ) ;
 
+            InitializeComponent ( ) ;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        #region Implementation of IView<ISyntaxPanelViewModel>
+        public ISyntaxPanelViewModel ViewModel
+        {
+            get { return _viewModel ; }
+            set
+            {
+                if ( Equals ( value , _viewModel ) )
+                {
+                    return ;
+                }
+
+                if ( _viewModel != null )
+                {
+                    _viewModel.PropertyChanged -= ViewModelOnPropertyChanged ;
+
+                    _viewModel.PropertyChanging -= ViewModelOnPropertyChanging ;
+                    RemoveViewChangedHAndler ( ) ;
+                }
+
+                _viewModel = value ;
+                if ( _viewModel != null )
+                {
+                    _viewModel.PropertyChanged  += ViewModelOnPropertyChanged ;
+                    _viewModel.PropertyChanging += ViewModelOnPropertyChanging ;
+                    AddViewChangedHAndler ( ) ;
+                }
+
+                OnPropertyChanged ( ) ;
+            }
+        }
+        #endregion
+
+        #region Implementation of IView1
+        [ NotNull ] public string ViewTitle { get { return "Syntax Panel" ; } }
+        #endregion
 
         #region Overrides of FrameworkElement
         public override void EndInit ( )
         {
             base.EndInit ( ) ;
-            var view = (CollectionViewSource)TryFindResource("AllNodes");
-            if (view.View != null)
+            var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
+            if ( view.View != null )
             {
-                Logger.Debug("Adding ViewOnCurrentChanged handler to view.View");
-                view.View.CurrentChanged += ViewOnCurrentChanged;
+                Logger.Debug ( "Adding ViewOnCurrentChanged handler to view.View" ) ;
+                view.View.CurrentChanged += ViewOnCurrentChanged ;
             }
-
         }
         #endregion
 
@@ -179,40 +214,6 @@ namespace AnalysisControls.Views
 
             return reprVal ;
         }
-
-        #region Implementation of IView<ISyntaxPanelViewModel>
-        public ISyntaxPanelViewModel ViewModel { 
-        
-            get { return _viewModel ; }
-            set
-            {
-                if ( Equals ( value , _viewModel ) ) return ;
-                if ( _viewModel != null )
-                {
-                    _viewModel.PropertyChanged -= ViewModelOnPropertyChanged ;
-
-                    _viewModel.PropertyChanging -= ViewModelOnPropertyChanging ;
-                    RemoveViewChangedHAndler();
-                }
-
-                _viewModel = value ;
-                if ( _viewModel != null )
-                {
-                    _viewModel.PropertyChanged  += ViewModelOnPropertyChanged ;
-                    _viewModel.PropertyChanging += ViewModelOnPropertyChanging ;
-                    AddViewChangedHAndler();
-                }
-
-                OnPropertyChanged( ) ;
-            }
-        }
-        #endregion
-
-        #region Implementation of IView1
-        [ NotNull ] public string ViewTitle { get { return "Syntax Panel" ; } }
-        #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )

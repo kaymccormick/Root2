@@ -15,10 +15,6 @@ namespace AnalysisAppLib.Syntax
 {
     public class PojoClassDeclarationSyntax
     {
-        public PocoSyntaxToken Identifier { get ; }
-
-        public List < object > Members { get ; }
-
         public PojoClassDeclarationSyntax (
             in PocoSyntaxToken identifier
           , List < object >    members
@@ -27,5 +23,9 @@ namespace AnalysisAppLib.Syntax
             Identifier = identifier ;
             Members    = members ;
         }
+
+        public PocoSyntaxToken Identifier { get ; }
+
+        public List < object > Members { get ; }
     }
 }

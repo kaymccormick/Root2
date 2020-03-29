@@ -15,28 +15,16 @@ using KayMcCormick.Dev.Application ;
 using Microsoft.Build.Locator ;
 using NLog ;
 
-using Module = Autofac.Module ;
-
 namespace ConsoleApp1
 {
     internal class AppContext
 
     {
-        public ILifetimeScope Scope { get ; }
-
-        public IProjectBrowserViewModel BrowserViewModel
-        {
-            get { return _projectBrowserViewModel ; }
-            set { _projectBrowserViewModel = value ; }
-        }
-
-        public IAnalyzeCommand AnalyzeCommand { get ; }
+        private IProjectBrowserViewModel _projectBrowserViewModel ;
 
         //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
 
         public ActionBlock < ILogInvocation > actionBlock ;
-
-        private IProjectBrowserViewModel _projectBrowserViewModel ;
 
         public AppContext (
             ILifetimeScope                 scope
@@ -52,6 +40,16 @@ namespace ConsoleApp1
             AnalyzeCommand   = analyzeCommand ;
             //AnalyzeCommands = analyzeCommands ;
         }
+
+        public ILifetimeScope Scope { get ; }
+
+        public IProjectBrowserViewModel BrowserViewModel
+        {
+            get { return _projectBrowserViewModel ; }
+            set { _projectBrowserViewModel = value ; }
+        }
+
+        public IAnalyzeCommand AnalyzeCommand { get ; }
     }
 
     internal class AppModule : Module
@@ -77,9 +75,8 @@ namespace ConsoleApp1
             Init ( ) ;
             using ( var appinst = new ApplicationInstance (
                                                            new ApplicationInstanceConfiguration (
-                                                                                                 (
-                                                                                                     message
-                                                                                                 ) => {
+                                                                                                 message
+                                                                                                     => {
                                                                                                  }
                                                                                                 )
                                                           ) )
@@ -141,23 +138,28 @@ namespace ConsoleApp1
             var menu = new Menu ( "VS Instance" ) ;
             var vsInstances = MSBuildLocator.QueryVisualStudioInstances (
                                                                          new
-                                                                         VisualStudioInstanceQueryOptions ( )
+                                                                         VisualStudioInstanceQueryOptions
                                                                          {
                                                                              DiscoveryTypes =
                                                                                  DiscoveryType
                                                                                     .VisualStudioSetup
                                                                          }
                                                                         ) ;
-            var visualStudioInstances = vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
-            string RenderFunc ( VisualStudioInstance inst1 ) => $"* {inst1.Name,-30} {inst1.Version.Major:00}.{inst1.Version.Minor:00}.{inst1.Version.Build:00000}.{inst1.Version.MinorRevision:0000}  [{inst1.VisualStudioRootPath}]" ;
+            var visualStudioInstances =
+                vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
+
+            string RenderFunc ( VisualStudioInstance inst1 )
+            {
+                return
+                    $"* {inst1.Name,- 30} {inst1.Version.Major:00}.{inst1.Version.Minor:00}.{inst1.Version.Build:00000}.{inst1.Version.MinorRevision:0000}  [{inst1.VisualStudioRootPath}]" ;
+            }
+
             var choices = visualStudioInstances.Select (
-                                                        x => new MenuWrapper < VisualStudioInstance > (
-                                                                                                       x
-                                                                                                     , RenderFunc
-                                                                                                      )
+                                                        x => new MenuWrapper < VisualStudioInstance
+                                                        > ( x , RenderFunc )
                                                        ) ;
             menu.Config.SelectedAppearence =
-                new Configuration.SelectedColor ( ) { BackgroundColor = ConsoleColor.Yellow } ;
+                new Configuration.SelectedColor { BackgroundColor = ConsoleColor.Yellow } ;
             var selected = menu.Render ( choices ) ;
 #if false
             var i2 = (
@@ -170,12 +172,12 @@ namespace ConsoleApp1
             {
 #endif
             var i2 = selected.Instance ;
-                Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
-                MSBuildLocator.RegisterInstance ( i2 ) ;
+            Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
+            MSBuildLocator.RegisterInstance ( i2 ) ;
 #if false
         }
 #endif
-            Console.WriteLine("");
+            Console.WriteLine ( "" ) ;
 
 #endif
             var i = 0 ;

@@ -20,7 +20,6 @@ using KayMcCormick.Dev.Logging ;
 namespace KayMcCormick.Dev.Application
 {
     /// <summary>
-    /// 
     /// </summary>
     public abstract class ApplicationInstanceBase
     {
@@ -42,27 +41,23 @@ namespace KayMcCormick.Dev.Application
 
         /// <summary>
         /// </summary>
-        
         public virtual event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
         /// </summary>
-        
         public virtual void Initialize ( ) { }
 
         /// <summary>
         /// </summary>
         /// <param name="appModule"></param>
-        
         public abstract void AddModule ( IModule appModule ) ;
 
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        
         public virtual ILifetimeScope GetLifetimeScope ( )
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException ( ) ;
         }
 
         /// <summary>
@@ -82,7 +77,6 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// todo call from wpf
-        
         public virtual void Shutdown ( ) { }
 
         /// <summary>

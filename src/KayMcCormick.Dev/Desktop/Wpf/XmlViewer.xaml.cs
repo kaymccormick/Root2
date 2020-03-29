@@ -6,16 +6,14 @@ using System.Xml ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// Interaction logic for XmlViewer.xaml
+    ///     Interaction logic for XmlViewer.xaml
     /// </summary>
     public partial class XmlViewer : UserControl
     {
-        /// <summary>Identifies the <see cref="XmlDocument"/> dependency property.</summary>
-        
-        
+        /// <summary>Identifies the <see cref="XmlDocument" /> dependency property.</summary>
         public static readonly DependencyProperty XmlDocumentProperty =
             DependencyProperty.Register (
-                                         nameof(XmlDocument)
+                                         nameof ( XmlDocument )
                                        , typeof ( XmlDocument )
                                        , typeof ( XmlViewer )
                                        , new FrameworkPropertyMetadata (
@@ -23,20 +21,20 @@ namespace KayMcCormick.Lib.Wpf
                                                                       , FrameworkPropertyMetadataOptions
                                                                            .None
                                                                       , PropertyChangedCallback
-
                                                                       , CoerceValueCallback
-
                                                                        )
                                         ) ;
 
         /// <summary>
-        /// 
+        /// </summary>
+        public XmlViewer ( ) { InitializeComponent ( ) ; }
+
+        /// <summary>
         /// </summary>
         public XmlDocument XmlDocument
         {
-            
-            get => ( XmlDocument ) GetValue ( XmlDocumentProperty ) ;
-            set => SetValue ( XmlDocumentProperty , value ) ;
+            get { return ( XmlDocument ) GetValue ( XmlDocumentProperty ) ; }
+            set { SetValue ( XmlDocumentProperty , value ) ; }
         }
 
         private static object CoerceValueCallback ( DependencyObject d , object basevalue )
@@ -56,24 +54,18 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public XmlViewer ( ) { InitializeComponent ( ) ; }
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="document"></param>
         public void BindXMLDocument ( XmlDocument document )
         {
             if ( document == null )
             {
-                xmlTree.SetCurrentValue(ItemsControl.ItemsSourceProperty, null) ;
+                xmlTree.SetCurrentValue ( ItemsControl.ItemsSourceProperty , null ) ;
                 return ;
             }
 
             var provider = new XmlDataProvider { Document = document } ;
-            var binding = new Binding { Source = provider , XPath = "child::node()" } ;
+            var binding = new Binding { Source            = provider , XPath = "child::node()" } ;
             xmlTree.SetBinding ( ItemsControl.ItemsSourceProperty , binding ) ;
         }
     }

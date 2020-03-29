@@ -5,9 +5,7 @@ using System.Diagnostics ;
 using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
-using System.Text ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
 using AnalysisAppLib.Auth ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.ViewModel ;
@@ -28,7 +26,7 @@ namespace AnalysisAppLib
 {
     public sealed class AnalysisAppLibModule : IocModule
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         #region Overrides of Module
         protected override void AttachToComponentRegistration (
@@ -46,10 +44,8 @@ namespace AnalysisAppLib
                     x.BeginInit ( ) ;
                     x.EndInit ( ) ;
                 }
-            };
-
+            } ;
         }
-        
         #endregion
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
@@ -118,29 +114,32 @@ namespace AnalysisAppLib
                    .Where (
                            t => t.FindInterfaces (
                                                   ( type , criteria ) => {
-                                                     if ( ! type.IsGenericType )
+                                                      if ( ! type.IsGenericType )
                                                       {
                                                           return false ;
                                                       }
 
-                                                     var assemblyName = type.GetGenericTypeDefinition ( )
-                                                                            .Assembly.GetName ( ) ;
-                                                     // Logger.Warn ( $"assembly is {assemblyName}" ) ;
-                                                     if ( assemblyName
-                                                          != Assembly
-                                                            .GetCallingAssembly ( )
-                                                            .GetName ( ) )
-                                                         return false ;
+                                                      var assemblyName =
+                                                          type.GetGenericTypeDefinition ( )
+                                                              .Assembly.GetName ( ) ;
+                                                      // Logger.Warn ( $"assembly is {assemblyName}" ) ;
+                                                      if ( assemblyName
+                                                           != Assembly
+                                                             .GetCallingAssembly ( )
+                                                             .GetName ( ) )
+                                                      {
+                                                          return false ;
+                                                      }
 
-                                                     // Logger.Warn(
-                                                                 // $"{t.FullName} {type.FullName} {criteria}"
-                                                                // );
+                                                      // Logger.Warn(
+                                                      // $"{t.FullName} {type.FullName} {criteria}"
+                                                      // );
 
                                                       if ( type.GetGenericTypeDefinition ( )
                                                            == typeof ( IAnalysisBlockProvider < , ,
                                                            > ) )
                                                       {
-                                                          Logger.Warn(
+                                                          Logger.Warn (
                                                                        "Discovered class {type}"
                                                                       ) ;
                                                           return true ;

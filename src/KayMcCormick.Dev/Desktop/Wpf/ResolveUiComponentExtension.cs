@@ -20,56 +20,39 @@ using JetBrains.Annotations ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
-    /// 
     /// </summary>
-    [TypeConverter( typeof(ResolveUiComponentTypeConverter))]
-    [MarkupExtensionReturnType( typeof(UIElement))]
+    [ TypeConverter ( typeof ( ResolveUiComponentTypeConverter ) ) ]
+    [ MarkupExtensionReturnType ( typeof ( UIElement ) ) ]
     public class ResolveUiComponentExtension : MarkupExtension
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static ResolveUiComponentExtension CreateInstance ( )
-        {
-            return new ResolveUiComponentExtension ( ) ;
-        }
-
         // public T FromResolveUiComponentExtension < T > () where T : DependencyObject
         // {
-            // return (T)_lifetimeScope.Resolve(_componentType);
+        // return (T)_lifetimeScope.Resolve(_componentType);
         // }
-         // public static implicit operator DependencyObject ( ResolveUiComponentExtension ext )
-         // {
-             // return (DependencyObject)ext._lifetimeScope.Resolve(ext._componentType);
+        // public static implicit operator DependencyObject ( ResolveUiComponentExtension ext )
+        // {
+        // return (DependencyObject)ext._lifetimeScope.Resolve(ext._componentType);
         // }
-        private Type _componentType ;
         private ILifetimeScope _lifetimeScope ;
-        private string _name ;
+        private string         _name ;
 
         /// <summary>
-        /// 
         /// </summary>
-        private ResolveUiComponentExtension ( ) {
-        }
+        private ResolveUiComponentExtension ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="componentType"></param>
-        public ResolveUiComponentExtension (Type componentType ) { _componentType = componentType ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Type ComponentType
+        public ResolveUiComponentExtension ( Type componentType )
         {
-            get { return _componentType ; }
-            set { _componentType = value ; }
+            ComponentType = componentType ;
         }
 
         /// <summary>
-        /// 
+        /// </summary>
+        public Type ComponentType { get ; set ; }
+
+        /// <summary>
         /// </summary>
         public ILifetimeScope LifetimeScope
         {
@@ -78,33 +61,32 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public string Name {
-            get {
-                return _name;
-            }
-            set { _name = value ; }
+        public string Name { get { return _name ; } set { _name = value ; } }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public static ResolveUiComponentExtension CreateInstance ( )
+        {
+            return new ResolveUiComponentExtension ( ) ;
         }
 
         #region Overrides of MarkupExtension
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public override object 
-            
-            ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
+        public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
         {
             if ( serviceProvider == null )
             {
                 throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
             }
 
-            
+
             var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                      typeof ( IAmbientProvider )
                                                                     ) ;
@@ -122,7 +104,6 @@ namespace KayMcCormick.Lib.Wpf
                                                            AttachedProperties.LifetimeScopeProperty
                                                           ) ;
                     nameScope = ( NameScope ) d.GetValue ( NameScope.NameScopeProperty ) ;
-                    
                 }
             }
 
@@ -137,7 +118,7 @@ namespace KayMcCormick.Lib.Wpf
                 if ( svc != null )
                 {
                     var rootObjectProvider = ( IRootObjectProvider ) svc ;
-                    rootObject = rootObjectProvider.RootObject;
+                    rootObject = rootObjectProvider.RootObject ;
                     if ( rootObject is DependencyObject dependencyObject )
                     {
                         if ( scope == null )
@@ -146,15 +127,11 @@ namespace KayMcCormick.Lib.Wpf
                                                                                   AttachedProperties
                                                                                      .LifetimeScopeProperty
                                                                                  ) ;
-
                         }
 
                         if ( nameScope == null )
                         {
-                            var value = dependencyObject.GetValue (
-                                                                   NameScope
-                                                                      .NameScopeProperty
-                                                                  ) ;
+                            var value = dependencyObject.GetValue ( NameScope.NameScopeProperty ) ;
                             if ( value != null )
                             {
                                 nameScope = ( INameScope ) value ;
@@ -163,9 +140,10 @@ namespace KayMcCormick.Lib.Wpf
                     }
                 }
             }
+
             if ( scope != null )
             {
-                var result = scope.Resolve ( _componentType ) ;
+                var result = scope.Resolve ( ComponentType ) ;
                 if ( Name != null )
                 {
                     if ( nameScope != null )
@@ -176,11 +154,8 @@ namespace KayMcCormick.Lib.Wpf
 
                 return result ;
             }
-            else
-            {
-                throw new Exception ( "No lifetime scope" ) ;
-            }
 
+            throw new Exception ( "No lifetime scope" ) ;
         }
         #endregion
     }

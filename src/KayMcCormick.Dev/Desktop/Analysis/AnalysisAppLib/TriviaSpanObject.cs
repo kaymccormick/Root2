@@ -16,10 +16,8 @@ namespace AnalysisAppLib
 {
     public class TriviaSpanObject : SpanObject < SyntaxTrivia >
     {
-        
         public TriviaSpanObject ( TextSpan span , SyntaxTrivia instance ) : base ( span , instance )
         {
         }
-
     }
 }

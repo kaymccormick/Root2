@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics.CodeAnalysis ;
 using System.Net ;
 using System.Net.Sockets ;
 using System.Text ;
@@ -22,9 +21,9 @@ namespace KayMcCormick.Dev.Logging
     internal class ProtoLogger
     {
         private readonly Func < LogEventInfo , byte[] > _getBytes ;
-        private readonly UdpClient                      _udpClient ;
         private readonly IPEndPoint                     _ipEndPoint ;
         private readonly Layout                         _layout ;
+        private readonly UdpClient                      _udpClient ;
 
         public ProtoLogger ( )
         {
@@ -34,19 +33,19 @@ namespace KayMcCormick.Dev.Logging
             _getBytes   = DefaultGetBytes ;
         }
 
-        private byte[] DefaultGetBytes ( LogEventInfo arg )
-        {
-            var encoding = Encoding.UTF8 ;
-            return encoding.GetBytes ( _layout.Render ( arg ) ) ;
-        }
 
-        
         public ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
         {
             _udpClient  = udpClient ;
             _ipEndPoint = ipEndPoint ;
             _layout     = AppLoggingConfigHelper.XmlEventLayout ;
             _getBytes   = DefaultGetBytes ;
+        }
+
+        private byte[] DefaultGetBytes ( LogEventInfo arg )
+        {
+            var encoding = Encoding.UTF8 ;
+            return encoding.GetBytes ( _layout.Render ( arg ) ) ;
         }
 
         public void LogAction ( LogEventInfo info )

@@ -25,29 +25,33 @@ namespace AnalysisAppLib.Serialization
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of JsonConverter
-        public override bool CanConvert ( Type typeToConvert ) { return typeof(CSharpSyntaxNode).IsAssignableFrom(typeToConvert) ; }
+        public override bool CanConvert ( Type typeToConvert )
+        {
+            return typeof ( CSharpSyntaxNode ).IsAssignableFrom ( typeToConvert ) ;
+        }
         #endregion
         #region Overrides of JsonConverterFactory
-        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
+        public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
-            return ( System.Text.Json.Serialization.JsonConverter ) Activator.CreateInstance (
-                                                                                              typeof ( InnerConverter <> ).MakeGenericType (
-                                                                                                                                            typeToConvert
-                                                                                                                                           )
-                                                                                            , BindingFlags.Instance | BindingFlags.Public
-                                                                                            , null
-                                                                                            , new object[] { options }
-                                                                                            , null
-                                                                                             ) ;
+            return ( JsonConverter ) Activator.CreateInstance (
+                                                               typeof ( InnerConverter <> )
+                                                                  .MakeGenericType ( typeToConvert )
+                                                             , BindingFlags.Instance
+                                                               | BindingFlags.Public
+                                                             , null
+                                                             , new object[] { options }
+                                                             , null
+                                                              ) ;
         }
         #endregion
 
-        private class InnerConverter < T > : JsonConverter < T > where T : CSharpSyntaxNode
+        private class InnerConverter < T > : JsonConverter < T >
+            where T : CSharpSyntaxNode
         {
-            public InnerConverter (JsonSerializerOptions options ) { }
+            public InnerConverter ( JsonSerializerOptions options ) { }
 
             #region Overrides of JsonConverter<T>
             public override T Read (
@@ -58,32 +62,33 @@ namespace AnalysisAppLib.Serialization
             {
                 if ( typeToConvert == typeof ( ThisExpressionSyntax ) )
                 {
-                    var d = JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (ref 
-                                                                                                reader
-                                                                                              , options
-                                                                                               ) ;
-                    return ( T ) ( ( CSharpSyntaxNode ) SyntaxFactory.ThisExpression ( ) ) ;
-                } else if ( typeToConvert == typeof ( CompilationUnitSyntax ) )
-                {
-
                     var d =
-                        JsonSerializer.Deserialize < PojoCompilationUnit > (
+                        JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (
                                                                                             ref
                                                                                             reader
                                                                                           , options
                                                                                            ) ;
+                    return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.ThisExpression ( ) ;
+                }
 
-                    if ( d != null && d.ExternAliases != null )
+                if ( typeToConvert == typeof ( CompilationUnitSyntax ) )
+                {
+                    var d = JsonSerializer.Deserialize < PojoCompilationUnit > (
+                                                                                ref reader
+                                                                              , options
+                                                                               ) ;
+
+                    if ( d                  != null
+                         && d.ExternAliases != null )
                     {
                         foreach ( var dExternAliase in d.ExternAliases )
                         {
-
                             Logger.Info ( "{x}" , dExternAliase ) ;
-
                         }
                     }
 
-                    if ( d != null && d.Members != null )
+                    if ( d            != null
+                         && d.Members != null )
                     {
                         foreach ( var xx in d.Members )
                         {
@@ -103,16 +108,16 @@ namespace AnalysisAppLib.Serialization
               , JsonSerializerOptions options
             )
             {
-                writer.WriteStartObject();
-                writer.WriteBoolean("JsonConverter", true);
-                writer.WriteString("Type", value.GetType().AssemblyQualifiedName);
+                writer.WriteStartObject ( ) ;
+                writer.WriteBoolean ( "JsonConverter" , true ) ;
+                writer.WriteString ( "Type" , value.GetType ( ).AssemblyQualifiedName ) ;
                 writer.WritePropertyName ( "Value" ) ;
                 // MemoryStream s = new MemoryStream();
                 // value.SerializeTo(s);
                 // writer.WriteBase64StringValue(s.GetBuffer());
                 var transformed = Transforms.TransformSyntaxNode ( value ) ;
-                JsonSerializer.Serialize < object > ( writer , transformed , options ) ;
-                writer.WriteEndObject();
+                JsonSerializer.Serialize ( writer , transformed , options ) ;
+                writer.WriteEndObject ( ) ;
             }
             #endregion
         }
