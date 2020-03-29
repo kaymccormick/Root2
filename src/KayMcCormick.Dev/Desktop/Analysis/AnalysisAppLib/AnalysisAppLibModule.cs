@@ -125,16 +125,16 @@ namespace AnalysisAppLib
 
                                                      var assemblyName = type.GetGenericTypeDefinition ( )
                                                                             .Assembly.GetName ( ) ;
-                                                     Logger.Warn ( $"assembly is {assemblyName}" ) ;
+                                                     // Logger.Warn ( $"assembly is {assemblyName}" ) ;
                                                      if ( assemblyName
                                                           != Assembly
                                                             .GetCallingAssembly ( )
                                                             .GetName ( ) )
                                                          return false ;
 
-                                                     Logger.Warn(
-                                                                 $"{t.FullName} {type.FullName} {criteria}"
-                                                                );
+                                                     // Logger.Warn(
+                                                                 // $"{t.FullName} {type.FullName} {criteria}"
+                                                                // );
 
                                                       if ( type.GetGenericTypeDefinition ( )
                                                            == typeof ( IAnalysisBlockProvider < , ,
