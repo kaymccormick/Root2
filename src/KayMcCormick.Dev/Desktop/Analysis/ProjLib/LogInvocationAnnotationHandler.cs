@@ -48,7 +48,7 @@ namespace ProjLib
                     // IMethodSymbol
                     // > ( )
                     // ) ;
-                    ProjLib.ActiveSpans[ logInvAnno ] = new LogInvocationSpan ( node.Span , inv ) ;
+                    //ActiveSpans[ logInvAnno ] = new LogInvocationSpan ( node.Span , inv ) ;
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace ProjLib
         }
 
 
-        public LogInvocationAnnotationHandler ( ) : base ( null ) { }
+        public LogInvocationAnnotationHandler ( ) : base ( ) { }
 
         public object logInvAnno { get { return _logInvAnno ; } set { _logInvAnno = value ; } }
     }
