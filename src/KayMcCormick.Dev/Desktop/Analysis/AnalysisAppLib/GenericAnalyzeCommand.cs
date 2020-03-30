@@ -18,6 +18,10 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TOutput"></typeparam>
     public class GenericAnalyzeCommand < TOutput > : IAnalyzeCommand2 < TOutput >
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -30,6 +34,11 @@ namespace AnalysisAppLib
 
         private ITargetBlock < RejectedItem > _rejectDestination ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="acceptorBlock"></param>
+        /// <param name="outputBlock"></param>
         public GenericAnalyzeCommand (
             ITargetBlock < AnalysisRequest > acceptorBlock
           , ISourceBlock < TOutput >         outputBlock
@@ -40,6 +49,12 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of IAnalyzeCommand
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectNode"></param>
+        /// <returns></returns>
+        /// <exception cref="AnalyzeException"></exception>
         public async Task AnalyzeCommandAsync ( IProjectBrowserNode projectNode )
         {
             var pipeline = _acceptorBlock ;
@@ -79,6 +94,9 @@ namespace AnalysisAppLib
             await HandlePipelineResultAsync ( _finalBlock ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITargetBlock < RejectedItem > RejectDestination
         {
             get { return _rejectDestination ; }

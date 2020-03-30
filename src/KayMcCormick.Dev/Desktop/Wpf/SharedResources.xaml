@@ -389,8 +389,8 @@
           TargetType="{x:Type RepeatButton}">
           <Border x:Name="Border"
                   Margin="3"
-                  BorderBrush="Blue"
-                  CornerRadius="0"
+                  BorderBrush="Black"
+                  CornerRadius="1"
                   BorderThickness="1">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">

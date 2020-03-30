@@ -3,8 +3,17 @@ using System.Threading.Tasks.Dataflow ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IAnalyzeCommand
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectNode"></param>
+        /// <param name="rejectTarget"></param>
+        /// <returns></returns>
         Task AnalyzeCommandAsync (
             IProjectBrowserNode           projectNode
           , ITargetBlock < RejectedItem > rejectTarget

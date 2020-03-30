@@ -20,6 +20,9 @@ using JetBrains.Annotations ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class FileSystemAppExplorerItem : AppExplorerItem , INotifyPropertyChanged
     {
         private readonly IEnumerable < FileSystemAppExplorerItem > _children ;
@@ -42,6 +45,10 @@ namespace AnalysisAppLib
         private readonly string _name ;
         private readonly long   _size ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputPath"></param>
         public FileSystemAppExplorerItem ( string inputPath )
         {
             _inputPath      = inputPath ;
@@ -71,11 +78,17 @@ namespace AnalysisAppLib
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsHidden
         {
             get { return ( _fileAttributes & FileAttributes.Hidden ) == FileAttributes.Hidden ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool CanOpen { get ; } = true ;
 
         #region Implementation of INotifyPropertyChanged
@@ -86,6 +99,9 @@ namespace AnalysisAppLib
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
@@ -95,17 +111,40 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of IExplorerItem
+        /// <summary>
+        /// 
+        /// </summary>
         public override IEnumerable < AppExplorerItem > Children { get { return _children1 ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override object Extension { get { return _extension1 ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="path"></param>
         public override void Push ( Stream stream , string path ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="stream"></param>
         public override void Pull ( string path , Stream stream ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
         public override void CreateFolder ( string path ) { }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Name { get { return _name ; } }
 
         public override string FullName { get { return _fullName ; } }

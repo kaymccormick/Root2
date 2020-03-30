@@ -202,7 +202,7 @@ namespace ProjInterface
             docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
             Debug.WriteLine ( e.ActivatedType.FullName ) ;
         }
-        #endregion
+        
     }
 
     public class AppComponentException : Exception

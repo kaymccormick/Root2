@@ -13,7 +13,6 @@ using System.Threading.Tasks ;
 using Autofac ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.TestLib ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
@@ -34,28 +33,6 @@ namespace ProjTests
         private readonly ApplicationInstanceBase _applicationInstance ;
         private readonly IMessageSink            _sink ;
         private          ILifetimeScope          _lifetimeScope ;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="object" />
-        ///     class.
-        /// </summary>
-        public AppContainerFixture ( IMessageSink sink )
-        {
-            _sink = sink ;
-            FixtureLogger.LogFixtureCreatedLifecycleEvent ( GetType ( ) ) ;
-
-            _applicationInstance = new ApplicationInstance (
-                                                            new ApplicationInstanceConfiguration (
-                                                                                                  m => _sink
-                                                                                                     .OnMessage (
-                                                                                                                 new
-                                                                                                                     DiagnosticMessage (
-                                                                                                                                        m
-                                                                                                                                       )
-                                                                                                                )
-                                                                                                 )
-                                                           ) ;
-        }
 
 
         /// <summary>

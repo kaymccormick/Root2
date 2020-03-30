@@ -96,7 +96,7 @@ namespace KayMcCormick.Dev.Logging
             #region Interceptors
             if ( DoInterception )
             {
-                builder.RegisterType < LoggingInterceptor > ( ).AsSelf ( ) ;
+
             }
             #endregion
 
@@ -178,6 +178,10 @@ namespace KayMcCormick.Dev.Logging
                     {
                         instanceDesc = eventArgs.Instance.ToString ( ) ;
                     }
+                }
+                else if ( eventArgs.Instance.GetType ( ).Name == "BuildCallbackService" )
+                {
+                    instanceDesc = eventArgs.Instance.ToString();
                 }
                 else if ( eventArgs.Instance is Delegate )
                 {

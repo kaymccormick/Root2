@@ -115,7 +115,6 @@
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="JsonConverters.cs" />
     <None Include="Program-Parse.cs" />
-    <Compile Include="JsonLazyConverterFactory.cs" />
     <Compile Include="JsonSimpleFrameworkElementConverter.cs" />
     <Compile Include="ProvideCompilationUnitSyntax.cs" />
     <Compile Include="PythonControl.xaml.cs">

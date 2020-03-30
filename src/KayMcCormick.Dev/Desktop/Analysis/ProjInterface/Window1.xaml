@@ -699,9 +699,82 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <Ribbon HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100">
-        <Ribbon.ApplicationMenu><RibbonApplicationMenu SmallImageSource="{StaticResource helpStatusColor}"/></Ribbon.ApplicationMenu>
+
+      <Ribbon x:Name="Ribbon"  Background="#76406A"  >
+        <Ribbon.ApplicationMenu>
+          <RibbonApplicationMenu SmallImageSource="{StaticResource BrowserIcon}" Background="#ECC8EC" >
+            <RibbonApplicationMenuItem Header="Hello _Ribbon"
+                                                      x:Name="MenuItem1"
+                                                      />
+          </RibbonApplicationMenu>
+        </Ribbon.ApplicationMenu>
+        <RibbonTab Header="Home">
+          <RibbonGroup Header="Group1" QuickAccessToolBarId="{Binding Label}">
+            <RibbonButton 
+
+                                         Label="Button1" />
+
+            <RibbonButton 
+              
+                                         Command="Close"
+                                         Label="Close" />
+            <RibbonSplitButton 
+              
+                                         Command="FirstPage"
+                                         Label="Page Home" >
+              <RibbonMenuItem Header="Next Page" 
+                                        ImageSource="{x:Null}"
+
+                                        Command="NextPage"/>
+              <RibbonMenuItem Header="Previous Page" 
+                                        
+                                        
+                                        Command="PreviousPage"/>
+
+            </RibbonSplitButton>
+            <RibbonButton 
+                                         
+                                         Label="Button4" />
+
+          </RibbonGroup>
+
+          <RibbonGroup  
+                                    Header="Group1">
+            <RibbonSplitButton 
+                                        Label="SplitButton with ToolTip"
+                                        ToolTipDescription="SplitButton having all Tooltip properties Set. Ribbon is awesome!!!"
+                                        ToolTipFooterTitle="More Details"
+                       
+                                        ToolTipFooterDescription="Press F1 for No Help."
+
+                        
+                                        
+                                         />
+
+            <RibbonButton 
+                                         
+
+                                          Label="Button"
+                       
+                                         />
+
+            <RibbonToggleButton 
+                                         Label="ToggleButton" />
+
+            <RibbonMenuButton 
+                              
+                                         
+                                         Label="MenuButton" >
+            </RibbonMenuButton>
+
+
+
+          </RibbonGroup>
+
+        </RibbonTab>
+
       </Ribbon>
+
       <avalondock:DockingManager BorderBrush="Black" BorderThickness="1" Grid.Row="2"
                                  Grid.Column="0"
 
@@ -731,7 +804,13 @@
             <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane
                 x:Name="docpane">
-                <avalondock:LayoutDocument Title="Browser"
+
+                <avalondock:LayoutDocument Title="Browsex"
+                                           IconSource="{StaticResource BrowserIcon}"
+                                           x:Name="FrameDxocument">
+                </avalondock:LayoutDocument>
+
+<avalondock:LayoutDocument Title="Browser"
                                            IconSource="{StaticResource BrowserIcon}"
                                            x:Name="FrameDocument">
                   <Frame Background="{x:Null}"
@@ -813,6 +892,7 @@
         </avalondock:LayoutRoot>
       </avalondock:DockingManager>
       <StatusBar Grid.Row="3" Grid.Column="0" />
+      <RibbonTwoLineText HorizontalAlignment="Left" Margin="461,60.4,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100"/>
     </Grid>
   </Border>
 </RibbonWindow>

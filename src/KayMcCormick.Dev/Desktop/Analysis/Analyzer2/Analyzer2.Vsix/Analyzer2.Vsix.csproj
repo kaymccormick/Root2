@@ -58,12 +58,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Analyzer2\Analyzer2.csproj">
-      <Project>{6CE640A5-AD97-42BB-AAF4-F78CFAB6AC57}</Project>
-      <Name>Analyzer2</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

@@ -27,9 +27,9 @@ namespace ModelTests
 {
     [ BeforeAfterLogger ]
     [ LogTestMethod ]
-    public sealed class Class1 : IDisposable , IClassFixture < LoggingFixture >
+    public sealed class TestModel : IDisposable , IClassFixture < LoggingFixture >
     {
-        public Class1 ( ITestOutputHelper outputHelper , [ NotNull ] LoggingFixture loggingFixture )
+        public TestModel ( ITestOutputHelper outputHelper , [ NotNull ] LoggingFixture loggingFixture )
         {
             _outputHelper = outputHelper ;
             loggingFixture.SetOutputHelper ( _outputHelper ) ;
@@ -58,13 +58,14 @@ namespace ModelTests
         {
             var applicationInstance = new ApplicationInstance (
                                                                new
-                                                                   ApplicationInstanceConfiguration (
-                                                                                                     LogMethod
-                                                                                                   , null
-                                                                                                   , DisableLogging
-                                                                                                   , true
-                                                                                                   , true
-                                                                                                    )
+                                                                   ApplicationInstance.ApplicationInstanceConfiguration (
+                                                                                                                         LogMethod
+                                                                                                                       , ApplicationGuid
+                                                                                                                       , null
+                                                                                                                       , disableLogging : DisableLogging
+                                                                                                                       , disableRuntimeConfiguration : true
+                                                                                                                       , disableServiceHost : true
+                                                                                                                        )
                                                               ) ;
             applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
             applicationInstance.Initialize ( ) ;
@@ -73,6 +74,8 @@ namespace ModelTests
             applicationInstance.Startup ( ) ;
             return applicationInstance ;
         }
+
+        public Guid ApplicationGuid { get ; } = new Guid ("5df44dce-af4d-4578-956d-d2b47f233fd0");
 
         private void LogMethod ( string message )
         {
@@ -377,13 +380,14 @@ namespace ModelTests
         {
             using ( var applicationInstance =
                 new ApplicationInstance (
-                                         new ApplicationInstanceConfiguration (
-                                                                               LogMethod
-                                                                             , null
-                                                                             , DisableLogging
-                                                                             , true
-                                                                             , true
-                                                                              )
+                                         new ApplicationInstance.ApplicationInstanceConfiguration (
+                                                                                                   LogMethod
+                                                                                                 , ApplicationGuid
+                                                                                                 , null
+                                                                                                 , disableLogging : DisableLogging
+                                                                                                 , disableRuntimeConfiguration : true
+                                                                                                 , disableServiceHost : true
+                                                                                                  )
                                         ) )
             {
                 applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;

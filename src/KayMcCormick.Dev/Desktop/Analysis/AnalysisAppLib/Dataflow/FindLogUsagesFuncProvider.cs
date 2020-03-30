@@ -6,6 +6,9 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class FindLogUsagesFuncProvider : DataflowTransformFuncProvider <
             Document , ILogInvocation >
       , IHaveRejectBlock
@@ -13,6 +16,10 @@ namespace AnalysisAppLib.Dataflow
         private readonly Func < Document , Task < IEnumerable < ILogInvocation > > >
             _transformFunc ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invocationFactory"></param>
         public FindLogUsagesFuncProvider ( Func < ILogInvocation > invocationFactory )
         {
             var findusages = new FindLogUsages ( invocationFactory ) ;
@@ -20,12 +27,25 @@ namespace AnalysisAppLib.Dataflow
             _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public BufferBlock < RejectedItem > RejectBlock { get ; }
 
         #region Implementation of IHaveRejectBlock
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ISourceBlock < RejectedItem > GetRejectBlock ( ) { return RejectBlock ; }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="AggregateException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public override Func < Document , IEnumerable < ILogInvocation > > GetTransformFunction ( )
         {
             return document => {
@@ -45,6 +65,10 @@ namespace AnalysisAppLib.Dataflow
             } ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override Func < Document , Task < IEnumerable < ILogInvocation > > >
             GetAsyncTransformFunction ( )
         {

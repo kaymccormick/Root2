@@ -2,10 +2,8 @@
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Reflection ;
-using JetBrains.Annotations ;
-using NLog ;
 
-namespace KayMcCormick.Dev.Attributes
+namespace Graveyard
 {
     /// <summary></summary>
     /// <seealso cref="System.Attribute" />

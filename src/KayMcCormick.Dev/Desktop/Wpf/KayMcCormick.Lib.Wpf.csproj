@@ -90,7 +90,7 @@
       <DependentUpon>ExceptionUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="JSON\JsonBrushConverter.cs" />
-    <Compile Include="JSON\JsonConverterImage.cs" />
+    <Compile Include="JSON\JsonImageConverterFactory.cs" />
     <Compile Include="JSON\JsonConverterResourceDictionary.cs" />
     <Compile Include="JSON\JsonDependencyPropertyConverter.cs" />
     <Compile Include="JSON\JsonFontFamilyConverter.cs" />
@@ -124,7 +124,7 @@
     <Compile Include="IHandleException.cs" />
     <Compile Include="IControlView.cs" />
     <Compile Include="IWrap1.cs" />
-    <Compile Include="JsonConverter.cs" />
+    <Compile Include="JsonConverter_.cs" />
     <Compile Include="KeyConverter.cs" />
     <Compile Include="LifetimeScopeExtension.cs" />
     <Compile Include="NavState.cs" />
@@ -137,7 +137,6 @@
     <Compile Include="ResourceDetailTemplateSelector.cs" />
     <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceKeyWrapper.cs" />
-    <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="ResourcePreviewTemplateSelector.cs" />
     <Compile Include="ResourcesUtil.cs" />
     <Compile Include="ResourceTemplateSelector.cs" />

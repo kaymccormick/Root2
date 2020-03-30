@@ -13,7 +13,7 @@ using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 
-namespace AnalysisControls
+namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// 

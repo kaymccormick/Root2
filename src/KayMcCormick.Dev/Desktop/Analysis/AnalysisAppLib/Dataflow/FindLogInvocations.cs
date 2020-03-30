@@ -45,8 +45,15 @@ namespace AnalysisAppLib.Dataflow
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IHaveRejectBlock
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         ISourceBlock < RejectedItem > GetRejectBlock ( ) ;
     }
 }

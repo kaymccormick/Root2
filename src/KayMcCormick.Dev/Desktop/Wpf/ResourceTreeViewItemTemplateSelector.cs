@@ -5,6 +5,7 @@ using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using NLog ;
 
 namespace KayMcCormick.Lib.Wpf

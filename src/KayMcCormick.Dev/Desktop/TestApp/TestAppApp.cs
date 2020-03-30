@@ -13,7 +13,7 @@ namespace TestApp
     {
         private readonly ApplicationInstance _applicationInstance ;
 
-        public TestAppApp ( [ NotNull ] ApplicationInstanceConfiguration config )
+        public TestAppApp ( [ NotNull ] ApplicationInstance.ApplicationInstanceConfiguration config )
         {
             _applicationInstance = new ApplicationInstance( config ) ;
         }

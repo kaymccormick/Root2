@@ -1,6 +1,6 @@
 ﻿using System ;
 
-namespace KayMcCormick.Dev.Attributes
+namespace Graveyard
 {
     /// <summary></summary>
     /// <seealso cref="System.Attribute" />

@@ -13,6 +13,9 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ISemanticModelContext
     {
         SemanticModel CurrentModel { get ; set ; }

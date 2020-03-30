@@ -62,7 +62,9 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
+            builder.RegisterType < ModelResources > ( ) ;
             builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;

@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Dev
 {
     /// <summary>
     /// </summary>

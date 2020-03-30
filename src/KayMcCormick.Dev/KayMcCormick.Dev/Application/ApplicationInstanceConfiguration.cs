@@ -9,57 +9,15 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections ;
 using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev.Application
 {
     /// <summary>
+    ///     Class containing parameters for the <see cref="ApplicationInstance" />
+    ///     constructor.
     /// </summary>
-    public class ApplicationInstanceConfiguration
-    {
-        private readonly LogDelegates.LogMethod _logMethod ;
 
-        /// <summary>
-        /// </summary>
-        /// <param name="logMethod"></param>
-        /// <param name="configs"></param>
-        /// <param name="disableLogging"></param>
-        /// <param name="disableRuntimeConfiguration"></param>
-        /// <param name="disableServiceHost"></param>
-        public ApplicationInstanceConfiguration (
-            LogDelegates.LogMethod logMethod
-          , IEnumerable            configs                     = null
-          , bool                   disableLogging              = false
-          , bool                   disableRuntimeConfiguration = false
-          , bool                   disableServiceHost          = false
-        )
-        {
-            _logMethod                  = logMethod ;
-            Configs                     = configs ;
-            DisableLogging              = disableLogging ;
-            DisableRuntimeConfiguration = disableRuntimeConfiguration ;
-            DisableServiceHost          = disableServiceHost ;
-        }
-
-        /// <summary>
-        /// </summary>
-        public LogDelegates.LogMethod LogMethod { get { return _logMethod ; } }
-
-        /// <summary>
-        /// </summary>
-        public IEnumerable Configs { get ; set ; }
-
-        /// <summary>
-        /// </summary>
-        public bool DisableLogging { get ; }
-
-        /// <summary>
-        /// </summary>
-        public bool DisableRuntimeConfiguration { get ; }
-
-        /// <summary>
-        /// </summary>
-        public bool DisableServiceHost { get ; }
-    }
 }

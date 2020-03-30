@@ -1,8 +1,8 @@
 ﻿using System ;
-using Castle.DynamicProxy ;
-using KayMcCormick.Dev.Attributes ;
+using System.Reflection ;
+using DynamicProxy ;
 
-namespace KayMcCormick.Dev.Logging
+namespace Graveyard
 {
     /// <summary>
     ///     DynamicProxy interceptor to inject a logger into classes. TODO
@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev.Logging
         public void Intercept ( IInvocation invocation )
         {
             var customAttributes = Attribute.GetCustomAttributes (
-                                                                  invocation
+                                                                  ( MemberInfo ) invocation
                                                                      .GetConcreteMethodInvocationTarget ( )
                                                                 , typeof ( PushContextAttribute )
                                                                  ) ;

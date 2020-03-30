@@ -7,6 +7,7 @@
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
   xmlns:registration="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
   xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
+  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
   Background="AliceBlue"
   DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
   FontSize="{DynamicResource DefaultFontSize}"
@@ -129,7 +130,7 @@
             </ContentControl>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
-            DataType="{x:Type wpf:ResourceNodeInfo}"
+            DataType="{x:Type dev:ResourceNodeInfo}"
             ItemsSource="{Binding Path=Children}">
             <ContentControl Focusable="False"
                             Content="{Binding Key}">
