@@ -8,6 +8,7 @@ using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using Autofac.Core.Registration ;
 using Autofac.Core.Resolving ;
+using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.AppBuild ;
 using KayMcCormick.Dev.Interfaces ;
@@ -95,7 +96,7 @@ namespace KayMcCormick.Dev.Logging
             #region Interceptors
             if ( DoInterception )
             {
-                builder.RegisterType < LoggingInterceptor > ( ).AsSelf ( ) ;
+
             }
             #endregion
 
@@ -154,7 +155,7 @@ namespace KayMcCormick.Dev.Logging
 
             var reg = args.ComponentRegistration ;
             var activatorLimitType = reg.Activator.LimitType ;
-            Logger.Trace ( "Registered " + activatorLimitType ) ;
+            Logger.Trace ( "Registered {limitType}", activatorLimitType ) ;
             PROVIDER_GUID.EventWriteEVENT_COMPONENT_REGISTERED (
                                                                 activatorLimitType
                                                                    .AssemblyQualifiedName
@@ -163,7 +164,26 @@ namespace KayMcCormick.Dev.Logging
 
             reg.Activated += ( o , eventArgs ) => {
                 var instanceDesc = eventArgs.Instance ;
-                if ( eventArgs.Instance is Delegate )
+                var type = eventArgs.Instance.GetType ( ) ;
+                if ( type.IsArray
+                     && typeof ( Delegate ).IsAssignableFrom ( type.GetElementType ( ) ) )
+                {
+                    instanceDesc = eventArgs.Instance.ToString ( ) ;
+                }
+                else if ( type.IsGenericType
+                          && type.GetGenericTypeDefinition ( ) == typeof ( Meta <> ) )
+                {
+                    var x = type.GetGenericArguments ( )[ 0 ] ;
+                    if ( typeof ( Delegate ).IsAssignableFrom ( x ) )
+                    {
+                        instanceDesc = eventArgs.Instance.ToString ( ) ;
+                    }
+                }
+                else if ( eventArgs.Instance.GetType ( ).Name == "BuildCallbackService" )
+                {
+                    instanceDesc = eventArgs.Instance.ToString();
+                }
+                else if ( eventArgs.Instance is Delegate )
                 {
                     instanceDesc = eventArgs.Instance.ToString ( ) ;
                 }

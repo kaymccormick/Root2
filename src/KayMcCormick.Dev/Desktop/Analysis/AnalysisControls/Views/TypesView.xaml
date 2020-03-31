@@ -10,6 +10,8 @@
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              mc:Ignorable="d" FontSize="20"
+          Foreground="CornflowerBlue"
+             Background="#202020"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -46,7 +48,7 @@
                     </Border.BorderBrush>
                     <Border.Background>
                       <SolidColorBrush
-                        Color="{DynamicResource ControlLightColor}" />
+                        Color="#10ffffff" />
                     </Border.Background>
                     <ScrollViewer Focusable="False"
                                   CanContentScroll="False"
@@ -139,6 +141,7 @@
                  TargetType="{x:Type TreeViewItem}">
             <Setter Property="Background"
                     Value="Transparent" />
+            <Setter Property="Foreground" Value="Crimson"></Setter>
             <Setter Property="HorizontalContentAlignment"
                     Value="{Binding Path=HorizontalContentAlignment,
     RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
@@ -147,8 +150,6 @@
     RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
             <Setter Property="Padding"
                     Value="1,0,0,0" />
-            <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Setter Property="FocusVisualStyle"
                     Value="{StaticResource TreeViewItemFocusVisual}" />
             <Setter Property="Template">
@@ -608,7 +609,7 @@
                 VerticalAlignment="Center"
                 VerticalContentAlignment="Center"
                 Content="Show Content Borders"
-                IsChecked="{Binding ShowBordersIsChecked}" />
+                IsChecked="{Binding ShowBordersIsChecked}" Foreground="#FF873BBC" />
     </StackPanel>
     <ItemsControl Grid.Row="1" Grid.Column="1" Margin="10"
                   x:Name="factoryMethods"

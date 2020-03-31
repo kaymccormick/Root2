@@ -22,12 +22,23 @@ using KayMcCormick.Lib.Wpf ;
 namespace AnalysisControls
 {
     // made internal 3/11
+    /// <summary>
+    /// 
+    /// </summary>
     public class AnalysisControlsModule : Module
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void Load ( ContainerBuilder builder )
         {
             builder.RegisterType < TypesView > ( ).AsImplementedInterfaces ( ) ;
             builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
+            builder.RegisterType < SyntaxPanel > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterType < SyntaxPanelViewModel > ( )
+                   .AsImplementedInterfaces ( )
+                   .AsSelf ( ) ;
             // builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
             builder.Register (
                               ( c , p ) => {

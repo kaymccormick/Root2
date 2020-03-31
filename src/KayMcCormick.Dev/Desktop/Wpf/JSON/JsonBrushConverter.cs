@@ -52,7 +52,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
         /// <summary>
         /// </summary>
-        public class JsonBrushConverter1 : JsonConverter < Brush >
+        private class JsonBrushConverter1 : JsonConverter < Brush >
         {
             /// <summary>
             /// </summary>
@@ -87,10 +87,55 @@ namespace KayMcCormick.Lib.Wpf.JSON
               , JsonSerializerOptions options
             )
             {
-                var xaml = XamlWriter.Save ( value ) ;
                 writer.WriteStartObject ( ) ;
-                writer.WriteString ( "Xaml" , xaml ) ;
+                writer.WriteString ( "Converter" , typeof ( JsonBrushConverter1 ).FullName ) ;
+                writer.WriteString ( "BrushType" , value.GetType ( ).FullName ) ;
+                switch ( value )
+                {
+                    case BitmapCacheBrush bitmapCacheBrush : break ;
+                    case DrawingBrush drawingBrush : break ;
+                    case LinearGradientBrush linearGradientBrush :
+                        WriteBaseGradient(writer, linearGradientBrush);
+                        break ;
+                    case RadialGradientBrush radialGradientBrush :
+                        WriteBaseGradient(writer, radialGradientBrush);
+                        break ;
+                    case ImageBrush imageBrush : break ;
+                    case SolidColorBrush scb :
+                        writer.WritePropertyName("Color");
+                        WriteColor ( writer , scb.Color ) ;
+                        break ;
+                    case VisualBrush visualBrush : break ;
+                    case TileBrush tileBrush : break ;
+                }
+
                 writer.WriteEndObject ( ) ;
+            }
+
+            private static void WriteBaseGradient ( Utf8JsonWriter writer , GradientBrush gradientBrush )
+            {
+                writer.WriteNumber ( "ColorInterpolationMode" , ( int ) gradientBrush.ColorInterpolationMode ) ;
+                writer.WriteStartArray ( "GradientStops" ) ;
+                foreach ( var stop in gradientBrush.GradientStops )
+                {
+                    writer.WriteStartObject ( ) ;
+                    writer.WritePropertyName ( "Color" ) ;
+                    WriteColor ( writer , stop.Color ) ;
+                    writer.WriteNumber ( "Offset" , stop.Offset ) ;
+                    writer.WriteEndObject ( ) ;
+                }
+
+                writer.WriteEndArray ( ) ;
+            }
+
+            private static void WriteColor ( Utf8JsonWriter writer , Color color )
+            {
+                writer.WriteStartArray ( ) ;
+                writer.WriteNumberValue ( color.ScA ) ;
+                writer.WriteNumberValue ( color.ScR ) ;
+                writer.WriteNumberValue ( color.ScG ) ;
+                writer.WriteNumberValue ( color.ScB ) ;
+                writer.WriteEndArray ( ) ;
             }
             #endregion
         }

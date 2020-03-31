@@ -13,8 +13,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICompilationUnitRootContext : ISyntaxTreeContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
         CompilationUnitSyntax CompilationUnit { get ; }
     }
 }

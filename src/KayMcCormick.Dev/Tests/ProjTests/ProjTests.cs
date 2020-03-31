@@ -19,7 +19,9 @@ using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Runtime.Serialization.Formatters.Soap ;
+using System.Text ;
 using System.Text.Json ;
+using System.Text.Json.Serialization ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows ;
@@ -27,6 +29,8 @@ using System.Windows.Controls ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using System.Xml ;
+using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
@@ -47,6 +51,7 @@ using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -54,7 +59,6 @@ using Moq ;
 using NLog ;
 using NLog.Layouts ;
 using NLog.Targets ;
-using ProjInterface ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
@@ -63,8 +67,9 @@ namespace ProjTests
 {
     [ CollectionDefinition ( "GeneralPurpose" ) ]
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
-      , ICollectionFixture < AppFixture >
-    {}
+
+    {
+    }
 
     [ Collection ( "GeneralPurpose" ) ]
     [ ClearLoggingRules ]
@@ -84,26 +89,25 @@ namespace ProjTests
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
-        private readonly ITestOutputHelper     _output ;
-        private readonly LoggingFixture        _loggingFixture ;
-        private readonly ProjectFixture        _projectFixture ;
-        private readonly AppFixture            _appFixture ;
-        private          ILifetimeScope        _testScope ;
-        private          JsonSerializerOptions _testJsonSerializerOptions ;
+        private readonly ITestOutputHelper _output ;
+        private readonly LoggingFixture    _loggingFixture ;
+        private readonly ProjectFixture    _projectFixture ;
+
+        private ILifetimeScope        _testScope ;
+        private JsonSerializerOptions _testJsonSerializerOptions ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
             ITestOutputHelper            output
           , [ CanBeNull ] LoggingFixture loggingFixture
           , ProjectFixture               projectFixture
-          , AppFixture                   appFixture
         )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
             _loggingFixture                              =  loggingFixture ;
             _projectFixture                              =  projectFixture ;
-            _appFixture                                  =  appFixture ;
+
 
             if ( ! _disableLogging )
             {
@@ -131,6 +135,37 @@ namespace ProjTests
         {
             var w = new Window ( ) ;
             var options = new JsonSerializerOptions { WriteIndented = true } ;
+            var xaml = XamlWriter.Save ( w ) ;
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xaml);
+            Utf8JsonWriter writer = new Utf8JsonWriter(new MemoryStream());
+            MyXmlWriter xxMyXmlWriter = new MyXmlWriter(writer);
+            XamlWriter.Save ( w , xxMyXmlWriter ) ;
+            XDocument xdoc = new XDocument();
+            XDocument.Parse ( xaml ) ;
+
+            
+
+            foreach ( var xNode in xdoc.Nodes ( ) )
+            {
+                switch ( xNode )
+                {
+                    case XComment xComment : break ;
+                    case XCData xcData : break ;
+                    case XDocument xDocument :
+                        writer.WriteStartObject();
+                        writer.WriteString( "Kind" , nameof ( XDocument ) ) ;
+                        break ;
+
+                    case XElement xElement :
+
+                    case XContainer xContainer : break ;
+                    case XDocumentType xDocumentType : break ;
+                    case XProcessingInstruction xProcessingInstruction : break ;
+                    case XText xText : break ;
+                    default : throw new ArgumentOutOfRangeException ( nameof ( xNode ) ) ;
+                }
+            }
             options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
             options.WriteIndented = true ;
             var json = JsonSerializer.Serialize ( w , options ) ;
@@ -215,10 +250,10 @@ namespace ProjTests
         {
             using ( var instance =
                 new ApplicationInstance (
-                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 LogManager.ThrowExceptions = true ;
@@ -245,17 +280,17 @@ namespace ProjTests
             }
         }
 
+        public Guid ApplicationGuid { get ; set ; } = new Guid ( "d4870a23-f1ad-4618-b955-6b342c6afab6" ) ;
+
         [ WpfFact ]
         public void TestAdapter ( )
         {
             // var x = new TestApplication ( ) ;
             Debug.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
-            using ( var instance =
-                new ApplicationInstance (
-                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
-                                        ) )
+            using (var instance =
+                new ApplicationInstance(ApplicationInstance.CreateConfiguration(_output.WriteLine, ApplicationGuid)))
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
@@ -330,7 +365,6 @@ namespace ProjTests
             w.Close ( ) ;
         }
 
-        private ProjInterfaceApp CreateProjInterfaceApp ( ) { return _appFixture.InterfaceApp ; }
 
         private int CountChildren ( [ NotNull ] DependencyObject tv )
         {
@@ -348,10 +382,10 @@ namespace ProjTests
         {
             using ( var instance =
                 new ApplicationInstance (
-                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
@@ -381,6 +415,43 @@ namespace ProjTests
 
                 DumpTree ( tree , model.AllResourcesCollection ) ;
             }
+        }
+
+        [WpfFact]
+        private void Dump1 ( )
+        {
+            JsonImageConverterFactory factory = new JsonImageConverterFactory();
+            LineGeometry x = new LineGeometry ( new Point ( 0 , 0 ) , new Point ( 10 , 10 ) ) ;
+            GeometryDrawing y = new GeometryDrawing (
+                                                     new SolidColorBrush ( Colors.Blue )
+                                                   , new Pen (
+                                                              new SolidColorBrush ( Colors.Green ), 2
+                                                             )
+                                                   , x
+                                                    ) ;
+            ImageSource xx = new DrawingImage ( y ) ;
+            var jsonConverter =
+                (JsonConverter<ImageSource>)factory.CreateConverter ( xx.GetType ( ) , new JsonSerializerOptions ( ) ) ;
+            var memoryStream = new MemoryStream ( ) ;
+            var jsonwriterxx = new JsonWriterOptions();
+            var jsonWriterOptions = new JsonSerializerOptions( ) ;
+            var utf8JsonWriter = new Utf8JsonWriter (
+                                                     memoryStream
+                                                   , jsonwriterxx
+                                                    ) ;
+            jsonConverter.Write (
+                                 utf8JsonWriter, xx, jsonWriterOptions
+                                ) ;
+            utf8JsonWriter.Flush();
+            memoryStream.Flush();
+            byte[] bytes = new byte[memoryStream.Length] ;
+            memoryStream.Seek ( 0 , SeekOrigin.Begin ) ;
+            var read = memoryStream.Read ( bytes , 0 , ( int ) memoryStream.Length ) ;
+            var json = Encoding.UTF8.GetString ( bytes ) ;
+
+
+
+
         }
 
         private void DumpTree (
@@ -437,7 +508,7 @@ namespace ProjTests
         [ Fact ]
         public void TestModule1 ( )
         {
-            var module = new ProjInterfaceModule ( ) ;
+            var module = new AnalysisAppLibModule ( ) ;
 
             var mock = new Mock < ContainerBuilder > ( ) ;
             mock.Setup ( cb => module.DoLoad ( cb ) ) ;
@@ -447,8 +518,7 @@ namespace ProjTests
         public void DeserializeLog ( )
         {
             var ctx = ( ICompilationUnitRootContext ) AnalysisService.Parse (
-                                                                             Resources
-                                                                                .Program_Parse
+                                                                             Resources.Program_Parse
                                                                            , "test"
                                                                             ) ;
             var info1 = LogEventInfo.Create ( LogLevel.Debug , "test" , "test" ) ;
@@ -728,10 +798,10 @@ namespace ProjTests
         {
             using ( var instance =
                 new ApplicationInstance (
-                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
                 var p = lifetimescope.Resolve < PythonViewModel > ( ) ;
@@ -780,8 +850,7 @@ namespace ProjTests
                                                   ) ;
             var dd = new ExceptionDataInfo
                      {
-                         Exception = ex
-                       , ParsedExceptions = Utils.GenerateParsedException(ex)
+                         Exception = ex , ParsedExceptions = Utils.GenerateParsedException ( ex )
                      } ;
 
             w.Content = new ExceptionUserControl { DataContext = dd } ;
@@ -793,10 +862,10 @@ namespace ProjTests
         {
             using ( var instance =
                 new ApplicationInstance (
-                                         new ApplicationInstanceConfiguration ( _output.WriteLine )
+                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
                                         ) )
             {
-                instance.AddModule ( new ProjInterfaceModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
@@ -817,18 +886,37 @@ namespace ProjTests
             }
         }
 
+        [ WpfFact ]
+        public void TEstWriteBrush ( )
+        {
+            var brushConverter = new JsonBrushConverter ( ) ;
+            var opt = new JsonSerializerOptions ( ) ;
+            opt.Converters.Add ( brushConverter ) ;
+            var brush = new SolidColorBrush ( Colors.Blue ) ;
+            var json = JsonSerializer.Serialize ( brush , opt ) ;
+            Logger.Info ( "json is {json}" , json ) ;
+            var b = new LinearGradientBrush (
+                                             Colors.Blue
+                                           , Colors.Green
+                                           , new Point ( 0 ,  0 )
+                                           , new Point ( 10 , 10 )
+                                            ) ;
+            Debug.WriteLine ( JsonSerializer.Serialize ( b , opt ) ) ;
+        }
+
+
         [ Fact ]
         public void TestModel ( )
         {
-            var t = new TypesViewModel();
-
+            var t = new TypesViewModel ( ) ;
         }
 
-        [Fact]
+
+        [ Fact ]
         public void TestXmlDoc ( )
         {
             var x = TypesViewModel.LoadDoc ( ) ;
-            var y  = TypesViewModel.DocMembers ( x ) ;
+            var y = TypesViewModel.DocMembers ( x ) ;
             foreach ( var codeElementDocumentation in y.Select ( TypesViewModel.HandleDocElement ) )
             {
                 if ( codeElementDocumentation != null )
@@ -836,22 +924,21 @@ namespace ProjTests
                     Debug.WriteLine ( codeElementDocumentation ) ;
                 }
             }
+
             // var x = TypesViewModel.LoadXmlDoc ( ) ;
             // foreach ( var keyValuePair in x )
             // {
-                // foreach ( var valuePair in keyValuePair.Value.MethodDocumentation )
-                // {
-                    // foreach ( var methodDocInfo in valuePair.Value )
-                    // {
-                        // Debug.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
-                    // }
-                // }
+            // foreach ( var valuePair in keyValuePair.Value.MethodDocumentation )
+            // {
+            // foreach ( var methodDocInfo in valuePair.Value )
+            // {
+            // Debug.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
             // }
-
+            // }
+            // }
         }
     }
 
-    
 
     public class RoutedExecutionResultEventArgs : RoutedEventArgs
     {
@@ -867,5 +954,89 @@ namespace ProjTests
         }
 
         public dynamic Result { get { return _result ; } }
+    }
+
+    public class MyXmlWriter : XmlWriter
+    {
+        private readonly Utf8JsonWriter writer ;
+        public MyXmlWriter ( Utf8JsonWriter writer ) { this.writer = writer ; }
+        #region Overrides of XmlWriter
+        public override void WriteStartDocument ( )
+        {
+            writer.WriteStartObject();
+        }
+
+        public override void WriteStartDocument ( bool standalone )
+        {
+            writer.WriteStartObject();
+        }
+
+        public override void WriteEndDocument ( )
+        {
+            writer.WriteEndObject();
+        }
+
+        public override void WriteDocType ( string name , string pubid , string sysid , string subset ) { }
+
+        public override void WriteStartElement ( string prefix , string localName , string ns )
+        {
+            writer.WriteStartObject();
+            //writer.WriteStartObject ( localName ) ;
+        }
+
+        public override void WriteEndElement ( )
+        {
+            writer.WriteEndObject();
+        }
+
+        public override void WriteFullEndElement ( )
+        {
+            writer.WriteEndObject();
+        }
+
+        public override void WriteStartAttribute ( string prefix , string localName , string ns )
+        {
+            
+            writer.WriteStartObject ( localName ) ;
+        }
+
+        public override void WriteEndAttribute ( )
+        {
+
+        }
+
+        public override void WriteCData ( string text ) { }
+
+        public override void WriteComment ( string text ) { }
+
+        public override void WriteProcessingInstruction ( string name , string text ) { }
+
+        public override void WriteEntityRef ( string name ) { }
+
+        public override void WriteCharEntity ( char ch ) { }
+
+        public override void WriteWhitespace ( string ws ) { }
+
+        public override void WriteString ( string text )
+        {
+            writer.WriteStringValue ( text ) ;
+        }
+
+        public override void WriteSurrogateCharEntity ( char lowChar , char highChar ) { }
+
+        public override void WriteChars ( char[] buffer , int index , int count ) { }
+
+        public override void WriteRaw ( char[] buffer , int index , int count ) { }
+
+        public override void WriteRaw ( string data ) { }
+
+        public override void WriteBase64 ( byte[] buffer , int index , int count ) { }
+
+        public override void Flush ( ) { }
+
+        public override string LookupPrefix ( string ns ) { return null ; }
+
+        public override WriteState WriteState { get ; }
+        #endregion
     }
 }

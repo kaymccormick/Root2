@@ -64,12 +64,14 @@ namespace TestApp
             _stdHandle = Kernel32.GetStdHandle ( Kernel32.StdHandleType.STD_OUTPUT_HANDLE ) ;
             if ( _stdHandle.IsInvalid ) throw new InvalidOperationException() ;
 #endif
-            LogDelegates.LogMethod logMethod = LogMethod ;
-            var config = new ApplicationInstanceConfiguration ( logMethod ) ;
+            ApplicationInstance.LogMethodDelegate logMethod = LogMethod ;
+            var config = new ApplicationInstance.ApplicationInstanceConfiguration ( logMethod , ApplicationGuid ) ;
 
             _testAppApp = new TestAppApp ( config ) ;
             InitializeComponent ( ) ;
         }
+
+        public Guid ApplicationGuid { get ; set ; } = new Guid ("50793c70-3902-4ba3-ad15-c28e2c9ca6a6");
 
         public static MainWindow Instance { get { return _instance ; } set { _instance = value ; } }
 
@@ -187,7 +189,7 @@ namespace TestApp
             var typesView = ( TypesView ) sender ;
             try
             {
-                var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
+                var options = AnalysisControls.JsonConverters.CreateJsonSerializeOptions ( ) ;
                 options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
                 options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
 
@@ -205,7 +207,7 @@ namespace TestApp
         {
             try
             {
-                var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
+                var options = AnalysisControls.JsonConverters.CreateJsonSerializeOptions ( ) ;
                 options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
                 options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
 

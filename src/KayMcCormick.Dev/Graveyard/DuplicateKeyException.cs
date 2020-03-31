@@ -13,7 +13,7 @@
 using System ;
 using System.Runtime.Serialization ;
 
-namespace KayMcCormick.Dev
+namespace Graveyard
 {
     /// <summary></summary>
     /// <seealso cref="System.Exception" />

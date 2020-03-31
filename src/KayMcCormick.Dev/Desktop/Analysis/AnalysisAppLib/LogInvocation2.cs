@@ -10,9 +10,13 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class LogInvocation2 : ILogInvocation
     {
         private IList < ILogInvocationArgument > _arguments =
@@ -26,6 +30,7 @@ namespace AnalysisAppLib
         private string _precedingCode ;
         private string _sourceLocation ;
         private object _transformedRelevantNode ;
+        private Location _location ;
 
         public override string ToString ( )
         {
@@ -34,6 +39,17 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of ILogInvocation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceLocation"></param>
+        /// <param name="followingCode"></param>
+        /// <param name="precedingCode"></param>
+        /// <param name="code"></param>
+        /// <param name="loggerType"></param>
+        /// <param name="methodName"></param>
+        /// <param name="methodDisplayName"></param>
+        /// <param name="transformedRelevantNode"></param>
         public LogInvocation2 (
             string sourceLocation
           , string followingCode
@@ -55,49 +71,84 @@ namespace AnalysisAppLib
             _transformedRelevantNode = transformedRelevantNode ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LogInvocation2 ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string SourceLocation
         {
             get { return _sourceLocation ; }
             set { _sourceLocation = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string FollowingCode
         {
             get { return _followingCode ; }
             set { _followingCode = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string PrecedingCode
         {
             get { return _precedingCode ; }
             set { _precedingCode = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Code { get { return _code ; } set { _code = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string LoggerType { get { return _loggerType ; } set { _loggerType = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string MethodName { get { return _methodName ; } set { _methodName = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string MethodDisplayName
         {
             get { return _methodDisplayName ; }
             set { _methodDisplayName = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IList < ILogInvocationArgument > Arguments
         {
             get { return _arguments ; }
             set { _arguments = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object TransformedRelevantNode
         {
             get { return _transformedRelevantNode ; }
             set { _transformedRelevantNode = value ; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Location Location { get { return _location ; } set { _location = value ; } }
         #endregion
     }
 }

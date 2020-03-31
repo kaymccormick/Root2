@@ -13,6 +13,9 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICodeRenderer
     {
         void addToken ( ushort rawKind , string text , bool newLine ) ;

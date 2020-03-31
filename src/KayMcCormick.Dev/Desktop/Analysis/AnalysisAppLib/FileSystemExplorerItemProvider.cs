@@ -15,6 +15,9 @@ using System.IO ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FileSystemExplorerItemProvider : IExplorerItemProvider
     {
         private readonly AppExplorerItem root ;

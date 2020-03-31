@@ -21,6 +21,12 @@ using NLog ;
 
 namespace KayMcCormick.Dev.Application
 {
+    public static class ApplicationInstanceIds
+    {
+        public static Guid ConsoleAnalysisProgramGuid { get ; } =
+            new Guid ( "49A60392-BCC5-468B-8F09-76E0C04CD27C" ) ;
+    }
+
     /// <summary>
     /// </summary>
     public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
@@ -32,6 +38,97 @@ namespace KayMcCormick.Dev.Application
         private          ApplicationInstanceHost _host ;
         private          ILifetimeScope          _lifetimeScope ;
 
+        public static ApplicationInstanceConfiguration CreateConfiguration (
+            LogMethodDelegate logMethod
+          , Guid              appGuid
+          , IEnumerable       configs                     = null
+          , bool              disableLogging              = false
+          , bool              disableRuntimeConfiguration = false
+          , bool              disableServiceHost          = false
+        )
+        {
+            return new ApplicationInstanceConfiguration (
+                                                         logMethod
+                                                       , appGuid
+                                                       , configs
+                                                       , disableLogging
+                                                       , disableRuntimeConfiguration
+                                                       , disableServiceHost
+                                                        ) ;
+        }
+
+        public delegate void LogMethodDelegate ( string message ) ;
+
+        public sealed class ApplicationInstanceConfiguration
+        {
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="message"></param>
+
+            private readonly LogMethodDelegate _logMethod ;
+
+            /// <summary>
+            ///     Initialize a <see cref="ApplicationInstanceConfiguration" /> instance
+            ///     with the provided values.
+            /// </summary>
+            /// <param name="logMethod">
+            ///     Delegate to provide logging capability prior to
+            ///     initialization of logging infrastructure.
+            /// </param>
+            /// <param name="appGuid">Pre-assigned app GUID.</param>
+            /// <param name="configs">Set of configuration objects to apply</param>
+            /// <param name="disableLogging">
+            ///     Boolean flag indicating whether or not the
+            ///     logging system should be disabled.
+            /// </param>
+            /// <param name="disableRuntimeConfiguration">
+            ///     Boolean indicatin+g whether or not
+            ///     to load runtime configuration using the System.Configuration mechanism.
+            /// </param>
+            /// <param name="disableServiceHost">Boolean indicating whether or not to run a service host inside the application.</param>
+            public ApplicationInstanceConfiguration (
+                LogMethodDelegate logMethod
+              , Guid              appGuid
+              , IEnumerable       configs                     = null
+              , bool              disableLogging              = false
+              , bool              disableRuntimeConfiguration = false
+              , bool              disableServiceHost          = false
+            )
+            {
+                _logMethod                  = logMethod ;
+                AppGuid                     = appGuid ;
+                Configs                     = configs ;
+                DisableLogging              = disableLogging ;
+                DisableRuntimeConfiguration = disableRuntimeConfiguration ;
+                DisableServiceHost          = disableServiceHost ;
+            }
+
+            /// <summary>
+            /// </summary>
+            public LogMethodDelegate LogMethod { get { return _logMethod ; } }
+
+            public Guid AppGuid { get ; }
+
+            /// <summary>
+            /// </summary>
+            public IEnumerable Configs { get ; set ; }
+
+            /// <summary>
+            /// </summary>
+            public bool DisableLogging { get ; }
+
+            /// <summary>
+            /// </summary>
+            public bool DisableRuntimeConfiguration { get ; }
+
+            /// <summary>
+            /// </summary>
+            public bool DisableServiceHost { get ; }
+        }
+
+
         /// <summary>
         /// </summary>
         public ApplicationInstance (
@@ -42,10 +139,10 @@ namespace KayMcCormick.Dev.Application
             _disableServiceHost =
                 applicationInstanceConfiguration.DisableServiceHost ;
             var serviceCollection = new ServiceCollection ( ) ;
-            ProtoLogger protoLogger = ProtoLogger.Instance;
+            var protoLogger = ProtoLogger.Instance ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
-                var loadedConfigs = LoadConfiguration (  ) ;
+                var loadedConfigs = LoadConfiguration ( ProtoLogger.ProtoLogDelegate ) ;
                 applicationInstanceConfiguration.Configs =
                     applicationInstanceConfiguration.Configs != null
                         ? ( ( IEnumerable < object > ) applicationInstanceConfiguration.Configs )
@@ -76,8 +173,11 @@ namespace KayMcCormick.Dev.Application
                 }
 
                 Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
-                                                                         applicationInstanceConfiguration
-                                                                            .LogMethod
+                                                                         new LogDelegates.
+                                                                             LogMethod (
+                                                                                        applicationInstanceConfiguration
+                                                                                           .LogMethod
+                                                                                       )
                                                                        , config
                                                                         ) ;
                 GlobalDiagnosticsContext.Set (
@@ -420,5 +520,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         public string TypeName { get { return _typeName ; } }
+
+
     }
 }

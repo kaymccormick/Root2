@@ -24,11 +24,19 @@ using Logger = NLog.Logger ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         #region Overrides of Module
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="componentRegistry"></param>
+        /// <param name="registration"></param>
         protected override void AttachToComponentRegistration (
             IComponentRegistryBuilder componentRegistry
           , IComponentRegistration    registration
@@ -48,9 +56,15 @@ namespace AnalysisAppLib
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
+            builder.RegisterType < ModelResources > ( ) ;
             builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
@@ -238,11 +252,17 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ TitleMetadata ( "Find and analyze usages of NLog logging." ) ]
     public sealed class FindLogUsagesAnalysisDefinition : IAnalysisDefinition < ILogInvocation >
     {
         private Type _dataflowOutputType = typeof ( ILogInvocation ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type DataflowOutputType
         {
             get { return _dataflowOutputType ; }
@@ -250,8 +270,15 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TOutput"></typeparam>
     public interface IAnalysisDefinition < TOutput >
     {
+        /// <summary>
+        /// 
+        /// </summary>
         Type DataflowOutputType { get ; set ; }
     }
 }

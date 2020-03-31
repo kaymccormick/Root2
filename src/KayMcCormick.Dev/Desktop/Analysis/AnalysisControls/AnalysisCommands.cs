@@ -14,8 +14,14 @@ using System.Windows.Input ;
 namespace AnalysisControls
 {
     // ReSharper disable once UnusedType.Global
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AnalysisCommands
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedUICommand AnalyzeControlFlow =
             new RoutedUICommand (
                                  "Analyze Control Flow"
@@ -23,6 +29,9 @@ namespace AnalysisControls
                                , typeof ( AnalysisCommands )
                                 ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedUICommand GetDeclaredSymbol =
             new RoutedUICommand (
                                  "Get Declared Symbol"

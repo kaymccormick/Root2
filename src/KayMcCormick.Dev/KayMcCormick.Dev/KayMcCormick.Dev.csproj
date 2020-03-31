@@ -108,7 +108,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\PushContextAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
     <Compile Include="Configuration\ConfigurationSource.cs" />
     <Compile Include="Configuration\ContainerHelperSection.cs" />
@@ -126,21 +125,17 @@
     <Compile Include="AttributeNotFoundException.cs" />
     <Compile Include="Attributes\ClearLoggingRulesAttribute.cs" />
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
-    <Compile Include="Attributes\ContextStackInstanceAttribute.cs" />
     <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
     <Compile Include="IViewWithTitle.cs" />
     <Compile Include="Logging\LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="ContextStack.cs" />
     <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
-    <Compile Include="DuplicateKeyException.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="FunctionalArea.cs" />
     <Compile Include="IHaveLogger.cs" />
-    <Compile Include="InfoContext.cs" />
     <Compile Include="IocModule.cs" />
     <Compile Include="Logging\AppFileTarget.cs" />
     <Compile Include="Logging\DictConverterFactory.cs" />
@@ -148,8 +143,12 @@
     <Compile Include="Logging\MyLayout.cs" />
     <Compile Include="Logging\MyLog4JXmlEventLayoutRenderer.cs" />
     <Compile Include="Logging\ProtoLogger.cs" />
+    <Compile Include="ModelResources.cs" />
+    <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="Serialization\EventTimeConverter.cs" />
     <Compile Include="Serialization\HashtableConverter.cs" />
+    <Compile Include="Serialization\JsonConverters.cs" />
+    <Compile Include="Serialization\JsonLazyConverterFactory.cs" />
     <Compile Include="Serialization\JsonTypeConverter.cs" />
     <Compile Include="Serialization\JsonTypeConverterFactory.cs" />
     <Compile Include="Serialization\JsonTypeInfoConverter.cs" />
@@ -166,7 +165,6 @@
     <Compile Include="Logging\LoggerEventArgs.cs" />
     <Compile Include="Logging\LoggerSettings.cs" />
     <Compile Include="Logging\LoggerTracker.cs" />
-    <Compile Include="Logging\LoggingInterceptor.cs" />
     <Compile Include="Logging\LoggingRuleAttribute.cs" />
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
@@ -204,7 +202,6 @@
     <Compile Include="StackTrace\StackTraceParser.cs" />
     <Compile Include="StackTrace\StackTraceSourceLocation.cs" />
     <Compile Include="StackTrace\StackTraceToken.cs" />
-    <Compile Include="TestApplicationInstance.cs" />
     <Compile Include="TestLib\BeforeAfterLoggerAttribute.cs" />
     <Compile Include="TestLib\FixtureLogger.cs" />
     <Compile Include="TestLib\Fixtures\GlobalLoggingFixture.cs" />

@@ -11,8 +11,14 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IBrowserNode
     {
+        /// <summary>
+        /// 
+        /// </summary>
         string Name { get ; }
     }
 }

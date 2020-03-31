@@ -1,4 +1,5 @@
-﻿using System.Linq ;
+﻿using System ;
+using System.Linq ;
 using System.Text.Json ;
 using System.Windows ;
 using AnalysisControls ;
@@ -63,6 +64,8 @@ namespace ProjInterface
                 JsonConverters.AddJsonConverters ( options ) ;
             }
         }
+
+        public override Guid ApplicationGuid { get ; } = new Guid ("9919c0fb-916c-4804-81de-f272a1b585f7");
 
         protected override void OnStartup ( StartupEventArgs e )
         {

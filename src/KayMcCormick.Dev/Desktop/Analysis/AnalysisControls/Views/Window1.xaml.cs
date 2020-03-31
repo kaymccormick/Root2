@@ -8,6 +8,10 @@ namespace AnalysisControls.Views
     /// </summary>
     public partial class Window1 : AppWindow
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lifetimeScope"></param>
         public Window1 ( ILifetimeScope lifetimeScope ) : base ( lifetimeScope )
         {
             InitializeComponent ( ) ;

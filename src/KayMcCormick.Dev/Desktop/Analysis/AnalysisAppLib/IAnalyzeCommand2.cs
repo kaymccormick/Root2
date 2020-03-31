@@ -13,12 +13,24 @@ using System.Threading.Tasks ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TOutput"></typeparam>
     public interface IAnalyzeCommand2 < TOutput > : IAnalyzeCommand3
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IAnalyzeCommand3
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectNode"></param>
+        /// <returns></returns>
         Task AnalyzeCommandAsync ( IProjectBrowserNode projectNode ) ;
     }
 }

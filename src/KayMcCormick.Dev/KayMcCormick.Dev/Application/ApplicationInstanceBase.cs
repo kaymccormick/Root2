@@ -26,7 +26,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// <param name="logMethod"></param>
-        protected ApplicationInstanceBase ( LogDelegates.LogMethod logMethod )
+        protected ApplicationInstanceBase ( ApplicationInstance.LogMethodDelegate logMethod )
         {
             InstanceRunGuid = Guid.NewGuid ( ) ;
         }

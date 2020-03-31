@@ -5,7 +5,8 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
   xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
-  xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib">
+  xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
   <!--Control colors.-->
   <Color x:Key="WindowColor">#FFE8EDF9</Color>
   <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
@@ -388,8 +389,8 @@
           TargetType="{x:Type RepeatButton}">
           <Border x:Name="Border"
                   Margin="3"
-                  BorderBrush="Blue"
-                  CornerRadius="0"
+                  BorderBrush="Black"
+                  CornerRadius="1"
                   BorderThickness="1">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
@@ -590,6 +591,6 @@
     BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
     UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
     x:Key="helpStatusColor" />
-
+  <system:Double x:Key="DefaultFontSize">24</system:Double>
 
 </ResourceDictionary>

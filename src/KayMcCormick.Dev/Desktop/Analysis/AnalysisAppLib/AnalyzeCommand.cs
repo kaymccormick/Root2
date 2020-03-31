@@ -21,15 +21,29 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AnalyzeCommand : IAnalyzeCommand
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly Pipeline                      _pipeline ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pipeline"></param>
         public AnalyzeCommand ( Pipeline pipeline ) { _pipeline = pipeline ; }
 
         #region Implementation of IAnalyzeCommand
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectNode"></param>
+        /// <param name="rejectTarget"></param>
+        /// <returns></returns>
+        /// <exception cref="AnalyzeException"></exception>
         public async Task AnalyzeCommandAsync (
             IProjectBrowserNode           projectNode
           , ITargetBlock < RejectedItem > rejectTarget
@@ -84,8 +98,14 @@ namespace AnalysisAppLib
             LogInvocations.Add ( invocation ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITargetBlock < RejectedItem > RejectDestination
         {
             get { return _rejectDestination ; }

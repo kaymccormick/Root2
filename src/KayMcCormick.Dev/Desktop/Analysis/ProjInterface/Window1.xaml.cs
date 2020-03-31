@@ -3,6 +3,7 @@ using System.Diagnostics ;
 using System.Runtime.Serialization ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Controls.Ribbon ;
 using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
@@ -20,7 +21,7 @@ using NLog ;
 namespace ProjInterface
 {
     [ TitleMetadata ( "Docking window" ) ]
-    public sealed partial class Window1 : AppWindow , IViewWithTitle , IView < DockWindowViewModel >
+    public sealed partial class Window1 : RibbonWindow, IViewWithTitle , IView < DockWindowViewModel >
     {
         private static readonly Logger Logger =
             LogManager.GetCurrentClassLogger ( ) ;
@@ -68,14 +69,14 @@ namespace ProjInterface
                                                        }
                                                       ) ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
-            lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
-                throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
-            } ;
+            // lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
+                // throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
+            // } ;
 
             ViewModel = viewModel ;
-            var wih = new WindowInteropHelper ( this ) ;
-            var hWnd = wih.Handle ;
-            viewModel.SethWnd ( hWnd ) ;
+            // var wih = new WindowInteropHelper ( this ) ;
+            // var hWnd = wih.Handle ;
+            // viewModel.SethWnd ( hWnd ) ;
             InitializeComponent ( ) ;
         }
 
@@ -171,17 +172,10 @@ namespace ProjInterface
             model.ExecutePythonScript ( textEditor.Text ) ;
         }
 
-        #region Overrides of FrameworkElement
-        public override void OnApplyTemplate ( )
-        {
-            base.OnApplyTemplate ( ) ;
-
-
-            AddHandler (
-                        TypeControl.TypeActivatedEvent
-                      , new TypeControl.TypeActivatedEventHandler ( Target )
-                       ) ;
-        }
+            // AddHandler (
+            //             TypeControl.TypeActivatedEvent
+            //           , new TypeControl.TypeActivatedEventHandler ( Target )
+            //            ) ;
 
         private void Target ( object sender , [ NotNull ] TypeActivatedEventArgs e )
         {
@@ -208,7 +202,7 @@ namespace ProjInterface
             docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
             Debug.WriteLine ( e.ActivatedType.FullName ) ;
         }
-        #endregion
+        
     }
 
     public class AppComponentException : Exception

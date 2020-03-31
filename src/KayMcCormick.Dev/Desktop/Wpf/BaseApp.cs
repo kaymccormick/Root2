@@ -75,19 +75,20 @@ namespace KayMcCormick.Lib.Wpf
             {
                 _applicationInstance = _createdAppInstance = new ApplicationInstance (
                                                                                       new
-                                                                                          ApplicationInstanceConfiguration (
-                                                                                                                            message
-                                                                                                                                => {
-                                                                                                                                PROVIDER_GUID
-                                                                                                                                   .EventWriteSETUP_LOGGING_EVENT (
-                                                                                                                                                                   message
-                                                                                                                                                                  ) ;
-                                                                                                                            }
-                                                                                                                          , null
-                                                                                                                          , disableLogging
-                                                                                                                          , disableRuntimeConfiguration
-                                                                                                                          , disableServiceHost
-                                                                                                                           )
+                                                                                          ApplicationInstance.ApplicationInstanceConfiguration (
+                                                                                                                                                message
+                                                                                                                                                    => {
+                                                                                                                                                    PROVIDER_GUID
+                                                                                                                                                       .EventWriteSETUP_LOGGING_EVENT (
+                                                                                                                                                                                       message
+                                                                                                                                                                                      ) ;
+                                                                                                                                                }
+                                                                                                                                              , ApplicationGuid
+                                                                                                                                              , null
+                                                                                                                                              , disableLogging : disableLogging
+                                                                                                                                              , disableRuntimeConfiguration : disableRuntimeConfiguration
+                                                                                                                                              , disableServiceHost : disableServiceHost
+                                                                                                                                               )
                                                                                      ) ;
             }
 
@@ -120,6 +121,11 @@ namespace KayMcCormick.Lib.Wpf
                 myJsonLayout.Options = options ;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public abstract Guid ApplicationGuid { get ; }
 
         /// <summary>
         /// </summary>

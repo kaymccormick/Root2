@@ -15,6 +15,9 @@
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ILogInvocationArgument
     {
         object Pojo { get ; set ; }

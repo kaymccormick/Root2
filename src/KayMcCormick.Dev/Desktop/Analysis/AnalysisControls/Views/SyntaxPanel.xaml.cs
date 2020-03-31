@@ -29,8 +29,15 @@ namespace AnalysisControls.Views
 
         private ISyntaxPanelViewModel _viewModel ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxPanel ( ) : this ( null ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewModel"></param>
         public SyntaxPanel ( ISyntaxPanelViewModel viewModel )
         {
             _viewModel = viewModel ;
@@ -43,9 +50,15 @@ namespace AnalysisControls.Views
             InitializeComponent ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         #region Implementation of IView<ISyntaxPanelViewModel>
+        /// <summary>
+        /// 
+        /// </summary>
         public ISyntaxPanelViewModel ViewModel
         {
             get { return _viewModel ; }
@@ -78,10 +91,16 @@ namespace AnalysisControls.Views
         #endregion
 
         #region Implementation of IView1
+        /// <summary>
+        /// 
+        /// </summary>
         [ NotNull ] public string ViewTitle { get { return "Syntax Panel" ; } }
         #endregion
 
         #region Overrides of FrameworkElement
+        /// <summary>
+        /// 
+        /// </summary>
         public override void EndInit ( )
         {
             base.EndInit ( ) ;

@@ -28,33 +28,52 @@ using NLog ;
 
 namespace AnalysisAppLib
 {
-    internal class FindLogUsages
+    /// <summary>
+    /// </summary>
+    public class FindLogUsages
     {
+#if DOLOG
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#endif
 
         private readonly Func < ILogInvocation > _invocationFactory ;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="invocationFactory"></param>
         public FindLogUsages ( Func < ILogInvocation > invocationFactory )
         {
             _invocationFactory = invocationFactory ;
         }
 
 
+        /// <summary>
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="rejectBlock"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         [ ItemNotNull ]
         public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
             [ NotNull ] Document         d
           , BufferBlock < RejectedItem > rejectBlock
         )
         {
-            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Document" , d.FilePath ) )
+            using (
+#if DOLOG
+                MappedDiagnosticsLogicalContext.SetScoped("Document", d.FilePath)
+#else
+                    new EmptyDisposable ( ) 
+#endif
+                )
             {
                 try
                 {
-#if TRACE
+#if TRACE && DOLOG
                     Logger.Trace (
                                   "[{id}] Entering {funcName}"
-                                , Thread.CurrentThread.ManagedThreadId
-                                , nameof ( FindUsagesFuncAsync )
+                            , Thread.CurrentThread.ManagedThreadId
+                            , nameof ( FindUsagesFuncAsync )
                                  ) ;
 #endif
                     var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
@@ -64,71 +83,20 @@ namespace AnalysisAppLib
 
                     if ( model != null )
                     {
-                        var exceptionType =
-                            model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
-                        var t = LogUsages.GetNLogSymbol ( model ) ;
-                        if ( t == null )
-                        {
-                            return Array.Empty < ILogInvocation > ( ) ;
-                        }
-
-                        var t2 = LogUsages.GetILoggerSymbol ( model ) ;
-                        if ( t2 == null )
-                        {
-                            return Array.Empty < ILogInvocation > ( ) ;
-                        }
-
-                        var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
-                        var rootNode = await tree.GetRootAsync ( ).ConfigureAwait ( true ) ;
-                        return (
-                                   from node in root.DescendantNodes ( ) //.AsParallel ( )
-                                   let t_ = t
-                                   let t2_ = t2
-                                   let builderSymbol = logBuilderSymbol
-                                   let tree_ = tree
-                                   let model_ = model
-                                   let exType = exceptionType
-                                   where node.RawKind == ( ushort ) SyntaxKind.InvocationExpression
-                                         || node.RawKind
-                                         == ( ushort ) SyntaxKind.ObjectCreationExpression
-                                   let @out =
-                                       LogUsages.CheckInvocationExpression (
-                                                                            node
-                                                                          , model_
-                                                                          , builderSymbol
-                                                                          , t_
-                                                                          , t2_
-                                                                           )
-                                   where @out.Item1
-                                   let statement =
-                                       node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                                   let result =
-                                       new InvocationParams (
-                                                             tree_
-                                                           , model_
-                                                           , statement
-                                                           , @out
-                                                           , exType
-                                                            ).ProcessInvocation (
-                                                                                 _invocationFactory
-                                                                                )
-                                   select result is ILogInvocation inv
-                                              ? inv
-                                              : ( object ) rejectBlock.Post (
-                                                                             result is RejectedItem
-                                                                                 rj
-                                                                                 ? rj
-                                                                                 : new
-                                                                                     RejectedItem (
-                                                                                                   statement
-                                                                                                  )
-                                                                            ) ).OfType <
-                            ILogInvocation > ( ) ;
+                        return await Process (
+                                              _invocationFactory
+                                            , model
+                                            , tree
+                                            , root
+                       ,                      rejectBlock.Post
+                                             ) ;
                     }
                 }
                 catch ( Exception ex )
                 {
+#if DOLOG
                     Logger.Debug ( ex , ex.ToString ( ) ) ;
+#endif
                     throw ;
                 }
             }
@@ -136,10 +104,76 @@ namespace AnalysisAppLib
             throw new InvalidOperationException ( ) ;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="invocationFactory"></param>
+        /// <param name="model"></param>
+        /// <param name="tree"></param>
+        /// <param name="root"></param>
+        /// <param name="RejectAction"></param>
+        /// <returns></returns>
+        public static async Task < IEnumerable < ILogInvocation > > Process (
+            Func < ILogInvocation >      invocationFactory
+          , SemanticModel                model
+          , SyntaxTree                   tree
+          , SyntaxNode                   root
+          , Func < RejectedItem , bool > RejectAction
+        )
+        {
+            var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
+            var t = LogUsages.GetNLogSymbol ( model ) ;
+            if ( t == null )
+            {
+                return Array.Empty < ILogInvocation > ( ) ;
+            }
+
+            var t2 = LogUsages.GetILoggerSymbol ( model ) ;
+            if ( t2 == null )
+            {
+                return Array.Empty < ILogInvocation > ( ) ;
+            }
+
+            var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
+            return (
+                       from node in root.DescendantNodes ( ) //.AsParallel ( )
+                       let t_ = t
+                       let t2_ = t2
+                       let builderSymbol = logBuilderSymbol
+                       let tree_ = tree
+                       let model_ = model
+                       let exType = exceptionType
+                       where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
+                             || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
+                       let @out =
+                           LogUsages.CheckInvocationExpression (
+                                                                node
+                                                              , model_
+                                                              , builderSymbol
+                                                              , t_
+                                                              , t2_
+                                                               )
+                       where @out.Item1
+                       let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
+                       let result = new InvocationParams (
+                                                          tree_
+                                                        , model_
+                                                        , statement
+                                                        , @out
+                                                        , exType
+                                                         ).ProcessInvocation ( invocationFactory )
+                       select result is ILogInvocation inv
+                                  ? inv
+                                  : ( object ) RejectAction (
+                                                             result is RejectedItem rj
+                                                                 ? rj
+                                                                 : new RejectedItem ( statement )
+                                                            ) ).OfType < ILogInvocation > ( ) ;
+        }
+
         private static bool Predicate ( [ NotNull ] SyntaxNode arg1 , int arg2 )
         {
             var b = arg1 is StatementSyntax || arg1 is MemberDeclarationSyntax ;
-#if TRACE
+#if TRACE && DOLOG
             Logger.Debug ( "Got {arg1} - {b}" , arg1.Kind ( ) , b ) ;
 #endif
             if ( b )
@@ -165,7 +199,9 @@ namespace AnalysisAppLib
 
             private const string NLogNamespace = "NLog" ;
 
+#if DOLOG
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#endif
 
             private static readonly string LoggerClassFullName =
                 NLogNamespace + '.' + LoggerClassName ;
@@ -203,21 +239,21 @@ namespace AnalysisAppLib
                 {
                     var symbolInfo =
                         ModelExtensions.GetSymbolInfo ( currentModel , node.Expression ) ;
-#if TRACE
+#if TRACE && DOLOG
                     Logger.Debug (
                                   "{method} node location is {node}"
-                                , nameof ( CheckInvocationExpression )
-                                , node.GetLocation ( ).ToString ( )
+                            , nameof ( CheckInvocationExpression )
+                            , node.GetLocation ( ).ToString ( )
                                  ) ;
                     Logger.Debug (
                                   "{exprKind}, {expr}"
-                                , node.Expression.Kind ( )
-                                , node.Expression.ToString ( )
+                            , node.Expression.Kind ( )
+                            , node.Expression.ToString ( )
                                  ) ;
 
                     Logger.Info (
                                  "symbol info is {node}"
-                               , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
+                           , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
                     {
@@ -229,8 +265,7 @@ namespace AnalysisAppLib
                     var result = methodSymbol != null
                                  // TODO optimize
                                  && CheckSymbol ( methodSymbol , t ) ;
-#if TRACE
-
+#if TRACE && DOLOG
                     Logger.Debug ( "result is {result}" , result ) ;
 
 #endif
@@ -289,7 +324,9 @@ namespace AnalysisAppLib
 
         internal class InvocationParams
         {
+#if DOLOG
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+#endif
 
             public InvocationParams (
                 SyntaxTree                                                syntaxTree
@@ -306,11 +343,11 @@ namespace AnalysisAppLib
 
                 if ( relevantNode != null )
                 {
-#if TRACE
+#if TRACE && DOLOG
                     Logger.Debug (
                                   "{id} relevant node is {node}"
-                                , Thread.CurrentThread.ManagedThreadId
-                                , relevantNode.ToString ( )
+                            , Thread.CurrentThread.ManagedThreadId
+                            , relevantNode.ToString ( )
                                  ) ;
 #endif
                     Tree = syntaxTree ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
@@ -362,14 +399,14 @@ namespace AnalysisAppLib
                 var msgParam = MethodSymbol
                               .Parameters.Select ( ( symbol , i ) => new { symbol , i } )
                               .Where ( arg1 => arg1.symbol.Name == "message" ) ;
-#if TRACE
+#if TRACE && DOLOG
                 if ( ! msgParam.Any ( ) )
                 {
                     Logger.Trace (
                                   "{params}"
-                                , string.Join (
+                            , string.Join (
                                                ", "
-                                             , MethodSymbol.Parameters.Select (
+                                         , MethodSymbol.Parameters.Select (
                                                                                symbol => symbol.Name
                                                                               )
                                               )
@@ -379,12 +416,12 @@ namespace AnalysisAppLib
 
                 var msgI = msgParam.Any ( ) ? ( int ? ) msgParam.First ( ).i : null ;
                 var methodSymbol = MethodSymbol ;
-#if TRACE
+#if TRACE && DOLOG
                 Logger.Trace (
                               "params = {params}"
-                            , string.Join (
+                        , string.Join (
                                            ", "
-                                         , methodSymbol.Parameters.Select ( symbol => symbol.Name )
+                                     , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                           )
                              ) ;
 #endif
@@ -401,13 +438,13 @@ namespace AnalysisAppLib
                         ModelExtensions.GetTypeInfo ( semanticModel , msgArgExpr ) ;
                     var symbolInfo = ModelExtensions.GetSymbolInfo ( semanticModel , msgArgExpr ) ;
                     var arg1sym = symbolInfo.Symbol ;
-#if TRACE
+#if TRACE && DOLOG
                     if ( arg1sym != null )
                     {
                         Logger.Trace (
                                       "{type} {symb}"
-                                    , arg1sym.GetType ( )
-                                    , arg1sym?.ToDisplayString ( )
+                                , arg1sym.GetType ( )
+                                , arg1sym?.ToDisplayString ( )
                                      ) ;
                     }
 #endif
@@ -419,7 +456,7 @@ namespace AnalysisAppLib
                     if ( constant.HasValue )
                     {
                         msgval.IsMessageTemplate = true ;
-#if TRACE
+#if TRACE && DOLOG
                         Logger.Trace ( "Constant {constant}" , constant.Value ) ;
 #endif
                         msgval.ConstantMessage = constant.Value ;
@@ -439,7 +476,7 @@ namespace AnalysisAppLib
                                 o.Add ( xt ) ;
                             }
                         }
-#if TRACE
+#if TRACE && DOLOG
                         Logger.Debug ( "{}" , string.Join ( ", " , o ) ) ;
 #endif
                     }
@@ -464,7 +501,7 @@ namespace AnalysisAppLib
                                 }
                             }
                         }
-#if TRACE
+#if TRACE && DOLOG
                         Logger.Trace ( "{}" , msgArgExpr ) ;
 #endif
                         //msgval.MessageExprPojo = Transforms.TransformExpr ( msgArgExpr ) ;
@@ -476,11 +513,10 @@ namespace AnalysisAppLib
                 }
 
                 var relevantNode = RelevantNode ;
+                var location = relevantNode.GetLocation ( ) ;
                 var sourceLocation = Tree.FilePath
                                      + ":"
-                                     + ( relevantNode.GetLocation ( )
-                                                     .GetMappedLineSpan ( )
-                                                     .StartLinePosition.Line
+                                     + ( location.GetMappedLineSpan ( ).StartLinePosition.Line
                                          + 1 ) ;
 
                 object t1 ;
@@ -494,6 +530,7 @@ namespace AnalysisAppLib
                 }
 
                 var debugInvo = invocationFactory ( ) ;
+                debugInvo.Location       = location ;
                 debugInvo.SourceLocation = sourceLocation ;
                 debugInvo.LoggerType     = methodSymbol.ContainingType.MetadataName ;
                 debugInvo.MethodDisplayName = methodSymbol.ContainingType.MetadataName
@@ -524,7 +561,9 @@ namespace AnalysisAppLib
                 }
                 catch ( Exception ex )
                 {
+#if DOLOG
                     Logger.Warn ( ex , ex.ToString ( ) ) ;
+#endif
                 }
 
                 var transformed = rest.Select (
@@ -536,7 +575,7 @@ namespace AnalysisAppLib
                 {
                     debugInvo.Arguments.Add ( logInvocationArgument ) ;
                 }
-#if TRACE
+#if TRACE && DOLOG
                 Logger.Trace ( "{t}" , transformed ) ;
 #endif
                 return debugInvo ;
@@ -597,5 +636,12 @@ namespace AnalysisAppLib
                 public object ConstantMessage { get ; set ; }
             }
         }
+    }
+
+    public class EmptyDisposable : IDisposable
+    {
+        #region IDisposable
+        public void Dispose ( ) { }
+        #endregion
     }
 }

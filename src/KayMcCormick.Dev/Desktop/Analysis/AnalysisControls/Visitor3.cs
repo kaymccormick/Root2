@@ -15,6 +15,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Documents ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -22,6 +23,9 @@ using NLog ;
 namespace AnalysisControls
 {
     // ReSharper disable once UnusedType.Global
+    /// <summary>
+    /// 
+    /// </summary>
     public class Visitor3 : CSharpSyntaxWalker
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -34,6 +38,11 @@ namespace AnalysisControls
         private readonly Stack < Style > _styles          = new Stack < Style > ( ) ;
         private          bool            attached ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="flowViewer"></param>
         public Visitor3 ( FlowDocument document , MyFlowDocumentScrollViewer flowViewer ) :
             base ( SyntaxWalkerDepth.Trivia )
         {
@@ -41,14 +50,26 @@ namespace AnalysisControls
             _document  = document ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MyFlowDocumentScrollViewer FlowViewer { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public async Task DefaultVisitAsync ( SyntaxNode node )
         {
             await Task.Run ( ( ) => DefaultVisit ( node ) ) ;
         }
 
         #region Overrides of CSharpSyntaxWalker
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
         public override void Visit ( SyntaxNode node )
         {
             RecordLocation ( node.GetLocation ( ) ) ;
@@ -85,15 +106,19 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Stack < Style > Styles { get { return _styles ; } }
 
-        private Style FindStyle ( SyntaxNode node )
+        [ CanBeNull ]
+        private Style FindStyle ( [ NotNull ] SyntaxNode node )
         {
             var r = _document.TryFindResource ( node.Kind ( ) ) ;
             return r as Style ;
         }
 
-        private void RecordLocation ( Location getLocation )
+        private void RecordLocation ( [ NotNull ] Location getLocation )
         {
             var line = getLocation.GetLineSpan ( ).StartLinePosition.Line ;
             Logger.Trace (
@@ -152,11 +177,15 @@ namespace AnalysisControls
             }
         }
 
-        private static void ScrollViewerOnScrollChanged ( object sender , ScrollChangedEventArgs e )
+        private static void ScrollViewerOnScrollChanged ( object sender , [ NotNull ] ScrollChangedEventArgs e )
         {
             Logger.Info ( "offset {}" , e.HorizontalOffset ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
         public override void VisitToken ( SyntaxToken token )
         {
             VisitLeadingTrivia ( token ) ;
@@ -176,7 +205,7 @@ namespace AnalysisControls
                                      .StartLinePosition.Character ;
                 if ( startChar > 0 )
                 {
-                    LogManager.GetCurrentClassLogger ( ).Info ( "apending {s}" , startChar ) ;
+                    LogManager.GetCurrentClassLogger ( ).Info ( "appending {s}" , startChar ) ;
                     var x = new string ( ' ' , startChar ) ;
                     text = x + text ;
                 }
@@ -249,8 +278,6 @@ namespace AnalysisControls
                 DoTrivia ( syntaxTrivia ) ;
             }
         }
-
-        public override void VisitTrivia ( SyntaxTrivia trivia ) { base.VisitTrivia ( trivia ) ; }
         #endregion
     }
 }
