@@ -15,10 +15,16 @@ using AnalysisAppLib.ViewModel ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ProjectBrowserViewModel : IProjectBrowserViewModel
     {
         private readonly IBrowserNodeCollection _rootCollection ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectBrowserViewModel ( )
         {
             var browserNodeCollection = new BrowserNodeCollection ( ) ;
@@ -58,9 +64,17 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of IProjectBrowserViewModoel
+        /// <summary>
+        /// 
+        /// </summary>
         public IBrowserNodeCollection RootCollection { get { return _rootCollection ; } }
         #endregion
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }

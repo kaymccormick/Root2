@@ -19,10 +19,16 @@ using NLog ;
 
 namespace AnalysisAppLib.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class SyntaxTokenViewModel : ISyntaxTokenViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxTokenViewModel ( )
         {
             foreach ( SyntaxKind value in Enum.GetValues ( typeof ( SyntaxKind ) ) )
@@ -49,10 +55,18 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < SyntaxItem > SyntaxItems { get ; } =
             new ObservableCollection < SyntaxItem > ( ) ;
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }

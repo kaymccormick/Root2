@@ -18,15 +18,22 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class FileSystemExplorerItemProvider : IExplorerItemProvider
+    public sealed class 
+        FileSystemExplorerItemProvider : IExplorerItemProvider
     {
         private readonly AppExplorerItem root ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public FileSystemExplorerItemProvider ( )
         {
             root = new FileSystemAppExplorerItem ( DefaultInputPath ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string DefaultInputPath { get ; } = Path.Combine (
                                                                  Environment.GetFolderPath (
                                                                                             Environment
@@ -37,6 +44,10 @@ namespace AnalysisAppLib
                                                                 ) ;
 
         #region Implementation of IExplorerItemProvider
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable < AppExplorerItem > GetRootItems ( ) { yield return root ; }
         #endregion
     }

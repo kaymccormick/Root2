@@ -16,9 +16,13 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Fluent ;
+using Span ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Visitor2 : CSharpSyntaxWalker
     {
         private static readonly Logger logger =
@@ -28,20 +32,35 @@ namespace AnalysisAppLib
 
         private readonly Func < object , ISpanViewModel > _mFunc ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Visitor2 ( )
         {
             _message = new LogBuilder ( LogManager.GetCurrentClassLogger ( ) ).Message ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected ActiveSpans ActiveSpans { get ; } = new ActiveSpans ( ) ;
 
         // public Dictionary<object, ISpanObject> ActiveSpans { get; } =
         //     new Dictionary<object, ISpanObject>();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="toke"></param>
         public override void VisitToken ( SyntaxToken toke )
         {
             //base.VisitToken ( token ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public override void DefaultVisit ( [ NotNull ] SyntaxNode node )
         {
             if ( node == null )

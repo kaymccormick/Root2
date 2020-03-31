@@ -26,7 +26,7 @@ using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax ;
+
 using NLog ;
 
 namespace AnalysisAppLib.ViewModel
@@ -42,14 +42,7 @@ namespace AnalysisAppLib.ViewModel
             0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c , 0xff3c6e7d , 0xff533ca3
         } ;
 
-        private AppTypeInfo root =
-            new AppTypeInfo (
-                             new ObservableCollection < AppTypeInfo >
-                             {
-                                 new AppTypeInfo { Type = typeof ( EndBlockStatementSyntax ) }
-                             }
-                            ) { Type = typeof ( CSharpSyntaxNode ) } ;
-
+        private AppTypeInfo root ;
         private readonly List < Type > _nodeTypes ;
 
         private readonly Dictionary < Type , AppTypeInfo > map =
@@ -623,9 +616,20 @@ namespace AnalysisAppLib.ViewModel
     public class CodeElementDocumentation
     {
         private   string                 _elementId ;
+        /// <summary>
+        /// 
+        /// </summary>
         protected string                 _type ;
+        /// <summary>
+        /// 
+        /// </summary>
         protected List < XmlDocElement > _xmlDoc ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
         protected CodeElementDocumentation (
             string                        elementId
           , IEnumerable < XmlDocElement > xmlDoc
@@ -643,6 +647,9 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         public string Type { get { return _type ; } set { _type = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable < XmlDocElement > XmlDoc { get { return _xmlDoc ; } }
 
         /// <summary>
@@ -687,7 +694,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class XmlDocText : XmlDocElement
+    public class XmlDocText : InlineDocElem
     {
         private readonly string text ;
 
@@ -711,7 +718,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Typeparamref : XmlDocElement
+    public class Typeparamref : InlineDocElem
     {
         private readonly string _typeParamName ;
 
@@ -728,7 +735,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Example : XmlDocElement
+    public class Example : BlockDocElem
     {
         /// <summary>
         /// </summary>
@@ -739,7 +746,7 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
-    public class Param : XmlDocElement
+    public class Param : BlockDocElem
     {
         /// <summary>
         /// </summary>
@@ -748,8 +755,23 @@ namespace AnalysisAppLib.ViewModel
     }
 
     /// <summary>
+    /// 
     /// </summary>
-    public class Anchor : XmlDocElement
+    public class InlineDocElem : XmlDocElement
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elements"></param>
+        public InlineDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+
+        protected InlineDocElem ( ) {
+        }
+    }
+
+    /// <summary>
+    /// </summary>
+    public class Anchor : InlineDocElem
     {
         private readonly string _href ;
 
@@ -762,6 +784,9 @@ namespace AnalysisAppLib.ViewModel
             _href = href ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Href { get { return _href ; } }
     }
 
@@ -779,7 +804,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Em : XmlDocElement
+    public class Em : InlineDocElem
     {
         /// <summary>
         /// </summary>
@@ -799,7 +824,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Para : XmlDocElement
+    public class Para : BlockDocElem
     {
         /// <summary>
         /// </summary>
@@ -809,7 +834,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Paramref : XmlDocElement
+    public class Paramref : InlineDocElem
     {
         private readonly string _paramName ;
 
@@ -825,7 +850,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Code : XmlDocElement
+    public class Code : InlineDocElem
     {
         /// <summary>
         /// </summary>
@@ -835,7 +860,7 @@ namespace AnalysisAppLib.ViewModel
 
     /// <summary>
     /// </summary>
-    public class Crossref : XmlDocElement
+    public class Crossref : InlineDocElem
     {
         private readonly string _xRefId ;
 
@@ -859,8 +884,6 @@ namespace AnalysisAppLib.ViewModel
         private readonly XElement               _element ;
         private readonly List < XmlDocElement > _elements ;
 
-        public XmlDocElement ( XElement element ) { _element = element ; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -880,6 +903,10 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         public List < XmlDocElement > Elements { get { return _elements ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString ( )
         {
             return $"[{GetType ( ).Name}] {string.Join ( " " , Elements )}" ;
@@ -889,9 +916,26 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
-    public class Summary : XmlDocElement
+    public sealed class Summary : BlockDocElem
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elements"></param>
         public Summary ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BlockDocElem : XmlDocElement
+    {
+        public BlockDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements )
+        {
+        }
+
+        protected BlockDocElem ( ) {
+        }
     }
 
     /// <summary>
@@ -899,15 +943,33 @@ namespace AnalysisAppLib.ViewModel
     /// </summary>
     public class UnrecognizedElementException : Exception
     {
-        public UnrecognizedElementException ( ) { }
+        /// <summary>
+        /// 
+        /// </summary>
+        public 
+            UnrecognizedElementException ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public UnrecognizedElementException ( string message ) : base ( message ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public UnrecognizedElementException ( string message , Exception innerException ) :
             base ( message , innerException )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected UnrecognizedElementException (
             [ NotNull ] SerializationInfo info
           , StreamingContext              context
@@ -916,7 +978,10 @@ namespace AnalysisAppLib.ViewModel
         }
     }
 
-    public class MyWriter : XmlWriter
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class MyWriter : XmlWriter
     {
         private readonly Stack < string > _elements = new Stack < string > ( ) ;
         #region Overrides of XmlWriter
@@ -1046,15 +1111,27 @@ namespace AnalysisAppLib.ViewModel
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class MemberDocInfo : DocInfo
     {
         private string _memberName ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string MemberName { get { return _memberName ; } set { _memberName = value ; } }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class MethodDocInfo : MemberDocInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string Parameters { get ; set ; }
     }
 

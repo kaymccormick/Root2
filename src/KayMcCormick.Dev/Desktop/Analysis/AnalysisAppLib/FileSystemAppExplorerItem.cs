@@ -147,19 +147,40 @@ namespace AnalysisAppLib
         /// </summary>
         public override string Name { get { return _name ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string FullName { get { return _fullName ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Link { get { return _link ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override long Size { get { return _size ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override DateTime ? Date { get { return _date ; } }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override bool IsDirectory { get { return _isDirectory ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override bool HasChildren { get { return _hasChildren ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IDictionary IconsResources
         {
             get { return _iconsResources ; }

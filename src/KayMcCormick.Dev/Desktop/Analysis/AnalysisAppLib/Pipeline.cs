@@ -13,14 +13,23 @@ using NLog.Fluent ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Pipeline
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Pipeline ( ) { }
 
         private readonly Func < ILogInvocation > _invocationFactory ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IPropagatorBlock < AnalysisRequest , ILogInvocation > PipelineInstance
         {
             get ;
@@ -36,20 +45,33 @@ namespace AnalysisAppLib
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
         private BufferBlock < RejectedItem >                           _rejectBlock ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public BufferBlock < ILogInvocation > ResultBufferBlock { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DataflowLinkOptions LinkOptions
         {
             get { return _linkOptions ; }
             set { _linkOptions = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IPropagatorBlock < AnalysisRequest , AnalysisRequest > CurrentBlock
         {
             get { return _currentBlock ; }
             set { _currentBlock = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invocationFactory"></param>
         public Pipeline ( Func < ILogInvocation > invocationFactory )
         {
             _invocationFactory = invocationFactory ;
@@ -57,6 +79,9 @@ namespace AnalysisAppLib
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void BuildPipeline ( )
         {
             var initWorkspace = Register ( Workspaces.InitializeWorkspace2Block ( ) ) ;
@@ -118,6 +143,10 @@ namespace AnalysisAppLib
             else { Logger.Trace ( $"{logName} complete - not faulted" ) ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected virtual IPropagatorBlock < AnalysisRequest , AnalysisRequest > ConfigureInput ( )
         {
             var input = new WriteOnceBlock < AnalysisRequest > ( s => s ) ;
@@ -125,8 +154,14 @@ namespace AnalysisAppLib
             return input ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITargetBlock < AnalysisRequest > Head { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public BufferBlock < RejectedItem > RejectBlock
         {
             get { return _rejectBlock ; }
@@ -281,6 +316,9 @@ namespace AnalysisAppLib
 #endif
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class MyTest
     {
     }

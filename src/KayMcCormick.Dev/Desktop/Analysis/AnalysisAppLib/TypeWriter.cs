@@ -354,6 +354,9 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum WriteStyle
     {
         /// <summary>

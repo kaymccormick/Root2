@@ -17,11 +17,19 @@ using Logger = NLog.Logger ;
 
 namespace AnalysisAppLib.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class LoginAuthenticationViewModel : IViewModel
     {
         private readonly Func < string , GraphServiceClient > _graphFunc ;
         private readonly IPublicClientApplication             _publicClient ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphFunc"></param>
+        /// <param name="publicClient"></param>
         public LoginAuthenticationViewModel (
             Func < string , GraphServiceClient > graphFunc
           , IPublicClientApplication             publicClient
@@ -32,10 +40,18 @@ namespace AnalysisAppLib.ViewModel
         }
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -56,6 +72,11 @@ namespace AnalysisAppLib.ViewModel
         private readonly ObservableCollection < AppExplorerItem > _rootCollection =
             new ObservableCollection < AppExplorerItem > ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="views"></param>
+        /// <param name="providers"></param>
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IViewWithTitle > > > views
           , IEnumerable < IExplorerItemProvider >            providers
@@ -80,27 +101,48 @@ namespace AnalysisAppLib.ViewModel
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable < Meta < Lazy < IViewWithTitle > > > Views { get { return _views ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < AppExplorerItem > RootCollection
         {
             get { return _rootCollection ; }
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string DefaultInputPath
         {
             get { return _defaultInputPath ; }
             set { _defaultInputPath = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task Request1 ( )
 
         {
@@ -115,6 +157,10 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void SethWnd ( IntPtr value ) { _hWnd = value ; }
 
         [ NotifyPropertyChangedInvocator ]

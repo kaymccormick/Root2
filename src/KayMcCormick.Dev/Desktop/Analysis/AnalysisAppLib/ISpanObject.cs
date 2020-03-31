@@ -11,8 +11,15 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ISpanObject < T >
     {
+        /// <summary>
+        /// 
+        /// </summary>
         T Instance { get ; set ; }
     }
 }

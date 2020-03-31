@@ -14,10 +14,19 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.ViewModel
 {
-    public interface ISpanToolTipViewModel
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface  ISpanToolTipViewModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         List < object > Spans { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         Location Location { get ; set ; }
     }
 }

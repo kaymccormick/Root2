@@ -11,13 +11,23 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogViewerConfig
 
     {
         private int _port ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="port"></param>
         public LogViewerConfig ( ushort port ) { _port = port ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Port { get { return _port ; } set { _port = value ; } }
     }
 }

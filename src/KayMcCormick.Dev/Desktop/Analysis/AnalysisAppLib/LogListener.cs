@@ -18,10 +18,14 @@ using System.Net.Sockets ;
 using System.Text ;
 using System.Text.Json ;
 using System.Xml ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogListener : IDisposable
 
 
@@ -41,6 +45,11 @@ namespace AnalysisAppLib
         private JsonSerializerOptions _options ;
         private UdpClient             _udpClient ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="viewModel"></param>
         public LogListener ( int port , LogViewModel viewModel )
         {
             _port      = port ;
@@ -48,9 +57,15 @@ namespace AnalysisAppLib
         }
 
         #region IDisposable
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose ( ) { _udpClient?.Dispose ( ) ; }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Start ( )
         {
             try
@@ -66,7 +81,10 @@ namespace AnalysisAppLib
             Listen ( ) ;
         }
 
-        private async void Listen ( )
+        /// <summary>
+        /// 
+        /// </summary>
+        public async void Listen ( )
         {
             var resp = await _udpClient.ReceiveAsync ( ).ConfigureAwait ( false ) ;
 
@@ -74,6 +92,7 @@ namespace AnalysisAppLib
             Listen ( ) ;
         }
 
+        [ NotNull ]
         private LogEventInstance HandleJsonMessage ( JsonSerializerOptions options , string s )
         {
             var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
@@ -122,6 +141,7 @@ namespace AnalysisAppLib
             _viewModel.AddEntry ( instance ) ;
         }
 
+        [ NotNull ]
         private LogEventInstance HandleXml ( byte[] resultBuffer )
         {
             var xmlNameTable = new NameTable ( ) ;
@@ -242,6 +262,11 @@ namespace AnalysisAppLib
             return instance ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="javaTimeStamp"></param>
+        /// <returns></returns>
         public static DateTime JavaTimeStampToDateTime ( double javaTimeStamp )
         {
             // Java timestamp is milliseconds past epoch

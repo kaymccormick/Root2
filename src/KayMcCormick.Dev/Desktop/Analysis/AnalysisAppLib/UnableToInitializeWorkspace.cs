@@ -8,12 +8,27 @@ using Microsoft.CodeAnalysis.MSBuild ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UnableToInitializeWorkspace : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public UnableToInitializeWorkspace ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public UnableToInitializeWorkspace ( string message ) : base ( message ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public UnableToInitializeWorkspace ( string message , Exception innerException ) : base (
                                                                                                  message
                                                                                                , innerException
@@ -21,6 +36,11 @@ namespace AnalysisAppLib
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected UnableToInitializeWorkspace (
             [ NotNull ] SerializationInfo info
           , StreamingContext              context

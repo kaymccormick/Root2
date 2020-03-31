@@ -21,6 +21,9 @@ using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class LogViewModel : INotifyPropertyChanged , IViewModel
     {
         private readonly SynchronizationContext                    _context ;
@@ -28,6 +31,9 @@ namespace AnalysisAppLib
         private          string                                    _displayName ;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LogViewModel ( )
         {
             _context = SynchronizationContext.Current ;
@@ -44,20 +50,39 @@ namespace AnalysisAppLib
             _dict[ "" ] = RootLogger ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ViewerLoggerInfo RootLogger { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < ViewerLoggerInfo > RootNodes { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LogEventInstanceObservableCollection LogEntries { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string DisplayName { get { return _displayName ; } set { _displayName = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         #region Implementation of ISerializable
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loggerName"></param>
         public void ParseLoggerName ( string loggerName )
         {
             //Regex x = new Regex(@"\.[^\.]*$", RegexOptions.Compiled);
@@ -102,6 +127,10 @@ namespace AnalysisAppLib
             return null ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logEvent"></param>
         public void AddEntry ( LogEventInstance logEvent )
         {
             //var loggers = logEvent.LoggerName.Split ( '.' ) ;

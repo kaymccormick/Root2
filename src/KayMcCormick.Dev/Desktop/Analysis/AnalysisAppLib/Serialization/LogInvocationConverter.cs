@@ -17,9 +17,19 @@ using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogInvocationConverter : JsonConverter < ILogInvocation >
     {
         #region Overrides of JsonConverter<ILogInvocation>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override ILogInvocation Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -29,6 +39,13 @@ namespace AnalysisAppLib.Serialization
             return null ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public override void Write (
             Utf8JsonWriter             writer
           , [ NotNull ] ILogInvocation value

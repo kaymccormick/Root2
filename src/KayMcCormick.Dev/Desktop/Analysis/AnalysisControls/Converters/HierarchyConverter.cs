@@ -10,11 +10,15 @@ using NLog ;
 
 namespace AnalysisControls.Converters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ ValueConversion ( typeof ( CSharpSyntaxNode ) , typeof ( string ) ) ]
     [ ValueConversion ( typeof ( CSharpSyntaxNode ) , typeof ( IEnumerable ) ) ]
     public sealed class HierarchyConverter : IValueConverter
     {
-        public static readonly  HierarchyConverter Default = new HierarchyConverter ( ) ;
+        public static readonly  HierarchyConverter 
+            Default = new HierarchyConverter ( ) ;
         private static readonly Logger             Logger  = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
         public object Convert (
@@ -1577,6 +1581,14 @@ namespace AnalysisControls.Converters
             return null ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack (
             object      value
           , Type        targetType

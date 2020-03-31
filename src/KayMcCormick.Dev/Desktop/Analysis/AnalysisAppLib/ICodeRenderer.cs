@@ -18,10 +18,33 @@ namespace AnalysisAppLib
     /// </summary>
     public interface ICodeRenderer
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rawKind"></param>
+        /// <param name="text"></param>
+        /// <param name="newLine"></param>
         void addToken ( ushort rawKind , string text , bool newLine ) ;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rawKind"></param>
+        /// <param name="text"></param>
+        /// <param name="newLine"></param>
         void addTrivia ( int   rawKind , string text , bool newLine ) ;
+        /// <summary>
+        /// 
+        /// </summary>
         void NewLine ( ) ;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
         void StartNode ( SyntaxNode node ) ;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
         void EndNode ( SyntaxNode   node ) ;
     }
 }

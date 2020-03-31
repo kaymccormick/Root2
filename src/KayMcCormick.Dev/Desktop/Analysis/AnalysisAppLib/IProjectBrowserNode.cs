@@ -13,12 +13,24 @@ using System ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IProjectBrowserNode : IBrowserNode
     {
+        /// <summary>
+        /// 
+        /// </summary>
         Uri RepositoryUrl { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         string Platform { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         string SolutionPath { get ; set ; }
     }
 }

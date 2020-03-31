@@ -49,6 +49,13 @@ namespace AnalysisAppLib.Syntax
             type2 = me.ConvertedType ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public static string ShortenedPath ( [ NotNull ] this Document doc )
         {
             if ( doc == null )
@@ -71,11 +78,22 @@ namespace AnalysisAppLib.Syntax
             throw new InvalidOperationException ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
         public static string RelativePath ( [ NotNull ] this Document doc )
         {
             return GetRelativePath ( doc.Project.FilePath , doc.FilePath ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="relativeTo"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static string GetRelativePath ( string relativeTo , string path )
         {
             var uri = new Uri ( relativeTo ) ;

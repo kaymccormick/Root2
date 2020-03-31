@@ -11,10 +11,16 @@
 #endregion
 namespace AnalysisAppLib.Projects
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class BrowserNode : IBrowserNode
     {
         private string _name ;
         #region Implementation of IBrowserNode
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get { return _name ; } set { _name = value ; } }
         #endregion
     }

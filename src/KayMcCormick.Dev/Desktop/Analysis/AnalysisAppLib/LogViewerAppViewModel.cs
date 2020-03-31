@@ -15,6 +15,9 @@ using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogViewerAppViewModel : IViewModel
 
 
@@ -22,6 +25,9 @@ namespace AnalysisAppLib
         private ObservableCollection < LogViewModel > _logViewModels =
             new ObservableCollection < LogViewModel > ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < LogViewModel > LogViewModels
         {
             get { return _logViewModels ; }
@@ -29,6 +35,11 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }

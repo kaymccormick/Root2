@@ -14,15 +14,27 @@ using AnalysisAppLib.Projects ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ProjectBrowserNode : BrowserNode , IProjectBrowserNode , IBrowserNode
     {
         private string _platform ;
         private string _solutionPath ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Uri RepositoryUrl { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Platform { get { return _platform ; } set { _platform = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string SolutionPath
         {
             get { return _solutionPath ; }

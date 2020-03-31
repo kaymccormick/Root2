@@ -18,6 +18,9 @@ namespace AnalysisAppLib
     /// </summary>
     public interface ISemanticModelContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
         SemanticModel CurrentModel { get ; set ; }
     }
 }

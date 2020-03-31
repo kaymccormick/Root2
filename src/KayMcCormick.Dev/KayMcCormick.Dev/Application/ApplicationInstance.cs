@@ -21,8 +21,14 @@ using NLog ;
 
 namespace KayMcCormick.Dev.Application
 {
+    /// <summary>
+    /// Static class containing application GUIds
+    /// </summary>
     public static class ApplicationInstanceIds
     {
+        /// <summary>
+        /// GUID for console analysis application
+        /// </summary>
         public static Guid ConsoleAnalysisProgramGuid { get ; } =
             new Guid ( "49A60392-BCC5-468B-8F09-76E0C04CD27C" ) ;
     }
@@ -446,7 +452,7 @@ namespace KayMcCormick.Dev.Application
     /// <summary>
     ///     New app module to replace crussty old app module. Work in progress.
     /// </summary>
-    public sealed class NouveauAppModule : IocModule
+    internal sealed class NouveauAppModule : IocModule
     {
         #region Overrides of IocModule
         /// <summary>

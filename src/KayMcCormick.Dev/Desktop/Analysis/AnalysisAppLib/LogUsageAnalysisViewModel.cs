@@ -19,6 +19,9 @@ using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class LogUsageAnalysisViewModel : ILogUsageAnalysisViewModel
       , INotifyPropertyChanged
     {
@@ -26,6 +29,9 @@ namespace AnalysisAppLib
         private LogInvocationCollection                   _logInvocations ;
         private PipelineResult                            _pipelineResult ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
@@ -35,6 +41,9 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of ILogUsageAnalysisViewModel
+        /// <summary>
+        /// 
+        /// </summary>
         public LogInvocationCollection LogInvocations
         {
             get { return _logInvocations ; }
@@ -45,6 +54,9 @@ namespace AnalysisAppLib
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PipelineResult PipelineResult
         {
             get { return _pipelineResult ; }
@@ -55,6 +67,9 @@ namespace AnalysisAppLib
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < LogEventInstance > Events
         {
             get { return _events ; }
@@ -65,6 +80,11 @@ namespace AnalysisAppLib
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewCurrentItem"></param>
+        /// <returns></returns>
         public async Task AnalyzeCommand ( object viewCurrentItem ) { }
         #endregion
     }

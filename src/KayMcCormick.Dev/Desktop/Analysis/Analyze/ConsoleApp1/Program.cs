@@ -298,14 +298,16 @@ namespace ConsoleApp1
             }
 
 
-            // foreach ( var projFile in Directory.EnumerateFiles (
-                                                                     // @"e:\kay2020\source"
-                                                                   // , "*.csproj"
-                                                                   // , SearchOption.AllDirectories
-                                                                    // ) )
-            // {
-                // Console.WriteLine(projFile);
-            // }
+            foreach ( var projFile in Directory.EnumerateFiles (
+                                                                     @"e:\kay2020\source"
+                                                                   , "*.csproj"
+                                                                   , SearchOption.AllDirectories
+                                                                    ) )
+            {
+                //using Microsoft.CodeAnalysis.MSBuild;
+                
+                Console.WriteLine(projFile);
+            }
 
             SqlConnectionStringBuilder b = new SqlConnectionStringBuilder();
             b.IntegratedSecurity = true ;

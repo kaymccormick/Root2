@@ -20,6 +20,9 @@ using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class CacheTargetViewModel
     {
         private readonly MyCacheTarget2 _cacheTarget ;
@@ -27,10 +30,20 @@ namespace AnalysisAppLib.ViewModel
         private readonly LogEventInstanceObservableCollection _events =
             new LogEventInstanceObservableCollection ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cacheTarget"></param>
         public CacheTargetViewModel ( MyCacheTarget2 cacheTarget ) { _cacheTarget = cacheTarget ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LogEventInstanceObservableCollection Events { get { return _events ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Attach ( )
         {
             _cacheTarget?.Cache.SubscribeOn ( Scheduler.Default )

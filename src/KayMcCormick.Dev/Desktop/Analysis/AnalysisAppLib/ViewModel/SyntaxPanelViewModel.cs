@@ -17,18 +17,32 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel , INotifyPropertyChanged
     {
         private CompilationUnitSyntax compilationUnitSyntax ;
         private object                selectedItem ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         #region Implementation of INotifyPropertyChanging
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangingEventHandler PropertyChanging ;
         #endregion
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
@@ -44,8 +58,15 @@ namespace AnalysisAppLib.ViewModel
         }
 
         #region Implementation of ISyntaxPanelViewModel
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxPanelViewModel ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compilationUnitSyntax"></param>
         public SyntaxPanelViewModel ( CompilationUnitSyntax compilationUnitSyntax = null )
         {
             if ( compilationUnitSyntax != null )
@@ -54,6 +75,9 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CompilationUnitSyntax CompilationUnitSyntax
         {
             get { return compilationUnitSyntax ; }
@@ -68,6 +92,9 @@ namespace AnalysisAppLib.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SelectedItem
         {
             get { return selectedItem ; }

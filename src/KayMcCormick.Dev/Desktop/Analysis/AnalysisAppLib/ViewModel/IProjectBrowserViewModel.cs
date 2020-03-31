@@ -13,8 +13,14 @@ using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IProjectBrowserViewModel : IViewModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         IBrowserNodeCollection RootCollection { get ; }
     }
 }

@@ -22,13 +22,22 @@ using Microsoft.Identity.Client ;
 
 namespace AnalysisAppLib
 {
-    public class MicrosoftUserViewModel : IViewModel , INotifyPropertyChanged
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class MicrosoftUserViewModel : IViewModel , INotifyPropertyChanged
     {
         private          IAccount                             _account ;
         private          GraphServiceClient                   _graphClient ;
         private readonly Func < string , GraphServiceClient > _graphFunc ;
         private readonly IPublicClientApplication             _publicClient ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="publicClientFunc"></param>
+        /// <param name="graphFunc"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public MicrosoftUserViewModel (
             [ NotNull ] Func < Guid , IPublicClientApplication > publicClientFunc
           , Func < string , GraphServiceClient >                 graphFunc
@@ -44,8 +53,14 @@ namespace AnalysisAppLib
                 publicClientFunc ( Guid.Parse ( "73d9e90c-5cd2-4fd7-9e36-4faab9404a7c" ) ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool CanLogin { get { return Account == null ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IAccount Account
         {
             get { return _account ; }
@@ -63,6 +78,9 @@ namespace AnalysisAppLib
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public GraphServiceClient GraphClient
         {
             get { return _graphClient ; }
@@ -78,12 +96,24 @@ namespace AnalysisAppLib
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task Login ( )
         {
             var scopes = new[] { "user.read.all" , "group.read.all" , "contacts.read" } ;
@@ -105,6 +135,10 @@ namespace AnalysisAppLib
             Account     = result.Account ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task < bool > LoginSilentAsync ( )
         {
             var app = _publicClient ;
@@ -129,8 +163,12 @@ namespace AnalysisAppLib
             return true ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         [ NotifyPropertyChangedInvocator ]
-        protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }

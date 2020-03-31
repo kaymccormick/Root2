@@ -22,6 +22,9 @@ using NLog ;
 
 namespace AnalysisAppLib.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonSyntaxNodeConverter : JsonConverterFactory
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
