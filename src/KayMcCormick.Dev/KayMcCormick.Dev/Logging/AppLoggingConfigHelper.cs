@@ -58,6 +58,7 @@ namespace KayMcCormick.Dev.Logging
             discoveryClient.Close ( ) ;
 
             if ( logReceiverServices.Count == 0 )
+
             {
 
                 Console.WriteLine ( "\nNo services are found." ) ;
@@ -439,7 +440,11 @@ namespace KayMcCormick.Dev.Logging
             _dict[LogLevel.Debug].Add(ServiceTarget);
 #endif
 
-
+            var networkT1 = new NetworkTarget ( "n1" ) ;
+            networkT1.Layout= Layout.FromString("${message}");
+            networkT1.Address = Layout.FromString ( "udp://10.25.0.102:6655" ) ;
+            _dict[ LogLevel.Trace].Add ( networkT1 )  ;
+            
             if ( config1.IsEnabledConsoleTarget.HasValue
                  && config1.IsEnabledConsoleTarget.Value
                  && ! disabled.Contains ( ConsoleTargetName ) )

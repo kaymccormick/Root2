@@ -107,8 +107,15 @@ namespace ProjInterface
         [ STAThreadAttribute ( ) ]
         public static void Main ( )
         {
-            var app = new ProjInterfaceApp ( ) ;
-            app.Run ( ) ;
+            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" )
+            )
+            {
+
+
+
+                var app = new ProjInterfaceApp ( ) ;
+                app.Run ( ) ;
+            }
         }
     }
 }

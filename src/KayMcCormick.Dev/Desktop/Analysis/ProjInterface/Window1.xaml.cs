@@ -31,9 +31,14 @@ namespace ProjInterface
 
         public Window1 ( ) { InitializeComponent ( ) ; }
 
+        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this ( lifetimeScope , null )
+        {
+
+        }
+
         public Window1 (
             [ NotNull ] ILifetimeScope      lifetimeScope
-          , [ NotNull ] DockWindowViewModel viewModel
+          ,  DockWindowViewModel viewModel
         )
         {
             if ( lifetimeScope == null )
@@ -41,11 +46,7 @@ namespace ProjInterface
                 throw new ArgumentNullException ( nameof ( lifetimeScope ) ) ;
             }
 
-            if ( viewModel == null )
-            {
-                throw new ArgumentNullException ( nameof ( viewModel ) ) ;
-            }
-
+            //SetValue ( AttachedProperties.LifetimeScopeProperty , (ILifetimeScope)lifetimeScope ) ;
             var lf = lifetimeScope.BeginLifetimeScope (
                                                        "Window1 lifetimescope"
                                                      , builder => {

@@ -114,22 +114,28 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
+
+            builder
+               .RegisterAdapter<Meta<Func<LayoutDocumentPane, IControlView>>,
+                    Func<LayoutDocumentPane, IDisplayableAppCommand>>(Func)
+               .As<Func<LayoutDocumentPane, IDisplayableAppCommand>>();
+
             builder
                .RegisterAssemblyTypes (
                                        Assembly.GetCallingAssembly ( )
                                      , typeof ( PythonControl ).Assembly
                                       )
                .Where (
-                       type => typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
-                               && type != typeof ( LambdaAppCommand )
+                       type => {
+                           var isAssignableFrom = typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
+                                                  && type != typeof ( LambdaAppCommand ) ;
+                           Debug.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
+                           return isAssignableFrom ;
+                       }
                       )
                .As < IDisplayableAppCommand > ( )
                .As < IAppCommand > ( )
                .As < IDisplayable > ( ) ;
-            builder
-               .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                    Func < LayoutDocumentPane , IDisplayableAppCommand > > ( Func )
-               .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
             builder.Register (
                               ( context , parameters )

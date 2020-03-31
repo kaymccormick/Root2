@@ -764,9 +764,16 @@
             <RibbonMenuButton 
                               
                                          
-                                         Label="MenuButton" >
+                                         Label="MenuButton" 
+                          ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+              <RibbonMenuButton.ItemTemplate>
+                    <DataTemplate
+                      DataType="kmWpf:IDisplayableAppCommand">
+                      <RibbonMenuItem Header="{Binding DisplayName}"
+                                Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
+                    </DataTemplate>
+                  </RibbonMenuButton.ItemTemplate>
             </RibbonMenuButton>
-
 
 
           </RibbonGroup>

@@ -15,7 +15,7 @@ namespace AnalysisControls.Views
     /// <summary>
     ///     Interaction logic for Types.xaml
     /// </summary>
-    [ TitleMetadata ( "Types view" ) ]
+    [ TitleMetadata ( "Syntax node types" ) ]
     public sealed partial class TypesView : UserControl
       , IView < ITypesViewModel >
       , IViewWithTitle

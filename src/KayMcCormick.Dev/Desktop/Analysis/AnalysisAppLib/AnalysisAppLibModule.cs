@@ -13,6 +13,7 @@ using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
+using Autofac.Extras.AttributeMetadata ;
 using Autofac.Features.AttributeFilters ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
@@ -68,8 +69,9 @@ namespace AnalysisAppLib
             builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly())
                    .Where (
                            type => typeof ( IViewModel ).IsAssignableFrom ( type )
-                                   || typeof ( IView1 ).IsAssignableFrom ( type )
+                                   // || typeof ( IView1 ).IsAssignableFrom ( type )
                           )
+                   .WithAttributedMetadata()
                    .AsImplementedInterfaces ( )
                    .AsSelf ( ) ;
 #if false

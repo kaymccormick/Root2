@@ -14,8 +14,10 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using AnalysisAppLib.ViewModel ;
+using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Extras.AttributeMetadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
@@ -34,9 +36,20 @@ namespace AnalysisControls
         /// <param name="builder"></param>
         protected override void Load ( [ NotNull ] ContainerBuilder builder )
         {
-            builder.RegisterAssemblyTypes(ThisAssembly).Where(type => typeof(IViewModel).IsAssignableFrom(type) || typeof(IView1).IsAssignableFrom(type)).AsImplementedInterfaces();
-
 #if false
+            builder.RegisterAssemblyTypes(ThisAssembly).Where(type => {
+                                                                  var isAssignableFrom = typeof ( IViewModel )
+                                                                                            .IsAssignableFrom (
+                                                                                                               type
+                                                                                                              )
+                                                                                         || typeof ( IView1 )
+                                                                                            .IsAssignableFrom (
+                                                                                                               type
+                                                                                                              ) ;
+                                                                  return isAssignableFrom ;
+                                                              }              ).AsImplementedInterfaces().AsSelf().WithAttributedMetadata();
+
+#else
             builder.RegisterType < TypesView > ( ).AsImplementedInterfaces ( ) ;
             builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
             builder.RegisterType < SyntaxPanel > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
