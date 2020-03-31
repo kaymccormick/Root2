@@ -76,7 +76,7 @@ namespace ProjTests
 #if VSSETTINGS
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
 #endif
-    [ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
+    //[ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
     [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
     [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
     [ BeforeAfterLogger ]
@@ -244,7 +244,7 @@ namespace ProjTests
                 Logger.Info ( r.GetType ( ) ) ;
             }
         }
-
+#if false
         [ WpfFact ]
         public void TestResourcesTree1 ( )
         {
@@ -280,6 +280,7 @@ namespace ProjTests
             }
         }
 
+#endif
         public Guid ApplicationGuid { get ; set ; } = new Guid ( "d4870a23-f1ad-4618-b955-6b342c6afab6" ) ;
 
         [ WpfFact ]
@@ -376,7 +377,7 @@ namespace ProjTests
 
             return count ;
         }
-
+#if false
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
@@ -416,7 +417,7 @@ namespace ProjTests
                 DumpTree ( tree , model.AllResourcesCollection ) ;
             }
         }
-
+#endif
         [WpfFact]
         private void Dump1 ( )
         {
@@ -960,7 +961,7 @@ namespace ProjTests
     {
         private readonly Utf8JsonWriter writer ;
         public MyXmlWriter ( Utf8JsonWriter writer ) { this.writer = writer ; }
-        #region Overrides of XmlWriter
+#region Overrides of XmlWriter
         public override void WriteStartDocument ( )
         {
             writer.WriteStartObject();
@@ -1037,6 +1038,6 @@ namespace ProjTests
         public override string LookupPrefix ( string ns ) { return null ; }
 
         public override WriteState WriteState { get ; }
-        #endregion
+#endregion
     }
 }

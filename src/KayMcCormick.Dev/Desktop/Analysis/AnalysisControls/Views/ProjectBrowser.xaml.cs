@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls ;
 using System.Windows.Data ;
+using AnalysisAppLib.Project ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

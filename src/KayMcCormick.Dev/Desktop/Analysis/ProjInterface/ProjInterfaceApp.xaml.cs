@@ -35,7 +35,7 @@ namespace ProjInterface
 
         {
             //PresentationTraceSources.Refresh();
-            //pulateJsonConverters ( disableLogging ) ;
+            //PopulateJsonConverters ( disableLogging ) ;
         }
 
         private static void PopulateJsonConverters ( bool disableLogging )
@@ -65,7 +65,8 @@ namespace ProjInterface
             }
         }
 
-        public override Guid ApplicationGuid { get ; } = new Guid ("9919c0fb-916c-4804-81de-f272a1b585f7");
+        public override Guid ApplicationGuid { get ; } =
+            new Guid ( "9919c0fb-916c-4804-81de-f272a1b585f7" ) ;
 
         protected override void OnStartup ( StartupEventArgs e )
         {
@@ -95,6 +96,19 @@ namespace ProjInterface
                            , MessageBoxButton.OK
                            , MessageBoxImage.Error
                             ) ;
+        }
+    }
+
+    internal class CustomAppEntry
+    {
+        /// <summary>
+        /// Application Entry Point.
+        /// </summary>
+        [ STAThreadAttribute ( ) ]
+        public static void Main ( )
+        {
+            var app = new ProjInterfaceApp ( ) ;
+            app.Run ( ) ;
         }
     }
 }

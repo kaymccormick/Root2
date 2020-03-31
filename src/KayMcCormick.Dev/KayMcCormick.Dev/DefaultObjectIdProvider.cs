@@ -13,7 +13,7 @@ namespace KayMcCormick.Dev
 {
     /// <summary>Default implementation for object ID provider service.</summary>
     /// <seealso cref="IObjectIdProvider" />
-    public sealed class DefaultObjectIdProvider : IObjectIdProvider
+    internal sealed class DefaultObjectIdProvider : IObjectIdProvider
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 

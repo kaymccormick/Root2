@@ -12,6 +12,7 @@
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Runtime.Serialization ;
 using Autofac ;
 using Autofac.Core.Lifetime ;
 using Autofac.Features.Metadata ;
@@ -23,15 +24,21 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    public class ModelResources: ISupportInitialize
+    public class ModelResources: ISupportInitialize, IViewModel
     {
-        protected IObjectIdProvider _idProvider ;
-        protected ILifetimeScope _lifetimeScope ;
-        private ObservableCollection < ResourceNodeInfo > _allResourcesCollection =new ObservableCollection < ResourceNodeInfo > ();
+        /// <summary>
+        /// 
+        /// </summary>
+        internal readonly IObjectIdProvider _idProvider ;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected readonly ILifetimeScope _lifetimeScope ;
+        private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =new ObservableCollection < ResourceNodeInfo > ();
 
         /// <summary>
         /// </summary>
-        public bool IsEnabledPopulateObjects { get ; set ; } = true ;
+        public bool IsEnabledPopulateObjects { get ; } = true ;
 
         /// <summary>
         /// </summary>
@@ -50,7 +57,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
-        public ModelResources(
+        internal ModelResources(
             ILifetimeScope    lifetimeScope
           , IObjectIdProvider idProvider
         )
@@ -81,14 +88,17 @@ namespace KayMcCormick.Dev
                                                                           .GetProperty (
                                                                                         "Metadata"
                                                                                        )
-                                                                          .GetValue (
+                                                                         ?.GetValue (
                                                                                      instanceInfo
                                                                                         .Instance
                                                                                     ) ;
                         var c4 = CreateNode ( n3 , "Metadata" , metadata , true ) ;
-                        foreach ( var keyValuePair in metadata )
+                        if ( metadata != null )
                         {
-                            CreateNode ( c4 , keyValuePair.Key , keyValuePair.Value , false ) ;
+                            foreach ( var keyValuePair in metadata )
+                            {
+                                CreateNode ( c4 , keyValuePair.Key , keyValuePair.Value , false ) ;
+                            }
                         }
                     }
 
@@ -121,7 +131,7 @@ namespace KayMcCormick.Dev
         /// <param name="isValueChildren"></param>
         /// <returns></returns>
         [ NotNull ]
-        protected ResourceNodeInfo CreateNode (
+        public ResourceNodeInfo CreateNode (
             [ CanBeNull ] ResourceNodeInfo parent
           , object                         key
           , object                         data
@@ -151,7 +161,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="node"></param>
-        protected void PopulateLifetimeScope ( ILifetimeScope lifetimeScope , ResourceNodeInfo node )
+        protected void PopulateLifetimeScope ( [ NotNull ] ILifetimeScope lifetimeScope , ResourceNodeInfo node )
         {
             var regs = CreateNode (
                                    node
@@ -224,6 +234,14 @@ namespace KayMcCormick.Dev
         {
             PopulateResourcesTree();
         }
+        #endregion
+        #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
     }
 }

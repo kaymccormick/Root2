@@ -29,23 +29,24 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
     /// </summary>
-    public sealed class AllResourcesTreeViewModel : ModelResources
+    public sealed class AllResourcesTreeViewModel
     {
+        private readonly ModelResources _modelResources ;
+
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         private ResourceNodeInfo _appNode ;
 
-        public AllResourcesTreeViewModel ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider ) : base ( lifetimeScope , idProvider )
-        {
-        }
-
         /// <summary>
+        /// 
         /// </summary>
-        /// <param name="lifetimeScope"></param>
-        /// <param name="idProvider"></param>
-
-
+        /// <param name="modelResources"></param>
+        public AllResourcesTreeViewModel ( ModelResources modelResources )
+        {
+            _modelResources = modelResources ;
+        }
+#if false
         private void PopulateInstances (
             ResourceNodeInfo       res
           , IComponentRegistration registration
@@ -53,7 +54,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             var n = CreateNode ( res , "Instances" , null , false ) ;
             foreach ( var instanceInfo in
-                _idProvider.GetInstanceByComponentRegistration ( registration ) )
+                _m.GetInstanceByComponentRegistration ( registration ) )
             {
                 var key = _idProvider.GetObjectInstanceIdentifier ( instanceInfo.Instance ) ;
                 CreateNode (
@@ -63,6 +64,15 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                           , true
                            ) ;
             }
+        }
+#endif
+        private ResourceNodeInfo CreateNode(
+            [CanBeNull] ResourceNodeInfo parent
+          , object                       key
+          , object                       data
+          , bool?                        isValueChildren = null)
+        {
+            return _modelResources.CreateNode ( parent , key , data , isValueChildren ) ;
         }
 
         private void PopulateAppNode ( )
@@ -196,23 +206,21 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        #region Overrides of ModelResources
-        protected override object WrapValue ( object data )
+#region Overrides of ModelResources
+        protected object WrapValue ( object data )
         {
             if (data is UIElement uie)
             {
                 return new ControlWrap<UIElement>(uie);
             }
 
-            return base.WrapValue ( data ) ;
-
+            return data ;
         }
 
-        protected override void PopulateResourcesTree ( )
+        protected void PopulateResourcesTree ( )
         {
-            base.PopulateResourcesTree ( ) ;
             PopulateAppNode();
         }
-        #endregion
+#endregion
     }
 }

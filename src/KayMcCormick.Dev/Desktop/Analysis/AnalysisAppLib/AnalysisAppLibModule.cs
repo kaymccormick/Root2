@@ -8,6 +8,7 @@ using System.Reflection ;
 using System.Threading.Tasks ;
 using AnalysisAppLib.Auth ;
 using AnalysisAppLib.Dataflow ;
+using AnalysisAppLib.Project ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
@@ -63,8 +64,15 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-            
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
+            builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly())
+                   .Where (
+                           type => typeof ( IViewModel ).IsAssignableFrom ( type )
+                                   || typeof ( IView1 ).IsAssignableFrom ( type )
+                          )
+                   .AsImplementedInterfaces ( )
+                   .AsSelf ( ) ;
+#if false
             builder.RegisterType < ModelResources > ( ) ;
             builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
@@ -72,17 +80,19 @@ namespace AnalysisAppLib
             builder.RegisterType < FileSystemExplorerItemProvider > ( )
                    .As < IExplorerItemProvider > ( ) ;
             builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
-
+#endif
             builder.RegisterType < AnalyzeCommand > ( ).As < IAnalyzeCommand > ( ) ;
 
             builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )
                    .As ( typeof ( IAnalyzeCommand2 <> ) ) ;
 
+#if false
             builder.RegisterType < ProjectBrowserViewModel > ( )
                    .As < IProjectBrowserViewModel > ( ) ;
             builder.RegisterType < Pipeline > ( ).AsSelf ( ) ;
 
             /* Register the "Cache target view model. */
+
             builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;
 
             builder.RegisterType < SyntaxPanelViewModel > ( ).As < ISyntaxPanelViewModel > ( ) ;
@@ -90,7 +100,7 @@ namespace AnalysisAppLib
             builder.RegisterType < SyntaxTokenViewModel > ( )
                    .As < ISyntaxTokenViewModel > ( )
                    .SingleInstance ( ) ;
-
+#endif
             builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
             // builder.RegisterType < FindLogUsagesAnalysisDefinition > ( )
             // .As < IAnalysisDefinition > ( ) ;
@@ -191,7 +201,7 @@ namespace AnalysisAppLib
             // .InstancePerLifetimeScope();
 
 
-            #region MS LOGIN
+#region MS LOGIN
             builder.Register ( MakePublicClientApplication ).As < IPublicClientApplication > ( ) ;
 
             builder.Register (
@@ -202,11 +212,13 @@ namespace AnalysisAppLib
                              )
                    .AsSelf ( ) ;
             #endregion
+#if false
             builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
             builder.Register ( ( c , p ) => new LogViewerConfig ( p.TypedAs < ushort > ( ) ) )
                    .AsSelf ( ) ;
             builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
+#endif
         }
 
         private IPublicClientApplication MakePublicClientApplication (

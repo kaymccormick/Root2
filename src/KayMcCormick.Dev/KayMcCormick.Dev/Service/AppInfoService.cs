@@ -10,7 +10,7 @@ namespace KayMcCormick.Dev.Service
 #if NETFRAMEWORK
     [ ServiceBehavior ( InstanceContextMode = InstanceContextMode.Single ) ]
 #endif
-    public class AppInfoService : IAppInfoService
+    internal class AppInfoService : IAppInfoService
     {
         private readonly IObjectIdProvider _objectId ;
         private readonly DateTime          _startupTime ;
@@ -19,7 +19,7 @@ namespace KayMcCormick.Dev.Service
         /// </summary>
         /// <param name="startupTime"></param>
         /// <param name="objectId"></param>
-        public AppInfoService ( DateTime startupTime , IObjectIdProvider objectId )
+        internal AppInfoService ( DateTime startupTime , IObjectIdProvider objectId )
         {
             _startupTime = startupTime ;
             _objectId    = objectId ;

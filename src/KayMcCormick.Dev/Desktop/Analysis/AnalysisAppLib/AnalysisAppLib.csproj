@@ -75,7 +75,6 @@
     <Compile Include="AnalyzeCommand.cs" />
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppExplorerItem.cs" />
-    <Compile Include="BrowserNodeCollection.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\DataflowTransformFuncProvider.cs" />
     <Compile Include="Dataflow\FindLogInvocations.cs" />
@@ -87,6 +86,14 @@
     <Compile Include="IAnalyzeCommand2.cs" />
     <Compile Include="ICodeRenderer.cs" />
     <Compile Include="ISpanObject.cs" />
+    <Compile Include="Project\BrowserNode.cs" />
+    <Compile Include="Project\BrowserNodeCollection.cs" />
+    <Compile Include="Project\IBrowserNode.cs" />
+    <Compile Include="Project\IBrowserNodeCollection.cs" />
+    <Compile Include="Project\IProjectBrowserNode.cs" />
+    <Compile Include="Project\IProjectBrowserViewModel.cs" />
+    <Compile Include="Project\ProjectBrowserNode.cs" />
+    <Compile Include="Project\ProjectBrowserViewModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,9 +102,9 @@
     <Compile Include="RefactorLogUsage.cs" />
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
     <Compile Include="Serialization\LogInvocationConverter.cs" />
-    <Compile Include="SpanToolTipViewModel.cs" />
     <Compile Include="Span\LogInvocationSpan.cs" />
     <Compile Include="Span\SpanObject.cs" />
+    <Compile Include="Span\SpanToolTipViewModel.cs" />
     <Compile Include="Span\SyntaxNodeSpanObject.cs" />
     <Compile Include="Span\TokenSpanObject.cs" />
     <Compile Include="Span\TriviaSpanObject.cs" />
@@ -112,7 +119,6 @@
     <Compile Include="ISemanticModelContext.cs" />
     <Compile Include="ISpanViewModel.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
-    <Compile Include="Projects\BrowserNode.cs" />
     <Compile Include="Syntax\SyntaxItem.cs" />
     <Compile Include="Syntax\AppTypeInfo.cs" />
     <Compile Include="Syntax\ComponentInfo.cs" />
@@ -120,23 +126,16 @@
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="FileSystemExplorerItemProvider.cs" />
     <Compile Include="IAppState.cs" />
-    <Compile Include="IBrowserNode.cs" />
-    <Compile Include="IBrowserNodeCollection.cs" />
     <Compile Include="IExplorerItemProvider.cs" />
     <Compile Include="ViewModel\ILogUsageAnalysisViewModel.cs" />
-    <Compile Include="IProjectBrowserNode.cs" />
-    <Compile Include="ViewModel\IProjectBrowserViewModel.cs" />
     <Compile Include="LogInvocationCollection.cs" />
     <Compile Include="LogListener.cs" />
-    <Compile Include="LogUsageAnalysisViewModel.cs" />
     <Compile Include="LogViewerAppViewModel.cs" />
     <Compile Include="LogViewerConfig.cs" />
     <Compile Include="LogViewModel.cs" />
     <Compile Include="MicrosoftUserViewModel.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineResult.cs" />
-    <Compile Include="ProjectBrowserNode.cs" />
-    <Compile Include="ProjectBrowserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultStatus.cs" />
     <Compile Include="Auth\TokenCacheHelper.cs" />
@@ -146,6 +145,7 @@
     <Compile Include="ViewModel\ISyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\ITypesViewModel.cs" />
+    <Compile Include="ViewModel\LogUsageAnalysisViewModel.cs" />
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\SyntaxTokenViewModel.cs" />
     <Compile Include="ViewModel\TypesViewModel.cs" />
@@ -231,6 +231,8 @@
   <ItemGroup>
     <None Include="doc.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Projects\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -14,9 +14,10 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using AnalysisAppLib.ViewModel ;
-using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 
 namespace AnalysisControls
@@ -25,21 +26,25 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class AnalysisControlsModule : Module
+    public sealed class AnalysisControlsModule : Module
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="builder"></param>
-        protected override void Load ( ContainerBuilder builder )
+        protected override void Load ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterAssemblyTypes(ThisAssembly).Where(type => typeof(IViewModel).IsAssignableFrom(type) || typeof(IView1).IsAssignableFrom(type)).AsImplementedInterfaces();
+
+#if false
             builder.RegisterType < TypesView > ( ).AsImplementedInterfaces ( ) ;
             builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
             builder.RegisterType < SyntaxPanel > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
             builder.RegisterType < SyntaxPanelViewModel > ( )
                    .AsImplementedInterfaces ( )
                    .AsSelf ( ) ;
-            // builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+#endif
+
             builder.Register (
                               ( c , p ) => {
                                   var listView = Func ( c , p ) ;
@@ -51,7 +56,8 @@ namespace AnalysisControls
             // builder.RegisterType < PythonViewModel > ( ).AsSelf ( ) ;
         }
 
-        private FrameworkElement Func ( IComponentContext c1 , IEnumerable < Parameter > p1 )
+        [ NotNull ]
+        private FrameworkElement Func ( [ NotNull ] IComponentContext c1 , IEnumerable < Parameter > p1 )
         {
             var gridView = new GridView ( ) ;
             gridView.Columns.Add (
