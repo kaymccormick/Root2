@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
+using System.Data.SqlClient ;
 using System.IO ;
 using System.Linq ;
 using System.Text.Json ;
@@ -296,16 +297,27 @@ namespace ConsoleApp1
             }
 
 
-            foreach ( var projFile in Directory.EnumerateFiles (
-                                                                     @"e:\kay2020\source"
-                                                                   , "*.csproj"
-                                                                   , SearchOption.AllDirectories
-                                                                    ) )
-            {
-                Console.WriteLine(projFile);
-            }
+            // foreach ( var projFile in Directory.EnumerateFiles (
+                                                                     // @"e:\kay2020\source"
+                                                                   // , "*.csproj"
+                                                                   // , SearchOption.AllDirectories
+                                                                    // ) )
+            // {
+                // Console.WriteLine(projFile);
+            // }
 
-            return 1 ;
+            SqlConnectionStringBuilder b = new SqlConnectionStringBuilder();
+            b.IntegratedSecurity = true ;
+            b.DataSource = @".\sql2017" ;
+            b.InitialCatalog = "syntaxdb" ;
+            SqlConnection c = new SqlConnection(b.ConnectionString);
+            c.Open();
+            SqlCommandBuilder bb = new SqlCommandBuilder();
+            SqlCommand bb2 = new SqlCommand (
+                                             "insert into syntaxexample (example, syntaxkind, typename) values (@example, @kind, @typename)"
+                                           , c
+                                            ) ;
+
 
                 var model1 = context.Scope.Resolve<ITypesViewModel>();
             HashSet<Type> set = new HashSet<Type>();
@@ -314,21 +326,21 @@ namespace ConsoleApp1
             Dictionary <string, X> xxx1 = new Dictionary < string , X > ();
             Dictionary <SyntaxKind, X> xxx = new Dictionary < SyntaxKind , X > ();
             int i1= 0 ;
+            Random r = new Random();
             foreach ( var enumerateFile in Directory.EnumerateFiles (
                                                                      @"e:\kay2020\source"
                                                                    , "*.cs"
                                                                    , SearchOption.AllDirectories
                                                                     ) )
             {
-                
                 var x = CSharpSyntaxTree.ParseText ( File.ReadAllText ( enumerateFile ), null, enumerateFile ) ;
-                var y = CSharpCompilation.Create ( "x" , new [] {x} ) ;
-                foreach ( var diagnostic in y.GetDiagnostics ( ) )
-                {
-                    Console.WriteLine(diagnostic.Location.GetMappedLineSpan().Path);
-                    Console.WriteLine(CSharpDiagnosticFormatter.Instance.Format(diagnostic));
-                }
-                Random r = new Random ( ) ;
+                // var y = CSharpCompilation.Create ( "x" , new [] {x} ) ;
+                // foreach ( var diagnostic in y.GetDiagnostics ( ) )
+                // {
+                    // Console.WriteLine(diagnostic.Location.GetMappedLineSpan().Path);
+                    // Console.WriteLine(CSharpDiagnosticFormatter.Instance.Format(diagnostic));
+                // }
+                
                 foreach ( var o1 in x.GetCompilationUnitRoot ( ).DescendantNodesAndTokensAndSelf())
                 {
                     if ( o1.IsToken )
@@ -367,6 +379,14 @@ namespace ConsoleApp1
 
                         l.Item1.len += o.ToString ( ).Length ;
                         l.Item2.Add ( Tuple.Create ( o , o.ToString ( ) ) ) ;
+                        var example1 = o.NormalizeWhitespace().ToString ( ) ;
+
+                        bb2.Parameters.Clear();
+                        bb2.Parameters.AddWithValue("@example", example1);
+                        bb2.Parameters.AddWithValue ( "@kind" , o.RawKind ) ;
+                        bb2.Parameters.AddWithValue ( "@typename" , o.GetType ( ).Name ) ;
+                        
+                        bb2.ExecuteNonQuery ( ) ;
                         if ( l.Item2.Count >= 100 )
                         {
                             set.Remove ( o.GetType ( ) ) ;
