@@ -27,7 +27,7 @@ namespace ConfigTest
             // return ;
 
             var x = new ApplicationInstance (
-                                             new ApplicationInstanceConfiguration (
+                                             new ApplicationInstance.ApplicationInstanceConfiguration (
                                                                                    message
                                                                                        => Console
                                                                                          .Error
