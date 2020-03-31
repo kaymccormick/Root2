@@ -11,6 +11,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.ViewModel ;
 using Autofac ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;

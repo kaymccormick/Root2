@@ -12,6 +12,7 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Serialization

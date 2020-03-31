@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel ;
-using AnalysisAppLib.Syntax ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib
+namespace FindLogUsages
 {
     internal class LogInvocationArgument : ILogInvocationArgument
     {

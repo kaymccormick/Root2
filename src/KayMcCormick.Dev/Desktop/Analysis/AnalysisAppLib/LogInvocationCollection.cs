@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Collections.ObjectModel ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 
 namespace AnalysisAppLib

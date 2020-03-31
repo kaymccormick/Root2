@@ -11,7 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 
-namespace AnalysisAppLib.Syntax
+namespace FindLogUsages
 {
     public class PojoClassDeclarationSyntax
     {

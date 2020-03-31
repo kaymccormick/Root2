@@ -13,7 +13,7 @@
 #endif
 
 
-namespace AnalysisAppLib
+namespace FindLogUsages
 {
     /// <summary>
     /// 

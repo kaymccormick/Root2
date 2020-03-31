@@ -109,6 +109,10 @@
       <Project>{0381d4d0-945e-4340-b974-9d07b2830d4f}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Desktop\Analysis\FindLogUsages\FindLogUsages.csproj">
+      <Project>{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}</Project>
+      <Name>FindLogUsages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>

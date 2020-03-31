@@ -11,7 +11,7 @@
 #endregion
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib
+namespace FindLogUsages
 {
     public class RejectedItem
     {

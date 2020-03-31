@@ -1,12 +1,12 @@
 using System ;
 using System.Diagnostics ;
 using System.Linq ;
-using JetBrains.Annotations ;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib.Syntax
+namespace FindLogUsages
 {
     /// <summary>
     ///     Transforms for Code Analysis nodes.
@@ -33,9 +33,10 @@ namespace AnalysisAppLib.Syntax
                                    RawKind = thise.RawKind
                                  , Kind    = thise.Kind ( ).ToString ( )
                                  , Type    = thise.GetType ( ).Name
-                                 , Tokens = thise.ChildTokens ( )
-                                                 .Select ( token => token.ToString ( ) )
-                                                 .ToList ( )
+                                 , Tokens = Enumerable.ToList < string > (
+                                                                     thise.ChildTokens ( )
+                                                                          .Select ( token => token.ToString ( ) )
+                                                                    )
                                } ;
                     case AliasQualifiedNameSyntax aliasQualifiedNameSyntax :               break ;
                     case AnonymousMethodExpressionSyntax anonymousMethodExpressionSyntax : break ;
@@ -100,21 +101,22 @@ namespace AnalysisAppLib.Syntax
                                  , Kind     = ac.Kind ( ).ToString ( )
                                  , InitExpr = ac.Initializer.Expressions.Select ( TransformExpr )
                                  , ac.Type.ElementType
-                                 , RankSpec = ac.Type.RankSpecifiers.Select (
-                                                                             syntax => new
-                                                                                       {
-                                                                                           syntax
-                                                                                              .RawKind
-                                                                                         , syntax
-                                                                                              .Rank
-                                                                                         , Sizes =
-                                                                                               syntax
-                                                                                                  .Sizes
-                                                                                                  .Select (
-                                                                                                           TransformExpr
-                                                                                                          )
-                                                                                       }
-                                                                            )
+                                 , RankSpec = Enumerable.Select (
+                                                                 ac.Type.RankSpecifiers
+                                                               , syntax => new
+                                                                           {
+                                                                               syntax
+                                                                                  .RawKind
+                                                                             , syntax
+                                                                                  .Rank
+                                                                             , Sizes =
+                                                                                   syntax
+                                                                                      .Sizes
+                                                                                      .Select (
+                                                                                               TransformExpr
+                                                                                              )
+                                                                           }
+                                                                )
                                } ;
                     case MemberBindingExpressionSyntax binding :
                         return new
@@ -139,8 +141,7 @@ namespace AnalysisAppLib.Syntax
                                    l.RawKind
                                  , Kind      = l.Kind ( ).ToString ( )
                                  , Parameter = TransformParameter ( l.Parameter )
-                                 , Block = l.Block?.Statements.Select ( TransformStatement )
-                                            .ToList ( )
+                                 , Block = Enumerable.ToList < object > ( l.Block?.Statements.Select ( TransformStatement ) )
                                  , ExpressionBody = TransformExpr ( l.ExpressionBody )
                                } ;
                     case ParenthesizedLambdaExpressionSyntax pl :
@@ -149,10 +150,8 @@ namespace AnalysisAppLib.Syntax
                                    pl.RawKind
                                  , Kind = pl.Kind ( ).ToString ( )
                                  , Parameters =
-                                       pl.ParameterList.Parameters.Select ( TransformParameter )
-                                         .ToList ( )
-                                 , Block = pl.Block?.Statements.Select ( TransformStatement )
-                                             .ToList ( )
+                                       Enumerable.ToList < object > ( pl.ParameterList.Parameters.Select ( TransformParameter ) )
+                                 , Block = Enumerable.ToList < object > ( pl.Block?.Statements.Select ( TransformStatement ) )
                                  , ExpressionBody = TransformExpr ( pl.ExpressionBody )
                                } ;
                     case InstanceExpressionSyntax instanceExpressionSyntax : break ;
@@ -173,13 +172,14 @@ namespace AnalysisAppLib.Syntax
                                    invoc.RawKind
                                  , Kind       = invoc.Kind ( ).ToString ( )
                                  , Expression = TransformExpr ( invoc.Expression )
-                                 , Args = invoc.ArgumentList.Arguments
-                                               .Select (
-                                                        syntax => TransformExpr (
-                                                                                 syntax.Expression
+                                 , Args = Enumerable.ToList < object > (
+                                                                   invoc.ArgumentList.Arguments
+                                                                        .Select (
+                                                                                 syntax => TransformExpr (
+                                                                                                          syntax.Expression
+                                                                                                         )
                                                                                 )
-                                                       )
-                                               .ToList ( )
+                                                                  )
                                } ;
                     case BinaryExpressionSyntax bin :
                         return new
@@ -217,7 +217,7 @@ namespace AnalysisAppLib.Syntax
                                {
                                    i.RawKind
                                  , Kind     = i.Kind ( ).ToString ( )
-                                 , Contents = i.Contents.Select ( TransformInterpolated ).ToList ( )
+                                 , Contents = Enumerable.ToList < object > ( i.Contents.Select ( TransformInterpolated ) )
                                  , Tokens = i.ChildTokens ( )
                                                .Select ( token => token.ToString ( ) )
                                } ;
@@ -412,7 +412,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        ///     Transform <see cref="ParameterSyntax" />
+        ///     Transform <see cref="Microsoft.CodeAnalysis.CSharp.Syntax.ParameterSyntax" />
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -564,9 +564,10 @@ namespace AnalysisAppLib.Syntax
                      , Kind       = gen.Kind ( ).ToString ( )
                      , Identifier = TransformIdentifier ( gen.Identifier )
                      , gen.IsUnboundGenericName
-                     , TypeArgumentList = gen.TypeArgumentList.Arguments
-                                             .Select ( TransformGenericNameTypeArgument )
-                                             .ToList ( )
+                     , TypeArgumentList = Enumerable.ToList < object > (
+                                                                   gen.TypeArgumentList.Arguments
+                                                                      .Select ( TransformGenericNameTypeArgument )
+                                                                  )
                    } ;
         }
 
@@ -663,7 +664,7 @@ namespace AnalysisAppLib.Syntax
 
 
         /// <summary>
-        ///     Transform keywords <see cref="SyntaxToken" />
+        ///     Transform keywords <see cref="Microsoft.CodeAnalysis.SyntaxToken" />
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
@@ -673,7 +674,7 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <summary>
-        ///     Transform <see cref="InterpolatedStringContentSyntax" />
+        ///     Transform <see cref="Microsoft.CodeAnalysis.CSharp.Syntax.InterpolatedStringContentSyntax" />
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -711,7 +712,7 @@ namespace AnalysisAppLib.Syntax
             return new
                    {
                        method.MethodKind
-                     , Parameters = method.Parameters.Select ( TransformMethodParameter ).ToList ( )
+                     , Parameters = Enumerable.ToList < object > ( method.Parameters.Select ( TransformMethodParameter ) )
                    } ;
         }
 
@@ -766,22 +767,26 @@ namespace AnalysisAppLib.Syntax
             {
                 case CompilationUnitSyntax comp :
                     return new PojoCompilationUnit (
-                                                    comp.Usings.Select (
-                                                                        TransformUsingDirectiveSyntax
-                                                                       )
-                                                        .ToList ( )
-                                                  , comp.Externs.Select (
-                                                                         TransformExternAliasDirectiveSyntax
-                                                                        )
-                                                        .ToList ( )
-                                                  , comp.AttributeLists.Select (
-                                                                                TransformAttributeListSyntax
-                                                                               )
-                                                        .ToList ( )
-                                                  , comp.Members.Select (
-                                                                         TransformMemberDeclarationSyntax
-                                                                        )
-                                                        .ToList ( )
+                                                    Enumerable.ToList < object > (
+                                                                             comp.Usings.Select (
+                                                                                                 TransformUsingDirectiveSyntax
+                                                                                                )
+                                                                            )
+                                                  , Enumerable.ToList < object > (
+                                                                             comp.Externs.Select (
+                                                                                                  TransformExternAliasDirectiveSyntax
+                                                                                                 )
+                                                                            )
+                                                  , Enumerable.ToList < object > (
+                                                                             comp.AttributeLists.Select (
+                                                                                                         TransformAttributeListSyntax
+                                                                                                        )
+                                                                            )
+                                                  , Enumerable.ToList < object > (
+                                                                             comp.Members.Select (
+                                                                                                  TransformMemberDeclarationSyntax
+                                                                                                 )
+                                                                            )
                                                    ) ;
                 case ExpressionSyntax s :          return TransformExpr ( s ) ;
                 case UsingDirectiveSyntax u :      return TransformUsingDirectiveSyntax ( u ) ;
@@ -847,9 +852,10 @@ namespace AnalysisAppLib.Syntax
                            {
                                namespaceDeclarationSyntax.RawKind
                              , Kind = namespaceDeclarationSyntax.Kind ( ).ToString ( )
-                             , Members = namespaceDeclarationSyntax
-                                        .Members.Select ( TransformMemberDeclarationSyntax )
-                                        .ToList ( )
+                             , Members = Enumerable.ToList < object > (
+                                                                  namespaceDeclarationSyntax
+                                                                     .Members.Select ( TransformMemberDeclarationSyntax )
+                                                                 )
                            } ;
             }
 
@@ -860,11 +866,12 @@ namespace AnalysisAppLib.Syntax
         {
             return new PojoClassDeclarationSyntax (
                                                    TransformSyntaxToken ( classDecl.Identifier )
-                                                 , classDecl
-                                                  .Members.Select (
-                                                                   TransformMemberDeclarationSyntax
-                                                                  )
-                                                  .ToList ( )
+                                                 , Enumerable.ToList < object > (
+                                                                            classDecl
+                                                                               .Members.Select (
+                                                                                                TransformMemberDeclarationSyntax
+                                                                                               )
+                                                                           )
                                                   ) ;
         }
 

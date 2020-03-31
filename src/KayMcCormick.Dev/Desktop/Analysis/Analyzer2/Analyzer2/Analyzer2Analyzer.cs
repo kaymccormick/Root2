@@ -1,7 +1,8 @@
 using System.Collections.Immutable ;
 using System.Linq ;
-using AnalysisAppLib ;
+
 using Analyzer2.Properties ;
+using FindLogUsages ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.Diagnostics ;
 
@@ -62,7 +63,7 @@ namespace Analyzer2
 
         private void Action ( CodeBlockAnalysisContext obj )
         {
-            var result = FindLogUsages.Process (
+            var result = FindLogUsagesMain.Process (
                                                 ( ) => new LogInvocation2 ( )
                                               , obj.SemanticModel
                                               , obj.SemanticModel.SyntaxTree

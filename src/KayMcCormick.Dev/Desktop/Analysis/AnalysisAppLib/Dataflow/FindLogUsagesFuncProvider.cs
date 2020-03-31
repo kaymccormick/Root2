@@ -2,6 +2,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using FindLogUsages ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
@@ -22,7 +23,7 @@ namespace AnalysisAppLib.Dataflow
         /// <param name="invocationFactory"></param>
         public FindLogUsagesFuncProvider ( Func < ILogInvocation > invocationFactory )
         {
-            var findusages = new FindLogUsages ( invocationFactory ) ;
+            var findusages = new FindLogUsagesMain( invocationFactory ) ;
             RejectBlock    = new BufferBlock < RejectedItem > ( ) ;
             _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock ) ;
         }

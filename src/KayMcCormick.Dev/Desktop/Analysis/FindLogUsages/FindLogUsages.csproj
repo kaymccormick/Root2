@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6CE640A5-AD97-42BB-AAF4-F78CFAB6AC57}</ProjectGuid>
+    <ProjectGuid>{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Analyzer2</RootNamespace>
-    <AssemblyName>Analyzer2</AssemblyName>
+    <RootNamespace>FindLogUsages</RootNamespace>
+    <AssemblyName>FindLogUsages</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,39 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzer2Analyzer.cs" />
-    <Compile Include="Analyzer2CodeFixProvider.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="EmptyDisposable.cs" />
+    <Compile Include="FindLogUsagesMain.cs" />
+    <Compile Include="ILogInvocation.cs" />
+    <Compile Include="ILogInvocationArgument.cs" />
+    <Compile Include="LogInvocation2.cs" />
+    <Compile Include="LogInvocationArgument.cs" />
+    <Compile Include="NotNullAttribute.cs" />
+    <Compile Include="PocoSyntaxToken.cs" />
+    <Compile Include="PojoClassDeclarationSyntax.cs" />
+    <Compile Include="PojoCompilationUnit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="RejectedItem.cs" />
+    <Compile Include="TransformNode.cs" />
+    <Compile Include="Transforms.cs" />
+    <Compile Include="UnsupportedExpressionTypeSyntaxException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
-      <Version>3.0.0-beta2.final</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
+    <PackageReference Include="MessageTemplates">
+      <Version>1.0.0-rc-00275</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+    <PackageReference Include="Microsoft.CodeAnalysis">
       <Version>3.6.0-2.final</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Analyzer2.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\FindLogUsages\FindLogUsages.csproj">
-      <Project>{bcc116d4-a7b9-4bb8-ae90-5d95e60b41cc}</Project>
-      <Name>FindLogUsages</Name>
-    </ProjectReference>
+    <PackageReference Include="System.Threading.Tasks.Dataflow">
+      <Version>4.11.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

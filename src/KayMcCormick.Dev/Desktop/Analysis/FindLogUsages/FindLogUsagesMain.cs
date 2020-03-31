@@ -1,36 +1,22 @@
-#region header
-// Kay McCormick (mccor)
-// 
-// Analysis
-// AnalysisAppLib
-// FindLogUsages.cs
-// 
-// 2020-03-25-1:52 AM
-// 
-// ---
-#endregion
 using System ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
 using System.Text ;
-using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using AnalysisAppLib.Syntax ;
-using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using NLog ;
 
-namespace AnalysisAppLib
+
+namespace FindLogUsages
 {
     /// <summary>
     /// </summary>
-    public class FindLogUsages
+    public class FindLogUsagesMain
     {
 #if DOLOG
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -41,7 +27,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// </summary>
         /// <param name="invocationFactory"></param>
-        public FindLogUsages ( Func < ILogInvocation > invocationFactory )
+        public FindLogUsagesMain ( Func < ILogInvocation > invocationFactory )
         {
             _invocationFactory = invocationFactory ;
         }
@@ -63,17 +49,17 @@ namespace AnalysisAppLib
 #if DOLOG
                 MappedDiagnosticsLogicalContext.SetScoped("Document", d.FilePath)
 #else
-                    new EmptyDisposable ( ) 
+                new EmptyDisposable ( ) 
 #endif
-                )
+            )
             {
                 try
                 {
 #if TRACE && DOLOG
                     Logger.Trace (
                                   "[{id}] Entering {funcName}"
-                            , Thread.CurrentThread.ManagedThreadId
-                            , nameof ( FindUsagesFuncAsync )
+                        , Thread.CurrentThread.ManagedThreadId
+                        , nameof ( FindUsagesFuncAsync )
                                  ) ;
 #endif
                     var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
@@ -134,40 +120,42 @@ namespace AnalysisAppLib
             }
 
             var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
-            return (
-                       from node in root.DescendantNodes ( ) //.AsParallel ( )
-                       let t_ = t
-                       let t2_ = t2
-                       let builderSymbol = logBuilderSymbol
-                       let tree_ = tree
-                       let model_ = model
-                       let exType = exceptionType
-                       where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
-                             || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
-                       let @out =
-                           LogUsages.CheckInvocationExpression (
-                                                                node
-                                                              , model_
-                                                              , builderSymbol
-                                                              , t_
-                                                              , t2_
-                                                               )
-                       where @out.Item1
-                       let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                       let result = new InvocationParams (
-                                                          tree_
-                                                        , model_
-                                                        , statement
-                                                        , @out
-                                                        , exType
-                                                         ).ProcessInvocation ( invocationFactory )
-                       select result is ILogInvocation inv
-                                  ? inv
-                                  : ( object ) RejectAction (
-                                                             result is RejectedItem rj
-                                                                 ? rj
-                                                                 : new RejectedItem ( statement )
-                                                            ) ).OfType < ILogInvocation > ( ) ;
+            return Enumerable.OfType < ILogInvocation > (
+                                            (
+                                                from node in root.DescendantNodes ( ) //.AsParallel ( )
+                                                let t_ = t
+                                                let t2_ = t2
+                                                let builderSymbol = logBuilderSymbol
+                                                let tree_ = tree
+                                                let model_ = model
+                                                let exType = exceptionType
+                                                where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
+                                                      || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
+                                                let @out =
+                                                    LogUsages.CheckInvocationExpression (
+                                                                                         node
+                                                                                       , model_
+                                                                                       , builderSymbol
+                                                                                       , t_
+                                                                                       , t2_
+                                                                                        )
+                                                where @out.Item1
+                                                let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
+                                                let result = new InvocationParams (
+                                                                                   tree_
+                                                                                 , model_
+                                                                                 , statement
+                                                                                 , @out
+                                                                                 , exType
+                                                                                  ).ProcessInvocation ( invocationFactory )
+                                                select result is ILogInvocation inv
+                                                           ? inv
+                                                           : ( object ) RejectAction (
+                                                                                      result is RejectedItem rj
+                                                                                          ? rj
+                                                                                          : new RejectedItem ( statement )
+                                                                                     ) )
+                                           ) ;
         }
 
         private static bool Predicate ( [ NotNull ] SyntaxNode arg1 , int arg2 )
@@ -242,18 +230,18 @@ namespace AnalysisAppLib
 #if TRACE && DOLOG
                     Logger.Debug (
                                   "{method} node location is {node}"
-                            , nameof ( CheckInvocationExpression )
-                            , node.GetLocation ( ).ToString ( )
+                        , nameof ( CheckInvocationExpression )
+                        , node.GetLocation ( ).ToString ( )
                                  ) ;
                     Logger.Debug (
                                   "{exprKind}, {expr}"
-                            , node.Expression.Kind ( )
-                            , node.Expression.ToString ( )
+                        , node.Expression.Kind ( )
+                        , node.Expression.ToString ( )
                                  ) ;
 
                     Logger.Info (
                                  "symbol info is {node}"
-                           , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
+                       , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
                     {
@@ -346,8 +334,8 @@ namespace AnalysisAppLib
 #if TRACE && DOLOG
                     Logger.Debug (
                                   "{id} relevant node is {node}"
-                            , Thread.CurrentThread.ManagedThreadId
-                            , relevantNode.ToString ( )
+                        , Thread.CurrentThread.ManagedThreadId
+                        , relevantNode.ToString ( )
                                  ) ;
 #endif
                     Tree = syntaxTree ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
@@ -396,17 +384,19 @@ namespace AnalysisAppLib
                     return null ;
                 }
 
-                var msgParam = MethodSymbol
-                              .Parameters.Select ( ( symbol , i ) => new { symbol , i } )
-                              .Where ( arg1 => arg1.symbol.Name == "message" ) ;
+                var msgParam = Enumerable.Select (
+                                                  MethodSymbol
+                                                     .Parameters
+                                                , ( symbol , i ) => new { symbol , i } )
+                                         .Where ( arg1 => arg1.symbol.Name == "message" ) ;
 #if TRACE && DOLOG
                 if ( ! msgParam.Any ( ) )
                 {
                     Logger.Trace (
                                   "{params}"
-                            , string.Join (
+                        , string.Join (
                                                ", "
-                                         , MethodSymbol.Parameters.Select (
+                                     , MethodSymbol.Parameters.Select (
                                                                                symbol => symbol.Name
                                                                               )
                                               )
@@ -419,9 +409,9 @@ namespace AnalysisAppLib
 #if TRACE && DOLOG
                 Logger.Trace (
                               "params = {params}"
-                        , string.Join (
+                    , string.Join (
                                            ", "
-                                     , methodSymbol.Parameters.Select ( symbol => symbol.Name )
+                                 , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                           )
                              ) ;
 #endif
@@ -443,8 +433,8 @@ namespace AnalysisAppLib
                     {
                         Logger.Trace (
                                       "{type} {symb}"
-                                , arg1sym.GetType ( )
-                                , arg1sym?.ToDisplayString ( )
+                            , arg1sym.GetType ( )
+                            , arg1sym?.ToDisplayString ( )
                                      ) ;
                     }
 #endif
@@ -467,12 +457,12 @@ namespace AnalysisAppLib
                         {
                             if ( messageTemplateToken is PropertyToken prop )
                             {
-                                var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
+                                var t = Tuple.Create < bool , string > ( prop.IsPositional , prop.PropertyName ) ;
                                 o.Add ( t ) ;
                             }
                             else if ( messageTemplateToken is TextToken t )
                             {
-                                var xt = Tuple.Create ( t.Text ) ;
+                                var xt = Tuple.Create < string > ( t.Text ) ;
                                 o.Add ( xt ) ;
                             }
                         }
@@ -636,12 +626,5 @@ namespace AnalysisAppLib
                 public object ConstantMessage { get ; set ; }
             }
         }
-    }
-
-    public class EmptyDisposable : IDisposable
-    {
-        #region IDisposable
-        public void Dispose ( ) { }
-        #endregion
     }
 }

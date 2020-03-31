@@ -82,7 +82,6 @@
     <Compile Include="Dataflow\FindLogUsagesFuncProvider.cs" />
     <Compile Include="Dataflow\IAnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\IDataflowTransformFuncProvider.cs" />
-    <Compile Include="FindLogUsages.cs" />
     <Compile Include="GenericAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
@@ -95,7 +94,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RefactorLogUsage.cs" />
-    <Compile Include="RejectedItem.cs" />
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
     <Compile Include="Serialization\LogInvocationConverter.cs" />
     <Compile Include="SpanObject.cs" />
@@ -103,7 +101,6 @@
     <Compile Include="SyntaxNodeSpanObject.cs" />
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
-    <Compile Include="Syntax\PojoCompilationUnit.cs" />
     <Compile Include="TokenSpanObject.cs" />
     <Compile Include="TriviaSpanObject.cs" />
     <Compile Include="TypeWriter.cs" />
@@ -126,13 +123,9 @@
     <Compile Include="IBrowserNode.cs" />
     <Compile Include="IBrowserNodeCollection.cs" />
     <Compile Include="IExplorerItemProvider.cs" />
-    <Compile Include="ILogInvocation.cs" />
-    <Compile Include="ILogInvocationArgument.cs" />
     <Compile Include="ViewModel\ILogUsageAnalysisViewModel.cs" />
     <Compile Include="IProjectBrowserNode.cs" />
     <Compile Include="ViewModel\IProjectBrowserViewModel.cs" />
-    <Compile Include="LogInvocation2.cs" />
-    <Compile Include="LogInvocationArgument.cs" />
     <Compile Include="LogInvocationCollection.cs" />
     <Compile Include="LogListener.cs" />
     <Compile Include="LogUsageAnalysisViewModel.cs" />
@@ -142,17 +135,12 @@
     <Compile Include="MicrosoftUserViewModel.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineResult.cs" />
-    <Compile Include="Syntax\PocoSyntaxToken.cs" />
-    <Compile Include="Syntax\PojoClassDeclarationSyntax.cs" />
     <Compile Include="ProjectBrowserNode.cs" />
     <Compile Include="ProjectBrowserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultStatus.cs" />
     <Compile Include="Auth\TokenCacheHelper.cs" />
-    <Compile Include="Syntax\TransformNode.cs" />
-    <Compile Include="Syntax\Transforms.cs" />
     <Compile Include="UnableToInitializeWorkspace.cs" />
-    <Compile Include="UnsupportedExpressionTypeSyntaxException.cs" />
     <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="ViewModel\ISpanToolTipViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxPanelViewModel.cs" />
@@ -167,6 +155,10 @@
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FindLogUsages\FindLogUsages.csproj">
+      <Project>{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}</Project>
+      <Name>FindLogUsages</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

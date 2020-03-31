@@ -1,4 +1,4 @@
-namespace AnalysisAppLib.Syntax
+namespace FindLogUsages
 {
     public class PocoSyntaxToken
     {

@@ -14,6 +14,7 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
 using ConsoleMenu ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;

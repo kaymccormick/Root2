@@ -5,6 +5,7 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using Buildalyzer ;
 using Buildalyzer.Workspaces ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
@@ -224,7 +225,7 @@ namespace AnalysisAppLib
             )
             {
                 Logger.Trace ( "Constructing FindUsagesBlock" ) ;
-                var flu = new FindLogUsages ( invocationFactory ) ;
+                var flu = new FindLogUsagesMain ( invocationFactory ) ;
 
                 Task < IEnumerable < ILogInvocation > > Transform ( Document document )
                 {

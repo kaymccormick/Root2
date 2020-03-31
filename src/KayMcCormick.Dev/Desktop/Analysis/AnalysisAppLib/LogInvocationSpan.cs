@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Linq ;
+using FindLogUsages ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 

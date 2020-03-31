@@ -13,6 +13,7 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
 using Autofac.Features.AttributeFilters ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
