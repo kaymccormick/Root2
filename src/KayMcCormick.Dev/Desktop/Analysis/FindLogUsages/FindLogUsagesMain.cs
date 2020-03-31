@@ -4,7 +4,6 @@ using System.IO ;
 using System.Linq ;
 using System.Text ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
@@ -32,63 +31,6 @@ namespace FindLogUsages
             _invocationFactory = invocationFactory ;
         }
 
-
-        /// <summary>
-        /// </summary>
-        /// <param name="d"></param>
-        /// <param name="rejectBlock"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ ItemNotNull ]
-        public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
-            [ NotNull ] Document         d
-          , BufferBlock < RejectedItem > rejectBlock
-        )
-        {
-            using (
-#if DOLOG
-                MappedDiagnosticsLogicalContext.SetScoped("Document", d.FilePath)
-#else
-                new EmptyDisposable ( ) 
-#endif
-            )
-            {
-                try
-                {
-#if TRACE && DOLOG
-                    Logger.Trace (
-                                  "[{id}] Entering {funcName}"
-                        , Thread.CurrentThread.ManagedThreadId
-                        , nameof ( FindUsagesFuncAsync )
-                                 ) ;
-#endif
-                    var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
-                    var root = ( tree ?? throw new InvalidOperationException ( ) )
-                       .GetCompilationUnitRoot ( ) ;
-                    var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
-
-                    if ( model != null )
-                    {
-                        return await Process (
-                                              _invocationFactory
-                                            , model
-                                            , tree
-                                            , root
-                       ,                      rejectBlock.Post
-                                             ) ;
-                    }
-                }
-                catch ( Exception ex )
-                {
-#if DOLOG
-                    Logger.Debug ( ex , ex.ToString ( ) ) ;
-#endif
-                    throw ;
-                }
-            }
-
-            throw new InvalidOperationException ( ) ;
-        }
 
         /// <summary>
         /// </summary>
