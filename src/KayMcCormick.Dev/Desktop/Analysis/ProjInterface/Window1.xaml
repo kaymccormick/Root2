@@ -760,6 +760,15 @@
 
             <RibbonToggleButton 
                                          Label="ToggleButton" />
+            <RibbonGroup ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+              <RibbonGroup.ItemTemplate>
+                <DataTemplate
+                  DataType="kmWpf:IDisplayableAppCommand">
+                  <RibbonButton Label="{Binding DisplayName}"
+                                  Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
+                </DataTemplate>
+              </RibbonGroup.ItemTemplate>
+            </RibbonGroup>
 
             <RibbonMenuButton 
                               

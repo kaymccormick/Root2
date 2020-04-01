@@ -8,8 +8,10 @@ using Autofac.Core ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.Graph ;
 using NLog ;
 using NLog.Targets ;
+using Process = System.Diagnostics.Process ;
 
 namespace ProjInterface
 {
@@ -110,9 +112,7 @@ namespace ProjInterface
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" )
             )
             {
-
-
-
+                AppDomain.CurrentDomain.ProcessExit += ( sender , args ) => { LogManager.GetCurrentClassLogger().Debug("Process exiting."); } ;
                 var app = new ProjInterfaceApp ( ) ;
                 app.Run ( ) ;
             }

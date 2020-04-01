@@ -66,17 +66,23 @@ namespace AnalysisAppLib
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
-            builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly())
+            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly() )
                    .Where (
-                           type => typeof ( IViewModel ).IsAssignableFrom ( type )
-                                   // || typeof ( IView1 ).IsAssignableFrom ( type )
+                           type => {
+                               var b = typeof ( IViewModel ).IsAssignableFrom ( type ) ;
+                               Debug.WriteLine($"{type.FullName} - {b}");
+                               return b ;
+                           }
+                           // || typeof ( IView1 ).IsAssignableFrom ( type )
                           )
-                   .WithAttributedMetadata()
                    .AsImplementedInterfaces ( )
-                   .AsSelf ( ) ;
+                   .AsSelf ( )
+                   .WithAttributedMetadata ( ) ;
+
+            //builder.RegisterType<DockWindowViewModel>().AsSelf();
 #if false
             builder.RegisterType < ModelResources > ( ) ;
-            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ) ;
+            
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             builder.RegisterType < FileSystemExplorerItemProvider > ( )
@@ -137,7 +143,7 @@ namespace AnalysisAppLib
             //  }
             // ) ;
 
-            builder.RegisterAssemblyTypes ( Assembly.GetCallingAssembly ( ) )
+            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly()  )
                    .Where (
                            t => t.FindInterfaces (
                                                   ( type , criteria ) => {
