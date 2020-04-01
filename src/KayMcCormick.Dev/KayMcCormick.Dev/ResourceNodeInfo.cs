@@ -23,6 +23,7 @@ namespace KayMcCormick.Dev
     /// </summary>
     public class ResourceNodeInfo : INotifyPropertyChanged
     {
+        private int _depth ;
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
         private object                    _data ;
 
@@ -87,6 +88,8 @@ namespace KayMcCormick.Dev
             set { _isValueChildren = value ; }
         }
 
+        public int Depth { get { return _depth ; } set { _depth = value ; } }
+
         /// <summary>
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
@@ -96,7 +99,7 @@ namespace KayMcCormick.Dev
         /// <returns></returns>
         public override string ToString ( )
         {
-            return $"{nameof ( _data )}: {_data}, {nameof ( _key )}: {_key}" ;
+            return $"{new String(' ', Depth)}Key: {_key}; Data: {_data}" ;
         }
 
         /// <summary>

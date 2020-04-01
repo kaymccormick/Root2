@@ -765,6 +765,9 @@ namespace AnalysisAppLib.ViewModel
         /// <param name="elements"></param>
         public InlineDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected InlineDocElem ( ) {
         }
     }
@@ -930,10 +933,17 @@ namespace AnalysisAppLib.ViewModel
     /// </summary>
     public class BlockDocElem : XmlDocElement
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elements"></param>
         public BlockDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected BlockDocElem ( ) {
         }
     }
@@ -1053,6 +1063,9 @@ namespace AnalysisAppLib.ViewModel
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class TypeDocInfo
     {
         private List < MethodDocInfo > constructorDocumentation = new List < MethodDocInfo > ( ) ;
@@ -1065,45 +1078,69 @@ namespace AnalysisAppLib.ViewModel
 
         private TypeDocumentation typeDocumentation ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeDocumentation TypeDocumentation
         {
             get { return typeDocumentation ; }
             set { typeDocumentation = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List < MethodDocInfo > ConstructorDocumentation
         {
             get { return constructorDocumentation ; }
             set { constructorDocumentation = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Dictionary < string , List < MethodDocumentation > > MethodDocumentation
         {
             get { return methodDocumentation ; }
             set { methodDocumentation = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Dictionary < string , PropertyDocumentation > PropertyDocumentation
         {
             get { return propertyDocumentation ; }
             set { propertyDocumentation = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Dictionary < string , FieldDocumentation > FieldDocumentation { get ; set ; } =
             new Dictionary < string , FieldDocumentation > ( ) ;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class DocInfo
     {
         private string                        _docIdentifier ;
         private IEnumerable < XmlDocElement > _docNode ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable < XmlDocElement > DocNode
         {
             get { return _docNode ; }
             set { _docNode = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string DocIdentifier
         {
             get { return _docIdentifier ; }

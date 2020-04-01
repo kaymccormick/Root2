@@ -10,6 +10,7 @@ using System.Runtime.Serialization ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
+using Autofac.Features.AttributeFilters ;
 using Autofac.Integration.Mef ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
@@ -481,6 +482,12 @@ namespace KayMcCormick.Dev.Application
         /// <param name="builder"></param>
         public override void DoLoad ( ContainerBuilder builder )
         {
+            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly())
+                   .AssignableTo < IViewModel > ( )
+                   .AsSelf ( )
+                   .AsImplementedInterfaces ( )
+                   .WithAttributedMetadata ( )
+                   .WithAttributeFiltering ( ) ;
             if ( AppLoggingConfigHelper.CacheTarget2 != null )
             {
                 builder.RegisterInstance ( AppLoggingConfigHelper.CacheTarget2 )
@@ -488,6 +495,7 @@ namespace KayMcCormick.Dev.Application
                        .SingleInstance ( ) ;
             }
         }
+
         #endregion
     }
 

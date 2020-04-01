@@ -9,10 +9,15 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Diagnostics ;
+using System.IO ;
 using System.Runtime.Serialization ;
+using System.Runtime.Serialization.Formatters.Soap ;
+using System.Text ;
 using Autofac ;
 using Autofac.Core.Lifetime ;
 using Autofac.Features.Metadata ;
@@ -57,7 +62,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
-        internal ModelResources(
+        public ModelResources(
             ILifetimeScope    lifetimeScope
           , IObjectIdProvider idProvider
         )
@@ -103,6 +108,30 @@ namespace KayMcCormick.Dev
                     }
 
                     CreateNode ( n3 , instanceInfo.Instance , instanceInfo.Instance , false ) ;
+                    if ( instanceInfo.Instance is IViewModel vm && object.ReferenceEquals(vm, this) == false)
+                    {
+                        try
+                        {
+                            SoapFormatter x = new SoapFormatter ( ) ;
+                            var serializationStream = new MemoryStream ( ) ;
+
+                            x.Serialize ( serializationStream , vm ) ;
+                            serializationStream.Flush ( ) ;
+                            serializationStream.Seek ( 0 , SeekOrigin.Begin ) ;
+                            byte[] buffer = new byte[ serializationStream.Length ] ;
+                            serializationStream.Read (
+                                                      buffer
+                                                    , 0
+                                                    , ( int ) serializationStream.Length
+                                                     ) ;
+                            var s = Encoding.UTF8.GetString ( buffer ) ;
+                            Debug.WriteLine ( s ) ;
+                        }
+                        catch ( Exception )
+                        {
+
+                        }
+                    }
                     if ( instanceInfo.Instance is LifetimeScope ls )
                     {
                     }
@@ -150,6 +179,7 @@ namespace KayMcCormick.Dev
             else
             {
                 parent.Children.Add ( r ) ;
+                r.Depth = parent.Depth + 1 ;
             }
 
             AllResourcesItemList.Add ( r ) ;
