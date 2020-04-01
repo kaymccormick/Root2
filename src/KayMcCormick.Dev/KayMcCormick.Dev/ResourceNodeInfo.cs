@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
@@ -21,7 +22,7 @@ namespace KayMcCormick.Dev
 {
     /// <summary>
     /// </summary>
-    public class ResourceNodeInfo : INotifyPropertyChanged
+    public class ResourceNodeInfo : INotifyPropertyChanged, IEnumerable <ResourceNodeInfo>
     {
         private int _depth ;
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
@@ -94,6 +95,8 @@ namespace KayMcCormick.Dev
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
+        public IEnumerator < ResourceNodeInfo > GetEnumerator ( ) { return _children.GetEnumerator ( ) ; }
+
         /// <summary>
         /// </summary>
         /// <returns></returns>
@@ -101,6 +104,8 @@ namespace KayMcCormick.Dev
         {
             return $"{new String(' ', Depth)}Key: {_key}; Data: {_data}" ;
         }
+
+        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _children ).GetEnumerator ( ) ; }
 
         /// <summary>
         /// </summary>

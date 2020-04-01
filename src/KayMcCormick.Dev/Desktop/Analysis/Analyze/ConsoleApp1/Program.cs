@@ -320,7 +320,6 @@ namespace ConsoleApp1
             var v2 = new TextView ( new Rect ( 0 , 12 , 40 , 5 ) ) ;
             var view = new ListView2 (
                                       new Rect ( 0 , 0 , 80 , 10 )
-                                    , model
                                     , new List < ResourceNodeInfo > ( model.AllResourcesCollection )
                                      ) ;
             view.SelectedChanged += ( ) => {
@@ -527,39 +526,118 @@ namespace ConsoleApp1
         private static void Init ( ) { }
     }
 
-    internal class ListView2 : ListView
+    internal class ListView2Base < T > : ListView
+        where T : class , IEnumerable < T >
     {
-        private readonly List < ResourceNodeInfo > _list ;
-
-        private ListWrapper < ResourceNodeInfo , ElementWrapper < ResourceNodeInfo > > wrapper =
-            new ListWrapper < ResourceNodeInfo , ElementWrapper < ResourceNodeInfo > > (
-                                                                                        new List <
-                                                                                            ElementWrapper
-                                                                                            < ResourceNodeInfo
-                                                                                            > > ( )
-                                                                                       ) ;
-
-        public ListView2 (
-            Rect                      rect
-          , ModelResources            res
-          , List < ResourceNodeInfo > list
-        ) : base ( rect , list )
+        private class ItemData < T >
         {
-            MyList = list.Select ( x => Tuple.Create ( x , false , new X ( ) ) ).ToList ( ) ;
-            _list  = list ;
+            public T Container { get ; set ; }
+
+            public bool Expanded { get ; set ; }
+
+            public List < T > InsertedChildren { get ; set ; }
+
+            public int SubtreeCount { get ; set ; }
+
+            public List < T > RemovedChildren { get ; set ; }
         }
 
-        public List < Tuple < ResourceNodeInfo , bool , X > > MyList { get ; set ; }
+        private ListWrapper < T > _wrapper ;
 
-        #region Overrides of ListView
+        private List < T > List { get { return _source.List ; } }
+
+        private List < ItemData < T > > _itemDatas = new List < ItemData < T > > ( 20 ) ;
+        private ListWrapper < T >       _source ;
+
+        internal ListView2Base ( IEnumerable < T > collection ) : base (
+                                                                        new ListWrapper < T > (
+                                                                                               collection
+                                                                                                  .ToList ( )
+                                                                                              )
+                                                                       )
+        {
+            _source = ( ListWrapper < T > ) Source ;
+            for ( var i = 0 ; i < _source.Count ; i ++ )
+            {
+                _itemDatas.Add ( new ItemData < T > ( ) ) ;
+            }
+        }
+
+        protected ListView2Base ( Rect rect , [ NotNull ] List < T > list ) : base (
+                                                                                    rect
+                                                                                  , new ListWrapper
+                                                                                        < T > (
+                                                                                               list
+                                                                                                  .ToList ( )
+                                                                                              )
+                                                                                   )
+        {
+            _source = ( ListWrapper < T > ) Source ;
+            for ( var i = 0 ; i < _source.Count ; i ++ )
+            {
+                _itemDatas.Add ( new ItemData < T > ( ) ) ;
+            }
+        }
+
         public override bool ProcessKey ( KeyEvent kb )
         {
             if ( kb.Key == Key.CursorRight )
             {
                 var selectedItem = SelectedItem ;
-                var (r , b , n) = MyList[ selectedItem ] ;
-                _list.InsertRange ( selectedItem + 1 , r.Children ) ;
-                Source       = wrapper ;
+                var e = List[ selectedItem ] ;
+                var d = _itemDatas[ selectedItem ] ;
+                if ( d.Expanded )
+                {
+                    return true ;
+                }
+
+                d.Expanded         = true ;
+                if ( d.RemovedChildren != null )
+                {
+                    List.InsertRange(selectedItem + 1, d.RemovedChildren);
+                    d.SubtreeCount = d.RemovedChildren.Count ;
+                }
+                else
+                {
+                    d.InsertedChildren = e.ToList ( ) ;
+                    List.InsertRange ( selectedItem + 1 , d.InsertedChildren ) ;
+                    var insertedChildrenCount = d.InsertedChildren.Count ;
+                    d.SubtreeCount = insertedChildrenCount ;
+                }
+
+                var c = d.Container ;
+                while ( c != null )
+                {
+                    ItemData < T > itemData = null ;
+                    for ( var i = selectedItem ; i >= 0 ; i -- )
+                    {
+                        if ( ReferenceEquals ( List[ i ] , c ) )
+                        {
+                            itemData = _itemDatas[ i ] ;
+                            break ;
+                        }
+                    }
+
+                    if ( itemData != null )
+                    {
+                        itemData.SubtreeCount += d.SubtreeCount ;
+                        c                     =  itemData.Container ;
+                    }
+                    else
+                    {
+                        c = null ;
+                    }
+                }
+
+                _itemDatas.InsertRange (
+                                        selectedItem + 1
+                                      , Enumerable.Repeat (1, d.SubtreeCount  ).Select(x =>
+                                                                       new ItemData < T >
+                                                                          {
+                                                                              Container = e
+                                                                          }));
+                    
+                Source       = _source ;
                 SelectedItem = selectedItem ;
                 // foreach ( var r in x.Children )
                 // {
@@ -568,47 +646,66 @@ namespace ConsoleApp1
             }
             else if ( kb.Key == Key.CursorLeft )
             {
+                var selectedItem = SelectedItem ;
+                var e = List[ selectedItem ] ;
+                var d = _itemDatas[ selectedItem ] ;
+                if ( ! d.Expanded )
+                {
+                    return true ;
+                }
+
+                var c = d.Container;
+                while (c != null)
+                {
+                    ItemData<T> itemData = null;
+                    for (var i = selectedItem; i >= 0; i--)
+                    {
+                        if (ReferenceEquals(List[i], c))
+                        {
+                            itemData = _itemDatas[i];
+                            break;
+                        }
+                    }
+
+                    if (itemData != null)
+                    {
+                        itemData.SubtreeCount -= d.SubtreeCount ;
+                        c                     =  itemData.Container;
+                    }
+                    else
+                    {
+                        c = null;
+                    }
+                }
+
+                d.RemovedChildren = List.GetRange ( selectedItem + 1 , d.SubtreeCount ) ;
+                List.RemoveRange ( selectedItem + 1 , d.SubtreeCount ) ;
+                d.Expanded = false ;
+                Source     = _source ;
+                SelectedItem = selectedItem ;
+                return true ;
             }
 
             return base.ProcessKey ( kb ) ;
         }
-        #endregion
-
-        #region Overrides of View
-        public override bool ProcessHotKey ( KeyEvent keyEvent )
-        {
-            return base.ProcessHotKey ( keyEvent ) ;
-        }
-
-        public override bool ProcessColdKey ( KeyEvent keyEvent )
-        {
-            return base.ProcessColdKey ( keyEvent ) ;
-        }
-        #endregion
     }
 
-    public class ElementWrapper < T > : IElementWrapper < T >
+    internal class ListView2 : ListView2Base < ResourceNodeInfo >
     {
-        private T _element ;
-
-        public ElementWrapper ( T element ) { Element = element ; }
-
-        public T Element { get { return _element ; } set { _element = value ; } }
+        public ListView2 ( Rect rect , List < ResourceNodeInfo > list ) : base ( rect , list ) { }
     }
 
     public interface IElementWrapper < T >
     {
-        T Element { get ; set ; }
     }
 
-    public class ListWrapper < T , E > : IListDataSource
-        where E : IElementWrapper < T >
+    public sealed class ListWrapper < T > : IListDataSource 
     {
-        private List < E > src ;
+        private List < T > src ;
         private BitArray   marks ;
         private int        count ;
 
-        public ListWrapper ( List < E > source )
+        public ListWrapper ( List < T > source )
         {
             count = source.Count ;
             marks = new BitArray ( count ) ;
@@ -616,6 +713,8 @@ namespace ConsoleApp1
         }
 
         public int Count { get { return src.Count ; } }
+
+        public List < T > List { get { return src ; } }
 
         private void RenderUstr (
             ConsoleDriver driver
@@ -658,7 +757,8 @@ namespace ConsoleApp1
         )
         {
             container.Move ( col , line ) ;
-            var t = src[ item ].Element ;
+            var t = src[ item ] ;
+
             RenderUstr (
                         driver
                       , t.ToString ( )
