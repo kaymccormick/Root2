@@ -33,7 +33,7 @@ namespace ConfigTest
                                                                                          .Error
                                                                                          .WriteLine (
                                                                                                      message
-                                                                                                    )
+                                                                                                    ), ApplicationInstanceIds.ConfigTest
                                                                                   )
                                             ) ;
             x.Initialize ( ) ;

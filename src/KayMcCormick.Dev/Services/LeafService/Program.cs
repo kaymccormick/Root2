@@ -25,10 +25,13 @@ namespace LeafService
         public Program ( )
         {
             _appInst = new ApplicationInstance (
-                                                new ApplicationInstanceConfiguration (
+                                                new ApplicationInstance.
+                                                    ApplicationInstanceConfiguration (
                                                                                       Console
                                                                                          .Error
                                                                                          .WriteLine
+                                                                                    , ApplicationInstanceIds
+                                                                                         .LeafService
                                                                                      )
                                                ) ;
         }

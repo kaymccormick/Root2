@@ -32,6 +32,10 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public static Guid ConsoleAnalysisProgramGuid { get ; } =
             new Guid ( "49A60392-BCC5-468B-8F09-76E0C04CD27C" ) ;
+
+        public static Guid LeafService { get ; set ; } = new Guid("{E66F158B-37EB-4FA7-8A2E-2387D5ADF2A7}");
+
+        public static Guid ConfigTest { get ; set ; } = new Guid ("{28CE37FB-A675-4483-BD6F-79FC9C68D973}");
     }
 
     /// <summary>
