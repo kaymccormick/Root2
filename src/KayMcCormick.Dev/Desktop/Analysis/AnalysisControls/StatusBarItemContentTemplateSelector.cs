@@ -6,10 +6,19 @@ using NLog ;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class StatusBarItemContentTemplateSelector : DataTemplateSelector
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of DataTemplateSelector
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
             try

@@ -13,6 +13,9 @@ using System.Collections.ObjectModel ;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class DynamicObservableCollection : ObservableCollection < dynamic >
     {
     }

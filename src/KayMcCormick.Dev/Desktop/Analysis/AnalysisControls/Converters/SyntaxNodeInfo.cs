@@ -11,8 +11,12 @@
 #endregion
 namespace AnalysisControls.Converters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum SyntaxNodeInfo
     {
+        /// <summary>The ancestors</summary>
         Ancestors
       , AncestorsAndSelf
       , GetFirstToken

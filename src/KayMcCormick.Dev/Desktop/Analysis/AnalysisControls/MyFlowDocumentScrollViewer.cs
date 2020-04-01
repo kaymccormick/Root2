@@ -16,6 +16,9 @@ using NLog ;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MyFlowDocumentScrollViewer : FlowDocumentScrollViewer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -25,6 +28,9 @@ namespace AnalysisControls
         /// </summary>
         private ScrollViewer scrollViewer ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool doOverrideMeasure { get ; set ; }
 
         /// <summary>
@@ -61,6 +67,11 @@ namespace AnalysisControls
         }
 
         #region Overrides of Visual
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="visualAdded"></param>
+        /// <param name="visualRemoved"></param>
         protected override void OnVisualChildrenChanged (
             DependencyObject visualAdded
           , DependencyObject visualRemoved
@@ -77,6 +88,10 @@ namespace AnalysisControls
         }
         #endregion
         #region Overrides of UIElement
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="drawingContext"></param>
         protected override void OnRender ( DrawingContext drawingContext )
         {
             base.OnRender ( drawingContext ) ;

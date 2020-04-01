@@ -19,11 +19,17 @@ using Microsoft.Scripting.Hosting ;
 
 namespace AnalysisControls.ViewModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class PythonViewModel : DependencyObject
       , IViewModel
       , INotifyPropertyChanged
       , ISupportInitialize
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty InputLineProperty =
             DependencyProperty.Register (
                                          nameof ( InputLine )
@@ -37,6 +43,9 @@ namespace AnalysisControls.ViewModel
                                                                        )
                                         ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty LinesProperty =
             DependencyProperty.Register (
                                          "Lines"
@@ -50,6 +59,9 @@ namespace AnalysisControls.ViewModel
                                                                        )
                                         ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty ResultsProperty =
             DependencyProperty.Register (
                                          "Results"
@@ -66,6 +78,11 @@ namespace AnalysisControls.ViewModel
         private ScriptEngine _py ;
         private ScriptScope  _pyScope ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="vars"></param>
         public PythonViewModel (
             ILifetimeScope                              scope
           , [ NotNull ] IEnumerable < IPythonVariable > vars
@@ -75,18 +92,30 @@ namespace AnalysisControls.ViewModel
             PythonInit ( scope , vars ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ JsonIgnore ]
         public ICollectionView linesCollectionView
         {
             get { return CollectionViewSource.GetDefaultView ( Lines ) ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ JsonIgnore ]
         public ILifetimeScope Scope { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ JsonIgnore ]
         public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ JsonIgnore ]
         public StringObservableCollection Lines
         {
@@ -94,6 +123,9 @@ namespace AnalysisControls.ViewModel
             set { SetValue ( LinesProperty , value ) ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ JsonIgnore ]
         public string InputLine
         {
@@ -101,6 +133,9 @@ namespace AnalysisControls.ViewModel
             set { SetValue ( InputLineProperty , value ) ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ JsonIgnore ]
         public DynamicObservableCollection Results
         {
@@ -108,11 +143,20 @@ namespace AnalysisControls.ViewModel
             set { SetValue ( ResultsProperty , value ) ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void BeginInit ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void EndInit ( )
         {
             if ( Lines == null )
@@ -147,6 +191,11 @@ namespace AnalysisControls.ViewModel
         }
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
@@ -237,6 +286,10 @@ namespace AnalysisControls.ViewModel
             FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( eValue ) ) ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
         public void TakeLine ( string text )
         {
             Lines.Add ( "" ) ;
@@ -280,6 +333,9 @@ namespace AnalysisControls.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void HistoryUp ( )
         {
             linesCollectionView.MoveCurrentToPrevious ( ) ;
@@ -292,24 +348,44 @@ namespace AnalysisControls.ViewModel
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void HistoryDown ( ) { linesCollectionView.MoveCurrentToNext ( ) ; }
 
         private int RunPython ( object state ) { return 0 ; }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textEditorText"></param>
         public void ExecutePythonScript ( string textEditorText )
         {
             var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class PythonVariable : IPythonVariable
     {
         #region Implementation of IPythonVariable
+        /// <summary>
+        /// 
+        /// </summary>
         public string VariableName { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Func < dynamic > ValueLambda { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [ CanBeNull ] public dynamic GetVariableValue ( ) { return ValueLambda?.Invoke ( ) ; }
         #endregion
     }

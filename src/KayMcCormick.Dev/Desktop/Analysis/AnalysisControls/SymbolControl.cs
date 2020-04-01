@@ -42,6 +42,9 @@ namespace AnalysisControls
                                                      ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ISymbol Symbol { get ; set ; }
     }
 }

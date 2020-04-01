@@ -15,6 +15,9 @@ using System.Windows.Media ;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Token : UIElement
     {
         private readonly bool _newLine ;
@@ -26,6 +29,13 @@ namespace AnalysisControls
         private readonly FormattedText _formattedText ;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rawKind"></param>
+        /// <param name="text"></param>
+        /// <param name="solidColorBrush"></param>
+        /// <param name="newLine"></param>
         public Token ( int rawKind , string text , SolidColorBrush solidColorBrush , bool newLine )
         {
             _text     = text ;
@@ -51,9 +61,18 @@ namespace AnalysisControls
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="availableSize"></param>
+        /// <returns></returns>
         protected override Size MeasureCore ( Size availableSize ) { return _desiredSize ; }
 
         #region Overrides of UIElement
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="drawingContext"></param>
         protected override void OnRender ( DrawingContext drawingContext )
         {
             base.OnRender ( drawingContext ) ;

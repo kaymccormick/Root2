@@ -1,7 +1,10 @@
 ﻿using System ;
 using System.Linq ;
 using System.Text.Json ;
+using System.Threading ;
+using System.Threading.Tasks ;
 using System.Windows ;
+using AdaptiveCards.Rendering.Wpf ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
@@ -109,13 +112,19 @@ namespace ProjInterface
         [ STAThreadAttribute ( ) ]
         public static void Main ( )
         {
-            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" )
+            Task.Run(
+                     () => AppLoggingConfigHelper.EnsureLoggingConfiguredAsync(
+                                                                               message => { }
+                                                                              )
+                    );
+            using (MappedDiagnosticsLogicalContext.SetScoped("Test", "CustomAppEntry")
             )
             {
-                AppDomain.CurrentDomain.ProcessExit += ( sender , args ) => { LogManager.GetCurrentClassLogger().Debug("Process exiting."); } ;
-                var app = new ProjInterfaceApp ( ) ;
-                app.Run ( ) ;
+                AppDomain.CurrentDomain.ProcessExit += (sender, args) => { LogManager.GetCurrentClassLogger().Debug("Process exiting."); };
+                var app = new ProjInterfaceApp();
+                app.Run();
             }
+
         }
     }
 }

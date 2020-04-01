@@ -286,6 +286,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
         }
 
         #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override System.Text.Json.Serialization.JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

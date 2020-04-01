@@ -39,8 +39,15 @@ namespace AnalysisControls
             // Panel.SetValue ( TextElement.FontSizeProperty , 24.0f ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public StackPanel Panel { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="o"></param>
         public void Add ( UIElement o )
         {
             if ( o != null )

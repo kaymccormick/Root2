@@ -22,6 +22,11 @@ namespace AnalysisControls
     public class JsonSimpleFrameworkElementConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
             if ( typeof ( FrameworkElement ).IsAssignableFrom ( typeToConvert ) )
@@ -33,6 +38,12 @@ namespace AnalysisControls
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

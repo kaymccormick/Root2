@@ -17,8 +17,10 @@ namespace AnalysisControls.Converters
     [ ValueConversion ( typeof ( CSharpSyntaxNode ) , typeof ( IEnumerable ) ) ]
     public sealed class HierarchyConverter : IValueConverter
     {
-        public static readonly  HierarchyConverter 
-            Default = new HierarchyConverter ( ) ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly  HierarchyConverter Default = new HierarchyConverter ( ) ;
         private static readonly Logger             Logger  = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
         public object Convert (

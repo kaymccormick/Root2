@@ -5,9 +5,20 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisControls.Converters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LocationConverter : IValueConverter
     {
         #region Implementation of IValueConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object Convert (
             object      value
           , Type        targetType
@@ -23,6 +34,14 @@ namespace AnalysisControls.Converters
             return null ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack (
             object      value
           , Type        targetType

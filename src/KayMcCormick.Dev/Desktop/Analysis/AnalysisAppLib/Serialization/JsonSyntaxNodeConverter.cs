@@ -29,12 +29,23 @@ namespace AnalysisAppLib.Serialization
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
             return typeof ( CSharpSyntaxNode ).IsAssignableFrom ( typeToConvert ) ;
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeToConvert"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

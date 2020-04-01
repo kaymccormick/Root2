@@ -14,5 +14,27 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public enum ResultStatus { Failed , Success , Pending , None }
+    public enum ResultStatus
+    {
+
+        /// <summary>
+        /// Failed
+        /// </summary>
+        Failed ,
+
+        /// <summary>
+        /// Success
+        /// </summary>
+        Success ,
+
+        /// <summary>
+        /// Pending
+        /// </summary>
+        Pending ,
+
+        /// <summary>
+        /// None
+        /// </summary>
+        None
+    }
 }

@@ -101,25 +101,25 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            initAction?.Invoke ( ) ;
+            // initAction?.Invoke ( ) ;
             _applicationInstance.Initialize ( ) ;
             _applicationInstance.Startup ( ) ;
             _scope = _applicationInstance.GetLifetimeScope ( ) ;
-
-            foreach ( var myJsonLayout in LogManager
-                                         .Configuration.AllTargets.OfType < TargetWithLayout > ( )
-                                         .Select ( t => t.Layout )
-                                         .OfType < MyJsonLayout > ( ) )
-            {
-                var options = new JsonSerializerOptions ( ) ;
-                foreach ( var optionsConverter in myJsonLayout.Options.Converters )
-                {
-                    options.Converters.Add ( optionsConverter ) ;
-                }
-
-                options.Converters.Add ( new DataTemplateKeyConverter ( ) ) ;
-                myJsonLayout.Options = options ;
-            }
+            //
+            // foreach ( var myJsonLayout in LogManager
+            //                              .Configuration.AllTargets.OfType < TargetWithLayout > ( )
+            //                              .Select ( t => t.Layout )
+            //                              .OfType < MyJsonLayout > ( ) )
+            // {
+            //     var options = new JsonSerializerOptions ( ) ;
+            //     foreach ( var optionsConverter in myJsonLayout.Options.Converters )
+            //     {
+            //         options.Converters.Add ( optionsConverter ) ;
+            //     }
+            //
+            //     options.Converters.Add ( new DataTemplateKeyConverter ( ) ) ;
+            //     myJsonLayout.Options = options ;
+            // }
         }
 
         /// <summary>

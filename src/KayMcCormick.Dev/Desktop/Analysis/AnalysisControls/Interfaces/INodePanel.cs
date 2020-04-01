@@ -11,6 +11,9 @@
 #endregion
 namespace AnalysisControls.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface INodePanel
     {
     }

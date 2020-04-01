@@ -11,10 +11,20 @@
 #endregion
 namespace AnalysisControls.Scripting
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IPythonVariable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         string VariableName { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         dynamic GetVariableValue ( ) ;
     }
 }

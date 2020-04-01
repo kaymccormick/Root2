@@ -9,6 +9,10 @@ namespace AnalysisControls.Scripting
     /// </summary>
     public class EventRaisingStreamWriter : StreamWriter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
         public EventRaisingStreamWriter ( [ NotNull ] Stream s ) : base ( s ) { }
 
         /// <summary>
@@ -23,6 +27,10 @@ namespace AnalysisControls.Scripting
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public override void Write ( string value ) { LaunchEvent ( value ) ; }
     }
 }

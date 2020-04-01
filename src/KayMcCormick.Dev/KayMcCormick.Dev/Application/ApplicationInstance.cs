@@ -44,6 +44,16 @@ namespace KayMcCormick.Dev.Application
         private          ApplicationInstanceHost _host ;
         private          ILifetimeScope          _lifetimeScope ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logMethod"></param>
+        /// <param name="appGuid"></param>
+        /// <param name="configs"></param>
+        /// <param name="disableLogging"></param>
+        /// <param name="disableRuntimeConfiguration"></param>
+        /// <param name="disableServiceHost"></param>
+        /// <returns></returns>
         public static ApplicationInstanceConfiguration CreateConfiguration (
             LogMethodDelegate logMethod
           , Guid              appGuid
@@ -63,8 +73,15 @@ namespace KayMcCormick.Dev.Application
                                                         ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public delegate void LogMethodDelegate ( string message ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public sealed class ApplicationInstanceConfiguration
         {
 
@@ -90,7 +107,7 @@ namespace KayMcCormick.Dev.Application
             ///     logging system should be disabled.
             /// </param>
             /// <param name="disableRuntimeConfiguration">
-            ///     Boolean indicatin+g whether or not
+            ///     Boolean indicating whether or not
             ///     to load runtime configuration using the System.Configuration mechanism.
             /// </param>
             /// <param name="disableServiceHost">Boolean indicating whether or not to run a service host inside the application.</param>
@@ -115,6 +132,9 @@ namespace KayMcCormick.Dev.Application
             /// </summary>
             public LogMethodDelegate LogMethod { get { return _logMethod ; } }
 
+            /// <summary>
+            /// 
+            /// </summary>
             public Guid AppGuid { get ; }
 
             /// <summary>
@@ -178,24 +198,24 @@ namespace KayMcCormick.Dev.Application
                     }
                 }
 
-                Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
-                                                                         new LogDelegates.
-                                                                             LogMethod (
-                                                                                        applicationInstanceConfiguration
-                                                                                           .LogMethod
-                                                                                       )
-                                                                       , config
-                                                                        ) ;
-                GlobalDiagnosticsContext.Set (
-                                              "ExecutionContext"
-                                            , new ExecutionContextImpl (
-                                                                        Logging.Application
-                                                                               .MainApplication
-                                                                       )
-                                             ) ;
+                // Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
+                                                                         // new LogDelegates.
+                                                                             // LogMethod (
+                                                                                        // applicationInstanceConfiguration
+                                                                                           // .LogMethod
+                                                                                       // )
+                                                                       // , config
+                                                                        // ) ;
+                // GlobalDiagnosticsContext.Set (
+                                              // "ExecutionContext"
+                                            // , new ExecutionContextImpl (
+                                                                        // Logging.Application
+                                                                               // .MainApplication
+                                                                       // )
+                                             // ) ;
 
-                GlobalDiagnosticsContext.Set ( "RunId" , InstanceRunGuid ) ;
-                Logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
+                // GlobalDiagnosticsContext.Set ( "RunId" , InstanceRunGuid ) ;
+                // Logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
             }
             else
             {
@@ -276,7 +296,7 @@ namespace KayMcCormick.Dev.Application
 
             foreach ( var module in _modules )
             {
-                Logger.Debug ( "Registering module {module}" , module.ToString ( ) ) ;
+                Logger?.Debug ( "Registering module {module}" , module.ToString ( ) ) ;
                 builder.RegisterModule ( module ) ;
             }
 

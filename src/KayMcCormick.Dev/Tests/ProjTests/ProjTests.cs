@@ -418,6 +418,18 @@ namespace ProjTests
             }
         }
 #endif
+
+        [ WpfFact(Timeout = 30000) ]
+        public void Test123 ( )
+        {
+            // AppLoggingConfigHelper.Performant = true ;
+            // for (int i = 0 ; i < 100; i++ )
+            // {
+                // AppLoggingConfigHelper.EnsureLoggingConfiguredAsync ( message => { } )
+                                      // .ContinueWith ( task => AppLoggingConfigHelper.Shutdown ( ) )
+                                      // .Wait ( ) ;
+            // }
+        }
         [WpfFact]
         private void Dump1 ( )
         {

@@ -16,6 +16,9 @@ namespace AnalysisControls.Views
 {
     public partial class NodePanel : UserControl , INodePanel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public NodePanel ( ) { InitializeComponent ( ) ; }
     }
 }

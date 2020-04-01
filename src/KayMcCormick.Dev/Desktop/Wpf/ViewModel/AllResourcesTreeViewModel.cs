@@ -109,6 +109,12 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 //            AddResourceNodeInfos ( winRes ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resNode"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         protected void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
         {
             if ( resNode == null )
@@ -207,6 +213,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         }
 
 #region Overrides of ModelResources
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected object WrapValue ( object data )
         {
             if (data is UIElement uie)
@@ -217,6 +228,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             return data ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected void PopulateResourcesTree ( )
         {
             PopulateAppNode();

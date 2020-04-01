@@ -7,6 +7,9 @@ namespace AnalysisControls
     /// </summary>
     public partial class MainStatusBar : UserControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public MainStatusBar ( ) { InitializeComponent ( ) ; }
     }
 }

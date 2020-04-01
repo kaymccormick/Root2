@@ -76,6 +76,11 @@ namespace AnalysisAppLib
         public event PropertyChangedEventHandler PropertyChanged ;
 
         #region Implementation of ISerializable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 

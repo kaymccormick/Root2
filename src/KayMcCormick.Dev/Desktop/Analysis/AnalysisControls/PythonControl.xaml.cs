@@ -20,8 +20,16 @@ namespace AnalysisControls
     {
         private readonly ILifetimeScope _scope ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PythonControl ( ) : this ( null , null ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="viewModel"></param>
         public PythonControl ( ILifetimeScope scope , PythonViewModel viewModel )
         {
             _scope    = scope ;
@@ -32,6 +40,9 @@ namespace AnalysisControls
         }
 
         #region Implementation of IView<out PythonViewModel>
+        /// <summary>
+        /// 
+        /// </summary>
         public PythonViewModel ViewModel { get ; }
         #endregion
 

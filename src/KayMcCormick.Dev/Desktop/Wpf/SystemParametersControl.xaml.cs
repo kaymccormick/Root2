@@ -63,6 +63,9 @@ namespace KayMcCormick.Lib.Wpf
         [ Category( "Appearance" ) ]
         public bool FlatMenu { [ SecurityCritical ] get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ Category( "Layout" ) ]
         public Rect WorkArea { get; set; }
 
