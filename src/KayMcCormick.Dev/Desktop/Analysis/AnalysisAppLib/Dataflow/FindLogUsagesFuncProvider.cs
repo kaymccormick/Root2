@@ -3,6 +3,7 @@ using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
@@ -47,6 +48,7 @@ namespace AnalysisAppLib.Dataflow
         /// <returns></returns>
         /// <exception cref="AggregateException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
+        [ NotNull ]
         public override Func < Document , IEnumerable < ILogInvocation > > GetTransformFunction ( )
         {
             return document => {

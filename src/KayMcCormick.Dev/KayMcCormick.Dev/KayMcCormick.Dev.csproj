@@ -256,11 +256,6 @@
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>
     </PackageReference>
-    <PackageReference Include="WpfAnalyzers">
-      <Version>2.4.5</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Xunit">
       <Version>2.4.1</Version>
     </PackageReference>

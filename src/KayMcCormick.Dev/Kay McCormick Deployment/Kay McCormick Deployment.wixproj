@@ -43,14 +43,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\AnalysisServiceLibrary\AnalysisServiceLibrary.csproj">
-      <Name>AnalysisServiceLibrary</Name>
-      <Project>{1f5d1b87-40ff-42c0-88d9-874162e5d234}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\ConfigTest\ConfigTest.csproj">
       <Name>ConfigTest</Name>
       <Project>{a688c320-781a-4453-b86b-324785618dd8}</Project>

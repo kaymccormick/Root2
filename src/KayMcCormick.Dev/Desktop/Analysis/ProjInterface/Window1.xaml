@@ -685,7 +685,7 @@
                     Executed="CommandBinding_OnExecuted" />
     <CommandBinding
       Command="kmWpf:WpfAppCommands.QuitApplication"
-      Executed="CommandBinding_OnExecuted2" />
+      Executed="QuitCommandOnExecuted" />
   </RibbonWindow.CommandBindings>
   <Border BorderBrush="CadetBlue" BorderThickness="0"
           CornerRadius="0">

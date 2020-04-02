@@ -1,6 +1,5 @@
 ﻿using System ;
 using System.Diagnostics ;
-using System.Runtime.Serialization ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon ;
@@ -81,16 +80,16 @@ namespace ProjInterface
             InitializeComponent ( ) ;
         }
 
-        #region Implementation of IView<out DockWindowViewModel>
+        
         public DockWindowViewModel ViewModel
         {
             get { return _viewModel ; }
             set { _viewModel = value ; }
         }
-        #endregion
-        #region Implementation of IView1
+        
+        
         public string ViewTitle { get { return _viewTitle ; } }
-        #endregion
+        
 
         private void CommandBinding_OnExecuted (
             object                              sender
@@ -125,7 +124,7 @@ namespace ProjInterface
             }
         }
 
-        private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
+        private void QuitCommandOnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
             Application.Current.Shutdown ( ) ;
         }
@@ -204,26 +203,5 @@ namespace ProjInterface
             Debug.WriteLine ( e.ActivatedType.FullName ) ;
         }
         
-    }
-
-    public class AppComponentException : Exception
-    {
-        public AppComponentException ( ) { }
-
-        public AppComponentException ( string message ) : base ( message ) { }
-
-        public AppComponentException ( string message , Exception innerException ) : base (
-                                                                                           message
-                                                                                         , innerException
-                                                                                          )
-        {
-        }
-
-        protected AppComponentException (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
-        {
-        }
     }
 }

@@ -85,11 +85,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis">
       <Version>3.6.0-2.final</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-      <Version>3.0.0-beta3.final</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
       <Version>16.5.132</Version>
     </PackageReference>

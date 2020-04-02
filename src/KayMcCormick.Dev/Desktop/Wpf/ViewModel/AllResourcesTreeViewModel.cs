@@ -124,7 +124,6 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
             var resNodeData = resNode.Data ;
             var res = ( ResourceDictionary ) resNodeData ;
-            resNode.SourceUri = res?.Source ;
 
             if ( res == null )
             {

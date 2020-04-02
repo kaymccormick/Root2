@@ -3,7 +3,6 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.Data.SqlClient ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
@@ -30,24 +29,27 @@ using NLog ;
 using NLog.Targets ;
 using NStack ;
 using Terminal.Gui ;
-using Attribute = Terminal.Gui.Attribute ;
 
 namespace ConsoleApp1
 {
     internal sealed class AppContext
 
     {
+        private readonly TermUi _termUi ;
+        
         private IProjectBrowserViewModel _projectBrowserViewModel ;
 
         //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
 
         public AppContext (
-            ILifetimeScope                 scope
-          , IProjectBrowserViewModel       projectBrowserViewModel
-            //, IAnalyzeCommand                analyzeCommand = null
+            ILifetimeScope           scope
+          , IProjectBrowserViewModel projectBrowserViewModel,
+            TermUi termUi
+            //, IAnalyzeCommand                analyzeCommand = null,
             //, IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > analyzeCommands
         )
         {
+            _termUi = termUi ;
             Scope            = scope ;
             BrowserViewModel = projectBrowserViewModel ;
             //AnalyzeCommand   = analyzeCommand ;
@@ -62,6 +64,8 @@ namespace ConsoleApp1
             get { return _projectBrowserViewModel ; }
             set { _projectBrowserViewModel = value ; }
         }
+
+        public TermUi Ui { get { return _termUi ; } }
     }
 
     internal sealed class AppModule : Module
@@ -75,6 +79,7 @@ namespace ConsoleApp1
                    .As < ActionBlock < ILogInvocation > > ( )
                    .SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
+            builder.RegisterType < TermUi > ( ).AsSelf ( ) ;
         }
     }
 
@@ -110,24 +115,26 @@ namespace ConsoleApp1
             }
         }
 
-        private static readonly Logger Logger = null ;
-
         //============= Config [Edit these with your settings] =====================
         private static async Task < int > Main ( )
         {
             var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
             var unused = AppLoggingConfigHelper.EnsureLoggingConfiguredAsync (
-                                                                                   Console.WriteLine
-                                                                                 , new
-                                                                                   AppLoggingConfiguration ( )
-                                                                                   {
-                                                                                       IsEnabledConsoleTarget
-                                                                                           = true
-                                                                                     , MinLogLevel =
-                                                                                           LogLevel
-                                                                                              .Trace
-                                                                                   }
-                                                                                  ).ContinueWith(task => Console.WriteLine("Logger async complete.")) ;
+                                                                              Console.WriteLine
+                                                                            , new
+                                                                              AppLoggingConfiguration
+                                                                              {
+                                                                                  IsEnabledConsoleTarget
+                                                                                      = true
+                                                                                , MinLogLevel =
+                                                                                      LogLevel.Trace
+                                                                              }
+                                                                             )
+                                               .ContinueWith (
+                                                              task => Console.WriteLine (
+                                                                                         "Logger async complete."
+                                                                                        )
+                                                             ) ;
             Console.WriteLine ( ConsoleAnalysisProgramGuid.ToString ( "X" ) ) ;
             Init ( ) ;
             using ( var appinst = new ApplicationInstance (
@@ -166,15 +173,13 @@ namespace ConsoleApp1
                     Exception ex1 = depex ;
                     while ( ex1 != null )
                     {
-                        Logger.Debug ( ex1.Message ) ;
                         ex1 = ex1.InnerException ;
                     }
 
                     return 1 ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
                 {
-                    Logger.Fatal ( ex , ex.Message ) ;
                     return 1 ;
                 }
 
@@ -185,14 +190,13 @@ namespace ConsoleApp1
         public static void Action ( ILogInvocation invocation )
         {
             var json = JsonSerializer.Serialize ( invocation ) ;
-            Logger.Debug ( json ) ;
             Console.WriteLine ( json ) ;
             // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
             // ) ;
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        private static async Task < int > MainCommandAsync ( [ NotNull ] AppContext context)
+        private static async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
 #if MSBUILDLOCATOR
@@ -316,13 +320,9 @@ namespace ConsoleApp1
                 //return 1 ;
             }
 #endif
-            var model = RunTerminalApp ( context ) ;
-            foreach ( var resourceNodeInfo in model.AllResourcesItemList )
-            {
-                Console.WriteLine ( resourceNodeInfo ) ;
-            }
 
-
+            context.Ui.Run ( ) ;
+            
 
             foreach ( var projFile in Directory.EnumerateFiles (
                                                                 @"e:\kay2020\source"
@@ -343,7 +343,7 @@ namespace ConsoleApp1
                     } ;
             var c = new SqlConnection ( b.ConnectionString ) ;
             await c.OpenAsync ( ) ;
-            
+
             var bb2 = new SqlCommand (
                                       "insert into syntaxexample (example, syntaxkind, typename) values (@example, @kind, @typename)"
                                     , c
@@ -397,7 +397,8 @@ namespace ConsoleApp1
                     {
                         continue ;
                     }
-                    if (  ! xxx.TryGetValue ( o.Kind ( ) , out var x1 ) )
+
+                    if ( ! xxx.TryGetValue ( o.Kind ( ) , out var x1 ) )
                     {
                         x1                = new X ( ) ;
                         xxx[ o.Kind ( ) ] = x1 ;
@@ -410,7 +411,7 @@ namespace ConsoleApp1
 
 
                     if ( r.Next ( 9 ) == 1
-                                       && set.Contains ( o.GetType ( ) ) )
+                         && set.Contains ( o.GetType ( ) ) )
                     {
                         if ( ! syntaxdict.TryGetValue ( o.GetType ( ) , out var l ) )
                         {
@@ -430,7 +431,7 @@ namespace ConsoleApp1
                         bb2.Parameters.AddWithValue ( "@kind" ,     o.RawKind ) ;
                         bb2.Parameters.AddWithValue ( "@typename" , o.GetType ( ).Name ) ;
 
-                        await bb2.ExecuteNonQueryAsync( ) ;
+                        await bb2.ExecuteNonQueryAsync ( ) ;
                         if ( l.Item2.Count >= 100 )
                         {
                             set.Remove ( o.GetType ( ) ) ;
@@ -479,73 +480,6 @@ namespace ConsoleApp1
             // }
         }
 
-        [ NotNull ]
-        private static ModelResources RunTerminalApp ( [ NotNull ] AppContext context )
-        {
-            var model = context.Scope.Resolve < ModelResources > ( ) ;
-            Terminal.Gui.Application.Init ( ) ;
-            var consoleDriver = Terminal.Gui.Application.Driver ;
-            consoleDriver.SetTerminalResized ( TerminalResized ) ;
-            var width = consoleDriver.Cols ;
-            var height = consoleDriver.Rows ;
-
-            var quitItem = new MenuItem (
-                                         "Quit"
-                                       , "Quit"
-                                       , ( ) => {
-                                         }
-                                        ) ;
-            var menuItems = new[] { quitItem } ;
-            var menu1 = new MenuBarItem ( "File" , menuItems ) ;
-
-            var items = new[] { menu1 } ;
-            var menuBar = new MenuBar ( items ) ;
-
-            var x = 1 ;
-            var y = 1 ;
-            x += 2 ;
-            y += 1 ;
-
-            var right = width - 2 ;
-            var bottom = y    + ( height - y - 4 ) / 2 ;
-
-            var r1 = Rect.FromLTRB ( x , y , right , bottom ) ;
-            Debug.WriteLine ( r1 ) ;
-            var view = new ListView2 (
-                                      r1
-                                    , new List < ResourceNodeInfo > ( model.AllResourcesCollection )
-                                     ) ;
-
-            y      = bottom + 3 ;
-            bottom = y      + 10 ;
-            var r2 = Rect.FromLTRB ( x , y , right , bottom ) ;
-            var frame = new FrameView ( r2 , "Details" ) ;
-
-            var v2 = new TextView ( )
-                     {
-                         Text = ""
-                       , ColorScheme = new ColorScheme ( )
-                                       {
-                                           Normal = Attribute.Make (
-                                                                    Color.BrightMagenta
-                                                                  , Color.Black
-                                                                   )
-                                       }
-                     } ;
-            frame.Add ( v2 ) ;
-            view.SelectedChanged += ( ) => {
-                //v2.Text = view.List[view.SelectedItem].ToString();
-            } ;
-            
-
-            Terminal.Gui.Application.Top.Add ( menuBar ) ;
-            //Terminal.Gui.Application.Top.Add ( view ) ;
-            Terminal.Gui.Application.Top.Add ( frame ) ;
-            Terminal.Gui.Application.Run ( ) ;
-            return model ;
-        }
-
-        private static void TerminalResized ( ) { }
 
         // ReSharper disable once UnusedMember.Local
         private static async Task ListenNetAsync ( )
@@ -567,7 +501,7 @@ namespace ConsoleApp1
 
         private static void NewMethod (
             [ NotNull ] ObservableCollection < AppTypeInfo > subTypeInfos
-          , HashSet < Type >                     set
+          , HashSet < Type >                                 set
         )
         {
             foreach ( var rootSubTypeInfo in subTypeInfos )
@@ -587,21 +521,6 @@ namespace ConsoleApp1
     internal class ListView2Base < T > : ListView
         where T : class , IEnumerable < T >
     {
-        private sealed class ItemData < T2 >
-        {
-            public T2 Container { get ; set ; }
-
-            public bool Expanded { get ; set ; }
-
-            public List < T2 > InsertedChildren { get ; set ; }
-
-            public int SubtreeCount { get ; set ; }
-
-            public List < T2 > RemovedChildren { get ; set ; }
-        }
-
-        public List < T > List { get { return _source.List ; } }
-
         private readonly List < ItemData < T > > _itemDatas = new List < ItemData < T > > ( 20 ) ;
         private readonly ListWrapper < T >       _source ;
 
@@ -620,6 +539,8 @@ namespace ConsoleApp1
                 _itemDatas.Add ( new ItemData < T > ( ) ) ;
             }
         }
+
+        public List < T > List { get { return _source.List ; } }
 
         public override bool ProcessKey ( KeyEvent kb )
         {
@@ -685,10 +606,11 @@ namespace ConsoleApp1
                 return true ;
                 // }
             }
-            else if ( kb.Key == Key.CursorLeft )
+
+            if ( kb.Key == Key.CursorLeft )
             {
                 var selectedItem = SelectedItem ;
-                
+
                 var d = _itemDatas[ selectedItem ] ;
                 if ( ! d.Expanded )
                 {
@@ -729,78 +651,57 @@ namespace ConsoleApp1
 
             return base.ProcessKey ( kb ) ;
         }
+
+        private sealed class ItemData < T2 >
+        {
+            public T2 Container { get ; set ; }
+
+            public bool Expanded { get ; set ; }
+
+            public List < T2 > InsertedChildren { get ; set ; }
+
+            public int SubtreeCount { get ; set ; }
+
+            public List < T2 > RemovedChildren { get ; set ; }
+        }
     }
 
     internal sealed class ListView2 : ListView2Base < ResourceNodeInfo >
     {
-        public ListView2 ( Rect rect , [ NotNull ] List < ResourceNodeInfo > list ) : base ( rect , list ) { }
+        public ListView2 ( Rect rect , [ NotNull ] List < ResourceNodeInfo > list ) :
+            base ( rect , list )
+        {
+        }
     }
 
     public sealed class ListWrapper < T > : IListDataSource
     {
-        private readonly List < T > src ;
-        private readonly BitArray   marks ;
-        private readonly int        count ;
+        private readonly int      count ;
+        private readonly BitArray marks ;
 
         public ListWrapper ( [ NotNull ] List < T > source )
         {
             count = source.Count ;
             marks = new BitArray ( count ) ;
-            src   = source ;
+            List  = source ;
         }
 
-        public int Count { get { return src.Count ; } }
+        public List < T > List { get ; }
 
-        public List < T > List { get { return src ; } }
-
-        private void RenderUstr (
-            ConsoleDriver driver
-          , [ NotNull ] ustring       ustr
-          , int           col
-            // ReSharper disable once UnusedParameter.Local
-          , int           line
-          , int           width
-        )
-        {
-            if ( col <= 0 )
-            {
-                throw new ArgumentOutOfRangeException ( nameof ( col ) ) ;
-            }
-
-            var byteLen = ustr.Length ;
-            var used = 0 ;
-            for ( var i = 0 ; i < byteLen ; )
-            {
-                var (rune , size) = Utf8.DecodeRune ( ustr , i , i - byteLen ) ;
-                var columnWidth = Rune.ColumnWidth ( rune ) ;
-                if ( used + columnWidth >= width )
-                {
-                    break ;
-                }
-
-                driver.AddRune ( rune ) ;
-                used += columnWidth ;
-                i    += size ;
-            }
-
-            for ( ; used < width ; used ++ )
-            {
-                driver.AddRune ( ' ' ) ;
-            }
-        }
+        public int Count { get { return List.Count ; } }
 
         public void Render (
-            [ NotNull ] ListView      container
-          , ConsoleDriver driver
-          , bool          marked
-          , int           item
-          , int           col
-          , int           line
-          , int           width
+            [ NotNull ] ListView container
+          , ConsoleDriver        driver
+          , bool                 marked
+          , int                  item
+          , int                  col
+          , int                  line
+          , int                  width
         )
         {
             container.Move ( col , line ) ;
-            var t = src[ item ] ;
+            var t = List[ item ] ;
 
             RenderUstr (
                         driver
@@ -828,6 +729,38 @@ namespace ConsoleApp1
                  && item < count )
             {
                 marks[ item ] = value ;
+            }
+        }
+
+        private void RenderUstr (
+            ConsoleDriver       driver
+          , [ NotNull ] ustring ustr
+            // ReSharper disable once UnusedParameter.Local
+          , int col
+            // ReSharper disable once UnusedParameter.Local
+          , int line
+          , int width
+        )
+        {
+            var byteLen = ustr.Length ;
+            var used = 0 ;
+            for ( var i = 0 ; i < byteLen ; )
+            {
+                var (rune , size) = Utf8.DecodeRune ( ustr , i , i - byteLen ) ;
+                var columnWidth = Rune.ColumnWidth ( rune ) ;
+                if ( used + columnWidth >= width )
+                {
+                    break ;
+                }
+
+                driver.AddRune ( rune ) ;
+                used += columnWidth ;
+                i    += size ;
+            }
+
+            for ( ; used < width ; used ++ )
+            {
+                driver.AddRune ( ' ' ) ;
             }
         }
     }

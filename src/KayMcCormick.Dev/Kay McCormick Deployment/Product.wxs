@@ -10,7 +10,7 @@
   <?define AnalysisControls_TargetDir=$(var.AnalysisControls.TargetDir)?>
   <?define ConsoleApp1_TargetDir=$(var.ConsoleApp1.TargetDir)?>
   <?define ConfigTest_TargetDir=$(var.ConfigTest.TargetDir)?>
-  <?define AnalysisServiceLibrary_TargetDir=$(var.AnalysisServiceLibrary.TargetDir)?>
+  
   <?define LeafService_TargetDir=$(var.LeafService.TargetDir)?>
   <?define Leaf1AddInSideAdapter_TargetDir=$(var.Leaf1AddInSideAdapter.TargetDir)?>
   <?define Leaf1Contract_TargetDir=$(var.Leaf1Contract.TargetDir)?>
@@ -625,12 +625,6 @@
               Id="Microsoft.CodeAnalysis.VisualBasic.dll"
               Name="Microsoft.CodeAnalysis.VisualBasic.dll"
               Source="$(var.AnalysisControls_TargetDir)Microsoft.CodeAnalysis.VisualBasic.dll" />
-      </Component>
-      <Component Id="AnalysisServiceLibrary.dll"
-                 Guid="9CEA900A-C616-4A9A-B058-1C8889C5FB31">
-        <File KeyPath="yes" Id="AnalysisServiceLibrary.dll"
-              Name="AnalysisServiceLibrary.dll"
-              Source="$(var.AnalysisServiceLibrary_TargetDir)AnalysisServiceLibrary.dll" />
       </Component>
       <Component Id="Microsoft.Build.Locator.dll"
                  Guid="08CFFFD9-610E-4464-AB71-8B8C1477E3D5">

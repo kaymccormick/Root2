@@ -1,26 +1,23 @@
 ﻿using System ;
 using System.Linq ;
 using System.Text.Json ;
-using System.Threading ;
-using System.Threading.Tasks ;
 using System.Windows ;
-using AdaptiveCards.Rendering.Wpf ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.Graph ;
 using NLog ;
 using NLog.Targets ;
-using Process = System.Diagnostics.Process ;
+using static KayMcCormick.Dev.Logging.AppLoggingConfigHelper ;
+using static NLog.LogManager ;
 
 namespace ProjInterface
 {
     public sealed partial class ProjInterfaceApp : BaseApp
     {
-        private new static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private new static readonly Logger Logger = GetCurrentClassLogger ( ) ;
 
         public ProjInterfaceApp ( ) : this ( null ) { }
 
@@ -47,8 +44,7 @@ namespace ProjInterface
         {
             if ( ! disableLogging )
             {
-                foreach ( var myJsonLayout in LogManager
-                                             .Configuration.AllTargets
+                foreach ( var myJsonLayout in Configuration.AllTargets
                                              .OfType < TargetWithLayout > ( )
                                              .Select ( t => t.Layout )
                                              .OfType < MyJsonLayout > ( ) )
@@ -104,7 +100,7 @@ namespace ProjInterface
         }
     }
 
-    internal class CustomAppEntry
+    internal static class CustomAppEntry
     {
         /// <summary>
         /// Application Entry Point.
@@ -112,19 +108,14 @@ namespace ProjInterface
         [ STAThreadAttribute ( ) ]
         public static void Main ( )
         {
-            Task.Run(
-                     () => AppLoggingConfigHelper.EnsureLoggingConfiguredAsync(
-                                                                               message => { }
-                                                                              )
-                    );
-            using (MappedDiagnosticsLogicalContext.SetScoped("Test", "CustomAppEntry")
-            )
-            {
-                AppDomain.CurrentDomain.ProcessExit += (sender, args) => { LogManager.GetCurrentClassLogger().Debug("Process exiting."); };
-                var app = new ProjInterfaceApp();
-                app.Run();
-            }
+            EnsureLoggingConfiguredAsync ( Console.WriteLine ) ;
 
+            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" ) )
+            {
+                AppDomain.CurrentDomain.ProcessExit += ( sender , args ) => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
+                var app = new ProjInterfaceApp ( ) ;
+                app.Run ( ) ;
+            }
         }
     }
 }

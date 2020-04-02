@@ -20,9 +20,8 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev
 {
-    /// <summary>
-    /// </summary>
-    public class ResourceNodeInfo : INotifyPropertyChanged, IEnumerable <ResourceNodeInfo>
+    /// <summary>Class representing a node in the resource tree. Relatively generic in that Key and Data refer to instances of type 'object' or in other words any chosen type.</summary>
+    public sealed class ResourceNodeInfo : INotifyPropertyChanged, IEnumerable <ResourceNodeInfo>, IHierarchicalNode
     {
         private int _depth ;
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
@@ -32,7 +31,6 @@ namespace KayMcCormick.Dev
         private bool ? _internalIsExpanded ;
         private bool ? _isValueChildren ;
         private object _key ;
-        private Uri    _sourceUri ;
         private object _styleKey ;
 
         private object _templateKey ;
@@ -53,10 +51,6 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        public Uri SourceUri { get { return _sourceUri ; } set { _sourceUri = value ; } }
-
-        /// <summary>
-        /// </summary>
         [ JsonIgnore ]
         public object Key { get { return _key ; } set { _key = value ; } }
 
@@ -68,6 +62,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         public bool IsExpanded
         {
+            // ReSharper disable once UnusedMember.Global
             get { return _internalIsExpanded.GetValueOrDefault ( ) ; }
             set
             {
@@ -79,22 +74,30 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
+        [ UsedImplicitly ] public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
 
         /// <summary>
         /// </summary>
         public bool ? IsValueChildren
         {
+            // ReSharper disable once UnusedMember.Global
             get { return _isValueChildren ; }
             set { _isValueChildren = value ; }
         }
 
+        /// <summary>
+        /// Depth of node. 0 for a top-level node.
+        /// </summary>
         public int Depth { get { return _depth ; } set { _depth = value ; } }
 
         /// <summary>
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator < ResourceNodeInfo > GetEnumerator ( ) { return _children.GetEnumerator ( ) ; }
 
         /// <summary>
@@ -111,9 +114,33 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="propertyName"></param>
         [ NotifyPropertyChangedInvocator ]
-        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IHierarchicalNode
+    {
+        /// <summary>
+        /// </summary>
+        List < ResourceNodeInfo > Children { get ; set ; }
+
+        /// <summary>
+        /// </summary>
+        bool IsExpanded
+        {
+            // ReSharper disable once UnusedMember.Global
+            get ;
+            set ;
+        }
+
+        /// <summary>
+        /// Depth of node. 0 for a top-level node.
+        /// </summary>
+        int Depth { get ; set ; }
     }
 }

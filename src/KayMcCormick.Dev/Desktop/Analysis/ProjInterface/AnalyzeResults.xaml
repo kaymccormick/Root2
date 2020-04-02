@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+        xmlns:findLogUsages="clr-namespace:FindLogUsages;assembly=FindLogUsages"
 
         mc:Ignorable="d"
         DataContext="{Binding ElementName=results, Path=ViewModel}"
@@ -13,7 +14,7 @@
     <CollectionViewSource x:Key="logs"
                           Source="{Binding Path=LogInvocations}" />
     <DataTemplate x:Key="CodeTemplate"
-                  DataType="analysisAppLib:ILogInvocation">
+                  DataType="findLogUsages:ILogInvocation">
       <StackPanel>
         <TextBlock Text="{Binding PrecedingCode}" />
         <TextBlock Background="Yellow" Foreground="Black"
@@ -22,7 +23,7 @@
       </StackPanel>
     </DataTemplate>
     <DataTemplate x:Key="FCodeTemplate"
-                  DataType="analysisAppLib:ILogInvocation">
+                  DataType="findLogUsages:ILogInvocation">
       <TextBlock />
     </DataTemplate>
   </Window.Resources>
