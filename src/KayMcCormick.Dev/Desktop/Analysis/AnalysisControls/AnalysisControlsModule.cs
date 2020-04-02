@@ -66,7 +66,7 @@ namespace AnalysisControls
             x.VDocelems = new DocumentCollection(v.Docelems);
             var xml = XamlWriter.Save(x);
             Debug.WriteLine ( xml ) ;
-            builder.RegisterInstance(v).SingleInstance();
+            builder.RegisterInstance(v).As<ITypesViewModel> (  ).SingleInstance();
             
             //builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
             builder.RegisterType < SyntaxPanel > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;

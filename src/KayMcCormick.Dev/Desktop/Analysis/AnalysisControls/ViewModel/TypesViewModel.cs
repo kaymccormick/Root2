@@ -3,6 +3,7 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
@@ -10,8 +11,6 @@ using System.Runtime.Serialization ;
 using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib.Properties ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -44,7 +43,7 @@ namespace AnalysisControls.ViewModel
         private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
 #endif
 
-        private readonly Dictionary < string , TypeDocInfo >             _docs ;
+        private readonly Dictionary < Type , TypeDocInfo > _docs ;
         private          ObservableCollection <CodeElementDocumentation> docelems = new ObservableCollection < CodeElementDocumentation > ();
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace AnalysisControls.ViewModel
             Root = CollectTypeInfos ( null , rootR ) ;
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            _docs.TryGetValue ( typeof ( SyntaxFactory ).FullName , out var si ) ;
+            _docs.TryGetValue ( typeof ( SyntaxFactory ), out var si ) ;
             var methodInfos = typeof ( SyntaxFactory )
                              .GetMethods ( BindingFlags.Static | BindingFlags.Public )
                              .ToList ( ) ;
@@ -160,7 +159,7 @@ namespace AnalysisControls.ViewModel
 
                         PropertyDocumentation propDoc = null ;
                         if ( pair.Value.Type != null
-                             && _docs.TryGetValue ( pair.Value.Type.FullName , out var info ) )
+                             && _docs.TryGetValue ( pair.Value.Type, out var info ) )
                         {
                             if ( info.PropertyDocumentation.TryGetValue (
                                                                          propertyInfo.Name
@@ -196,9 +195,9 @@ namespace AnalysisControls.ViewModel
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         [ NotNull ]
-        public static Dictionary < string , TypeDocInfo > LoadXmlDoc ( )
+        public static Dictionary < Type , TypeDocInfo > LoadXmlDoc ( )
         {
-            var docDict = new Dictionary < string , TypeDocInfo > ( ) ;
+            var docDict = new Dictionary < Type, TypeDocInfo > ( ) ;
             var doc = LoadDoc ( ) ;
             if ( doc.DocumentElement == null )
             {
@@ -208,6 +207,10 @@ namespace AnalysisControls.ViewModel
             foreach ( var xmlElement in DocMembers ( doc ) )
             {
                 var elem = HandleDocElement ( xmlElement ) ;
+                if ( elem == null )
+                {
+                    continue ;
+                }
                 if ( ! docDict.TryGetValue ( elem.Type , out var info ) )
                 {
                     info                 = new TypeDocInfo ( ) ;
@@ -284,7 +287,8 @@ namespace AnalysisControls.ViewModel
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        [ NotNull ]
+
+        [ CanBeNull ]
         public static CodeElementDocumentation HandleDocElement (
             [ NotNull ] XmlElement xmlElement
         )
@@ -321,21 +325,28 @@ namespace AnalysisControls.ViewModel
                 type       = type.Substring ( 0 , type.LastIndexOf ( '.' ) ) ;
             }
 
+            var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( type ) ;
+            if ( t == null )
+            {
+                Debug.WriteLine($"cant find type {type}");
+                return null ;
+            }
+            //var t = Type.GetType ( type ) ;
             switch ( kind )
             {
-                case 'T' : return new TypeDocumentation ( elementId , type , xmlDoc ) ;
+                case 'T' : return new TypeDocumentation ( elementId , t , xmlDoc ) ;
                 case 'M' :
                     return new MethodDocumentation (
                                                     elementId
-                                                  , type
+                                                  , t
                                                   , memberName
                                                   , parameters
                                                   , xmlDoc
                                                    ) ;
                 case 'P' :
-                    return new PropertyDocumentation ( elementId , type , memberName , xmlDoc ) ;
+                    return new PropertyDocumentation ( elementId , t , memberName , xmlDoc ) ;
                 case 'F' :
-                    return new FieldDocumentation ( elementId , type , memberName , xmlDoc ) ;
+                    return new FieldDocumentation ( elementId , t , memberName , xmlDoc ) ;
                 default : throw new InvalidOperationException ( kind.ToString ( ) ) ;
             }
         }
@@ -462,6 +473,9 @@ namespace AnalysisControls.ViewModel
             set { _hierarchyColors = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < CodeElementDocumentation > Docelems
         {
             get { return docelems ; }
@@ -478,7 +492,7 @@ namespace AnalysisControls.ViewModel
             TypeDocumentation docNode = null ;
 
             if ( _docs.TryGetValue (
-                                    rootR.FullName ?? throw new InvalidOperationException ( )
+                                    rootR?? throw new InvalidOperationException ( )
                                   , out var info
                                    ) )
             {
@@ -503,10 +517,12 @@ namespace AnalysisControls.ViewModel
             return r ;
         }
 
-        private void CollectDoc ( CodeElementDocumentation docNode )
+        private void CollectDoc ( [ CanBeNull ] CodeElementDocumentation docNode )
         {
-            Docelems.Add ( docNode ) ;
-
+            if ( docNode != null )
+            {
+                Docelems.Add ( docNode ) ;
+            }
         }
 
         #region Implementation of ISerializable

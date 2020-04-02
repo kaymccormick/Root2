@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel ;
+﻿using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
@@ -17,7 +16,7 @@ namespace AnalysisControls.Views
     ///     Interaction logic for Types.xaml
     /// </summary>
     [ TitleMetadata ( "Syntax node types" ) ]
-    [ImageMetadata("helpStatusColor")]
+    [ ImageMetadata ( "helpStatusColor" ) ]
     public sealed partial class TypesView : UserControl
       , IView < ITypesViewModel >
       , IViewWithTitle
@@ -28,7 +27,11 @@ namespace AnalysisControls.Views
 
         /// <summary>
         /// </summary>
-        public TypesView ( ) { InitializeComponent ( ) ; }
+        private TypesView ( )
+        {
+            Debug.WriteLine ( "Initializing without ViewModel" ) ;
+            InitializeComponent ( ) ;
+        }
 
         /// <summary>
         /// </summary>
@@ -36,6 +39,7 @@ namespace AnalysisControls.Views
         public TypesView ( ITypesViewModel viewModel )
         {
             _viewModel = viewModel ;
+            Debug.WriteLine ( "View model is " + _viewModel ) ;
             InitializeComponent ( ) ;
         }
 

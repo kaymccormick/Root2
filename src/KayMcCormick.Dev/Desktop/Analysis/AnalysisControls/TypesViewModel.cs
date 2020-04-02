@@ -40,7 +40,7 @@ namespace AnalysisControls
         /// <param name="xmlDocElements"></param>
         protected MemberBaseDocumentation (
             string                        elementId
-          , [ NotNull ] string            type
+          , [ NotNull ] Type            type
           , [ NotNull ] string            memberName
           , IEnumerable < XmlDocElement > xmlDocElements
         ) : base ( elementId , xmlDocElements )
@@ -67,7 +67,7 @@ namespace AnalysisControls
         /// <param name="xmlDocElements"></param>
         public FieldDocumentation (
             string                        elementId
-          , [ NotNull ] string                        type
+          , [ NotNull ] Type                        type
           , string                        memberName
           , IEnumerable < XmlDocElement > xmlDocElements
         ) : base ( elementId , type , memberName , xmlDocElements )
@@ -77,7 +77,6 @@ namespace AnalysisControls
 
     /// <summary>
     /// </summary>
-    [ ContentProperty ( "XmlDoc" ) ]
     public class PropertyDocumentation : MemberBaseDocumentation
     {
         /// <summary>
@@ -88,7 +87,7 @@ namespace AnalysisControls
         /// <param name="xmlDoc"></param>
         public PropertyDocumentation (
             string                        elementId
-          , string                        type
+          , Type type
           , string                        memberName
           , IEnumerable < XmlDocElement > xmlDoc
         ) : base ( elementId , type , memberName , xmlDoc )
@@ -113,7 +112,7 @@ namespace AnalysisControls
         /// <param name="xmlDoc"></param>
         public TypeDocumentation (
             string                        elementId
-          , string                        type
+          , Type                        type
           , IEnumerable < XmlDocElement > xmlDoc
         ) : base ( elementId , xmlDoc )
         {
@@ -136,7 +135,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        protected string _type ;
+        protected Type _type ;
 
         /// <summary>
         /// 
@@ -168,7 +167,7 @@ namespace AnalysisControls
 
         /// <summary>
         /// </summary>
-        public string Type { get { return _type ; } set { _type = value ; } }
+        public Type Type { get { return _type ; } set { _type = value ; } }
 
         /// <summary>
         /// 
@@ -278,7 +277,7 @@ namespace AnalysisControls
         /// <param name="xmlDoc"></param>
         public MethodDocumentation (
             string                        elementId
-          , [ NotNull ] string            type
+          , [ NotNull ] Type            type
           , string                        member
           , string                        parameters
           , IEnumerable < XmlDocElement > xmlDoc
@@ -328,6 +327,7 @@ namespace AnalysisControls
 
         #region Overrides of XmlDocElement
         
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override XmlDocumentElementCollection DocumentElementCollection { get ; set ; }
         #endregion
     }

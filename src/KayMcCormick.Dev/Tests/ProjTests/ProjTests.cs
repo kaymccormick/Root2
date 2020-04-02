@@ -33,7 +33,6 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
-using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
 using AnalysisControls.Properties ;
 using AnalysisControls.ViewModel ;
@@ -46,19 +45,16 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
-using KayMcCormick.Lib.Wpf.ViewModel ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Moq ;
 using NLog ;
 using NLog.Layouts ;
-using NLog.Targets ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
@@ -124,7 +120,21 @@ namespace ProjTests
         [ WpfFact ]
         public void TEstTypesview ( )
         {
-            ITypesViewModel viewModel = new TypesViewModel ( ) ;
+            TypesViewModel viewModel = new TypesViewModel ( ) ;
+            var stringWriter = new StringWriter() ;
+            using ( XmlWriter x = XmlWriter.Create (stringWriter
+                                
+                                                    //@"c:\data\logs\out.xaml"
+                                                  , new XmlWriterSettings ( ) { Indent = true }
+                                                   ) )
+            {
+                var xmlDocumentElementCollection = new XmlDocumentElementCollection ( viewModel.Docelems ) ;
+                XamlWriter.Save ( xmlDocumentElementCollection , x ) ;
+                x.Flush();
+                Debug.Write(stringWriter.ToString ( )) ;
+            }
+
+            return ;
             var typesView = new TypesView ( viewModel ) ;
             var w = new Window { Content = typesView } ;
             w.ShowDialog ( ) ;
