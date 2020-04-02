@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Diagnostics ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
@@ -36,9 +37,10 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public Task < IAppCommandResult > ExecuteAsync ( )
+        public async Task < IAppCommandResult > ExecuteAsync ( )
         {
-            return _wrappedCommand.ExecuteAsync ( )
+            Debug.WriteLine ( "Executinng command" ) ;
+            var r = await _wrappedCommand.ExecuteAsync ( )
                                   .ContinueWith (
                                                  ( task , o ) => {
                                                      OnFault ( task.Exception ) ;
@@ -50,6 +52,8 @@ namespace KayMcCormick.Lib.Wpf
                                                , TaskContinuationOptions.OnlyOnFaulted
                                                , TaskScheduler.FromCurrentSynchronizationContext ( )
                                                 ) ;
+            Debug.WriteLine ( "Complete" ) ;
+            return r ;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel ;
+﻿
+using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
@@ -16,6 +17,7 @@ namespace AnalysisControls.Views
     ///     Interaction logic for Types.xaml
     /// </summary>
     [ TitleMetadata ( "Syntax node types" ) ]
+    [ImageMetadata("helpStatusColor")]
     public sealed partial class TypesView : UserControl
       , IView < ITypesViewModel >
       , IViewWithTitle

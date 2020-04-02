@@ -235,28 +235,28 @@ namespace ModelTests
         }
 
 
-        [ Fact ]
-        public void Te4t3 ( )
-        {
-            ITypesViewModel viewModel = new TypesViewModel ( ) ;
-            try
-            {
-                var options = new JsonSerializerOptions ( ) ;
-                options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
-                options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
-                options.WriteIndented = true ;
-                var model =
-                    JsonSerializer.Deserialize < TypesViewModel > (
-                                                                   File.ReadAllText (
-                                                                                     @"C:\data\logs\viewmodel.json"
-                                                                                    )
-                                                                  ) ;
-            }
-            catch ( JsonException ex )
-            {
-                MessageBox.Show ( "Json failure" , ex.Message ) ;
-            }
-        }
+        // [ Fact ]
+        // public void Te4t3 ( )
+        // {
+            // ITypesViewModel viewModel = new TypesViewModel ( ) ;
+            // try
+            // {
+                // var options = new JsonSerializerOptions ( ) ;
+                // options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+                // options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
+                // options.WriteIndented = true ;
+                // var model =
+                    // JsonSerializer.Deserialize < TypesViewModel > (
+                                                                   // File.ReadAllText (
+                                                                                     // @"C:\data\logs\viewmodel.json"
+                                                                                    // )
+                                                                  // ) ;
+            // }
+            // catch ( JsonException ex )
+            // {
+                // MessageBox.Show ( "Json failure" , ex.Message ) ;
+            // }
+        // }
 
         [ Fact ]
         public void Test1 ( )
@@ -357,24 +357,24 @@ namespace ModelTests
             }
         }
 
-        [ Fact ]
-        public void Test3 ( )
-        {
-            ITypesViewModel viewModel = new TypesViewModel ( ) ;
-            try
-            {
-                var options = new JsonSerializerOptions ( ) ;
-                options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
-                options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
-                options.WriteIndented = true ;
-                var json = JsonSerializer.Serialize ( viewModel , options ) ;
-                File.WriteAllText ( @"C:\data\logs\viewmodel.json" , json ) ;
-            }
-            catch ( JsonException ex )
-            {
-                MessageBox.Show ( "Json failure" , ex.Message ) ;
-            }
-        }
+        // [ Fact ]
+        // public void Test3 ( )
+        // {
+        //     ITypesViewModel viewModel = new TypesViewModel ( ) ;
+        //     try
+        //     {
+        //         var options = new JsonSerializerOptions ( ) ;
+        //         options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+        //         options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
+        //         options.WriteIndented = true ;
+        //         var json = JsonSerializer.Serialize ( viewModel , options ) ;
+        //         File.WriteAllText ( @"C:\data\logs\viewmodel.json" , json ) ;
+        //     }
+        //     catch ( JsonException ex )
+        //     {
+        //         MessageBox.Show ( "Json failure" , ex.Message ) ;
+        //     }
+        // }
 
         [ Fact ]
         public void TestAppStartup ( )

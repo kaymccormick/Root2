@@ -19,6 +19,7 @@ namespace KayMcCormick.Dev.Attributes
     ///     Intended for user dusplay. Right now is transferred from views to menu
     ///     commands.
     /// </summary>
+    /// 
     [ MetadataAttribute ]
     public class TitleMetadataAttribute : Attribute
     {

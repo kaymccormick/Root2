@@ -14,8 +14,10 @@ using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Reflection ;
+using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Media ;
 using AnalysisAppLib ;
 using AnalysisControls ;
 using AnalysisControls.Scripting ;
@@ -31,6 +33,7 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using NLog ;
+
 #if MIGRADOC
 using MigraDoc.DocumentObjectModel.Internals ;
 #endif
@@ -55,6 +58,9 @@ namespace ProjInterface
     public sealed class ProjInterfaceModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        public ProjInterfaceModule ( ) {
+        }
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
@@ -82,8 +88,7 @@ namespace ProjInterface
                                            }
                                           ) ;
 
-            builder.RegisterModule < AnalysisAppLibModule > ( ) ;
-            LogRegistration ( typeof ( Window1 ) , "AsSelf" ) ;
+            builder.RegisterModule < AnalysisAppLibModule > ( ) ; ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
                                                                          (
@@ -104,6 +109,7 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
+            builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ) ;
 
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
@@ -116,26 +122,27 @@ namespace ProjInterface
                    .As < IControlView > ( ) ;
 
             builder
-               .RegisterAdapter<Meta<Func<LayoutDocumentPane, IControlView>>,
-                    Func<LayoutDocumentPane, IDisplayableAppCommand>>(Func)
-               .As<Func<LayoutDocumentPane, IDisplayableAppCommand>>();
+               .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
+                    Func < LayoutDocumentPane , IDisplayableAppCommand >
+                > ( ControlViewCommandAdapter )
+               .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
-            builder
-               .RegisterAssemblyTypes (
-                                       Assembly.GetCallingAssembly ( )
-                                     , typeof ( PythonControl ).Assembly
-                                      )
-               .Where (
-                       type => {
-                           var isAssignableFrom = typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
-                                                  && type != typeof ( LambdaAppCommand ) ;
-                           Debug.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
-                           return isAssignableFrom ;
-                       }
-                      )
-               .As < IDisplayableAppCommand > ( )
-               .As < IAppCommand > ( )
-               .As < IDisplayable > ( ) ;
+            builder.RegisterAssemblyTypes (
+                                           Assembly.GetCallingAssembly ( )
+                                         , typeof ( PythonControl ).Assembly
+                                          )
+                   .Where (
+                           type => {
+                               var isAssignableFrom =
+                                   typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
+                                   && type != typeof ( LambdaAppCommand ) ;
+                               Debug.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
+                               return isAssignableFrom ;
+                           }
+                          )
+                   .As < IDisplayableAppCommand > ( )
+                   .As < IAppCommand > ( )
+                   .As < IDisplayable > ( ) ;
 
             builder.Register (
                               ( context , parameters )
@@ -146,13 +153,18 @@ namespace ProjInterface
         }
 
         [ NotNull ]
-        private Func < LayoutDocumentPane , IDisplayableAppCommand > Func (
+        private Func < LayoutDocumentPane , IDisplayableAppCommand > ControlViewCommandAdapter (
             IComponentContext                                               c
           , IEnumerable < Parameter >                                       p
-          , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
+          , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView> >  metaFunc
         )
         {
-            metaFunc.Metadata.TryGetValue ( "Title" , out var titleo ) ;
+            var r = c.Resolve < IResourceResolver > ( ) ;
+            metaFunc.Metadata.TryGetValue ( "Title" ,       out var titleo ) ;
+            metaFunc.Metadata.TryGetValue ( "ImageSource" , out var imageSource ) ;
+            // object res = r.ResolveResource ( imageSource ) ;
+            // var im = res as ImageSource ; 
+
             var title = ( string ) titleo ?? "no title" ;
 
             return pane => ( IDisplayableAppCommand ) new LambdaAppCommand (
@@ -163,7 +175,11 @@ namespace ProjInterface
                                                                                              .Value
                                                                                         , pane
                                                                                          )
-                                                                           ) ;
+                                                                           )
+                                                      {
+                                                          LargeImageSourceKey = imageSource
+                                                      } ;
+                
         }
 
         [ NotNull ]
@@ -185,13 +201,15 @@ namespace ProjInterface
             return r ;
         }
 
-        private static IAppCommandResult CommandFunc ( [ NotNull ] LambdaAppCommand command )
+        private static async Task < IAppCommandResult > CommandFunc ( [ NotNull ] LambdaAppCommand command )
         {
             var (viewFunc1 , pane1) =
                 ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
                 command.Argument ;
 
+            var n = DateTime.Now ;
             var view = viewFunc1 ( pane1 ) ;
+            Debug.WriteLine(DateTime.Now - n);
             var doc = new LayoutDocument { Content = view } ;
             pane1.Children.Add ( doc ) ;
             pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
@@ -212,7 +230,7 @@ namespace ProjInterface
 
             return new LambdaAppCommand (
                                          title.ToString ( )
-                                       , command => {
+                                       , async command => {
                                              try
                                              {
                                                  if ( view.Value.Value is Window w )
@@ -237,5 +255,10 @@ namespace ProjInterface
                                        , obj
                                         ) ;
         }
+    }
+
+    internal interface IResourceResolver
+    {
+        object ResolveResource ( object resourceKey ) ;
     }
 }

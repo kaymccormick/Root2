@@ -103,6 +103,9 @@
   <ItemGroup>
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
+    <Compile Include="AppMethodInfo.cs" />
+    <Compile Include="AppTypeInfo.cs" />
+    <Compile Include="ComponentInfo.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
@@ -113,6 +116,7 @@
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
+    <Compile Include="ITypesViewModel.cs" />
     <Compile Include="JsonConverters.cs" />
     <None Include="Program-Parse.cs" />
     <Compile Include="JsonSimpleFrameworkElementConverter.cs" />
@@ -123,8 +127,10 @@
     <Compile Include="Scripting\EventRaisingStreamWriter.cs" />
     <Compile Include="Scripting\IPythonVariable.cs" />
     <Compile Include="Scripting\MyEvtArgs.cs" />
+    <Compile Include="TypesViewModel.cs" />
     <Compile Include="ViewModel\PythonViewModel.cs" />
     <Compile Include="StringObservableCollection.cs" />
+    <Compile Include="ViewModel\TypesViewModel.cs" />
     <Compile Include="Views\NodePanel.cs" />
     <Compile Include="FormattedCode2.xaml.cs">
       <DependentUpon>FormattedCode2.xaml</DependentUpon>

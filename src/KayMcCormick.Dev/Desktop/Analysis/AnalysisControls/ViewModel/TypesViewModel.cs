@@ -1,20 +1,8 @@
-﻿#region header
-// Kay McCormick (mccor)
-// 
-// KayMcCormick.Dev
-// AnalysisControls
-// TypesViewModel.cs
-// 
-// 2020-03-11-7:05 PM
-// 
-// ---
-#endregion
-using System ;
+﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
@@ -23,13 +11,13 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
-
 using NLog ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisControls.ViewModel
 {
     /// <summary>
     /// </summary>
@@ -42,7 +30,7 @@ namespace AnalysisAppLib.ViewModel
             0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c , 0xff3c6e7d , 0xff533ca3
         } ;
 
-        private AppTypeInfo root ;
+        private          AppTypeInfo   root ;
         private readonly List < Type > _nodeTypes ;
 
         private readonly Dictionary < Type , AppTypeInfo > map =
@@ -56,7 +44,8 @@ namespace AnalysisAppLib.ViewModel
         private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
 #endif
 
-        private readonly Dictionary < string , TypeDocInfo > _docs ;
+        private readonly Dictionary < string , TypeDocInfo >             _docs ;
+        private          ObservableCollection <CodeElementDocumentation> docelems = new ObservableCollection < CodeElementDocumentation > ();
 
         /// <summary>
         /// 
@@ -98,20 +87,21 @@ namespace AnalysisAppLib.ViewModel
                                                      => parameterInfo.ParameterType.FullName
                                                 )
                                         ) ;
-                    Debug.WriteLine ( $"xx: {p}" ) ;
+                    //Debug.WriteLine ( $"xx: {p}" ) ;
                     foreach ( var methodDocumentation in mdoc )
                     {
-                        Debug.WriteLine ( methodDocumentation.Parameters ) ;
+                        //  Debug.WriteLine ( methodDocumentation.Parameters ) ;
                         if ( methodDocumentation.Parameters == p )
                         {
-                            Debug.WriteLine ( $"Docs for {methodInfo}" ) ;
+                            //    Debug.WriteLine ( $"Docs for {methodInfo}" ) ;
                             appMethodInfo.XmlDoc = methodDocumentation ;
+                            CollectDoc ( methodDocumentation ) ;
                         }
                     }
                 }
 
                 info.FactoryMethods.Add ( appMethodInfo ) ;
-                Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
+                //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
             foreach ( var pair in map.Where ( pair => pair.Key != typeof ( CSharpSyntaxNode ) ) )
@@ -180,6 +170,7 @@ namespace AnalysisAppLib.ViewModel
                             }
                         }
 
+                        CollectDoc ( propDoc ) ;
                         pair.Value.Components.Add (
                                                    new ComponentInfo
                                                    {
@@ -191,11 +182,13 @@ namespace AnalysisAppLib.ViewModel
                                                      , PropertyName   = propertyInfo.Name
                                                    }
                                                   ) ;
-                        Logger.Info ( t.ToString ( ) ) ;
+                        //Logger.Info ( t.ToString ( ) ) ;
                     }
                 }
             }
+            
         }
+
 
         /// <summary>
         /// </summary>
@@ -469,6 +462,12 @@ namespace AnalysisAppLib.ViewModel
             set { _hierarchyColors = value ; }
         }
 
+        public ObservableCollection < CodeElementDocumentation > Docelems
+        {
+            get { return docelems ; }
+            set { docelems = value ; }
+        }
+
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos (
             AppTypeInfo      parentTypeInfo
@@ -486,6 +485,7 @@ namespace AnalysisAppLib.ViewModel
                 docNode = info.TypeDocumentation ;
             }
 
+            CollectDoc(docNode);
             var r = new AppTypeInfo
                     {
                         Type           = rootR
@@ -501,6 +501,12 @@ namespace AnalysisAppLib.ViewModel
 
             map[ rootR ] = r ;
             return r ;
+        }
+
+        private void CollectDoc ( CodeElementDocumentation docNode )
+        {
+            Docelems.Add ( docNode ) ;
+
         }
 
         #region Implementation of ISerializable
@@ -520,659 +526,5 @@ namespace AnalysisAppLib.ViewModel
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class MemberBaseDocumentation : CodeElementDocumentation
-    {
-        /// <summary>
-        /// </summary>
-        protected string _memberName ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="type"></param>
-        /// <param name="memberName"></param>
-        /// <param name="xmlDocElements"></param>
-        protected MemberBaseDocumentation (
-            string                        elementId
-          , [ NotNull ] string            type
-          , [ NotNull ] string            memberName
-          , IEnumerable < XmlDocElement > xmlDocElements
-        ) : base ( elementId , xmlDocElements )
-        {
-            Type       = type       ?? throw new ArgumentNullException ( nameof ( type ) ) ;
-            MemberName = memberName ?? throw new ArgumentNullException ( nameof ( memberName ) ) ;
-        }
-
-        /// <summary>
-        /// </summary>
-        public string MemberName { get { return _memberName ; } set { _memberName = value ; } }
-    }
-
-    /// <summary>
-    /// </summary>
-    public sealed class FieldDocumentation : MemberBaseDocumentation
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="type"></param>
-        /// <param name="memberName"></param>
-        /// <param name="xmlDocElements"></param>
-        public FieldDocumentation (
-            string                        elementId
-          , string                        type
-          , string                        memberName
-          , IEnumerable < XmlDocElement > xmlDocElements
-        ) : base ( elementId , type , memberName , xmlDocElements )
-        {
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class PropertyDocumentation : MemberBaseDocumentation
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="type"></param>
-        /// <param name="memberName"></param>
-        /// <param name="xmlDoc"></param>
-        public PropertyDocumentation (
-            string                        elementId
-          , string                        type
-          , string                        memberName
-          , IEnumerable < XmlDocElement > xmlDoc
-        ) : base ( elementId , type , memberName , xmlDoc )
-        {
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public sealed class TypeDocumentation : CodeElementDocumentation
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="type"></param>
-        /// <param name="xmlDoc"></param>
-        public TypeDocumentation (
-            string                        elementId
-          , string                        type
-          , IEnumerable < XmlDocElement > xmlDoc
-        ) : base ( elementId , xmlDoc )
-        {
-            Type = type ;
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class CodeElementDocumentation
-    {
-        private   string                 _elementId ;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string                 _type ;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected List < XmlDocElement > _xmlDoc ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="xmlDoc"></param>
-        protected CodeElementDocumentation (
-            string                        elementId
-          , IEnumerable < XmlDocElement > xmlDoc
-        )
-        {
-            _xmlDoc   = xmlDoc.ToList ( ) ;
-            ElementId = elementId ;
-        }
-
-        /// <summary>
-        /// </summary>
-        public string ElementId { get { return _elementId ; } set { _elementId = value ; } }
-
-        /// <summary>
-        /// </summary>
-        public string Type { get { return _type ; } set { _type = value ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable < XmlDocElement > XmlDoc { get { return _xmlDoc ; } }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString ( )
-        {
-            return
-                $" {GetType ( ).Name}{nameof ( ElementId )}: {ElementId}, {nameof ( XmlDoc )}: {string.Join ( "" , XmlDoc ?? Enumerable.Empty < XmlDocElement > ( ) )}," ;
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public sealed class MethodDocumentation : MemberBaseDocumentation
-    {
-        private readonly string _parameters ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="type"></param>
-        /// <param name="member"></param>
-        /// <param name="parameters"></param>
-        /// <param name="xmlDoc"></param>
-        public MethodDocumentation (
-            string                        elementId
-          , [ NotNull ] string            type
-          , string                        member
-          , string                        parameters
-          , IEnumerable < XmlDocElement > xmlDoc
-        ) : base ( elementId , type , member , xmlDoc )
-        {
-            _parameters = parameters ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Parameters { get { return _parameters ; } }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class XmlDocText : InlineDocElem
-    {
-        private readonly string text ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="text"></param>
-        public XmlDocText ( string text ) : base ( Enumerable.Empty < XmlDocElement > ( ) )
-        {
-            this.text = text ;
-        }
-
-        /// <summary>
-        /// </summary>
-        public string Text { get { return text ; } }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString ( ) { return $"{Text}" ; }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Typeparamref : InlineDocElem
-    {
-        private readonly string _typeParamName ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="typeParamName"></param>
-        public Typeparamref ( string typeParamName ) { _typeParamName = typeParamName ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string TypeParamName { get { return _typeParamName ; } }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Example : BlockDocElem
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elements"></param>
-        public Example ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Param : BlockDocElem
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elements"></param>
-        public Param ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class InlineDocElem : XmlDocElement
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elements"></param>
-        public InlineDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected InlineDocElem ( ) {
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Anchor : InlineDocElem
-    {
-        private readonly string _href ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="href"></param>
-        /// <param name="elements"></param>
-        public Anchor ( string href , IEnumerable < XmlDocElement > elements ) : base ( elements )
-        {
-            _href = href ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Href { get { return _href ; } }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Pre : XmlDocElement
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elements"></param>
-        public Pre ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Em : InlineDocElem
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elements"></param>
-        public Em ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Seealso : XmlDocElement
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elements"></param>
-        public Seealso ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Para : BlockDocElem
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elements"></param>
-        public Para ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Paramref : InlineDocElem
-    {
-        private readonly string _paramName ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="paramName"></param>
-        public Paramref ( string paramName ) { _paramName = paramName ; }
-
-        /// <summary>
-        /// </summary>
-        public string ParamName { get { return _paramName ; } }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Code : InlineDocElem
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="elements"></param>
-        public Code ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class Crossref : InlineDocElem
-    {
-        private readonly string _xRefId ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="xRefId"></param>
-        public Crossref ( string xRefId ) { _xRefId = xRefId ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string XRefId { get { return _xRefId ; } }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class XmlDocElement
-    {
-        private readonly XElement               _element ;
-        private readonly List < XmlDocElement > _elements ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elements"></param>
-        public XmlDocElement ( IEnumerable < XmlDocElement > elements )
-        {
-            _elements = elements.ToList ( ) ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected XmlDocElement ( ) { _elements = new List < XmlDocElement > ( ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public List < XmlDocElement > Elements { get { return _elements ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString ( )
-        {
-            return $"[{GetType ( ).Name}] {string.Join ( " " , Elements )}" ;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class Summary : BlockDocElem
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elements"></param>
-        public Summary ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class BlockDocElem : XmlDocElement
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elements"></param>
-        public BlockDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements )
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected BlockDocElem ( ) {
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class UnrecognizedElementException : Exception
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public 
-            UnrecognizedElementException ( ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        public UnrecognizedElementException ( string message ) : base ( message ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public UnrecognizedElementException ( string message , Exception innerException ) :
-            base ( message , innerException )
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected UnrecognizedElementException (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
-        {
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    internal class MyWriter : XmlWriter
-    {
-        private readonly Stack < string > _elements = new Stack < string > ( ) ;
-        #region Overrides of XmlWriter
-        public override void WriteStartDocument ( ) { }
-
-        public override void WriteStartDocument ( bool standalone ) { }
-
-        public override void WriteEndDocument ( ) { }
-
-        public override void WriteDocType (
-            string name
-          , string pubid
-          , string sysid
-          , string subset
-        )
-        {
-        }
-
-        public override void WriteStartElement ( string prefix , string localName , string ns )
-        {
-            _elements.Push ( localName ) ;
-            if ( localName == "summary" )
-            {
-            }
-        }
-
-        public override void WriteEndElement ( )
-        {
-            var elemName = _elements.Pop ( ) ;
-        }
-
-        public override void WriteFullEndElement ( ) { }
-
-        public override void WriteStartAttribute ( string prefix , string localName , string ns )
-        {
-        }
-
-        public override void WriteEndAttribute ( ) { }
-
-        public override void WriteCData ( string text ) { }
-
-        public override void WriteComment ( string text ) { }
-
-        public override void WriteProcessingInstruction ( string name , string text ) { }
-
-        public override void WriteEntityRef ( string name ) { }
-
-        public override void WriteCharEntity ( char ch ) { }
-
-        public override void WriteWhitespace ( string ws ) { }
-
-        public override void WriteString ( string text ) { }
-
-        public override void WriteSurrogateCharEntity ( char lowChar , char highChar ) { }
-
-        public override void WriteChars ( char[] buffer , int index , int count ) { }
-
-        public override void WriteRaw ( char[] buffer , int index , int count ) { }
-
-        public override void WriteRaw ( string data ) { }
-
-        public override void WriteBase64 ( byte[] buffer , int index , int count ) { }
-
-        public override void Flush ( ) { }
-
-        public override string LookupPrefix ( string ns ) { return null ; }
-
-        public override WriteState WriteState { get ; }
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class TypeDocInfo
-    {
-        private List < MethodDocInfo > constructorDocumentation = new List < MethodDocInfo > ( ) ;
-
-        private Dictionary < string , List < MethodDocumentation > > methodDocumentation =
-            new Dictionary < string , List < MethodDocumentation > > ( ) ;
-
-        private Dictionary < string , PropertyDocumentation > propertyDocumentation =
-            new Dictionary < string , PropertyDocumentation > ( ) ;
-
-        private TypeDocumentation typeDocumentation ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public TypeDocumentation TypeDocumentation
-        {
-            get { return typeDocumentation ; }
-            set { typeDocumentation = value ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public List < MethodDocInfo > ConstructorDocumentation
-        {
-            get { return constructorDocumentation ; }
-            set { constructorDocumentation = value ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary < string , List < MethodDocumentation > > MethodDocumentation
-        {
-            get { return methodDocumentation ; }
-            set { methodDocumentation = value ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary < string , PropertyDocumentation > PropertyDocumentation
-        {
-            get { return propertyDocumentation ; }
-            set { propertyDocumentation = value ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary < string , FieldDocumentation > FieldDocumentation { get ; set ; } =
-            new Dictionary < string , FieldDocumentation > ( ) ;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DocInfo
-    {
-        private string                        _docIdentifier ;
-        private IEnumerable < XmlDocElement > _docNode ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable < XmlDocElement > DocNode
-        {
-            get { return _docNode ; }
-            set { _docNode = value ; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string DocIdentifier
-        {
-            get { return _docIdentifier ; }
-            set { _docIdentifier = value ; }
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MemberDocInfo : DocInfo
-    {
-        private string _memberName ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string MemberName { get { return _memberName ; } set { _memberName = value ; } }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MethodDocInfo : MemberDocInfo
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Parameters { get ; set ; }
-    }
-
-    internal class MethodBaseDocInfo
-    {
     }
 }

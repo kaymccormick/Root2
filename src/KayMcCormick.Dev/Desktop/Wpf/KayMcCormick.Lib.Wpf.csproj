@@ -89,6 +89,7 @@
     <Compile Include="ExceptionUserControl.xaml.cs">
       <DependentUpon>ExceptionUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ImageMetadataAttribute.cs" />
     <Compile Include="JSON\JsonBrushConverter.cs" />
     <Compile Include="JSON\JsonImageConverterFactory.cs" />
     <Compile Include="JSON\JsonConverterResourceDictionary.cs" />

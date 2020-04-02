@@ -8,6 +8,7 @@
              xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
              xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
+             xmlns:analysisControls="clr-namespace:AnalysisControls"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              mc:Ignorable="d" FontSize="20"
           Foreground="CornflowerBlue"
@@ -372,7 +373,7 @@
             </Style.Triggers>
           </Style>
           <DataTemplate
-            DataType="{x:Type viewModel:Summary}">
+            DataType="{x:Type analysisControls:Summary}">
             <GroupBox Header="Summary">
               <ItemsControl
                 ItemsSource="{Binding Elements}">
@@ -385,23 +386,23 @@
             </GroupBox>
           </DataTemplate>
           <DataTemplate
-            DataType="{x:Type viewModel:XmlDocText}">
+            DataType="{x:Type analysisControls:XmlDocText}">
             <TextBlock Text="{Binding}" />
           </DataTemplate>
           <DataTemplate
-            DataType="{x:Type viewModel:Crossref}">
+            DataType="{x:Type analysisControls:Crossref}">
             <TextBlock FontStyle="Italic"
                        Text="{Binding XRefId}" />
           </DataTemplate>
-          <DataTemplate DataType="{x:Type viewModel:Em}">
+          <DataTemplate DataType="{x:Type analysisControls:Em}">
             <TextBlock FontStyle="Italic" Text="{Binding}" />
           </DataTemplate>
-          <DataTemplate DataType="{x:Type viewModel:Code}">
+          <DataTemplate DataType="{x:Type analysisControls:Code}">
             <TextBlock FontFamily="Lucida Console"
                        Text="{Binding}" />
           </DataTemplate>
 
-          <DataTemplate DataType="{x:Type viewModel:Para}">
+          <DataTemplate DataType="{x:Type analysisControls:Para}">
             <StackPanel Orientation="Vertical"
                         Margin="0,10,0,10">
               <ItemsControl
@@ -413,7 +414,7 @@
             </StackPanel>
           </DataTemplate>
           <DataTemplate
-            DataType="{x:Type viewModel:MethodDocumentation}">
+            DataType="{x:Type analysisControls:MethodDocumentation}">
             <WrapPanel>
               <ItemsControl
                 ItemsSource="{Binding Path=XmlDoc}">
@@ -427,7 +428,7 @@
           </DataTemplate>
 
           <DataTemplate
-            DataType="{x:Type viewModel:PropertyDocumentation}">
+            DataType="{x:Type analysisControls:PropertyDocumentation}">
             <WrapPanel>
               <ItemsControl
                 ItemsSource="{Binding Path=XmlDoc}">
@@ -440,7 +441,7 @@
             </WrapPanel>
           </DataTemplate>
           <DataTemplate
-            DataType="{x:Type viewModel:TypeDocumentation}">
+            DataType="{x:Type analysisControls:TypeDocumentation}">
             <WrapPanel>
               <ItemsControl
                 ItemsSource="{Binding Path=XmlDoc}">
@@ -453,7 +454,7 @@
             </WrapPanel>
           </DataTemplate>
           <HierarchicalDataTemplate
-            DataType="{x:Type syntax1:AppTypeInfo}"
+            DataType="{x:Type analysisControls:AppTypeInfo}"
             ItemsSource="{Binding SubTypeInfos}">
             <Grid HorizontalAlignment="Stretch"
                   ShowGridLines="True">
@@ -481,7 +482,7 @@
             </Grid>
           </HierarchicalDataTemplate>
           <DataTemplate
-            DataType="{x:Type syntax1:AppMethodInfo}">
+            DataType="{x:Type analysisControls:AppMethodInfo}">
             <ContentControl Content="{Binding MethodInfo}">
               <ContentControl.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />
@@ -560,7 +561,7 @@
           </DataTemplate>
 
           <DataTemplate
-            DataType="{x:Type syntax1:ComponentInfo}">
+            DataType="{x:Type analysisControls:ComponentInfo}">
             <TextBlock>
               <TextBlock.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />

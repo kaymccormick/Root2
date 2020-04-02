@@ -101,6 +101,10 @@
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AnalysisControls\AnalysisControls.csproj">
+      <Project>{BCF8F7FB-8C2A-4583-8F62-EADEE645243C}</Project>
+      <Name>AnalysisControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FindLogUsages\FindLogUsages.csproj">
       <Project>{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}</Project>
       <Name>FindLogUsages</Name>

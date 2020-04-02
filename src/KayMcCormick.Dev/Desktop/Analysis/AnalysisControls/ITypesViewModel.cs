@@ -9,10 +9,9 @@
 // 
 // ---
 #endregion
-using AnalysisAppLib.Syntax ;
 using KayMcCormick.Dev ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisControls
 {
     /// <summary>
     /// </summary>

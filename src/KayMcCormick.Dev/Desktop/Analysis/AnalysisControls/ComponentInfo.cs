@@ -11,9 +11,8 @@
 #endregion
 using System ;
 using System.Text.Json.Serialization ;
-using AnalysisAppLib.ViewModel ;
 
-namespace AnalysisAppLib.Syntax
+namespace AnalysisControls
 {
     /// <summary>
     /// 

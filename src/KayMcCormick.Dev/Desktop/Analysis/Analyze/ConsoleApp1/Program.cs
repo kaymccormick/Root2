@@ -15,6 +15,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.ViewModel ;
+using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using FindLogUsages ;
@@ -22,13 +23,13 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Targets ;
 using NStack ;
 using Terminal.Gui ;
+using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 
 namespace ConsoleApp1
 {
@@ -45,15 +46,11 @@ namespace ConsoleApp1
             ILifetimeScope           scope
           , IProjectBrowserViewModel projectBrowserViewModel,
             TermUi termUi
-            //, IAnalyzeCommand                analyzeCommand = null,
-            //, IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > analyzeCommands
         )
         {
             _termUi = termUi ;
             Scope            = scope ;
             BrowserViewModel = projectBrowserViewModel ;
-            //AnalyzeCommand   = analyzeCommand ;
-            //AnalyzeCommands = analyzeCommands ;
         }
 
         public ILifetimeScope Scope { get ; }

@@ -3,6 +3,7 @@ using System.Diagnostics ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
+using System.Windows.Media ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -74,6 +75,9 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public interface IDisplayableAppCommand : IAppCommand , IDisplayable
     {
+        ImageSource LargeImageSource { get ; set ; }
+
+        object LargeImageSourceKey { get ; set ; }
     }
 
     /// <summary>
@@ -84,6 +88,7 @@ namespace KayMcCormick.Lib.Wpf
         private string                     _displayName ;
         private IAppCommandResult          _lastResult ;
         private Task < IAppCommandResult > _lastTask ;
+        private ImageSource _largeImageSource ;
 
         /// <summary>
         /// </summary>
@@ -172,6 +177,14 @@ namespace KayMcCormick.Lib.Wpf
             set { _lastResult = value ; }
         }
 
+        public ImageSource LargeImageSource
+        {
+            get { return _largeImageSource ; }
+            set { _largeImageSource = value ; }
+        }
+
+        public abstract object LargeImageSourceKey { get ; set ; }
+
         /// <summary>
         /// </summary>
         public event EventHandler CanExecuteChanged ;
@@ -183,7 +196,7 @@ namespace KayMcCormick.Lib.Wpf
     public class LambdaAppCommand : AppCommand
     {
         private readonly object                                        _argument ;
-        private          Func < LambdaAppCommand , IAppCommandResult > _commandFunc ;
+        private          Func < LambdaAppCommand , Task < IAppCommandResult > > _commandFunc ;
         private          Action < AggregateException >                 _onFaultDelegate ;
 
         /// <summary>
@@ -194,7 +207,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="onFaultDelegate"></param>
         public LambdaAppCommand (
             string                                        displayName
-          , Func < LambdaAppCommand , IAppCommandResult > commandFunc
+          , Func < LambdaAppCommand , Task < IAppCommandResult > > commandFunc
           , object                                        argument
           , Action < AggregateException >                 onFaultDelegate = null
         ) : base ( displayName )
@@ -206,7 +219,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public Func < LambdaAppCommand , IAppCommandResult > CommandFunc
+        public Func < LambdaAppCommand , Task < IAppCommandResult > > CommandFunc
         {
             get { return _commandFunc ; }
             set { _commandFunc = value ; }
@@ -222,7 +235,8 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns></returns>
         public override async Task < IAppCommandResult > ExecuteAsync ( )
         {
-            return CommandFunc ( this ) ;
+            var r = await CommandFunc ( this ) ;
+            return r ;
         }
 
         /// <summary>
@@ -246,6 +260,8 @@ namespace KayMcCormick.Lib.Wpf
             get { return _onFaultDelegate ; }
             set { _onFaultDelegate = value ; }
         }
+
+        public override object LargeImageSourceKey { get ; set ; }
         #endregion
     }
 

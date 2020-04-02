@@ -486,13 +486,14 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     internal sealed class NouveauAppModule : IocModule
     {
-        #region Overrides of IocModule
+        
         /// <summary>
         ///     Our fun custom load method that is public.
         /// </summary>
         /// <param name="builder"></param>
         public override void DoLoad ( ContainerBuilder builder )
         {
+            
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly())
                    .AssignableTo < IViewModel > ( )
                    .AsSelf ( )
@@ -507,7 +508,7 @@ namespace KayMcCormick.Dev.Application
             }
         }
 
-        #endregion
+        
     }
 
     /// <summary>

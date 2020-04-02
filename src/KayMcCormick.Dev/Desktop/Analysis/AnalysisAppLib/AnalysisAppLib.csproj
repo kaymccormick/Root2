@@ -120,8 +120,6 @@
     <Compile Include="ISpanViewModel.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
     <Compile Include="Syntax\SyntaxItem.cs" />
-    <Compile Include="Syntax\AppTypeInfo.cs" />
-    <Compile Include="Syntax\ComponentInfo.cs" />
     <Compile Include="ViewModel\DockWindowViewModel.cs" />
     <Compile Include="FileSystemAppExplorerItem.cs" />
     <Compile Include="FileSystemExplorerItemProvider.cs" />
@@ -144,11 +142,9 @@
     <Compile Include="ViewModel\ISpanToolTipViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\ISyntaxTokenViewModel.cs" />
-    <Compile Include="ViewModel\ITypesViewModel.cs" />
     <Compile Include="ViewModel\LogUsageAnalysisViewModel.cs" />
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\SyntaxTokenViewModel.cs" />
-    <Compile Include="ViewModel\TypesViewModel.cs" />
     <Compile Include="Visitor2.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -222,7 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

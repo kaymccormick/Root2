@@ -15,7 +15,7 @@ using static NLog.LogManager ;
 
 namespace ProjInterface
 {
-    public sealed partial class ProjInterfaceApp : BaseApp
+    public sealed partial class ProjInterfaceApp : BaseApp, IResourceResolver
     {
         private new static readonly Logger Logger = GetCurrentClassLogger ( ) ;
 
@@ -98,6 +98,10 @@ namespace ProjInterface
                            , MessageBoxImage.Error
                             ) ;
         }
+
+        #region Implementation of IResourceResolver
+        public object ResolveResource ( object resourceKey ) { return TryFindResource(resourceKey) ; }
+        #endregion
     }
 
     internal static class CustomAppEntry

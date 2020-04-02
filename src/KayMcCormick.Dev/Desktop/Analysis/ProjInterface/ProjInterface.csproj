@@ -22,7 +22,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>MSBUILDLOCATOR;ANALYSISCONTROLS</DefineConstants>
+    <DefineConstants>DEBUG;MSBUILDLOCATOR;ANALYSISCONTROLS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -100,6 +100,7 @@
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ImageSourceConverter.cs" />
     <Compile Include="ITakesHwnd.cs" />
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="IconsSource.cs" />
@@ -126,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AppResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Docs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

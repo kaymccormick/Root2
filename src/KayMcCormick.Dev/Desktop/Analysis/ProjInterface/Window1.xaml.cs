@@ -47,8 +47,8 @@ namespace ProjInterface
 
             //SetValue ( AttachedProperties.LifetimeScopeProperty , (ILifetimeScope)lifetimeScope ) ;
             var lf = lifetimeScope.BeginLifetimeScope (
-                                                       "Window1 lifetimescope"
-                                                     , builder => {
+                                               
+                                                      builder => {
                                                            builder.RegisterInstance (
                                                                                      new
                                                                                          LayoutService (
@@ -202,6 +202,12 @@ namespace ProjInterface
             docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
             Debug.WriteLine ( e.ActivatedType.FullName ) ;
         }
-        
+
+        #region Implementation of IResourceResolver
+        public object ResolveResource ( object resourceKey )
+        {
+            return TryFindResource ( resourceKey ) ;
+        }
+        #endregion
     }
 }

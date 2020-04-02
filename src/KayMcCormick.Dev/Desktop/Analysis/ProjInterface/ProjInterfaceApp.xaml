@@ -10,7 +10,12 @@
   xmlns:projInterface="clr-namespace:ProjInterface">
 
   <kmWpf:BaseApp.Resources>
-
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+</ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
 
   </kmWpf:BaseApp.Resources>
 </kmWpf:BaseApp>
