@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisControls.ViewModel ;
 using KayMcCormick.Dev ;
 
 namespace AnalysisControls
@@ -28,5 +29,9 @@ namespace AnalysisControls
         /// <summary>
         /// </summary>
         uint[] HierarchyColors { get ; set ; }
+
+        TypeMapDictionary Map { get ; set ; }
+
+        AppTypeInfoCollection StructureRoot { get ; set ; }
     }
 }

@@ -8,6 +8,7 @@
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
+              xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
               mc:Ignorable="d"
@@ -1090,8 +1091,29 @@
           <avalondock:LayoutPanel Orientation="Horizontal">
             <avalondock:LayoutAnchorablePane
               x:Name="leftAnchorablePane"
-              DockWidth="200" />
-            <avalondock:LayoutDocumentPaneGroup>
+              DockWidth="200">
+              <avalondock:LayoutAnchorable Title="Two">
+                <Grid>
+                  <TreeView ItemsSource="{Binding Source={kmWpf:Resolve anal:ITypesViewModel},Path=StructureRoot}">
+                    <TreeView.Resources>
+                      <HierarchicalDataTemplate DataType="{x:Type anal:AppTypeInfo}" ItemsSource="{Binding Fields}">
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="{Binding Title}"></TextBlock>
+                        </StackPanel>
+                      </HierarchicalDataTemplate>
+                      <HierarchicalDataTemplate DataType="{x:Type anal:SyntaxFieldInfo}" ItemsSource="{Binding Types}">
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="{Binding Name}"></TextBlock>
+                          <TextBlock Text=" "></TextBlock>
+                          <TextBlock Text="{Binding TypeName}"></TextBlock>
+                        </StackPanel>
+                      </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                  </TreeView>
+                </Grid>
+              </avalondock:LayoutAnchorable>
+            </avalondock:LayoutAnchorablePane>
+              <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane
                 x:Name="docpane">
 

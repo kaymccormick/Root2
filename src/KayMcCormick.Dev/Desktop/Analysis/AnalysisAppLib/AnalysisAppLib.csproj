@@ -84,7 +84,6 @@
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
     <Compile Include="ICodeRenderer.cs" />
-    <Compile Include="ISpanObject.cs" />
     <Compile Include="Project\BrowserNode.cs" />
     <Compile Include="Project\BrowserNodeCollection.cs" />
     <Compile Include="Project\IBrowserNode.cs" />
@@ -102,6 +101,8 @@
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
     <Compile Include="Serialization\LogInvocationConverter.cs" />
     <Compile Include="Span\ActiveSpans.cs" />
+    <Compile Include="Span\ISpanObject.cs" />
+    <Compile Include="Span\ISpanViewModel.cs" />
     <Compile Include="Span\LogInvocationSpan.cs" />
     <Compile Include="Span\SpanObject.cs" />
     <Compile Include="Span\SpanToolTipViewModel.cs" />
@@ -117,7 +118,6 @@
     <Compile Include="ICodeAnalyseContext.cs" />
     <Compile Include="ICompilationUnitRootContext.cs" />
     <Compile Include="ISemanticModelContext.cs" />
-    <Compile Include="ISpanViewModel.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
     <Compile Include="Syntax\SyntaxItem.cs" />
     <Compile Include="ViewModel\DockWindowViewModel.cs" />

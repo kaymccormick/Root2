@@ -1,5 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
+using System.ComponentModel.DataAnnotations ;
 using System.Diagnostics ;
 using System.Linq ;
 using System.Text.Json ;
@@ -40,10 +42,6 @@ namespace KayMcCormick.Lib.Wpf
         private readonly ApplicationInstanceBase _applicationInstance ;
         private readonly ApplicationInstanceBase _createdAppInstance ;
         private          ILifetimeScope          _scope ;
-#if COMMANDLINE
-        private Type[]                  _optionType ;
-        private ParserResult < object > _argParseResult ;
-#endif
         /// <summary>
         /// </summary>
         protected BaseApp ( ) : this ( null ) { }
@@ -66,6 +64,7 @@ namespace KayMcCormick.Lib.Wpf
         )
         {
             _disableLogging = disableLogging ;
+            TypeDescriptor.AddProvider(new InstanceInfoProvider(), typeof(InstanceInfo));
 
             if ( applicationInstance != null )
             {
@@ -270,6 +269,26 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         /// <summary>
         /// </summary>
         public virtual void Dispose ( ) { _applicationInstance?.Dispose ( ) ; }
+        #endregion
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class InstanceInfoProvider : TypeDescriptionProvider
+    {
+        #region Overrides of TypeDescriptionProvider
+        public override ICustomTypeDescriptor GetTypeDescriptor (
+            Type   objectType
+          , object instance
+        )
+        {
+            if ( objectType == typeof ( InstanceInfo ) )
+            {
+                return new InstanceInfoTypeDescriptor();
+            }
+            return base.GetTypeDescriptor ( objectType , instance ) ;
+        }
         #endregion
     }
 }

@@ -502,6 +502,8 @@ namespace AnalysisControls.ViewModel
 
         public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
 
+        public AppTypeInfoCollection StructureRoot { get ; set ; }
+
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos (
             AppTypeInfo      parentTypeInfo
@@ -593,8 +595,47 @@ namespace AnalysisControls.ViewModel
                 PopulateMap ( Root ) ;
             }
 
+            DetailFields ( ) ;
+
             LoadSyntaxFactoryDocs ( ) ;
+            StructureRoot = new AppTypeInfoCollection ( ) ;
+            StructureRoot.Add ( Map[ typeof ( CompilationUnitSyntax ) ] ) ;
             IsInitialized = true ;
+        }
+
+        private void DetailFields ( )
+        {
+            foreach ( var keyValuePair in Map.dict )
+            {
+                foreach ( SyntaxFieldInfo rField in keyValuePair.Value.Fields )
+                {
+                    if ( rField.Type != null
+                         && rField.Type.IsGenericType
+                         && ( rField.Type.GetGenericTypeDefinition ( ) == typeof ( SyntaxList <> )
+                              || rField.Type.GetGenericTypeDefinition ( )
+                              == typeof ( SeparatedSyntaxList <> ) ) )
+                    {
+                        var tz = rField.Type.GetGenericArguments ( )[ 0 ] ;
+                        if ( Map.Contains ( tz ) )
+                        {
+                            var ati = Map.dict[ tz ] ;
+                            var types = new List < AppTypeInfo > ( ) ;
+                            Collect ( ati , types ) ;
+                            foreach ( var appTypeInfo in types )
+                            {
+                                rField.Types.Add ( appTypeInfo ) ;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if ( rField.Type != null && Map.Contains(rField.Type))
+                        {
+                            rField.Types.Add ( Map.dict[ rField.Type ] ) ;
+                        }
+                    }
+                }
+            }
         }
 
         private void LoadTypeInfo2 ( )
@@ -638,6 +679,7 @@ namespace AnalysisControls.ViewModel
                 {
                     rField.TypeName = "SyntaxTokenList" ;
                 }
+
                 var typs = SyntaxFactory.ParseTypeName ( rField.TypeName ) ;
                 if ( typs is GenericNameSyntax gns )
                 {
@@ -645,31 +687,33 @@ namespace AnalysisControls.ViewModel
                     Type t0 = null ;
                     // if ( id == "SeparatedSyntaxList" )
                     // {
-                        // t0 = typeof ( SeparatedSyntaxList <> ) ;
+                    // t0 = typeof ( SeparatedSyntaxList <> ) ;
                     // }
-                    t0 = typeof(SyntaxNode).Assembly.GetType(
-                                                                      "Microsoft.CodeAnalysis."
-                                                                      + id + "`1"
-                                                                     );
+                    t0 = typeof ( SyntaxNode ).Assembly.GetType (
+                                                                 "Microsoft.CodeAnalysis."
+                                                                 + id
+                                                                 + "`1"
+                                                                ) ;
                     if ( t0 == null )
                     {
                         Debug.WriteLine ( "fail" + id ) ;
                     }
                     else
                     {
-                        SimpleNameSyntax s = ( SimpleNameSyntax) gns.TypeArgumentList.Arguments[ 0 ] ;
-                        var t1 = typeof(CSharpSyntaxNode).Assembly.GetType(
-                                                                           "Microsoft.CodeAnalysis.CSharp.Syntax."
-                                                                           + s.Identifier.ValueText
-                                                                          );
+                        var s = ( SimpleNameSyntax ) gns.TypeArgumentList.Arguments[ 0 ] ;
+                        var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType (
+                                                                               "Microsoft.CodeAnalysis.CSharp.Syntax."
+                                                                               + s.Identifier
+                                                                                  .ValueText
+                                                                              ) ;
                         if ( t1 == null )
                         {
-                            t1 = typeof(SyntaxNode).Assembly.GetType(
-                                                                               "Microsoft.CodeAnalysis."
-                                                                               + s.Identifier.ValueText
-                                                                              );
-
+                            t1 = typeof ( SyntaxNode ).Assembly.GetType (
+                                                                         "Microsoft.CodeAnalysis."
+                                                                         + s.Identifier.ValueText
+                                                                        ) ;
                         }
+
                         var t2 = t0.MakeGenericType ( t1 ) ;
                         if ( t2 == null )
                         {
@@ -699,7 +743,6 @@ namespace AnalysisControls.ViewModel
                         {
                             Debug.WriteLine ( rField.TypeName ) ;
                         }
-
                     }
 
                     rField.Type = t ;
@@ -707,6 +750,19 @@ namespace AnalysisControls.ViewModel
             }
 
             return r ;
+        }
+
+        private void Collect ( AppTypeInfo ati , List < AppTypeInfo > types )
+        {
+            if ( ! ati.Type.IsAbstract )
+            {
+                types.Add ( ati ) ;
+            }
+
+            foreach ( AppTypeInfo atiSubTypeInfo in ati.SubTypeInfos )
+            {
+                Collect ( atiSubTypeInfo , types ) ;
+            }
         }
 
         private void PopulateMap ( [ NotNull ] AppTypeInfo appTypeInfo )

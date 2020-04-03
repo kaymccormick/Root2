@@ -216,6 +216,9 @@ namespace AnalysisControls
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SyntaxFieldCollection : IList , ICollection, IEnumerable
     {
         private IList _listImplementation = new List < SyntaxFieldInfo > ( ) ;
@@ -273,12 +276,24 @@ namespace AnalysisControls
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ContentProperty("Kinds")]
     public class SyntaxFieldInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxFieldInfo ( ) {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="typeName"></param>
+        /// <param name="kinds"></param>
         public SyntaxFieldInfo ( string name , string typeName, params string[] kinds )
         {
             _name = name ;
@@ -308,6 +323,8 @@ namespace AnalysisControls
         }
 
         public Type Type { get ; set ; }
+
+        public List<AppTypeInfo> Types { get ;  } = new List < AppTypeInfo > ();
     }
 
     public class SyntaxKindCollection : IList, ICollection, IEnumerable
@@ -367,10 +384,20 @@ namespace AnalysisControls
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppTypeInfoCollection : IList, ICollection, IEnumerable
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
         public AppTypeInfoCollection ( IList list ) { _list = list ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AppTypeInfoCollection ( )
         {
             _list = new List < AppTypeInfo > ( ) ;

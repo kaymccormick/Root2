@@ -11,7 +11,7 @@
 #endregion
 using Microsoft.CodeAnalysis.Text ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.Span
 {
     /// <summary>
     /// </summary>
