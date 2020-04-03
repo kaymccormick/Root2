@@ -457,7 +457,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <seealso cref="System.Windows.Controls.UserControl" />
     /// <seealso cref="KayMcCormick.Dev.IViewWithTitle" />
     /// <seealso
-    ///     cref="KayMcCormick.Dev.IView{KayMcCormick.Lib.Wpf.ViewModel.AllResourcesTreeViewModel}" />
+    ///     cref="AllResourcesTreeViewModel" />
     /// <seealso cref="KayMcCormick.Lib.Wpf.IControlView" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     [ TitleMetadata ( "Resources Explorer" ) ]

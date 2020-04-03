@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Composition ;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [MetadataAttribute]
-    public class ImageMetadataAttribute : Attribute
+    public sealed class ImageMetadataAttribute : Attribute
     {
-        public string ImageSource { get ; set ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ImageSource { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageSource"></param>
         public ImageMetadataAttribute ( string imageSource ) { ImageSource = imageSource ; }
     }
 }

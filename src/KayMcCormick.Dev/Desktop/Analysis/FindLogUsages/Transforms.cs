@@ -33,10 +33,8 @@ namespace FindLogUsages
                                    RawKind = thise.RawKind
                                  , Kind    = thise.Kind ( ).ToString ( )
                                  , Type    = thise.GetType ( ).Name
-                                 , Tokens = Enumerable.ToList < string > (
-                                                                     thise.ChildTokens ( )
-                                                                          .Select ( token => token.ToString ( ) )
-                                                                    )
+                                 , Tokens = thise.ChildTokens ( )
+                                                 .Select ( token => token.ToString ( ) ).ToList < string > ( )
                                } ;
                     case AliasQualifiedNameSyntax aliasQualifiedNameSyntax :               break ;
                     case AnonymousMethodExpressionSyntax anonymousMethodExpressionSyntax : break ;

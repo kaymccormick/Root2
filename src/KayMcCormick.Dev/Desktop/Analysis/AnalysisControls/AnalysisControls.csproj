@@ -127,7 +127,6 @@
     <Compile Include="Scripting\EventRaisingStreamWriter.cs" />
     <Compile Include="Scripting\IPythonVariable.cs" />
     <Compile Include="Scripting\MyEvtArgs.cs" />
-    <Compile Include="TypesViewModel.cs" />
     <Compile Include="ViewModel\PythonViewModel.cs" />
     <Compile Include="StringObservableCollection.cs" />
     <Compile Include="ViewModel\TypesViewModel.cs" />
@@ -183,6 +182,10 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Types.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="TypesViewModel2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

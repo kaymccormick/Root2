@@ -1,14 +1,25 @@
 ﻿using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
-    public class ConverterUtil
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class ConverterUtil
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="converter"></param>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
         public static void WritePreamble (
-            JsonConverter         converter
-          , Utf8JsonWriter        writer
-          , object                value
+            [ NotNull ] JsonConverter         converter
+          , [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] object                value
           , JsonSerializerOptions options
         )
         {
@@ -23,7 +34,11 @@ namespace KayMcCormick.Dev.Serialization
             writer.WritePropertyName("ObjectInstance");
         }
 
-        public static void WriteTerminal ( Utf8JsonWriter writer)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        public static void WriteTerminal ( [ NotNull ] Utf8JsonWriter writer)
         {
             writer.WriteEndObject();
         }

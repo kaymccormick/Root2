@@ -64,9 +64,9 @@ namespace AnalysisControls
                    .As<IControlView> (  )
                    .WithMetadata (
                                   "ImageSource"
-                                , new Uri (
+                                , 
                                            "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
-                                          )
+                                          
                                  )
                    .WithMetadata ( "Ribbon" , true ) ;
 

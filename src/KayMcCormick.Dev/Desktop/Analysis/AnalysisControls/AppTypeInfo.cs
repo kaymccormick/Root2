@@ -7,6 +7,7 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
+using System.Windows.Markup ;
 using AnalysisAppLib.Syntax ;
 using AnalysisControls.ViewModel ;
 using JetBrains.Annotations ;
@@ -20,6 +21,8 @@ namespace AnalysisControls
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
+        private string _elementName ;
+        private SyntaxFieldCollection  _fields = new SyntaxFieldCollection ();
         private AppTypeInfoCollection _subTypeInfos ;
         private          uint ?                               _colorValue ;
 
@@ -85,6 +88,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AppTypeInfoCollection SubTypeInfos
         {
             get { return _subTypeInfos ; }
@@ -191,6 +195,15 @@ namespace AnalysisControls
         /// </summary>
         public TypeDocumentation DocInfo { get ; set ; }
 
+        public string ElementName { get { return _elementName ; } set { _elementName = value ; } }
+
+
+        public SyntaxFieldCollection Fields
+        {
+            get { return _fields ; }
+            set { _fields = value ; }
+        }
+
         /// <summary>
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
@@ -200,6 +213,154 @@ namespace AnalysisControls
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    public class SyntaxFieldCollection : IList , ICollection, IEnumerable
+    {
+        private IList _listImplementation = new List < SyntaxFieldInfo > ( ) ;
+        #region Implementation of IEnumerable
+        public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
+        #endregion
+        #region Implementation of ICollection
+        public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+
+        public int Count
+        {
+            get { return _listImplementation.Count ; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _listImplementation.SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _listImplementation.IsSynchronized ; }
+        }
+        #endregion
+        #region Implementation of IList
+        public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
+
+        public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
+
+        public void Clear ( ) { _listImplementation.Clear ( ) ; }
+
+        public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
+
+        public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
+
+        public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
+
+        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
+
+        public object this [ int index ]
+        {
+            get { return _listImplementation[ index ] ; }
+            set { _listImplementation[ index ] = value ; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _listImplementation.IsReadOnly ; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _listImplementation.IsFixedSize ; }
+        }
+        #endregion
+    }
+
+    [ContentProperty("Kinds")]
+    public class SyntaxFieldInfo
+    {
+        public SyntaxFieldInfo ( ) {
+        }
+
+        public SyntaxFieldInfo ( string name , string typeName, params string[] kinds )
+        {
+            _name = name ;
+            _typeName = typeName ;
+            foreach ( var kind in kinds )
+            {
+                _kinds.Add ( kind ) ;
+            }
+            
+        }
+
+        private string _name ;
+        private string _typeName ;
+        private SyntaxKindCollection _kinds = new SyntaxKindCollection ();
+
+        public string TypeName  { get { return _typeName ; } set { _typeName = value ; } }
+
+        public string Name { get { return _name ; } set { _name = value ; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public SyntaxKindCollection Kinds
+        {
+            get { return _kinds ; }
+            set { _kinds = value ; }
+        }
+    }
+
+    [ContentWrapper(typeof(string))]
+    public class SyntaxKindCollection : IList, ICollection, IEnumerable
+    {
+        private IList _listImplementation = new List < string > ( ) ;
+        #region Implementation of IEnumerable
+        public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
+        #endregion
+        #region Implementation of ICollection
+        public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+
+        public int Count
+        {
+            get { return _listImplementation.Count ; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _listImplementation.SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _listImplementation.IsSynchronized ; }
+        }
+        #endregion
+        #region Implementation of IList
+        public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
+
+        public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
+
+        public void Clear ( ) { _listImplementation.Clear ( ) ; }
+
+        public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
+
+        public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
+
+        public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
+
+        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
+
+        public object this [ int index ]
+        {
+            get { return _listImplementation[ index ] ; }
+            set { _listImplementation[ index ] = value ; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _listImplementation.IsReadOnly ; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _listImplementation.IsFixedSize ; }
+        }
+        #endregion
     }
 
     public class AppTypeInfoCollection : IList, ICollection, IEnumerable

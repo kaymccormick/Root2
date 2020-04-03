@@ -68,7 +68,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveSpans.cs" />
     <Compile Include="AnalysisAppLibModule.cs" />
     <Compile Include="AnalysisRequest.cs" />
     <Compile Include="AnalysisService.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="RefactorLogUsage.cs" />
     <Compile Include="Serialization\JsonSyntaxNodeConverter.cs" />
     <Compile Include="Serialization\LogInvocationConverter.cs" />
+    <Compile Include="Span\ActiveSpans.cs" />
     <Compile Include="Span\LogInvocationSpan.cs" />
     <Compile Include="Span\SpanObject.cs" />
     <Compile Include="Span\SpanToolTipViewModel.cs" />
@@ -227,6 +227,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Projects\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Syntax.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

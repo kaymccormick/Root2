@@ -80,5 +80,24 @@ namespace AnalysisAppLib.Properties {
                 return ResourceManager.GetString("doc", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. --&gt;
+        ///
+        ///&lt;!-- 
+        /// To re-generate source from this file, run eng/generate-compiler-code.cmd
+        ///--&gt;
+        ///
+        ///&lt;Tree Root=&quot;SyntaxNode&quot;&gt;
+        ///  &lt;PredefinedNode Name=&quot;CSharpSyntaxNode&quot; Base=&quot;SyntaxNode&quot;/&gt;
+        ///  &lt;PredefinedNode Name=&quot;SyntaxToken&quot; Base=&quot;CSharpSyntaxNode&quot;/&gt;
+        ///  &lt;PredefinedNode Name=&quot;Structured [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Syntax {
+            get {
+                return ResourceManager.GetString("Syntax", resourceCulture);
+            }
+        }
     }
 }

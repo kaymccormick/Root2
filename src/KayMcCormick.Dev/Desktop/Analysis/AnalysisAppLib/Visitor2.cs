@@ -11,12 +11,12 @@
 #endregion
 using System ;
 using System.Linq ;
+using AnalysisAppLib.Span ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Fluent ;
-using Span ;
 
 namespace AnalysisAppLib
 {

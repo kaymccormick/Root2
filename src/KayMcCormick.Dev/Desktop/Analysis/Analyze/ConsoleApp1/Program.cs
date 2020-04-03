@@ -1,34 +1,37 @@
 ﻿using System ;
-using System.Collections ;
 using System.Collections.Generic ;
+using System.Data ;
 using System.Data.SqlClient ;
+using System.Data.SqlTypes ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
 using System.Net.Sockets ;
 using System.Reactive.Subjects ;
+using System.Security ;
 using System.Text ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using System.Windows.Markup ;
+using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
+using AnalysisAppLib.Properties ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 using NLog.Targets ;
-using NStack ;
-using Terminal.Gui ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 
 namespace ConsoleApp1
@@ -37,18 +40,18 @@ namespace ConsoleApp1
 
     {
         private readonly TermUi _termUi ;
-        
+
         private IProjectBrowserViewModel _projectBrowserViewModel ;
 
         //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
 
         public AppContext (
             ILifetimeScope           scope
-          , IProjectBrowserViewModel projectBrowserViewModel,
-            TermUi termUi
+          , IProjectBrowserViewModel projectBrowserViewModel
+          , TermUi                   termUi
         )
         {
-            _termUi = termUi ;
+            _termUi          = termUi ;
             Scope            = scope ;
             BrowserViewModel = projectBrowserViewModel ;
         }
@@ -120,7 +123,7 @@ namespace ConsoleApp1
         private static async Task < int > Main ( )
         {
             var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
-            Subject<ILogger> subject = new Subject < ILogger > ();
+            var subject = new Subject < ILogger > ( ) ;
             subject.Subscribe (
                                logger => {
                                    logger.Warn ( "Received logger" ) ;
@@ -153,8 +156,7 @@ namespace ConsoleApp1
             _appinst = new ApplicationInstance (
                                                 new ApplicationInstance.
                                                     ApplicationInstanceConfiguration (
-                                                                                      message
-                                                                                          => {
+                                                                                      message => {
                                                                                       }
                                                                                     , ConsoleAnalysisProgramGuid
                                                                                      )
@@ -164,6 +166,8 @@ namespace ConsoleApp1
             {
                 _appinst.AddModule ( new AppModule ( ) ) ;
                 _appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
+                _appinst.AddModule ( new AnalysisControlsModule ( ) ) ;
+
                 PopulateJsonConverters ( false ) ;
                 ILifetimeScope scope ;
                 try
@@ -261,7 +265,7 @@ namespace ConsoleApp1
 
 #endif
 
-//await            xx ( ) ;
+            //await            xx ( ) ;
 #if false
             var i = 0 ;
             var browserNodeCollection = context.BrowserViewModel.RootCollection ;
@@ -335,23 +339,126 @@ namespace ConsoleApp1
             }
 #endif
 
-            context.Ui.Init();
+            //context.Ui.Init();
             // object o11 = XamlReader.Parse(
             //                             "<Toplevel xmlns=\"clr-namespace:Terminal.Gui;assembly=Terminal.Gui\">\r\n</Toplevel>\r\n"
             //                            ) ;
-            context.Ui.Run ( ) ;
+            //context.Ui.Run ( ) ;
+            //
+            // foreach ( var projFile in Directory.EnumerateFiles (
+            //                                                     @"e:\kay2020\source"
+            //                                                   , "*.csproj"
+            //                                                   , SearchOption.AllDirectories
+            //                                                    ) )
+            // {
+            //     //using Microsoft.CodeAnalysis.MSBuild;
+            //
+            //     Console.WriteLine ( projFile ) ;
+            // }
+            //var model1 = context.Scope.Resolve<TypesViewModel>();
+            var model1 = new TypesViewModel();
+            model1.BeginInit();
+            model1.EndInit();
 
-            foreach ( var projFile in Directory.EnumerateFiles (
-                                                                @"e:\kay2020\source"
-                                                              , "*.csproj"
-                                                              , SearchOption.AllDirectories
-                                                               ) )
+            var syntax = XDocument.Parse ( Resources.Syntax ) ;
+            foreach ( var xElement in syntax.Root.Elements ( ) )
             {
-                //using Microsoft.CodeAnalysis.MSBuild;
+                switch (xElement.Name.LocalName)
+                {
+                    case "PredefinedNode":
+                        var typeName = xElement.Attribute(XName.Get("Name")).Value ;
+                        typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
+                        var t = typeof(CSharpSyntaxNode).Assembly.GetType(typeName);
+                        if ( t == null )
+                        {
+                            Debug.WriteLine ("No type for " + typeName  );
+                        }  else 
+                        if ( model1.Map.Contains ( t ) )
+                        {
+                            var typ = (AppTypeInfo)model1.Map[ t ] ;
+                            typ.ElementName = xElement.Name.LocalName ;
+                        }
 
-                Console.WriteLine ( projFile ) ;
+                        break;
+                    case "AbstractNode":
+                        var typeName1 = xElement.Attribute(XName.Get("Name")).Value;
+                        typeName1 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName1}";
+                        var t1 = typeof(CSharpSyntaxNode).Assembly.GetType(typeName1);
+                        if (t1 == null)
+                        {
+                            Debug.WriteLine("No type for " + typeName1);
+                        }
+                        else
+                        {
+                            var typ1 = (AppTypeInfo)model1.Map[ t1 ] ;
+                            typ1.ElementName = xElement.Name.LocalName ;
+                            var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
+                            //Debug.WriteLine ( comment ) ;
+                            var fields = new List < Tuple < string , string, List <string> > > ( ) ;
+                            foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                            {
+                                var fieldName = field.Attribute(XName.Get("Name")).Value;
+                                var fieldType = field.Attribute(XName.Get("Type")).Value;
+                                
+                                var kinds = field.Elements ( "Kind" )
+                                                 .Select ( element => element.Attribute ( "Name" ).Value )
+                                                 .ToList ( ) ;
+                                if ( kinds.Any ( ) )
+                                {
+                                    //Debug.WriteLine ( string.Join ( ", " , kinds ) ) ;
+                                }
+
+                                typ1.Fields.Add(new SyntaxFieldInfo(fieldName, fieldType, kinds.ToArray()));
+                            }
+
+                        }
+
+                        break;
+                    case "Node":
+                        var typeName2 = xElement.Attribute(XName.Get("Name")).Value;
+                        typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}";
+                        var t2 = typeof(CSharpSyntaxNode).Assembly.GetType(typeName2);
+                        if (t2 == null)
+                        {
+                            Debug.WriteLine("No type for " + typeName2);
+                        }
+                        else
+                        {
+                            var typ2 = (AppTypeInfo)model1.Map[t2];
+                            typ2.ElementName = xElement.Name.LocalName;
+                            var comment = xElement.Element(XName.Get("TypeComment"));
+                            //Debug.WriteLine ( comment ) ;
+                            var fields = new List<Tuple<string, string, List<string>>>();
+                            foreach (var field in xElement.Elements(XName.Get("Field")))
+                            {
+                                var fieldName = field.Attribute(XName.Get("Name")).Value;
+                                var fieldType = field.Attribute(XName.Get("Type")).Value;
+
+                                var kinds = field.Elements("Kind")
+                                                 .Select(element => element.Attribute("Name").Value)
+                                                 .ToList();
+                                if (kinds.Any())
+                                {
+                                    //Debug.WriteLine(string.Join(", ", kinds));
+                                }
+
+                                //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
+                                typ2.Fields.Add(new SyntaxFieldInfo(fieldName, fieldType, kinds.ToArray()));
+                            }
+
+                        }
+                        break;
+
+                    
+                    default:
+                    throw new InvalidOperationException();
+                }
             }
+            TypeMapDictionary d = new TypeMapDictionary();
+            d[typeof(string) ] = new AppTypeInfo();
+            Debug.WriteLine(XamlWriter.Save(d));
 
+            Debug.WriteLine(XamlWriter.Save ( model1 )) ;
             var b = new SqlConnectionStringBuilder
                     {
                         IntegratedSecurity = true
@@ -362,12 +469,11 @@ namespace ConsoleApp1
             await c.OpenAsync ( ) ;
 
             var bb2 = new SqlCommand (
-                                      "insert into syntaxexample (example, syntaxkind, typename) values (@example, @kind, @typename)"
+                                      "insert into syntaxexample2 (example, syntaxkind, typename, tokens) values (@example, @kind, @typename, @tokens)"
                                     , c
                                      ) ;
 
 
-            var model1 = context.Scope.Resolve < ITypesViewModel > ( ) ;
             var set = new HashSet < Type > ( ) ;
             NewMethod ( model1.Root.SubTypeInfos , set ) ;
             var syntaxdict =
@@ -430,11 +536,28 @@ namespace ConsoleApp1
                     if ( r.Next ( 9 ) == 1
                          && set.Contains ( o.GetType ( ) ) )
                     {
-                        o.DescendantTokens().Select (( token , i ) => new XElement(XName.Get(token.Kind().ToString()), new XText(token.ValueText)));
-                        foreach ( var descendantToken in o.DescendantTokens ( ) )
-                        {
-                            
-                        }
+                        var doc = new XDocument (
+                                                 new XElement (
+                                                               XName.Get ( "Tokens" )
+                                                             , o.DescendantTokens ( )
+                                                                .Select (
+                                                                         ( token , i )
+                                                                             => new XElement (
+                                                                                              XName
+                                                                                                 .Get (
+                                                                                                       token
+                                                                                                          .Kind ( )
+                                                                                                          .ToString ( )
+                                                                                                      )
+                                                                                            , new
+                                                                                                  XText (
+                                                                                                         token
+                                                                                                            .ToString ( )
+                                                                                                        )
+                                                                                             )
+                                                                        )
+                                                              )
+                                                ) ;
                         if ( ! syntaxdict.TryGetValue ( o.GetType ( ) , out var l ) )
                         {
                             l = Tuple.Create (
@@ -452,8 +575,22 @@ namespace ConsoleApp1
                         bb2.Parameters.AddWithValue ( "@example" ,  example1 ) ;
                         bb2.Parameters.AddWithValue ( "@kind" ,     o.RawKind ) ;
                         bb2.Parameters.AddWithValue ( "@typename" , o.GetType ( ).Name ) ;
+                        bb2.Parameters.Add (
+                                            new SqlParameter ( "@tokens" , SqlDbType.Xml )
+                                            {
+                                                Value = new SqlXml ( doc.CreateReader ( ) )
+                                            }
+                                           ) ;
 
-                        await bb2.ExecuteNonQueryAsync ( ) ;
+                        try
+                        {
+                            await bb2.ExecuteNonQueryAsync ( ) ;
+                        }
+                        catch ( Exception ex )
+                        {
+                            Debug.WriteLine ( ex.ToString ( ) ) ;
+                        }
+
                         if ( l.Item2.Count >= 100 )
                         {
                             set.Remove ( o.GetType ( ) ) ;
@@ -523,7 +660,7 @@ namespace ConsoleApp1
 
         private static void NewMethod (
             [ NotNull ] AppTypeInfoCollection subTypeInfos
-          , HashSet < Type >                                 set
+          , HashSet < Type >                  set
         )
         {
             foreach ( AppTypeInfo rootSubTypeInfo in subTypeInfos )
@@ -538,253 +675,6 @@ namespace ConsoleApp1
         }
 
         private static void Init ( ) { }
-    }
-
-    internal class ListView2Base < T > : ListView
-        where T : class , IEnumerable < T >
-    {
-        private readonly List < ItemData < T > > _itemDatas = new List < ItemData < T > > ( 20 ) ;
-        private readonly ListWrapper < T >       _source ;
-
-        protected ListView2Base ( Rect rect , [ NotNull ] List < T > list ) : base (
-                                                                                    rect
-                                                                                  , new ListWrapper
-                                                                                        < T > (
-                                                                                               list
-                                                                                                  .ToList ( )
-                                                                                              )
-                                                                                   )
-        {
-            _source = ( ListWrapper < T > ) Source ;
-            for ( var i = 0 ; i < _source.Count ; i ++ )
-            {
-                _itemDatas.Add ( new ItemData < T > ( ) ) ;
-            }
-        }
-
-        public List < T > List { get { return _source.List ; } }
-
-        public override bool ProcessKey ( KeyEvent kb )
-        {
-            if ( kb.Key == Key.CursorRight )
-            {
-                var selectedItem = SelectedItem ;
-                var e = List[ selectedItem ] ;
-                var d = _itemDatas[ selectedItem ] ;
-                if ( d.Expanded )
-                {
-                    return true ;
-                }
-
-                d.Expanded = true ;
-                if ( d.RemovedChildren != null )
-                {
-                    List.InsertRange ( selectedItem + 1 , d.RemovedChildren ) ;
-                    d.SubtreeCount = d.RemovedChildren.Count ;
-                }
-                else
-                {
-                    d.InsertedChildren = e.ToList ( ) ;
-                    List.InsertRange ( selectedItem + 1 , d.InsertedChildren ) ;
-                    var insertedChildrenCount = d.InsertedChildren.Count ;
-                    d.SubtreeCount = insertedChildrenCount ;
-                }
-
-                var c = d.Container ;
-                while ( c != null )
-                {
-                    ItemData < T > itemData = null ;
-                    for ( var i = selectedItem ; i >= 0 ; i -- )
-                    {
-                        if ( ReferenceEquals ( List[ i ] , c ) )
-                        {
-                            itemData = _itemDatas[ i ] ;
-                            break ;
-                        }
-                    }
-
-                    if ( itemData != null )
-                    {
-                        itemData.SubtreeCount += d.SubtreeCount ;
-                        c                     =  itemData.Container ;
-                    }
-                    else
-                    {
-                        c = null ;
-                    }
-                }
-
-                _itemDatas.InsertRange (
-                                        selectedItem + 1
-                                      , Enumerable
-                                       .Repeat ( 1 , d.SubtreeCount )
-                                       .Select ( x => new ItemData < T > { Container = e } )
-                                       ) ;
-
-                Source       = _source ;
-                SelectedItem = selectedItem ;
-                // foreach ( var r in x.Children )
-                // {
-                return true ;
-                // }
-            }
-
-            if ( kb.Key == Key.CursorLeft )
-            {
-                var selectedItem = SelectedItem ;
-
-                var d = _itemDatas[ selectedItem ] ;
-                if ( ! d.Expanded )
-                {
-                    return true ;
-                }
-
-                var c = d.Container ;
-                while ( c != null )
-                {
-                    ItemData < T > itemData = null ;
-                    for ( var i = selectedItem ; i >= 0 ; i -- )
-                    {
-                        if ( ReferenceEquals ( List[ i ] , c ) )
-                        {
-                            itemData = _itemDatas[ i ] ;
-                            break ;
-                        }
-                    }
-
-                    if ( itemData != null )
-                    {
-                        itemData.SubtreeCount -= d.SubtreeCount ;
-                        c                     =  itemData.Container ;
-                    }
-                    else
-                    {
-                        c = null ;
-                    }
-                }
-
-                d.RemovedChildren = List.GetRange ( selectedItem + 1 , d.SubtreeCount ) ;
-                List.RemoveRange ( selectedItem + 1 , d.SubtreeCount ) ;
-                d.Expanded   = false ;
-                Source       = _source ;
-                SelectedItem = selectedItem ;
-                return true ;
-            }
-
-            return base.ProcessKey ( kb ) ;
-        }
-
-        private sealed class ItemData < T2 >
-        {
-            public T2 Container { get ; set ; }
-
-            public bool Expanded { get ; set ; }
-
-            public List < T2 > InsertedChildren { get ; set ; }
-
-            public int SubtreeCount { get ; set ; }
-
-            public List < T2 > RemovedChildren { get ; set ; }
-        }
-    }
-
-    internal sealed class ListView2 : ListView2Base < ResourceNodeInfo >
-    {
-        public ListView2 ( Rect rect , [ NotNull ] List < ResourceNodeInfo > list ) :
-            base ( rect , list )
-        {
-        }
-    }
-
-    public sealed class ListWrapper < T > : IListDataSource
-    {
-        private readonly int      count ;
-        private readonly BitArray marks ;
-
-        public ListWrapper ( [ NotNull ] List < T > source )
-        {
-            count = source.Count ;
-            marks = new BitArray ( count ) ;
-            List  = source ;
-        }
-
-        public List < T > List { get ; }
-
-        public int Count { get { return List.Count ; } }
-
-        public void Render (
-            [ NotNull ] ListView container
-          , ConsoleDriver        driver
-          , bool                 marked
-          , int                  item
-          , int                  col
-          , int                  line
-          , int                  width
-        )
-        {
-            container.Move ( col , line ) ;
-            var t = List[ item ] ;
-
-            RenderUstr (
-                        driver
-                      , t.ToString ( )
-                      , col
-                      , line
-             ,          width
-                       ) ;
-        }
-
-        public bool IsMarked ( int item )
-        {
-            if ( item    >= 0
-                 && item < count )
-            {
-                return marks[ item ] ;
-            }
-
-            return false ;
-        }
-
-        public void SetMark ( int item , bool value )
-        {
-            if ( item    >= 0
-                 && item < count )
-            {
-                marks[ item ] = value ;
-            }
-        }
-
-        private void RenderUstr (
-            ConsoleDriver       driver
-          , [ NotNull ] ustring ustr
-            // ReSharper disable once UnusedParameter.Local
-          , int col
-            // ReSharper disable once UnusedParameter.Local
-          , int line
-          , int width
-        )
-        {
-            var byteLen = ustr.Length ;
-            var used = 0 ;
-            for ( var i = 0 ; i < byteLen ; )
-            {
-                var (rune , size) = Utf8.DecodeRune ( ustr , i , i - byteLen ) ;
-                var columnWidth = Rune.ColumnWidth ( rune ) ;
-                if ( used + columnWidth >= width )
-                {
-                    break ;
-                }
-
-                driver.AddRune ( rune ) ;
-                used += columnWidth ;
-                i    += size ;
-            }
-
-            for ( ; used < width ; used ++ )
-            {
-                driver.AddRune ( ' ' ) ;
-            }
-        }
     }
 
     // ReSharper disable once UnusedType.Global

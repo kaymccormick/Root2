@@ -32,9 +32,9 @@ namespace AnalysisControls.ViewModel
         private          AppTypeInfo   root ;
         private List < Type > _nodeTypes ;
 
-        private readonly Dictionary < Type , AppTypeInfo > map =
-            new Dictionary < Type , AppTypeInfo > ( ) ;
-
+        private TypeMapDictionary map =
+            new TypeMapDictionary ( ) ;
+        
         private readonly Dictionary < Type , AppTypeInfo > otherTyps =
             new Dictionary < Type , AppTypeInfo > ( ) ;
 #if false
@@ -69,7 +69,7 @@ namespace AnalysisControls.ViewModel
                                                               .IsAssignableFrom ( info.ReturnType )
                                                           ) )
             {
-                var info = map[ methodInfo.ReturnType ] ;
+                var info = (AppTypeInfo) Map[ methodInfo.ReturnType ] ;
                 var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
                 if ( si != null
                      && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var mdoc ) )
@@ -100,7 +100,7 @@ namespace AnalysisControls.ViewModel
                 //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
-            foreach ( var pair in map.Where ( pair => pair.Key != typeof ( CSharpSyntaxNode ) ) )
+            foreach ( var pair in Map.dict.Where ( pair => pair.Key != typeof ( CSharpSyntaxNode ) ) )
             {
                 //}.Where ( pair => pair.Key.IsAbstract == false ) )
                 {
@@ -134,12 +134,12 @@ namespace AnalysisControls.ViewModel
                                 // $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
                                 // ) ;
                                 isList   = true ;
-                                typeInfo = map[ targ ] ;
+                                typeInfo = ( AppTypeInfo ) Map[ targ ] ;
                             }
                         }
                         else
                         {
-                            if ( ! map.TryGetValue ( t , out typeInfo ) )
+                            if ( ! Map.dict.TryGetValue ( t , out typeInfo ) )
                             {
                                 if ( ! otherTyps.TryGetValue ( t , out otherTypeInfo ) )
                                 {
@@ -415,9 +415,13 @@ namespace AnalysisControls.ViewModel
                         case "param" :
                             r = new Param (element.Attribute(XName.Get("name", ""))
                                                  ?.Value
-                                           ?? "") ;
+                                           ?? "", element.Nodes().Select(Selector)) ;
                             break ;
-                        case "example" :
+                            case "returns":
+                                r = new Returns(element.Nodes().Select(Selector));
+                                break;
+
+                            case "example" :
                             r = new Example ( element.Nodes ( ).Select ( Selector ) ) ;
                             break ;
                     }
@@ -442,7 +446,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AppTypeInfo Root
         {
             get { return root ; }
@@ -478,6 +482,13 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
+
+        public TypeMapDictionary Map
+        {
+            get { return map ; }
+            set { map = value ; }
+        }
+
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos (
             AppTypeInfo      parentTypeInfo
@@ -509,7 +520,7 @@ namespace AnalysisControls.ViewModel
                 r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
             }
 
-            map[ rootR ] = r ;
+            Map[ rootR ] = r ;
             return r ;
         }
 
@@ -569,7 +580,7 @@ namespace AnalysisControls.ViewModel
 
         private void PopulateMap ( [ NotNull ] AppTypeInfo appTypeInfo )
         {
-            map[ appTypeInfo.Type ] = appTypeInfo ;
+            Map[ appTypeInfo.Type ] = appTypeInfo ;
             foreach ( AppTypeInfo subTypeInfo in appTypeInfo.SubTypeInfos )
             {
                 PopulateMap(subTypeInfo);
@@ -588,7 +599,82 @@ namespace AnalysisControls.ViewModel
         #endregion
     }
 
-    
+    public class Returns : BlockDocElem
+    {
+        public Returns ( IEnumerable < XmlDocElement > @select ): base(@select) { }
+
+        public Returns ( ) {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TypeMapDictionary : IDictionary, ICollection, IEnumerable
+    {
+        internal Dictionary<Type, AppTypeInfo> dict = new Dictionary<Type, AppTypeInfo>( ) ;
+        private IDictionary _dict ;
+        public TypeMapDictionary ( ) { _dict = dict ; }
+        #region Implementation of IEnumerable
+        public bool Contains ( object key ) { return _dict.Contains ( key ) ; }
+
+        public void Add ( object key , object value ) { _dict.Add ( key , value ) ; }
+
+        public void Clear ( ) { _dict.Clear ( ) ; }
+
+        public IDictionaryEnumerator GetEnumerator ( ) { return _dict.GetEnumerator ( ) ; }
+
+        public void Remove ( object key ) { _dict.Remove ( key ) ; }
+
+        public object this [ object key ]
+        {
+            get { return _dict[ key ] ; }
+            set { _dict[ key ] = value ; }
+        }
+
+        public ICollection Keys
+        {
+            get { return _dict.Keys ; }
+        }
+
+        public ICollection Values
+        {
+            get { return _dict.Values ; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _dict.IsReadOnly ; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _dict.IsFixedSize ; }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _dict ).GetEnumerator ( ) ; }
+        #endregion
+        #region Implementation of ICollection
+        public void CopyTo ( Array array , int index ) { _dict.CopyTo ( array , index ) ; }
+
+        public int Count
+        {
+            get { return _dict.Count ; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _dict.SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _dict.IsSynchronized ; }
+        }
+        #endregion
+    }
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -627,7 +713,6 @@ namespace AnalysisControls.ViewModel
 
     /// <summary>
     /// </summary>
-    [ContentProperty("XmlDoc")]
     public sealed class FieldDocumentation : MemberBaseDocumentation
     {
         /// <summary>
@@ -673,7 +758,6 @@ namespace AnalysisControls.ViewModel
 
     /// <summary>
     /// </summary>
-    [ContentProperty("XmlDoc")]
     public sealed class TypeDocumentation : CodeElementDocumentation
     {
         /// <summary>
@@ -747,10 +831,11 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Content)]
         public XmlDocumentElementCollection XmlDoc
         {
             get { return _xmlDoc; }
-            set { _xmlDoc = value; }
+            // set { _xmlDoc = value; }
         }
 
         /// <summary>
@@ -845,7 +930,21 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public int Add ( object value ) { return ( ( IList ) _listImplementation ).Add ( value ) ; }
+        public int Add ( object value )
+        {
+            if ( value is XmlDocumentElementCollection e )
+            {
+                foreach ( var xmlDocElement in e )
+                {
+                    _listImplementation.Add (xmlDocElement  );
+                }
+
+                return 0;
+            }
+
+            return ( ( IList ) _listImplementation ).Add ( value ) ;
+            
+        }
 
         /// <summary>
         /// 
@@ -949,7 +1048,6 @@ namespace AnalysisControls.ViewModel
 
     /// <summary>
     /// </summary>
-    [ContentProperty("XmlDoc")]
     public sealed class MethodDocumentation : MemberBaseDocumentation
     {
         private readonly string _parameters;
@@ -984,7 +1082,7 @@ namespace AnalysisControls.ViewModel
     }
 
     /// <summary>
-    /// </summary
+    /// </summary>
     [ContentProperty("Text")]
     public class XmlDocText : InlineDocElem
     {
@@ -1024,7 +1122,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public override XmlDocumentElementCollection DocumentElementCollection { get; set; }
+        public override XmlDocumentElementCollection DocumentElementCollection { get; }
         #endregion
     }
 
@@ -1084,7 +1182,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Param(string name) : base() { Name = name; }
+        public Param(string name, IEnumerable<XmlDocElement> elements) : base(elements) { Name = name; }
 
         /// <summary>
         /// 
@@ -1203,7 +1301,6 @@ namespace AnalysisControls.ViewModel
 
     /// <summary>
     /// </summary>
-    [ContentProperty( "DocumentElementCollection")]
     public class Para : BlockDocElem
     {
         /// <summary>
@@ -1295,6 +1392,7 @@ namespace AnalysisControls.ViewModel
     /// 
     /// </summary
     [ContentProperty("DocumentElementCollection")]
+    [ContentWrapper(typeof(XmlDocElement))]
     public class XmlDocElement
     {
         private readonly XElement _element;
@@ -1321,18 +1419,18 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public virtual XmlDocumentElementCollection DocumentElementCollection
         {
             get { return _xmlDocumentElementCollection; }
-            set { _xmlDocumentElementCollection = value; }
         }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    [ContentProperty( "DocumentElementCollection")]
-    public sealed class Summary : BlockDocElem, IAddChild
+
+    public sealed class Summary : BlockDocElem
     {
         
 
@@ -1344,16 +1442,6 @@ namespace AnalysisControls.ViewModel
         {
         }
 
-        #region Overrides of XmlDocElement
-        /// <summary>
-        /// 
-        /// </summary>
-        public override XmlDocumentElementCollection DocumentElementCollection
-        {
-            get { return _xmlDocumentElementCollection ; }
-            set { _xmlDocumentElementCollection = value ; }
-        }
-        #endregion
 
         /// <summary>
         /// 
@@ -1361,31 +1449,12 @@ namespace AnalysisControls.ViewModel
         /// <param name="elements"></param>
         public Summary(IEnumerable<XmlDocElement> elements) : base(elements) { }
 
-        #region Implementation of IAddChild
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        public void AddChild ( object value )
-        {
-            DocumentElementCollection.Add ( value ) ;
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        public void AddText ( string text )
-        {
-            DocumentElementCollection.Add ( new XmlDocText ( text ) ) ;
-        }
-        #endregion
     }
 
     /// <summary>
     /// 
     /// </summary>
-    [ContentProperty( "DocumentElementCollection")]
     public class BlockDocElem : XmlDocElement
     {
         /// <summary>
