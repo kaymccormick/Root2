@@ -11,6 +11,7 @@ using System.Windows.Markup ;
 using AnalysisAppLib.Syntax ;
 using AnalysisControls.ViewModel ;
 using JetBrains.Annotations ;
+using Microsoft.CodeAnalysis.CSharp ;
 
 namespace AnalysisControls
 {
@@ -282,9 +283,11 @@ namespace AnalysisControls
         {
             _name = name ;
             _typeName = typeName ;
+            
             foreach ( var kind in kinds )
             {
-                _kinds.Add ( kind ) ;
+                var k = (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind);
+                _kinds.Add ( k) ;
             }
             
         }
@@ -292,7 +295,7 @@ namespace AnalysisControls
         private string _name ;
         private string _typeName ;
         private SyntaxKindCollection _kinds = new SyntaxKindCollection ();
-
+        
         public string TypeName  { get { return _typeName ; } set { _typeName = value ; } }
 
         public string Name { get { return _name ; } set { _name = value ; } }
@@ -301,14 +304,14 @@ namespace AnalysisControls
         public SyntaxKindCollection Kinds
         {
             get { return _kinds ; }
-            set { _kinds = value ; }
         }
+
+        
     }
 
-    [ContentWrapper(typeof(string))]
     public class SyntaxKindCollection : IList, ICollection, IEnumerable
     {
-        private IList _listImplementation = new List < string > ( ) ;
+        private IList _listImplementation = new List < SyntaxKind > ( ) ;
         #region Implementation of IEnumerable
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
         #endregion
