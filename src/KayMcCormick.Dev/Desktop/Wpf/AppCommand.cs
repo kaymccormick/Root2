@@ -8,21 +8,25 @@ using System.Windows.Media ;
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
+    /// An interface to an "Application command" provided by the application.
     /// </summary>
     public interface IAppCommand
     {
         /// <summary>
+        /// Access to the ICommand interface provided by the command.
         /// </summary>
         ICommand Command { get ; }
 
         /// <summary>
+        /// An Async method to execute the command.
         /// </summary>
         /// <returns></returns>
         Task < IAppCommandResult > ExecuteAsync ( ) ;
 
         /// <summary>
+        /// A method to handle faults.
         /// </summary>
-        /// <param name="exception"></param>
+        /// <param name="exception">Exception</param>
         void OnFault ( AggregateException exception ) ;
     }
 
@@ -78,8 +82,14 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public interface IDisplayableAppCommand : IAppCommand , IDisplayable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         ImageSource LargeImageSource { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         object LargeImageSourceKey { get ; set ; }
     }
 
@@ -196,7 +206,7 @@ namespace KayMcCormick.Lib.Wpf
 
     /// <summary>
     /// </summary>
-    public class LambdaAppCommand : AppCommand
+    public sealed class LambdaAppCommand : AppCommand
     {
         private readonly object                                        _argument ;
         private          Func < LambdaAppCommand , Task < IAppCommandResult > > _commandFunc ;

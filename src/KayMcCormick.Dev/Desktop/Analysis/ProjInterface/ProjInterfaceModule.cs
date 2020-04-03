@@ -24,6 +24,7 @@ using AnalysisControls.Scripting ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 using ExplorerCtrl ;
@@ -68,12 +69,18 @@ namespace ProjInterface
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
             //builder.RegisterType < PaneService > ( ) ;
-            builder.RegisterType < PythonControl > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
+                                                                              "ImageSource"
+                                                                            , new Uri(
+                                                                                      "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
+                                                                                     )
+                                                                             )
+                   .WithMetadata("Ribbon", true); ;
             builder.RegisterType < PythonViewModel > ( )
                    .AsSelf ( )
                    .SingleInstance ( ) ; //.AutoActivate();
             builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > ( Adapter ) ;
-            builder.RegisterType < EventLogView > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterType < EventLogView > ( ).AsSelf ( ) ;
             builder.RegisterType < EventLogViewModel > ( ) ;
             builder.RegisterBuildCallback (
                                            scope => {
@@ -107,7 +114,7 @@ namespace ProjInterface
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
-                   .As < IViewWithTitle > ( )
+                   .As < IViewWithTitle > ( ) 
                    .As < IControlView > ( ) ;
             builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ) ;
 
@@ -116,16 +123,14 @@ namespace ProjInterface
             //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
 
             builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
-            builder.RegisterType < LogViewerControl > ( )
-                   .AsSelf ( )
-                   .As < IViewWithTitle > ( )
-                   .As < IControlView > ( ) ;
+            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
+                   //.As < IControlView > ( ) ;
 
-            builder
-               .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                    Func < LayoutDocumentPane , IDisplayableAppCommand >
-                > ( ControlViewCommandAdapter )
-               .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
+                   builder
+                      .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
+                           Func < LayoutDocumentPane , IDisplayableAppCommand >
+                       > ( ControlViewCommandAdapter )
+                      .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
             builder.RegisterAssemblyTypes (
                                            Assembly.GetCallingAssembly ( )

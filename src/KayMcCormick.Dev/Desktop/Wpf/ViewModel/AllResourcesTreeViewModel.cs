@@ -13,7 +13,9 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
+using System.ComponentModel ;
 using System.Diagnostics ;
+using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -29,7 +31,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
     /// </summary>
-    public sealed class AllResourcesTreeViewModel
+    public sealed class AllResourcesTreeViewModel : IViewModel, ISupportInitialize
     {
         private readonly ModelResources _modelResources ;
 
@@ -45,6 +47,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         public AllResourcesTreeViewModel ( ModelResources modelResources )
         {
             _modelResources = modelResources ;
+        }
+
+        public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
+        {
+            get { return _allResourcesCollection ; }
         }
 #if false
         private void PopulateInstances (
@@ -234,6 +241,22 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             PopulateAppNode();
         }
+#endregion
+#region Implementation of ISupportInitialize
+public void BeginInit ( ) { }
+
+public void EndInit ( )
+{
+    foreach ( var resourceNodeInfo in _modelResources.AllResourcesCollection )
+    {
+        AllResourcesCollection.Add ( resourceNodeInfo ) ;
+    }
+    PopulateResourcesTree();
+}
+
+#endregion
+#region Implementation of ISerializable
+public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
 #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Diagnostics ;
+using System.IO ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon ;
@@ -9,12 +10,14 @@ using System.Windows.Navigation ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
+using Autofac.Core.Lifetime ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.Win32 ;
 using NLog ;
 
 namespace ProjInterface
@@ -121,7 +124,27 @@ namespace ProjInterface
                 {
                     Debug.WriteLine ( ex.ToString ( ) ) ;
                 }
+
             }
+
+            Microsoft.Win32.OpenFileDialog dlg = new OpenFileDialog();
+                dlg.DefaultExt = ".xml" ;
+                dlg.Filter = "XML Documents (.xml)|*.xml" ;
+                Nullable<bool> result = dlg.ShowDialog();
+
+                // Process open file dialog box results
+                if (result == true)
+                {
+                    // Open document
+                    string filename = dlg.FileName;
+                    var scope = (ILifetimeScope)GetValue(AttachedProperties.LifetimeScopeProperty);
+                    var view = scope.ResolveKeyed<IControlView>(ApplicationEntityIds.File, new NamedParameter("filename", filename));
+
+                }
+
+            return ;
+            
+
         }
 
         private void QuitCommandOnExecuted ( object sender , ExecutedRoutedEventArgs e )

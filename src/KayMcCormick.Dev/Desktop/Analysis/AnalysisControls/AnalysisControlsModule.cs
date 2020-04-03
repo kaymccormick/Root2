@@ -26,6 +26,8 @@ using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Module = Autofac.Module ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
 
@@ -58,8 +60,15 @@ namespace AnalysisControls
 
 #else
             builder.RegisterType < TypesView > ( )
-                   .AsImplementedInterfaces ( )
-                   .WithMetadata ( "ImageSource" , new Uri("pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png")) ;
+                   .AsSelf ( )
+                   .As<IControlView> (  )
+                   .WithMetadata (
+                                  "ImageSource"
+                                , new Uri (
+                                           "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
+                                          )
+                                 )
+                   .WithMetadata ( "Ribbon" , true ) ;
 
 
             Debug.WriteLine(string.Join(", ", Assembly.GetExecutingAssembly().GetManifestResourceNames()));
@@ -83,20 +92,22 @@ namespace AnalysisControls
             // builder.RegisterInstance(v).As<ITypesViewModel> (  ).SingleInstance();
             
             //builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
-            builder.RegisterType < SyntaxPanel > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterType < SyntaxPanel > ( )
+                   .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
+                   .AsSelf ( ) ;
             builder.RegisterType < SyntaxPanelViewModel > ( )
                    .AsImplementedInterfaces ( )
                    .AsSelf ( ) ;
 #endif
 
-            builder.Register (
-                              ( c , p ) => {
-                                  var listView = Func ( c , p ) ;
-                                  return new ContentControlView { Content = listView } ;
-                              }
-                             )
-                   .WithMetadata ( "Title" , "Syntax Token View" )
-                   .As < IControlView > ( ) ;
+            // builder.Register (
+            //                   ( c , p ) => {
+            //                       var listView = Func ( c , p ) ;
+            //                       return new ContentControlView { Content = listView } ;
+            //                   }
+            //                  )
+            //        .WithMetadata ( "Title" , "Syntax Token View" )
+            //        .As < IControlView > ( ) ;
             // builder.RegisterType < PythonViewModel > ( ).AsSelf ( ) ;
         }
 

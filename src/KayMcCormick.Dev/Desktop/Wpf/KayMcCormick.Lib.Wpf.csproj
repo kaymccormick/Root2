@@ -89,6 +89,7 @@
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppCommand.cs" />
+    <Compile Include="ApplicationEntity.cs" />
     <Compile Include="ColorConverter.cs" />
     <Compile Include="ContentControlView.cs" />
     <Compile Include="DictionaryConverter.cs" />
@@ -426,6 +427,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="keypair.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\python1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

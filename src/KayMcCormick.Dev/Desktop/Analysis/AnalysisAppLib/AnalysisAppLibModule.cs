@@ -66,11 +66,20 @@ namespace AnalysisAppLib
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
-            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly() )
+            builder.RegisterType<ModelResources>().SingleInstance();
+
+            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .Where (
                            type => {
+                               if ( builder.ComponentRegistryBuilder.IsRegistered (
+                                                                                   new
+                                                                                       TypedService (
+                                                                                                     type
+                                                                                                    )
+                                                                                  ) )
+                                   return false ;
                                var b = typeof ( IViewModel ).IsAssignableFrom ( type ) ;
-                               Debug.WriteLine($"{type.FullName} - {b}");
+                               Debug.WriteLine ( $"{type.FullName} - {b}" ) ;
                                return b ;
                            }
                            // || typeof ( IView1 ).IsAssignableFrom ( type )
@@ -81,7 +90,7 @@ namespace AnalysisAppLib
 
             //builder.RegisterType<DockWindowViewModel>().AsSelf();
 #if false
-            builder.RegisterType < ModelResources > ( ) ;
+            
             
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
