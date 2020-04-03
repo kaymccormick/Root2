@@ -18,12 +18,14 @@ using System.Windows.Interop ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
     /// </summary>
+    [ UsedImplicitly ]
     public class JsonImageConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverterFactory
@@ -175,33 +177,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
     }
 
-    internal class ConverterUtil
-    {
-        public static void WritePreamble (
-            JsonConverter converter
-          , Utf8JsonWriter                                   writer
-          , object                                           value
-          , JsonSerializerOptions                            options
-        )
-        {
-            writer.WriteStartObject();
-            writer.WriteString(
-                               "Converter"
-                             , converter.GetType().AssemblyQualifiedName
-                              );
-            JsonTypeConverter typeConverter = new JsonTypeConverter();
-            writer.WritePropertyName("ObjectType");
-            typeConverter.Write(writer, value.GetType(), options);
-            writer.WritePropertyName("ObjectInstance");
-        }
-
-        public static void WriteTerminal ( Utf8JsonWriter writer)
-        {
-            writer.WriteEndObject();
-        }
-    }
-
-    internal class JsonDrawingConverter : JsonConverter <Drawing>
+    public class JsonDrawingConverter : JsonConverter <Drawing>
     {
         #region Overrides of JsonConverter<Drawing>
         public override Drawing Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
@@ -237,7 +213,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
     }
 
-    internal class JsonGeometryConverter :JsonConverter <Geometry>
+    public class JsonGeometryConverter :JsonConverter <Geometry>
     {
         #region Overrides of JsonConverter<Geometry>
         public override Geometry Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
@@ -252,7 +228,9 @@ namespace KayMcCormick.Lib.Wpf.JSON
             {
                 case CombinedGeometry combinedGeometry : break ;
                 case EllipseGeometry ellipseGeometry : break ;
-                case GeometryGroup geometryGroup : break ;
+                case GeometryGroup geometryGroup :
+                    break ;
+
                 case LineGeometry lineGeometry :
                     writer.WriteStartObject();
                     writer.WritePropertyName ( "Bounds" ) ;
@@ -261,6 +239,14 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     writer.WriteNumberValue(lineGeometry.Bounds.Top);
                     writer.WriteNumberValue(lineGeometry.Bounds.Right);
                     writer.WriteNumberValue(lineGeometry.Bounds.Bottom);
+                    writer.WriteEndArray();
+                    writer.WriteStartArray ( "StartPoint" ) ;
+                    writer.WriteNumberValue ( lineGeometry.StartPoint.X ) ;
+                    writer.WriteNumberValue(lineGeometry.StartPoint.Y);
+                    writer.WriteEndArray();
+                    writer.WriteStartArray("EndPoint");
+                    writer.WriteNumberValue(lineGeometry.EndPoint.X);
+                    writer.WriteNumberValue(lineGeometry.EndPoint.Y);
                     writer.WriteEndArray();
                     writer.WriteEndObject();
                     break ;

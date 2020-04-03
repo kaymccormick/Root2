@@ -27,7 +27,7 @@ using KayMcCormick.Dev.Interfaces ;
 namespace KayMcCormick.Dev
 {
     /// <summary>
-    /// 
+    /// ViewModel designed to expose a hierarchy of resources in an application.
     /// </summary>
     public class ModelResources: ISupportInitialize, IViewModel
     {

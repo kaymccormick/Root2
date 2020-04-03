@@ -14,20 +14,18 @@ namespace ClassLibTests
 {
     /// <summary>Test for the default configured service for the <seealso cref="IObjectIdProvider"/> service.</summary>
     /// <seealso cref="LoggingFixture" />
-    [ BeforeAfterLogger ] [ LogTestMethod ] [ UsedImplicitly ] [ Collection ( "GeneralPurpose" ) ]
-    public sealed class DefaultObjectIdProviderTests : IClassFixture < LoggingFixture >
-      , IDisposable
+//    [ BeforeAfterLogger ] [ LogTestMethod ] [ UsedImplicitly ] [ Collection ( "GeneralPurpose" ) ]
+    public sealed class DefaultObjectIdProviderTests : IDisposable
     {
         private readonly LoggingFixture _loggingFixture ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public DefaultObjectIdProviderTests (
-            LoggingFixture    loggingFixture
-          , ITestOutputHelper helper
+            ITestOutputHelper helper
         )
         {
-            _loggingFixture = loggingFixture ;
-            loggingFixture?.SetOutputHelper ( helper ) ;
+            // _loggingFixture = loggingFixture ;
+            // loggingFixture?.SetOutputHelper ( helper ) ;
         }
 
         /// <summary>Gets the instance by component registration test.</summary>
@@ -151,7 +149,7 @@ namespace ClassLibTests
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose ( )
         {
-            _loggingFixture.SetOutputHelper ( null ) ;
+//            _loggingFixture.SetOutputHelper ( null ) ;
             // _loggingFixture?.Dispose ( ) ;
         }
     }

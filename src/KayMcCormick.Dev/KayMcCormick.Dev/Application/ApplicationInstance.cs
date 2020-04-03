@@ -10,6 +10,8 @@ using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json ;
+using System.Text.Json.Serialization ;
+using System.Threading ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
@@ -347,6 +349,23 @@ namespace KayMcCormick.Dev.Application
             builder.RegisterMetadataRegistrationSources ( ) ;
             builder.RegisterModule < NouveauAppModule > ( ) ;
 
+            var yy = AppDomain.CurrentDomain.GetAssemblies ( )
+                     .Where (
+                             assembly => {
+                                 if ( assembly.GetName().Name == "KayMcCormick.Lib.Wpf")
+                                 {
+                                     return true ;
+                                 }
+
+                                 return false ;
+                             }
+                            ).ToArray() ;
+            builder.RegisterAssemblyTypes ( yy )
+                   .AssignableTo < JsonConverter > ( ).PublicOnly()
+                   .AsImplementedInterfaces ( )
+                   .As<JsonConverter> (  )
+                   .AsSelf ( ) ;
+
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
             JsonConverters.AddJsonConverters(jsonSerializerOptions);
             foreach ( var jsonConverter in jsonSerializerOptions.Converters )
@@ -354,7 +373,20 @@ namespace KayMcCormick.Dev.Application
                 builder.RegisterInstance ( jsonConverter ).AsSelf ( ).AsImplementedInterfaces ( ) ;
             }
             
-            builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
+            //builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
+            builder.Register (
+                              ( context , parameters ) => {
+                                  var o = new JsonSerializerOptions ( ) ;
+                                  foreach ( var cc in context
+                                     .Resolve < IEnumerable < JsonConverter > > ( ) )
+                                  {
+                                      o.Converters.Add ( cc ) ;
+                                  }
+
+                                  return o ;
+                              }
+                             )
+                   .As < JsonSerializerOptions > ( ) ;
 
             foreach ( var module in _modules )
             {
@@ -500,6 +532,7 @@ namespace KayMcCormick.Dev.Application
     public sealed class AppLogMessage
     {
         private string _message ;
+        private int _threadId ;
 
         /// <summary>
         /// 
@@ -510,14 +543,18 @@ namespace KayMcCormick.Dev.Application
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public AppLogMessage ( string message ) { _message = message ; }
+        public AppLogMessage ( string message )
+        {
+            _message = message ;
+            _threadId = Thread.CurrentThread.ManagedThreadId ;
+        }
 
         #region Overrides of Object
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public override string ToString ( ) { return $"{nameof ( AppLogMessage )}: {Message}" ; }
+        public override string ToString ( ) { return $"{nameof ( AppLogMessage )}[{_threadId}]: {Message}" ; }
         #endregion
     }
 

@@ -3,6 +3,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
+using Autofac.Core.Registration ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 
@@ -175,7 +176,21 @@ namespace KayMcCormick.Dev.Serialization
           , JsonSerializerOptions  options
         )
         {
-            writer.WriteStringValue ( value.ToString ( ) ) ;
+            var xx = ( ComponentRegistration ) value ;
+            writer.WriteStartObject();
+            writer.WriteStartObject("Metadata");
+            foreach ( var keyValuePair in value.Metadata )
+            {
+                writer.WriteString (keyValuePair.Key, keyValuePair.Value.ToString()  );
+            }
+            writer.WriteEndObject();
+            writer.WriteStartArray ( "Services" ) ;
+            foreach ( var valueService in value.Services )
+            {
+                writer.WriteStringValue( valueService.Description ) ;
+            }
+            writer.WriteEndArray();
+            writer.WriteEndObject();
         }
         #endregion
     }
@@ -217,7 +232,32 @@ namespace KayMcCormick.Dev.Serialization
           , JsonSerializerOptions options
         )
         {
-            writer.WriteStringValue ( value.ToString ( ) ) ;
+            ConverterUtil.WritePreamble((JsonConverter)this, writer, value, options);
+            writer.WriteStartObject();
+            writer.WritePropertyName("Tag");
+            JsonSerializer.Serialize ( writer , value.Tag , value.Tag.GetType ( ) , options ) ;
+            var p = value.ParentLifetimeScope ;
+            if ( p != null )
+            {
+                writer.WritePropertyName ( "ParentLifetimeScope" ) ;
+                JsonSerializer.Serialize(writer, p.Tag, p.Tag.GetType(), options);
+            }
+
+            writer.WritePropertyName ( "ComponentRegistry" ) ;
+            writer.WriteStartObject();
+            writer.WriteStartArray("Registrations");
+            foreach ( var componentRegistryRegistration in value.ComponentRegistry.Registrations )
+            {
+                JsonSerializer.Serialize (writer,
+                                          componentRegistryRegistration
+                                        , typeof ( ComponentRegistration )
+                                        , options
+                                         ) ;
+            }
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+            writer.WriteEndObject();
+            ConverterUtil.WriteTerminal(writer);
         }
         #endregion
     }

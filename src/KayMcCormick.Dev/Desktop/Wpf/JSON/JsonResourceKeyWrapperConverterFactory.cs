@@ -50,7 +50,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
         /// <summary>
         /// </summary>
-        public class JsonResourceKeyWrapperConverter : JsonConverter < IResourceKeyWrapper1 >
+        private class JsonResourceKeyWrapperConverter : JsonConverter < IResourceKeyWrapper1 >
         {
             /// <summary>
             /// </summary>

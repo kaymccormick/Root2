@@ -143,6 +143,7 @@
     <Compile Include="Logging\ProtoLogger.cs" />
     <Compile Include="ModelResources.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
+    <Compile Include="Serialization\ConverterUtil.cs" />
     <Compile Include="Serialization\EventTimeConverter.cs" />
     <Compile Include="Serialization\HashtableConverter.cs" />
     <Compile Include="Serialization\JsonConverters.cs" />

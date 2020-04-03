@@ -34,6 +34,9 @@ namespace KayMcCormick.Lib.Wpf.JSON
     /// </summary>
     public class JsonFrameworkElementConverter : JsonConverterFactory
     {
+        public JsonFrameworkElementConverter ( ) {
+        }
+
         /// <summary>
         /// 
         /// </summary>

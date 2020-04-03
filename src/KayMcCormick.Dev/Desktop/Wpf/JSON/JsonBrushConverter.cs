@@ -14,13 +14,18 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
     /// </summary>
+    [ UsedImplicitly ]
     public class JsonBrushConverter : JsonConverterFactory
     {
+        public JsonBrushConverter ( ) {
+        }
+
         #region Overrides of JsonConverter
         /// <summary>
         /// </summary>
