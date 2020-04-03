@@ -4,6 +4,7 @@ using System.Text.Json.Serialization ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Attributes ;
 
 namespace KayMcCormick.Dev.Serialization
 {
@@ -39,7 +40,9 @@ namespace KayMcCormick.Dev.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonIViewModelConverterFactory : JsonConverterFactory
+    [PurposeMetadata( "JSON Converter Factory")]
+    [ConvertsTypeMetadata( typeof(IViewModel))]
+    public sealed class JsonIViewModelConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
@@ -59,6 +62,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -70,6 +74,7 @@ namespace KayMcCormick.Dev.Serialization
         private sealed class JsonIViewModelConverter : JsonConverter < IViewModel >
         {
             #region Overrides of JsonConverter<IViewModel>
+            [ CanBeNull ]
             public override IViewModel Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -80,8 +85,8 @@ namespace KayMcCormick.Dev.Serialization
             }
 
             public override void Write (
-                Utf8JsonWriter        writer
-              , IViewModel            value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] IViewModel            value
               , JsonSerializerOptions options
             )
             {
@@ -95,7 +100,9 @@ namespace KayMcCormick.Dev.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonComponentRegistrationConverterFactory : JsonConverterFactory
+    [PurposeMetadata( "JSON Converter Factory")]
+    [ConvertsTypeMetadata( typeof(IComponentRegistration))]
+    public sealed class JsonComponentRegistrationConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
@@ -120,6 +127,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -133,7 +141,9 @@ namespace KayMcCormick.Dev.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonComponentRegistrationConverter : JsonConverter < IComponentRegistration >
+    [PurposeMetadata( "JSON Converter")]
+    [ConvertsTypeMetadata( typeof(IComponentRegistration))]
+    public sealed class JsonComponentRegistrationConverter : JsonConverter < IComponentRegistration >
     {
         #region Overrides of JsonConverter<ComponentRegistration>
         /// <summary>
@@ -143,6 +153,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override IComponentRegistration Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -159,8 +170,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter         writer
-          , IComponentRegistration value
+            [ NotNull ] Utf8JsonWriter         writer
+          , [ NotNull ] IComponentRegistration value
           , JsonSerializerOptions  options
         )
         {
@@ -171,8 +182,10 @@ namespace KayMcCormick.Dev.Serialization
 
     /// <summary>
     /// 
-    /// </summary>
-    public class JsonLifetimeScopeConverter : JsonConverter < LifetimeScope >
+    /// </summary
+    [PurposeMetadata("JSON Converter")]
+    [ConvertsTypeMetadata(typeof(LifetimeScope))]
+    public sealed class JsonLifetimeScopeConverter : JsonConverter < LifetimeScope >
     {
         #region Overrides of JsonConverter<LifetimeScope>
         /// <summary>
@@ -182,6 +195,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override LifetimeScope Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -198,8 +212,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , LifetimeScope         value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] LifetimeScope         value
           , JsonSerializerOptions options
         )
         {

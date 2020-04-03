@@ -4,9 +4,12 @@ using System.Collections.Generic ;
 using System.Configuration ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Reactive.Linq ;
+using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization ;
+using System.Text.Json ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Extras.AttributeMetadata ;
@@ -16,6 +19,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Configuration ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.StackTrace ;
 using Microsoft.Extensions.DependencyInjection ;
 using NLog ;
@@ -36,24 +40,32 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// Application GUID for the Leaf node windows service.
         /// </summary>
-        public static Guid LeafService { get ; } = new Guid("{E66F158B-37EB-4FA7-8A2E-2387D5ADF2A7}");
+        public static Guid LeafService { get ; } =
+            new Guid ( "{E66F158B-37EB-4FA7-8A2E-2387D5ADF2A7}" ) ;
 
         /// <summary>
         /// Application GUID for a basic command-line configuration test application.
         /// </summary>
-        public static Guid ConfigTest { get ; set ; } = new Guid ("{28CE37FB-A675-4483-BD6F-79FC9C68D973}");
+        // ReSharper disable once UnusedMember.Global
+        public static Guid ConfigTest { get ; set ; } =
+            new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
+
+        public static Guid ClassLibTests { get ; set ; } =
+            new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
     }
 
     /// <summary>
     /// </summary>
     public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
-        private readonly bool                    _disableLogging ;
-        private readonly bool                    _disableServiceHost ;
-        private readonly List < IModule >        _modules = new List < IModule > ( ) ;
-        private          IContainer              _container ;
-        private          ApplicationInstanceHost _host ;
-        private          ILifetimeScope          _lifetimeScope ;
+        private readonly bool                            _disableLogging ;
+        private readonly bool                            _disableServiceHost ;
+        private readonly List < IModule >                _modules = new List < IModule > ( ) ;
+        private          IContainer                      _container ;
+        private          ApplicationInstanceHost         _host ;
+        private          ILifetimeScope                  _lifetimeScope ;
+        private readonly ReplaySubject < AppLogMessage > _subject ;
+        private          ILogger                         _logger ;
 
         /// <summary>
         /// 
@@ -96,12 +108,12 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public sealed class ApplicationInstanceConfiguration
         {
+            private Action < ContainerBuilder > _builderAction ;
 
             /// <summary>
             /// 
             /// </summary>
             /// <param name="message"></param>
-
             private readonly LogMethodDelegate _logMethod ;
 
             /// <summary>
@@ -164,6 +176,12 @@ namespace KayMcCormick.Dev.Application
             /// <summary>
             /// </summary>
             public bool DisableServiceHost { get ; }
+
+            public Action < ContainerBuilder > BuilderAction
+            {
+                get { return _builderAction ; }
+                set { _builderAction = value ; }
+            }
         }
 
 
@@ -174,13 +192,24 @@ namespace KayMcCormick.Dev.Application
         ) : base ( applicationInstanceConfiguration.LogMethod )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException ;
-            _disableServiceHost =
-                applicationInstanceConfiguration.DisableServiceHost ;
+
+            _subject = new ReplaySubject < AppLogMessage > ( ) ;
+            var msg = new AppLogMessage ( "Hello" ) ;
+            Subject1.OnNext ( msg ) ;
+
+            // ReSharper disable once ConvertToLocalFunction
+            Action < string > log = s => {
+                Subject1.OnNext ( new AppLogMessage ( s ) ) ;
+                applicationInstanceConfiguration.LogMethod ( s ) ;
+            } ;
+
+            _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost ;
+
             var serviceCollection = new ServiceCollection ( ) ;
             var protoLogger = ProtoLogger.Instance ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
-                var loadedConfigs = LoadConfiguration ( ProtoLogger.ProtoLogDelegate ) ;
+                var loadedConfigs = LoadConfiguration ( log ) ;
                 applicationInstanceConfiguration.Configs =
                     applicationInstanceConfiguration.Configs != null
                         ? ( ( IEnumerable < object > ) applicationInstanceConfiguration.Configs )
@@ -211,20 +240,20 @@ namespace KayMcCormick.Dev.Application
                 }
 
                 // Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
-                                                                         // new LogDelegates.
-                                                                             // LogMethod (
-                                                                                        // applicationInstanceConfiguration
-                                                                                           // .LogMethod
-                                                                                       // )
-                                                                       // , config
-                                                                        // ) ;
+                // new LogDelegates.
+                // LogMethod (
+                // applicationInstanceConfiguration
+                // .LogMethod
+                // )
+                // , config
+                // ) ;
                 // GlobalDiagnosticsContext.Set (
-                                              // "ExecutionContext"
-                                            // , new ExecutionContextImpl (
-                                                                        // Logging.Application
-                                                                               // .MainApplication
-                                                                       // )
-                                             // ) ;
+                // "ExecutionContext"
+                // , new ExecutionContextImpl (
+                // Logging.Application
+                // .MainApplication
+                // )
+                // ) ;
 
                 // GlobalDiagnosticsContext.Set ( "RunId" , InstanceRunGuid ) ;
                 // Logger.Info ( "RunID: {runId}" , InstanceRunGuid ) ;
@@ -235,9 +264,21 @@ namespace KayMcCormick.Dev.Application
             }
         }
 
-        /// <summary>
+        /// <summary>s
         /// </summary>
-        public ILogger Logger { get ; }
+        public ILogger Logger
+        {
+            get { return _logger ; }
+            set
+            {
+                _logger = value ;
+                Subject1.Subscribe ( message => _logger.Info ( $"XX: {message}" ) ) ;
+            }
+        }
+
+        public IContainer Container1 { get { return _container ; } set { _container = value ; } }
+
+        public ReplaySubject < AppLogMessage > Subject1 { get { return _subject ; } }
 
         /// <summary>
         /// </summary>
@@ -245,7 +286,7 @@ namespace KayMcCormick.Dev.Application
         {
             _host?.Dispose ( ) ;
             _lifetimeScope?.Dispose ( ) ;
-            _container?.Dispose ( ) ;
+            Container1?.Dispose ( ) ;
         }
 
         private static void CurrentDomain_FirstChanceException (
@@ -262,7 +303,7 @@ namespace KayMcCormick.Dev.Application
         public override void Initialize ( )
         {
             base.Initialize ( ) ;
-            _container = BuildContainer ( ) ;
+            Container1 = BuildContainer ( ) ;
         }
         #endregion
 
@@ -286,13 +327,13 @@ namespace KayMcCormick.Dev.Application
                 return _lifetimeScope ;
             }
 
-            if ( _container == null )
+            if ( Container1 == null )
             {
-                _container = BuildContainer ( ) ;
+                Container1 = BuildContainer ( ) ;
             }
 
-            _lifetimeScope = _container.BeginLifetimeScope ( ) ;
-            return _container.BeginLifetimeScope ( ) ;
+            _lifetimeScope = Container1.BeginLifetimeScope ( ) ;
+            return _lifetimeScope ;
         }
 
         /// <summary>
@@ -306,9 +347,18 @@ namespace KayMcCormick.Dev.Application
             builder.RegisterMetadataRegistrationSources ( ) ;
             builder.RegisterModule < NouveauAppModule > ( ) ;
 
+            var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
+            JsonConverters.AddJsonConverters(jsonSerializerOptions);
+            foreach ( var jsonConverter in jsonSerializerOptions.Converters )
+            {
+                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).AsImplementedInterfaces ( ) ;
+            }
+            
+            builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
+
             foreach ( var module in _modules )
             {
-                Logger?.Debug ( "Registering module {module}" , module.ToString ( ) ) ;
+                LogDebug ( $"Registering module {module}" ) ;
                 builder.RegisterModule ( module ) ;
             }
 
@@ -325,13 +375,18 @@ namespace KayMcCormick.Dev.Application
             }
         }
 
+        private void LogDebug ( string message )
+        {
+            Subject1.OnNext ( new AppLogMessage ( message ) ) ;
+        }
+
         /// <summary>
         /// </summary>
         public override void Startup ( )
         {
             if ( ! _disableServiceHost )
             {
-                _host = new ApplicationInstanceHost ( _container ) ;
+                _host = new ApplicationInstanceHost ( Container1 ) ;
                 _host.HostOpen ( ) ;
             }
 
@@ -353,7 +408,7 @@ namespace KayMcCormick.Dev.Application
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        protected override IEnumerable LoadConfiguration ( LogDelegates.LogMethod logMethod2 )
+        protected override IEnumerable LoadConfiguration ( Action < string > logMethod2 )
         {
             if ( logMethod2 == null )
             {
@@ -440,6 +495,33 @@ namespace KayMcCormick.Dev.Application
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public sealed class AppLogMessage
+    {
+        private string _message ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Message { get { return _message ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        public AppLogMessage ( string message ) { _message = message ; }
+
+        #region Overrides of Object
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString ( ) { return $"{nameof ( AppLogMessage )}: {Message}" ; }
+        #endregion
+    }
+
+    /// <summary>
     ///     Fatal error building container. Wraps any autofac exceptions.
     /// </summary>
     [ Serializable ]
@@ -457,7 +539,7 @@ namespace KayMcCormick.Dev.Application
         public ContainerBuildException ( string message ) : base ( message ) { }
 
         /// <summary>
-        ///     Constructr
+        /// Construcotr
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -482,19 +564,17 @@ namespace KayMcCormick.Dev.Application
     }
 
     /// <summary>
-    ///     New app module to replace crussty old app module. Work in progress.
+    ///     New app module to replace crusty old app module. Work in progress.
     /// </summary>
     internal sealed class NouveauAppModule : IocModule
     {
-        
         /// <summary>
         ///     Our fun custom load method that is public.
         /// </summary>
         /// <param name="builder"></param>
-        public override void DoLoad ( ContainerBuilder builder )
+        public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-            
-            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly())
+            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .AssignableTo < IViewModel > ( )
                    .AsSelf ( )
                    .AsImplementedInterfaces ( )
@@ -507,8 +587,6 @@ namespace KayMcCormick.Dev.Application
                        .SingleInstance ( ) ;
             }
         }
-
-        
     }
 
     /// <summary>
@@ -566,7 +644,5 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         public string TypeName { get { return _typeName ; } }
-
-
     }
 }

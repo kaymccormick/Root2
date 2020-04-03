@@ -764,13 +764,13 @@ namespace AnalysisControls.ViewModel
     /// <summary>
     /// 
     /// </summary>
-    public sealed class XmlDocumentElementCollection : IList, IEnumerable, ICollection
+    public sealed class XmlDocumentElementCollection : IList, IEnumerable, ICollection, IList <XmlDocElement>, ICollection<XmlDocElement>, IEnumerable<XmlDocElement>
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="listImplementation"></param>
-        public XmlDocumentElementCollection(IList listImplementation)
+        public XmlDocumentElementCollection(List < XmlDocElement > listImplementation)
         {
             _listImplementation = listImplementation;
         }
@@ -783,61 +783,89 @@ namespace AnalysisControls.ViewModel
             _listImplementation = new List<XmlDocElement>();
         }
 
-        private readonly IList _listImplementation;
+        private readonly List<XmlDocElement> _listImplementation;
         #region Implementation of IEnumerable
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerator GetEnumerator() { return _listImplementation.GetEnumerator(); }
+        public IEnumerator < XmlDocElement > GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
+
+        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _listImplementation ).GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        public void CopyTo(Array array, int index)
+        public void CopyTo ( Array array , int index ) { ( ( ICollection ) _listImplementation ).CopyTo ( array , index ) ; }
+
+        public bool Remove ( XmlDocElement item ) { return _listImplementation.Remove ( item ) ; }
+
+        int ICollection < XmlDocElement >.Count
         {
-            _listImplementation.CopyTo(array, index);
+            get { return _listImplementation.Count ; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Count { get { return _listImplementation.Count; } }
+        bool ICollection < XmlDocElement >.IsReadOnly => false ;
 
-        public object SyncRoot { get { return _listImplementation.SyncRoot; } }
+        int ICollection.Count
+        {
+            get { return _listImplementation.Count ; }
+        }
 
-        public bool IsSynchronized { get { return _listImplementation.IsSynchronized; } }
+        public object SyncRoot
+        {
+            get { return ( ( ICollection ) _listImplementation ).SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return ( ( ICollection ) _listImplementation ).IsSynchronized ; }
+        }
         #endregion
         #region Implementation of IList
-        public int Add(object value) { return _listImplementation.Add(value); }
+        public int Add ( object value ) { return ( ( IList ) _listImplementation ).Add ( value ) ; }
 
-        public bool Contains(object value) { return _listImplementation.Contains(value); }
+        public bool Contains ( object value ) { return ( ( IList ) _listImplementation ).Contains ( value ) ; }
 
-        public void Clear() { _listImplementation.Clear(); }
+        public void Add ( XmlDocElement item ) { _listImplementation.Add ( item ) ; }
 
-        public int IndexOf(object value) { return _listImplementation.IndexOf(value); }
+        void ICollection < XmlDocElement >.Clear ( ) { _listImplementation.Clear ( ) ; }
 
-        public void Insert(int index, object value)
+        public bool Contains ( XmlDocElement item ) { return _listImplementation.Contains ( item ) ; }
+
+        public void CopyTo ( XmlDocElement[] array , int arrayIndex ) { _listImplementation.CopyTo ( array , arrayIndex ) ; }
+
+        void IList.Clear ( ) { _listImplementation.Clear ( ) ; }
+
+        public int IndexOf ( object value ) { return ( ( IList ) _listImplementation ).IndexOf ( value ) ; }
+
+        public void Insert ( int index , object value ) { ( ( IList ) _listImplementation ).Insert ( index , value ) ; }
+
+        public void Remove ( object value ) { ( ( IList ) _listImplementation ).Remove ( value ) ; }
+
+        public int IndexOf ( XmlDocElement item ) { return _listImplementation.IndexOf ( item ) ; }
+
+        public void Insert ( int index , XmlDocElement item ) { _listImplementation.Insert ( index , item ) ; }
+
+        void IList < XmlDocElement >.RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
+
+        public XmlDocElement this [ int index ]
         {
-            _listImplementation.Insert(index, value);
+            get { return _listImplementation[ index ] ; }
+            set { _listImplementation[ index ] = value ; }
         }
 
-        public void Remove(object value) { _listImplementation.Remove(value); }
+        void IList.RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
 
-        public void RemoveAt(int index) { _listImplementation.RemoveAt(index); }
-
-        public object this[int index]
+        object IList.this [ int index ]
         {
-            get { return _listImplementation[index]; }
-            set { _listImplementation[index] = value; }
+            get { return ( ( IList ) _listImplementation )[ index ] ; }
+            set { ( ( IList ) _listImplementation )[ index ] = value ; }
         }
 
-        public bool IsReadOnly { get { return _listImplementation.IsReadOnly; } }
+        bool IList.IsReadOnly
+        {
+            get { return ( ( IList ) _listImplementation ).IsReadOnly ; }
+        }
 
-        public bool IsFixedSize { get { return _listImplementation.IsFixedSize; } }
+        public bool IsFixedSize
+        {
+            get { return ( ( IList ) _listImplementation ).IsFixedSize ; }
+        }
         #endregion
     }
 
@@ -1082,12 +1110,15 @@ namespace AnalysisControls.ViewModel
 
     /// <summary>
     /// </summary>
+    [ContentProperty( "DocumentElementCollection")]
     public class Para : BlockDocElem
     {
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
         public Para(IEnumerable<XmlDocElement> elements) : base(elements) { }
+
+        public Para(params XmlDocElement[] elements) : base(elements) { }
 
         /// <summary>
         /// 
@@ -1243,6 +1274,7 @@ namespace AnalysisControls.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    [ContentProperty( "DocumentElementCollection")]
     public class BlockDocElem : XmlDocElement
     {
         /// <summary>

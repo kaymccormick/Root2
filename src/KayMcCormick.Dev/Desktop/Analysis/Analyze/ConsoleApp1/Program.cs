@@ -1,12 +1,13 @@
 ﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
 using System.Data.SqlClient ;
+using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
 using System.Net.Sockets ;
+using System.Reactive.Subjects ;
 using System.Text ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
@@ -14,8 +15,6 @@ using System.Threading.Tasks.Dataflow ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
@@ -113,46 +112,63 @@ namespace ConsoleApp1
             }
         }
 
+        private static ILogger Logger = null ;
+
+        private static ApplicationInstance _appinst = null ;
+
         //============= Config [Edit these with your settings] =====================
         private static async Task < int > Main ( )
         {
             var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
-            var unused = AppLoggingConfigHelper.EnsureLoggingConfiguredAsync (
-                                                                              Console.WriteLine
-                                                                            , new
-                                                                              AppLoggingConfiguration
-                                                                              {
-                                                                                  IsEnabledConsoleTarget
-                                                                                      = true
-                                                                                , MinLogLevel =
-                                                                                      LogLevel.Trace
-                                                                              }
-                                                                             )
-                                               .ContinueWith (
-                                                              task => Console.WriteLine (
-                                                                                         "Logger async complete."
-                                                                                        )
-                                                             ) ;
+            Subject<ILogger> subject = new Subject < ILogger > ();
+            subject.Subscribe (
+                               logger => {
+                                   logger.Warn ( "Received logger" ) ;
+                                   Debug.WriteLine ( "got logger" ) ;
+                                   Logger = logger ;
+                                   if ( _appinst != null )
+                                   {
+                                       _appinst.Logger = logger ;
+                                   }
+                               }
+                              ) ;
+            Task.Run (
+                      ( ) => AppLoggingConfigHelper
+                            .EnsureLoggingConfiguredAsync (
+                                                           Console.WriteLine
+                                                         , new AppLoggingConfiguration
+                                                           {
+                                                               IsEnabledConsoleTarget = true
+                                                             , MinLogLevel =
+                                                                   LogLevel.Trace
+                                                           }
+                                                         , subject
+                                                          )
+                            .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ) )
+                     ) ;
+
+            Console.WriteLine ( "here" ) ;
             Console.WriteLine ( ConsoleAnalysisProgramGuid.ToString ( "X" ) ) ;
             Init ( ) ;
-            using ( var appinst = new ApplicationInstance (
-                                                           new ApplicationInstance.
-                                                               ApplicationInstanceConfiguration (
-                                                                                                 message
-                                                                                                     => {
-                                                                                                 }
-                                                                                               , ConsoleAnalysisProgramGuid
-                                                                                                )
-                                                          ) )
+            _appinst = new ApplicationInstance (
+                                                new ApplicationInstance.
+                                                    ApplicationInstanceConfiguration (
+                                                                                      message
+                                                                                          => {
+                                                                                      }
+                                                                                    , ConsoleAnalysisProgramGuid
+                                                                                     )
+                                               ) ;
+            using ( _appinst )
 
             {
-                appinst.AddModule ( new AppModule ( ) ) ;
-                appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
+                _appinst.AddModule ( new AppModule ( ) ) ;
+                _appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 PopulateJsonConverters ( false ) ;
                 ILifetimeScope scope ;
                 try
                 {
-                    scope = appinst.GetLifetimeScope ( ) ;
+                    scope = _appinst.GetLifetimeScope ( ) ;
                 }
                 catch ( ContainerBuildException buildException )
                 {
@@ -319,8 +335,11 @@ namespace ConsoleApp1
             }
 #endif
 
+            context.Ui.Init();
+            // object o11 = XamlReader.Parse(
+            //                             "<Toplevel xmlns=\"clr-namespace:Terminal.Gui;assembly=Terminal.Gui\">\r\n</Toplevel>\r\n"
+            //                            ) ;
             context.Ui.Run ( ) ;
-            
 
             foreach ( var projFile in Directory.EnumerateFiles (
                                                                 @"e:\kay2020\source"

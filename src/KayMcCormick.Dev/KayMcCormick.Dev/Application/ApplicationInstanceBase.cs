@@ -85,7 +85,7 @@ namespace KayMcCormick.Dev.Application
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         protected abstract IEnumerable LoadConfiguration (
-            [ NotNull ] LogDelegates.LogMethod logMethod2
+            [ NotNull ] Action < string > logMethod2
         ) ;
 
         /// <summary>

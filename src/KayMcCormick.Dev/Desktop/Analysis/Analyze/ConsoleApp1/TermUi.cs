@@ -1,14 +1,12 @@
-using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
-using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Terminal.Gui ;
 
 namespace ConsoleApp1
 {
-    internal class TermUi
+    internal sealed class TermUi
     {
         private const    string         FrameTitle = "Details" ;
         private readonly ModelResources _modelResources ;
@@ -19,8 +17,11 @@ namespace ConsoleApp1
         private          FrameView      _frame ;
         private          TextView       _textView ;
         private          MenuBar        _menuBar ;
+        private Toplevel _toplevel ;
 
         public TermUi ( ModelResources modelResources ) { _modelResources = modelResources ; }
+
+        public Toplevel Toplevel1 { get { return _toplevel ; } set { _toplevel = value ; } }
 
         private void TerminalResized ( )
         {
@@ -36,8 +37,9 @@ namespace ConsoleApp1
         {
             var x = 1 ;
             var y = 0 ;
-            /* Menubar occupies row 1 */
+            /* Menu bar occupies row 1 */
             x += 2 ;
+            // ReSharper disable once UselessBinaryOperation
             y += 2 ;
 
             var right = width - 2 ;
@@ -51,7 +53,7 @@ namespace ConsoleApp1
             return r1 ;
         }
 
-        public void Run ( )
+        public void Init( )
         {
             Application.Init ( ) ;
             _consoleDriver = Application.Driver ;
@@ -83,18 +85,23 @@ namespace ConsoleApp1
                                           }
                         } ;
             _frame.Add ( _textView ) ;
-            _listView.SelectedChanged += ( ) => {
-                _textView.Text = _listView.List[ _listView.SelectedItem ].ToString ( ) ;
-            } ;
+            _listView.SelectedChanged += ( ) => _textView.Text = _listView.List[ _listView.SelectedItem ].ToString ( ) ;
 
             Application.Driver.SetTerminalResized ( TerminalResized ) ;
 
-            Application.Top.Add ( _menuBar ) ;
-            Application.Top.Add ( _listView ) ;
-            Application.Top.Add ( _frame ) ;
-            Application.Run ( ) ;
+            Toplevel1 = Application.Top ;
+            Toplevel1.Add ( _menuBar ) ;
+            Toplevel1.Add ( _listView ) ;
+            Toplevel1.Add ( _frame ) ;
+            
         }
 
+        public void Run ( )
+        {
+            Application.Run();
+        }
+
+        [ NotNull ]
         private MenuBar CreateMenuBar ( )
         {
             var quitItem = new MenuItem (

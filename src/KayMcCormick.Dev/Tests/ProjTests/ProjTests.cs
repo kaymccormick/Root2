@@ -155,8 +155,13 @@ namespace ProjTests
         [ Fact ]
         public void TestDoc ( )
         {
+            // var xml = "<Summary xmlns=\"clr-namespace:AnalysisControls.ViewModel;"
+                      // + "assembly=AnalysisControls\">Hello</Summary>" ;
+            // var s1 = XamlReader.Parse ( xml ) ;
+            // _output.WriteLine(XamlWriter.Save(s1));
             Summary s = new Summary();
-            s.DocumentElementCollection.Add ( new XmlDocText ( "hello" ) ) ;
+            var p = new Para ( new XmlDocText ( "hello" ) ) ;
+            s.DocumentElementCollection.Add (p) ;
             var x = XamlWriter.Save ( s ) ;
             _output.WriteLine(x);
         }
