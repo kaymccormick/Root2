@@ -199,10 +199,10 @@ namespace AnalysisControls
         public string ElementName { get { return _elementName ; } set { _elementName = value ; } }
 
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public SyntaxFieldCollection Fields
         {
             get { return _fields ; }
-            set { _fields = value ; }
         }
 
         /// <summary>
@@ -295,7 +295,8 @@ namespace AnalysisControls
         private string _name ;
         private string _typeName ;
         private SyntaxKindCollection _kinds = new SyntaxKindCollection ();
-        
+
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Content)]
         public string TypeName  { get { return _typeName ; } set { _typeName = value ; } }
 
         public string Name { get { return _name ; } set { _name = value ; } }
@@ -306,7 +307,7 @@ namespace AnalysisControls
             get { return _kinds ; }
         }
 
-        
+        public Type Type { get ; set ; }
     }
 
     public class SyntaxKindCollection : IList, ICollection, IEnumerable

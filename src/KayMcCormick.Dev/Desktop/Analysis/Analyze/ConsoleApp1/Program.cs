@@ -355,110 +355,8 @@ namespace ConsoleApp1
             //
             //     Console.WriteLine ( projFile ) ;
             // }
-            //var model1 = context.Scope.Resolve<TypesViewModel>();
-            var model1 = new TypesViewModel();
-            model1.BeginInit();
-            model1.EndInit();
-
-            var syntax = XDocument.Parse ( Resources.Syntax ) ;
-            foreach ( var xElement in syntax.Root.Elements ( ) )
-            {
-                switch (xElement.Name.LocalName)
-                {
-                    case "PredefinedNode":
-                        var typeName = xElement.Attribute(XName.Get("Name")).Value ;
-                        typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
-                        var t = typeof(CSharpSyntaxNode).Assembly.GetType(typeName);
-                        if ( t == null )
-                        {
-                            Debug.WriteLine ("No type for " + typeName  );
-                        }  else 
-                        if ( model1.Map.Contains ( t ) )
-                        {
-                            var typ = (AppTypeInfo)model1.Map[ t ] ;
-                            typ.ElementName = xElement.Name.LocalName ;
-                        }
-
-                        break;
-                    case "AbstractNode":
-                        var typeName1 = xElement.Attribute(XName.Get("Name")).Value;
-                        typeName1 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName1}";
-                        var t1 = typeof(CSharpSyntaxNode).Assembly.GetType(typeName1);
-                        if (t1 == null)
-                        {
-                            Debug.WriteLine("No type for " + typeName1);
-                        }
-                        else
-                        {
-                            var typ1 = (AppTypeInfo)model1.Map[ t1 ] ;
-                            typ1.ElementName = xElement.Name.LocalName ;
-                            var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                            //Debug.WriteLine ( comment ) ;
-                            var fields = new List < Tuple < string , string, List <string> > > ( ) ;
-                            foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
-                            {
-                                var fieldName = field.Attribute(XName.Get("Name")).Value;
-                                var fieldType = field.Attribute(XName.Get("Type")).Value;
-                                
-                                var kinds = field.Elements ( "Kind" )
-                                                 .Select ( element => element.Attribute ( "Name" ).Value )
-                                                 .ToList ( ) ;
-                                if ( kinds.Any ( ) )
-                                {
-                                    //Debug.WriteLine ( string.Join ( ", " , kinds ) ) ;
-                                }
-
-                                typ1.Fields.Add(new SyntaxFieldInfo(fieldName, fieldType, kinds.ToArray()));
-                            }
-
-                        }
-
-                        break;
-                    case "Node":
-                        var typeName2 = xElement.Attribute(XName.Get("Name")).Value;
-                        typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}";
-                        var t2 = typeof(CSharpSyntaxNode).Assembly.GetType(typeName2);
-                        if (t2 == null)
-                        {
-                            Debug.WriteLine("No type for " + typeName2);
-                        }
-                        else
-                        {
-                            var typ2 = (AppTypeInfo)model1.Map[t2];
-                            typ2.ElementName = xElement.Name.LocalName;
-                            var comment = xElement.Element(XName.Get("TypeComment"));
-                            //Debug.WriteLine ( comment ) ;
-                            var fields = new List<Tuple<string, string, List<string>>>();
-                            foreach (var field in xElement.Elements(XName.Get("Field")))
-                            {
-                                var fieldName = field.Attribute(XName.Get("Name")).Value;
-                                var fieldType = field.Attribute(XName.Get("Type")).Value;
-
-                                var kinds = field.Elements("Kind")
-                                                 .Select(element => element.Attribute("Name").Value)
-                                                 .ToList();
-                                if (kinds.Any())
-                                {
-                                    //Debug.WriteLine(string.Join(", ", kinds));
-                                }
-
-                                //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
-                                typ2.Fields.Add(new SyntaxFieldInfo(fieldName, fieldType, kinds.ToArray()));
-                            }
-
-                        }
-                        break;
-
-                    
-                    default:
-                    throw new InvalidOperationException();
-                }
-            }
-            TypeMapDictionary d = new TypeMapDictionary();
-            d[typeof(string) ] = new AppTypeInfo();
-            Debug.WriteLine(XamlWriter.Save(d));
-
-            Debug.WriteLine(XamlWriter.Save ( model1 )) ;
+            var model1 = context.Scope.Resolve<TypesViewModel>();
+            //LoadSyntax ( model1 ) ;
             var b = new SqlConnectionStringBuilder
                     {
                         IntegratedSecurity = true
@@ -637,6 +535,120 @@ namespace ConsoleApp1
             // Console.ReadLine ( ) ;
             // }
             // }
+        }
+
+        private static void LoadSyntax ( TypesViewModel model1 )
+        {
+            var syntax = XDocument.Parse ( Resources.Syntax ) ;
+            foreach ( var xElement in syntax.Root.Elements ( ) )
+            {
+                switch ( xElement.Name.LocalName )
+                {
+                    case "PredefinedNode" :
+                        var typeName = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                        typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
+                        var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName ) ;
+                        if ( t == null )
+                        {
+                            Debug.WriteLine ( "No type for " + typeName ) ;
+                        }
+                        else if ( model1.Map.Contains ( t ) )
+                        {
+                            var typ = ( AppTypeInfo ) model1.Map[ t ] ;
+                            typ.ElementName = xElement.Name.LocalName ;
+                        }
+
+                        break ;
+                    case "AbstractNode" :
+                        var typeName1 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                        typeName1 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName1}" ;
+                        var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName1 ) ;
+                        if ( t1 == null )
+                        {
+                            Debug.WriteLine ( "No type for " + typeName1 ) ;
+                        }
+                        else
+                        {
+                            var typ1 = ( AppTypeInfo ) model1.Map[ t1 ] ;
+                            typ1.ElementName = xElement.Name.LocalName ;
+                            var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
+                            //Debug.WriteLine ( comment ) ;
+                            var fields = new List < Tuple < string , string , List < string > > > ( ) ;
+                            foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                            {
+                                var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
+                                var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+
+                                var kinds = field.Elements ( "Kind" )
+                                                 .Select ( element => element.Attribute ( "Name" ).Value )
+                                                 .ToList ( ) ;
+                                if ( kinds.Any ( ) )
+                                {
+                                    //Debug.WriteLine ( string.Join ( ", " , kinds ) ) ;
+                                }
+
+                                typ1.Fields.Add (
+                                                 new SyntaxFieldInfo (
+                                                                      fieldName
+                                                                    , fieldType
+                                                                    , kinds.ToArray ( )
+                                                                     )
+                                                ) ;
+                            }
+                        }
+
+                        break ;
+                    case "Node" :
+                        var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                        typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
+                        var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
+                        if ( t2 == null )
+                        {
+                            Debug.WriteLine ( "No type for " + typeName2 ) ;
+                        }
+                        else
+                        {
+                            var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
+                            typ2.ElementName = xElement.Name.LocalName ;
+                            var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
+                            //Debug.WriteLine ( comment ) ;
+                            var fields = new List < Tuple < string , string , List < string > > > ( ) ;
+                            foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                            {
+                                var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
+                                var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+
+                                var kinds = field.Elements ( "Kind" )
+                                                 .Select ( element => element.Attribute ( "Name" ).Value )
+                                                 .ToList ( ) ;
+                                if ( kinds.Any ( ) )
+                                {
+                                    //Debug.WriteLine(string.Join(", ", kinds));
+                                }
+
+                                //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
+                                typ2.Fields.Add (
+                                                 new SyntaxFieldInfo (
+                                                                      fieldName
+                                                                    , fieldType
+                                                                    , kinds.ToArray ( )
+                                                                     )
+                                                ) ;
+                            }
+                        }
+
+                        break ;
+
+
+                    default : throw new InvalidOperationException ( ) ;
+                }
+            }
+
+            TypeMapDictionary d = new TypeMapDictionary ( ) ;
+            d[ typeof ( string ) ] = new AppTypeInfo ( ) ;
+            Debug.WriteLine ( XamlWriter.Save ( d ) ) ;
+
+            Debug.WriteLine ( XamlWriter.Save ( model1 ) ) ;
         }
 
 

@@ -1,10 +1,3 @@
-<TypeMapDictionary xmlns="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls" xmlns:anal="http://kaymccormick.com/xaml/analysis" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-  <anal:AppTypeInfo Type="{assembly:Null}" Title="{assembly:Null}" ColorValue="{assembly:Null}" DocInfo="{assembly:Null}" ElementName="{assembly:Null}" assembly:Key="{assembly:Type s:String}" xmlns:s="clr-namespace:System;assembly=mscorlib">
-    <anal:AppTypeInfo.Fields>
-      <anal:SyntaxFieldCollection />
-    </anal:AppTypeInfo.Fields>
-  </anal:AppTypeInfo>
-</TypeMapDictionary>
 <TypesViewModel ShowBordersIsChecked="False" xmlns="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls" xmlns:mcacs="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp" xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:anal="http://kaymccormick.com/xaml/analysis">
   <TypesViewModel.DocumentCollection>
     <TypeDocumentation ElementId="T:Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode" Type="mcacs:CSharpSyntaxNode">
@@ -4696,9 +4689,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:AccessorDeclarationSyntax" Title="Accessor Declaration" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:AccessorDeclarationSyntax}">
       <anal:AppTypeInfo.Fields>
@@ -5697,9 +5687,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:DeclarationExpressionSyntax" Title="Declaration Expression" ColorValue="4290286632" ElementName="Node" assembly:Key="{assembly:Type mcacss:DeclarationExpressionSyntax}">
       <anal:AppTypeInfo.DocInfo>
@@ -6099,9 +6086,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:ExternAliasDirectiveSyntax" Title="Extern Alias Directive" ColorValue="4286080130" ElementName="Node" assembly:Key="{assembly:Type mcacss:ExternAliasDirectiveSyntax}">
       <anal:AppTypeInfo.DocInfo>
@@ -6484,9 +6468,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:InterfaceDeclarationSyntax" Title="Interface Declaration" ColorValue="4282150525" ElementName="Node" assembly:Key="{assembly:Type mcacss:InterfaceDeclarationSyntax}">
       <anal:AppTypeInfo.DocInfo>
@@ -6520,11 +6501,7 @@
         </anal:SyntaxFieldInfo>
       </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
-    <anal:AppTypeInfo Type="mcacss:InterpolatedStringContentSyntax" Title="Interpolated String Content" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:InterpolatedStringContentSyntax}">
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
-    </anal:AppTypeInfo>
+    <anal:AppTypeInfo Type="mcacss:InterpolatedStringContentSyntax" Title="Interpolated String Content" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:InterpolatedStringContentSyntax}" />
     <anal:AppTypeInfo Type="mcacss:InterpolatedStringExpressionSyntax" Title="Interpolated String Expression" ColorValue="4290286632" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:InterpolatedStringExpressionSyntax}">
       <anal:AppTypeInfo.Fields>
         <anal:SyntaxFieldInfo TypeName="SyntaxToken" Name="StringStartToken">
@@ -6853,9 +6830,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:MemberDeclarationSyntax" Title="Member Declaration" ColorValue="4286080130" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:MemberDeclarationSyntax}">
       <anal:AppTypeInfo.DocInfo>
@@ -6973,9 +6947,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:NullableDirectiveTriviaSyntax" Title="Nullable Directive Trivia" ColorValue="4288594572" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:NullableDirectiveTriviaSyntax}">
       <anal:AppTypeInfo.Fields>
@@ -7247,11 +7218,7 @@
         </anal:SyntaxFieldInfo>
       </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
-    <anal:AppTypeInfo Type="mcacss:PatternSyntax" Title="Pattern" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:PatternSyntax}">
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
-    </anal:AppTypeInfo>
+    <anal:AppTypeInfo Type="mcacss:PatternSyntax" Title="Pattern" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:PatternSyntax}" />
     <anal:AppTypeInfo Type="mcacss:PointerTypeSyntax" Title="Pointer Type" ColorValue="4288594572" ElementName="Node" assembly:Key="{assembly:Type mcacss:PointerTypeSyntax}">
       <anal:AppTypeInfo.DocInfo>
         <TypeDocumentation ElementId="T:Microsoft.CodeAnalysis.CSharp.Syntax.PointerTypeSyntax" Type="mcacss:PointerTypeSyntax">
@@ -7462,11 +7429,7 @@
         <anal:SyntaxFieldInfo TypeName="QueryContinuationSyntax" Name="Continuation" />
       </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
-    <anal:AppTypeInfo Type="mcacss:QueryClauseSyntax" Title="Query Clause" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:QueryClauseSyntax}">
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
-    </anal:AppTypeInfo>
+    <anal:AppTypeInfo Type="mcacss:QueryClauseSyntax" Title="Query Clause" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:QueryClauseSyntax}" />
     <anal:AppTypeInfo Type="mcacss:QueryContinuationSyntax" Title="Query Continuation" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:QueryContinuationSyntax}">
       <anal:AppTypeInfo.Fields>
         <anal:SyntaxFieldInfo TypeName="SyntaxToken" Name="IntoKeyword">
@@ -7634,11 +7597,7 @@
         <anal:SyntaxFieldInfo TypeName="ExpressionSyntax" Name="Expression" />
       </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
-    <anal:AppTypeInfo Type="mcacss:SelectOrGroupClauseSyntax" Title="Select Or Group Clause" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:SelectOrGroupClauseSyntax}">
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
-    </anal:AppTypeInfo>
+    <anal:AppTypeInfo Type="mcacss:SelectOrGroupClauseSyntax" Title="Select Or Group Clause" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:SelectOrGroupClauseSyntax}" />
     <anal:AppTypeInfo Type="mcacss:ShebangDirectiveTriviaSyntax" Title="Shebang Directive Trivia" ColorValue="4288594572" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:ShebangDirectiveTriviaSyntax}">
       <anal:AppTypeInfo.Fields>
         <anal:SyntaxFieldInfo TypeName="SyntaxToken" Name="HashToken">
@@ -7795,9 +7754,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:SubpatternSyntax" Title="Subpattern" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:SubpatternSyntax}">
       <anal:AppTypeInfo.Fields>
@@ -8096,9 +8052,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:TypeParameterListSyntax" Title="Type Parameter List" ColorValue="4286080130" ElementName="Node" assembly:Key="{assembly:Type mcacss:TypeParameterListSyntax}">
       <anal:AppTypeInfo.DocInfo>
@@ -8145,9 +8098,6 @@
           </Summary>
         </TypeDocumentation>
       </anal:AppTypeInfo.DocInfo>
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
     <anal:AppTypeInfo Type="mcacss:UndefDirectiveTriviaSyntax" Title="Undef Directive Trivia" ColorValue="4288594572" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:UndefDirectiveTriviaSyntax}">
       <anal:AppTypeInfo.Fields>
@@ -8219,11 +8169,7 @@
         <anal:SyntaxFieldInfo TypeName="EqualsValueClauseSyntax" Name="Initializer" />
       </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
-    <anal:AppTypeInfo Type="mcacss:VariableDesignationSyntax" Title="Variable Designation" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:VariableDesignationSyntax}">
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
-    </anal:AppTypeInfo>
+    <anal:AppTypeInfo Type="mcacss:VariableDesignationSyntax" Title="Variable Designation" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:VariableDesignationSyntax}" />
     <anal:AppTypeInfo Type="mcacss:VarPatternSyntax" Title="Var Pattern" ColorValue="4290286632" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:VarPatternSyntax}">
       <anal:AppTypeInfo.Fields>
         <anal:SyntaxFieldInfo TypeName="SyntaxToken" Name="VarKeyword">
@@ -8400,11 +8346,7 @@
         </anal:SyntaxFieldInfo>
       </anal:AppTypeInfo.Fields>
     </anal:AppTypeInfo>
-    <anal:AppTypeInfo Type="mcacss:XmlNodeSyntax" Title="Xml Node" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:XmlNodeSyntax}">
-      <anal:AppTypeInfo.Fields>
-        <anal:SyntaxFieldCollection />
-      </anal:AppTypeInfo.Fields>
-    </anal:AppTypeInfo>
+    <anal:AppTypeInfo Type="mcacss:XmlNodeSyntax" Title="Xml Node" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="AbstractNode" assembly:Key="{assembly:Type mcacss:XmlNodeSyntax}" />
     <anal:AppTypeInfo Type="mcacss:XmlPrefixSyntax" Title="Xml Prefix" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="Node" assembly:Key="{assembly:Type mcacss:XmlPrefixSyntax}">
       <anal:AppTypeInfo.Fields>
         <anal:SyntaxFieldInfo TypeName="SyntaxToken" Name="Prefix">

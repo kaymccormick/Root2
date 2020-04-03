@@ -61,24 +61,25 @@ using ColorConverter = System.Windows.Media.ColorConverter ;
 
 namespace ProjTests
 {
-    [ CollectionDefinition ( "GeneralPurpose" ) ]
+//    [ CollectionDefinition ( "GeneralPurpose" ) ]
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
 
     {
     }
 
     [ Collection ( "GeneralPurpose" ) ]
-    [ ClearLoggingRules ]
+    // [ ClearLoggingRules ]
 #if VSSETTINGS
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
 #endif
     //[ LoggingRule ( typeof ( DefaultObjectIdProvider ) , nameof ( LogLevel.Warn ) ) ]
-    [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
-    [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
-    [ BeforeAfterLogger ]
-    public sealed class ProjTests : IClassFixture < LoggingFixture >
-      , IClassFixture < ProjectFixture >
-      , IDisposable
+    // [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
+    // [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
+    // [ BeforeAfterLogger ]
+    public sealed class ProjTests 
+        // : IClassFixture < LoggingFixture >
+      // , IClassFixture < ProjectFixture >
+      : IDisposable
     {
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
@@ -95,24 +96,24 @@ namespace ProjTests
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
             ITestOutputHelper            output
-          , [ CanBeNull ] LoggingFixture loggingFixture
-          , ProjectFixture               projectFixture
+          // , [ CanBeNull ] LoggingFixture loggingFixture
+          // , ProjectFixture               projectFixture
         )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
             _output                                      =  output ;
-            _loggingFixture                              =  loggingFixture ;
-            _projectFixture                              =  projectFixture ;
+            // _loggingFixture                              =  loggingFixture ;
+            // _projectFixture                              =  projectFixture ;
 
 
             if ( ! _disableLogging )
             {
-                loggingFixture?.SetOutputHelper ( output , this ) ;
+                // loggingFixture?.SetOutputHelper ( output , this ) ;
 
-                if ( _loggingFixture != null )
-                {
-                    _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
-                }
+                // if ( _loggingFixture != null )
+                // {
+                    // _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
+                // }
             }
         }
 
@@ -905,10 +906,10 @@ namespace ProjTests
         {
             // _loggingFixture?.Dispose ( ) ;
             AppDomain.CurrentDomain.FirstChanceException -= CurrentDomainOnFirstChanceException ;
-            if ( ! _disableLogging )
-            {
-                _loggingFixture.SetOutputHelper ( null ) ;
-            }
+            // if ( ! _disableLogging )
+            // {
+                // _loggingFixture.SetOutputHelper ( null ) ;
+            // }
         }
 
         [ WpfFact ]

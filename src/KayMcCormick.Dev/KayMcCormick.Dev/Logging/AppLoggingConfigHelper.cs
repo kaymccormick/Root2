@@ -864,7 +864,7 @@ namespace KayMcCormick.Dev.Logging
 
 
                 var logger = _factory.GetLogger("DefaultLogger");
-                observable.OnNext(logger);
+                observable?.OnNext(logger);
                 // DumpPossibleConfig ( LogManager.Configuration ) ;
                 return logger ;
             }
