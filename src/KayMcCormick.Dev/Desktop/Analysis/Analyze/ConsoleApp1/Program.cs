@@ -1,5 +1,7 @@
 ﻿using System ;
+using System.Collections ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Data ;
 using System.Data.SqlClient ;
 using System.Data.SqlTypes ;
@@ -366,6 +368,46 @@ namespace ConsoleApp1
             var c = new SqlConnection ( b.ConnectionString ) ;
             await c.OpenAsync ( ) ;
 
+            var bb1 = new SqlCommand ( "select example, syntaxkind, typename, tokens, id from syntaxexample2" , c) ;
+            var result = await bb1.ExecuteReaderAsync ( ) ;
+            ExampleDict d1 = new ExampleDict();
+            for ( ; ; )
+            {
+                var moreRows = await result.ReadAsync ( ) ;
+                if ( ! moreRows ) break ;
+                var kind = result.GetInt32 ( 1 ) ;
+                var k = Enum.GetName ( typeof ( SyntaxKind ) , ( uint ) kind ) ;
+                Enum.TryParse<SyntaxKind> ( k , out var k2 ) ;
+                ArrayList l = null ;
+                if ( !d1.Contains( k2)) 
+                {
+                    l = new ArrayList ( ) ;//List < ExampleSyntax > ();
+                    d1[ k2 ] = l ;
+                } else
+                {
+                    l = ( ArrayList ) d1[ k2 ] ;
+                }
+
+                var reader1 = result.GetXmlReader ( 3 ) ;
+                reader1.MoveToContent( ) ;
+                var tokens = (XElement)XDocument.ReadFrom ( reader1 ) ;
+                var x = tokens
+                      .Elements ( )
+                      .Select ( element => new SToken ( element.Name.LocalName , element.Value ) )
+                      .ToList ( ) ;
+                var exampleSyntax = new ExampleSyntax(kind, result.GetString(0), result.GetString(2), x, result.GetInt32(4)) ;
+                var xx11 = XamlWriter.Save ( exampleSyntax ) ;
+                //Debug.WriteLine(xx11);
+                l.Add(exampleSyntax);
+
+            }
+
+            var d2 = (IDictionary) d1 ;
+            using ( var fileStream = File.OpenWrite ( @"C:\data\logs\xaml" ) )
+            {
+                XamlWriter.Save ( d2 , fileStream ) ;
+            }
+
             var bb2 = new SqlCommand (
                                       "insert into syntaxexample2 (example, syntaxkind, typename, tokens) values (@example, @kind, @typename, @tokens)"
                                     , c
@@ -687,6 +729,173 @@ namespace ConsoleApp1
         }
 
         private static void Init ( ) { }
+    }
+
+    public class ExampleTokens : IList , ICollection , IEnumerable
+    {
+        private IList _listImplementation = new List<SToken>();
+        #region Implementation of IEnumerable
+        public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
+        #endregion
+        #region Implementation of ICollection
+        public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+
+        public int Count
+        {
+            get { return _listImplementation.Count ; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _listImplementation.SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _listImplementation.IsSynchronized ; }
+        }
+        #endregion
+        #region Implementation of IList
+        public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
+
+        public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
+
+        public void Clear ( ) { _listImplementation.Clear ( ) ; }
+
+        public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
+
+        public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
+
+        public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
+
+        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
+
+        public object this [ int index ]
+        {
+            get { return _listImplementation[ index ] ; }
+            set { _listImplementation[ index ] = value ; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _listImplementation.IsReadOnly ; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _listImplementation.IsFixedSize ; }
+        }
+        #endregion
+    }
+    public class SToken
+    {
+        public SToken ( ) {
+        }
+
+        public SToken ( string tokenKind, string tokenValue)
+        {
+            TokenKind = tokenKind;
+            TokenValue = tokenValue ;
+        }
+
+        public string TokenKind { get; set ; }
+
+        public string TokenValue { get ; set ; }
+    }
+
+    public class ExampleDict : IDictionary, ICollection, IEnumerable
+    {
+        private IDictionary _dictionaryImplementation = new Dictionary<SyntaxKind, ArrayList>();
+        #region Implementation of IEnumerable
+        public bool Contains ( object key ) { return _dictionaryImplementation.Contains ( key ) ; }
+
+        public void Add ( object key , object value ) { _dictionaryImplementation.Add ( key , value ) ; }
+
+        public void Clear ( ) { _dictionaryImplementation.Clear ( ) ; }
+
+        public IDictionaryEnumerator GetEnumerator ( ) { return _dictionaryImplementation.GetEnumerator ( ) ; }
+
+        public void Remove ( object key ) { _dictionaryImplementation.Remove ( key ) ; }
+
+        public object this [ object key ]
+        {
+            get { return _dictionaryImplementation[ key ] ; }
+            set { _dictionaryImplementation[ key ] = value ; }
+        }
+
+        public ICollection Keys
+        {
+            get { return _dictionaryImplementation.Keys ; }
+        }
+
+        public ICollection Values
+        {
+            get { return _dictionaryImplementation.Values ; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _dictionaryImplementation.IsReadOnly ; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _dictionaryImplementation.IsFixedSize ; }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _dictionaryImplementation ).GetEnumerator ( ) ; }
+        #endregion
+        #region Implementation of ICollection
+        public void CopyTo ( Array array , int index ) { _dictionaryImplementation.CopyTo ( array , index ) ; }
+
+        public int Count
+        {
+            get { return _dictionaryImplementation.Count ; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _dictionaryImplementation.SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _dictionaryImplementation.IsSynchronized ; }
+        }
+        #endregion
+    }
+    [ContentProperty("Example")]
+    public class ExampleSyntax
+    {
+        private int _kind ;
+        private string _example ;
+        private string _typeName ;
+
+        private ExampleTokens _tokens = new ExampleTokens();
+        private int _id ;
+
+        public ExampleSyntax ( int kind , string example , string typeName , List<SToken> tokens , int id )
+        {
+            Kind = kind ;
+            Example = example ;
+            TypeName = typeName ;
+            Id = id ;
+            foreach ( var sToken in tokens )
+            {
+                Tokens.Add ( sToken ) ;
+            }
+        }
+
+        public int Kind { get { return _kind ; } set { _kind = value ; } }
+
+        public string Example { get { return _example ; } set { _example = value ; } }
+
+        public string TypeName { get { return _typeName ; } set { _typeName = value ; } }
+        
+        public int Id { get { return _id ; } set { _id = value ; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public ExampleTokens Tokens { get { return _tokens ; } }
     }
 
     // ReSharper disable once UnusedType.Global

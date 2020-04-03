@@ -16,6 +16,7 @@ using System.Globalization ;
 using System.IO ;
 using System.Linq ;
 using System.Reflection ;
+using System.Resources ;
 using System.Runtime.ExceptionServices ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Runtime.Serialization.Formatters.Soap ;
@@ -25,10 +26,11 @@ using System.Text.Json.Serialization ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows ;
+using System.Windows.Baml2006 ;
 using System.Windows.Controls ;
-using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using System.Xaml ;
 using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
@@ -58,6 +60,8 @@ using NLog.Layouts ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
+using XamlReader = System.Windows.Markup.XamlReader ;
+using XamlWriter = System.Windows.Markup.XamlWriter ;
 
 namespace ProjTests
 {
@@ -1013,6 +1017,18 @@ namespace ProjTests
             // }
             // }
             // }
+        }
+        [WpfFact]
+        public void Test111 ( )
+        {
+            ResourceManager x = new ResourceManager (
+                                                     "AnalysisControls.g"
+                                                   , typeof ( PythonControl ).Assembly
+                                                    ) ;
+            var y = x.GetStream ( "mainstatusbar.baml" ) ;
+            var b = new Baml2006Reader(y, new XamlReaderSettings(){});
+            var c = b.SchemaContext ;
+            var t = c.GetXamlType ( typeof ( TypesViewModel ) ) ;
         }
     }
 

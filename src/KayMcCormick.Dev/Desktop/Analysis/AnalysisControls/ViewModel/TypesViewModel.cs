@@ -14,6 +14,7 @@ using AnalysisAppLib.Properties ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
 namespace AnalysisControls.ViewModel
@@ -633,11 +634,76 @@ namespace AnalysisControls.ViewModel
 
             foreach ( SyntaxFieldInfo rField in r.Fields )
             {
-                var t = typeof ( CSharpSyntaxNode ).Assembly.GetType (
-                                                              "Microsoft.CodeAnalysis.CSharp.Syntax."
-                                                                  + rField.TypeName
-                                                             ) ;
-                rField.Type = t ;
+                if ( rField.TypeName == "SyntaxList<SyntaxToken>" )
+                {
+                    rField.TypeName = "SyntaxTokenList" ;
+                }
+                var typs = SyntaxFactory.ParseTypeName ( rField.TypeName ) ;
+                if ( typs is GenericNameSyntax gns )
+                {
+                    var id = gns.Identifier.ValueText ;
+                    Type t0 = null ;
+                    // if ( id == "SeparatedSyntaxList" )
+                    // {
+                        // t0 = typeof ( SeparatedSyntaxList <> ) ;
+                    // }
+                    t0 = typeof(SyntaxNode).Assembly.GetType(
+                                                                      "Microsoft.CodeAnalysis."
+                                                                      + id + "`1"
+                                                                     );
+                    if ( t0 == null )
+                    {
+                        Debug.WriteLine ( "fail" + id ) ;
+                    }
+                    else
+                    {
+                        SimpleNameSyntax s = ( SimpleNameSyntax) gns.TypeArgumentList.Arguments[ 0 ] ;
+                        var t1 = typeof(CSharpSyntaxNode).Assembly.GetType(
+                                                                           "Microsoft.CodeAnalysis.CSharp.Syntax."
+                                                                           + s.Identifier.ValueText
+                                                                          );
+                        if ( t1 == null )
+                        {
+                            t1 = typeof(SyntaxNode).Assembly.GetType(
+                                                                               "Microsoft.CodeAnalysis."
+                                                                               + s.Identifier.ValueText
+                                                                              );
+
+                        }
+                        var t2 = t0.MakeGenericType ( t1 ) ;
+                        if ( t2 == null )
+                        {
+                            Debug.WriteLine ( "Boo" ) ;
+                        }
+                        else
+                        {
+                            Debug.WriteLine ( "yay!" ) ;
+                        }
+
+                        rField.Type = t2 ;
+                    }
+                }
+                else
+                {
+                    var t = typeof ( CSharpSyntaxNode ).Assembly.GetType (
+                                                                          "Microsoft.CodeAnalysis.CSharp.Syntax."
+                                                                          + rField.TypeName
+                                                                         ) ;
+                    if ( t == null )
+                    {
+                        t = typeof ( SyntaxNode ).Assembly.GetType (
+                                                                    "Microsoft.CodeAnalysis."
+                                                                    + rField.TypeName
+                                                                   ) ;
+                        if ( t == null )
+                        {
+                            Debug.WriteLine ( rField.TypeName ) ;
+                        }
+
+                    }
+
+                    rField.Type = t ;
+                }
             }
 
             return r ;
