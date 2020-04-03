@@ -13,6 +13,9 @@ using System.Collections.ObjectModel ;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class StringObservableCollection : ObservableCollection < string >
     {
     }

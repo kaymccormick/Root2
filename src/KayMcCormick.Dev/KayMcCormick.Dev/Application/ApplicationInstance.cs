@@ -52,6 +52,9 @@ namespace KayMcCormick.Dev.Application
         public static Guid ConfigTest { get ; set ; } =
             new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Guid ClassLibTests { get ; set ; } =
             new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
     }
@@ -179,6 +182,9 @@ namespace KayMcCormick.Dev.Application
             /// </summary>
             public bool DisableServiceHost { get ; }
 
+            /// <summary>
+            /// 
+            /// </summary>
             public Action < ContainerBuilder > BuilderAction
             {
                 get { return _builderAction ; }
@@ -278,8 +284,14 @@ namespace KayMcCormick.Dev.Application
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IContainer Container1 { get { return _container ; } set { _container = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ReplaySubject < AppLogMessage > Subject1 { get { return _subject ; } }
 
         /// <summary>

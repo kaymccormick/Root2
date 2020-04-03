@@ -1049,11 +1049,6 @@
         <RibbonTab Header="Views">
             <RibbonGroup
               ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
-            <RibbonGroup.GroupSizeDefinitions>
-              <RibbonGroupSizeDefinition>
-                <RibbonControlSizeDefinition/>
-              </RibbonGroupSizeDefinition>
-            </RibbonGroup.GroupSizeDefinitions>
             <RibbonGroup.ItemTemplate>
                 <DataTemplate
                   DataType="kmWpf:IDisplayableAppCommand">

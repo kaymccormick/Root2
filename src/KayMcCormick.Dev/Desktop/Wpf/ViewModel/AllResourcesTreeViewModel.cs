@@ -31,7 +31,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
     /// </summary>
-    public sealed class AllResourcesTreeViewModel : IViewModel, ISupportInitialize
+    public sealed class AllResourcesTreeViewModel : IViewModel, ISupportInitializeNotification
     {
         private readonly ModelResources _modelResources ;
 
@@ -39,6 +39,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         private ResourceNodeInfo _appNode ;
+        public ObservableCollection<ResourceNodeInfo> AllResourcesItemList { get; set; } =
+            new ObservableCollection<ResourceNodeInfo>();
 
         /// <summary>
         /// 
@@ -79,7 +81,25 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
           , object                       data
           , bool?                        isValueChildren = null)
         {
-            return _modelResources.CreateNode ( parent , key , data , isValueChildren ) ;
+            var wrapped = WrapValue(data);
+            var r = new ResourceNodeInfo
+                    {
+                        Key             = key,
+                        Data            = wrapped,
+                        IsValueChildren = isValueChildren
+                    };
+            if (parent == null)
+            {
+                AllResourcesCollection.Add(r);
+            }
+            else
+            {
+                parent.Children.Add(r);
+                r.Depth = parent.Depth + 1;
+            }
+
+            AllResourcesItemList.Add(r);
+            return r ;
         }
 
         private void PopulateAppNode ( )
@@ -243,7 +263,17 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         }
 #endregion
 #region Implementation of ISupportInitialize
-public void BeginInit ( ) { }
+public void BeginInit ( )
+{
+    // if ( IsInitializing )
+    // {
+    //     throw new InvalidOperationException("Cannot initialize twice");
+    // }
+    //
+    // IsInitializing = true ;
+}
+
+//public bool IsInitializing { get ; set ; }
 
 public void EndInit ( )
 {
@@ -252,11 +282,18 @@ public void EndInit ( )
         AllResourcesCollection.Add ( resourceNodeInfo ) ;
     }
     PopulateResourcesTree();
+    IsInitialized = true ;
 }
 
 #endregion
 #region Implementation of ISerializable
 public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+#endregion
+
+#region Implementation of ISupportInitializeNotification
+public bool IsInitialized { get ; set ; }
+
+public event EventHandler Initialized ;
 #endregion
     }
 }

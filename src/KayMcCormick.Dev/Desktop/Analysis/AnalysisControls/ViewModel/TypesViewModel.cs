@@ -341,9 +341,9 @@ namespace AnalysisControls.ViewModel
                                                   , xmlDoc
                                                    ) ;
                 case 'P' :
-                    return new PropertyDocumentation ( elementId , t , memberName , xmlDoc ) ;
+                    return new PropertyDocumentation ( elementId , t , memberName ?? throw new InvalidOperationException ( ) , xmlDoc ) ;
                 case 'F' :
-                    return new FieldDocumentation ( elementId , t , memberName , xmlDoc ) ;
+                    return new FieldDocumentation ( elementId , t , memberName ?? throw new InvalidOperationException ( ) , xmlDoc ) ;
                 default : throw new InvalidOperationException ( kind.ToString ( ) ) ;
             }
         }
@@ -589,6 +589,9 @@ namespace AnalysisControls.ViewModel
     }
 
     
+    /// <summary>
+    /// 
+    /// </summary>
     public class MemberBaseDocumentation : CodeElementDocumentation
     {
         /// <summary>
@@ -785,13 +788,27 @@ namespace AnalysisControls.ViewModel
 
         private readonly List<XmlDocElement> _listImplementation;
         #region Implementation of IEnumerable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator < XmlDocElement > GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
 
         IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _listImplementation ).GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo ( Array array , int index ) { ( ( ICollection ) _listImplementation ).CopyTo ( array , index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Remove ( XmlDocElement item ) { return _listImplementation.Remove ( item ) ; }
 
         int ICollection < XmlDocElement >.Count
@@ -806,43 +823,101 @@ namespace AnalysisControls.ViewModel
             get { return _listImplementation.Count ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot
         {
             get { return ( ( ICollection ) _listImplementation ).SyncRoot ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSynchronized
         {
             get { return ( ( ICollection ) _listImplementation ).IsSynchronized ; }
         }
         #endregion
         #region Implementation of IList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int Add ( object value ) { return ( ( IList ) _listImplementation ).Add ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public bool Contains ( object value ) { return ( ( IList ) _listImplementation ).Contains ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
         public void Add ( XmlDocElement item ) { _listImplementation.Add ( item ) ; }
 
         void ICollection < XmlDocElement >.Clear ( ) { _listImplementation.Clear ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Contains ( XmlDocElement item ) { return _listImplementation.Contains ( item ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="arrayIndex"></param>
         public void CopyTo ( XmlDocElement[] array , int arrayIndex ) { _listImplementation.CopyTo ( array , arrayIndex ) ; }
 
         void IList.Clear ( ) { _listImplementation.Clear ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int IndexOf ( object value ) { return ( ( IList ) _listImplementation ).IndexOf ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public void Insert ( int index , object value ) { ( ( IList ) _listImplementation ).Insert ( index , value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void Remove ( object value ) { ( ( IList ) _listImplementation ).Remove ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public int IndexOf ( XmlDocElement item ) { return _listImplementation.IndexOf ( item ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="item"></param>
         public void Insert ( int index , XmlDocElement item ) { _listImplementation.Insert ( index , item ) ; }
 
         void IList < XmlDocElement >.RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public XmlDocElement this [ int index ]
         {
             get { return _listImplementation[ index ] ; }
@@ -862,6 +937,9 @@ namespace AnalysisControls.ViewModel
             get { return ( ( IList ) _listImplementation ).IsReadOnly ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsFixedSize
         {
             get { return ( ( IList ) _listImplementation ).IsFixedSize ; }
@@ -954,6 +1032,9 @@ namespace AnalysisControls.ViewModel
     /// </summary>
     public sealed class Typeparamref : InlineDocElem
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Typeparamref()
         {
         }
@@ -985,6 +1066,9 @@ namespace AnalysisControls.ViewModel
         /// <param name="elements"></param>
         public Example(IEnumerable<XmlDocElement> elements) : base(elements) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Example()
         {
         }
@@ -1010,6 +1094,9 @@ namespace AnalysisControls.ViewModel
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get { return _name; } set { _name = value; } }
     }
 
@@ -1089,6 +1176,9 @@ namespace AnalysisControls.ViewModel
         /// <param name="elements"></param>
         public Em(IEnumerable<XmlDocElement> elements) : base(elements) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Em()
         {
         }
@@ -1103,6 +1193,9 @@ namespace AnalysisControls.ViewModel
         /// <param name="elements"></param>
         public Seealso(IEnumerable<XmlDocElement> elements) : base(elements) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Seealso()
         {
         }
@@ -1118,6 +1211,10 @@ namespace AnalysisControls.ViewModel
         /// <param name="elements"></param>
         public Para(IEnumerable<XmlDocElement> elements) : base(elements) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elements"></param>
         public Para(params XmlDocElement[] elements) : base(elements) { }
 
         /// <summary>
@@ -1152,6 +1249,9 @@ namespace AnalysisControls.ViewModel
     /// </summary>
     public class Code : InlineDocElem
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Code()
         {
         }
@@ -1174,6 +1274,9 @@ namespace AnalysisControls.ViewModel
         /// <param name="xRefId"></param>
         public Crossref(string xRefId) { _xRefId = xRefId; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Crossref()
         {
         }
@@ -1259,11 +1362,19 @@ namespace AnalysisControls.ViewModel
         public Summary(IEnumerable<XmlDocElement> elements) : base(elements) { }
 
         #region Implementation of IAddChild
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void AddChild ( object value )
         {
             DocumentElementCollection.Add ( value ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
         public void AddText ( string text )
         {
             DocumentElementCollection.Add ( new XmlDocText ( text ) ) ;

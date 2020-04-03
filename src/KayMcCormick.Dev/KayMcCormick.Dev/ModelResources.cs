@@ -29,7 +29,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// ViewModel designed to expose a hierarchy of resources in an application.
     /// </summary>
-    public class ModelResources: ISupportInitialize, IViewModel
+    public class ModelResources: ISupportInitializeNotification, IViewModel
     {
         /// <summary>
         /// 
@@ -255,7 +255,17 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public void BeginInit ( ) { }
+        public void BeginInit ( )
+        {
+            // if (IsInitializing)
+            // {
+            //     throw new InvalidOperationException("Cannot initialize twice");
+            // }
+            //
+            // IsInitializing = true;
+        }
+
+        // public bool IsInitializing { get ; set ; }
 
         /// <summary>
         /// 
@@ -263,6 +273,7 @@ namespace KayMcCormick.Dev
         public void EndInit ( )
         {
             PopulateResourcesTree();
+            IsInitialized = true ;
         }
         #endregion
         #region Implementation of ISerializable
@@ -272,6 +283,12 @@ namespace KayMcCormick.Dev
         /// <param name="info"></param>
         /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
+
+        #region Implementation of ISupportInitializeNotification
+        public bool IsInitialized { get ; set ;  }
+
+        public event EventHandler Initialized ;
         #endregion
     }
 }

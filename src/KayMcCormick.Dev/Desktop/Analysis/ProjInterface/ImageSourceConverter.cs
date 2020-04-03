@@ -16,7 +16,7 @@ namespace ProjInterface
           , CultureInfo culture
         )
         {
-            return new BitmapImage ( value as Uri ) ;
+            return new BitmapImage ( value as Uri ?? throw new InvalidOperationException ( ) ) ;
         }
 
         public object ConvertBack ( object value , Type targetType , object parameter , CultureInfo culture ) { return null ; }

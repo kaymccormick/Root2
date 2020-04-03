@@ -32,6 +32,11 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
+        public AnalysisAppLibModule ( )
+        {
+             Debug.WriteLine ( "here" ) ;
+        }
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         #region Overrides of Module
@@ -45,15 +50,25 @@ namespace AnalysisAppLib
           , IComponentRegistration    registration
         )
         {
-            registration.Activated += ( sender , args ) => {
-                Debug.WriteLine ( "activated" ) ;
-                var inst = args.Instance ;
-                if ( inst is IViewModel
-                     && inst is ISupportInitialize x )
-                {
-                    Debug.WriteLine ( "calling init on instance" ) ;
-                    x.BeginInit ( ) ;
-                    x.EndInit ( ) ;
+            registration.Activating += ( sender , args ) => {
+                var inst = args.Instance;
+                Debug.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
+                if ( inst is IViewModel) {
+                    if (inst is ISupportInitializeNotification xx)
+                    {
+                        Debug.WriteLine("calling init on instance");
+                        if (!xx.IsInitialized)
+                        {
+                            xx.BeginInit();
+                            xx.EndInit();
+                        }
+                    } else 
+                    if ( inst is ISupportInitialize x )
+                    {
+                        Debug.WriteLine ( "calling init on instance" ) ;
+                        x.BeginInit ( ) ;
+                        x.EndInit ( ) ;
+                    } 
                 }
             } ;
         }

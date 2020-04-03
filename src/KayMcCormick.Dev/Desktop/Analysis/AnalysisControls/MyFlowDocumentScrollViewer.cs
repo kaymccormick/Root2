@@ -98,6 +98,11 @@ namespace AnalysisControls
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="availableSize"></param>
+        /// <returns></returns>
         protected override Size MeasureOverride ( Size availableSize )
         {
             if ( ! doOverrideMeasure )
