@@ -58,6 +58,9 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         public bool IsSuccess { get { return _isSuccess ; } set { _isSuccess = value ; } }
+
+        public static IAppCommandResult Cancelled { get ; set ; } =
+            new AppCommandResult ( ) { IsSuccess = false } ;
         #endregion
 
 

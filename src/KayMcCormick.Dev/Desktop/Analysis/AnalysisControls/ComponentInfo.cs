@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Text.Json.Serialization ;
+using AnalysisControls.ViewModel ;
 
 namespace AnalysisControls
 {

@@ -15,6 +15,7 @@ using System.Linq ;
 using System.Reflection ;
 using System.Text.Json.Serialization ;
 using AnalysisAppLib.Syntax ;
+using AnalysisControls.ViewModel ;
 using JetBrains.Annotations ;
 
 namespace AnalysisControls

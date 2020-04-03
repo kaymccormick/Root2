@@ -415,5 +415,8 @@
     <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD.png" />
     <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD_color.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Export\Class_256x.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

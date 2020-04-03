@@ -40,18 +40,28 @@ namespace KayMcCormick.Lib.Wpf
         public async Task < IAppCommandResult > ExecuteAsync ( )
         {
             Debug.WriteLine ( "Executinng command" ) ;
-            var r = await _wrappedCommand.ExecuteAsync ( )
-                                  .ContinueWith (
-                                                 ( task , o ) => {
-                                                     OnFault ( task.Exception ) ;
-                                                     return ( IAppCommandResult ) AppCommandResult
-                                                        .Faulted ( task.Exception ) ;
-                                                 }
-                                               , this
-                                               , CancellationToken.None
-                                               , TaskContinuationOptions.OnlyOnFaulted
-                                               , TaskScheduler.FromCurrentSynchronizationContext ( )
-                                                ) ;
+            IAppCommandResult r = null ;
+            try
+            {
+                r = await _wrappedCommand.ExecuteAsync ( )
+                                         .ContinueWith (
+                                                        ( task , o ) => {
+                                                            return ( IAppCommandResult )
+                                                                AppCommandResult.Cancelled ;
+                                                        }
+                                                      , this
+                                                      , CancellationToken.None
+                                                      , TaskContinuationOptions.NotOnRanToCompletion
+                                                      , TaskScheduler
+                                                           .FromCurrentSynchronizationContext ( )
+                                                       ) ;
+
+            }
+            catch ( Exception ex )
+            {
+                Debug.WriteLine (ex.ToString()  );
+            }
+
             Debug.WriteLine ( "Complete" ) ;
             return r ;
         }

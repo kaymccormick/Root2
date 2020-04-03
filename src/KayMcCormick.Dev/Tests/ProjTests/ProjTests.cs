@@ -116,31 +116,79 @@ namespace ProjTests
             }
         }
 
-
+        [ WpfFact ]
+        public void TestRead ( )
+        {
+            var x = XamlReader.Load ( new FileStream(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml", FileMode.Open ) ) ;
+//            var json = JsonSerializer.Serialize ( x ) ;
+        }
         [ WpfFact ]
         public void TEstTypesview ( )
         {
             TypesViewModel viewModel = new TypesViewModel ( ) ;
+            viewModel.BeginInit();
+            viewModel.EndInit();
             var stringWriter = new StringWriter() ;
             using ( XmlWriter x = XmlWriter.Create (stringWriter
                                 
-                                                    //@"c:\data\logs\out.xaml"
+                                                    
                                                   , new XmlWriterSettings ( ) { Indent = true }
                                                    ) )
-            {
-                var xmlDocumentElementCollection = new XmlDocumentElementCollection ( viewModel.Docelems ) ;
-                XamlWriter.Save ( xmlDocumentElementCollection , x ) ;
+            { 
+                XamlWriter.Save ( viewModel, x ) ;
                 x.Flush();
-                Debug.Write(stringWriter.ToString ( )) ;
             }
 
-            return ;
+                
+                XamlWriter.Save (viewModel, File.CreateText (
+                                                             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml"
+                                                            ) ); 
+            
+
+
+            return;
             var typesView = new TypesView ( viewModel ) ;
             var w = new Window { Content = typesView } ;
             w.ShowDialog ( ) ;
         }
 
+        [ Fact ]
+        public void TestDoc ( )
+        {
+            Summary s = new Summary();
+            s.DocumentElementCollection.Add ( new XmlDocText ( "hello" ) ) ;
+            var x = XamlWriter.Save ( s ) ;
+            _output.WriteLine(x);
+        }
         [ WpfFact ]
+        public void TEstTypesview2 ( )
+        {
+            TypesViewModel viewModel = new TypesViewModel ( ) ;
+            viewModel.BeginInit ( ) ;
+            viewModel.EndInit ( ) ;
+            var stringWriter = new StringWriter ( ) ;
+            using ( XmlWriter x = XmlWriter.Create (
+                                                    stringWriter
+                                                  , new XmlWriterSettings ( ) { Indent = true }
+                                                   ) )
+            {
+                XamlWriter.Save ( viewModel , x ) ;
+                x.Flush ( ) ;
+            }
+
+
+            XamlWriter.Save (
+                             viewModel.Root
+                           , File.CreateText (
+                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\Types.xaml"
+                                             )
+                            ) ;
+
+
+
+        }
+
+        [WpfFact ]
         public void TestJsonSerialization ( )
         {
             var w = new Window ( ) ;

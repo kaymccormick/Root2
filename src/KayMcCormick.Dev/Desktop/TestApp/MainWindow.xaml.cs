@@ -9,6 +9,7 @@ using System.Windows.Controls ;
 using System.Windows.Input ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
 using JetBrains.Annotations ;

@@ -11,6 +11,7 @@ using System.Text ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
 using AnalysisAppLib.Syntax ;
@@ -410,6 +411,11 @@ namespace ConsoleApp1
                     if ( r.Next ( 9 ) == 1
                          && set.Contains ( o.GetType ( ) ) )
                     {
+                        o.DescendantTokens().Select (( token , i ) => new XElement(XName.Get(token.Kind().ToString()), new XText(token.ValueText)));
+                        foreach ( var descendantToken in o.DescendantTokens ( ) )
+                        {
+                            
+                        }
                         if ( ! syntaxdict.TryGetValue ( o.GetType ( ) , out var l ) )
                         {
                             l = Tuple.Create (
@@ -497,11 +503,11 @@ namespace ConsoleApp1
         }
 
         private static void NewMethod (
-            [ NotNull ] ObservableCollection < AppTypeInfo > subTypeInfos
+            [ NotNull ] AppTypeInfoCollection subTypeInfos
           , HashSet < Type >                                 set
         )
         {
-            foreach ( var rootSubTypeInfo in subTypeInfos )
+            foreach ( AppTypeInfo rootSubTypeInfo in subTypeInfos )
             {
                 if ( rootSubTypeInfo.Type.IsAbstract == false )
                 {

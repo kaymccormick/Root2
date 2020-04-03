@@ -12,22 +12,21 @@
 using System ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
 using System.Diagnostics ;
+using System.Reflection ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
-using System.Xaml ;
 using AnalysisAppLib.ViewModel ;
+using AnalysisControls.Properties ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
-using Autofac.Extras.AttributeMetadata ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using Module = Autofac.Module ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
 
 namespace AnalysisControls
@@ -61,12 +60,27 @@ namespace AnalysisControls
             builder.RegisterType < TypesView > ( )
                    .AsImplementedInterfaces ( )
                    .WithMetadata ( "ImageSource" , new Uri("pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png")) ;
-            TypesViewModel v = new TypesViewModel();
-            TypesViewModelContainer x = new TypesViewModelContainer();
-            x.VDocelems = new DocumentCollection(v.Docelems);
-            var xml = XamlWriter.Save(x);
-            Debug.WriteLine ( xml ) ;
-            builder.RegisterInstance(v).As<ITypesViewModel> (  ).SingleInstance();
+
+
+            Debug.WriteLine(string.Join(", ", Assembly.GetExecutingAssembly().GetManifestResourceNames()));
+
+            builder.Register (
+                              ( context , parameters ) => {
+                                  TypesViewModel v =
+                                      ( TypesViewModel ) XamlReader.Parse (
+                                                                           Resources.TypesViewModel
+                                                                          ) ;
+                                  return v ;
+                              }
+                             )
+                   .AsSelf ( )
+                   .AsImplementedInterfaces ( ) ;
+            
+            //TypesViewModelContainer x = new TypesViewModelContainer();
+            //x.VDocelems = new DocumentCollection(v.Docelems);
+            // var xml = XamlWriter.Save(v);
+            // Debug.WriteLine ( xml ) ;
+            // builder.RegisterInstance(v).As<ITypesViewModel> (  ).SingleInstance();
             
             //builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
             builder.RegisterType < SyntaxPanel > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
@@ -156,20 +170,39 @@ namespace AnalysisControls
 
         public DocumentCollection ( IList list ) { _list = list ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DocumentCollection ( ) {
+            _list = new ArrayList();
         }
 
         #region Implementation of IEnumerable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator ( ) { return _list.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo ( Array array , int index ) { _list.CopyTo ( array , index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return _list.Count ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot
         {
             get { return _list.SyncRoot ; }

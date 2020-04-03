@@ -1,4 +1,5 @@
 ﻿using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
@@ -7,6 +8,7 @@ using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
 using AnalysisAppLib.Syntax ;
+using AnalysisControls.ViewModel ;
 using JetBrains.Annotations ;
 
 namespace AnalysisControls
@@ -18,11 +20,11 @@ namespace AnalysisControls
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
-        private readonly ObservableCollection < AppTypeInfo > _subTypeInfos ;
+        private AppTypeInfoCollection _subTypeInfos ;
         private          uint ?                               _colorValue ;
 
-        private ObservableCollection < ComponentInfo > _components =
-            new ObservableCollection < ComponentInfo > ( ) ;
+        private SyntaxComponentCollection _components =
+            new SyntaxComponentCollection ( ) ;
 
         private ObservableCollection < AppMethodInfo > _factoryMethods =
             new ObservableCollection < AppMethodInfo > ( ) ;
@@ -32,18 +34,17 @@ namespace AnalysisControls
         private string      _title ;
         private Type        _type ;
 
+
         /// <summary>
         /// </summary>
         /// <param name="subTypeInfos"></param>
-        public AppTypeInfo ( ObservableCollection < AppTypeInfo > subTypeInfos = null )
+        public AppTypeInfo ( AppTypeInfoCollection subTypeInfos = null )
         {
             if ( subTypeInfos == null )
             {
-                subTypeInfos = new ObservableCollection < AppTypeInfo > ( ) ;
+                subTypeInfos = new AppTypeInfoCollection ( ) ;
             }
 
-            subTypeInfos.CollectionChanged += ( sender , args )
-                => OnPropertyChanged ( nameof ( SubTypeInfos ) ) ;
             _components.CollectionChanged += ( sender , args )
                 => OnPropertyChanged ( nameof ( Components ) ) ;
             _factoryMethods.CollectionChanged += ( sender , args )
@@ -82,11 +83,17 @@ namespace AnalysisControls
         }
 
         /// <summary>
+        /// 
         /// </summary>
-        public ObservableCollection < AppTypeInfo > SubTypeInfos { get { return _subTypeInfos ; } }
+        public AppTypeInfoCollection SubTypeInfos
+        {
+            get { return _subTypeInfos ; }
+            set { _subTypeInfos = value ; }
+        }
 
         /// <summary>
         /// </summary>
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public ObservableCollection < AppMethodInfo > FactoryMethods
         {
             get { return _factoryMethods ; }
@@ -99,8 +106,9 @@ namespace AnalysisControls
 
         /// <summary>
         /// </summary>
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         [ JsonIgnore ]
-        public ObservableCollection < ComponentInfo > Components
+        public SyntaxComponentCollection Components
         {
             get { return _components ; }
             set
@@ -112,6 +120,7 @@ namespace AnalysisControls
 
         /// <summary>
         /// </summary>
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         [ NotNull ] public IEnumerable < ComponentInfo > AllComponents
         {
             get
@@ -153,6 +162,7 @@ namespace AnalysisControls
 
         /// <summary>
         /// </summary>
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         [ JsonIgnore ]
         public AppTypeInfo ParentInfo
         {
@@ -166,6 +176,7 @@ namespace AnalysisControls
 
         /// <summary>
         /// </summary>
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public int HierarchyLevel
         {
             get { return _hierarchyLevel ; }
@@ -189,5 +200,76 @@ namespace AnalysisControls
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    public class AppTypeInfoCollection : IList, ICollection, IEnumerable
+    {
+        public AppTypeInfoCollection ( IList list ) { _list = list ; }
+
+        public AppTypeInfoCollection ( )
+        {
+            _list = new List < AppTypeInfo > ( ) ;
+        }
+
+        private IList _list ;
+        #region Implementation of IEnumerable
+        public IEnumerator GetEnumerator ( ) { return _list.GetEnumerator ( ) ; }
+        #endregion
+        #region Implementation of ICollection
+        public void CopyTo ( Array array , int index ) { _list.CopyTo ( array , index ) ; }
+
+        public int Count
+        {
+            get { return _list.Count ; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _list.SyncRoot ; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _list.IsSynchronized ; }
+        }
+        #endregion
+        #region Implementation of IList
+        public int Add ( object value ) { return _list.Add ( value ) ; }
+
+        public bool Contains ( object value ) { return _list.Contains ( value ) ; }
+
+        public void Clear ( ) { _list.Clear ( ) ; }
+
+        public int IndexOf ( object value ) { return _list.IndexOf ( value ) ; }
+
+        public void Insert ( int index , object value ) { _list.Insert ( index , value ) ; }
+
+        public void Remove ( object value ) { _list.Remove ( value ) ; }
+
+        public void RemoveAt ( int index ) { _list.RemoveAt ( index ) ; }
+
+        public object this [ int index ]
+        {
+            get { return _list[ index ] ; }
+            set { _list[ index ] = value ; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _list.IsReadOnly ; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _list.IsFixedSize ; }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SyntaxComponentCollection : ObservableCollection < ComponentInfo >
+    {
     }
 }

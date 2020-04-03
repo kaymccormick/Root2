@@ -7,6 +7,7 @@
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
                  xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
+                 xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
                  mc:Ignorable="d"
                  Title="MainWindow" Height="450"
                  Width="800">
@@ -37,7 +38,7 @@
                     Command="Open" />
       </views:TypesView.InputBindings>
       <views:TypesView.ViewModel>
-        <viewModel:TypesViewModel />
+        <viewModel1:TypesViewModel />
       </views:TypesView.ViewModel>
     </views:TypesView>
   </Grid>
