@@ -599,8 +599,8 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="6*" />
-      <ColumnDefinition Width="10*" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <TreeView Grid.Column="0" Grid.Row="0" x:Name="tv"
               Grid.RowSpan="3"
