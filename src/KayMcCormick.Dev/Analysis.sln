@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
+# Visual Studio 15
 VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KayMcCormick.Dev", "KayMcCormick.Dev\KayMcCormick.Dev.csproj", "{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}"
@@ -55,6 +55,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer2.Vsix", "Desktop\Analysis\Analyzer2\Analyzer2.Vsix\Analyzer2.Vsix.csproj", "{33EB184D-88A1-4FE3-9C5B-AB54BF9ECC8B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Gui", "..\..\..\gui.cs\Terminal.Gui\Terminal.Gui.csproj", "{809FDF76-250B-4DA9-9CAF-E257E9E0E68A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Desktop\Analysis\Analyze\ConsoleApp1\ConsoleApp1.csproj", "{FAD293B8-C008-4243-88FC-A3A8A01DB52D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -238,6 +240,16 @@ Global
 		{809FDF76-250B-4DA9-9CAF-E257E9E0E68A}.Release|x64.Build.0 = Release|Any CPU
 		{809FDF76-250B-4DA9-9CAF-E257E9E0E68A}.Release|x86.ActiveCfg = Release|Any CPU
 		{809FDF76-250B-4DA9-9CAF-E257E9E0E68A}.Release|x86.Build.0 = Release|Any CPU
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x64.ActiveCfg = Debug|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x64.Build.0 = Debug|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x86.ActiveCfg = Debug|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Debug|x86.Build.0 = Debug|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|Any CPU.ActiveCfg = Release|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x64.ActiveCfg = Release|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x64.Build.0 = Release|x64
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x86.ActiveCfg = Release|x86
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -261,6 +273,7 @@ Global
 		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 		{33EB184D-88A1-4FE3-9C5B-AB54BF9ECC8B} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 		{809FDF76-250B-4DA9-9CAF-E257E9E0E68A} = {18C721D5-8339-4A66-8A6F-2B974ACD9598}
+		{FAD293B8-C008-4243-88FC-A3A8A01DB52D} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E0A2F67-7D8F-4910-BFB7-8AE9E0B25204}

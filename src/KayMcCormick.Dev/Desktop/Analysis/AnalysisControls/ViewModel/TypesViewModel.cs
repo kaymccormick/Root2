@@ -12,12 +12,10 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
-using AnalysisControls ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.Graph ;
 using NLog ;
 
 namespace AnalysisControls.ViewModel
@@ -57,11 +55,7 @@ namespace AnalysisControls.ViewModel
         // ReSharper disable once EmptyConstructor
         public TypesViewModel ( ) { }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// 
-        public void LoadSyntaxFactoryDocs ( )
+        internal void LoadSyntaxFactoryDocs ( )
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             _docs.TryGetValue ( typeof ( SyntaxFactory ) , out var si ) ;
@@ -136,9 +130,6 @@ namespace AnalysisControls.ViewModel
                             if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
                                  && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                             {
-                                // Debug.WriteLine (
-                                // $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
-                                // ) ;
                                 isList   = true ;
                                 typeInfo = ( AppTypeInfo ) Map[ targ ] ;
                             }
@@ -301,7 +292,6 @@ namespace AnalysisControls.ViewModel
             }
 
             var elementId = xmlElement.GetAttribute ( "name" ) ;
-            xmlElement.WriteTo ( new MyWriter ( ) ) ;
             var doc = XDocument.Parse ( xmlElement.OuterXml ) ;
             var xNodes = doc.Element ( "member" )?.Nodes ( ) ;
 
@@ -376,10 +366,7 @@ namespace AnalysisControls.ViewModel
         {
             switch ( node )
             {
-                case XComment xComment : break ;
                 case XCData xcData :     return new XmlDocText ( xcData.Value ) ;
-
-                case XDocument xDocument : break ;
                 case XElement element :
                 {
                     XmlDocElement r = null ;
@@ -446,16 +433,8 @@ namespace AnalysisControls.ViewModel
                             break ;
                     }
 
-                    if ( r != null )
-                    {
-                        // Debug.WriteLine ( r.ToString ( ) ) ;
-                    }
-
                     return r ;
                 }
-                case XContainer xContainer :                         break ;
-                case XDocumentType xDocumentType :                   break ;
-                case XProcessingInstruction xProcessingInstruction : break ;
                 case XText xText :
                     return new XmlDocText ( xText.Value ) ;
             }
@@ -503,8 +482,14 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AppTypeInfoCollection StructureRoot { get ; set ; }
 
         [ NotNull ]
@@ -601,8 +586,7 @@ namespace AnalysisControls.ViewModel
             DetailFields ( ) ;
 
             LoadSyntaxFactoryDocs ( ) ;
-            StructureRoot = new AppTypeInfoCollection ( ) ;
-            StructureRoot.Add ( Map[ typeof ( CompilationUnitSyntax ) ] ) ;
+            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
             IsInitialized = true ;
         }
 
@@ -650,14 +634,13 @@ namespace AnalysisControls.ViewModel
             Root = CollectTypeInfos2 ( null , rootR ) ;
         }
 
+        [ NotNull ]
         private AppTypeInfo CollectTypeInfos2 (
             AppTypeInfo parentTypeInfo
-          , Type        rootR
+          , [ NotNull ] Type        rootR
           , int         level = 0
         )
         {
-            TypeDocumentation docNode = null ;
-
             // if (_docs.TryGetValue(
             //                       rootR ?? throw new InvalidOperationException()
             //                     , out var info
@@ -696,16 +679,11 @@ namespace AnalysisControls.ViewModel
                 if ( typs is GenericNameSyntax gns )
                 {
                     var id = gns.Identifier.ValueText ;
-                    Type t0 = null ;
-                    // if ( id == "SeparatedSyntaxList" )
-                    // {
-                    // t0 = typeof ( SeparatedSyntaxList <> ) ;
-                    // }
-                    t0 = typeof ( SyntaxNode ).Assembly.GetType (
-                                                                 "Microsoft.CodeAnalysis."
-                                                                 + id
-                                                                 + "`1"
-                                                                ) ;
+                    var t0 = typeof ( SyntaxNode ).Assembly.GetType (
+                                                                     "Microsoft.CodeAnalysis."
+                                                                     + id
+                                                                     + "`1"
+                                                                    ) ;
                     if ( t0 == null )
                     {
                         Debug.WriteLine ( "fail" + id ) ;
@@ -727,15 +705,6 @@ namespace AnalysisControls.ViewModel
                         }
 
                         var t2 = t0.MakeGenericType ( t1 ) ;
-                        if ( t2 == null )
-                        {
-                            Debug.WriteLine ( "Boo" ) ;
-                        }
-                        else
-                        {
-                            Debug.WriteLine ( "yay!" ) ;
-                        }
-
                         rField.Type = t2 ;
                     }
                 }
@@ -764,7 +733,7 @@ namespace AnalysisControls.ViewModel
             return r ;
         }
 
-        private void Collect ( AppTypeInfo ati , List < AppTypeInfo > types )
+        private void Collect ( [ NotNull ] AppTypeInfo ati , List < AppTypeInfo > types )
         {
             if ( ! ati.Type.IsAbstract )
             {
@@ -797,8 +766,13 @@ namespace AnalysisControls.ViewModel
         #endregion
 
         #region Implementation of ISupportInitializeNotification
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsInitialized { get ; set ; }
 
+        /// <summary>
+        /// </summary>
         public event EventHandler Initialized ;
         #endregion
     }
@@ -812,30 +786,70 @@ namespace AnalysisControls.ViewModel
             dict = new Dictionary < Type , AppTypeInfo > ( ) ;
 
         private IDictionary _dict ;
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeMapDictionary ( ) { _dict = dict ; }
         #region Implementation of IEnumerable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Contains ( object key ) { return _dict.Contains ( key ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void Add ( object key , object value ) { _dict.Add ( key , value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Clear ( ) { _dict.Clear ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IDictionaryEnumerator GetEnumerator ( ) { return _dict.GetEnumerator ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
         public void Remove ( object key ) { _dict.Remove ( key ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
         public object this [ object key ]
         {
             get { return _dict[ key ] ; }
             set { _dict[ key ] = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ICollection Keys { get { return _dict.Keys ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ICollection Values { get { return _dict.Values ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsReadOnly { get { return _dict.IsReadOnly ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsFixedSize { get { return _dict.IsFixedSize ; } }
 
         IEnumerator IEnumerable.GetEnumerator ( )
@@ -844,12 +858,26 @@ namespace AnalysisControls.ViewModel
         }
         #endregion
         #region Implementation of ICollection
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo ( Array array , int index ) { _dict.CopyTo ( array , index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count { get { return _dict.Count ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot { get { return _dict.SyncRoot ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSynchronized { get { return _dict.IsSynchronized ; } }
         #endregion
     }
@@ -892,80 +920,5 @@ namespace AnalysisControls.ViewModel
         ) : base ( info , context )
         {
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    internal class MyWriter : XmlWriter
-    {
-        private readonly Stack < string > _elements = new Stack < string > ( ) ;
-        #region Overrides of XmlWriter
-        public override void WriteStartDocument ( ) { }
-
-        public override void WriteStartDocument ( bool standalone ) { }
-
-        public override void WriteEndDocument ( ) { }
-
-        public override void WriteDocType (
-            string name
-          , string pubid
-          , string sysid
-          , string subset
-        )
-        {
-        }
-
-        public override void WriteStartElement ( string prefix , string localName , string ns )
-        {
-            _elements.Push ( localName ) ;
-            if ( localName == "summary" )
-            {
-            }
-        }
-
-        public override void WriteEndElement ( )
-        {
-            var elemName = _elements.Pop ( ) ;
-        }
-
-        public override void WriteFullEndElement ( ) { }
-
-        public override void WriteStartAttribute ( string prefix , string localName , string ns )
-        {
-        }
-
-        public override void WriteEndAttribute ( ) { }
-
-        public override void WriteCData ( string text ) { }
-
-        public override void WriteComment ( string text ) { }
-
-        public override void WriteProcessingInstruction ( string name , string text ) { }
-
-        public override void WriteEntityRef ( string name ) { }
-
-        public override void WriteCharEntity ( char ch ) { }
-
-        public override void WriteWhitespace ( string ws ) { }
-
-        public override void WriteString ( string text ) { }
-
-        public override void WriteSurrogateCharEntity ( char lowChar , char highChar ) { }
-
-        public override void WriteChars ( char[] buffer , int index , int count ) { }
-
-        public override void WriteRaw ( char[] buffer , int index , int count ) { }
-
-        public override void WriteRaw ( string data ) { }
-
-        public override void WriteBase64 ( byte[] buffer , int index , int count ) { }
-
-        public override void Flush ( ) { }
-
-        public override string LookupPrefix ( string ns ) { return null ; }
-
-        public override WriteState WriteState { get ; }
-        #endregion
     }
 }

@@ -12,13 +12,11 @@ using System.Linq ;
 using System.Net ;
 using System.Net.Sockets ;
 using System.Reactive.Subjects ;
-using System.Security ;
 using System.Text ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows.Markup ;
-using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
@@ -140,6 +138,7 @@ namespace ConsoleApp1
                                    }
                                }
                               ) ;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Task.Run (
                       ( ) => AppLoggingConfigHelper
                             .EnsureLoggingConfiguredAsync (
@@ -154,9 +153,8 @@ namespace ConsoleApp1
                                                           )
                             .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ) )
                      ) ;
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-            Console.WriteLine ( "here" ) ;
-            Console.WriteLine ( ConsoleAnalysisProgramGuid.ToString ( "X" ) ) ;
             Init ( ) ;
             _appinst = new ApplicationInstance (
                                                 new ApplicationInstance.
@@ -345,12 +343,7 @@ namespace ConsoleApp1
 #endif
 
 
-
-            //context.Ui.Init();
-            // object o11 = XamlReader.Parse(
-            //                             "<Toplevel xmlns=\"clr-namespace:Terminal.Gui;assembly=Terminal.Gui\">\r\n</Toplevel>\r\n"
-            //                            ) ;
-            //context.Ui.Run ( ) ;
+            RunConsoleUi (context ) ;
             //
             // foreach ( var projFile in Directory.EnumerateFiles (
             //                                                     @"e:\kay2020\source"
@@ -364,147 +357,6 @@ namespace ConsoleApp1
             // }
             var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
 
-            SyntaxList<MemberDeclarationSyntax> types = new SyntaxList < MemberDeclarationSyntax > ();
-            foreach ( Type mapKey in model1.Map.Keys )
-            {
-                var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
-                var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
-                foreach ( SyntaxFieldInfo tField in t.Fields )
-                {
-                    if ( tField.Type == null ) continue ;
-                    var accessorDeclarationSyntaxes =
-                        new SyntaxList < AccessorDeclarationSyntax > (
-                                                                      new[]
-                                                                      {
-                                                                          SyntaxFactory
-                                                                             .AccessorDeclaration (
-                                                                                                   SyntaxKind
-                                                                                                      .GetAccessorDeclaration
-                                                                                                  ).WithSemicolonToken(SyntaxFactory.Token (SyntaxKind.SemicolonToken))
-                                                                        , SyntaxFactory
-                                                                             .AccessorDeclaration (
-                                                                                                   SyntaxKind
-                                                                                                      .SetAccessorDeclaration
-                                                                                                  ).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
-                                                                      }
-                                                                     ) ;
-                    var accessorListSyntax = SyntaxFactory.AccessorList (
-                                                                         accessorDeclarationSyntaxes
-                                                                        ) ;
-                    if ( tField.Type.IsGenericType )
-                    {
-                        var g = tField.Type.GetGenericTypeDefinition ( ).Name ;
-                        
-                    }
-                    var typeSyntax = SyntaxFactory.ParseTypeName(tField.TypeName); /*SyntaxFactory.IdentifierName (
-                                                                                                                 tField
-                                                                                                                    .Type
-                                                                                                                    .Name
-                                                                                                                ) ;*/
-                    members = members.Add (
-                                           SyntaxFactory.PropertyDeclaration (
-                                                                              new SyntaxList <
-                                                                                  AttributeListSyntax > ( )
-                                                                            , SyntaxTokenList.Create (
-                                                                                                      SyntaxFactory
-                                                                                                         .Token (
-                                                                                                                 SyntaxKind
-                                                                                                                    .PublicKeyword
-                                                                                                                )
-                                                                                                     )
-                                                                            , typeSyntax
-                                                                            , null
-                                                                            , SyntaxFactory.Identifier (
-                                                                                                        tField
-                                                                                                           .Name
-                                                                                                       )
-                                                                            , accessorListSyntax
-                                                                             )
-                                          ) ;
-                }
-
-                var classDecl =
-                    SyntaxFactory.ClassDeclaration ( mapKey.Name ).WithMembers ( members ) ;
-                if ( t.ParentInfo != null )
-                {
-                    classDecl =
-                        classDecl.WithBaseList ( SyntaxFactory.BaseList (
-                                                                         new SeparatedSyntaxList <
-                                                                                 BaseTypeSyntax
-                                                                             > ( )
-                                                                            .Add (
-                                                                                  SyntaxFactory
-                                                                                     .SimpleBaseType (
-                                                                                                      SyntaxFactory
-                                                                                                         .IdentifierName (
-                                                                                                                          t.ParentInfo
-                                                                                                                           .Type
-                                                                                                                           .Name
-                                                                                                                         )
-                                                                                                     )
-                                                                                 )
-                                                                        ) );
-                }
-                types = types.Add ( classDecl ) ;
-
-            }
-
-            var compl = SyntaxFactory.CompilationUnit ( ).WithUsings(new SyntaxList < UsingDirectiveSyntax > (SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System"))))
-                                     .WithMembers ( types )
-                                     .NormalizeWhitespace ( ) ;
-            var tree = SyntaxFactory.SyntaxTree ( compl ) ;
-            var src = tree.ToString ( ) ;
-            File.WriteAllText ( @"C:\data\logs\stuff.cs" , src ) ;
-            var tree2 = CSharpSyntaxTree.ParseText ( SourceText.From ( src ) ) ;
-            //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
-            var source = tree2.ToString ( ).Split ( new []{"\r\n"}, StringSplitOptions.None ) ;
-            //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
-            AdhocWorkspace adhoc = new AdhocWorkspace();
-            //var p = adhoc.AddProject("test", LanguageNames.CSharp);
-            var projectId = ProjectId.CreateNewId() ;
-            var s = adhoc.AddSolution (
-                                       SolutionInfo.Create (
-                                                            SolutionId.CreateNewId ( )
-                                                          , VersionStamp.Create ( ), null, new[] {ProjectInfo.Create(projectId, VersionStamp.Create(), "test", "test", LanguageNames.CSharp, null, null, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary
-                                                                                                                                                                                                                                     ))}));
-            
-            
-            //var p = s.AddProject("test", "test", LanguageNames.CSharp);
-            //adhoc.TryApplyChanges ( s ) ;
-            
-            var documentInfo = DocumentInfo.Create(DocumentId.CreateNewId(projectId), "test", null, SourceCodeKind.Regular, TextLoader.From(TextAndVersion.Create(SourceText.From ( src ), VersionStamp.Create()))) ;
-            var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ) ) ;
-
-            //var d = project.AddDocument ( "test.cs" , src ) ;
-            var rb1 = adhoc.TryApplyChanges ( s2 ) ;
-            if (!rb1)
-            {
-                throw new InvalidOperationException();
-            }
-
-            var s3 = adhoc.CurrentSolution.AddMetadataReference (
-                                                                 projectId
-                                                               , MetadataReference.CreateFromFile (
-                                                                                                   @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.dll"
-                                                                                                  )
-                                                                ) ;
-                                                                   
-            
-            var rb = adhoc.TryApplyChanges(s3);
-            if ( ! rb )
-            {
-                throw new InvalidOperationException();
-            }
-            var project = adhoc.CurrentSolution.Projects.First();
-            var compilation = await project.GetCompilationAsync ( ) ;
-            foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
-            {
-                var line = source[ diagnostic.Location.GetLineSpan ( ).StartLinePosition.Line ] ;
-                Console.WriteLine(diagnostic.ToString());
-            }
-            Debug.WriteLine (compl.ToString()  );
-
-            //LoadSyntax ( model1 ) ;
             var b = new SqlConnectionStringBuilder
                     {
                         IntegratedSecurity = true
@@ -534,7 +386,7 @@ namespace ConsoleApp1
                 ArrayList l = null ;
                 if ( ! d1.Contains ( k2 ) )
                 {
-                    l        = new ArrayList ( ) ; //List < ExampleSyntax > ();
+                    l        = new ArrayList ( ) ;
                     d1[ k2 ] = l ;
                 }
                 else
@@ -543,6 +395,7 @@ namespace ConsoleApp1
                 }
 
                 var reader1 = result.GetXmlReader ( 3 ) ;
+                // ReSharper disable once MethodHasAsyncOverload
                 reader1.MoveToContent ( ) ;
                 var tokens = ( XElement ) XNode.ReadFrom ( reader1 ) ;
                 var x = tokens.Elements ( )
@@ -560,8 +413,6 @@ namespace ConsoleApp1
                                                      , x
                                                      , result.GetInt32 ( 4 )
                                                       ) ;
-                var xx11 = XamlWriter.Save ( exampleSyntax ) ;
-                //Debug.WriteLine(xx11);
                 l.Add ( exampleSyntax ) ;
             }
 
@@ -742,125 +593,353 @@ namespace ConsoleApp1
             // }
         }
 
-        private static void LoadSyntax ( TypesViewModel model1 )
+        private static void RunConsoleUi ( AppContext context )
         {
-            var syntax = XDocument.Parse ( Resources.Syntax ) ;
-            foreach ( var xElement in syntax.Root.Elements ( ) )
+            context.Ui.Init ( ) ;
+            context.Ui.Run ( ) ;
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private static async Task CodeGen ( TypesViewModel model1 )
+        {
+            var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;
+            foreach ( Type mapKey in model1.Map.Keys )
             {
-                switch ( xElement.Name.LocalName )
+                var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
+                var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
+                foreach ( SyntaxFieldInfo tField in t.Fields )
                 {
-                    case "PredefinedNode" :
-                        var typeName = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
-                        typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
-                        var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName ) ;
-                        if ( t == null )
-                        {
-                            Debug.WriteLine ( "No type for " + typeName ) ;
-                        }
-                        else if ( model1.Map.Contains ( t ) )
-                        {
-                            var typ = ( AppTypeInfo ) model1.Map[ t ] ;
-                            typ.ElementName = xElement.Name.LocalName ;
-                        }
+                    if ( tField.Type == null )
+                    {
+                        continue ;
+                    }
 
-                        break ;
-                    case "AbstractNode" :
-                        var typeName1 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
-                        typeName1 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName1}" ;
-                        var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName1 ) ;
-                        if ( t1 == null )
-                        {
-                            Debug.WriteLine ( "No type for " + typeName1 ) ;
-                        }
-                        else
-                        {
-                            var typ1 = ( AppTypeInfo ) model1.Map[ t1 ] ;
-                            typ1.ElementName = xElement.Name.LocalName ;
-                            var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                            //Debug.WriteLine ( comment ) ;
-                            var fields =
-                                new List < Tuple < string , string , List < string > > > ( ) ;
-                            foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
-                            {
-                                var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
-                                var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+                    var accessorDeclarationSyntaxes = new SyntaxList < AccessorDeclarationSyntax > (
+                                                                                                    new
+                                                                                                    []
+                                                                                                    {
+                                                                                                        SyntaxFactory
+                                                                                                           .AccessorDeclaration (
+                                                                                                                                 SyntaxKind
+                                                                                                                                    .GetAccessorDeclaration
+                                                                                                                                )
+                                                                                                           .WithSemicolonToken (
+                                                                                                                                SyntaxFactory
+                                                                                                                                   .Token (
+                                                                                                                                           SyntaxKind
+                                                                                                                                              .SemicolonToken
+                                                                                                                                          )
+                                                                                                                               )
+                                                                                                      , SyntaxFactory
+                                                                                                       .AccessorDeclaration (
+                                                                                                                             SyntaxKind
+                                                                                                                                .SetAccessorDeclaration
+                                                                                                                            )
+                                                                                                       .WithSemicolonToken (
+                                                                                                                            SyntaxFactory
+                                                                                                                               .Token (
+                                                                                                                                       SyntaxKind
+                                                                                                                                          .SemicolonToken
+                                                                                                                                      )
+                                                                                                                           )
+                                                                                                    }
+                                                                                                   ) ;
+                    var accessorListSyntax =
+                        SyntaxFactory.AccessorList ( accessorDeclarationSyntaxes ) ;
+                    if ( tField.Type.IsGenericType )
+                    {
+                        var g = tField.Type.GetGenericTypeDefinition ( ).Name ;
+                    }
 
-                                var kinds = field.Elements ( "Kind" )
-                                                 .Select (
-                                                          element => element
-                                                                    .Attribute ( "Name" )
-                                                                    .Value
-                                                         )
-                                                 .ToList ( ) ;
-                                if ( kinds.Any ( ) )
-                                {
-                                    //Debug.WriteLine ( string.Join ( ", " , kinds ) ) ;
-                                }
+                    var typeSyntax =
+                        SyntaxFactory.ParseTypeName (
+                                                     tField.TypeName
+                                                    ) ; /*SyntaxFactory.IdentifierName (
+                                                                                                                 tField
+                                                                                                                    .Type
+                                                                                                                    .Name
+                                                                                                                ) ;*/
+                    members = members.Add (
+                                           SyntaxFactory.PropertyDeclaration (
+                                                                              new SyntaxList <
+                                                                                  AttributeListSyntax
+                                                                              > ( )
+                                                                            , SyntaxTokenList
+                                                                                 .Create (
+                                                                                          SyntaxFactory
+                                                                                             .Token (
+                                                                                                     SyntaxKind
+                                                                                                        .PublicKeyword
+                                                                                                    )
+                                                                                         )
+                                                                            , typeSyntax
+                                                                            , null
+                                                                            , SyntaxFactory
+                                                                                 .Identifier (
+                                                                                              tField
+                                                                                                 .Name
+                                                                                             )
+                                                                            , accessorListSyntax
+                                                                             )
+                                          ) ;
+                }
 
-                                typ1.Fields.Add (
-                                                 new SyntaxFieldInfo (
-                                                                      fieldName
-                                                                    , fieldType
-                                                                    , kinds.ToArray ( )
-                                                                     )
-                                                ) ;
-                            }
-                        }
+                var classDecl =
+                    SyntaxFactory.ClassDeclaration ( mapKey.Name ).WithMembers ( members ) ;
+                if ( t.ParentInfo != null )
+                {
+                    classDecl = classDecl.WithBaseList (
+                                                        SyntaxFactory.BaseList (
+                                                                                new
+                                                                                    SeparatedSyntaxList
+                                                                                    < BaseTypeSyntax
+                                                                                    > ( ).Add (
+                                                                                               SyntaxFactory
+                                                                                                  .SimpleBaseType (
+                                                                                                                   SyntaxFactory
+                                                                                                                      .IdentifierName (
+                                                                                                                                       t.ParentInfo
+                                                                                                                                        .Type
+                                                                                                                                        .Name
+                                                                                                                                      )
+                                                                                                                  )
+                                                                                              )
+                                                                               )
+                                                       ) ;
+                }
 
-                        break ;
-                    case "Node" :
-                        var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
-                        typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
-                        var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
-                        if ( t2 == null )
-                        {
-                            Debug.WriteLine ( "No type for " + typeName2 ) ;
-                        }
-                        else
-                        {
-                            var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
-                            typ2.ElementName = xElement.Name.LocalName ;
-                            var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                            //Debug.WriteLine ( comment ) ;
-                            var fields =
-                                new List < Tuple < string , string , List < string > > > ( ) ;
-                            foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
-                            {
-                                var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
-                                var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+                types = types.Add ( classDecl ) ;
+            }
 
-                                var kinds = field.Elements ( "Kind" )
-                                                 .Select (
-                                                          element => element
-                                                                    .Attribute ( "Name" )
-                                                                    .Value
-                                                         )
-                                                 .ToList ( ) ;
-                                if ( kinds.Any ( ) )
-                                {
-                                    //Debug.WriteLine(string.Join(", ", kinds));
-                                }
+            var compl = SyntaxFactory.CompilationUnit ( )
+                                     .WithUsings (
+                                                  new SyntaxList < UsingDirectiveSyntax > (
+                                                                                           SyntaxFactory
+                                                                                              .UsingDirective (
+                                                                                                               SyntaxFactory
+                                                                                                                  .ParseName (
+                                                                                                                              "System"
+                                                                                                                             )
+                                                                                                              )
+                                                                                          )
+                                                 )
+                                     .WithMembers ( types )
+                                     .NormalizeWhitespace ( ) ;
+            var tree = SyntaxFactory.SyntaxTree ( compl ) ;
+            var src = tree.ToString ( ) ;
+            File.WriteAllText ( @"C:\data\logs\stuff.cs" , src ) ;
+            var tree2 = CSharpSyntaxTree.ParseText ( SourceText.From ( src ) ) ;
+            //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
+            var source = tree2.ToString ( ).Split ( new[] { "\r\n" } , StringSplitOptions.None ) ;
+            //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
+            var adhoc = new AdhocWorkspace ( ) ;
+            
+            var projectId = ProjectId.CreateNewId ( ) ;
+            var s = adhoc.AddSolution (
+                                       SolutionInfo.Create (
+                                                            SolutionId.CreateNewId ( )
+                                                          , VersionStamp.Create ( )
+                                                          , null
+                                                          , new[]
+                                                            {
+                                                                ProjectInfo.Create (
+                                                                                    projectId
+                                                                                  , VersionStamp
+                                                                                       .Create ( )
+                                                                                  , "test"
+                                                                                  , "test"
+                                                                                  , LanguageNames
+                                                                                       .CSharp
+                                                                                  , null
+                                                                                  , null
+                                                                                  , new
+                                                                                        CSharpCompilationOptions (
+                                                                                                                  OutputKind
+                                                                                                                     .DynamicallyLinkedLibrary
+                                                                                                                 )
+                                                                                   )
+                                                            }
+                                                           )
+                                      ) ;
 
-                                //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
-                                typ2.Fields.Add (
-                                                 new SyntaxFieldInfo (
-                                                                      fieldName
-                                                                    , fieldType
-                                                                    , kinds.ToArray ( )
-                                                                     )
-                                                ) ;
-                            }
-                        }
-
-                        break ;
 
 
-                    default : throw new InvalidOperationException ( ) ;
+            var documentInfo = DocumentInfo.Create (
+                                                    DocumentId.CreateNewId ( projectId )
+                                                  , "test"
+                                                  , null
+                                                  , SourceCodeKind.Regular
+                                                  , TextLoader.From (
+                                                                     TextAndVersion.Create (
+                                                                                            SourceText
+                                                                                               .From (
+                                                                                                      src
+                                                                                                     )
+                                                                                          , VersionStamp
+                                                                                               .Create ( )
+                                                                                           )
+                                                                    )
+                                                   ) ;
+            var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ) ) ;
+
+            //var d = project.AddDocument ( "test.cs" , src ) ;
+            var rb1 = adhoc.TryApplyChanges ( s2 ) ;
+            if ( ! rb1 )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
+
+            var s3 = adhoc.CurrentSolution.AddMetadataReference (
+                                                                 projectId
+                                                               , MetadataReference.CreateFromFile (
+                                                                                                   @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.dll"
+                                                                                                  )
+                                                                ) ;
+
+
+            var rb = adhoc.TryApplyChanges ( s3 ) ;
+            if ( ! rb )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
+
+            var project = adhoc.CurrentSolution.Projects.First ( ) ;
+            var compilation = await project.GetCompilationAsync ( ) ;
+            if ( compilation != null )
+            {
+                foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+                {
+                    var line =
+                        source[ diagnostic.Location.GetLineSpan ( ).StartLinePosition.Line ] ;
+                    Console.WriteLine ( diagnostic.ToString ( ) ) ;
                 }
             }
 
-            var d = new TypeMapDictionary ( ) ;
-            d[ typeof ( string ) ] = new AppTypeInfo ( ) ;
+            Debug.WriteLine ( compl.ToString ( ) ) ;
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private static void LoadSyntax ( TypesViewModel model1 )
+        {
+            var syntax = XDocument.Parse ( Resources.Syntax ) ;
+            if ( syntax.Root != null )
+            {
+                foreach ( var xElement in syntax.Root.Elements ( ) )
+                {
+                    switch ( xElement.Name.LocalName )
+                    {
+                        case "PredefinedNode" :
+                            var typeName = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                            typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
+                            var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName ) ;
+                            if ( t == null )
+                            {
+                                Debug.WriteLine ( "No type for " + typeName ) ;
+                            }
+                            else if ( model1.Map.Contains ( t ) )
+                            {
+                                var typ = ( AppTypeInfo ) model1.Map[ t ] ;
+                                typ.ElementName = xElement.Name.LocalName ;
+                            }
+
+                            break ;
+                        case "AbstractNode" :
+                            var typeName1 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                            typeName1 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName1}" ;
+                            var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName1 ) ;
+                            if ( t1 == null )
+                            {
+                                Debug.WriteLine ( "No type for " + typeName1 ) ;
+                            }
+                            else
+                            {
+                                var typ1 = ( AppTypeInfo ) model1.Map[ t1 ] ;
+                                typ1.ElementName = xElement.Name.LocalName ;
+                                var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
+                                //Debug.WriteLine ( comment ) ;
+                                var fields =
+                                    new List < Tuple < string , string , List < string > > > ( ) ;
+                                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                                {
+                                    var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
+                                    var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+
+                                    var kinds = field.Elements ( "Kind" )
+                                                     .Select (
+                                                              element => element
+                                                                        .Attribute ( "Name" )
+                                                                        .Value
+                                                             )
+                                                     .ToList ( ) ;
+                                    if ( kinds.Any ( ) )
+                                    {
+                                        //Debug.WriteLine ( string.Join ( ", " , kinds ) ) ;
+                                    }
+
+                                    typ1.Fields.Add (
+                                                     new SyntaxFieldInfo (
+                                                                          fieldName
+                                                                        , fieldType
+                                                                        , kinds.ToArray ( )
+                                                                         )
+                                                    ) ;
+                                }
+                            }
+
+                            break ;
+                        case "Node" :
+                            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                            typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
+                            var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
+                            if ( t2 == null )
+                            {
+                                Debug.WriteLine ( "No type for " + typeName2 ) ;
+                            }
+                            else
+                            {
+                                var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
+                                typ2.ElementName = xElement.Name.LocalName ;
+                                var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
+                                //Debug.WriteLine ( comment ) ;
+                                var fields =
+                                    new List < Tuple < string , string , List < string > > > ( ) ;
+                                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                                {
+                                    var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
+                                    var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+
+                                    var kinds = field.Elements ( "Kind" )
+                                                     .Select (
+                                                              element => element
+                                                                        .Attribute ( "Name" )
+                                                                        .Value
+                                                             )
+                                                     .ToList ( ) ;
+                                    if ( kinds.Any ( ) )
+                                    {
+                                        //Debug.WriteLine(string.Join(", ", kinds));
+                                    }
+
+                                    //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
+                                    typ2.Fields.Add (
+                                                     new SyntaxFieldInfo (
+                                                                          fieldName
+                                                                        , fieldType
+                                                                        , kinds.ToArray ( )
+                                                                         )
+                                                    ) ;
+                                }
+                            }
+
+                            break ;
+
+
+                        default : throw new InvalidOperationException ( ) ;
+                    }
+                }
+            }
+
+            var d = new TypeMapDictionary { [ typeof ( string ) ] = new AppTypeInfo ( ) } ;
             Debug.WriteLine ( XamlWriter.Save ( d ) ) ;
 
             Debug.WriteLine ( XamlWriter.Save ( model1 ) ) ;
