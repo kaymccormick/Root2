@@ -43,13 +43,25 @@ namespace AnalysisAppLib
         /// <param name="xmlDocElements"></param>
         protected MemberBaseDocumentation (
             string                        elementId
-          , [ NotNull ] Type              type
-          , [ NotNull ] string            memberName
-          , IEnumerable < XmlDocElement > xmlDocElements
+          , [ CanBeNull ] Type            type
+          , [ NotNull ]   string          memberName
+          , IEnumerable < XmlDocElement > xmlDocElements = null
         ) : base ( elementId , xmlDocElements )
         {
-            Type       = type       ?? throw new ArgumentNullException ( nameof ( type ) ) ;
+            Type       = type ;
             MemberName = memberName ?? throw new ArgumentNullException ( nameof ( memberName ) ) ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
+        protected MemberBaseDocumentation (
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , xmlDoc )
+        {
         }
 
         /// <summary>
@@ -91,7 +103,7 @@ namespace AnalysisAppLib
             string                        elementId
           , [ NotNull ] Type              type
           , [ NotNull ] string            memberName
-          , IEnumerable < XmlDocElement > xmlDoc
+          , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , type , memberName , xmlDoc )
         {
         }
@@ -114,7 +126,7 @@ namespace AnalysisAppLib
         public TypeDocumentation (
             string                        elementId
           , Type                          type
-          , IEnumerable < XmlDocElement > xmlDoc
+          , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
             Type = type ;
@@ -150,11 +162,19 @@ namespace AnalysisAppLib
         /// <param name="elementId"></param>
         /// <param name="xmlDoc"></param>
         protected CodeElementDocumentation (
-            string                                    elementId
-          , [ NotNull ] IEnumerable < XmlDocElement > xmlDoc
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         )
         {
-            _xmlDoc   = new XmlDocumentElementCollection ( xmlDoc.ToList ( ) ) ;
+            if ( xmlDoc != null )
+            {
+                _xmlDoc = new XmlDocumentElementCollection ( xmlDoc.ToList ( ) ) ;
+            }
+            else
+            {
+                _xmlDoc = new XmlDocumentElementCollection ( ) ;
+            }
+
             ElementId = elementId ;
         }
 
@@ -189,6 +209,69 @@ namespace AnalysisAppLib
             var doc = XmlDoc != null ? string.Join ( "" , XmlDoc ) : "" ;
             return
                 $" {GetType ( ).Name}{nameof ( ElementId )}: {ElementId}, {nameof ( XmlDoc )}: {doc}" ;
+        }
+    }
+
+    public class IndexerDocumentation : CodeElementDocumentation
+    {
+        public IndexerDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        {
+        }
+
+        public IndexerDocumentation ( ) {
+        }
+    }
+
+    public class EventDocumentation : CodeElementDocumentation
+    {
+        public EventDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        {
+        }
+
+        public EventDocumentation ( ) {
+        }
+    }
+
+    public class EnumMemberDocumentation : CodeElementDocumentation
+    {
+        public EnumMemberDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        {
+        }
+
+        public EnumMemberDocumentation ( ) {
+        }
+    }
+
+    public class DelegateDocumentation : CodeElementDocumentation
+    {
+        public DelegateDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        {
+        }
+
+        public DelegateDocumentation ( ) {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ConstructorDocumentation : MemberBaseDocumentation
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public ConstructorDocumentation ( ) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
+        public ConstructorDocumentation (
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , xmlDoc )
+        {
         }
     }
 
@@ -426,7 +509,7 @@ namespace AnalysisAppLib
           , [ NotNull ] Type              type
           , string                        member
           , string                        parameters
-          , IEnumerable < XmlDocElement > xmlDoc
+          , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , type , member , xmlDoc )
         {
             _parameters = parameters ;

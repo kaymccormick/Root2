@@ -249,17 +249,28 @@ namespace AnalysisAppLib
             get { return _listImplementation.Count ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot
         {
             get { return _listImplementation.SyncRoot ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSynchronized
         {
             get { return _listImplementation.IsSynchronized ; }
         }
         #endregion
         #region Implementation of IList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
 
         /// <summary>
@@ -274,8 +285,18 @@ namespace AnalysisAppLib
         /// </summary>
         public void Clear ( ) { _listImplementation.Clear ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
 
         public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }

@@ -362,139 +362,120 @@ namespace ConsoleApp1
                                          .DescendantNodesAndSelf ( )
                                          .Where ( node => node.HasStructuredTrivia ) )
                     {
-                        foreach ( var syntaxTrivia in node
-                                                     .GetLeadingTrivia ( )
-                                                     .Where (
-                                                             triv => triv.Kind ( )
-                                                                     == SyntaxKind
-                                                                        .SingleLineDocumentationCommentTrivia
-                                                            ) )
+                        var nn = node.GetLeadingTrivia ( )
+                                     .Where (
+                                             triv => triv.Kind ( )
+                                                     == SyntaxKind
+                                                        .SingleLineDocumentationCommentTrivia
+                                            )
+                                     .ToList ( ) ;
+                        if ( nn.Count > 1 )
                         {
-                            var structure = syntaxTrivia.GetStructure ( ) ;
-                            var x = ( DocumentationCommentTriviaSyntax ) structure ;
-                            foreach ( var xml in x.Content )
-                            {
-                                Console.WriteLine ( xml.GetType ( ).Name ) ;
-                                switch ( xml )
-                                {
-                                    case XmlCDataSectionSyntax xmlCDataSectionSyntax : break ;
-                                    case XmlCommentSyntax xmlCommentSyntax :           break ;
-                                    case XmlElementSyntax xmlElementSyntax :
-                                        if ( xmlElementSyntax
-                                            .DescendantNodes ( )
-                                            .OfType < XmlElementSyntax > ( )
-                                            .Any ( ) )
-                                        {
-                                            var xdoc =
-                                                XDocument.Parse ( xmlElementSyntax.ToString ( ) ) ;
-                                            var elem = XmlDocElements.HandleXDocument ( xdoc ) ;
-                                            Console.WriteLine ( elem ) ;
-                                        }
+                            throw new InvalidOperationException ( ) ;
+                        }
 
-                                        break ;
-                                    case XmlEmptyElementSyntax xmlEmptyElementSyntax : break ;
-                                    case XmlProcessingInstructionSyntax xmlProcessingInstructionSyntax : break ;
-                                    case XmlTextSyntax xmlTextSyntax : break ;
-                                    //                 var name = xmlElementSyntax.StartTag.Name.LocalName ;
-                                            //                 var elem = XmlDocElements.HandleName ( name.Text ) ;
-                                            //
-                                            //                 foreach ( var att in xmlElementSyntax
-                                            //                                     .StartTag.Attributes )
-                                            //                 {
-                                            //                     switch ( att )
-                                            //                     {
-                                            //                         case XmlCrefAttributeSyntax
-                                            //                             xmlCrefAttributeSyntax :
-                                            //                             switch ( xmlCrefAttributeSyntax.Cref )
-                                            //                             {
-                                            //                                 case IndexerMemberCrefSyntax
-                                            //                                     indexerMemberCrefSyntax :
-                                            //                                     if ( indexerMemberCrefSyntax
-                                            //                                             .Parameters
-                                            //                                          != null )
-                                            //                                     {
-                                            //                                         foreach ( var param in
-                                            //                                             indexerMemberCrefSyntax
-                                            //                                                .Parameters.Parameters )
-                                            //                                         {
-                                            //                                             SyntaxToken ? k = null ;
-                                            //                                             try
-                                            //                                             {
-                                            //                                                 k = SyntaxFactory
-                                            //                                                    .Token (
-                                            //                                                            param
-                                            //                                                               .RefKindKeyword
-                                            //                                                               .Kind ( )
-                                            //                                                           ) ;
-                                            //                                             }
-                                            //                                             catch ( Exception ex )
-                                            //                                             {
-                                            //                                             }
-                                            //
-                                            //                                             if ( k.HasValue )
-                                            //                                             {
-                                            //                                                 Console.WriteLine (
-                                            //                                                                    "Static token"
-                                            //                                                                   ) ;
-                                            //                                             }
-                                            //                                         }
-                                            //                                     }
-                                            //
-                                            //                                     break ;
-                                            //                                 case ConversionOperatorMemberCrefSyntax
-                                            //                                     conversionOperatorMemberCrefSyntax :
-                                            //                                     break ;
-                                            //                                 case NameMemberCrefSyntax
-                                            //                                     nameMemberCrefSyntax :
-                                            //                                     break ;
-                                            //                                 case OperatorMemberCrefSyntax
-                                            //                                     operatorMemberCrefSyntax :
-                                            //                                     break ;
-                                            //                                 case MemberCrefSyntax memberCrefSyntax :
-                                            //                                     break ;
-                                            //                                 case QualifiedCrefSyntax
-                                            //                                     qualifiedCrefSyntax :
-                                            //                                     break ;
-                                            //                                 case TypeCrefSyntax typeCrefSyntax :
-                                            //                                     break ;
-                                            //                                 default :
-                                            //                                     throw new
-                                            //                                         ArgumentOutOfRangeException ( ) ;
-                                            //                             }
-                                            //
-                                            //                             break ;
-                                            //                         case XmlNameAttributeSyntax
-                                            //                             xmlNameAttributeSyntax :
-                                            //                             break ;
-                                            //                         case XmlTextAttributeSyntax
-                                            //                             xmlTextAttributeSyntax :
-                                            //                             break ;
-                                            //                         default :
-                                            //                             throw new ArgumentOutOfRangeException (
-                                            //                                                                    nameof
-                                            //                                                                    ( att
-                                            //                                                                    )
-                                            //                                                                   ) ;
-                                            //                     }
-                                            //                 }
-                                            //
-                                            //                 foreach ( var descendantNode in xmlElementSyntax
-                                            //                    .DescendantNodes ( ) )
-                                            //                 {
-                                            //                     Console.WriteLine (
-                                            //                                        descendantNode
-                                            //                                           .GetType ( )
-                                            //                                           .FullName
-                                            //                                       ) ;
-                                            //                     Console.WriteLine ( "***" ) ;
-                                            //                     Console.WriteLine ( descendantNode ) ;
-                                            //                     Console.WriteLine ( "***" ) ;
-                                            //                 }
-                                            //             }
-                                        }
-                                }
+                        if ( ! nn.Any ( ) )
+                        {
+                            continue ;
+                        }
+
+                        try
+                        {
+                            CodeElementDocumentation xdoc = null ;
+                            var declaredSymbol = model.GetDeclaredSymbol ( node ) ;
+                            if ( declaredSymbol == null )
+                            {
+                                Console.WriteLine ( node.Kind ( ) ) ;
+                                continue ;
                             }
-                        
+
+                            var declarationId =
+                                DocumentationCommentId.CreateDeclarationId ( declaredSymbol ) ;
+                            var coll = new XmlDocumentElementCollection ( ) ;
+                            switch ( node )
+                            {
+                                case MethodDeclarationSyntax m :
+                                    xdoc = new MethodDocumentation (
+                                                                    declarationId
+                                                                  , null
+                                                                  , m.Identifier.Text
+                                                                  , null
+                                                                   ) ;
+                                    break ;
+                                case ClassDeclarationSyntax cl :
+                                case InterfaceDeclarationSyntax idcl :
+                                case EnumDeclarationSyntax eds :
+                                    xdoc = new TypeDocumentation ( declarationId , null ) ;
+                                    break ;
+                                case DelegateDeclarationSyntax dds :
+                                    xdoc = new DelegateDocumentation ( declarationId ) ;
+                                    break ;
+                                case PropertyDeclarationSyntax pp :
+                                    xdoc = new PropertyDocumentation (
+                                                                      declarationId
+                                                                    , null
+                                                                    , pp.Identifier.Text
+                                                                     ) ;
+                                    break ;
+                                case ConstructorDeclarationSyntax cds :
+                                    xdoc = new ConstructorDocumentation ( declarationId ) ;
+                                    break ;
+                                case EnumMemberDeclarationSyntax ems :
+                                    xdoc = new EnumMemberDocumentation ( declarationId ) ;
+                                    break ;
+                                case EventDeclarationSyntax eds :
+                                    xdoc = new EventDocumentation ( declarationId ) ;
+                                    break ;
+                                case IndexerDeclarationSyntax ids :
+                                    xdoc = new IndexerDocumentation ( declarationId ) ;
+                                    break ;
+                                default :
+                                    throw new InvalidOperationException (
+                                                                         node.Kind ( ).ToString ( )
+                                                                        ) ;
+                            }
+
+                            foreach ( var syntaxTrivia in nn )
+                            {
+                                var structure = syntaxTrivia.GetStructure ( ) ;
+                                var x = ( DocumentationCommentTriviaSyntax ) structure ;
+                                foreach ( var xml in x.Content )
+                                {
+                                    XmlDocElement elem = null ;
+                                    //Console.WriteLine ( xml.GetType ( ).Name ) ;
+                                    switch ( xml )
+                                    {
+                                        case XmlCDataSectionSyntax xmlCDataSectionSyntax : break ;
+                                        case XmlCommentSyntax xmlCommentSyntax :           break ;
+                                        case XmlElementSyntax xmlElementSyntax :
+                                            var xdoc1 =
+                                                XDocument.Parse ( xmlElementSyntax.ToString ( ) ) ;
+                                            elem = XmlDocElements.HandleXDocument ( xdoc1 ) ;
+
+                                            break ;
+                                        case XmlEmptyElementSyntax xmlEmptyElementSyntax : break ;
+                                        case XmlProcessingInstructionSyntax
+                                            xmlProcessingInstructionSyntax :
+                                            break ;
+                                        case XmlTextSyntax xmlTextSyntax :
+                                            elem = new XmlDocText (
+                                                                   xmlTextSyntax.ToFullString ( )
+                                                                  ) ;
+                                            break ;
+                                    }
+
+                                    if ( elem != null )
+                                    {
+                                        xdoc.XmlDoc.Add ( elem ) ;
+                                    }
+                                }
+
+                                Console.WriteLine ( XamlWriter.Save ( xdoc ) ) ;
+                            }
+                        }
+                        catch ( Exception exx )
+                        {
+                        }
                     }
                 }
             }
@@ -753,14 +734,14 @@ namespace ConsoleApp1
             // }
         }
 
-        private static void RunConsoleUi ( AppContext context )
+        private static void RunConsoleUi ( [ NotNull ] AppContext context )
         {
             context.Ui.Init ( ) ;
             context.Ui.Run ( ) ;
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static async Task CodeGen ( TypesViewModel model1 )
+        private static async Task CodeGen ( [ NotNull ] TypesViewModel model1 )
         {
             var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;
             foreach ( Type mapKey in model1.Map.Keys )

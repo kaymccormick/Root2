@@ -142,6 +142,7 @@ namespace AnalysisAppLib
                     r = new Quoteinline(element.Nodes().Select(Selector));
                     break;
                 default:
+                    return null ;
                     throw new UnrecognizedElementException(name);
             }
 

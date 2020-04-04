@@ -178,10 +178,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </DesignDataWithDesignTimeCreatableTypes>
-    <Resource Include="Types.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Resource Include="TypesViewModel2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
