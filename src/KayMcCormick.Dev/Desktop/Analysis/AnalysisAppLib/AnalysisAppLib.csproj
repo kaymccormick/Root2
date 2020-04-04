@@ -116,6 +116,7 @@
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
     <Compile Include="TypeWriter.cs" />
+    <Compile Include="UnrecognizedElementException.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
     <Compile Include="CodeAnalyseContext.cs" />
     <Compile Include="CodeAnalyseContext2.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\SyntaxTokenViewModel.cs" />
     <Compile Include="Visitor2.cs" />
+    <Compile Include="XmlDocElements.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">

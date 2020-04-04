@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeafService", "Services\Lea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisAppLib", "Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj", "{0381D4D0-945E-4340-B974-9D07B2830D4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FindLogUsages", "Desktop\Analysis\FindLogUsages\FindLogUsages.csproj", "{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,18 @@ Global
 		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x64.Build.0 = Release|x64
 		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x86.ActiveCfg = Release|x86
 		{0381D4D0-945E-4340-B974-9D07B2830D4F}.Release|x86.Build.0 = Release|x86
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Debug|x64.ActiveCfg = Debug|x64
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Debug|x64.Build.0 = Debug|x64
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Debug|x86.ActiveCfg = Debug|x86
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Debug|x86.Build.0 = Debug|x86
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Release|x64.ActiveCfg = Release|x64
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Release|x64.Build.0 = Release|x64
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Release|x86.ActiveCfg = Release|x86
+		{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

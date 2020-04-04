@@ -12,6 +12,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    ///
     public class Returns : BlockDocElem
     {
         public Returns ( IEnumerable < XmlDocElement > @select ) : base ( @select ) { }
@@ -669,6 +670,11 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="paramName"></param>
         public Paramref ( string paramName ) { _paramName = paramName ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Paramref ( ) { }
 
         /// <summary>
         /// </summary>

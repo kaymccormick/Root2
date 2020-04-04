@@ -295,7 +295,7 @@ namespace AnalysisControls.ViewModel
             var doc = XDocument.Parse ( xmlElement.OuterXml ) ;
             var xNodes = doc.Element ( "member" )?.Nodes ( ) ;
 
-            var xmlDoc = ( xNodes ?? throw new InvalidOperationException ( ) ).Select ( Selector ) ;
+            var xmlDoc = ( xNodes ?? throw new InvalidOperationException ( ) ).Select ( XmlDocElements.Selector ) ;
             var kind = elementId[ 0 ] ;
             var type = elementId.Substring ( 2 ) ;
             string parameters = null ;
@@ -354,92 +354,6 @@ namespace AnalysisControls.ViewModel
                                                   ) ;
                 default : throw new InvalidOperationException ( kind.ToString ( ) ) ;
             }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        /// <exception cref="UnrecognizedElementException"></exception>
-        [ CanBeNull ]
-        public static XmlDocElement Selector ( [ NotNull ] XNode node )
-        {
-            switch ( node )
-            {
-                case XCData xcData :     return new XmlDocText ( xcData.Value ) ;
-                case XElement element :
-                {
-                    XmlDocElement r = null ;
-                    switch ( element.Name.LocalName )
-                    {
-                        case "summary" :
-                            r = new Summary ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-                        case "see" :
-                            r = new Crossref (
-                                              element.Attribute ( XName.Get ( "cref" , "" ) )?.Value
-                                              ?? ""
-                                             ) ;
-                            break ;
-                        case "paramref" :
-                            r = new Paramref (
-                                              element.Attribute ( XName.Get ( "name" , "" ) )?.Value
-                                              ?? ""
-                                             ) ;
-                            break ;
-                        case "c" :
-                            r = new Code ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-                        case "para" :
-                            r = new Para ( element.Nodes ( ).Select ( Selector ) ) ;
-
-                            break ;
-                        case "seealso" :
-                            r = new Seealso ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-                        case "em" :
-                            r = new Em ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-                        case "pre" :
-                            r = new Pre ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-                        case "a" :
-                            r = new Anchor (
-                                            element.Attribute ( XName.Get ( "href" , "" ) )?.Value
-                                            ?? ""
-                                          , element.Nodes ( ).Select ( Selector )
-                                           ) ;
-                            break ;
-                        case "typeparamref" :
-                            r = new Typeparamref (
-                                                  element.Attribute ( XName.Get ( "name" , "" ) )
-                                                        ?.Value
-                                                  ?? ""
-                                                 ) ;
-                            break ;
-                        case "param" :
-                            r = new Param (
-                                           element.Attribute ( XName.Get ( "name" , "" ) )?.Value
-                                           ?? ""
-                                         , element.Nodes ( ).Select ( Selector )
-                                          ) ;
-                            break ;
-                        case "returns" :
-                            r = new Returns ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-
-                        case "example" :
-                            r = new Example ( element.Nodes ( ).Select ( Selector ) ) ;
-                            break ;
-                    }
-
-                    return r ;
-                }
-                case XText xText :
-                    return new XmlDocText ( xText.Value ) ;
-            }
-
-            throw new UnrecognizedElementException ( node.GetType ( ).FullName ) ;
         }
 
         /// <summary>
@@ -880,45 +794,5 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public bool IsSynchronized { get { return _dict.IsSynchronized ; } }
         #endregion
-    }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class UnrecognizedElementException : Exception
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public UnrecognizedElementException ( ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        public UnrecognizedElementException ( string message ) : base ( message ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public UnrecognizedElementException ( string message , Exception innerException ) :
-            base ( message , innerException )
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected UnrecognizedElementException (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
-        {
-        }
     }
 }
