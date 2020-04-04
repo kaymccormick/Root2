@@ -1,0 +1,13 @@
+              <avalondock:LayoutAnchorable Title="Syntax Node Types">
+                <Grid>
+                  <TreeView ItemsSource="{Binding Source={kmWpf:Resolve anal:ITypesViewModel},Path=Root.SubTypeInfos}">
+                  <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type anal:AppTypeInfo}" ItemsSource="{Binding SubTypeInfos}">
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="{Binding Title}"></TextBlock>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                  </TreeView.Resources>
+                  </TreeView>
+                </Grid>
+              </avalondock:LayoutAnchorable>

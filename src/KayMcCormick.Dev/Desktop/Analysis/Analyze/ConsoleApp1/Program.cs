@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using System.Collections.Immutable ;
 using System.ComponentModel ;
 using System.Data ;
 using System.Data.SqlClient ;
@@ -32,6 +33,8 @@ using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using NLog.Targets ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
@@ -341,6 +344,8 @@ namespace ConsoleApp1
             }
 #endif
 
+
+
             //context.Ui.Init();
             // object o11 = XamlReader.Parse(
             //                             "<Toplevel xmlns=\"clr-namespace:Terminal.Gui;assembly=Terminal.Gui\">\r\n</Toplevel>\r\n"
@@ -357,7 +362,148 @@ namespace ConsoleApp1
             //
             //     Console.WriteLine ( projFile ) ;
             // }
-            var model1 = context.Scope.Resolve<TypesViewModel>();
+            var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
+
+            SyntaxList<MemberDeclarationSyntax> types = new SyntaxList < MemberDeclarationSyntax > ();
+            foreach ( Type mapKey in model1.Map.Keys )
+            {
+                var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
+                var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
+                foreach ( SyntaxFieldInfo tField in t.Fields )
+                {
+                    if ( tField.Type == null ) continue ;
+                    var accessorDeclarationSyntaxes =
+                        new SyntaxList < AccessorDeclarationSyntax > (
+                                                                      new[]
+                                                                      {
+                                                                          SyntaxFactory
+                                                                             .AccessorDeclaration (
+                                                                                                   SyntaxKind
+                                                                                                      .GetAccessorDeclaration
+                                                                                                  ).WithSemicolonToken(SyntaxFactory.Token (SyntaxKind.SemicolonToken))
+                                                                        , SyntaxFactory
+                                                                             .AccessorDeclaration (
+                                                                                                   SyntaxKind
+                                                                                                      .SetAccessorDeclaration
+                                                                                                  ).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                                                                      }
+                                                                     ) ;
+                    var accessorListSyntax = SyntaxFactory.AccessorList (
+                                                                         accessorDeclarationSyntaxes
+                                                                        ) ;
+                    if ( tField.Type.IsGenericType )
+                    {
+                        var g = tField.Type.GetGenericTypeDefinition ( ).Name ;
+                        
+                    }
+                    var typeSyntax = SyntaxFactory.ParseTypeName(tField.TypeName); /*SyntaxFactory.IdentifierName (
+                                                                                                                 tField
+                                                                                                                    .Type
+                                                                                                                    .Name
+                                                                                                                ) ;*/
+                    members = members.Add (
+                                           SyntaxFactory.PropertyDeclaration (
+                                                                              new SyntaxList <
+                                                                                  AttributeListSyntax > ( )
+                                                                            , SyntaxTokenList.Create (
+                                                                                                      SyntaxFactory
+                                                                                                         .Token (
+                                                                                                                 SyntaxKind
+                                                                                                                    .PublicKeyword
+                                                                                                                )
+                                                                                                     )
+                                                                            , typeSyntax
+                                                                            , null
+                                                                            , SyntaxFactory.Identifier (
+                                                                                                        tField
+                                                                                                           .Name
+                                                                                                       )
+                                                                            , accessorListSyntax
+                                                                             )
+                                          ) ;
+                }
+
+                var classDecl =
+                    SyntaxFactory.ClassDeclaration ( mapKey.Name ).WithMembers ( members ) ;
+                if ( t.ParentInfo != null )
+                {
+                    classDecl =
+                        classDecl.WithBaseList ( SyntaxFactory.BaseList (
+                                                                         new SeparatedSyntaxList <
+                                                                                 BaseTypeSyntax
+                                                                             > ( )
+                                                                            .Add (
+                                                                                  SyntaxFactory
+                                                                                     .SimpleBaseType (
+                                                                                                      SyntaxFactory
+                                                                                                         .IdentifierName (
+                                                                                                                          t.ParentInfo
+                                                                                                                           .Type
+                                                                                                                           .Name
+                                                                                                                         )
+                                                                                                     )
+                                                                                 )
+                                                                        ) );
+                }
+                types = types.Add ( classDecl ) ;
+
+            }
+
+            var compl = SyntaxFactory.CompilationUnit ( ).WithUsings(new SyntaxList < UsingDirectiveSyntax > (SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System"))))
+                                     .WithMembers ( types )
+                                     .NormalizeWhitespace ( ) ;
+            var tree = SyntaxFactory.SyntaxTree ( compl ) ;
+            var src = tree.ToString ( ) ;
+            File.WriteAllText ( @"C:\data\logs\stuff.cs" , src ) ;
+            var tree2 = CSharpSyntaxTree.ParseText ( SourceText.From ( src ) ) ;
+            //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
+            var source = tree2.ToString ( ).Split ( new []{"\r\n"}, StringSplitOptions.None ) ;
+            //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
+            AdhocWorkspace adhoc = new AdhocWorkspace();
+            //var p = adhoc.AddProject("test", LanguageNames.CSharp);
+            var projectId = ProjectId.CreateNewId() ;
+            var s = adhoc.AddSolution (
+                                       SolutionInfo.Create (
+                                                            SolutionId.CreateNewId ( )
+                                                          , VersionStamp.Create ( ), null, new[] {ProjectInfo.Create(projectId, VersionStamp.Create(), "test", "test", LanguageNames.CSharp, null, null, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary
+                                                                                                                                                                                                                                     ))}));
+            
+            
+            //var p = s.AddProject("test", "test", LanguageNames.CSharp);
+            //adhoc.TryApplyChanges ( s ) ;
+            
+            var documentInfo = DocumentInfo.Create(DocumentId.CreateNewId(projectId), "test", null, SourceCodeKind.Regular, TextLoader.From(TextAndVersion.Create(SourceText.From ( src ), VersionStamp.Create()))) ;
+            var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ) ) ;
+
+            //var d = project.AddDocument ( "test.cs" , src ) ;
+            var rb1 = adhoc.TryApplyChanges ( s2 ) ;
+            if (!rb1)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var s3 = adhoc.CurrentSolution.AddMetadataReference (
+                                                                 projectId
+                                                               , MetadataReference.CreateFromFile (
+                                                                                                   @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.dll"
+                                                                                                  )
+                                                                ) ;
+                                                                   
+            
+            var rb = adhoc.TryApplyChanges(s3);
+            if ( ! rb )
+            {
+                throw new InvalidOperationException();
+            }
+            var project = adhoc.CurrentSolution.Projects.First();
+            var compilation = await project.GetCompilationAsync ( ) ;
+            foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+            {
+                var line = source[ diagnostic.Location.GetLineSpan ( ).StartLinePosition.Line ] ;
+                Console.WriteLine(diagnostic.ToString());
+            }
+            Debug.WriteLine (compl.ToString()  );
+
             //LoadSyntax ( model1 ) ;
             var b = new SqlConnectionStringBuilder
                     {
@@ -368,41 +514,58 @@ namespace ConsoleApp1
             var c = new SqlConnection ( b.ConnectionString ) ;
             await c.OpenAsync ( ) ;
 
-            var bb1 = new SqlCommand ( "select example, syntaxkind, typename, tokens, id from syntaxexample2" , c) ;
+            var bb1 = new SqlCommand (
+                                      "select example, syntaxkind, typename, tokens, id from syntaxexample2"
+                                    , c
+                                     ) ;
             var result = await bb1.ExecuteReaderAsync ( ) ;
-            ExampleDict d1 = new ExampleDict();
+            var d1 = new ExampleDict ( ) ;
             for ( ; ; )
             {
                 var moreRows = await result.ReadAsync ( ) ;
-                if ( ! moreRows ) break ;
+                if ( ! moreRows )
+                {
+                    break ;
+                }
+
                 var kind = result.GetInt32 ( 1 ) ;
                 var k = Enum.GetName ( typeof ( SyntaxKind ) , ( uint ) kind ) ;
-                Enum.TryParse<SyntaxKind> ( k , out var k2 ) ;
+                Enum.TryParse < SyntaxKind > ( k , out var k2 ) ;
                 ArrayList l = null ;
-                if ( !d1.Contains( k2)) 
+                if ( ! d1.Contains ( k2 ) )
                 {
-                    l = new ArrayList ( ) ;//List < ExampleSyntax > ();
+                    l        = new ArrayList ( ) ; //List < ExampleSyntax > ();
                     d1[ k2 ] = l ;
-                } else
+                }
+                else
                 {
                     l = ( ArrayList ) d1[ k2 ] ;
                 }
 
                 var reader1 = result.GetXmlReader ( 3 ) ;
-                reader1.MoveToContent( ) ;
-                var tokens = (XElement)XDocument.ReadFrom ( reader1 ) ;
-                var x = tokens
-                      .Elements ( )
-                      .Select ( element => new SToken ( element.Name.LocalName , element.Value ) )
-                      .ToList ( ) ;
-                var exampleSyntax = new ExampleSyntax(kind, result.GetString(0), result.GetString(2), x, result.GetInt32(4)) ;
+                reader1.MoveToContent ( ) ;
+                var tokens = ( XElement ) XNode.ReadFrom ( reader1 ) ;
+                var x = tokens.Elements ( )
+                              .Select (
+                                       element => new SToken (
+                                                              element.Name.LocalName
+                                                            , element.Value
+                                                             )
+                                      )
+                              .ToList ( ) ;
+                var exampleSyntax = new ExampleSyntax (
+                                                       kind
+                                                     , result.GetString ( 0 )
+                                                     , result.GetString ( 2 )
+                                                     , x
+                                                     , result.GetInt32 ( 4 )
+                                                      ) ;
                 var xx11 = XamlWriter.Save ( exampleSyntax ) ;
                 //Debug.WriteLine(xx11);
-                l.Add(exampleSyntax);
-
+                l.Add ( exampleSyntax ) ;
             }
 
-            var d2 = (IDictionary) d1 ;
+            var d2 = ( IDictionary ) d1 ;
             using ( var fileStream = File.OpenWrite ( @"C:\data\logs\xaml" ) )
             {
                 XamlWriter.Save ( d2 , fileStream ) ;
@@ -615,14 +778,19 @@ namespace ConsoleApp1
                             typ1.ElementName = xElement.Name.LocalName ;
                             var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
                             //Debug.WriteLine ( comment ) ;
-                            var fields = new List < Tuple < string , string , List < string > > > ( ) ;
+                            var fields =
+                                new List < Tuple < string , string , List < string > > > ( ) ;
                             foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
                             {
                                 var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
                                 var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
 
                                 var kinds = field.Elements ( "Kind" )
-                                                 .Select ( element => element.Attribute ( "Name" ).Value )
+                                                 .Select (
+                                                          element => element
+                                                                    .Attribute ( "Name" )
+                                                                    .Value
+                                                         )
                                                  .ToList ( ) ;
                                 if ( kinds.Any ( ) )
                                 {
@@ -654,14 +822,19 @@ namespace ConsoleApp1
                             typ2.ElementName = xElement.Name.LocalName ;
                             var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
                             //Debug.WriteLine ( comment ) ;
-                            var fields = new List < Tuple < string , string , List < string > > > ( ) ;
+                            var fields =
+                                new List < Tuple < string , string , List < string > > > ( ) ;
                             foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
                             {
                                 var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
                                 var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
 
                                 var kinds = field.Elements ( "Kind" )
-                                                 .Select ( element => element.Attribute ( "Name" ).Value )
+                                                 .Select (
+                                                          element => element
+                                                                    .Attribute ( "Name" )
+                                                                    .Value
+                                                         )
                                                  .ToList ( ) ;
                                 if ( kinds.Any ( ) )
                                 {
@@ -686,7 +859,7 @@ namespace ConsoleApp1
                 }
             }
 
-            TypeMapDictionary d = new TypeMapDictionary ( ) ;
+            var d = new TypeMapDictionary ( ) ;
             d[ typeof ( string ) ] = new AppTypeInfo ( ) ;
             Debug.WriteLine ( XamlWriter.Save ( d ) ) ;
 
@@ -733,27 +906,21 @@ namespace ConsoleApp1
 
     public class ExampleTokens : IList , ICollection , IEnumerable
     {
-        private IList _listImplementation = new List<SToken>();
+        private IList _listImplementation = new List < SToken > ( ) ;
         #region Implementation of IEnumerable
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
-        public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
-
-        public int Count
+        public void CopyTo ( Array array , int index )
         {
-            get { return _listImplementation.Count ; }
+            _listImplementation.CopyTo ( array , index ) ;
         }
 
-        public object SyncRoot
-        {
-            get { return _listImplementation.SyncRoot ; }
-        }
+        public int Count { get { return _listImplementation.Count ; } }
 
-        public bool IsSynchronized
-        {
-            get { return _listImplementation.IsSynchronized ; }
-        }
+        public object SyncRoot { get { return _listImplementation.SyncRoot ; } }
+
+        public bool IsSynchronized { get { return _listImplementation.IsSynchronized ; } }
         #endregion
         #region Implementation of IList
         public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
@@ -764,7 +931,10 @@ namespace ConsoleApp1
 
         public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
 
-        public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
+        public void Insert ( int index , object value )
+        {
+            _listImplementation.Insert ( index , value ) ;
+        }
 
         public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
 
@@ -776,44 +946,46 @@ namespace ConsoleApp1
             set { _listImplementation[ index ] = value ; }
         }
 
-        public bool IsReadOnly
-        {
-            get { return _listImplementation.IsReadOnly ; }
-        }
+        public bool IsReadOnly { get { return _listImplementation.IsReadOnly ; } }
 
-        public bool IsFixedSize
-        {
-            get { return _listImplementation.IsFixedSize ; }
-        }
+        public bool IsFixedSize { get { return _listImplementation.IsFixedSize ; } }
         #endregion
     }
+
     public class SToken
     {
-        public SToken ( ) {
-        }
+        public SToken ( ) { }
 
-        public SToken ( string tokenKind, string tokenValue)
+        public SToken ( string tokenKind , string tokenValue )
         {
-            TokenKind = tokenKind;
+            TokenKind  = tokenKind ;
             TokenValue = tokenValue ;
         }
 
-        public string TokenKind { get; set ; }
+        public string TokenKind { get ; set ; }
 
         public string TokenValue { get ; set ; }
     }
 
-    public class ExampleDict : IDictionary, ICollection, IEnumerable
+    public class ExampleDict : IDictionary , ICollection , IEnumerable
     {
-        private IDictionary _dictionaryImplementation = new Dictionary<SyntaxKind, ArrayList>();
+        private IDictionary _dictionaryImplementation =
+            new Dictionary < SyntaxKind , ArrayList > ( ) ;
+
         #region Implementation of IEnumerable
         public bool Contains ( object key ) { return _dictionaryImplementation.Contains ( key ) ; }
 
-        public void Add ( object key , object value ) { _dictionaryImplementation.Add ( key , value ) ; }
+        public void Add ( object key , object value )
+        {
+            _dictionaryImplementation.Add ( key , value ) ;
+        }
 
         public void Clear ( ) { _dictionaryImplementation.Clear ( ) ; }
 
-        public IDictionaryEnumerator GetEnumerator ( ) { return _dictionaryImplementation.GetEnumerator ( ) ; }
+        public IDictionaryEnumerator GetEnumerator ( )
+        {
+            return _dictionaryImplementation.GetEnumerator ( ) ;
+        }
 
         public void Remove ( object key ) { _dictionaryImplementation.Remove ( key ) ; }
 
@@ -823,63 +995,55 @@ namespace ConsoleApp1
             set { _dictionaryImplementation[ key ] = value ; }
         }
 
-        public ICollection Keys
-        {
-            get { return _dictionaryImplementation.Keys ; }
-        }
+        public ICollection Keys { get { return _dictionaryImplementation.Keys ; } }
 
-        public ICollection Values
-        {
-            get { return _dictionaryImplementation.Values ; }
-        }
+        public ICollection Values { get { return _dictionaryImplementation.Values ; } }
 
-        public bool IsReadOnly
-        {
-            get { return _dictionaryImplementation.IsReadOnly ; }
-        }
+        public bool IsReadOnly { get { return _dictionaryImplementation.IsReadOnly ; } }
 
-        public bool IsFixedSize
-        {
-            get { return _dictionaryImplementation.IsFixedSize ; }
-        }
+        public bool IsFixedSize { get { return _dictionaryImplementation.IsFixedSize ; } }
 
-        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _dictionaryImplementation ).GetEnumerator ( ) ; }
+        IEnumerator IEnumerable.GetEnumerator ( )
+        {
+            return ( ( IEnumerable ) _dictionaryImplementation ).GetEnumerator ( ) ;
+        }
         #endregion
         #region Implementation of ICollection
-        public void CopyTo ( Array array , int index ) { _dictionaryImplementation.CopyTo ( array , index ) ; }
-
-        public int Count
+        public void CopyTo ( Array array , int index )
         {
-            get { return _dictionaryImplementation.Count ; }
+            _dictionaryImplementation.CopyTo ( array , index ) ;
         }
 
-        public object SyncRoot
-        {
-            get { return _dictionaryImplementation.SyncRoot ; }
-        }
+        public int Count { get { return _dictionaryImplementation.Count ; } }
 
-        public bool IsSynchronized
-        {
-            get { return _dictionaryImplementation.IsSynchronized ; }
-        }
+        public object SyncRoot { get { return _dictionaryImplementation.SyncRoot ; } }
+
+        public bool IsSynchronized { get { return _dictionaryImplementation.IsSynchronized ; } }
         #endregion
     }
-    [ContentProperty("Example")]
+
+    [ ContentProperty ( "Example" ) ]
     public class ExampleSyntax
     {
-        private int _kind ;
+        private int    _kind ;
         private string _example ;
         private string _typeName ;
 
-        private ExampleTokens _tokens = new ExampleTokens();
-        private int _id ;
+        private ExampleTokens _tokens = new ExampleTokens ( ) ;
+        private int           _id ;
 
-        public ExampleSyntax ( int kind , string example , string typeName , List<SToken> tokens , int id )
+        public ExampleSyntax (
+            int             kind
+          , string          example
+          , string          typeName
+          , List < SToken > tokens
+          , int             id
+        )
         {
-            Kind = kind ;
-            Example = example ;
+            Kind     = kind ;
+            Example  = example ;
             TypeName = typeName ;
-            Id = id ;
+            Id       = id ;
             foreach ( var sToken in tokens )
             {
                 Tokens.Add ( sToken ) ;
@@ -891,10 +1055,10 @@ namespace ConsoleApp1
         public string Example { get { return _example ; } set { _example = value ; } }
 
         public string TypeName { get { return _typeName ; } set { _typeName = value ; } }
-        
+
         public int Id { get { return _id ; } set { _id = value ; } }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Content ) ]
         public ExampleTokens Tokens { get { return _tokens ; } }
     }
 

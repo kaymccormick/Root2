@@ -196,9 +196,15 @@ namespace AnalysisControls
         /// </summary>
         public TypeDocumentation DocInfo { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ElementName { get { return _elementName ; } set { _elementName = value ; } }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public SyntaxFieldCollection Fields
         {
@@ -223,11 +229,23 @@ namespace AnalysisControls
     {
         private IList _listImplementation = new List < SyntaxFieldInfo > ( ) ;
         #region Implementation of IEnumerable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
-        public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
+        void ICollection.CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return _listImplementation.Count ; }

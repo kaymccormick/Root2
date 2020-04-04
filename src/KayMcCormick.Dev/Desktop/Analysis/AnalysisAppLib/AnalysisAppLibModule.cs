@@ -32,6 +32,9 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public AnalysisAppLibModule ( )
         {
              Debug.WriteLine ( "here" ) ;
