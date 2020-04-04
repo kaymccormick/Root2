@@ -453,7 +453,7 @@
             </WrapPanel>
           </DataTemplate>
           <HierarchicalDataTemplate
-            DataType="{x:Type analysisControls:AppTypeInfo}"
+            DataType="{x:Type analysisAppLib:AppTypeInfo}"
             ItemsSource="{Binding SubTypeInfos}">
             <Grid HorizontalAlignment="Stretch"
                   ShowGridLines="True">
@@ -481,7 +481,7 @@
             </Grid>
           </HierarchicalDataTemplate>
           <DataTemplate
-            DataType="{x:Type analysisControls:AppMethodInfo}">
+            DataType="{x:Type analysisAppLib:AppMethodInfo}">
             <ContentControl Content="{Binding MethodInfo}">
               <ContentControl.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />
@@ -560,7 +560,7 @@
           </DataTemplate>
 
           <DataTemplate
-            DataType="{x:Type analysisControls:ComponentInfo}">
+            DataType="{x:Type analysisAppLib:ComponentInfo}">
             <TextBlock>
               <TextBlock.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />

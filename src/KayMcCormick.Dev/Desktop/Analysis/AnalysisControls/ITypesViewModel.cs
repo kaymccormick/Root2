@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib ;
 using AnalysisControls.ViewModel ;
 using KayMcCormick.Dev ;
 

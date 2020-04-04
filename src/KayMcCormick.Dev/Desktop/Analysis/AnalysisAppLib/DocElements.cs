@@ -9,6 +9,9 @@ using JetBrains.Annotations ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Returns : BlockDocElem
     {
         public Returns ( IEnumerable < XmlDocElement > @select ) : base ( @select ) { }

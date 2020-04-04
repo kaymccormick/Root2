@@ -74,6 +74,9 @@
     <Compile Include="AnalyzeCommand.cs" />
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppExplorerItem.cs" />
+    <Compile Include="AppMethodInfo.cs" />
+    <Compile Include="AppTypeInfo.cs" />
+    <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\DataflowTransformFuncProvider.cs" />
     <Compile Include="Dataflow\FindLogInvocations.cs" />

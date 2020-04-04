@@ -103,9 +103,6 @@
   <ItemGroup>
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
-    <Compile Include="AppMethodInfo.cs" />
-    <Compile Include="AppTypeInfo.cs" />
-    <Compile Include="ComponentInfo.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />

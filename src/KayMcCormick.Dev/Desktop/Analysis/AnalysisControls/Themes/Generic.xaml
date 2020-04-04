@@ -1,7 +1,8 @@
 <ResourceDictionary
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:local="clr-namespace:AnalysisControls">
+  xmlns:local="clr-namespace:AnalysisControls"
+  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib">
   <Style TargetType="{x:Type local:CustomControl1}">
     <Setter Property="Template">
       <Setter.Value>
@@ -26,7 +27,7 @@
                         ItemsSource="{TemplateBinding RootItemsSource}">
                 <TreeView.Resources>
                   <HierarchicalDataTemplate
-                    DataType="{x:Type local:AppTypeInfo}"
+                    DataType="{x:Type analysisAppLib:AppTypeInfo}"
                     ItemsSource="{Binding SubTypeInfos}">
                     <Grid HorizontalAlignment="Stretch"
                           ShowGridLines="True">

@@ -9,6 +9,7 @@
               xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
               xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
+              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
               mc:Ignorable="d"
@@ -1096,12 +1097,12 @@
                 <Grid>
                   <TreeView ItemsSource="{Binding Source={kmWpf:Resolve anal:ITypesViewModel},Path=StructureRoot}">
                     <TreeView.Resources>
-                      <HierarchicalDataTemplate DataType="{x:Type anal:AppTypeInfo}" ItemsSource="{Binding Fields}">
+                      <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:AppTypeInfo}" ItemsSource="{Binding Fields}">
                         <StackPanel Orientation="Horizontal">
                           <TextBlock Text="{Binding Title}"></TextBlock>
                         </StackPanel>
                       </HierarchicalDataTemplate>
-                      <HierarchicalDataTemplate DataType="{x:Type anal:SyntaxFieldInfo}" ItemsSource="{Binding Types}">
+                      <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:SyntaxFieldInfo}" ItemsSource="{Binding Types}">
                         <StackPanel Orientation="Horizontal">
                           <TextBlock Text="{Binding Name}"></TextBlock>
                           <TextBlock Text=" "></TextBlock>
