@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Windows.Markup ;
+using AnalysisAppLib ;
 using AnalysisAppLib.Syntax ;
 using AnalysisControls.ViewModel ;
 using JetBrains.Annotations ;

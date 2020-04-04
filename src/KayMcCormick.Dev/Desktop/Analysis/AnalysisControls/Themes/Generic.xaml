@@ -9,7 +9,71 @@
           TargetType="{x:Type local:CustomControl1}">
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}" />
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <TreeView Grid.Column="0" Grid.Row="0"
+                        Grid.RowSpan="3" x:Name="treeView"
+                        ItemsSource="{TemplateBinding RootItemsSource}">
+                <TreeView.Resources>
+                  <HierarchicalDataTemplate
+                    DataType="{x:Type local:AppTypeInfo}"
+                    ItemsSource="{Binding SubTypeInfos}">
+                    <Grid HorizontalAlignment="Stretch"
+                          ShowGridLines="True">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Text="{Binding Title}"
+                                 >
+                        <TextBlock.ToolTip>
+                          <ContentControl
+                            Content="{Binding DocInfo}" />
+                        </TextBlock.ToolTip>
+                      </TextBlock>
+                      <WrapPanel
+                        Grid.ZIndex="100" Grid.Column="0"
+                        Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        Margin="10,0,10,0">
+                        
+                      </WrapPanel>
+                    </Grid>
+                  </HierarchicalDataTemplate>
+                </TreeView.Resources>
+              </TreeView>
+              <StackPanel Orientation="Horizontal"
+                          Grid.Row="0"
+                          Grid.Column="1" />
+              <ItemsControl Grid.Row="1" Grid.Column="1"
+                            Margin="10"
+                            x:Name="factoryMethods"
+                            ItemsSource="{TemplateBinding FactoryMethods}">
+                <ItemsControl.Template>
+                  <ControlTemplate
+                    TargetType="ItemsControl">
+                    <ScrollViewer>
+                      <ItemsPresenter />
+                    </ScrollViewer>
+                  </ControlTemplate>
+                </ItemsControl.Template>
+              </ItemsControl>
+              <ListBox Grid.Row="2" Grid.Column="1"
+                       Margin="10" />
+            </Grid>
+          </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

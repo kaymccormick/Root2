@@ -111,6 +111,7 @@
     <Compile Include="Span\TriviaSpanObject.cs" />
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
+    <Compile Include="DocElements.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
     <Compile Include="CodeAnalyseContext.cs" />

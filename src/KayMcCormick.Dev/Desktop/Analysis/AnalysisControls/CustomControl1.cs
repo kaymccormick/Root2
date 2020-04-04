@@ -1,4 +1,7 @@
-﻿using System.Windows ;
+﻿using System.Collections ;
+using System.Collections.Generic ;
+using System.Collections.ObjectModel ;
+using System.Windows ;
 using System.Windows.Controls ;
 
 namespace AnalysisControls
@@ -29,6 +32,44 @@ namespace AnalysisControls
     /// </summary>
     public class CustomControl1 : Control
     {
+        public static readonly DependencyProperty RootItemsSourceProperty =
+            DependencyProperty.Register (
+                                         "RootItemsSource"
+                                       , typeof ( IEnumerable < AppTypeInfo > )
+                                       , typeof ( CustomControl1 )
+                                       , new FrameworkPropertyMetadata ( ( object ) null )
+                                        ) ;
+        private static readonly DependencyPropertyKey RootItemsPropertyKey =
+            DependencyProperty.RegisterReadOnly (
+                                                 "RootItems"
+                                               , typeof ( ObservableCollection < AppTypeInfo > )
+                                               , typeof ( CustomControl1 )
+                                               , new FrameworkPropertyMetadata (
+                                                                                new
+                                                                                    ObservableCollection
+                                                                                    < AppTypeInfo
+                                                                                    > ( )
+                                                                               )
+                                                ) ;
+
+        public static readonly DependencyProperty RootItemsProperty =
+            RootItemsPropertyKey.DependencyProperty ;
+
+        private static readonly DependencyPropertyKey FactoryMethodsPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                                                "FactoryMethods"
+                                              , typeof(ObservableCollection<AppMethodInfo>)
+                                              , typeof(CustomControl1)
+                                              , new FrameworkPropertyMetadata(
+                                                                              new
+                                                                                  ObservableCollection
+                                                                                  <AppMethodInfo
+                                                                                  >()
+                                                                             )
+                                               );
+
+        public static readonly DependencyProperty FactoryMethodsProperty =
+            FactoryMethodsPropertyKey.DependencyProperty;
         static CustomControl1 ( )
         {
             DefaultStyleKeyProperty.OverrideMetadata (
@@ -40,5 +81,31 @@ namespace AnalysisControls
                                                                                     )
                                                      ) ;
         }
+
+        public CustomControl1 ( ) {
+            SetValue (RootItemsPropertyKey, new ObservableCollection<AppTypeInfo>()  );
+            SetValue (FactoryMethodsPropertyKey, new ObservableCollection<AppMethodInfo>()  );
+        }
+
+        #region Overrides of FrameworkElement
+        public override void OnApplyTemplate ( )
+        {
+            TreeView treeView = GetTemplateChild ( "treeView" ) as TreeView ;
+        }
+
+        public ObservableCollection <AppMethodInfo> FactoryMethods { get ; set ; }
+
+        public ObservableCollection < AppTypeInfo > RootItems
+        {
+            get { return ( ObservableCollection < AppTypeInfo > ) GetValue ( RootItemsProperty ) ; }
+            set { SetValue ( RootItemsProperty , value ) ; }
+        }
+
+        public IEnumerable<AppTypeInfo> RootItemsSource
+        {
+            get { return ( IEnumerable < AppTypeInfo > ) GetValue ( RootItemsSourceProperty ) ; }
+            set { SetValue ( RootItemsSourceProperty , value ) ;  }
+        }
+        #endregion
     }
 }

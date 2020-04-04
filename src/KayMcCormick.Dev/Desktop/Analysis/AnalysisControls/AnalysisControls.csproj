@@ -177,10 +177,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="TypesViewModel.xaml">
+    <DesignDataWithDesignTimeCreatableTypes Include="TypesViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Resource>
+    </DesignDataWithDesignTimeCreatableTypes>
     <Resource Include="Types.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -317,6 +317,9 @@
     </PackageReference>
     <PackageReference Include="ReactiveUI.WPF">
       <Version>11.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+      <Version>4.7.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>

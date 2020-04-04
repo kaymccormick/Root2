@@ -80,6 +80,7 @@ namespace AnalysisAppLib.ViewModel
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IViewWithTitle > > > views
           , IEnumerable < IExplorerItemProvider >            providers
+            
         )
         {
             _views     = views ;

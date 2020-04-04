@@ -1119,11 +1119,13 @@
 
                 <avalondock:LayoutDocument Title="Browsex"
                                            IconSource="{StaticResource BrowserIcon}"
-                                           x:Name="FrameDxocument" />
+                                           x:Name="FrameDxocument" >
+                  <anal:CustomControl1 DataContext=""  d:DataContext="{d:DesignData /TypesViewModel.xaml}" RootItemsSource="{Binding Root.SubTypeInfos}"/>
+                </avalondock:LayoutDocument>
 
-                <avalondock:LayoutDocument Title="Browser"
-                                           IconSource="{StaticResource BrowserIcon}"
-                                           x:Name="FrameDocument">
+                  <avalondock:LayoutDocument Title="Browser"
+                                             IconSource="{StaticResource BrowserIcon}"
+                                             x:Name="FrameDocument">
                   <Frame Background="{x:Null}"
                          Navigating="BrowserFrame_OnNavigating"
                          x:Name="BrowserFrame"

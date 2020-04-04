@@ -272,7 +272,7 @@ namespace KayMcCormick.Dev.Application
             }
         }
 
-        /// <summary>s
+        /// <summary>
         /// </summary>
         public ILogger Logger
         {
