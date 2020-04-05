@@ -88,9 +88,9 @@ namespace AnalysisControls.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;TypesViewModel ShowBordersIsChecked=&quot;False&quot; xmlns=&quot;clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls&quot; xmlns:mcacs=&quot;clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp&quot; xmlns:mcacss=&quot;clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp&quot; xmlns:assembly=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; xmlns:anal=&quot;http://kaymccormick.com/xaml/analysis&quot;&gt;
-        ///  &lt;TypesViewModel.DocumentCollection&gt;
-        ///    &lt;TypeDocumentation ElementId=&quot;T: [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;TypesViewModel ShowBordersIsChecked=&quot;False&quot; IsInitialized=&quot;True&quot; xmlns=&quot;clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls&quot; xmlns:aal=&quot;clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib&quot; xmlns:mcacs=&quot;clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp&quot; xmlns:mcacss=&quot;clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp&quot; xmlns:assembly=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;&gt;
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string TypesViewModel {
             get {

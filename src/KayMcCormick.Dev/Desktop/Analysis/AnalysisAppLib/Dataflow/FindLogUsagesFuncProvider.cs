@@ -24,6 +24,7 @@ namespace AnalysisAppLib.Dataflow
         /// <param name="invocationFactory"></param>
         public FindLogUsagesFuncProvider ( Func < ILogInvocation > invocationFactory )
         {
+
             var findusages = new FindLogUsagesMain( invocationFactory ) ;
             RejectBlock    = new BufferBlock < RejectedItem > ( ) ;
             _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock ) ;

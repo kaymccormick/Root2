@@ -404,7 +404,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public AppTypeInfoCollection StructureRoot { get ; set ; }
+        public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection();
 
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos (
@@ -500,7 +500,7 @@ namespace AnalysisControls.ViewModel
             DetailFields ( ) ;
 
             LoadSyntaxFactoryDocs ( ) ;
-            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
+//            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
             IsInitialized = true ;
         }
 

@@ -65,7 +65,7 @@ namespace KayMcCormick.Dev.TestLib
                                                ) ;
 
 
-            AppLoggingConfigHelper.EnsureLoggingConfigured ( param1 ) ;
+            AppLoggingConfigHelper.EnsureLoggingConfigured ( param1 , new AppLoggingConfiguration() { MinLogLevel = LogLevel.Trace}) ;
             LogManager.LogFactory.ThrowExceptions = true ;
         }
 

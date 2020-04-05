@@ -139,6 +139,11 @@ namespace AnalysisAppLib
             builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
             // builder.RegisterType < FindLogUsagesAnalysisDefinition > ( )
             // .As < IAnalysisDefinition > ( ) ;
+
+            builder.RegisterType < FindLogInvocations > ( )
+                   .AsImplementedInterfaces ( )
+                   .WithAttributeFiltering ( ) ;
+
             builder.RegisterType < FindLogUsagesFuncProvider > ( )
                    .AsImplementedInterfaces ( )
                    .WithAttributeFiltering ( )
@@ -218,22 +223,25 @@ namespace AnalysisAppLib
             //        .WithAttributeFiltering ( )
             //        .InstancePerLifetimeScope ( ) ;
 
-            // builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
-            // .As ( typeof ( IAnalysisBlockProvider < , , > ) )
-            // .WithAttributeFiltering ( )
-            // .InstancePerLifetimeScope ( ) ;
-            // builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
-            // .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-            // .WithAttributeFiltering ( )
-            // .InstancePerLifetimeScope ( ) ;
-            // builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
-            // .As(typeof(IAnalysisBlockProvider<,,>))
-            // .WithAttributeFiltering()
-            // .InstancePerLifetimeScope(); 
-            // builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
-            // .As(typeof(IDataflowTransformFuncProvider<,>))
-            // .WithAttributeFiltering()
-            // .InstancePerLifetimeScope();
+             builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
+             .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+             .WithAttributeFiltering ( )
+             .InstancePerLifetimeScope ( ) ;
+
+            builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
+             .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+             .WithAttributeFiltering ( )
+             .InstancePerLifetimeScope ( ) ;
+
+            builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
+             .As(typeof(IAnalysisBlockProvider<,,>))
+             .WithAttributeFiltering()
+             .InstancePerLifetimeScope(); 
+
+             builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
+             .As(typeof(IDataflowTransformFuncProvider<,>))
+             .WithAttributeFiltering()
+             .InstancePerLifetimeScope();
 
 
 #region MS LOGIN

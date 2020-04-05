@@ -17,6 +17,7 @@ using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows.Markup ;
+using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
@@ -126,7 +127,7 @@ namespace ConsoleApp1
         private static ApplicationInstance _appinst = null ;
 
         //============= Config [Edit these with your settings] =====================
-        private static async Task < int > Main ( )
+        private static async Task < int > Main ( string[] args)
         {
             var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
             var subject = new Subject < ILogger > ( ) ;
@@ -190,7 +191,7 @@ namespace ConsoleApp1
                 AppContext context ;
                 try
                 {
-                    context = scope.Resolve < AppContext > ( ) ;
+                    context = scope.Resolve < AppContext > () ;
                 }
                 catch ( DependencyResolutionException depex )
                 {
@@ -225,51 +226,7 @@ namespace ConsoleApp1
         {
 #if MSBUILDLOCATOR
             // var instances = MSBuildLocator.RegisterDefaults ( ) ;
-            var menu = new Menu ( "VS Instance" ) ;
-            var vsInstances = MSBuildLocator.QueryVisualStudioInstances (
-                                                                         new
-                                                                         VisualStudioInstanceQueryOptions
-                                                                         {
-                                                                             DiscoveryTypes =
-                                                                                 DiscoveryType
-                                                                                    .VisualStudioSetup
-                                                                         }
-                                                                        ) ;
-            var visualStudioInstances =
-                vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
-
-            string RenderFunc ( VisualStudioInstance inst1 )
-            {
-                return
-                    $"* {inst1.Name,- 30} {inst1.Version.Major:00}.{inst1.Version.Minor:00}.{inst1.Version.Build:00000}.{inst1.Version.MinorRevision:0000}  [{inst1.VisualStudioRootPath}]" ;
-            }
-
-            var choices = visualStudioInstances.Select (
-                                                        x => new MenuWrapper < VisualStudioInstance
-                                                        > ( x , RenderFunc )
-                                                       ) ;
-            menu.Config.SelectedAppearence =
-                new Configuration.SelectedColor { BackgroundColor = ConsoleColor.Yellow } ;
-            var selected = menu.Render ( choices ) ;
-#if false
-            var i2 = (
-                         from inst in visualStudioInstances
-                         where inst.Version.Major == 15
-                         orderby inst.Version descending
-                         select inst ).FirstOrDefault ( ) ;
-
-            if ( i2 != null )
-            {
-#endif
-            var i2 = selected.Instance ;
-            Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
-            MSBuildLocator.RegisterInstance ( i2 ) ;
-#if false
-        }
-#endif
-            Console.WriteLine ( "" ) ;
-
-#endif
+            SelectVsInstance ( ) ;
 
             //await            xx ( ) ;
 #if false
@@ -344,146 +301,8 @@ namespace ConsoleApp1
                 //return 1 ;
             }
 #endif
-            var workspace = MSBuildWorkspace.Create ( ) ;
-            var solution = await workspace.OpenSolutionAsync (
-                                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\ManagedProd.sln"
-                                                             ) ;
-            foreach ( var project in solution.Projects )
-            {
-                Console.WriteLine ( project.Name ) ;
 
-                var compilation = await project.GetCompilationAsync ( ) ;
-                foreach ( var doc in project.Documents )
-                {
-                    var model = await doc.GetSemanticModelAsync ( ) ;
-                    Console.WriteLine ( doc.Name ) ;
-                    var tree = await doc.GetSyntaxRootAsync ( ) ;
-                    foreach ( var node in tree
-                                         .DescendantNodesAndSelf ( )
-                                         .Where ( node => node.HasStructuredTrivia ) )
-                    {
-                        var nn = node.GetLeadingTrivia ( )
-                                     .Where (
-                                             triv => triv.Kind ( )
-                                                     == SyntaxKind
-                                                        .SingleLineDocumentationCommentTrivia
-                                            )
-                                     .ToList ( ) ;
-                        if ( nn.Count > 1 )
-                        {
-                            throw new InvalidOperationException ( ) ;
-                        }
-
-                        if ( ! nn.Any ( ) )
-                        {
-                            continue ;
-                        }
-
-                        try
-                        {
-                            CodeElementDocumentation xdoc = null ;
-                            var declaredSymbol = model.GetDeclaredSymbol ( node ) ;
-                            if ( declaredSymbol == null )
-                            {
-                                Console.WriteLine ( node.Kind ( ) ) ;
-                                continue ;
-                            }
-
-                            var declarationId =
-                                DocumentationCommentId.CreateDeclarationId ( declaredSymbol ) ;
-                            var coll = new XmlDocumentElementCollection ( ) ;
-                            switch ( node )
-                            {
-                                case MethodDeclarationSyntax m :
-                                    xdoc = new MethodDocumentation (
-                                                                    declarationId
-                                                                  , null
-                                                                  , m.Identifier.Text
-                                                                  , null
-                                                                   ) ;
-                                    break ;
-                                case ClassDeclarationSyntax cl :
-                                case InterfaceDeclarationSyntax idcl :
-                                case EnumDeclarationSyntax eds :
-                                    xdoc = new TypeDocumentation ( declarationId , null ) ;
-                                    break ;
-                                case DelegateDeclarationSyntax dds :
-                                    xdoc = new DelegateDocumentation ( declarationId ) ;
-                                    break ;
-                                case PropertyDeclarationSyntax pp :
-                                    xdoc = new PropertyDocumentation (
-                                                                      declarationId
-                                                                    , null
-                                                                    , pp.Identifier.Text
-                                                                     ) ;
-                                    break ;
-                                case ConstructorDeclarationSyntax cds :
-                                    xdoc = new ConstructorDocumentation ( declarationId ) ;
-                                    break ;
-                                case EnumMemberDeclarationSyntax ems :
-                                    xdoc = new EnumMemberDocumentation ( declarationId ) ;
-                                    break ;
-                                case EventDeclarationSyntax eds :
-                                    xdoc = new EventDocumentation ( declarationId ) ;
-                                    break ;
-                                case IndexerDeclarationSyntax ids :
-                                    xdoc = new IndexerDocumentation ( declarationId ) ;
-                                    break ;
-                                default :
-                                    throw new InvalidOperationException (
-                                                                         node.Kind ( ).ToString ( )
-                                                                        ) ;
-                            }
-
-                            foreach ( var syntaxTrivia in nn )
-                            {
-                                var structure = syntaxTrivia.GetStructure ( ) ;
-                                var x = ( DocumentationCommentTriviaSyntax ) structure ;
-                                foreach ( var xml in x.Content )
-                                {
-                                    XmlDocElement elem = null ;
-                                    //Console.WriteLine ( xml.GetType ( ).Name ) ;
-                                    switch ( xml )
-                                    {
-                                        case XmlCDataSectionSyntax xmlCDataSectionSyntax : break ;
-                                        case XmlCommentSyntax xmlCommentSyntax :           break ;
-                                        case XmlElementSyntax xmlElementSyntax :
-                                            var xdoc1 =
-                                                XDocument.Parse ( xmlElementSyntax.ToString ( ) ) ;
-                                            elem = XmlDocElements.HandleXDocument ( xdoc1 ) ;
-
-                                            break ;
-                                        case XmlEmptyElementSyntax xmlEmptyElementSyntax : break ;
-                                        case XmlProcessingInstructionSyntax
-                                            xmlProcessingInstructionSyntax :
-                                            break ;
-                                        case XmlTextSyntax xmlTextSyntax :
-                                            elem = new XmlDocText (
-                                                                   xmlTextSyntax.ToFullString ( )
-                                                                  ) ;
-                                            break ;
-                                    }
-
-                                    if ( elem != null )
-                                    {
-                                        xdoc.XmlDoc.Add ( elem ) ;
-                                    }
-                                }
-
-                                Console.WriteLine ( XamlWriter.Save ( xdoc ) ) ;
-                            }
-                        }
-                        catch ( Exception exx )
-                        {
-                        }
-                    }
-                }
-            }
-
-
-            return 1 ;
-            // RunConsoleUi (context ) ;
-
+            RunConsoleUi (context ) ;
 
             //
             // foreach ( var projFile in Directory.EnumerateFiles (
@@ -496,7 +315,6 @@ namespace ConsoleApp1
             //
             //     Console.WriteLine ( projFile ) ;
             // }
-            var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
 
             var b = new SqlConnectionStringBuilder
                     {
@@ -570,7 +388,8 @@ namespace ConsoleApp1
 
 
             var set = new HashSet < Type > ( ) ;
-            NewMethod ( model1.Root.SubTypeInfos , set ) ;
+            var model = context.Scope.Resolve < TypesViewModel > ( ) ;
+            NewMethod ( model.Root.SubTypeInfos , set ) ;
             var syntaxdict =
                 new Dictionary < Type , Tuple < X , List < Tuple < SyntaxNode , string > > > > ( ) ;
             var xxx1 = new Dictionary < string , X > ( ) ;
@@ -594,7 +413,31 @@ namespace ConsoleApp1
                 // Console.WriteLine(CSharpDiagnosticFormatter.Instance.Format(diagnostic));
                 // }
 
-                foreach ( var o1 in st.GetCompilationUnitRoot ( )
+                var comp = st.GetCompilationUnitRoot ( ) ;
+                Dictionary <SyntaxKind, SyntaxInfo> triviaDict = new Dictionary < SyntaxKind , SyntaxInfo > ();
+                foreach ( var syntaxTrivia in comp.DescendantTrivia ( x => true , true ) )
+                {
+                    var kind = syntaxTrivia.Kind ( ) ;
+                    if (! triviaDict.TryGetValue ( kind , out var info ) )
+                    {
+                        info = new SyntaxInfo ( ) { Kind = kind } ;
+                        triviaDict[ kind ] = info ;
+                    }
+
+                    info.Count ++ ;
+                }
+
+                Console.Write (
+                               string.Join (
+                                            ", "
+                                          , triviaDict.Select (
+                                                               ( kv )
+                                                                   => $"{kv.Key} = {kv.Value.Count}"
+                                                              )
+                                           )
+                              ) ;
+                return 1 ;
+                foreach ( var o1 in comp
                                       .DescendantNodesAndTokensAndSelf ( ) )
                 {
                     if ( o1.IsToken )
@@ -732,6 +575,201 @@ namespace ConsoleApp1
             // Console.ReadLine ( ) ;
             // }
             // }
+        }
+
+        private static void SelectVsInstance ( )
+        {
+            var menu = new Menu ( "VS Instance" ) ;
+            var vsInstances = MSBuildLocator.QueryVisualStudioInstances (
+                                                                         new
+                                                                         VisualStudioInstanceQueryOptions
+                                                                         {
+                                                                             DiscoveryTypes =
+                                                                                 DiscoveryType
+                                                                                    .VisualStudioSetup
+                                                                         }
+                                                                        ) ;
+            var visualStudioInstances = vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
+
+            string RenderFunc ( VisualStudioInstance inst1 )
+            {
+                return
+                    $"* {inst1.Name,- 30} {inst1.Version.Major:00}.{inst1.Version.Minor:00}.{inst1.Version.Build:00000}.{inst1.Version.MinorRevision:0000}  [{inst1.VisualStudioRootPath}]" ;
+            }
+
+            var choices = visualStudioInstances.Select (
+                                                        x => new MenuWrapper < VisualStudioInstance > (
+                                                                                                       x
+                                                                                                     , RenderFunc
+                                                                                                      )
+                                                       ) ;
+            menu.Config.SelectedAppearence =
+                new Configuration.SelectedColor { BackgroundColor = ConsoleColor.Yellow } ;
+            var selected = menu.Render ( choices ) ;
+#if false
+            var i2 = (
+                         from inst in visualStudioInstances
+                         where inst.Version.Major == 15
+                         orderby inst.Version descending
+                         select inst ).FirstOrDefault ( ) ;
+
+            if ( i2 != null )
+            {
+#endif
+            var i2 = selected.Instance ;
+            Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
+            MSBuildLocator.RegisterInstance ( i2 ) ;
+#if false
+        }
+#endif
+            Console.WriteLine ( "" ) ;
+
+#endif
+        }
+
+        private static void WriteTypesViewModel ( )
+        {
+            var model = new TypesViewModel ( ) ;
+            model.BeginInit ( ) ;
+            model.EndInit ( ) ;
+            var writer = XmlWriter.Create (
+                                           @"C:\data\logs\model.xaml"
+                                         , new XmlWriterSettings { Indent = true , Async = true }
+                                          ) ;
+            XamlWriter.Save ( model , writer ) ;
+            writer.Close ( ) ;
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private static async Task CollectDocs ( )
+        {
+            var workspace = MSBuildWorkspace.Create ( ) ;
+            var solution = await workspace.OpenSolutionAsync (
+                                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\ManagedProd.sln"
+                                                             ) ;
+            foreach ( var project in solution.Projects )
+            {
+                Console.WriteLine ( project.Name ) ;
+
+                var compilation = await project.GetCompilationAsync ( ) ;
+                foreach ( var doc in project.Documents )
+                {
+                    var model = await doc.GetSemanticModelAsync ( ) ;
+                    Console.WriteLine ( doc.Name ) ;
+                    var tree = await doc.GetSyntaxRootAsync ( ) ;
+                    foreach ( var node in tree.DescendantNodesAndSelf ( )
+                                              .Where ( node => node.HasStructuredTrivia ) )
+                    {
+                        var nn = node.GetLeadingTrivia ( )
+                                     .Where (
+                                             triv => triv.Kind ( )
+                                                     == SyntaxKind.SingleLineDocumentationCommentTrivia
+                                            )
+                                     .ToList ( ) ;
+                        if ( nn.Count > 1 )
+                        {
+                            throw new InvalidOperationException ( ) ;
+                        }
+
+                        if ( ! nn.Any ( ) )
+                        {
+                            continue ;
+                        }
+
+                        try
+                        {
+                            CodeElementDocumentation xdoc = null ;
+                            var declaredSymbol = model.GetDeclaredSymbol ( node ) ;
+                            if ( declaredSymbol == null )
+                            {
+                                Console.WriteLine ( node.Kind ( ) ) ;
+                                continue ;
+                            }
+
+                            var declarationId =
+                                DocumentationCommentId.CreateDeclarationId ( declaredSymbol ) ;
+                            var coll = new XmlDocumentElementCollection ( ) ;
+                            switch ( node )
+                            {
+                                case MethodDeclarationSyntax m :
+                                    xdoc = new MethodDocumentation (
+                                                                    declarationId
+                                                                  , null
+                                                                  , m.Identifier.Text
+                                                                  , null
+                                                                   ) ;
+                                    break ;
+                                case ClassDeclarationSyntax cl :
+                                case InterfaceDeclarationSyntax idcl :
+                                case EnumDeclarationSyntax eds :
+                                    xdoc = new TypeDocumentation ( declarationId , null ) ;
+                                    break ;
+                                case DelegateDeclarationSyntax dds :
+                                    xdoc = new DelegateDocumentation ( declarationId ) ;
+                                    break ;
+                                case PropertyDeclarationSyntax pp :
+                                    xdoc = new PropertyDocumentation (
+                                                                      declarationId
+                                                                    , null
+                                                                    , pp.Identifier.Text
+                                                                     ) ;
+                                    break ;
+                                case ConstructorDeclarationSyntax cds :
+                                    xdoc = new ConstructorDocumentation ( declarationId ) ;
+                                    break ;
+                                case EnumMemberDeclarationSyntax ems :
+                                    xdoc = new EnumMemberDocumentation ( declarationId ) ;
+                                    break ;
+                                case EventDeclarationSyntax eds :
+                                    xdoc = new EventDocumentation ( declarationId ) ;
+                                    break ;
+                                case IndexerDeclarationSyntax ids :
+                                    xdoc = new IndexerDocumentation ( declarationId ) ;
+                                    break ;
+                                default :
+                                    throw new InvalidOperationException ( node.Kind ( ).ToString ( ) ) ;
+                            }
+
+                            foreach ( var syntaxTrivia in nn )
+                            {
+                                var structure = syntaxTrivia.GetStructure ( ) ;
+                                var x = ( DocumentationCommentTriviaSyntax ) structure ;
+                                foreach ( var xml in x.Content )
+                                {
+                                    XmlDocElement elem = null ;
+                                    //Console.WriteLine ( xml.GetType ( ).Name ) ;
+                                    switch ( xml )
+                                    {
+                                        case XmlCDataSectionSyntax xmlCDataSectionSyntax : break ;
+                                        case XmlCommentSyntax xmlCommentSyntax :           break ;
+                                        case XmlElementSyntax xmlElementSyntax :
+                                            var xdoc1 = XDocument.Parse ( xmlElementSyntax.ToString ( ) ) ;
+                                            elem = XmlDocElements.HandleXDocument ( xdoc1 ) ;
+
+                                            break ;
+                                        case XmlEmptyElementSyntax xmlEmptyElementSyntax : break ;
+                                        case XmlProcessingInstructionSyntax xmlProcessingInstructionSyntax :
+                                            break ;
+                                        case XmlTextSyntax xmlTextSyntax :
+                                            elem = new XmlDocText ( xmlTextSyntax.ToFullString ( ) ) ;
+                                            break ;
+                                    }
+
+                                    if ( elem != null )
+                                    {
+                                        xdoc.XmlDoc.Add ( elem ) ;
+                                    }
+                                }
+
+                                Console.WriteLine ( XamlWriter.Save ( xdoc ) ) ;
+                            }
+                        }
+                        catch ( Exception exx )
+                        {
+                        }
+                    }
+                }
+            }
         }
 
         private static void RunConsoleUi ( [ NotNull ] AppContext context )
@@ -1122,6 +1160,13 @@ namespace ConsoleApp1
         }
 
         private static void Init ( ) { }
+    }
+
+    internal class SyntaxInfo
+    {
+        public SyntaxKind Kind { get ; set ; }
+
+        public int Count { get ; set ; }
     }
 
     internal class MyVisitor : SymbolVisitor

@@ -217,7 +217,11 @@ namespace ModelTests
             //var pipeline = ls.Resolve<Pipeline>();
             x.Completion.ContinueWith ( task => LogMethod ( x.OutputCount.ToString ( ) ) ) ;
 
-            await project.GetCompilationAsync ( ) ;
+            var compilation = await project.GetCompilationAsync ( ) ;
+            foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+            {
+                Debug.WriteLine (new DiagnosticFormatter().Format(diagnostic)  );
+            }
 
             var model = await doc.GetSemanticModelAsync ( ) ;
             if ( model != null )
@@ -285,60 +289,58 @@ namespace ModelTests
         [ Fact ]
         public void Test113 ( )
         {
-            using ( var ls = _app.GetLifetimeScope ( )
-                                 .BeginLifetimeScope (
-                                                      b => {
-                                                          b.Register (
-                                                                      ( c , p )
-                                                                          => new
-                                                                              ConcreteAnalysisBlockProvider
-                                                                              < Document , NodeInfo
-                                                                                , IPropagatorBlock <
-                                                                                      Document ,
-                                                                                      NodeInfo > > (
-                                                                                                    transform
-                                                                                                        => new
-                                                                                                            TransformManyBlock
-                                                                                                            < Document
-                                                                                                              , NodeInfo
-                                                                                                            > (
-                                                                                                               transform
-                                                                                                              )
-                                                                                                  , new
-                                                                                                        ConcreteDataflowTransformFuncProvider
-                                                                                                        < Document
-                                                                                                          , NodeInfo
-                                                                                                        > (
-                                                                                                           source
-                                                                                                               => Task
-                                                                                                                  .FromResult (
-                                                                                                                               Enumerable
-                                                                                                                                  .Empty
-                                                                                                                                   < NodeInfo
-                                                                                                                                   > ( )
-                                                                                                                              )
-                                                                                                          )
-                                                                                                   )
-                                                                     ) ;
+            using ( var ls = _app.GetLifetimeScope ( ).BeginLifetimeScope ( b => {
+                                                                               b.Register (
+                                                                                               ( c , p )
+                                                                                                   => new
+                                                                                                       ConcreteAnalysisBlockProvider
+                                                                                                       < Document , NodeInfo
+                                                                                                         , IPropagatorBlock <
+                                                                                                               Document ,
+                                                                                                               NodeInfo > > (
+                                                                                                                             transform
+                                                                                                                                 => new
+                                                                                                                                     TransformManyBlock
+                                                                                                                                     < Document
+                                                                                                                                       , NodeInfo
+                                                                                                                                     > (
+                                                                                                                                        transform
+                                                                                                                                       )
+                                                                                                                           , new
+                                                                                                                                 ConcreteDataflowTransformFuncProvider
+                                                                                                                                 < Document
+                                                                                                                                   , NodeInfo
+                                                                                                                                 > (
+                                                                                                                                    source
+                                                                                                                                        => Task
+                                                                                                                                           .FromResult (
+                                                                                                                                                        Enumerable
+                                                                                                                                                           .Empty
+                                                                                                                                                            < NodeInfo
+                                                                                                                                                            > ( )
+                                                                                                                                                       )
+                                                                                                                                   )
+                                                                                                                            )
+                                                                                              ) ;
 
-                                                          // b.RegisterGeneric ( typeof ( BlockFactory < ,, > ) ) ;
-                                                          // b.Register<TransformFunc <Document, Task<IEnumerable <NodeInfo> >>>(
-                                                          // (c) => (Document doc)
-                                                          // => Task.FromResult(
-                                                          // Enumerable
-                                                          // .Empty<NodeInfo>()
-                                                          // )
-                                                          // );
-                                                          // b.Register (
-                                                          // ( c , p )
-                                                          // => c.Resolve<BlockFactory <Document,NodeInfo,TransformManyBlock <Document, NodeInfo >>> (  )(
-                                                          // p.Positional
-                                                          // < Func < Document ,
-                                                          // Task < IEnumerable < NodeInfo > > >> ( 0 )
-                                                          // )
-                                                          // ) ;
-                                                      }
-                                                     ) )
+                                                                               b.RegisterGeneric ( typeof ( BlockFactory < ,, > ) ) ;
+                                                                               b.Register<TransformFunc <Document, Task<IEnumerable <NodeInfo> >>>(
+                                                                               (c) => (Document doc)
+                                                                               => Task.FromResult(
+                                                                               Enumerable
+                                                                               .Empty<NodeInfo>()
+                                                                               )
+                                                                               );
+                                                                               b.Register (
+                                                                               ( c , p )
+                                                                               => c.Resolve<BlockFactory <Document,NodeInfo,TransformManyBlock <Document, NodeInfo >>> (  )(
+                                                                               p.Positional
+                                                                               < Func < Document ,
+                                                                               Task < IEnumerable < NodeInfo > > >> ( 0 )
+                                                                               )
+                                                                               ) ;
+                                                                           }
+                                                                          ) )
 
             {
                 DoFlow < MyTest > ( ls ) ;
