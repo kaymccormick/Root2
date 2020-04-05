@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.Collections.Immutable ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
@@ -19,6 +20,7 @@ using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using Xunit ;
@@ -184,29 +186,88 @@ namespace ModelTests
             var code = File.ReadAllText ( @"c:\temp\program-parse.cs" ) ;
             var xxxx = AnalysisService.Parse ( code , "parse" ) ;
             var workspace = new AdhocWorkspace ( ) ;
-            workspace.AddSolution (
-                                   SolutionInfo.Create (
-                                                        SolutionId.CreateNewId ( )
-                                                      , VersionStamp.Create ( )
-                                                       )
-                                  ) ;
-            var projectInfo = ProjectInfo.Create (
-                                                  ProjectId.CreateNewId ( )
-                                                , VersionStamp.Create ( )
-                                                , "test"
-                                                , "parse"
-                                                , LanguageNames.CSharp
-                                                 ) ;
-            var project = workspace.AddProject ( projectInfo ) ;
-            project.AddMetadataReference (
-                                          MetadataReference.CreateFromFile (
-                                                                            typeof ( Logger )
-                                                                               .Assembly.Location
-                                                                           )
-                                         ) ;
-            var doc = project.AddDocument ( "Program-parse.cs" , SourceText.From ( code ) ) ;
-            LogMethod ( doc.Id.ToString ( ) ) ;
+            var projectId = ProjectId.CreateNewId ( ) ;
+            var s = workspace.AddSolution(
+                           SolutionInfo.Create(
+                                                SolutionId.CreateNewId()
+                                              , VersionStamp.Create()
+                                              , null
+                                              , new[]
+                                                {
+                                                                ProjectInfo.Create (
+                                                                                    projectId
+                                                                                  , VersionStamp
+                                                                                       .Create ( )
+                                                                                  , "test"
+                                                                                  , "test"
+                                                                                  , LanguageNames
+                                                                                       .CSharp
+                                                                                  , null
+                                                                                  , null
+                                                                                  , new
+                                                                                        CSharpCompilationOptions (
+                                                                                                                  OutputKind
+                                                                                                                     .ConsoleApplication
+                                                                                                                 )
+                                                                                   )
+                                                }
+                                               )
+                          );
 
+            var documentInfo = DocumentInfo.Create(
+                                                   DocumentId.CreateNewId(projectId)
+                                                 , "test"
+                                                 , null
+                                                 , SourceCodeKind.Regular
+                                                 , TextLoader.From(
+                                                                   TextAndVersion.Create(
+                                                                                         SourceText
+                                                                                            .From(
+                                                                                                  code
+                                                                                                 )
+                                                                                       , VersionStamp
+                                                                                            .Create()
+                                                                                        )
+                                                                  )
+                                                  );
+            var s2 = s.AddDocuments(ImmutableArray<DocumentInfo>.Empty.Add(documentInfo));
+
+            //var d = project.AddDocument ( "test.cs" , src ) ;
+            var rb1 = workspace.TryApplyChanges(s2);
+            if (!rb1)
+            {
+                throw new InvalidOperationException();
+            }
+
+
+            var s3 = workspace.CurrentSolution.AddMetadataReference(
+                                                                    projectId
+                                                                  , MetadataReference.CreateFromFile(
+                                                                                                     @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.dll"
+                                                                                                    )
+                                                                   );
+
+            var rb = workspace.TryApplyChanges(s3);
+            if (!rb)
+            {
+                throw new InvalidOperationException();
+            }
+            var s4 = workspace.CurrentSolution.AddMetadataReference(
+                                                                    projectId,
+
+            MetadataReference.CreateFromFile(
+                                             typeof(Logger)
+                                                .Assembly.Location
+                                            )
+                ) ;
+
+            rb = workspace.TryApplyChanges(s4);
+            if (!rb)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var project = workspace.CurrentSolution.Projects.First ( ) ;
             var f = ls
                .Resolve < IAnalysisBlockProvider < Document , T ,
                     TransformManyBlock < Document , T > > > ( ) ;
@@ -223,13 +284,14 @@ namespace ModelTests
                 Debug.WriteLine (new DiagnosticFormatter().Format(diagnostic)  );
             }
 
+            var doc = project.Documents.First ( ) ;
             var model = await doc.GetSemanticModelAsync ( ) ;
             if ( model != null )
             {
                 LogMethod ( model.SyntaxTree.ToString ( ) ) ;
             }
 
-            if ( ! x.Post ( doc ) )
+            if ( ! x.Post ( project.Documents.First() ) )
             {
                 throw new InvalidOperationException ( "doco faild to post" ) ;
             }
