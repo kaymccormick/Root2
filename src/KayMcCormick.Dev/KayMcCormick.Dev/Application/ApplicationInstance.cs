@@ -376,13 +376,13 @@ namespace KayMcCormick.Dev.Application
                    .AssignableTo < JsonConverter > ( ).PublicOnly()
                    .AsImplementedInterfaces ( )
                    .As<JsonConverter> (  )
-                   .AsSelf ( ) ;
+                   .AsSelf ( );
 
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
             JsonConverters.AddJsonConverters(jsonSerializerOptions);
             foreach ( var jsonConverter in jsonSerializerOptions.Converters )
             {
-                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).AsImplementedInterfaces ( ) ;
+                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ) ;
             }
             
             //builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;

@@ -66,7 +66,8 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// </summary>
+        /// </summary
+        [JsonIgnore]
         public MethodDocumentation XmlDoc { get ; set ; }
     }
 }

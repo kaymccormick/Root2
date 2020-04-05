@@ -1,18 +1,22 @@
 ﻿using System ;
 using System.Diagnostics ;
 using System.IO ;
+using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon ;
 using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
+using AnalysisAppLib ;
+using AnalysisAppLib.Project ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core.Lifetime ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
+using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
@@ -94,7 +98,7 @@ namespace ProjInterface
         public string ViewTitle { get { return _viewTitle ; } }
         
 
-        private void CommandBinding_OnExecuted (
+        private async void CommandBinding_OnExecuted (
             object                              sender
           , [ NotNull ] ExecutedRoutedEventArgs e
         )
@@ -129,15 +133,26 @@ namespace ProjInterface
 
             Microsoft.Win32.OpenFileDialog dlg = new OpenFileDialog();
                 dlg.DefaultExt = ".xml" ;
-                dlg.Filter = "XML Documents (.xml)|*.xml" ;
+                dlg.Filter = "XML Documents (*.xml)|*.xml|Solution Files (*.sln)|*.sln" ;
                 Nullable<bool> result = dlg.ShowDialog();
 
                 // Process open file dialog box results
                 if (result == true)
                 {
-                    // Open document
-                    string filename = dlg.FileName;
                     var scope = (ILifetimeScope)GetValue(AttachedProperties.LifetimeScopeProperty);
+
+                // Open document
+                string filename = dlg.FileName;
+                    if ( Path.GetExtension ( filename ).ToLowerInvariant ( ) == ".sln" )
+                    {
+                        var analyzeCommand = scope.Resolve < IAnalyzeCommand > ( ) ;
+                        var node = new ProjectBrowserNode ( )
+                                   {
+                                       Name = "Loaded solution" , SolutionPath = filename
+                                   } ;
+                        await analyzeCommand.AnalyzeCommandAsync(node, new ActionBlock < RejectedItem > (x => Debug.WriteLine (x)));
+                        return ;
+                    }
                     var view = scope.ResolveKeyed<IControlView>(ApplicationEntityIds.File, new NamedParameter("filename", filename));
 
                 }

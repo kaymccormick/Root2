@@ -97,7 +97,7 @@ namespace AnalysisAppLib
                                                                                   ) )
                                    return false ;
                                var b = typeof ( IViewModel ).IsAssignableFrom ( type ) ;
-                               Debug.WriteLine ( $"{type.FullName} - {b}" ) ;
+//                               Debug.WriteLine ( $"{type.FullName} - {b}" ) ;
                                return b ;
                            }
                            // || typeof ( IView1 ).IsAssignableFrom ( type )
@@ -120,12 +120,13 @@ namespace AnalysisAppLib
 
             builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )
                    .As ( typeof ( IAnalyzeCommand2 <> ) ) ;
+            builder.RegisterType<Pipeline>().AsSelf();
+
 
 #if false
             builder.RegisterType < ProjectBrowserViewModel > ( )
                    .As < IProjectBrowserViewModel > ( ) ;
-            builder.RegisterType < Pipeline > ( ).AsSelf ( ) ;
-
+            
             /* Register the "Cache target view model. */
 
             builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;

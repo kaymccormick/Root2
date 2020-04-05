@@ -1,0 +1,35 @@
+﻿<#@ template debug="true" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@assembly name="PresentationFramework.dll"#>
+<#@assembly name="System.Xaml.dll"#>
+<#@assembly name="System.Xml.dll"#>
+<#@assembly name="System.Memory.dll"#>
+<#@assembly name="netstandard.dll"#>
+<#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.text.json\4.7.1\lib\net461\System.Text.Json.dll"#>
+<#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.text.encodings.web\4.7.0\lib\netstandard2.0\System.Text.Encodings.Web.dll"#>
+<#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.numerics.vectors\4.5.0\lib\net46\System.Numerics.Vectors.dll"#>
+
+<#@ output extension=".cs" #>
+<#@import namespace="System.Windows.Markup" #>
+<#@import namespace="System.IO" #>
+<#@import namespace="System.Xml" #>
+<#@import namespace="System.Text.Json" #>
+
+public static class GenTransforms {
+<#
+
+List<JsonElement> types = JsonSerializer.Deserialize<List<JsonElement>>(File.ReadAllText(@"C:\data\logs\types.json"));
+foreach(var typ in types) {
+var typname = typ.GetProperty("Type").GetProperty("FullName").GetString();
+var poco = "Poco" + typname.Substring(typname.LastIndexOf('.') + 1);
+#> public static <#=poco#> Transform_<#=typ.GetProperty("Title").GetString().Replace(" ", "_")#> (<#=typ.GetProperty("Type").GetProperty("FullName").GetString()#> node) {
+return new <#=poco#>();
+}
+
+<#
+}
+#>
+}

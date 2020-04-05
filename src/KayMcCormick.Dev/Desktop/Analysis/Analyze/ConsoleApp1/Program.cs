@@ -92,6 +92,24 @@ namespace ConsoleApp1
 
     internal static class Program
     {
+        private static string[] AssemblyRefs = new[]
+                                               {
+                                                   @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll"
+                                                 , @"C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\nlog\4.6.8\lib\net45\NLog.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Runtime.Serialization.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ServiceModel.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Transactions.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll"
+                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll"
+                                               };
         private static void PopulateJsonConverters ( bool disableLogging )
         {
             if ( ! disableLogging )
@@ -302,7 +320,16 @@ namespace ConsoleApp1
             }
 #endif
 
-            RunConsoleUi (context ) ;
+            var typesViewModel = context.Scope.Resolve < TypesViewModel > ( ) ;
+            //LoadSyntax(typesViewModel);
+            //WriteThisTypesViewModel(typesViewModel);
+
+            //DumpModelToJson ( context , typesViewModel ) ;
+
+            //var json = JsonSerializer.Serialize ( typesViewModel, jsonSerializerOptions ) ;
+//             File.WriteAllText ( @"C:\data\logs\model.json" , json ) ;
+            await CodeGenAsync ( typesViewModel ) ;
+//            RunConsoleUi (context ) ;
 
             //
             // foreach ( var projFile in Directory.EnumerateFiles (
@@ -577,6 +604,42 @@ namespace ConsoleApp1
             // }
         }
 
+        private static void DumpModelToJson ( AppContext context , TypesViewModel typesViewModel )
+        {
+            using ( var utf8Json = File.Open ( @"C:\temp\out.json" , FileMode.Create ) )
+            {
+                List < AppTypeInfo > infos = typesViewModel.Map.Values.Cast < AppTypeInfo > ( ).ToList ( ) ;
+                Utf8JsonWriter writer = new Utf8JsonWriter (
+                                                            utf8Json
+                                                          , new JsonWriterOptions ( ) { Indented = true }
+                                                           ) ;
+                var jsonSerializerOptions = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
+                jsonSerializerOptions.WriteIndented = true ;
+                if ( ! jsonSerializerOptions
+                      .Converters.Select ( conv => conv.CanConvert ( typeof ( Type ) ) )
+                      .Any ( ) )
+
+                {
+                    throw new InvalidOperationException ( "no type converter" ) ;
+                }
+
+                foreach ( var jsonConverter in jsonSerializerOptions.Converters )
+                {
+                    Console.WriteLine ( jsonConverter ) ;
+                }
+
+                try
+                {
+                    JsonSerializer.Serialize ( writer , infos , jsonSerializerOptions ) ;
+                }
+                catch ( Exception ex )
+                {
+                }
+
+                writer.Flush ( ) ;
+            }
+        }
+
         private static void SelectVsInstance ( )
         {
             var menu = new Menu ( "VS Instance" ) ;
@@ -617,7 +680,15 @@ namespace ConsoleApp1
             {
 #endif
             var i2 = selected.Instance ;
-            Logger.Warn ( "Selected instance {instance} {path}" , i2.Name , i2.MSBuildPath ) ;
+            if ( i2.Name != null )
+            {
+                Logger?.Warn (
+                             "Selected instance {instance} {path}"
+                           , ( object ) i2.Name
+                           , ( object ) i2.MSBuildPath
+                            ) ;
+            }
+
             MSBuildLocator.RegisterInstance ( i2 ) ;
 #if false
         }
@@ -632,6 +703,11 @@ namespace ConsoleApp1
             var model = new TypesViewModel ( ) ;
             model.BeginInit ( ) ;
             model.EndInit ( ) ;
+            WriteThisTypesViewModel ( model ) ;
+        }
+
+        private static void WriteThisTypesViewModel ( TypesViewModel model )
+        {
             var writer = XmlWriter.Create (
                                            @"C:\data\logs\model.xaml"
                                          , new XmlWriterSettings { Indent = true , Async = true }
@@ -779,9 +855,9 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static async Task CodeGen ( [ NotNull ] TypesViewModel model1 )
+        private static async Task CodeGenAsync ( [ NotNull ] TypesViewModel model1 )
         {
-            var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;
+            var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;//new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
             foreach ( Type mapKey in model1.Map.Keys )
             {
                 var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
@@ -830,27 +906,76 @@ namespace ConsoleApp1
                         var g = tField.Type.GetGenericTypeDefinition ( ).Name ;
                     }
 
+                    var tFieldTypeName = tField.TypeName ;
+                    if ( tFieldTypeName == "SyntaxTokenList" )
+                    {
+                        tFieldTypeName = "List<SyntaxToken>" ;
+                    }
+                    else if (tFieldTypeName.StartsWith("SyntaxList<"))
+                    {
+                        tFieldTypeName = tFieldTypeName.Replace("SyntaxList<", "List<");
+                    }
+                 else if (tFieldTypeName.StartsWith("SeparatedSyntaxList<"))
+                {
+                    tFieldTypeName = tFieldTypeName.Replace("SeparatedSyntaxList<", "List<");
+                }
                     var typeSyntax =
                         SyntaxFactory.ParseTypeName (
-                                                     tField.TypeName
+                                                     tFieldTypeName
                                                     ) ; /*SyntaxFactory.IdentifierName (
                                                                                                                  tField
                                                                                                                     .Type
                                                                                                                     .Name
                                                                                                                 ) ;*/
+                    if ( typeSyntax is GenericNameSyntax gen )
+                    {
+                         SimpleNameSyntax ss = ( SimpleNameSyntax ) gen.TypeArgumentList.Arguments[ 0 ] ;
+                         typeSyntax = gen.WithTypeArgumentList (
+                                                                SyntaxFactory.TypeArgumentList (
+                                                                                                new
+                                                                                                        SeparatedSyntaxList
+                                                                                                        < TypeSyntax
+                                                                                                        > ( )
+                                                                                                   .Add (
+                                                                                                         SyntaxFactory
+                                                                                                            .ParseTypeName (
+                                                                                                                            "Poco"
+                                                                                                                            + ss
+                                                                                                                             .Identifier
+                                                                                                                             .Text
+                                                                                                                           )
+                                                                                                        )
+                                                                                               )
+                                                               ) ;
+
+                    }
+                    else
+                    {
+                        typeSyntax =
+                            SyntaxFactory.ParseTypeName (
+                                                         "Poco"
+                                                         + ( ( SimpleNameSyntax ) typeSyntax )
+                                                          .Identifier.Text
+                                                        ) ;
+                    }
+                    List <SyntaxToken> tokens = new List < SyntaxToken > ();
+                    tokens.Add (SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                    if ( tField.Override )
+                    {
+                        tokens.Add (SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
+                    }
+                    else
+                    {
+                        tokens.Add(SyntaxFactory.Token(SyntaxKind.VirtualKeyword));
+                    }
+
+                    
                     members = members.Add (
                                            SyntaxFactory.PropertyDeclaration (
                                                                               new SyntaxList <
                                                                                   AttributeListSyntax
                                                                               > ( )
-                                                                            , SyntaxTokenList
-                                                                                 .Create (
-                                                                                          SyntaxFactory
-                                                                                             .Token (
-                                                                                                     SyntaxKind
-                                                                                                        .PublicKeyword
-                                                                                                    )
-                                                                                         )
+                                                                            , SyntaxFactory.TokenList(tokens.ToArray()) 
                                                                             , typeSyntax
                                                                             , null
                                                                             , SyntaxFactory
@@ -864,7 +989,7 @@ namespace ConsoleApp1
                 }
 
                 var classDecl =
-                    SyntaxFactory.ClassDeclaration ( mapKey.Name ).WithMembers ( members ) ;
+                    SyntaxFactory.ClassDeclaration ( "Poco" + mapKey.Name ).WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token (SyntaxKind.PublicKeyword))).WithMembers ( members ) ;
                 if ( t.ParentInfo != null )
                 {
                     classDecl = classDecl.WithBaseList (
@@ -876,7 +1001,7 @@ namespace ConsoleApp1
                                                                                                SyntaxFactory
                                                                                                   .SimpleBaseType (
                                                                                                                    SyntaxFactory
-                                                                                                                      .IdentifierName (
+                                                                                                                      .IdentifierName ("Poco" + 
                                                                                                                                        t.ParentInfo
                                                                                                                                         .Type
                                                                                                                                         .Name
@@ -892,14 +1017,21 @@ namespace ConsoleApp1
 
             var compl = SyntaxFactory.CompilationUnit ( )
                                      .WithUsings (
-                                                  new SyntaxList < UsingDirectiveSyntax > (
+                                                  new SyntaxList < UsingDirectiveSyntax > (new [] {
                                                                                            SyntaxFactory
                                                                                               .UsingDirective (
                                                                                                                SyntaxFactory
                                                                                                                   .ParseName (
                                                                                                                               "System"
                                                                                                                              )
-                                                                                                              )
+                                                                                                              ),
+                                                                                           SyntaxFactory
+                                                                                              .UsingDirective(
+                                                                                                              SyntaxFactory
+                                                                                                                 .ParseName(
+                                                                                                                            "System.Collections.Generic"
+                                                                                                                           )
+                                                                                                             )}
                                                                                           )
                                                  )
                                      .WithMembers ( types )
@@ -959,7 +1091,10 @@ namespace ConsoleApp1
                                                                                            )
                                                                     )
                                                    ) ;
-            var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ) ) ;
+            var document2 = DocumentInfo.Create(DocumentId.CreateNewId(projectId), "misc", null, SourceCodeKind.Regular, TextLoader.From (TextAndVersion.Create(SourceText.From(
+                @"public class PocoSyntaxToken { public int RawKind { get; set; } public string Kind { get; set; } public object Value {get; set;} public string ValueText { get; set; } }"), VersionStamp.Create())));
+                
+            var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ).Add (document2  ) ) ;
 
             //var d = project.AddDocument ( "test.cs" , src ) ;
             var rb1 = adhoc.TryApplyChanges ( s2 ) ;
@@ -968,33 +1103,50 @@ namespace ConsoleApp1
                 throw new InvalidOperationException ( ) ;
             }
 
-            var s3 = adhoc.CurrentSolution.AddMetadataReference (
-                                                                 projectId
-                                                               , MetadataReference.CreateFromFile (
-                                                                                                   @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.dll"
-                                                                                                  )
-                                                                ) ;
-
-
-            var rb = adhoc.TryApplyChanges ( s3 ) ;
-            if ( ! rb )
+            foreach (var ref1 in AssemblyRefs)
             {
-                throw new InvalidOperationException ( ) ;
-            }
-
-            var project = adhoc.CurrentSolution.Projects.First ( ) ;
-            var compilation = await project.GetCompilationAsync ( ) ;
-            if ( compilation != null )
-            {
-                foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+                var s3 = adhoc.CurrentSolution.AddMetadataReference(
+                                                                        projectId
+                                                                      , MetadataReference
+                                                                           .CreateFromFile(ref1)
+                                                                       );
+                var rb = adhoc.TryApplyChanges(s3);
+                if (!rb)
                 {
-                    var line =
-                        source[ diagnostic.Location.GetLineSpan ( ).StartLinePosition.Line ] ;
-                    Console.WriteLine ( diagnostic.ToString ( ) ) ;
+                    throw new InvalidOperationException();
                 }
             }
 
-            Debug.WriteLine ( compl.ToString ( ) ) ;
+            
+            var project = adhoc.CurrentSolution.Projects.First ( ) ;
+            var compilation = await project.GetCompilationAsync ( ) ;
+            using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )
+            {
+                if ( compilation != null )
+                {
+                    foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+                    {
+                        if ( ! diagnostic.IsSuppressed )
+                        {
+                            var line =
+                                source[ diagnostic
+                                       .Location.GetLineSpan ( )
+                                       .StartLinePosition.Line ] ;
+                            Console.WriteLine ( diagnostic.ToString ( ) ) ;
+                            f.WriteLine ( diagnostic.ToString ( ) ) ;
+                        }
+                    }
+                }
+            }
+
+            var result =compilation.Emit ( @"C:\data\logs\output.dll" ) ;
+            if (result.Success)
+            {
+                Console.WriteLine("Success");
+            }
+            
+            File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
+            
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -1038,10 +1190,14 @@ namespace ConsoleApp1
                                 //Debug.WriteLine ( comment ) ;
                                 var fields =
                                     new List < Tuple < string , string , List < string > > > ( ) ;
-                                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                                typ1.Fields.Clear();
+                                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ).Concat(xElement.Elements(XName.Get ("Choice"  )).Elements(XName.Get ("Field"  ))))
                                 {
                                     var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
-                                    var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+                                    var fieldType = field.Attribute(XName.Get("Type")).Value;
+                                    var @override =
+                                        field.Attribute ( XName.Get ( "Override" ) )?.Value
+                                        == "true" ;
 
                                     var kinds = field.Elements ( "Kind" )
                                                      .Select (
@@ -1061,6 +1217,7 @@ namespace ConsoleApp1
                                                                         , fieldType
                                                                         , kinds.ToArray ( )
                                                                          )
+                                                     {  Override = @override }
                                                     ) ;
                                 }
                             }
@@ -1082,10 +1239,15 @@ namespace ConsoleApp1
                                 //Debug.WriteLine ( comment ) ;
                                 var fields =
                                     new List < Tuple < string , string , List < string > > > ( ) ;
-                                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ) )
+                                typ2.Fields.Clear();
+                                foreach ( var field in xElement.Elements(XName.Get("Field")).Concat(xElement.Elements(XName.Get("Choice")).Elements(XName.Get("Field"))))
                                 {
                                     var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
                                     var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+                                    var @override =
+                                        field.Attribute(XName.Get("Override"))?.Value
+                                        == "true";
+
 
                                     var kinds = field.Elements ( "Kind" )
                                                      .Select (
@@ -1106,6 +1268,7 @@ namespace ConsoleApp1
                                                                         , fieldType
                                                                         , kinds.ToArray ( )
                                                                          )
+                                                     {  Override = @override}
                                                     ) ;
                                 }
                             }

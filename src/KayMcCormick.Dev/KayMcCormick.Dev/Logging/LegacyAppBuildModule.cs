@@ -1,5 +1,6 @@
 using System ;
 using System.Collections.Generic ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
@@ -483,15 +484,22 @@ namespace KayMcCormick.Dev.Logging
                 }
 
                 //var provider = e.Context.Resolve < IObjectIdProvider > ( ) ;
-                var provideObjectInstanceIdentifier =
-                    DefaultObject.ProvideObjectInstanceIdentifier (
-                                                                   inst
-                                                                 , e.Component
-                                                                 , e.Parameters
-                                                                  ) ;
-                if ( inst is IHaveObjectId x )
+                try
                 {
-                    x.InstanceObjectId = provideObjectInstanceIdentifier ;
+                    var provideObjectInstanceIdentifier =
+                        DefaultObject.ProvideObjectInstanceIdentifier (
+                                                                       inst
+                                                                     , e.Component
+                                                                     , e.Parameters
+                                                                      ) ;
+                    if ( inst is IHaveObjectId x )
+                    {
+                        x.InstanceObjectId = provideObjectInstanceIdentifier ;
+                    }
+                }
+                catch ( Exception eX )
+                {
+                    Debug.WriteLine ( eX ) ;
                 }
             }
 

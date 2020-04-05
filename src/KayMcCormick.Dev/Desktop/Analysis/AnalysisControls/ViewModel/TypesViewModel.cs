@@ -8,11 +8,13 @@ using System.Linq ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
+using System.Text.Json.Serialization ;
 using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -22,6 +24,7 @@ namespace AnalysisControls.ViewModel
 {
     /// <summary>
     /// </summary>
+    [NoJsonConverter]
     public sealed class TypesViewModel : ITypesViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
@@ -360,6 +363,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
+        [JsonIgnore]
         public AppTypeInfo Root
         {
             get { return root ; }

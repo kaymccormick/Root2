@@ -139,7 +139,7 @@ namespace FindLogUsages
                                    l.RawKind
                                  , Kind      = l.Kind ( ).ToString ( )
                                  , Parameter = TransformParameter ( l.Parameter )
-                                 , Block = Enumerable.ToList < object > ( l.Block?.Statements.Select ( TransformStatement ) )
+                                 , Block = l.Block == null ? null : Enumerable.ToList < object > ( l.Block.Statements.Select ( TransformStatement ) )
                                  , ExpressionBody = TransformExpr ( l.ExpressionBody )
                                } ;
                     case ParenthesizedLambdaExpressionSyntax pl :

@@ -1,4 +1,5 @@
 using System ;
+using System.Linq ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using Autofac.Core ;
@@ -35,6 +36,7 @@ namespace KayMcCormick.Dev.Serialization
                                                 );
             jsonSerializerOptions.Converters.Add(new JsonIViewModelConverterFactory());
             jsonSerializerOptions.Converters.Add(new JsonLazyConverterFactory());
+            jsonSerializerOptions.Converters.Add (new JsonTypeConverterFactory()  );
         }
     }
 
@@ -53,7 +55,9 @@ namespace KayMcCormick.Dev.Serialization
         /// <returns></returns>
         public override bool CanConvert ( Type typeToConvert )
         {
-            return typeof ( IViewModel ).IsAssignableFrom ( typeToConvert ) ;
+            return typeof ( IViewModel ).IsAssignableFrom ( typeToConvert )
+                   && ! typeToConvert.GetCustomAttributes ( typeof ( NoJsonConverterAttribute ), true )
+                                     .Any ( ) ;
         }
         #endregion
         #region Overrides of JsonConverterFactory
@@ -96,6 +100,10 @@ namespace KayMcCormick.Dev.Serialization
             #endregion
         }
         #endregion
+    }
+
+    public class NoJsonConverterAttribute : Attribute
+    {
     }
 
     /// <summary>

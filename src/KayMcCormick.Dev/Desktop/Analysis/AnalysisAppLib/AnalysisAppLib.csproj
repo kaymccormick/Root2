@@ -83,6 +83,7 @@
     <Compile Include="Dataflow\FindLogUsagesFuncProvider.cs" />
     <Compile Include="Dataflow\IAnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\IDataflowTransformFuncProvider.cs" />
+    <Compile Include="Gen.cs" />
     <Compile Include="GenericAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
@@ -115,6 +116,11 @@
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
+    <Compile Include="TextTemplate1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextTemplate1.tt</DependentUpon>
+    </Compile>
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
@@ -236,6 +242,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Syntax.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TextTemplate1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TextTemplate1.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

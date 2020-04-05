@@ -88,6 +88,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [JsonIgnore]
         public AppTypeInfoCollection SubTypeInfos
         {
             get { return _subTypeInfos ; }
@@ -327,6 +328,7 @@ namespace AnalysisAppLib
     [ContentProperty("Kinds")]
     public class SyntaxFieldInfo
     {
+        private bool _override ;
         /// <summary>
         /// 
         /// </summary>
@@ -339,11 +341,11 @@ namespace AnalysisAppLib
         /// <param name="name"></param>
         /// <param name="typeName"></param>
         /// <param name="kinds"></param>
-        public SyntaxFieldInfo ( string name , string typeName, params string[] kinds )
+        public SyntaxFieldInfo ( string name , string typeName, params string[] kinds  )
         {
             _name = name ;
             _typeName = typeName ;
-            
+
             foreach ( var kind in kinds )
             {
                 var k = (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind);
@@ -369,7 +371,13 @@ namespace AnalysisAppLib
 
         public Type Type { get ; set ; }
 
+        [JsonIgnore]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<AppTypeInfo> Types { get ;  } = new List < AppTypeInfo > ();
+
+        public IEnumerable< Type > ClrTypes => Types.Select ( typ => typ.Type ) ;
+
+        public bool Override { get { return _override ; } set { _override = value ; } }
     }
 
     public class SyntaxKindCollection : IList, ICollection, IEnumerable
