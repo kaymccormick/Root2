@@ -9,18 +9,56 @@
 // 
 // ---
 #endregion
-using JetBrains.Annotations;
+using JetBrains.Annotations ;
+using NLog ;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public interface ILoggingConfiguration
     {
         /// <summary>
-        /// 
         /// </summary>
-        [UsedImplicitly] bool IsEnabledConsoleTarget { get; }
+        bool ? IsEnabledConsoleTarget { get ; }
+
+        /// <summary>
+        /// </summary>
+        bool ? IsEnabledEventLogTarget { get ; }
+
+        /// <summary>
+        /// </summary>
+        bool ? IsEnabledCacheTarget { get ; }
+
+        /// <summary>
+        /// </summary>
+        [ CanBeNull ] LogLevel MinLogLevel { get ; }
+
+        /// <summary>
+        /// </summary>
+        bool ? IsEnabledDebuggerTarget { get ; }
+
+        /// <summary>
+        /// </summary>
+        string DebuggerTargetName { get ; }
+
+        /// <summary>
+        ///     NLog viewer port
+        /// </summary>
+        int ? NLogViewerPort { get ; }
+
+        /// <summary>
+        ///     Chainsaw port
+        /// </summary>
+        int ? ChainsawPort { get ; }
+
+        /// <summary>
+        /// </summary>
+        bool ? LogThrowExceptions { get ; }
+
+        /// <summary>
+        ///     Enable XML File target
+        /// </summary>
+        bool IsEnabledXmlFileTarget { get ; set ; }
     }
 }

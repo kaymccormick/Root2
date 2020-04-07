@@ -1,0 +1,631 @@
+﻿<UserControl x:Name="typesView"
+             x:Class="AnalysisControls.Views.TypesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
+             xmlns:analysisControls="clr-namespace:AnalysisControls"
+             xmlns:analysisAppLib="clr-namespace:AnalysisAppLib"
+             xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
+
+             DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
+             mc:Ignorable="d" FontSize="20"
+          Foreground="CornflowerBlue"
+             Background="#202020"
+             d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.Resources>
+    <ResourceDictionary>
+
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/ResourcesTemplates.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/ResourcesMisc.xaml" />
+        <ResourceDictionary>
+          <Style x:Key="{x:Type TreeView}"
+                 TargetType="TreeView">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="True" />
+            <Setter Property="SnapsToDevicePixels"
+                    Value="True" />
+            <Setter
+              Property="ScrollViewer.HorizontalScrollBarVisibility"
+              Value="Auto" />
+            <Setter
+              Property="ScrollViewer.VerticalScrollBarVisibility"
+              Value="Auto" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="TreeView">
+                  <Border Name="Border"
+                          CornerRadius="1"
+                          BorderThickness="1">
+                    <Border.BorderBrush>
+                      <SolidColorBrush
+                        Color="{DynamicResource BorderMediumColor}" />
+                    </Border.BorderBrush>
+                    <Border.Background>
+                      <SolidColorBrush
+                        Color="#10ffffff" />
+                    </Border.Background>
+                    <ScrollViewer Focusable="False"
+                                  CanContentScroll="False"
+                                  Padding="4">
+                      <ItemsPresenter />
+                    </ScrollViewer>
+                  </Border>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+
+          <Style x:Key="ExpandCollapseToggleStyle"
+                 TargetType="ToggleButton">
+            <Setter Property="Focusable"
+                    Value="False" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                  <Grid Width="15"
+                        Height="13"
+                        Background="Transparent">
+                    <VisualStateManager.VisualStateGroups>
+                      <VisualStateGroup
+                        x:Name="CheckStates">
+                        <VisualState x:Name="Checked">
+                          <Storyboard>
+                            <ObjectAnimationUsingKeyFrames
+                              Storyboard.TargetProperty="(UIElement.Visibility)"
+                              Storyboard.TargetName="Collapsed">
+                              <DiscreteObjectKeyFrame
+                                KeyTime="0"
+                                Value="{x:Static Visibility.Hidden}" />
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames
+                              Storyboard.TargetProperty="(UIElement.Visibility)"
+                              Storyboard.TargetName="Expanded">
+                              <DiscreteObjectKeyFrame
+                                KeyTime="0"
+                                Value="{x:Static Visibility.Visible}" />
+                            </ObjectAnimationUsingKeyFrames>
+                          </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Unchecked" />
+                        <VisualState x:Name="Indeterminate" />
+                      </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Path x:Name="Collapsed"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Margin="1,1,1,1"
+                          Data="M 4 0 L 8 4 L 4 8 Z">
+                      <Path.Fill>
+                        <SolidColorBrush
+                          Color="{DynamicResource GlyphColor}" />
+                      </Path.Fill>
+                    </Path>
+                    <Path x:Name="Expanded"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Margin="1,1,1,1"
+                          Data="M 0 4 L 8 4 L 4 8 Z"
+                          Visibility="Hidden">
+                      <Path.Fill>
+                        <SolidColorBrush
+                          Color="{DynamicResource GlyphColor}" />
+                      </Path.Fill>
+                    </Path>
+                  </Grid>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+          <Style x:Key="TreeViewItemFocusVisual">
+            <Setter Property="Control.Template">
+              <Setter.Value>
+                <ControlTemplate>
+                  <Border>
+                    <Rectangle Margin="0,0,0,0"
+                               StrokeThickness="5"
+                               Stroke="Black"
+                               StrokeDashArray="1 2"
+                               Opacity="0" />
+                  </Border>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+          <Style x:Key="{x:Type TreeViewItem}"
+                 TargetType="{x:Type TreeViewItem}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Foreground" Value="Crimson"></Setter>
+            <Setter Property="HorizontalContentAlignment"
+                    Value="{Binding Path=HorizontalContentAlignment,
+    RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="{Binding Path=VerticalContentAlignment,
+    RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="Padding"
+                    Value="1,0,0,0" />
+            <Setter Property="FocusVisualStyle"
+                    Value="{StaticResource TreeViewItemFocusVisual}" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate
+                  TargetType="{x:Type TreeViewItem}">
+                  <Grid ShowGridLines="False">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition MinWidth="19"
+                                        Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto" />
+                      <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <VisualStateManager.VisualStateGroups>
+                      <VisualStateGroup
+                        x:Name="SelectionStates">
+                        <VisualState x:Name="Selected">
+                          <Storyboard>
+                            <ColorAnimationUsingKeyFrames
+                              Storyboard.TargetName="Bd"
+                              Storyboard.TargetProperty="(Panel.Background).
+                    (SolidColorBrush.Color)">
+                              <EasingColorKeyFrame
+                                KeyTime="0"
+                                Value="{StaticResource SelectedBackgroundColor}" />
+                            </ColorAnimationUsingKeyFrames>
+                          </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Unselected" />
+                        <VisualState
+                          x:Name="SelectedInactive">
+                          <Storyboard>
+                            <ColorAnimationUsingKeyFrames
+                              Storyboard.TargetName="Bd"
+                              Storyboard.TargetProperty="(Panel.Background).
+                    (SolidColorBrush.Color)">
+                              <EasingColorKeyFrame
+                                KeyTime="0"
+                                Value="{StaticResource SelectedUnfocusedColor}" />
+                            </ColorAnimationUsingKeyFrames>
+                          </Storyboard>
+                        </VisualState>
+                      </VisualStateGroup>
+                      <VisualStateGroup
+                        x:Name="ExpansionStates">
+                        <VisualState x:Name="Expanded">
+                          <Storyboard>
+                            <ObjectAnimationUsingKeyFrames
+                              Storyboard.TargetProperty="(UIElement.Visibility)"
+                              Storyboard.TargetName="ItemsHost">
+                              <DiscreteObjectKeyFrame
+                                KeyTime="0"
+                                Value="{x:Static Visibility.Visible}" />
+                            </ObjectAnimationUsingKeyFrames>
+                          </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Collapsed" />
+                      </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <ToggleButton x:Name="Expander"
+                                  Style="{StaticResource ExpandCollapseToggleStyle}"
+                                  ClickMode="Press"
+                                  IsChecked="{Binding IsExpanded, 
+            RelativeSource={RelativeSource TemplatedParent}}" />
+                    <Border x:Name="Bd"
+                            Grid.Column="1"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                      <ContentPresenter
+                        x:Name="PART_Header"
+                        ContentSource="Header"
+                        HorizontalAlignment="Stretch" />
+                    </Border>
+                    <ItemsPresenter x:Name="ItemsHost"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    Visibility="Collapsed" />
+                  </Grid>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="HasItems"
+                             Value="false">
+                      <Setter TargetName="Expander"
+                              Property="Visibility"
+                              Value="Hidden" />
+                    </Trigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="HasHeader"
+                                   Value="false" />
+                        <Condition Property="Width"
+                                   Value="Auto" />
+                      </MultiTrigger.Conditions>
+                      <Setter TargetName="PART_Header"
+                              Property="MinWidth"
+                              Value="75" />
+                    </MultiTrigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="HasHeader"
+                                   Value="false" />
+                        <Condition Property="Height"
+                                   Value="Auto" />
+                      </MultiTrigger.Conditions>
+                      <Setter TargetName="PART_Header"
+                              Property="MinHeight"
+                              Value="19" />
+                    </MultiTrigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+          <Style x:Key="ConditionalBorderStyle"
+                 TargetType="Border">
+            <Style.Triggers>
+              <DataTrigger
+                Binding="{Binding ElementName=typesView,Path=ViewModel.ShowBordersIsChecked}"
+                Value="true">
+                <Setter Property="BorderBrush"
+                        Value="#a00000ff" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
+                <Setter Property="Padding" Value="1" />
+              </DataTrigger>
+              <DataTrigger
+                Binding="{Binding ElementName=typesView,Path=ViewModel.ShowBordersIsChecked}"
+                Value="false">
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
+                <Setter Property="Padding" Value="1" />
+              </DataTrigger>
+            </Style.Triggers>
+
+          </Style>
+          <Style x:Key="{x:Type ToolTip}"
+                 TargetType="ToolTip">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="HasDropShadow"
+                    Value="True" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                  <Border Name="Border"
+                          BorderThickness="1"
+                          Width="{TemplateBinding Width}"
+                          Height="{TemplateBinding Height}">
+                    <Border.Background>
+                      <LinearGradientBrush StartPoint="0,0"
+                                           EndPoint="0,1">
+                        <LinearGradientBrush.GradientStops>
+                          <GradientStopCollection>
+                            <GradientStop
+                              Color="{DynamicResource ControlLightColor}"
+                              Offset="0.0" />
+                            <GradientStop
+                              Color="{DynamicResource ControlMediumColor}"
+                              Offset="1.0" />
+                          </GradientStopCollection>
+                        </LinearGradientBrush.GradientStops>
+                      </LinearGradientBrush>
+
+                    </Border.Background>
+                    <Border.BorderBrush>
+                      <SolidColorBrush
+                        Color="{DynamicResource BorderMediumColor}" />
+                    </Border.BorderBrush>
+                    <ContentPresenter Margin="4"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top" />
+                  </Border>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="HasDropShadow"
+                             Value="true">
+                      <Setter TargetName="Border"
+                              Property="CornerRadius"
+                              Value="4" />
+                      <Setter TargetName="Border"
+                              Property="SnapsToDevicePixels"
+                              Value="true" />
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+
+          <wpf:CustomDataTemplateSelector
+            x:Key="CustomDataTemplateSelector" />
+          <wpf:MethodInfoConverter
+            x:Key="MethodInfoConverter" />
+          <wpf:ColorConverter x:Key="ColorConverter" />
+          <Style x:Key="S2" TargetType="WrapPanel">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Path=DocInfo}"
+                           Value="{x:Null}">
+                <Setter Property="Visibility"
+                        Value="Hidden" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+          <Style x:Key="S1" TargetType="TextBlock">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Path=DocInfo}"
+                           Value="{x:Null}" />
+              <DataTrigger
+                Binding="{Binding Path=Type.IsAbstract}"
+                Value="True">
+                <Setter Property="Background"
+                        Value="{Binding ColorValue,Converter={StaticResource ColorConverter}}" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:Summary}">
+            <GroupBox Header="Summary">
+              <ItemsControl
+                ItemsSource="{Binding DocumentElementCollection}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
+            </GroupBox>
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:XmlDocText}">
+            <TextBlock Text="{Binding}" />
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:Crossref}">
+            <TextBlock FontStyle="Italic"
+                       Text="{Binding XRefId}" />
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type analysisAppLib:Em}">
+            <TextBlock FontStyle="Italic" Text="{Binding}" />
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type analysisAppLib:Code}">
+            <TextBlock FontFamily="Lucida Console"
+                       Text="{Binding}" />
+          </DataTemplate>
+
+          <DataTemplate DataType="{x:Type analysisAppLib:Para}">
+            <StackPanel Orientation="Vertical"
+                        Margin="0,10,0,10">
+              <ItemsControl
+                ItemsSource="{Binding DocumentElementCollection}">
+                <ItemsPanelTemplate>
+                  <WrapPanel />
+                </ItemsPanelTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:MethodDocumentation}">
+            <WrapPanel>
+              <ItemsControl
+                ItemsSource="{Binding Path=XmlDoc}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
+            </WrapPanel>
+          </DataTemplate>
+
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:PropertyDocumentation}">
+            <WrapPanel>
+              <ItemsControl
+                ItemsSource="{Binding Path=XmlDoc}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
+            </WrapPanel>
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:TypeDocumentation}">
+            <WrapPanel>
+              <ItemsControl
+                ItemsSource="{Binding Path=XmlDoc}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
+            </WrapPanel>
+          </DataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type analysisAppLib:AppTypeInfo}"
+            ItemsSource="{Binding SubTypeInfos}">
+            <Grid HorizontalAlignment="Stretch"
+                  ShowGridLines="True">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <TextBlock Text="{Binding Title}"
+                         Style="{StaticResource S1}">
+                <TextBlock.ToolTip>
+                  <ContentControl
+                    Content="{Binding DocInfo}" />
+                </TextBlock.ToolTip>
+              </TextBlock>
+              <WrapPanel Style="{StaticResource S2}"
+                         Grid.ZIndex="100" Grid.Column="0"
+                         Grid.Row="0"
+                         HorizontalAlignment="Right"
+                         Margin="10,0,10,0">
+                <Image
+                  Source="{StaticResource helpStatusColor}" />
+              </WrapPanel>
+            </Grid>
+          </HierarchicalDataTemplate>
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:AppMethodInfo}">
+            <ContentControl Content="{Binding MethodInfo}">
+              <ContentControl.ToolTip>
+                <ContentControl Content="{Binding XmlDoc}" />
+              </ContentControl.ToolTip>
+            </ContentControl>
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type reflection:MethodInfo}">
+            <Border BorderBrush="Black"
+                    BorderThickness="0,0,0,1"
+                    Margin="0,0,0,15">
+              <WrapPanel Orientation="Horizontal">
+                <Border
+                  Style="{StaticResource ConditionalBorderStyle}">
+                  <wpf:TypeControl
+                    VerticalContentAlignment="Center">
+                    <wpf:AttachedProperties.RenderedType>
+                      <Binding Path="ReturnType" />
+                    </wpf:AttachedProperties.RenderedType>
+                  </wpf:TypeControl>
+                </Border>
+                <TextBlock Text=" " />
+                <Border
+                  Style="{StaticResource ConditionalBorderStyle}">
+                  <TextBlock Margin="0,0,0,0"
+                             Text="{Binding Path=Name}"
+                             VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Text=" " />
+                <Border
+                  Style="{StaticResource ConditionalBorderStyle}">
+                  <TextBlock Margin="0,0,0,0" Text="("
+                             VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Text=" " />
+                <ItemsControl Margin="0,0,0,0"
+                              ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate
+                      DataType="{x:Type reflection:ParameterInfo}">
+                      <Border
+                        Style="{StaticResource ConditionalBorderStyle}">
+                        <WrapPanel Orientation="Horizontal">
+                          <Border
+                            Style="{StaticResource ConditionalBorderStyle}">
+                            <wpf:TypeControl>
+                              <wpf:AttachedProperties.RenderedType>
+                                <Binding
+                                  Path="ParameterType" />
+                              </wpf:AttachedProperties.RenderedType>
+                            </wpf:TypeControl>
+                          </Border>
+                          <Border
+                            Style="{StaticResource ConditionalBorderStyle}">
+                            <TextBlock Margin="10,0,0,0"
+                                       Text="{Binding Name}" />
+                          </Border>
+                          <TextBlock Text=", " />
+                        </WrapPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Border BorderThickness="1" Padding="3"
+                        Style="{StaticResource ConditionalBorderStyle}">
+                  <TextBlock Margin="10,0,0,0" Text=")"
+                             VerticalAlignment="Center" />
+                </Border>
+              </WrapPanel>
+            </Border>
+          </DataTemplate>
+
+          <DataTemplate
+            DataType="{x:Type analysisAppLib:ComponentInfo}">
+            <TextBlock>
+              <TextBlock.ToolTip>
+                <ContentControl Content="{Binding XmlDoc}" />
+              </TextBlock.ToolTip>
+              <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                  <Style.Triggers>
+                    <DataTrigger
+                      Binding="{Binding IsSelfOwned}"
+                      Value="false">
+                      <Setter Property="Background"
+                              Value="{Binding Path=OwningTypeInfo.ColorValue,Converter={StaticResource ColorConverter}}" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+              <Run Text="{Binding Path=PropertyName}" />
+              <Run Text=": " />
+              <Run Text="{Binding Path=TypeInfo.Title}" />
+              <CheckBox Content="Persist"
+                        IsChecked="{Binding IsPersisted}" />
+            </TextBlock>
+          </DataTemplate>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <TreeView Grid.Column="0" Grid.Row="0" x:Name="tv"
+              Grid.RowSpan="3"
+              ItemsSource="{Binding Root.SubTypeInfos}" />
+    <StackPanel Orientation="Horizontal" Grid.Row="0"
+                Grid.Column="1">
+      <CheckBox Margin="20,20,20,5"
+                VerticalAlignment="Center"
+                VerticalContentAlignment="Center"
+                Content="Show Content Borders"
+                IsChecked="{Binding ShowBordersIsChecked}" Foreground="#FF873BBC" />
+    </StackPanel>
+    <ItemsControl Grid.Row="1" Grid.Column="1" Margin="10"
+                  x:Name="factoryMethods"
+                  ItemsSource="{Binding ElementName=tv,Path=SelectedItem.FactoryMethods}"
+                  ItemTemplateSelector="{StaticResource CustomDataTemplateSelector}">
+      <ItemsControl.Template>
+        <ControlTemplate TargetType="ItemsControl">
+          <ScrollViewer>
+            <ItemsPresenter />
+          </ScrollViewer>
+        </ControlTemplate>
+      </ItemsControl.Template>
+    </ItemsControl>
+    <ListBox Grid.Row="2" Grid.Column="1" Margin="10"
+             ItemsSource="{Binding ElementName=tv,Path=SelectedItem.AllComponents}" />
+  </Grid>
+</UserControl>

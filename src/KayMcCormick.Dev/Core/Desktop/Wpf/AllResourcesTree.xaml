@@ -1,0 +1,265 @@
+﻿<UserControl
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
+  xmlns:registration="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
+  xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
+  xmlns:dev="clr-namespace:KayMcCormick.Dev"
+  Background="AliceBlue"
+  DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
+  FontSize="{DynamicResource DefaultFontSize}"
+  x:Class="KayMcCormick.Lib.Wpf.AllResourcesTree"
+  mc:Ignorable="d" 
+  d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="SharedResources.xaml" />
+        <ResourceDictionary
+          Source="ResourcesTemplates.xaml" />
+        <ResourceDictionary Source="ResourcesMisc.xaml" />
+        <ResourceDictionary>
+          <Style TargetType="TextBlock">
+            <Setter Property="TextWrapping"
+                    Value="WrapWithOverflow" />
+          </Style>
+          <Style x:Key="DetailHeader"
+                 TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextDecorations"
+                    Value="Underline" />
+          </Style>
+          <Style x:Key="DetailValue"
+                 TargetType="ContentControl">
+            <Setter Property="Margin" Value="20,5,0,0" />
+          </Style>
+          <wpf:ResourceDetailTemplateSelector
+            x:Key="ResourceDetailTemplateSelector" />
+          <wpf:ResourcePreviewTemplateSelector
+            x:Key="ResourcePreviewTemplateSelector" />
+          <wpf:ControlTemplateConverter
+            x:Key="ControlTemplateConverter" />
+          <DataTemplate x:Key="DetailControlTemplate"
+                        DataType="{x:Type ControlTemplate}">
+            <ContentControl
+              Content="{Binding Converter={StaticResource ControlTemplateConverter}}" />
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type ImageSource}"
+                        x:Key="DetailImageSource">
+            <Image Source="{Binding}" />
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type Application}">
+            <TextBlock Text="Application" />
+          </DataTemplate>
+          <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded"
+                    Value="{Binding IsExpanded, Mode=TwoWay}" />
+          </Style>
+          <DataTemplate DataType="{x:Type FontFamily}"
+                        x:Key="PreviewFontFamily">
+            <TextBlock FontFamily="{Binding}"
+                       FontSize="24.0"
+                       Text="{Binding FamilyNames[en-US]}" />
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type Color}"
+                        x:Key="DetailColor">
+            <Border Margin="10">
+              <Rectangle Margin="25" MinWidth="25"
+                         MinHeight="25">
+                <Rectangle.Fill>
+                  <SolidColorBrush Color="{Binding}" />
+                </Rectangle.Fill>
+              </Rectangle>
+            </Border>
+          </DataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type Color}">
+            <Border Margin="10,0,10,0" IsEnabled="False">
+              <Border.Background>
+                <SolidColorBrush Color="{Binding Data}" />
+              </Border.Background>
+              <TextBlock Margin="10" Padding="6"
+                         Background="White"
+                         Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
+            </Border>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type ImageSource}">
+            <WrapPanel>
+              <Image MaxHeight="32" Source="{Binding Data}" />
+              <TextBlock VerticalAlignment="Center"
+                         Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
+            </WrapPanel>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type BitmapImage}">
+            <WrapPanel>
+              <Image MaxHeight="32" Source="{Binding Data}" />
+              <TextBlock VerticalAlignment="Center"
+                         Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
+            </WrapPanel>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type core:IComponentRegistration}"
+            ItemsSource="{Binding Children}">
+            <TextBlock
+              Text="{Binding Path=Data.Services[0].Description}" />
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type core:TypedService}"
+            ItemsSource="{Binding Children}">
+            <wpf:TypeControl>
+              <wpf:AttachedProperties.RenderedType>
+                <Binding Path="Data.ServiceType" />
+              </wpf:AttachedProperties.RenderedType>
+            </wpf:TypeControl>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type Style}"
+            ItemsSource="{Binding Path=Children}">
+            <ContentControl Focusable="False"
+                            Content="{Binding Key}">
+              <ContentControl.ToolTip>
+                <Binding Path="Key"
+                         Converter="{StaticResource GetTypeConverter}" />
+              </ContentControl.ToolTip>
+            </ContentControl>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate
+            DataType="{x:Type dev:ResourceNodeInfo}"
+            ItemsSource="{Binding Path=Children}">
+            <ContentControl Focusable="False"
+                            Content="{Binding Key}">
+              <ContentControl.ToolTip>
+                <Binding Path="Key"
+                         Converter="{StaticResource GetTypeConverter}" />
+              </ContentControl.ToolTip>
+            </ContentControl>
+          </HierarchicalDataTemplate>
+          <DataTemplate x:Key="WindowTemplate">
+            <Image HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Source="{Binding Path=Image}" />
+          </DataTemplate>
+          <wpf:ResourceTreeViewItemTemplateSelector
+            x:Key="ResourceTreeViewItemTemplateSelector" />
+          <wpf:ResourceViewItemContainerStyleSelector
+            x:Key="ResourcereeViewItemContainerStyleSelector" />
+          <Style x:Key="DefaultResourceNodeInfoStyle"
+                 BasedOn="{StaticResource {x:Type TreeViewItem}}"
+                 TargetType="TreeViewItem">
+            <Setter Property="Control.BorderThickness"
+                    Value="0.5" />
+            <Setter Property="Control.BorderBrush"
+                    Value="#80aaaaaa" />
+            <Setter Property="Background"
+                    Value="Beige" />
+            <Setter Property="Control.Margin"
+                    Value="-5,0,0,0" />
+            <Setter Property="Control.Padding" Value="0" />
+          </Style>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="30" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="2*" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <ComboBox ItemsSource="{Binding AllResourcesItemList}"
+              IsEditable="True" IsTextSearchEnabled="True" />
+    <Border Padding="0" BorderBrush="LightBlue"
+            BorderThickness="3" CornerRadius="2"
+            Grid.Row="1" Grid.Column="0"
+            Grid.RowSpan="3">
+      <wpf:TreeView1 x:Name="tv"
+                     x:FieldModifier="public"
+                     VerticalAlignment="Stretch"
+                     ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}"
+                     ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}"
+                     ItemsSource="{Binding Path=AllResourcesCollection}"
+                     Margin="0,0,0,0.2" />
+    </Border>
+
+    <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"
+          DataContext="{Binding ElementName=tv,Path=SelectedItem}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid Margin="10" Grid.Column="0" Grid.Row="1">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,0,20,0" Text="Key Type"
+                   Grid.Row="0" Grid.Column="0" />
+        <ContentControl
+          Style="{StaticResource DetailValue}"
+          Margin="20,0,0,0" Grid.Row="1" Grid.Column="0"
+          Content="{Binding Key,Converter={StaticResource GetTypeConverter}}" />
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,5,20,0" Text="Key"
+                   Grid.Row="2" Grid.Column="0" />
+        <ContentControl Margin="20,0,0,0" Grid.Row="3"
+                        Style="{StaticResource DetailValue}"
+                        Grid.Column="0"
+                        Content="{Binding Key}" />
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,0,20,0" Text="Value Type"
+                   Grid.Row="4" Grid.Column="0" />
+        <wpf:TypeControl
+          Grid.Row="5"
+          Grid.Column="0"
+          Style="{StaticResource DetailValue}">
+          <wpf:AttachedProperties.RenderedType>
+            <Binding Path="Data"
+                     Converter="{StaticResource GetTypeConverter}" />
+          </wpf:AttachedProperties.RenderedType>
+        </wpf:TypeControl>
+        <TextBlock Style="{StaticResource DetailHeader}"
+                   Margin="0,0,20,0" Text="Value"
+                   Grid.Row="6" Grid.Column="0" />
+        <ContentControl
+          Style="{StaticResource DetailValue}"
+          x:FieldModifier="public"
+          x:Name="details"
+          ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
+          Grid.Row="7" Grid.Column="0"
+          Content="{Binding Data}" />
+        <ContentControl Margin="0,40,0,0" Grid.Row="8"
+                        Grid.Column="0"
+                        ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
+                        Content="{Binding Data}" />
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

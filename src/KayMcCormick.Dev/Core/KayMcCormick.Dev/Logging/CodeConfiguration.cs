@@ -1,5 +1,5 @@
-﻿using NLog;
-using NLog.Config;
+﻿using NLog ;
+using NLog.Config ;
 
 namespace KayMcCormick.Dev.Logging
 {
@@ -13,13 +13,12 @@ namespace KayMcCormick.Dev.Logging
         ///     Initializes a new instance of the
         ///     <see cref="NLog.Config.LoggingConfiguration" /> class.
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public CodeConfiguration() { }
+        public CodeConfiguration ( ) { }
 
         /// <summary>
         ///     Initializes a new instance of the
         ///     <see cref="NLog.Config.LoggingConfiguration" /> class.
         /// </summary>
-        public CodeConfiguration(LogFactory logFactory) : base(logFactory) { }
+        public CodeConfiguration ( LogFactory logFactory ) : base ( logFactory ) { }
     }
 }

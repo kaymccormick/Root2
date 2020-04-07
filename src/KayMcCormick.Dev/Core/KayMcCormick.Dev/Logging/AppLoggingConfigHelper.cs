@@ -1,234 +1,416 @@
-/* test 123 */
-
-#if NETFRAMEWORK
-using Castle.DynamicProxy;
+#if ENABLE_PROXYLOG
+using Castle.DynamicProxy ;
+#endif
+#if ENABLE_WCF_TARGET
 using System.ServiceModel.Discovery ;
 #endif
-using JetBrains.Annotations;
-using NLog;
-using NLog.Common;
-using NLog.Config;
-using NLog.Layouts;
-using NLog.Targets;
-using NLog.Targets.Wrappers;
-using System; /* test 123 */
-/* test 123 */
-using System.Collections.Generic;
-using System.Collections.ObjectModel ;
-/* test 123 */
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.ServiceModel ;
+using System ;
+using System.Collections.Generic ;
+using System.Diagnostics ;
+using System.Diagnostics.CodeAnalysis ;
+using System.IO ;
+using System.Linq ;
+using System.Net ;
+using System.Net.Sockets ;
+using System.Reactive.Subjects ;
+using System.Reflection ;
+using System.Runtime.CompilerServices ;
+using System.Runtime.InteropServices ;
+using System.Security ;
+using System.Security.Permissions ;
+using System.Text ;
+using System.Text.RegularExpressions ;
+using System.Threading.Tasks ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev.Tracing ;
+using NLog ;
+using NLog.Common ;
+using NLog.Config ;
+using NLog.LayoutRenderers ;
+using NLog.Layouts ;
+using NLog.Targets ;
 
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-#if NETFRAMEWORK
+#if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
 #endif
-using JsonAttribute = NLog.Layouts.JsonAttribute;
 
 namespace KayMcCormick.Dev.Logging
 {
-#if NETFRAMEWORK
-    class Client
+#if NETFRAMEWORK && ENABLE_WCF_TARGET
+    internal class Client
     {
-        static public EndpointAddress serviceAddress;
+        public static EndpointAddress serviceAddress ;
 
         // ** DISCOVERY ** //  
-        static public bool FindService()
+        public static bool FindService ( )
         {
-            DiscoveryClient discoveryClient =
-                new DiscoveryClient(new UdpDiscoveryEndpoint());
+            var discoveryClient = new DiscoveryClient ( new UdpDiscoveryEndpoint ( ) ) ;
 
-            Collection<EndpointDiscoveryMetadata> logReceiverServices =
-                (Collection<EndpointDiscoveryMetadata>)discoveryClient.Find(
-                    new FindCriteria(typeof(ILogReceiverServer))).Endpoints;
+            var logReceiverServices = ( Collection < EndpointDiscoveryMetadata > ) discoveryClient
+                                                                                  .Find (
+                                                                                         new
+                                                                                             FindCriteria (
+                                                                                                           typeof
+                                                                                                           ( ILogReceiverServer
+                                                                                                           )
+                                                                                                          )
+                                                                                        )
+                                                                                  .Endpoints ;
 
-            discoveryClient.Close();
+            discoveryClient.Close ( ) ;
 
-            if (logReceiverServices.Count == 0)
+            if ( logReceiverServices.Count == 0 )
+
             {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
-                Console.WriteLine("\nNo services are found.");
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
-                return false;
+
+                Console.WriteLine ( "\nNo services are found." ) ;
+
+                return false ;
             }
             else
             {
-                serviceAddress = logReceiverServices[0].Address;
-                return true;
+                serviceAddress = logReceiverServices[ 0 ].Address ;
+                return true ;
             }
         }
     }
 #endif
+
     /// <summary>Static class containing logging configuration methods</summary>
     /// <seealso cref="NLog.Config.LoggingConfiguration" />
     public static class AppLoggingConfigHelper
     {
+        private const           string JsonTargetName              = "json_out" ;
+        private const           string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
+        // ReSharper disable once UnusedMember.Local
+        private const           string PublicFacingHostAddress     = "xx1.mynetgear.com:" ;
+        private const           int    DefaultProtoLogUdpPort      = 4445 ;
+        private const           string EnvVarName_MINLOGLEVEL      = "MINLOGLEVEL" ;
+        private const           string DefaultEventLogTargetName   = "eventLogTarget" ;
+        private const           string LogRootPath                 = @"c:\data\logs\" ;
+        private static readonly int    _nLogViewerPort             = 9995 ;
+
+
+        private static Logger Logger ;
+
+        [ ThreadStatic ]
+        private static int ? _numTimesConfigured ;
+
+        private static          LogFactory                                _factory ;
+        private static          Target                                    _serviceTarget ;
+        private static readonly int                                       _chainsawPort = 4445 ;
+        private static          MyCacheTarget                             _cacheTarget ;
+        private static          LogDelegates.LogMethod                    _oldLogMethod ;
+        private static          Dictionary < LogLevel , List < Target > > _dict ;
+        private static          bool                                      _loggingConfigured ;
+        private static          LogLevel                                  _minLogLevel ;
+        private static          ChainsawTarget                            _chainsawTarget ;
+
+        private static readonly int _protoLogPort = DefaultProtoLogUdpPort ;
+
+        private static readonly IPAddress _protoLogIpAddress = IPAddress.Broadcast ;
+
+        private static readonly IPEndPoint _ipEndPoint =
+            new IPEndPoint ( _protoLogIpAddress , _protoLogPort ) ;
+
+        private static readonly UdpClient _udpClient = CreateUdpClient ( ) ;
+
+        private static readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer =
+            new MyLog4JXmlEventLayoutRenderer ( ) ;
+
+        private static NetworkTarget jsonNetworkTarget ;
+
+        //private static string _chainsawHost = PublicFacingHostAddress;
+        private static readonly string _chainsawHost = "10.25.0.102" ;
+        private static          bool   _performant ;
+        private static readonly bool _checkExistingConfig = true ;
+
         /// <summary>The string writer</summary>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for StringWriter
-        public static StringWriter Writer { get; set; }
+        public static StringWriter Writer { get ; set ; }
 
-        private const string JsonTargetName = "json_out";
-        private const string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS";
-        private const string PublicFacingHostAddress = "xx1.mynetgear.com:";
-
-        // ReSharper disable once InconsistentNaming
-        [SuppressMessage(
-                                                              "Microsoft.Performance"
-                                                            , "CA1823:AvoidUnusedPrivateFields"
-                                                          )]
-        [UsedImplicitly] private static Logger Logger;
-
-        [ThreadStatic]
-        private static int? _numTimesConfigured;
-
-        private static LogFactory _factory ;
 
         /// <summary>
-        /// 
         /// </summary>
-#if NETFRAMEWORK
-        public static LogReceiverWebServiceTarget ServiceTarget { get; private set; }
-#endif
-
-
-        /// <summary>Gets or sets a value indicating whether [debugger target enabled].</summary>
-        /// <value>
-        ///   <see language="true"/> if [debugger target enabled]; otherwise, <see language="false"/>.</value>
-        /// <autogeneratedoc />
-        /// TODO Edit XML Comment Template for DebuggerTargetEnabled
-        public static bool DebuggerTargetEnabled { get; } = false;
-
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        public static Target ServiceTarget { get ; private set ; }
 
         /// <summary>Gets or sets a value indicating whether [logging is configured].</summary>
         /// <value>
-        ///   <see language="true"/> if [logging is configured]; otherwise, <see language="false"/>.</value>
+        ///     <see language="true" /> if [logging is configured]; otherwise,
+        ///     <see language="false" />.
+        /// </value>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for LoggingIsConfigured
-        public static bool LoggingIsConfigured { get; set; }
+        public static bool ? LoggingIsConfigured { get ; set ; }
 
-        /// <summary>Gets or sets a value indicating whether [dump existing configuration].</summary>
+        /// <summary>
+        ///     Gets or sets a value indicating whether [dump existing
+        ///     configuration].
+        /// </summary>
         /// <value>
-        ///   <see language="true"/> if [dump existing configuration]; otherwise, <see language="false"/>.</value>
+        ///     <see language="true" /> if [dump existing configuration]; otherwise,
+        ///     <see language="false" />.
+        /// </value>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for DumpExistingConfig
-        public static bool DumpExistingConfig { get; } = true;
+        public static bool DumpExistingConfig { get ; } = false ;
 
 
         /// <summary>Gets or sets a value indicating whether [force code configuration].</summary>
         /// <value>
-        ///   <see language="true"/> if [force code configuration]; otherwise, <see language="false"/>.</value>
+        ///     <see language="true" /> if [force code configuration]; otherwise,
+        ///     <see language="false" />.
+        /// </value>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for ForceCodeConfig
-        public static bool ForceCodeConfig { get; } = false;
+        public static bool ForceCodeConfig { get ; } = false ;
 
-        private static void DoLogMessage(string message)
+        /// <summary>
+        /// </summary>
+        public static string ConsoleTargetName { get ; private set ; }
+
+        /// <summary>
+        /// </summary>
+        public static string EventLogTargetName { get ; private set ; }
+
+        /// <summary>
+        /// </summary>
+        public static MyCacheTarget2 CacheTarget2 { get ; private set ; }
+
+        /// <summary>
+        /// </summary>
+        public static UdpClient UdpClient { get { return _udpClient ; } }
+
+        /// <summary>
+        /// </summary>
+        public static IPEndPoint IpEndPoint { get { return _ipEndPoint ; } }
+
+        /// <summary>
+        /// </summary>
+        public static Layout XmlEventLayout { get ; } = new MyLayout ( _xmlEventLayoutRenderer ) ;
+
+        /// <summary>
+        /// </summary>
+        public static string DisableLoggingEnvVar { get ; } = "DISABLE_LOGGING" ;
+
+        /// <summary>
+        /// </summary>
+        public static bool Performant { get { return _performant ; } set { _performant = value ; } }
+
+        [ NotNull ]
+        private static UdpClient CreateUdpClient ( )
         {
-            System.Diagnostics.Debug.WriteLine(
-                                                nameof(AppLoggingConfigHelper) + ":" + message
-                                               );
+            return new UdpClient
+                   {
+                       EnableBroadcast = true
+                     , Client =
+                           new Socket ( SocketType.Dgram , ProtocolType.Udp )
+                           {
+                               EnableBroadcast = true , DualMode = true
+                           }
+                   } ;
+        }
+
+        private static void DoLogMessage ( string message )
+        {
+            System.Diagnostics.Debug.WriteLine (
+                                                nameof ( AppLoggingConfigHelper ) + ":" + message
+                                               ) ;
             // System.Diagnostics.Debug.WriteLine ( nameof(AppLoggingConfigHelper) + ":" + message ) ;
         }
 
-        // ReSharper disable once MemberCanBePrivate.Global
-        internal static LogFactory ConfigureLogging(
+
+        internal static async Task<LogFactory> ConfigureLoggingAsync (
             LogDelegates.LogMethod logMethod
-          , bool proxyLogging = false
+          , bool                   proxyLogging = false
+          , ILoggingConfiguration  config1      = null
         )
         {
-            // logMethod(
-            // source
-            // .AppLoggingConfigHelper_ConfigureLogging_____Starting_logger_configuration_
-            // );
-            InternalLogging();
-
-            if (Environment.GetEnvironmentVariable("DISABLE_LOGGING") != null)
+            if ( Environment.GetEnvironmentVariable ( DisableLoggingEnvVar ) != null )
             {
-                LogManager.Configuration = new CodeConfiguration();
+                logMethod ( "Disabling logging completely" ) ;
+                LogManager.Configuration = new CodeConfiguration ( ) ;
                 return LogManager.LogFactory ;
             }
 
-            #if NETFRAMEWORK
-            LogFactory proxiedFactory = null;
-            if (proxyLogging)
+            if ( config1 == null )
             {
-                var proxyGenerator = new ProxyGenerator();
-                var loggerProxyHelper = new LoggerProxyHelper(proxyGenerator, DoLogMessage);
-                var logFactory = new MyLogFactory(DoLogMessage);
-                var lConfLogFactory = loggerProxyHelper.CreateLogFactory(logFactory);
-                proxiedFactory = lConfLogFactory;
+                config1 = AppLoggingConfiguration.Default ;
             }
-            #endif
-            var fieldInfo = typeof(LogManager).GetField(
-                                                            "factory"
-                                                          , BindingFlags.Static
-                                                            | BindingFlags.NonPublic
-                                                           );
-            if (fieldInfo != null)
+
+            ApplyConfiguration ( config1 ) ;
+
+            if ( ! Performant )
             {
-                logMethod($"field info is {fieldInfo.DeclaringType} . {fieldInfo.Name}");
-                var cur = fieldInfo.GetValue(null);
-                logMethod($"cur is {cur}");
-#if NETFRAMEWORK
-                if (proxyLogging)
+                InternalLogging ( ) ;
+            }
+
+
+#if ENABLE_PROXYLOG
+            LogFactory proxiedFactory = null ;
+            if ( proxyLogging )
+            {
+                var proxyGenerator = new ProxyGenerator ( ) ;
+                var loggerProxyHelper = new LoggerProxyHelper ( proxyGenerator , DoLogMessage ) ;
+                var logFactory = new MyLogFactory ( DoLogMessage ) ;
+                var lConfLogFactory = loggerProxyHelper.CreateLogFactory ( logFactory ) ;
+                proxiedFactory = lConfLogFactory ;
+            }
+#endif
+#if FIELD_ACCESS
+            var fieldInfo = typeof ( LogManager ).GetField (
+                                                            "factory"
+                              , BindingFlags.Static
+                                                            | BindingFlags.NonPublic
+                                                           ) ;
+            if ( fieldInfo != null )
+            {
+                logMethod ( $"field info is {fieldInfo.DeclaringType} . {fieldInfo.Name}" ) ;
+                var cur = fieldInfo.GetValue ( null ) ;
+                logMethod ( $"cur is {cur}" ) ;
+#if ENABLE_PROXYLOG
+                if ( proxyLogging )
                 {
-                    fieldInfo.SetValue(null, proxiedFactory);
-                    var newVal = fieldInfo.GetValue(null);
-                    logMethod($"New Value = {newVal}");
+                    fieldInfo.SetValue ( null , proxiedFactory ) ;
+                    var newVal = fieldInfo.GetValue ( null ) ;
+                    logMethod ( $"New Value = {newVal}" ) ;
                 }
 #endif
             }
-
-#if NETFRAMEWORK
-            return PerformConfiguration(logMethod, proxyLogging, proxiedFactory);
+#endif
+#if ENABLE_PROXYLOG
+            return PerformConfiguration ( logMethod , proxyLogging , proxiedFactory , config1 ) ;
 #else
-            return PerformConfiguration(logMethod, false, null);
+            return await PerformConfigurationAsync ( logMethod , false , null , config1 ) ;
 #endif
         }
 
-        private static LogFactory PerformConfiguration(
+
+        // ReSharper disable once UnusedParameter.Local
+        private static void ApplyConfiguration ( ILoggingConfiguration config1 )
+        {
+            EventLogTargetName = DefaultEventLogTargetName ;
+            ConsoleTargetName  = "consoleTarget" ;
+        }
+
+        private static async Task<LogFactory> PerformConfigurationAsync (
             LogDelegates.LogMethod logMethod
-          , bool proxyLogging
-          , LogFactory proxiedFactory
+          , bool                   proxyLogging
+          , LogFactory             proxiedFactory
+          , ILoggingConfiguration  config1
         )
         {
-            var useFactory = proxyLogging ? proxiedFactory : LogManager.LogFactory;
-            var lConf = new CodeConfiguration(useFactory);
-
-            var dict = LogLevel.AllLoggingLevels.ToDictionary(
-                                                               level => level
-                                                             , level => new List<Target>()
-                                                              );
-            // ReSharper disable once UnusedVariable
-            var errorTargets = dict[LogLevel.Error];
-            var t = dict[LogLevel.Trace];
-
-
-            var disabledLogTargets = Environment.GetEnvironmentVariable(DisableLogTargetsEnvVarName);
-            HashSet<string> disabled;
-            if (disabledLogTargets != null)
+            var oldTargets = LogManager.Configuration?.AllTargets?.ToList ( ) ;
+            var oldRules = LogManager.Configuration?.LoggingRules?.ToList ( ) ;
+            var usedNames = oldTargets?.Select ( target => target.Name ).ToHashSet ( ) ;
+            LogFactory useFactory ;
+            if ( proxyLogging )
             {
-                var targets = disabledLogTargets.Split(';');
-                disabled = new HashSet<string>(targets);
-                logMethod(string.Join(", ", disabled));
+                useFactory = proxiedFactory ;
             }
             else
             {
-                disabled = new HashSet<string>();
+                System.Diagnostics.Debug.WriteLine ( "Using stock log factory" ) ;
+                useFactory = LogManager.LogFactory ;
             }
 
-            // var x = new EventLogTarget("eventLog") { Source = "Application Error" };
-            // errorTargets.Add(x);
+            var lConf = new CodeConfiguration ( useFactory ) ;
+            if ( config1.LogThrowExceptions.GetValueOrDefault ( ) )
+            {
+                logMethod ( "Setting throwExceptions to true" ) ;
+                LogManager.ThrowExceptions = true ;
+            }
+            else
+            {
+                logMethod ( "Setting throwExceptions to false" ) ;
+                LogManager.ThrowExceptions = false ;
+            }
+#if DEBUG
+            LogManager.ThrowExceptions = true ;
+#endif
+            _dict = LogLevel.AllLoggingLevels.ToDictionary (
+                                                            level => level
+                                                          , level => new List < Target > ( )
+                                                           ) ;
+            logMethod (
+                       $"Log Levels\tName\tOrdinal:\n{string.Join ( ",\n" , _dict.Keys.Select ( level => $"\t\t{level.Name}\t({level.Ordinal})" ) )}"
+                      ) ;
+            _minLogLevel = config1.MinLogLevel ;
 
-            #if NETFRAMEWORK
+            var envVarName = EnvVarName_MINLOGLEVEL ;
+            var env = Environment.GetEnvironmentVariable ( envVarName ) ;
+            if ( env != null )
+            {
+                logMethod (
+                           $"Detected environment variable {envVarName} with value {env}. Attempting to set minimum log level."
+                          ) ;
+                LogLevel level = null ;
+                try
+                {
+                    level = env.Any ( c => ! char.IsDigit ( c ) )
+                                ? LogLevel.FromString ( env )
+                                : LogLevel.FromOrdinal ( int.Parse ( env ) ) ;
+                }
+                catch ( ArgumentException ex )
+                {
+                    logMethod ( $"Unable to determine specified log level: {ex.Message}" ) ;
+                }
+
+                if ( level != null )
+                {
+                    logMethod (
+                               $"Setting minimum log level from environment variable {envVarName} to {level}"
+                              ) ;
+                    _minLogLevel = level ;
+                }
+            }
+
+            if ( _minLogLevel != null )
+            {
+                logMethod (
+                           $"Using supplied minimum log level of {_minLogLevel} from application configuration or environment variable source."
+                          ) ;
+                if ( _minLogLevel == LogLevel.Off )
+                {
+                    logMethod ( "Supplied value will suppress logging." ) ;
+                }
+            }
+
+            if ( _minLogLevel == null )
+            {
+                _minLogLevel = LogLevel.Trace ;
+            }
+
+
+            var t = _dict[ _minLogLevel ] ;
+            var errorTargets = _minLogLevel <= LogLevel.Error ? _dict[ LogLevel.Error ] : null ;
+
+            var disabledLogTargets =
+                Environment.GetEnvironmentVariable ( DisableLogTargetsEnvVarName ) ;
+            HashSet < string > disabled ;
+            if ( disabledLogTargets != null )
+            {
+                var targets = disabledLogTargets.Split ( ';' ) ;
+                disabled = new HashSet < string > ( targets ) ;
+                logMethod ( string.Join ( ", " , disabled ) ) ;
+            }
+            else
+            {
+                disabled = new HashSet < string > ( ) ;
+            }
+
+            if ( config1.IsEnabledEventLogTarget.GetValueOrDefault ( ) )
+            {
+                var x = EventLogTarget ( EventLogTargetName ) ;
+                errorTargets?.Add ( x ) ;
+            }
+
+            var tracingTarget = new NLogTraceTarget ( ) ;
+            t.Add ( tracingTarget ) ;
+
+#if ENABLE_WCF_TARGET
             var endpointAddress = Environment.GetEnvironmentVariable("LOGGING_WEBSERVICE_ENDPOINT")
                                   ?? $"http://{PublicFacingHostAddress}/LogService/ReceiveLogs.svc";
             EndpointAddress receiverAddress = null;//new EndpointAddress(endpointAddress);
@@ -238,179 +420,324 @@ namespace KayMcCormick.Dev.Logging
                 logMethod($"Found service at endpoint {receiverAddress}");
 
             }
-            receiverAddress = new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/");
+            receiverAddress =
+ new EndpointAddress("http://exomail-87976:8737/discovery/scenarios/logreceiver/");
             // TODO make this address configurable
             if ( receiverAddress != null )
             {
                 ServiceTarget = new LogReceiverWebServiceTarget ( "log" )
-                                {
-                                    // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
+            {
+                // EndpointAddress = Configuration.GetValue(LOGGING_WEBSERVICE_ENDPOINT)
                                     EndpointAddress = receiverAddress.ToString ( )
-                                  , ClientId        = new SimpleLayout ( "${processName}" )
-                                  , EndpointConfigurationName =
+, ClientId = new SimpleLayout ( "${processName}" )
+, EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
-                                  , IncludeEventProperties = true
-                                   ,
+, IncludeEventProperties = true
+       ,
                                 } ;
             }
-
+                
             // var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
-            dict[LogLevel.Debug].Add(ServiceTarget);
+            _dict[LogLevel.Debug].Add(ServiceTarget);
 #endif
 
-            var consoleTarget = new ConsoleTarget("console")
+            var networkT1 = new NetworkTarget ( "n1" ) ;
+            networkT1.Layout= Layout.FromString("${message}");
+            networkT1.Address = Layout.FromString ( "udp://10.25.0.102:6655" ) ;
+            _dict[ LogLevel.Trace].Add ( networkT1 )  ;
+            
+            if ( config1.IsEnabledConsoleTarget.HasValue
+                 && config1.IsEnabledConsoleTarget.Value
+                 && ! disabled.Contains ( ConsoleTargetName ) )
             {
-                Error = true
-                                  ,
-                Layout = new SimpleLayout("${level} ${message} ${logger}")
-            };
-            dict[LogLevel.Warn].Add(consoleTarget);
-
-
-#region Cache Target
-            var cacheTarget = new MyCacheTarget();
-            dict[LogLevel.Debug].Add(cacheTarget);
-            var cacheTarget2 = new MyCacheTarget2() { Layout = SetupJsonLayout() };
-            dict[LogLevel.Debug].Add(cacheTarget2);
-#endregion
-#region NLogViewer Target
-            var viewer = Viewer();
-            t.Add(viewer);
-#endregion
-#region Debugger Target
-            if (DebuggerTargetEnabled)
-            {
-                // var debuggerTarget =
-                // new DebuggerTarget { Layout = new SimpleLayout("${message}") };
-                // t.Add(debuggerTarget);
-            }
-#endregion
-#region Chainsaw Target
-            var chainsawTarget = new ChainsawTarget();
-            string PublicHostAddress = PublicFacingHostAddress;
-            SetupNetworkTarget(chainsawTarget, $"udp://{PublicHostAddress}4445");
-            t.Add(chainsawTarget);
-#endregion
-            t.Add(MyFileTarget());
-            var jsonFileTarget = JsonFileTarget();
-            dict[LogLevel.Debug].Add(jsonFileTarget);
-            var byType = new Dictionary<Type, int>();
-            var keys = dict.Keys.ToList();
-            foreach (var k in keys)
-            {
-                var v = dict[k];
-                dict[k] = v.Where((target, i) => !disabled.Contains(target.Name)).ToList();
+                var consoleTarget = new ConsoleTarget ( ConsoleTargetName )
+                                    {
+                                        Error = true
+                                      , Layout =
+                                            new SimpleLayout ( "${level} ${message} ${logger}" )
+                                    } ;
+                _dict[ LogLevel.Warn ].Add ( consoleTarget ) ;
             }
 
-            foreach (var target in dict.SelectMany(pair => pair.Value))
+            // ConfigurationItemFactory.Default = new ConfigurationItemFactory();
+            // jsonNetworkTarget = new NetworkTarget ( "jsonNetworkTarget" )
+            // {
+            // Address = "udp://10.25.0.102:4477"
+            // , Layout  = new MyJsonLayout ( )
+            // } ;
+            // t.Add ( jsonNetworkTarget ) ;
+            if ( config1.IsEnabledXmlFileTarget )
             {
-                var type = target.GetType();
-                byType.TryGetValue(type, out var count);
-                count += 1;
-                byType[type] = count;
+                var logRootDir = LogRootPath ;
+                var xmlTarget = new AppFileTarget ( "xmlFile" )
+                                {
+                                    FileName =
+                                        new SimpleLayout (
+                                                          $@"{logRootDir}xmllog-${{processId}}.log"
+                                                         )
+                                  , Layout = XmlEventLayout
+                                } ;
+                t.Add ( xmlTarget ) ;
+            }
 
-                if (target.Name == null)
+
+            #region Cache Target
+            if ( config1.IsEnabledCacheTarget.GetValueOrDefault ( ) )
+            {
+                _cacheTarget = new MyCacheTarget ( ) ;
+                _dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
+                CacheTarget2 = new MyCacheTarget2 { Layout = SetupJsonLayout ( ) } ;
+                _dict[ LogLevel.Debug ].Add ( CacheTarget2 ) ;
+            }
+            #endregion
+            #region NLogViewer Target
+            var viewer = await ViewerAsync ( ) ;
+            t.Add ( viewer ) ;
+            #endregion
+            #region Debugger Target
+            if ( config1.IsEnabledDebuggerTarget.GetValueOrDefault ( )
+                 && ! disabled.Contains ( config1.DebuggerTargetName ) )
+            {
+                var debuggerTarget =
+                    new DebuggerTarget ( config1.DebuggerTargetName )
+                    {
+                        Layout = new SimpleLayout ( "${message}" )
+                    } ;
+                t.Add ( debuggerTarget ) ;
+            }
+            #endregion
+            #region Chainsaw Target
+            _chainsawTarget = CreateChainsawTarget ( ) ;
+            var chainsawTarget = _chainsawTarget ;
+            t.Add ( chainsawTarget ) ;
+            #endregion
+            t.Add ( MyFileTarget ( ) ) ;
+            var jsonFileTarget = JsonFileTarget ( ) ;
+            _dict[ LogLevel.Trace ].Add ( jsonFileTarget ) ;
+
+            // var jsonNetworkTarget = new NetworkTarget ( "jsonNet" ) ;
+            // jsonNetworkTarget.Layout = new MyJsonLayout ( ) ;
+            // SetupNetworkTarget ( jsonNetworkTarget , "udp://127.0.0.1:5110" ) ;
+            // t.Add ( jsonNetworkTarget ) ;
+
+            var byType = new Dictionary < Type , int > ( ) ;
+            var keys = _dict.Keys.ToList ( ) ;
+            foreach ( var k in keys )
+            {
+                var v = _dict[ k ].Where ( target => target != null ) ;
+                _dict[ k ] = v.Where ( ( target , i ) => ! disabled.Contains ( target.Name ) )
+                              .ToList ( ) ;
+            }
+
+            foreach ( var target in _dict.SelectMany ( pair => pair.Value ) )
+            {
+                var type = target.GetType ( ) ;
+                byType.TryGetValue ( type , out var count ) ;
+                count          += 1 ;
+                byType[ type ] =  count ;
+
+                if ( target.Name == null
+                     || usedNames != null && usedNames.Contains ( target.Name ) )
                 {
-                    target.Name = $"{Regex.Replace(type.Name, "Target", "")}{count:D2}";
+                    target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
 
-                lConf.AddTarget(target);
+                logMethod (
+                           $"Adding log target {target.Name} of type {target.GetType ( ).AssemblyQualifiedName}"
+                          ) ;
+                LogAddTarget ( target ) ;
+                lConf.AddTarget ( target ) ;
             }
 
-            foreach (var result in dict.Select(LoggingRule))
+            foreach ( var result in _dict.Select (
+                                                  pair => LoggingRule (
+                                                                       pair
+                                                                     , _minLogLevel
+                                                                     , config1
+                                                                      )
+                                                 ) )
             {
-                foreach (var loggingRule in result)
+                foreach ( var loggingRule in result )
                 {
-                    lConf.LoggingRules.Add(loggingRule);
+                    logMethod ( $"Adding logging rule {loggingRule}" ) ;
+                    lConf.LoggingRules.Add ( loggingRule ) ;
                 }
 
                 // ((List<LoggingRule>lConf.LoggingRules)).AddRange ( result ) ;
             }
 
-            LogManager.Configuration = lConf;
-            Logger = LogManager.GetCurrentClassLogger();
-            return useFactory ;
+            if ( oldTargets != null )
+            {
+                foreach ( var oldTarget in oldTargets )
+                {
+                    lConf.AddTarget ( oldTarget ) ;
+                }
+            }
+
+            if ( oldRules != null )
+            {
+                foreach ( var oldRule in oldRules )
+                {
+                    lConf.LoggingRules.Add ( oldRule ) ;
+                }
+            }
+
+            try
+            {
+                LogManager.Configuration = lConf ;
+                Logger                   = LogManager.GetCurrentClassLogger ( ) ;
+                _loggingConfigured       = true ;
+                System.Diagnostics.Debug.WriteLine (
+                                                    $"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}"
+                                                   ) ;
+                return useFactory ;
+            }
+            catch ( Exception ex )
+            {
+                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                throw ;
+            }
         }
 
-        private static IEnumerable<LoggingRule> LoggingRule(
-            KeyValuePair<LogLevel, List<Target>> arg
+        private static void LogAddTarget ( [ NotNull ] Target target )
+        {
+#if TRACEPROVIDER
+            PROVIDER_GUID.EventWriteLOGTARGET_ATTACHED_EVENT (
+                                                              target.Name
+                                                            , target.GetType ( ).FullName
+                                                             ) ;
+#endif
+        }
+
+        [ NotNull ]
+        private static ChainsawTarget CreateChainsawTarget ( )
+        {
+            var chainsawTarget = new ChainsawTarget { Layout = XmlEventLayout } ;
+            var s = _chainsawPort.ToString ( ) ;
+            SetupNetworkTarget ( chainsawTarget , $"udp://{_chainsawHost}:{s}" ) ;
+            return chainsawTarget ;
+        }
+
+        [ SuppressMessage (
+                              "Style"
+                            , "IDE0060:Remove unused parameter"
+                            , Justification = "<Pending>"
+                          ) ]
+        [ NotNull ]
+        private static IEnumerable < LoggingRule > LoggingRule (
+            KeyValuePair < LogLevel , List < Target > > pair
+          , LogLevel                                    config1MinLogLevel
+            // ReSharper disable once UnusedParameter.Local
+          , ILoggingConfiguration                       config1
         )
         {
-            return arg.Value.Select(target => new LoggingRule("*", arg.Key, target));
+            return pair.Value.Select (
+                                      target => new LoggingRule (
+                                                                 "*"
+                                                               , config1MinLogLevel <= pair.Key
+                                                                     ? pair.Key
+                                                                     : config1MinLogLevel
+                                                               , target
+                                                                )
+                                     ) ;
         }
 
-        // ReSharper disable once UnusedMember.Local
-        private static LoggingRule DefaultLoggingRule(Target target) => new LoggingRule("*", LogLevel.FromOrdinal(0), target);
-
-        private static void InternalLogging()
+        [ NotNull ]
+        private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {
-            InternalLogger.LogLevel = LogLevel.Debug;
+            var x = new EventLogTarget ( eventLogTargetName ) { Source = "Application Error" } ;
+            return x ;
+        }
 
-            var id = Process.GetCurrentProcess().Id;
-            var logFile = $@"c:\temp\nlog-internal-{id}.txt";
-            InternalLogger.LogFile = logFile;
+        // TODO never used??
+
+        [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
+        private static IEnumerable < LoggingRule > LoggingRule (
+            KeyValuePair < LogLevel , List < Target > > arg
+        )
+        {
+            return arg.Value.Select ( target => new LoggingRule ( "*" , arg.Key , target ) ) ;
+        }
+
+
+        [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
+        private static LoggingRule DefaultLoggingRule ( Target target )
+        {
+            return new LoggingRule ( "*" , LogLevel.FromOrdinal ( 0 ) , target ) ;
+        }
+
+        private static void InternalLogging ( )
+        {
+            InternalLogger.LogLevel = LogLevel.Debug ;
+
+            var id = Process.GetCurrentProcess ( ).Id ;
+            var logFile = $@"c:\temp\nlog-internal-{id}.txt" ;
+            InternalLogger.LogFile = logFile ;
 
             //InternalLogger.LogToConsole      = true ;
             //InternalLogger.LogToConsoleError = true ;
             //InternalLogger.LogToTrace        = true ;
 
-            Writer = new StringWriter();
-            InternalLogger.LogWriter = Writer;
+            Writer                   = new StringWriter ( ) ;
+            InternalLogger.LogWriter = Writer ;
         }
 
-        private static void SetupNetworkTarget(NetworkTarget target, string address)
+        private static void SetupNetworkTarget ( [ NotNull ] NetworkTarget target , string address )
         {
-            target.Address = new SimpleLayout(address);
+            target.Address = new SimpleLayout ( address ) ;
         }
 
-        private static NLogViewerTarget Viewer(string name = null)
+        [ NotNull ]
+        private static Task<NLogViewerTarget> ViewerAsync ( string name = null )
         {
-            return new NLogViewerTarget(name)
-            {
-                Address = new SimpleLayout("udp://10.25.0.102:9995")
-                     ,
-                IncludeAllProperties = true
-                     ,
-                IncludeCallSite = true
-                     ,
-                IncludeSourceInfo = true
-            };
+            var s = _nLogViewerPort ;
+            return Task.FromResult(new NLogViewerTarget ( name )
+                   {
+                       Address              = new SimpleLayout ( $"udp://10.25.0.102:{s}" )
+                     , IncludeAllProperties = true
+                     , IncludeCallSite      = true
+                     , IncludeSourceInfo    = true
+                     , IncludeNdlc          = true
+                   }) ;
         }
 
         /// <summary>JSON File Target</summary>
         /// <returns></returns>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for JsonFileTarget
-        public static FileTarget JsonFileTarget()
+        [ NotNull ]
+        public static FileTarget JsonFileTarget ( )
         {
-            var f = new FileTarget(JsonTargetName)
-            {
-                FileName = Layout.FromString(@"c:\data\logs\${processName}.json")
-                      ,
-                Layout = new MyJsonLayout()
-            };
+            var f = new AppFileTarget ( JsonTargetName )
+                    {
+                        FileName =
+                            Layout.FromString ( @"c:\data\logs\${processName}\${processId}.json" )
+                        // ,
+                        // Layout = new MyJsonLayout()
+                      , Layout = new MyJsonLayout ( )
+                    } ;
 
-            return f;
+            return f ;
         }
 
         /// <summary>My File Target.</summary>
         /// <returns></returns>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for MyFileTarget
-        public static FileTarget MyFileTarget()
+        [ NotNull ]
+        public static FileTarget MyFileTarget ( )
         {
-            var f = new FileTarget
-            {
-                Name = "text_log"
-                      ,
-                FileName = Layout.FromString(@"c:\data\logs\log.txt")
-                      ,
-                Layout = Layout.FromString("${message}")
-            };
+            var f = new AppFileTarget ( "text_log" )
+                    {
+                        FileName = Layout.FromString ( @"c:\data\logs\log-${processid}.txt" )
+                      , Layout   = Layout.FromString ( "${message}" )
+                    } ;
 
-            return f;
+            return f ;
         }
 
         /// <summary>Removes the target.</summary>
@@ -418,16 +745,15 @@ namespace KayMcCormick.Dev.Logging
         /// <exception cref="System.ArgumentNullException">target</exception>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for RemoveTarget
-        // ReSharper disable once UnusedMember.Global
-        public static void RemoveTarget([JetBrains.Annotations.NotNull] Target target)
+        public static void RemoveTarget ( [ NotNull ] Target target )
         {
-            if (target == null)
+            if ( target == null )
             {
-                throw new ArgumentNullException(nameof(target));
+                throw new ArgumentNullException ( nameof ( target ) ) ;
             }
 
-            LogManager.Configuration.RemoveTarget(target.Name);
-            LogManager.LogFactory.ReconfigExistingLoggers();
+            LogManager.Configuration.RemoveTarget ( target.Name ) ;
+            LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
 #if LOGREMOVAL
             Logger.Debug ( "Removing target " + target ) ;
             foreach ( var t in LogManager.Configuration.AllTargets )
@@ -437,257 +763,311 @@ namespace KayMcCormick.Dev.Logging
 #endif
         }
 
-        /// <summary>Ensures the logging configured.</summary>
-        /// <param name="logMethod">The log method.</param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slogMethod"></param>
         /// <param name="config1"></param>
+        /// <param name="callerFilePath"></param>
+        /// <returns></returns>
+        public static ILogger EnsureLoggingConfigured (
+            [ CanBeNull ] LogDelegates.LogMethod slogMethod     = null
+          , ILoggingConfiguration                config1        = null
+          , [ CallerFilePath ] string            callerFilePath = null
+        )
+        {
+            var task = Task.Run ( () => EnsureLoggingConfiguredAsync ( slogMethod , config1 , null, callerFilePath ) ) ;
+            return task.Result;
+        }
+
+        /// <summary>Ensures the logging configured.</summary>
+        /// <param name="slogMethod"></param>
+        /// <param name="config1"></param>
+        /// <param name="filePath"></param>
         /// <param name="callerFilePath">The caller file path.</param>
         /// <exception cref="Exception">no config loaded field found</exception>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for EnsureLoggingConfigured
-        [SuppressMessage(
-                                                              "Microsoft.Naming"
-                                                            , "CA2204:Literals should be spelled correctly"
-                                                            , MessageId = "EnsureLoggingConfigured"
-                                                          )]
-        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
-        public static ILogger EnsureLoggingConfigured(
-             LogDelegates.LogMethod logMethod = null
-          , ILoggingConfiguration config1 = null
-          , [CallerFilePath] string callerFilePath = null
+        [SuppressMessage (
+                             "Microsoft.Naming"
+                           , "CA2204:Literals should be spelled correctly"
+                           , MessageId = "EnsureLoggingConfigured"
+                         ) ]
+        public static async Task < ILogger > EnsureLoggingConfiguredAsync (
+            [ CanBeNull ] LogDelegates.LogMethod slogMethod = null
+          , ILoggingConfiguration                config1    = null
+          , Subject < ILogger > observable = null
+          , [ CallerFilePath ] string            callerFilePath = null
         )
         {
-            if (!_numTimesConfigured.HasValue)
+            
+            System.Diagnostics.Debug.WriteLine("Logging");
+            try
             {
-                _numTimesConfigured = 1;
-            }
-            else
-            {
-                _numTimesConfigured += 1;
-            }
-
-            if (logMethod == null)
-            {
-                logMethod = DoLogMessage;
-            }
-
-            logMethod(
-                       $"[time {_numTimesConfigured.Value}]\t{nameof(EnsureLoggingConfigured)} called from {callerFilePath}"
-                      );
-
-
-            var fieldInfo2 = LogManager.LogFactory.GetType()
-                                       .GetField(
-                                                  "_config"
-                                                , BindingFlags.Instance | BindingFlags.NonPublic
-                                                 );
-
-            if (fieldInfo2 == null)
-            {
-                System.Diagnostics.Debug.WriteLine(
-                                                    "no field _configLoaded for "
-                                                    + LogManager.LogFactory
-                                                   );
-                // throw new Exception ( Resources.AppLoggingConfigHelper_EnsureLoggingConfigured_no_config_loaded_field_found ) ;
-            }
-
-            if (fieldInfo2 != null)
-            {
-                var config = fieldInfo2.GetValue(LogManager.LogFactory);
-
-                //LogManager.ThrowConfigExceptions = true;
-                //LogManager.ThrowExceptions = true;
-                var fieldInfo = LogManager.LogFactory.GetType()
-                                          .GetField(
-                                                     "_configLoaded"
-                                                   , BindingFlags.Instance | BindingFlags.NonPublic
-                                                    );
-
-                bool configLoaded;
-                if (fieldInfo == null)
+                var logMethod = slogMethod != null
+                                    ? slogMethod + ProtoLogger.ProtoLogDelegate
+                                    : ProtoLogger.ProtoLogDelegate ;
+                if ( ! _numTimesConfigured.HasValue )
                 {
-                    configLoaded = config != null;
-
-                    System.Diagnostics.Debug.WriteLine(
-                                                        "no field _configLoaded for "
-                                                        + LogManager.LogFactory
-                                                       );
-                    // throw new Exception ( "no config loaded field found" ) ;
+                    _numTimesConfigured = 1 ;
                 }
                 else
                 {
-                    configLoaded = (bool)fieldInfo.GetValue(LogManager.LogFactory);
+                    _numTimesConfigured += 1 ;
                 }
 
-                LoggingIsConfigured = configLoaded;
-                var isMyConfig =
-                    !configLoaded || LogManager.Configuration is CodeConfiguration;
-                var doConfig = !LoggingIsConfigured || ForceCodeConfig && !isMyConfig;
-                logMethod(
-                           $"{nameof(LoggingIsConfigured)} = {LoggingIsConfigured}; {nameof(ForceCodeConfig)} = {ForceCodeConfig}; {nameof(isMyConfig)} = {isMyConfig});"
-                          );
-                if (DumpExistingConfig)
+                if ( logMethod == null )
                 {
-                    void Collect(string s) { System.Diagnostics.Debug.WriteLine(s); }
-
-                    DoDumpConfig(Collect);
+                    logMethod = DoLogMessage ;
                 }
 
-                if (doConfig)
+                _oldLogMethod = logMethod ;
+                logMethod     = message => _oldLogMethod ( message ) ;
+                logMethod (
+                           $"[time {_numTimesConfigured.Value}]\t{nameof ( EnsureLoggingConfiguredAsync )} called from {callerFilePath}"
+                          ) ;
+
+
+                var isMyConfig = false ;
+                var doConfig = true ;
+                if ( _checkExistingConfig )
                 {
-                    var factory = ConfigureLogging(logMethod);
+                    var configLoaded = GetConfigLoaded ( ) ;
+
+                    isMyConfig = ! configLoaded.GetValueOrDefault ( )
+                                 || LogManager.Configuration is CodeConfiguration ;
+
+                    doConfig = ! LoggingIsConfigured.GetValueOrDefault ( )
+                               || ForceCodeConfig && ! isMyConfig ;
+                }
+
+                logMethod (
+                           $"{nameof ( DumpExistingConfig )} = {DumpExistingConfig};"
+                           + $" {nameof ( doConfig )} = {doConfig};"
+                           + $" {nameof ( LoggingIsConfigured )} = {LoggingIsConfigured};"
+                           + $" {nameof ( ForceCodeConfig )} = {ForceCodeConfig};"
+                           + $" {nameof ( isMyConfig )} = {isMyConfig});"
+                          ) ;
+                if ( ! Performant && DumpExistingConfig )
+                {
+                    void Collect ( string s ) { System.Diagnostics.Debug.WriteLine ( s ) ; }
+
+                    var x = new StringWriter ( ) ;
+                    Utils.PerformLogConfigDump ( x ) ;
+                    Collect ( x.ToString ( ) ) ;
+                }
+
+                if ( doConfig )
+                {
+                    logMethod ( "About to configure logging" ) ;
+                    var factory = await ConfigureLoggingAsync ( logMethod , true , config1 ) ;
                     _factory = factory ;
                 }
+
+
+                var logger = _factory.GetLogger("DefaultLogger");
+                observable?.OnNext(logger);
+                // DumpPossibleConfig ( LogManager.Configuration ) ;
+                return logger ;
+            }
+            catch ( SecurityException ex )
+            {
+                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                ProtoLogger.ProtoLogDelegate ( ex.ToString ( ) ) ;
             }
 
-            DumpPossibleConfig(LogManager.Configuration);
-            return _factory.GetLogger("DefaultLogger");
+            return null ;
+        }
+
+        private static bool ? GetConfigLoaded ( )
+        {
+            var perm =
+                new ReflectionPermission ( ReflectionPermissionFlag.RestrictedMemberAccess ) ;
+            perm.Demand ( ) ;
+            try
+            {
+                var fieldInfo2 = LogManager.LogFactory.GetType ( )
+                                           .GetField (
+                                                      "_config"
+                                                    , BindingFlags.Instance | BindingFlags.NonPublic
+                                                     ) ;
+
+                if ( fieldInfo2 == null )
+                {
+                    System.Diagnostics.Debug.WriteLine (
+                                                        "no field _configLoaded for "
+                                                        + LogManager.LogFactory
+                                                       ) ;
+                    // throw new Exception ( Resources.AppLoggingConfigHelper_EnsureLoggingConfigured_no_config_loaded_field_found ) ;
+                }
+
+                bool ? configLoaded = null ;
+                if ( fieldInfo2 != null )
+                {
+                    var config = fieldInfo2.GetValue ( LogManager.LogFactory ) ;
+
+                    //LogManager.ThrowConfigExceptions = true;
+                    //LogManager.ThrowExceptions = true;
+                    var fieldInfo = LogManager.LogFactory.GetType ( )
+                                              .GetField (
+                                                         "_configLoaded"
+                                                       , BindingFlags.Instance
+                                                         | BindingFlags.NonPublic
+                                                        ) ;
+
+
+                    if ( fieldInfo == null )
+                    {
+                        configLoaded = config != null ;
+
+                        System.Diagnostics.Debug.WriteLine (
+                                                            "no field _configLoaded for "
+                                                            + LogManager.LogFactory
+                                                           ) ;
+                        // throw new Exception ( "no config loaded field found" ) ;
+                    }
+                    else
+                    {
+                        configLoaded = ( bool ) fieldInfo.GetValue ( LogManager.LogFactory ) ;
+                    }
+
+                    LoggingIsConfigured = configLoaded ;
+                }
+
+                return configLoaded ;
+            }
+            catch ( SecurityException ex )
+            {
+                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+            }
+
+            return null ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="collect"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static Dictionary<string, object> DoDumpConfig(Action<string> collect)
+        [ NotNull ]
+        public static Dictionary < string , object > DoDumpConfig ( Action < string > collect )
         {
-            var config = LogManager.Configuration;
-            if (config == null)
+            var config = LogManager.Configuration ;
+            if ( config == null )
             {
-                return null;
+                return new Dictionary < string , object > ( ) ;
             }
 
-            var configInfo = new Dictionary<string, object>();
-            var targets = new Dictionary<string, object>();
-            configInfo["Targets"] = targets;
-            foreach (var aTarget in config.AllTargets)
+            var configInfo = new Dictionary < string , object > ( ) ;
+            var targets = new Dictionary < string , object > ( ) ;
+            configInfo[ "Targets" ] = targets ;
+            foreach ( var aTarget in config.AllTargets )
             {
-                var target = new Dictionary<string, object>();
-                targets[aTarget.Name] = target;
-                collect(aTarget.Name);
-                var targetType = aTarget.GetType().ToString();
-                target["Type"] = targetType;
-                collect(targetType);
-                target["Rules"] = config.LoggingRules
-                                          .Where(rule => rule.Targets.Contains(aTarget))
-                                          .Select((rule, i) => new { rule, i })
-                                          .ToDictionary(arg => arg.i, arg => arg.rule);
+                var target = new Dictionary < string , object > ( ) ;
+                targets[ aTarget.Name ] = target ;
+                collect ( aTarget.Name ) ;
+                var targetType = aTarget.GetType ( ).ToString ( ) ;
+                target[ "Type" ] = targetType ;
+                collect ( targetType ) ;
+                target[ "Rules" ] = config.LoggingRules
+                                          .Where ( rule => rule.Targets.Contains ( aTarget ) )
+                                          .Select ( ( rule , i ) => new { rule , i } )
+                                          .ToDictionary ( arg => arg.i , arg => arg.rule ) ;
 
-                foreach (var propertyInfo in aTarget.GetType().GetProperties())
+                foreach ( var propertyInfo in aTarget.GetType ( ).GetProperties ( ) )
                 {
-                    var p = propertyInfo.GetValue(aTarget);
-                    target[propertyInfo.Name] = p;
+                    var p = propertyInfo.GetValue ( aTarget ) ;
+                    target[ propertyInfo.Name ] = p ;
                 }
 
-                if (aTarget is FileTarget f)
+                if ( aTarget is FileTarget f )
                 {
-                    target["FileName"] = f.FileName;
+                    target[ "FileName" ] = f.FileName ;
                 }
 
-                if (aTarget is TargetWithLayout a)
+                if ( aTarget is TargetWithLayout a )
                 {
-                    if (a.Layout is JsonLayout jl)
+                    if ( a.Layout is JsonLayout jl )
                     {
-                        string Selector(JsonAttribute attribute, int i)
+                        string Selector ( JsonAttribute attribute , int i )
                         {
-                            if (attribute == null)
+                            if ( attribute == null )
                             {
-                                throw new ArgumentNullException(nameof(attribute));
+                                throw new ArgumentNullException ( nameof ( attribute ) ) ;
                             }
 
-                            var b = new StringBuilder();
+                            var b = new StringBuilder ( ) ;
                             var propertyInfos = attribute
-                                               .GetType()
-                                               .GetProperties(
+                                               .GetType ( )
+                                               .GetProperties (
                                                                BindingFlags.Public
                                                                | BindingFlags.Instance
-                                                              );
-                            foreach (var propertyInfo in propertyInfos)
+                                                              ) ;
+                            foreach ( var propertyInfo in propertyInfos )
                             {
-                                var val2 = propertyInfo.GetValue(attribute);
-                                b.Append($"{propertyInfo.Name} = {val2}; ");
+                                var val2 = propertyInfo.GetValue ( attribute ) ;
+                                b.Append ( $"{propertyInfo.Name} = {val2}; " ) ;
                             }
 
-                            return b.ToString();
+                            return b.ToString ( ) ;
                         }
 
-                        var enumerable = jl.Attributes.Select(Selector);
-                        collect(string.Join("--", enumerable));
+                        var enumerable = jl.Attributes.Select ( Selector ) ;
+                        collect ( string.Join ( "--" , enumerable ) ) ;
                     }
                 }
 
-                if (aTarget is FileTarget gt)
+                if ( aTarget is FileTarget gt )
                 {
-                    collect(gt.FileName.ToString());
+                    collect ( gt.FileName.ToString ( ) ) ;
                 }
             }
 
-            return configInfo;
+            return configInfo ;
         }
 
-        private static void DumpPossibleConfig(LoggingConfiguration configuration)
+        // ReSharper disable once UnusedMember.Local
+        private static void DumpPossibleConfig ( [ NotNull ] LoggingConfiguration configuration )
         {
-            var candidateConfigFilePaths = LogManager.LogFactory.GetCandidateConfigFilePaths();
-            foreach (var q in candidateConfigFilePaths)
+            var candidateConfigFilePaths = LogManager.LogFactory.GetCandidateConfigFilePaths ( ) ;
+            foreach ( var q in candidateConfigFilePaths )
             {
-                Debug($"{q}");
+                Debug ( $"{q}" ) ;
             }
 
-            var fieldInfo = configuration.GetType()
-                                         .GetField(
+            var fieldInfo = configuration.GetType ( )
+                                         .GetField (
                                                     "_originalFileName"
                                                   , BindingFlags.NonPublic | BindingFlags.Instance
-                                                   );
-            if (fieldInfo != null)
+                                                   ) ;
+            if ( fieldInfo != null )
             {
-                if (fieldInfo.GetValue(configuration) != null)
+                if ( fieldInfo.GetValue ( configuration ) != null )
                 {
                     {
-                        Debug("Original NLog configuration filename");
+                        Debug ( "Original NLog configuration filename" ) ;
                     }
                 }
             }
 
-            Debug($"{configuration}");
+            Debug ( $"{configuration}" ) ;
         }
 
 
-        // ReSharper disable once UnusedParameter.Local
-#pragma warning disable IDE0060 // Remove unused parameter
-        private static void Debug(string s) { }
-#pragma warning restore IDE0060 // Remove unused parameter
-#region Target Methods
-        /// <summary>Adds the supplied target to the current NLog configuration.</summary>
-        /// <param name="target">The target.</param>
-        /// <param name="minLevel"></param>
-        // ReSharper disable once RedundantNameQualifier
-        // ReSharper disable once UnusedMember.Global
-        public static void AddTarget(NLog.Targets.Target target, LogLevel minLevel)
+        private static void Debug ( [ NotNull ] string s )
         {
-            if (minLevel == null)
+            if ( s == null )
             {
-                minLevel = LogLevel.Trace;
+                throw new ArgumentNullException ( nameof ( s ) ) ;
             }
-
-            LogManager.Configuration.AddTarget(target);
-
-            LogManager.Configuration.AddRule(minLevel, LogLevel.Fatal, target);
-
-            LogManager.LogFactory.ReconfigExistingLoggers();
         }
 
-        /// <summary>Removes a target by name from the current NLog configuration.</summary>
-        /// <param name="name">The name of the target to remove.</param>
-        // ReSharper disable once UnusedMember.Global
-        public static void RemoveTarget(string name)
-        {
-            LogManager.Configuration.RemoveTarget(name);
-            LogManager.Configuration.LogFactory.ReconfigExistingLoggers();
-        }
-#endregion
-
-        /// <summary>Set up a <seealso cref="NLog.Layouts.JsonLayout"/> for json loggers.</summary>
+        /// <summary>
+        ///     Set up a <seealso cref="NLog.Layouts.JsonLayout" /> for json
+        ///     loggers.
+        /// </summary>
         /// <returns>Configured JSON layout</returns>
-        public static JsonLayout SetupJsonLayout()
+        [ NotNull ]
+        public static JsonLayout SetupJsonLayout ( )
         {
             var atts = new[]
                        {
@@ -697,223 +1077,149 @@ namespace KayMcCormick.Dev.Logging
                          , Tuple.Create ( "logger" ,    ( string ) null )
                          , Tuple.Create ( "@mt" ,       "${message}" )
                          , Tuple.Create ( "exception" , "${exception}" )
-                       };
+                       } ;
 
 
             var l = new JsonLayout
-            {
-                IncludeGdc = false
-                      ,
-                IncludeMdlc = false
-                      ,
-                IncludeAllProperties = false
-                      ,
-                MaxRecursionLimit = 3
-            };
-            ((List<JsonAttribute>)l.Attributes).AddRange(
-                                                                  atts.Select(
+                    {
+                        IncludeGdc           = false
+                      , IncludeMdlc          = false
+                      , IncludeAllProperties = false
+                      , MaxRecursionLimit    = 3
+                    } ;
+            ( ( List < JsonAttribute > ) l.Attributes ).AddRange (
+                                                                  atts.Select (
                                                                                tuple
                                                                                    => new
-                                                                                       JsonAttribute(
+                                                                                       JsonAttribute (
                                                                                                       tuple
                                                                                                          .Item1
                                                                                                     , Layout
-                                                                                                         .FromString(
+                                                                                                         .FromString (
                                                                                                                       tuple
                                                                                                                          .Item2
                                                                                                                       ?? $"${{{tuple.Item1}}}"
                                                                                                                      )
                                                                                                      )
                                                                               )
-                                                                 );
-            l.Attributes.Add(
-                              new JsonAttribute(
+                                                                 ) ;
+            l.Attributes.Add (
+                              new JsonAttribute (
                                                  "properties"
-                                               , new JsonLayout()
-                                               {
-                                                   IncludeAllProperties = true
-                                                   ,
-                                                   MaxRecursionLimit = 3
-                                               }
+                                               , new JsonLayout
+                                                 {
+                                                     IncludeAllProperties = true
+                                                   , MaxRecursionLimit    = 3
+                                                 }
                                                , false
                                                 )
-                             );
-            l.Attributes.Add(
-                              new JsonAttribute(
+                             ) ;
+            l.Attributes.Add (
+                              new JsonAttribute (
                                                  "gdc"
-                                               , new JsonLayout()
-                                               {
-                                                   IncludeGdc = true,
-                                                   MaxRecursionLimit = 3
-                                               }
+                                               , new JsonLayout
+                                                 {
+                                                     IncludeGdc = true , MaxRecursionLimit = 3
+                                                 }
                                                , false
                                                 )
-                             );
-            l.Attributes.Add(
-                              new JsonAttribute(
+                             ) ;
+            l.Attributes.Add (
+                              new JsonAttribute (
                                                  "mdlc"
-                                               , new JsonLayout()
-                                               {
-                                                   IncludeMdlc = true,
-                                                   MaxRecursionLimit = 3
-                                               }
+                                               , new JsonLayout
+                                                 {
+                                                     IncludeMdlc = true , MaxRecursionLimit = 3
+                                                 }
                                                , false
                                                 )
-                             );
-            return l;
+                             ) ;
+            return l ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rule2"></param>
-        public static void AddRule(LoggingRule rule2)
+        public static void AddRule ( LoggingRule rule2 )
         {
-            LogManager.Configuration.LoggingRules.Insert(0, rule2);
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class JsonTypeConverter : JsonConverter<Type>
-    {
-#region Overrides of JsonConverter<Type>
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override Type Read(
-            ref Utf8JsonReader reader
-          , Type typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return null;
+            LogManager.Configuration.LoggingRules.Insert ( 0 , rule2 ) ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="value"></param>
-        /// <param name="options"></param>
-        public override void Write(
-            [JetBrains.Annotations.NotNull] Utf8JsonWriter writer
-          , [JetBrains.Annotations.NotNull] Type value
-          , JsonSerializerOptions options
-        )
+        public static void Shutdown ( )
         {
-            if (writer == null)
+            if ( ! _loggingConfigured )
             {
-                throw new ArgumentNullException(nameof(writer));
+                return ;
             }
 
-            if (value == null)
+            _numTimesConfigured = null ;
+            if ( _dict != null )
             {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            writer.WriteStringValue(value.FullName);
-        }
-#endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    // ReSharper disable once UnusedType.Global
-    public class DictConverterFactory : JsonConverterFactory
-    {
-#region Overrides of JsonConverter
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <returns></returns>
-        public override bool CanConvert(Type typeToConvert)
-        {
-            if (typeToConvert == typeof(IDictionary<object, object>))
-            {
-                return true;
-            }
-
-            return false;
-        }
-#endregion
-#region Overrides of JsonConverterFactory
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public override JsonConverter CreateConverter(
-            Type typeToConvert
-          , JsonSerializerOptions options
-        )
-        {
-            return new Inner();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private class Inner : JsonConverter<IDictionary<object, object>>
-        {
-#region Overrides of JsonConverter<IDictionary<object,object>>
-            public override IDictionary<object, object> Read(
-                ref Utf8JsonReader reader
-              , Type typeToConvert
-              , JsonSerializerOptions options
-            )
-            {
-                IDictionary<object, object> dict = new Dictionary<object, object>();
-                while (reader.Read())
+                foreach ( var target in _dict.Where ( pair => pair.Value != null )
+                                             .SelectMany ( pair => pair.Value )
+                                             .Where ( target => target != null ) )
                 {
-                    if (reader.TokenType == JsonTokenType.EndObject)
+                    if ( LogManager.Configuration != null )
                     {
-                        return dict;
+                        LogManager.Configuration.RemoveTarget ( target.Name ) ;
                     }
 
-                    if (reader.TokenType != JsonTokenType.PropertyName)
-                    {
-                        throw new JsonException();
-                    }
-
-                    var propertyName = reader.GetString();
-                    var value = JsonSerializer.Deserialize<object>(ref reader, options);
-                    dict[propertyName] = value;
+                    target.Dispose();
                 }
-
-                return dict;
             }
 
-            public override void Write(
-                Utf8JsonWriter writer
-              , IDictionary<object, object> value
-              , JsonSerializerOptions options
-            )
+            if ( LogManager.Configuration != null )
             {
-                writer.WriteStartObject();
-                foreach (var keyValuePair in value)
-                {
-                    writer.WritePropertyName(keyValuePair.Key.ToString());
-                    JsonSerializer.Serialize(
-                                              writer
-                                            , keyValuePair.Value
-                                            , keyValuePair.Value.GetType()
-                                            , options
-                                             );
-                }
-
-                writer.WriteEndObject();
+                LogManager.Configuration.LoggingRules.Clear ( ) ;
             }
-#endregion
+
+            LogManager.ReconfigExistingLoggers ( ) ;
+            LogManager.Shutdown ( ) ;
+        }
+
+        [ DllImport ( "kernel32.dll" ) ]
+        private static extern void OutputDebugString ( string lpOutputString ) ;
+
+#region Target Methods
+        /// <summary>Adds the supplied target to the current NLog configuration.</summary>
+        /// <param name="target">The target.</param>
+        /// <param name="minLevel"></param>
+        /// <param name="addRules"></param>
+        public static void AddTarget (
+            [ NotNull ] Target target
+          , LogLevel           minLevel
+          , bool               addRules = true
+        )
+        {
+            LogAddTarget ( target ) ;
+            if ( minLevel == null )
+            {
+                minLevel = LogLevel.Trace ;
+            }
+
+
+            LogManager.Configuration.AddTarget ( target ) ;
+
+            if ( addRules )
+            {
+                LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
+                LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
+            }
+        }
+
+        /// <summary>Removes a target by name from the current NLog configuration.</summary>
+        /// <param name="name">The name of the target to remove.</param>
+        public static void RemoveTarget ( string name )
+        {
+            if ( LogManager.Configuration != null )
+            {
+                LogManager.Configuration.RemoveTarget ( name ) ;
+                LogManager.Configuration.LogFactory.ReconfigExistingLoggers ( ) ;
+            }
         }
 #endregion
+
     }
 }

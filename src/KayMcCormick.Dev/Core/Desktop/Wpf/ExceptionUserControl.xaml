@@ -1,0 +1,92 @@
+﻿<UserControl
+  x:Class="KayMcCormick.Lib.Wpf.ExceptionUserControl"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:KayMcCormick.Lib.Wpf"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  d:DataContext="{Binding RelativeSource={RelativeSource Self},Path=DataInfo}"
+  mc:Ignorable="d"
+  d:DesignHeight="450" d:DesignWidth="800">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="SharedResources.xaml" />
+        <ResourceDictionary
+          Source="ResourcesTemplates.xaml" />
+        <ResourceDictionary Source="ResourcesMisc.xaml" />
+        <ResourceDictionary>
+          <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="32pt" />
+          </Style>
+          <DataTemplate
+            DataType="{x:Type system:Exception}">
+            <StackPanel Background="Aqua">
+              <TextBlock Text="Template"
+                         TextDecorations="Underline" />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Message: " />
+                <TextBlock Text="{Binding Message}" />
+              </StackPanel>
+              <Expander Margin="40,20,0,0"
+                        ExpandDirection="Down"
+                        IsExpanded="False"
+                        Content="{Binding InnerException}"
+                        Header="Inner Exception"
+                        ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}" />
+            </StackPanel>
+          </DataTemplate>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <StackPanel Orientation="Vertical">
+    <ContentControl Content="{Binding Exception}"
+                    ContentTemplateSelector="{StaticResource CustomDataTemplateSelector}" />
+    <ItemsControl ItemsSource="{Binding ParsedExceptions}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <ItemsControl ItemsSource="{Binding ParsedList}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Type" />
+                    <TextBlock
+                      Text="{Binding Path=TypeName}" />
+                  </StackPanel>
+                  <ItemsControl
+                    ItemsSource="{Binding StackTraceEntries}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel
+                          Orientation="Horizontal">
+                          <TextBlock Text="Stack Frame: " />
+                          <TextBlock
+                            Text="{Binding Path=Type.Text}" />
+                          <TextBlock Text="." />
+                          <TextBlock
+                            Text="{Binding Path=Method.Text}" />
+                          <TextBlock FontStyle="Italic"
+                                     Text="{Binding Path=ParameterList.Text}" />
+                          <TextBlock
+                            Text="{Binding Path=File.Text}" />
+                          <TextBlock>:</TextBlock>
+                          <TextBlock
+                            Text="{Binding Path=Line.Text}" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</UserControl>

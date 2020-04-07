@@ -4,28 +4,21 @@ using NLog ;
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
-    /// 
     /// </summary>
     public class MyLogger : Logger
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MyLogger'
+
     {
+        /// <summary>
+        ///     Random test constructor.
+        /// </summary>
+        public MyLogger ( ) { SetProperty ( "Cheese" , "Food" ) ; }
+
         /// <summary>Raises the event when the logger is reconfigured.</summary>
         /// <param name="e">Event arguments</param>
-        protected override void OnLoggerReconfigured(EventArgs e)
+        protected override void OnLoggerReconfigured ( EventArgs e )
         {
-            base.OnLoggerReconfigured(e);
-            SetProperty(
-                        "Cheese", "Food");
+            base.OnLoggerReconfigured ( e ) ;
+            SetProperty ( "Cheese" , "Food" ) ;
         }
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MyLogger.MyLogger()'
-        public MyLogger()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MyLogger.MyLogger()'
-        {
-            SetProperty(
-                        "Cheese", "Food");
-        }
-       
-
     }
 }

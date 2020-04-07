@@ -1,0 +1,41 @@
+﻿<UserControl x:Name="py"
+             x:Class="AnalysisControls.PythonControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             DataContext="{Binding ElementName=py,Path=ViewModel}"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+    <FlowDocumentScrollViewer Background="DarkOliveGreen"
+                              Grid.Row="0" Grid.Column="0"
+                              Grid.RowSpan="2">
+
+      <FlowDocumentScrollViewer.Document>
+        <FlowDocument Background="DarkOliveGreen"
+                      Name="flow" />
+      </FlowDocumentScrollViewer.Document>
+    </FlowDocumentScrollViewer>
+    <Border Padding="20" Grid.Row="2" Grid.Column="0"
+            Grid.ColumnSpan="2" Background="CadetBlue">
+      <TextBox Name="input"
+               PreviewKeyDown="UIElement_OnPreviewKeyDown"
+               Text="{Binding ElementName=py,Path=ViewModel.TextInput,Mode=TwoWay}"
+               KeyDown="UIElement_OnKeyDown" Height="60" />
+    </Border>
+    <ListBox Grid.Row="0" Grid.Column="1" MinWidth="200"
+             ItemsSource="{Binding Path=linesCollectionView}" />
+    <ListBox Grid.Row="1" Grid.Column="1" MinWidth="200"
+             ItemsSource="{Binding Path=Results}" />
+  </Grid>
+</UserControl>
