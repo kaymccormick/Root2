@@ -9,11 +9,13 @@
     <OutputPath>$(KmGlobalOutputPath)\lib\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</OutputPath>
     <ProjectGuid>{0381D4D0-945E-4340-B974-9D07B2830D4F}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <DocOutputPath>$(KmGlobalOutputPath)\doc\</DocOutputPath>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AnalysisAppLib</RootNamespace>
     <AssemblyName>AnalysisAppLib</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <DocumentationFile>$(DocOutputPath)KayMcCormick.Dev.xml</DocumentationFile>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -88,6 +90,8 @@
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
     <Compile Include="ICodeRenderer.cs" />
+    <Compile Include="JsonPocoSyntaxConverter.cs" />
+    <Compile Include="JsonPocoSyntaxConverter2.cs" />
     <Compile Include="Project\BrowserNode.cs" />
     <Compile Include="Project\BrowserNodeCollection.cs" />
     <Compile Include="Project\IBrowserNode.cs" />
@@ -241,7 +245,9 @@
     <Folder Include="Projects\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Syntax.xml" />
+    <EmbeddedResource Include="Resources\Syntax.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TextTemplate1.tt">

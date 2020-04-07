@@ -17,16 +17,116 @@
 <#@import namespace="System.IO" #>
 <#@import namespace="System.Xml" #>
 <#@import namespace="System.Text.Json" #>
+using System ;
 
+using System.Linq;
+using Microsoft.CodeAnalysis.CSharp ;
+using JetBrains.Annotations ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using PocoSyntax ;
+
+
+/// <summary/>
 public static class GenTransforms {
 <#
 
 List<JsonElement> types = JsonSerializer.Deserialize<List<JsonElement>>(File.ReadAllText(@"C:\data\logs\types.json"));
+Dictionary<string, string> dict = new Dictionary<string, string>();
+Dictionary<string, JsonElement> dict2 = new Dictionary<string, JsonElement>();
 foreach(var typ in types) {
+var k = typ.GetProperty("Type").GetProperty("FullName").GetString();
+k = k.Substring(k.LastIndexOf('.') + 1);
+dict[k] = typ.GetProperty("Title").GetString().Replace(" ", "_");
+dict2[k] = typ;
+}
+foreach(var typ in types) {
+string body = "";
 var typname = typ.GetProperty("Type").GetProperty("FullName").GetString();
-var poco = "Poco" + typname.Substring(typname.LastIndexOf('.') + 1);
-#> public static <#=poco#> Transform_<#=typ.GetProperty("Title").GetString().Replace(" ", "_")#> (<#=typ.GetProperty("Type").GetProperty("FullName").GetString()#> node) {
-return new <#=poco#>();
+var shortname = typname.Substring(typname.LastIndexOf('.') + 1);
+var poco = "Poco" + shortname;
+
+if(typ.GetProperty("ElementName").GetString() == "AbstractNode" || typ.GetProperty("ElementName").GetString() == "PredefinedNode") {
+IEnumerable<string> nodes(string cname) {
+
+if(dict2[cname].GetProperty("ElementName").GetString() == "AbstractNode" || dict2[cname].GetProperty("ElementName").GetString() == "PredefinedNode") {
+return dict2[cname].GetProperty("SubTypeNames").EnumerateArray().SelectMany(xx => nodes(xx.GetString()));
+} else {
+return new[] {cname};
+}
+}
+var cases = string.Join("", nodes(shortname).Select(sn => $"case {sn} _: return Transform_{dict[sn]}(({sn})node); \n"));
+body = $"switch(node) {{\n{cases}\n}}\nreturn null;\n";
+} else {
+
+var fields = typ.GetProperty("Fields");
+string props = "";
+foreach(var f in typ.GetProperty("Fields").EnumerateArray()) {
+
+var name = f.GetProperty("Name").GetString();
+if((typname.EndsWith("StatementSyntax") || poco == "PocoBlockSyntax") && name == "AttributeLists")
+continue;
+var t1 = f.GetProperty("Type");
+string m = "";
+string value = "";
+string transform = "";
+string x = null;
+string msg = null;
+  var typeName = f.GetProperty("TypeName").GetString();
+  if(typeName == "bool") {
+  value = $"node.{name}";
+  msg = "bool";
+  }else
+
+if(t1.ValueKind == JsonValueKind.Object) {
+  var k = t1.GetProperty("FullName").GetString(); 
+  k = k.Substring(k.LastIndexOf('.') + 1);
+  x = k;
+
+  if(dict.TryGetValue(k, out var method)) {
+    value = $"Transform_{method}(node.{name})";
+  } else {
+  msg = "not found";
+  if(f.GetProperty("TypeName").GetString() == "SyntaxToken") {
+    value = $"new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}";
+  } else if(typeName.StartsWith("SyntaxList<")) {
+    var t2 = typeName.Substring(11, typeName.Length - 12);
+	if(dict.TryGetValue(t2, out var m2)) {
+	}
+    transform = $".Select(Transform_{m2}).ToList()";
+	} else if(typeName.StartsWith("SeparatedSyntaxList<")) {
+    var t2 = typeName.Substring(20, typeName.Length - 21);
+	if(dict.TryGetValue(t2, out var m2)) {
+	}else {
+
+	}
+    transform = $".Select(Transform_{m2}).ToList()";
+  } else if(k == "SyntaxTokenList") {
+  transform = ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()";
+  }
+  }
+}
+if(transform != "") {
+value = $"node.{name}{transform}";
+}
+if(value == "")
+value = msg;
+var code = $"{name} = {value}, ";
+props = props + "\n" + code;
+}
+
+body = $"return new {poco}() {{ {props} }};";
+}
+#>
+
+/// <summary></summary>
+[NotNull]
+public static <#=poco#> Transform_<#=typ.GetProperty("Title").GetString().Replace(" ", "_")#> ([NotNull] <#=shortname#> node) {
+    if ( node == null )
+    {
+        throw new ArgumentNullException ( nameof ( node ) ) ;
+    }
+	<#= body #>
+
 }
 
 <#

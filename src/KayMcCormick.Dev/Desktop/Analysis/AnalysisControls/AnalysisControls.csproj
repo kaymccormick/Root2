@@ -115,6 +115,9 @@
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="ITypesViewModel.cs" />
     <Compile Include="JsonConverters.cs" />
+    <Compile Include="WorkspaceControl.xaml.cs">
+      <DependentUpon>WorkspaceControl.xaml</DependentUpon>
+    </Compile>
     <None Include="Program-Parse.cs" />
     <Compile Include="JsonSimpleFrameworkElementConverter.cs" />
     <Compile Include="ProvideCompilationUnitSyntax.cs" />
@@ -174,10 +177,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <DesignDataWithDesignTimeCreatableTypes Include="TypesViewModel.xaml">
+    <None Include="TypesViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </DesignDataWithDesignTimeCreatableTypes>
+    </None>
+    <Page Include="WorkspaceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Resource Include="TypesViewModel2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -289,6 +296,11 @@
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.8.1</Version>
+    </PackageReference>
+    <PackageReference Include="KayMcCormick.Analyzer.LogUsage">
+      <Version>1.0.3</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
       <Version>3.5.0</Version>

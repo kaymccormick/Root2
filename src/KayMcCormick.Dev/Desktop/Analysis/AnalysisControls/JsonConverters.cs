@@ -1,5 +1,6 @@
 using System ;
 using System.Text.Json ;
+using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
@@ -42,7 +43,8 @@ namespace AnalysisControls
                 throw new ArgumentNullException ( nameof ( jsonSerializerOptions ) ) ;
             }
             KayMcCormick.Dev.Serialization.JsonConverters.AddJsonConverters(jsonSerializerOptions);
-            jsonSerializerOptions.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
+            jsonSerializerOptions.Converters.Add(new JsonPocoSyntaxConverter());
+            jsonSerializerOptions.Converters.Add(new JsonSyntaxNodeConverter());
             jsonSerializerOptions.Converters.Add ( new JsonImageConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonConverterResourceDictionary ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new HashtableConverter ( ) ) ;

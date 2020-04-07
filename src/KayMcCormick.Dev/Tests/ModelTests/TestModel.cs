@@ -21,6 +21,7 @@ using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
@@ -33,7 +34,10 @@ namespace ModelTests
     [ LogTestMethod ]
     public sealed class TestModel : IDisposable , IClassFixture < LoggingFixture >
     {
-        public TestModel ( ITestOutputHelper outputHelper , [ NotNull ] LoggingFixture loggingFixture )
+        public TestModel (
+            ITestOutputHelper          outputHelper
+          , [ NotNull ] LoggingFixture loggingFixture
+        )
         {
             _outputHelper = outputHelper ;
             loggingFixture.SetOutputHelper ( _outputHelper ) ;
@@ -61,15 +65,18 @@ namespace ModelTests
         private ApplicationInstance SetupApplicationInstance ( )
         {
             var applicationInstance = new ApplicationInstance (
-                                                               new
-                                                                   ApplicationInstance.ApplicationInstanceConfiguration (
-                                                                                                                         LogMethod
-                                                                                                                       , ApplicationGuid
-                                                                                                                       , null
-                                                                                                                       , disableLogging : DisableLogging
-                                                                                                                       , disableRuntimeConfiguration : true
-                                                                                                                       , disableServiceHost : true
-                                                                                                                        )
+                                                               new ApplicationInstance.
+                                                                   ApplicationInstanceConfiguration (
+                                                                                                     LogMethod
+                                                                                                   , ApplicationGuid
+                                                                                                   , null
+                                                                                                   , disableLogging
+                                                                                                     : DisableLogging
+                                                                                                   , disableRuntimeConfiguration
+                                                                                                     : true
+                                                                                                   , disableServiceHost
+                                                                                                     : true
+                                                                                                    )
                                                               ) ;
             applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
             applicationInstance.Initialize ( ) ;
@@ -79,7 +86,8 @@ namespace ModelTests
             return applicationInstance ;
         }
 
-        public Guid ApplicationGuid { get ; } = new Guid ("5df44dce-af4d-4578-956d-d2b47f233fd0");
+        public Guid ApplicationGuid { get ; } =
+            new Guid ( "5df44dce-af4d-4578-956d-d2b47f233fd0" ) ;
 
         private void LogMethod ( string message )
         {
@@ -185,10 +193,10 @@ namespace ModelTests
             )
         {
             var project = SetupAdHocWorkspace < T > ( ) ;
-         //var project = await SetupMsBuildProject < T > ( ) ;
+            //var project = await SetupMsBuildProject < T > ( ) ;
 
 
-         var f = ls
+            var f = ls
                .Resolve < IAnalysisBlockProvider < Document , T ,
                     TransformManyBlock < Document , T > > > ( ) ;
             Assert.NotNull ( f ) ;
@@ -201,20 +209,21 @@ namespace ModelTests
             var compilation = await project.GetCompilationAsync ( ) ;
             foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
             {
-                Debug.WriteLine (new DiagnosticFormatter().Format(diagnostic)  );
+                Debug.WriteLine ( new DiagnosticFormatter ( ).Format ( diagnostic ) ) ;
             }
+
             foreach ( var @ref in project.MetadataReferences )
             {
-                switch(@ref)
+                switch ( @ref )
                 {
                     case CompilationReference compilationReference :
-                        Debug.WriteLine(compilationReference.Display);
-                        break;
+                        Debug.WriteLine ( compilationReference.Display ) ;
+                        break ;
                     case PortableExecutableReference portableExecutableReference :
-                        Debug.WriteLine(portableExecutableReference.FilePath);
+                        Debug.WriteLine ( portableExecutableReference.FilePath ) ;
                         break ;
                     case UnresolvedMetadataReference unresolvedMetadataReference :
-                        Debug.WriteLine(unresolvedMetadataReference.Display);
+                        Debug.WriteLine ( unresolvedMetadataReference.Display ) ;
                         break ;
                     default : throw new ArgumentOutOfRangeException ( nameof ( @ref ) ) ;
                 }
@@ -227,7 +236,7 @@ namespace ModelTests
                 LogMethod ( model.SyntaxTree.ToString ( ) ) ;
             }
 
-            if ( ! x.Post ( project.Documents.First() ) )
+            if ( ! x.Post ( project.Documents.First ( ) ) )
             {
                 throw new InvalidOperationException ( "doco faild to post" ) ;
             }
@@ -265,7 +274,8 @@ namespace ModelTests
                                                                                            .Create ( )
                                                                                       , "test"
                                                                                       , "test"
-                                                                                      , LanguageNames.CSharp
+                                                                                      , LanguageNames
+                                                                                           .CSharp
                                                                                       , null
                                                                                       , null
                                                                                       , new
@@ -338,12 +348,13 @@ namespace ModelTests
 
             var s4 = workspace.CurrentSolution.AddMetadataReference (
                                                                      projectId
-                                                                   , MetadataReference.CreateFromFile (
-                                                                                                       typeof
-                                                                                                           ( Logger
-                                                                                                           ).Assembly
-                                                                                                            .Location
-                                                                                                      )
+                                                                   , MetadataReference
+                                                                        .CreateFromFile (
+                                                                                         typeof (
+                                                                                                 Logger
+                                                                                             ).Assembly
+                                                                                              .Location
+                                                                                        )
                                                                     ) ;
 
             var rb2 = workspace.TryApplyChanges ( s4 ) ;
@@ -360,24 +371,24 @@ namespace ModelTests
         // [ Fact ]
         // public void Te4t3 ( )
         // {
-            // ITypesViewModel viewModel = new TypesViewModel ( ) ;
-            // try
-            // {
-                // var options = new JsonSerializerOptions ( ) ;
-                // options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
-                // options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
-                // options.WriteIndented = true ;
-                // var model =
-                    // JsonSerializer.Deserialize < TypesViewModel > (
-                                                                   // File.ReadAllText (
-                                                                                     // @"C:\data\logs\viewmodel.json"
-                                                                                    // )
-                                                                  // ) ;
-            // }
-            // catch ( JsonException ex )
-            // {
-                // MessageBox.Show ( "Json failure" , ex.Message ) ;
-            // }
+        // ITypesViewModel viewModel = new TypesViewModel ( ) ;
+        // try
+        // {
+        // var options = new JsonSerializerOptions ( ) ;
+        // options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+        // options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
+        // options.WriteIndented = true ;
+        // var model =
+        // JsonSerializer.Deserialize < TypesViewModel > (
+        // File.ReadAllText (
+        // @"C:\data\logs\viewmodel.json"
+        // )
+        // ) ;
+        // }
+        // catch ( JsonException ex )
+        // {
+        // MessageBox.Show ( "Json failure" , ex.Message ) ;
+        // }
         // }
 
         [ Fact ]
@@ -407,58 +418,79 @@ namespace ModelTests
         [ Fact ]
         public void Test113 ( )
         {
-            using ( var ls = _app.GetLifetimeScope ( ).BeginLifetimeScope ( b => {
-                                                                               b.Register (
-                                                                                               ( c , p )
-                                                                                                   => new
-                                                                                                       ConcreteAnalysisBlockProvider
-                                                                                                       < Document , NodeInfo
-                                                                                                         , IPropagatorBlock <
-                                                                                                               Document ,
-                                                                                                               NodeInfo > > (
-                                                                                                                             transform
-                                                                                                                                 => new
-                                                                                                                                     TransformManyBlock
-                                                                                                                                     < Document
-                                                                                                                                       , NodeInfo
-                                                                                                                                     > (
-                                                                                                                                        transform
-                                                                                                                                       )
-                                                                                                                           , new
-                                                                                                                                 ConcreteDataflowTransformFuncProvider
-                                                                                                                                 < Document
-                                                                                                                                   , NodeInfo
-                                                                                                                                 > (
-                                                                                                                                    source
-                                                                                                                                        => Task
-                                                                                                                                           .FromResult (
-                                                                                                                                                        Enumerable
-                                                                                                                                                           .Empty
-                                                                                                                                                            < NodeInfo
-                                                                                                                                                            > ( )
-                                                                                                                                                       )
-                                                                                                                                   )
-                                                                                                                            )
-                                                                                              ) ;
+            using ( var ls = _app.GetLifetimeScope ( )
+                                 .BeginLifetimeScope (
+                                                      b => {
+                                                          b.Register (
+                                                                      ( c , p )
+                                                                          => new
+                                                                              ConcreteAnalysisBlockProvider
+                                                                              < Document , NodeInfo
+                                                                                , IPropagatorBlock <
+                                                                                      Document ,
+                                                                                      NodeInfo > > (
+                                                                                                    transform
+                                                                                                        => new
+                                                                                                            TransformManyBlock
+                                                                                                            < Document
+                                                                                                              , NodeInfo
+                                                                                                            > (
+                                                                                                               transform
+                                                                                                              )
+                                                                                                  , new
+                                                                                                        ConcreteDataflowTransformFuncProvider
+                                                                                                        < Document
+                                                                                                          , NodeInfo
+                                                                                                        > (
+                                                                                                           source
+                                                                                                               => Task
+                                                                                                                  .FromResult (
+                                                                                                                               Enumerable
+                                                                                                                                  .Empty
+                                                                                                                                   < NodeInfo
+                                                                                                                                   > ( )
+                                                                                                                              )
+                                                                                                          )
+                                                                                                   )
+                                                                     ) ;
 
-                                                                               b.RegisterGeneric ( typeof ( BlockFactory < ,, > ) ) ;
-                                                                               b.Register<TransformFunc <Document, Task<IEnumerable <NodeInfo> >>>(
-                                                                               (c) => (Document doc)
-                                                                               => Task.FromResult(
-                                                                               Enumerable
-                                                                               .Empty<NodeInfo>()
-                                                                               )
-                                                                               );
-                                                                               b.Register (
-                                                                               ( c , p )
-                                                                               => c.Resolve<BlockFactory <Document,NodeInfo,TransformManyBlock <Document, NodeInfo >>> (  )(
-                                                                               p.Positional
-                                                                               < Func < Document ,
-                                                                               Task < IEnumerable < NodeInfo > > >> ( 0 )
-                                                                               )
-                                                                               ) ;
-                                                                           }
-                                                                          ) )
+                                                          b.RegisterGeneric (
+                                                                             typeof ( BlockFactory <
+                                                                               , , > )
+                                                                            ) ;
+                                                          b.Register < TransformFunc < Document ,
+                                                                  Task < IEnumerable < NodeInfo > >
+                                                              >
+                                                          > (
+                                                             ( c ) => ( Document doc )
+                                                                 => Task.FromResult (
+                                                                                     Enumerable
+                                                                                        .Empty <
+                                                                                             NodeInfo
+                                                                                         > ( )
+                                                                                    )
+                                                            ) ;
+                                                          b.Register (
+                                                                      ( c , p )
+                                                                          => c.Resolve <
+                                                                              BlockFactory <
+                                                                                  Document ,
+                                                                                  NodeInfo ,
+                                                                                  TransformManyBlock
+                                                                                  < Document ,
+                                                                                      NodeInfo > >
+                                                                          > ( ) (
+                                                                                 p.Positional <
+                                                                                     Func < Document
+                                                                                       , Task <
+                                                                                             IEnumerable
+                                                                                             < NodeInfo
+                                                                                             > > >
+                                                                                 > ( 0 )
+                                                                                )
+                                                                     ) ;
+                                                      }
+                                                     ) )
 
             {
                 DoFlow < MyTest > ( ls ) ;
@@ -499,17 +531,20 @@ namespace ModelTests
         [ Fact ]
         public void TestAppStartup ( )
         {
-            using ( var applicationInstance =
-                new ApplicationInstance (
-                                         new ApplicationInstance.ApplicationInstanceConfiguration (
-                                                                                                   LogMethod
-                                                                                                 , ApplicationGuid
-                                                                                                 , null
-                                                                                                 , disableLogging : DisableLogging
-                                                                                                 , disableRuntimeConfiguration : true
-                                                                                                 , disableServiceHost : true
-                                                                                                  )
-                                        ) )
+            using ( var applicationInstance = new ApplicationInstance (
+                                                                       new ApplicationInstance.
+                                                                           ApplicationInstanceConfiguration (
+                                                                                                             LogMethod
+                                                                                                           , ApplicationGuid
+                                                                                                           , null
+                                                                                                           , disableLogging
+                                                                                                             : DisableLogging
+                                                                                                           , disableRuntimeConfiguration
+                                                                                                             : true
+                                                                                                           , disableServiceHost
+                                                                                                             : true
+                                                                                                            )
+                                                                      ) )
             {
                 applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 applicationInstance.Initialize ( ) ;
@@ -530,6 +565,26 @@ namespace ModelTests
             {
                 Utils.LogParsedExceptions ( ex ) ;
             }
+        }
+
+        [ Fact ]
+        public void TestTransform1 ( )
+        {
+            var result = GenTransforms.Transform_Expression (SyntaxFactory
+             .ParseExpression ( "x + y" ));   //SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, SyntaxFactory.expression)  )
+                                                          // GenTransforms.Transform_Binary_Expression (
+                                                          // ( BinaryExpressionSyntax ) SyntaxFactory
+                                                          // .ParseExpression ( "x + y" )
+                                                          // ) ;
+                                                          var opts = new JsonSerializerOptions ( ) ;
+                                                          opts.Converters.Add (new JsonPocoSyntaxConverter()  );
+                                                          var serialize =
+                                                              JsonSerializer.Serialize (
+                                                                                        result
+                                                                                      , opts
+                                                                                       ) ;
+                                                          Debug.WriteLine(serialize);
+
         }
 
         [ Fact ]
@@ -588,6 +643,155 @@ namespace ModelTests
 
             // }
             // }
+        }
+
+        [Fact]
+        public void TestZ ( )
+        {
+            z ( ) ;
+        }
+        public void z ( )
+        {
+            List < JsonElement > types =
+                JsonSerializer.Deserialize < List < JsonElement > > (
+                                                                     File.ReadAllText (
+                                                                                       @"C:\data\logs\types.json"
+                                                                                      )
+                                                                    ) ;
+
+            Dictionary < string , string > dict = new Dictionary < string , string > ( ) ;
+
+            Dictionary < string , JsonElement >
+                dict2 = new Dictionary < string , JsonElement > ( ) ;
+            foreach ( var typ in types )
+            {
+                var k = typ.GetProperty ( "Type" ).GetProperty ( "FullName" ).GetString ( ) ;
+                k          = k.Substring ( k.LastIndexOf ( '.' ) + 1 ) ;
+                dict[ k ]  = typ.GetProperty ( "Title" ).GetString ( ).Replace ( " " , "_" ) ;
+                dict2[ k ] = typ ;
+            }
+
+            foreach ( var typ in types )
+            {
+                string body = "" ;
+                var typname = typ.GetProperty ( "Type" ).GetProperty ( "FullName" ).GetString ( ) ;
+                var shortname = typname.Substring ( typname.LastIndexOf ( '.' ) + 1 ) ;
+                var poco = "Poco" + shortname ;
+
+                if ( typ.GetProperty ( "ElementName" ).GetString ( ) == "AbstractNode" )
+                {
+                    IEnumerable < string > nodes ( string cname )
+                    {
+                        if ( dict2[ cname ].GetProperty ( "ElementName" ).GetString ( )
+                             == "AbstractNode" )
+                        {
+                            return dict2[ cname ]
+                                  .GetProperty ( "SubTypeNames" )
+                                  .EnumerateArray ( )
+                                  .SelectMany ( xx => nodes ( xx.GetString ( ) ) ) ;
+                        }
+                        else
+                        {
+                            return new[] { cname } ;
+                        }
+                    }
+
+                    var cases = string.Join (
+                                             ""
+                                           , nodes ( shortname )
+                                                .Select (
+                                                         sn
+                                                             => $"case {sn} _: return {dict[ sn ]}((sn)node); \n"
+                                                        )
+                                            ) ;
+                    body = $"switch(node) {{\\n{cases}\\n}}return null;\\n" ;
+                }
+                else
+                {
+
+                    var fields = typ.GetProperty ( "Fields" ) ;
+                    string props = "" ;
+                    foreach ( var f in typ.GetProperty ( "Fields" ).EnumerateArray ( ) )
+                    {
+
+                        var name = f.GetProperty ( "Name" ).GetString ( ) ;
+                        if ( ( typname.EndsWith ( "StatementSyntax" ) || poco == "PocoBlockSyntax" )
+                             && name == "AttributeLists" )
+                            continue ;
+                        var t1 = f.GetProperty ( "Type" ) ;
+                        string m = "" ;
+                        string value = "" ;
+                        string transform = "" ;
+                        string x = null ;
+                        string msg = null ;
+                        var typeName = f.GetProperty ( "TypeName" ).GetString ( ) ;
+                        if ( typeName == "bool" )
+                        {
+                            value = $"node.{name}" ;
+                            msg   = "bool" ;
+                        }
+                        else if ( t1.ValueKind == JsonValueKind.Object )
+                        {
+                            var k = t1.GetProperty ( "FullName" ).GetString ( ) ;
+                            k = k.Substring ( k.LastIndexOf ( '.' ) + 1 ) ;
+                            x = k ;
+
+                            if ( dict.TryGetValue ( k , out var method ) )
+                            {
+                                value = $"Transform_{method}(node.{name})" ;
+                            }
+                            else
+                            {
+                                msg = "not found" ;
+                                if ( f.GetProperty ( "TypeName" ).GetString ( ) == "SyntaxToken" )
+                                {
+                                    value =
+                                        $"new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
+                                }
+                                else if ( typeName.StartsWith ( "SyntaxList<" ) )
+                                {
+                                    var t2 = typeName.Substring ( 11 , typeName.Length - 12 ) ;
+                                    if ( dict.TryGetValue ( t2 , out var m2 ) )
+                                    {
+                                    }
+
+                                    transform = $".Select(Transform_{m2}).ToList()" ;
+                                }
+                                else if ( typeName.StartsWith ( "SeparatedSyntaxList<" ) )
+                                {
+                                    var t2 = typeName.Substring ( 20 , typeName.Length - 21 ) ;
+                                    if ( dict.TryGetValue ( t2 , out var m2 ) )
+                                    {
+                                    }
+                                    else
+                                    {
+
+                                    }
+
+                                    transform = $".Select(Transform_{m2}).ToList()" ;
+                                }
+                                else if ( k == "SyntaxTokenList" )
+                                {
+                                    transform =
+                                        ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()" ;
+                                }
+                            }
+                        }
+
+                        if ( transform != "" )
+                        {
+                            value = $"node.{name}{transform}" ;
+                        }
+
+                        if ( value == "" ) value = msg ;
+                        var code = $"{name} = {value}, " ;
+                        props = props + "\n" + code ;
+                    }
+
+                    body = $"return new {poco}() {{ {props} }};" ;
+                }
+
+            }
         }
     }
 

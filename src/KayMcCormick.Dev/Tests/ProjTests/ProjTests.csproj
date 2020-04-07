@@ -65,10 +65,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContainerFixture.cs" />
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="MyXmlWriter.cs" />
     <Compile Include="ProjectFixture.cs" />
     <Compile Include="ProjTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

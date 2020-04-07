@@ -13,7 +13,7 @@ namespace FindLogUsages
         public LogInvocationArgument ( ArgumentSyntax syntax )
         {
             _syntax = syntax ;
-            var jsonOut = Transforms.TransformExpr ( syntax.Expression ) ;
+            var jsonOut = GenTransforms.Transform_Expression( syntax.Expression ) ;
             Pojo = jsonOut ;
         }
 

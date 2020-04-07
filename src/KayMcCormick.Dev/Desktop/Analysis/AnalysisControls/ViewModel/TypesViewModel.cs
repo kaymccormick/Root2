@@ -508,7 +508,7 @@ namespace AnalysisControls.ViewModel
             IsInitialized = true ;
         }
 
-        private void DetailFields ( )
+        public void DetailFields ( )
         {
             foreach ( var keyValuePair in Map.dict )
             {
@@ -577,6 +577,13 @@ namespace AnalysisControls.ViewModel
                 r.SubTypeInfos.Add ( CollectTypeInfos2 ( r , type1 , level + 1 ) ) ;
             }
 
+            PopulateFieldTypes ( r ) ;
+
+            return r ;
+        }
+
+        public void PopulateFieldTypes ( AppTypeInfo r )
+        {
             foreach ( SyntaxFieldInfo rField in r.Fields )
             {
                 if ( rField.TypeName == "SyntaxList<SyntaxToken>" )
@@ -598,9 +605,7 @@ namespace AnalysisControls.ViewModel
                 {
                     var id = gns.Identifier.ValueText ;
                     var t0 = typeof ( SyntaxNode ).Assembly.GetType (
-                                                                     "Microsoft.CodeAnalysis."
-                                                                     + id
-                                                                     + "`1"
+                                                                     "Microsoft.CodeAnalysis." + id + "`1"
                                                                     ) ;
                     if ( t0 == null )
                     {
@@ -611,8 +616,7 @@ namespace AnalysisControls.ViewModel
                         var s = ( SimpleNameSyntax ) gns.TypeArgumentList.Arguments[ 0 ] ;
                         var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType (
                                                                                "Microsoft.CodeAnalysis.CSharp.Syntax."
-                                                                               + s.Identifier
-                                                                                  .ValueText
+                                                                               + s.Identifier.ValueText
                                                                               ) ;
                         if ( t1 == null )
                         {
@@ -647,8 +651,6 @@ namespace AnalysisControls.ViewModel
                     rField.Type = t ;
                 }
             }
-
-            return r ;
         }
 
         private void Collect ( [ NotNull ] AppTypeInfo ati , List < AppTypeInfo > types )

@@ -116,6 +116,10 @@ namespace ProjInterface
                    .AsSelf ( )
                    .As < IViewWithTitle > ( ) 
                    .As < IControlView > ( ) ;
+            builder.RegisterType < WorkspaceControl > ( )
+                   .As < IViewWithTitle > ( )
+                   .As < IControlView > ( ) ;
+            builder.RegisterType < WorkspaceViewModel > ( ) ;
             builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ) ;
 
             builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;

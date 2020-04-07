@@ -71,15 +71,31 @@ namespace AnalysisControls
                    .WithMetadata ( "Ribbon" , true ) ;
 
 
-            Debug.WriteLine(string.Join(", ", Assembly.GetExecutingAssembly().GetManifestResourceNames()));
 
-            builder.Register (
-                              ( context , parameters ) => {
-                                  TypesViewModel v =
-                                      ( TypesViewModel ) XamlReader.Parse (
-                                                                           Resources.TypesViewModel
-                                                                          ) ;
-                                  return v ;
+            //
+            // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            // foreach ( var name in names )
+            // {
+            //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
+            //     Debug.WriteLine ( info.ResourceLocation ) ;
+            //
+            // }
+
+            builder.Register ( ( context , parameters ) => {
+                var stream = Assembly.GetExecutingAssembly ( )
+                                     .GetManifestResourceStream (
+                                                                 "AnalysisControls.TypesViewModel.xaml"
+                                                                ) ;
+                if ( stream == null )
+                {
+                    return new TypesViewModel();
+                } else 
+                                  {
+                                      TypesViewModel v =
+                                          ( TypesViewModel ) XamlReader.Load ( stream ) ;
+                                      stream.Close ( ) ;
+                                      return v ;
+                                  }
                               }
                              )
                    .AsSelf ( )

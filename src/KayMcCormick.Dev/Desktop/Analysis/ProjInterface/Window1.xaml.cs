@@ -1,6 +1,9 @@
 ﻿using System ;
+using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.IO ;
+using System.Linq ;
+using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -21,16 +24,19 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
+
 using Microsoft.Win32 ;
 using NLog ;
+using Application = System.Windows.Application ;
 
 namespace ProjInterface
 {
     [ TitleMetadata ( "Docking window" ) ]
-    public sealed partial class Window1 : RibbonWindow, IViewWithTitle , IView < DockWindowViewModel >
+    public sealed partial class Window1 : RibbonWindow
+      , IViewWithTitle
+      , IView < DockWindowViewModel >
     {
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly string              _viewTitle = "Docking window" ;
         private          DockWindowViewModel _viewModel ;
@@ -39,13 +45,9 @@ namespace ProjInterface
 
         public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this ( lifetimeScope , null )
         {
-
         }
 
-        public Window1 (
-            [ NotNull ] ILifetimeScope      lifetimeScope
-          ,  DockWindowViewModel viewModel
-        )
+        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope , DockWindowViewModel viewModel )
         {
             if ( lifetimeScope == null )
             {
@@ -54,8 +56,7 @@ namespace ProjInterface
 
             //SetValue ( AttachedProperties.LifetimeScopeProperty , (ILifetimeScope)lifetimeScope ) ;
             var lf = lifetimeScope.BeginLifetimeScope (
-                                               
-                                                      builder => {
+                                                       builder => {
                                                            builder.RegisterInstance (
                                                                                      new
                                                                                          LayoutService (
@@ -77,7 +78,7 @@ namespace ProjInterface
                                                       ) ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
             // lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
-                // throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
+            // throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
             // } ;
 
             ViewModel = viewModel ;
@@ -87,16 +88,16 @@ namespace ProjInterface
             InitializeComponent ( ) ;
         }
 
-        
+
         public DockWindowViewModel ViewModel
         {
             get { return _viewModel ; }
             set { _viewModel = value ; }
         }
-        
-        
+
+
         public string ViewTitle { get { return _viewTitle ; } }
-        
+
 
         private async void CommandBinding_OnExecuted (
             object                              sender
@@ -128,38 +129,68 @@ namespace ProjInterface
                 {
                     Debug.WriteLine ( ex.ToString ( ) ) ;
                 }
-
             }
 
-            Microsoft.Win32.OpenFileDialog dlg = new OpenFileDialog();
-                dlg.DefaultExt = ".xml" ;
-                dlg.Filter = "XML Documents (*.xml)|*.xml|Solution Files (*.sln)|*.sln" ;
-                Nullable<bool> result = dlg.ShowDialog();
+            var filters = new List < Filter >
+                          {
+                              new Filter { Extension = ".sln" , Description = "Solution Files" }
+                            , new Filter { Extension = ".xml" , Description = "XML files" }
+                            , new Filter
+                              {
+                                  Extension = ".cs" , Description = "CSharp source files",
+                                  Handler = async delegate ( string filename ) {
+                                      return ;
+                                  }
+                              }
+                          } ;
+            var dlg = new OpenFileDialog ( ) ;
+            dlg.DefaultExt = ".cs" ;
+            dlg.Filter = String.Join (
+                                      "|"
+                                    , filters.Select (
+                                                      f => $"{f.Description} (*{f.Extension})|*{f.Extension}"
+                                                     )
+                                     ) ;
 
-                // Process open file dialog box results
-                if (result == true)
-                {
-                    var scope = (ILifetimeScope)GetValue(AttachedProperties.LifetimeScopeProperty);
+        var result = dlg.ShowDialog ( ) ;
+
+            // Process open file dialog box results
+            if ( result == true )
+            {
+                var scope =
+                    ( ILifetimeScope ) GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
 
                 // Open document
-                string filename = dlg.FileName;
-                    if ( Path.GetExtension ( filename ).ToLowerInvariant ( ) == ".sln" )
-                    {
-                        var analyzeCommand = scope.Resolve < IAnalyzeCommand > ( ) ;
-                        var node = new ProjectBrowserNode ( )
-                                   {
-                                       Name = "Loaded solution" , SolutionPath = filename
-                                   } ;
-                        await analyzeCommand.AnalyzeCommandAsync(node, new ActionBlock < RejectedItem > (x => Debug.WriteLine (x)));
-                        return ;
-                    }
-                    var view = scope.ResolveKeyed<IControlView>(ApplicationEntityIds.File, new NamedParameter("filename", filename));
-
+                var filename = dlg.FileName ;
+                if ( Path.GetExtension ( filename ).ToLowerInvariant ( ) == ".sln" )
+                {
+                    var analyzeCommand = scope.Resolve < IAnalyzeCommand > ( ) ;
+                    var node = new ProjectBrowserNode ( )
+                               {
+                                   Name = "Loaded solution" , SolutionPath = filename
+                               } ;
+                    await analyzeCommand.AnalyzeCommandAsync (
+                                                              node
+                                                            , new ActionBlock < RejectedItem > (
+                                                                                                x => Debug
+                                                                                                   .WriteLine (
+                                                                                                               x
+                                                                                                              )
+                                                                                               )
+                                                             ) ;
+                    return ;
                 }
 
-            return ;
-            
+                var view = scope.ResolveKeyed < IControlView > (
+                                                                ApplicationEntityIds.File
+                                                              , new NamedParameter (
+                                                                                    "filename"
+                                                                                  , filename
+                                                                                   )
+                                                               ) ;
+            }
 
+            return ;
         }
 
         private void QuitCommandOnExecuted ( object sender , ExecutedRoutedEventArgs e )
@@ -210,10 +241,10 @@ namespace ProjInterface
             model.ExecutePythonScript ( textEditor.Text ) ;
         }
 
-            // AddHandler (
-            //             TypeControl.TypeActivatedEvent
-            //           , new TypeControl.TypeActivatedEventHandler ( Target )
-            //            ) ;
+        // AddHandler (
+        //             TypeControl.TypeActivatedEvent
+        //           , new TypeControl.TypeActivatedEventHandler ( Target )
+        //            ) ;
 
         private void Target ( object sender , [ NotNull ] TypeActivatedEventArgs e )
         {
@@ -247,5 +278,19 @@ namespace ProjInterface
             return TryFindResource ( resourceKey ) ;
         }
         #endregion
+    }
+
+    public class Filter
+    {
+        private string _extension ;
+        private string _description ;
+
+        public Filter ( ) { }
+
+        public string Extension { get { return _extension ; } set { _extension = value ; } }
+
+        public string Description { get { return _description ; } set { _description = value ; } }
+
+        public Action<string> Handler { get ; set ; }
     }
 }

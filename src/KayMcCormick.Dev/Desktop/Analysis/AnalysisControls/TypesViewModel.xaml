@@ -8438,6 +8438,6 @@
     </aal:AppTypeInfo>
   </TypesViewModel.Map>
   <TypesViewModel.StructureRoot>
-    <aal:AppTypeInfo Type="mcacss:CompilationUnitSyntax" Title="Compilation Unit" ColorValue="4286080130" DocInfo="{assembly:Null}" ElementName="{assembly:Null}" />
+    <aal:AppTypeInfoCollection />
   </TypesViewModel.StructureRoot>
 </TypesViewModel>

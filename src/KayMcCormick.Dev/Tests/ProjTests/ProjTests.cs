@@ -26,6 +26,7 @@ using System.Text.Json.Serialization ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows ;
+using System.Windows.Automation ;
 using System.Windows.Baml2006 ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
@@ -60,6 +61,7 @@ using NLog.Layouts ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
+using Condition = System.Windows.Automation.Condition ;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
 
@@ -860,19 +862,6 @@ namespace ProjTests
             var c = new ColorConverter ( ) ;
         }
 
-        public delegate void RoutedExecutionResultEventHandler (
-            object                         sender
-          , RoutedExecutionResultEventArgs e
-        ) ;
-
-        public static readonly RoutedEvent ExecutionResultEvent =
-            EventManager.RegisterRoutedEvent (
-                                              "ExecutionResult"
-                                            , RoutingStrategy.Direct
-                                            , typeof ( RoutedExecutionResultEventHandler )
-                                            , typeof ( PythonViewModel )
-                                             ) ;
-
 
         [ Fact ]
         public void TestPython1 ( )
@@ -985,11 +974,102 @@ namespace ProjTests
             Debug.WriteLine ( JsonSerializer.Serialize ( b , opt ) ) ;
         }
 
-
         [ Fact ]
-        public void TestModel ( )
+        public void TestApp ( )
         {
-            var t = new TypesViewModel ( ) ;
+            ProcessStartInfo info = new ProcessStartInfo(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\build\bin\debug\x86\ProjInterface\ProjInterface.exe");
+            var proc = Process.Start ( info ) ;
+            
+            Thread.Sleep(5000);
+            try
+            {
+                TreeWalker walker = new TreeWalker ( Condition.TrueCondition ) ;
+                
+                var r = AutomationElement.RootElement ;
+                AutomationElement child = null ;
+                try
+                {
+                    child = walker.GetFirstChild ( r ) ;
+                }
+                catch ( Exception ex )
+                {
+                    proc.Kill();
+                    proc = null ;
+                }
+
+                var lastChild = child ;
+                for ( ; ; )
+                {
+                    HandleChild(lastChild);
+                    var next = walker.GetNextSibling ( lastChild ) ;
+                    if ( next == null )
+                    {
+                        break ;
+                    }
+                    lastChild = next ;
+                }
+                foreach ( AutomationElement o in r.FindAll (
+                                                            TreeScope.Children
+                                                          , Condition.TrueCondition
+                                                           ) )
+                {
+                    Debug.WriteLine ( o ) ;
+                    try
+                    {
+                        Debug.WriteLine (
+                                         o.GetCachedPropertyValue (
+                                                                   AutomationElement
+                                                                      .ClassNameProperty
+                                                                  )
+                                        ) ;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                // foreach ( AutomationElement rCachedChild in r.CachedChildren )
+                // {
+                // foreach ( var automationProperty in rCachedChild.GetSupportedProperties ( ) )
+                // {
+                // var v = rCachedChild.GetCachedPropertyValue ( automationProperty ) ;
+                // Debug.WriteLine ( v.ToString ( ) ) ;
+                // }
+                // }
+            }
+            finally
+            {
+                proc?.Kill();
+            }
+
+            
+        }
+
+        private static void HandleChild ( AutomationElement child )
+        {
+            try
+            {
+                var cacheRequest = new CacheRequest ( ) { } ;
+                cacheRequest.Add ( AutomationElement.ClassNameProperty ) ;
+                foreach ( var automationProperty in child.GetSupportedProperties ( ) )
+                {
+                    try
+                    {
+                        var propValue = child.GetCurrentPropertyValue ( automationProperty ) ;
+                        Debug.WriteLine ( automationProperty.ProgrammaticName ) ;
+                        Debug.WriteLine ( propValue ) ;
+                    }catch(Exception)
+                    { }
+                }
+                var c = child.GetUpdatedCache ( cacheRequest ) ;
+                var cn = c.GetCachedPropertyValue ( AutomationElement.ClassNameProperty ) ;
+                Debug.WriteLine ( cn ) ;
+            }
+            catch ( Exception ex )
+            {
+                Debug.WriteLine("Got exception " + ex.Message);
+            }
         }
 
 
@@ -1030,106 +1110,5 @@ namespace ProjTests
             var c = b.SchemaContext ;
             var t = c.GetXamlType ( typeof ( TypesViewModel ) ) ;
         }
-    }
-
-
-    public class RoutedExecutionResultEventArgs : RoutedEventArgs
-    {
-        private readonly dynamic _result ;
-
-        public RoutedExecutionResultEventArgs (
-            RoutedEvent routedEvent
-          , object      source
-          , dynamic     result
-        ) : base ( routedEvent , source )
-        {
-            _result = result ;
-        }
-
-        public dynamic Result { get { return _result ; } }
-    }
-
-    public class MyXmlWriter : XmlWriter
-    {
-        private readonly Utf8JsonWriter writer ;
-        public MyXmlWriter ( Utf8JsonWriter writer ) { this.writer = writer ; }
-#region Overrides of XmlWriter
-        public override void WriteStartDocument ( )
-        {
-            writer.WriteStartObject();
-        }
-
-        public override void WriteStartDocument ( bool standalone )
-        {
-            writer.WriteStartObject();
-        }
-
-        public override void WriteEndDocument ( )
-        {
-            writer.WriteEndObject();
-        }
-
-        public override void WriteDocType ( string name , string pubid , string sysid , string subset ) { }
-
-        public override void WriteStartElement ( string prefix , string localName , string ns )
-        {
-            writer.WriteStartObject();
-            //writer.WriteStartObject ( localName ) ;
-        }
-
-        public override void WriteEndElement ( )
-        {
-            writer.WriteEndObject();
-        }
-
-        public override void WriteFullEndElement ( )
-        {
-            writer.WriteEndObject();
-        }
-
-        public override void WriteStartAttribute ( string prefix , string localName , string ns )
-        {
-            
-            writer.WriteStartObject ( localName ) ;
-        }
-
-        public override void WriteEndAttribute ( )
-        {
-
-        }
-
-        public override void WriteCData ( string text ) { }
-
-        public override void WriteComment ( string text ) { }
-
-        public override void WriteProcessingInstruction ( string name , string text ) { }
-
-        public override void WriteEntityRef ( string name ) { }
-
-        public override void WriteCharEntity ( char ch ) { }
-
-        public override void WriteWhitespace ( string ws ) { }
-
-        public override void WriteString ( string text )
-        {
-            writer.WriteStringValue ( text ) ;
-        }
-
-        public override void WriteSurrogateCharEntity ( char lowChar , char highChar ) { }
-
-        public override void WriteChars ( char[] buffer , int index , int count ) { }
-
-        public override void WriteRaw ( char[] buffer , int index , int count ) { }
-
-        public override void WriteRaw ( string data ) { }
-
-        public override void WriteBase64 ( byte[] buffer , int index , int count ) { }
-
-        public override void Flush ( ) { }
-
-        public override string LookupPrefix ( string ns ) { return null ; }
-
-        public override WriteState WriteState { get ; }
-#endregion
     }
 }

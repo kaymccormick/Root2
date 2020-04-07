@@ -20,67 +20,74 @@ namespace AnalysisAppLib
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
-        private string _elementName ;
-        private SyntaxFieldCollection  _fields = new SyntaxFieldCollection ();
-        private AppTypeInfoCollection _subTypeInfos ;
-        private          uint ?                               _colorValue ;
+        private string _elementName;
+        private readonly SyntaxFieldCollection _fields = new SyntaxFieldCollection();
+        private AppTypeInfoCollection _subTypeInfos;
+        private uint? _colorValue;
 
         private SyntaxComponentCollection _components =
-            new SyntaxComponentCollection ( ) ;
+            new SyntaxComponentCollection();
 
-        private ObservableCollection < AppMethodInfo > _factoryMethods =
-            new ObservableCollection < AppMethodInfo > ( ) ;
+        private ObservableCollection<AppMethodInfo> _factoryMethods =
+            new ObservableCollection<AppMethodInfo>();
 
-        private int         _hierarchyLevel ;
-        private AppTypeInfo _parentInfo ;
-        private string      _title ;
-        private Type        _type ;
+        private int _hierarchyLevel;
+        private AppTypeInfo _parentInfo;
+        private string _title;
+        private Type _type;
+        private List<string> _kinds= new List < string > ();
 
 
         /// <summary>
         /// </summary>
         /// <param name="subTypeInfos"></param>
-        public AppTypeInfo ( AppTypeInfoCollection subTypeInfos = null )
+        public AppTypeInfo(AppTypeInfoCollection subTypeInfos = null)
         {
-            if ( subTypeInfos == null )
+            if (subTypeInfos == null)
             {
-                subTypeInfos = new AppTypeInfoCollection ( ) ;
+                subTypeInfos = new AppTypeInfoCollection();
             }
 
-            _components.CollectionChanged += ( sender , args )
-                => OnPropertyChanged ( nameof ( Components ) ) ;
-            _factoryMethods.CollectionChanged += ( sender , args )
-                => OnPropertyChanged ( nameof ( FactoryMethods ) ) ;
-            _subTypeInfos = subTypeInfos ;
+            _components.CollectionChanged += (sender, args)
+                => OnPropertyChanged(nameof(Components));
+            _factoryMethods.CollectionChanged += (sender, args)
+                => OnPropertyChanged(nameof(FactoryMethods));
+            _subTypeInfos = subTypeInfos;
         }
 
         /// <summary>
         /// </summary>
-        public AppTypeInfo ( ) : this ( null ) { }
+        public AppTypeInfo() : this(null) { }
 
         /// <summary>
         /// </summary>
         public Type Type
         {
-            get { return _type ; }
+            get { return _type; }
             set
             {
-                _type = value ;
-                OnPropertyChanged ( ) ;
-                var title = _type.Name.Replace ( "Syntax" , "" ) ;
-                Title = Regex.Replace ( title , "([a-z])([A-Z])" , @"$1 $2" ) ;
+                _type = value;
+                OnPropertyChanged();
+                var title = _type.Name.Replace("Syntax", "");
+                Title = Regex.Replace(title, "([a-z])([A-Z])", @"$1 $2");
             }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public List<string> Kinds
+        {
+            get { return _kinds ; }
         }
 
         /// <summary>
         /// </summary>
         public string Title
         {
-            get { return _title ; }
+            get { return _title; }
             set
             {
-                _title = value ;
-                OnPropertyChanged ( ) ;
+                _title = value;
+                OnPropertyChanged();
             }
         }
 
@@ -91,114 +98,121 @@ namespace AnalysisAppLib
         [JsonIgnore]
         public AppTypeInfoCollection SubTypeInfos
         {
-            get { return _subTypeInfos ; }
-            set { _subTypeInfos = value ; }
+            get { return _subTypeInfos; }
+            set { _subTypeInfos = value; }
         }
+
+        public List<string> SubTypeNames => SubTypeInfos.Cast<AppTypeInfo>().Select(st => st.Type.Name).ToList();
 
         /// <summary>
         /// </summary>
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        public ObservableCollection < AppMethodInfo > FactoryMethods
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ObservableCollection<AppMethodInfo> FactoryMethods
         {
-            get { return _factoryMethods ; }
+            get { return _factoryMethods; }
             set
             {
-                _factoryMethods = value ;
-                OnPropertyChanged ( ) ;
+                _factoryMethods = value;
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// </summary>
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        [ JsonIgnore ]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [JsonIgnore]
         public SyntaxComponentCollection Components
         {
-            get { return _components ; }
+            get { return _components; }
             set
             {
-                _components = value ;
-                OnPropertyChanged ( ) ;
+                _components = value;
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// </summary>
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        [ NotNull ] public IEnumerable < ComponentInfo > AllComponents
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [NotNull]
+        public IEnumerable<ComponentInfo> AllComponents
         {
             get
             {
-                var type = ParentInfo ;
+                var type = ParentInfo;
                 var allComponentInfos =
-                    Components?.ToList ( ) ?? Enumerable.Empty < ComponentInfo > ( ) ;
-                while ( type != null )
+                    Components?.ToList() ?? Enumerable.Empty<ComponentInfo>();
+                while (type != null)
                 {
-                    allComponentInfos = allComponentInfos.Concat (
-                                                                  type.Components.Select (
+                    allComponentInfos = allComponentInfos.Concat(
+                                                                  type.Components.Select(
                                                                                           info
                                                                                               => new
                                                                                                  ComponentInfo
-                                                                                                 {
-                                                                                                     OwningTypeInfo
+                                                                                              {
+                                                                                                  OwningTypeInfo
                                                                                                          = info
                                                                                                             .OwningTypeInfo
-                                                                                                   , IsList
+                                                                                                   ,
+                                                                                                  IsList
                                                                                                          = info
                                                                                                             .IsList
-                                                                                                   , IsSelfOwned
+                                                                                                   ,
+                                                                                                  IsSelfOwned
                                                                                                          = false
-                                                                                                   , PropertyName
+                                                                                                   ,
+                                                                                                  PropertyName
                                                                                                          = info
                                                                                                             .PropertyName
-                                                                                                   , TypeInfo
+                                                                                                   ,
+                                                                                                  TypeInfo
                                                                                                          = info
                                                                                                             .TypeInfo
-                                                                                                 }
+                                                                                              }
                                                                                          )
-                                                                 ) ;
-                    type = type.ParentInfo ;
+                                                                 );
+                    type = type.ParentInfo;
                 }
 
-                return allComponentInfos ;
+                return allComponentInfos;
             }
         }
 
         /// <summary>
         /// </summary>
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        [ JsonIgnore ]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [JsonIgnore]
         public AppTypeInfo ParentInfo
         {
-            get { return _parentInfo ; }
+            get { return _parentInfo; }
             set
             {
-                _parentInfo = value ;
-                OnPropertyChanged ( ) ;
+                _parentInfo = value;
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// </summary>
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int HierarchyLevel
         {
-            get { return _hierarchyLevel ; }
-            set { _hierarchyLevel = value ; }
+            get { return _hierarchyLevel; }
+            set { _hierarchyLevel = value; }
         }
 
         /// <summary>
         /// </summary>
-        public uint ? ColorValue { get { return _colorValue ; } set { _colorValue = value ; } }
+        public uint? ColorValue { get { return _colorValue; } set { _colorValue = value; } }
 
         /// <summary>
         /// </summary>
-        public TypeDocumentation DocInfo { get ; set ; }
+        public TypeDocumentation DocInfo { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string ElementName { get { return _elementName ; } set { _elementName = value ; } }
+        public string ElementName { get { return _elementName; } set { _elementName = value; } }
 
 
         /// <summary>
@@ -207,17 +221,17 @@ namespace AnalysisAppLib
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public SyntaxFieldCollection Fields
         {
-            get { return _fields ; }
+            get { return _fields; }
         }
 
         /// <summary>
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged ;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        [ NotifyPropertyChangedInvocator ]
-        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        [NotifyPropertyChangedInvocator]
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
@@ -357,27 +371,48 @@ namespace AnalysisAppLib
         private string _name ;
         private string _typeName ;
         private SyntaxKindCollection _kinds = new SyntaxKindCollection ();
+        private bool _optional ;
 
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Content)]
         public string TypeName  { get { return _typeName ; } set { _typeName = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get { return _name ; } set { _name = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public SyntaxKindCollection Kinds
         {
             get { return _kinds ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type Type { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonIgnore]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<AppTypeInfo> Types { get ;  } = new List < AppTypeInfo > ();
 
         public IEnumerable< Type > ClrTypes => Types.Select ( typ => typ.Type ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Override { get { return _override ; } set { _override = value ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Optional { get { return _optional ; } set { _optional = value ; } }
     }
 
     public class SyntaxKindCollection : IList, ICollection, IEnumerable

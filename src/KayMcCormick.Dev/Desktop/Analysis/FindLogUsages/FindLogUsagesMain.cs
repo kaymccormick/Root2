@@ -512,7 +512,7 @@ namespace FindLogUsages
                 object t1 ;
                 try
                 {
-                    t1 = Transforms.TransformSyntaxNode ( relevantNode ) ;
+                    t1 = GenTransforms.Transform_CSharp_Node (( CSharpSyntaxNode ) relevantNode);         
                 }
                 catch ( UnsupportedExpressionTypeSyntaxException unsupported )
                 {

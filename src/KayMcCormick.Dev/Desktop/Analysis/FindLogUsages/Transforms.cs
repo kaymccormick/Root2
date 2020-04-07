@@ -1088,11 +1088,11 @@ namespace FindLogUsages
                 case SyntaxKind.EndOfFileToken :                       break ;
                 case SyntaxKind.BadToken :                             break ;
                 case SyntaxKind.IdentifierToken :
-                    return new PocoSyntaxToken (
-                                                token.Kind ( ).ToString ( )
-                                              , token.RawKind
-                                              , token.Value
-                                               ) ;
+                    // return new PocoSyntaxToken (
+                                                // token.Kind ( ).ToString ( )
+                                              // , token.RawKind
+                                              // , token.Value
+                                               // ) ;
                 case SyntaxKind.NumericLiteralToken :                       break ;
                 case SyntaxKind.CharacterLiteralToken :                     break ;
                 case SyntaxKind.StringLiteralToken :                        break ;

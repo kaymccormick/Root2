@@ -320,15 +320,27 @@ namespace ConsoleApp1
             }
 #endif
 
+            var options = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
+            // options.Converters.Add (new JsonPocoSyntaxConverter()  );
+            // await            CollectDocs ( options ) ;
+            // return 1 ;
             var typesViewModel = context.Scope.Resolve < TypesViewModel > ( ) ;
-            //LoadSyntax(typesViewModel);
-            //WriteThisTypesViewModel(typesViewModel);
+            WriteThisTypesViewModel(typesViewModel);
 
-            //DumpModelToJson ( context , typesViewModel ) ;
-
+            LoadSyntax(typesViewModel);
+            foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
+            {
+                typesViewModel.PopulateFieldTypes ( ati ) ;
+            }
+            WriteThisTypesViewModel(typesViewModel);
+            typesViewModel.DetailFields();
+            WriteThisTypesViewModel(typesViewModel);
+            DumpModelToJson( context , typesViewModel ) ;
+            // return 1 ;
             //var json = JsonSerializer.Serialize ( typesViewModel, jsonSerializerOptions ) ;
 //             File.WriteAllText ( @"C:\data\logs\model.json" , json ) ;
-            await CodeGenAsync ( typesViewModel ) ;
+            //await CodeGenAsync ( typesViewModel ) ;
+            return 1 ;
 //            RunConsoleUi (context ) ;
 
             //
@@ -717,8 +729,9 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static async Task CollectDocs ( )
+        private static async Task CollectDocs (JsonSerializerOptions options )
         {
+            options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
             var solution = await workspace.OpenSolutionAsync (
                                                               @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\ManagedProd.sln"
@@ -727,12 +740,17 @@ namespace ConsoleApp1
             {
                 Console.WriteLine ( project.Name ) ;
 
+
                 var compilation = await project.GetCompilationAsync ( ) ;
                 foreach ( var doc in project.Documents )
                 {
                     var model = await doc.GetSemanticModelAsync ( ) ;
                     Console.WriteLine ( doc.Name ) ;
                     var tree = await doc.GetSyntaxRootAsync ( ) ;
+                    var gen = FindLogUsages.GenTransforms.Transform_CSharp_Node ( ( CSharpSyntaxNode ) tree ) ;
+
+                    Debug.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
+                    continue ;
                     foreach ( var node in tree.DescendantNodesAndSelf ( )
                                               .Where ( node => node.HasStructuredTrivia ) )
                     {
@@ -860,11 +878,12 @@ namespace ConsoleApp1
             var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;//new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
             foreach ( Type mapKey in model1.Map.Keys )
             {
+                Logger.Debug ($"{mapKey}");
                 var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
                 var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
                 foreach ( SyntaxFieldInfo tField in t.Fields )
                 {
-                    if ( tField.Type == null )
+                    if ( tField.Type == null && tField.TypeName != "bool")
                     {
                         continue ;
                     }
@@ -901,10 +920,6 @@ namespace ConsoleApp1
                                                                                                    ) ;
                     var accessorListSyntax =
                         SyntaxFactory.AccessorList ( accessorDeclarationSyntaxes ) ;
-                    if ( tField.Type.IsGenericType )
-                    {
-                        var g = tField.Type.GetGenericTypeDefinition ( ).Name ;
-                    }
 
                     var tFieldTypeName = tField.TypeName ;
                     if ( tFieldTypeName == "SyntaxTokenList" )
@@ -949,7 +964,7 @@ namespace ConsoleApp1
                                                                ) ;
 
                     }
-                    else
+                    else if(tField.TypeName != "bool")
                     {
                         typeSyntax =
                             SyntaxFactory.ParseTypeName (
@@ -1034,7 +1049,7 @@ namespace ConsoleApp1
                                                                                                              )}
                                                                                           )
                                                  )
-                                     .WithMembers ( types )
+                                     .WithMembers (new SyntaxList<MemberDeclarationSyntax>(SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("PocoSyntax")).WithMembers(types) ))
                                      .NormalizeWhitespace ( ) ;
             var tree = SyntaxFactory.SyntaxTree ( compl ) ;
             var src = tree.ToString ( ) ;
@@ -1091,6 +1106,7 @@ namespace ConsoleApp1
                                                                                            )
                                                                     )
                                                    ) ;
+            
             var document2 = DocumentInfo.Create(DocumentId.CreateNewId(projectId), "misc", null, SourceCodeKind.Regular, TextLoader.From (TextAndVersion.Create(SourceText.From(
                 @"public class PocoSyntaxToken { public int RawKind { get; set; } public string Kind { get; set; } public object Value {get; set;} public string ValueText { get; set; } }"), VersionStamp.Create())));
                 
@@ -1175,103 +1191,10 @@ namespace ConsoleApp1
 
                             break ;
                         case "AbstractNode" :
-                            var typeName1 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
-                            typeName1 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName1}" ;
-                            var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName1 ) ;
-                            if ( t1 == null )
-                            {
-                                Debug.WriteLine ( "No type for " + typeName1 ) ;
-                            }
-                            else
-                            {
-                                var typ1 = ( AppTypeInfo ) model1.Map[ t1 ] ;
-                                typ1.ElementName = xElement.Name.LocalName ;
-                                var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                                //Debug.WriteLine ( comment ) ;
-                                var fields =
-                                    new List < Tuple < string , string , List < string > > > ( ) ;
-                                typ1.Fields.Clear();
-                                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) ).Concat(xElement.Elements(XName.Get ("Choice"  )).Elements(XName.Get ("Field"  ))))
-                                {
-                                    var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
-                                    var fieldType = field.Attribute(XName.Get("Type")).Value;
-                                    var @override =
-                                        field.Attribute ( XName.Get ( "Override" ) )?.Value
-                                        == "true" ;
-
-                                    var kinds = field.Elements ( "Kind" )
-                                                     .Select (
-                                                              element => element
-                                                                        .Attribute ( "Name" )
-                                                                        .Value
-                                                             )
-                                                     .ToList ( ) ;
-                                    if ( kinds.Any ( ) )
-                                    {
-                                        //Debug.WriteLine ( string.Join ( ", " , kinds ) ) ;
-                                    }
-
-                                    typ1.Fields.Add (
-                                                     new SyntaxFieldInfo (
-                                                                          fieldName
-                                                                        , fieldType
-                                                                        , kinds.ToArray ( )
-                                                                         )
-                                                     {  Override = @override }
-                                                    ) ;
-                                }
-                            }
-
+                            ParseNodeBasics(model1, xElement);
                             break ;
                         case "Node" :
-                            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
-                            typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
-                            var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
-                            if ( t2 == null )
-                            {
-                                Debug.WriteLine ( "No type for " + typeName2 ) ;
-                            }
-                            else
-                            {
-                                var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
-                                typ2.ElementName = xElement.Name.LocalName ;
-                                var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                                //Debug.WriteLine ( comment ) ;
-                                var fields =
-                                    new List < Tuple < string , string , List < string > > > ( ) ;
-                                typ2.Fields.Clear();
-                                foreach ( var field in xElement.Elements(XName.Get("Field")).Concat(xElement.Elements(XName.Get("Choice")).Elements(XName.Get("Field"))))
-                                {
-                                    var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
-                                    var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
-                                    var @override =
-                                        field.Attribute(XName.Get("Override"))?.Value
-                                        == "true";
-
-
-                                    var kinds = field.Elements ( "Kind" )
-                                                     .Select (
-                                                              element => element
-                                                                        .Attribute ( "Name" )
-                                                                        .Value
-                                                             )
-                                                     .ToList ( ) ;
-                                    if ( kinds.Any ( ) )
-                                    {
-                                        //Debug.WriteLine(string.Join(", ", kinds));
-                                    }
-
-                                    //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
-                                    typ2.Fields.Add (
-                                                     new SyntaxFieldInfo (
-                                                                          fieldName
-                                                                        , fieldType
-                                                                        , kinds.ToArray ( )
-                                                                         )
-                                                     {  Override = @override}
-                                                    ) ;
-                                }
-                            }
+                            ParseNodeBasics ( model1 , xElement ) ;
 
                             break ;
 
@@ -1285,6 +1208,87 @@ namespace ConsoleApp1
             Debug.WriteLine ( XamlWriter.Save ( d ) ) ;
 
             Debug.WriteLine ( XamlWriter.Save ( model1 ) ) ;
+        }
+
+        private static void ParseNodeBasics ( TypesViewModel model1 , XElement xElement )
+        {
+            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+            typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
+            var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
+            if ( t2 == null )
+            {
+                Debug.WriteLine ( "No type for " + typeName2 ) ;
+            }
+            else
+            {
+                var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
+                typ2.ElementName = xElement.Name.LocalName ;
+                var kinds1 = xElement.Elements ( XName.Get ( "Kind" ) ) ;
+                if ( kinds1.Any ( ) )
+                {
+                    typ2.Kinds.Clear();
+                    var nodekinds = kinds1
+                                     .Select(element => element.Attribute("Name").Value)
+                                     .ToList();
+                    foreach ( var nodekind in nodekinds )
+                    {
+                        typ2.Kinds.Add ( nodekind ) ;
+                    }
+                    Debug.WriteLine ( typ2.Title ) ;
+                    
+                }
+                var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
+                //Debug.WriteLine ( comment ) ;
+                var fields = new List < Tuple < string , string , List < string > > > ( ) ;
+                typ2.Fields.Clear ( ) ;
+                var choices = xElement.Elements ( XName.Get ( "Choice" ) ) ;
+                if ( choices.Any ( ) )
+                {
+
+                    var choice = choices.First ( ) ;
+                    foreach ( var element in choice.Elements ( ) )
+                    {
+
+                    }
+                    foreach ( var element in choice.Elements ( XName.Get ( "Field" ) ) )
+                    {
+
+                    }
+                    Debug.WriteLine ( typ2.Title ) ;
+                }
+                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) )
+                                               .Concat (
+                                                        xElement.Elements ( XName.Get ( "Choice" ) )
+                                                                .Elements ( XName.Get ( "Field" ) )
+                                                       ) )
+                {
+                    ParseField ( field , typ2 ) ;
+                }
+            }
+        }
+
+        private static void ParseField ( XElement field , AppTypeInfo typ2 )
+        {
+            var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
+            var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+            var @override = field.Attribute ( XName.Get ( "Override" ) )?.Value == "true" ;
+            var optional = field.Attribute ( XName.Get ( "Optional" ) )?.Value  == "true" ;
+
+            var kinds = field.Elements ( "Kind" )
+                             .Select ( element => element.Attribute ( "Name" ).Value )
+                             .ToList ( ) ;
+            if ( kinds.Any ( ) )
+            {
+                //Debug.WriteLine(string.Join(", ", kinds));
+            }
+
+            //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
+            typ2.Fields.Add (
+                             new SyntaxFieldInfo ( fieldName , fieldType , kinds.ToArray ( ) )
+                             {
+                                 Override = @override , Optional = optional
+                             }
+                            ) ;
         }
 
 

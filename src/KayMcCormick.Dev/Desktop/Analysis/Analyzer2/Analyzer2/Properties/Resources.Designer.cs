@@ -61,7 +61,7 @@ namespace Analyzer2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to test1.
         /// </summary>
         internal static string AnalyzerDescription {
             get {
@@ -70,7 +70,7 @@ namespace Analyzer2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to test2.
         /// </summary>
         internal static string AnalyzerMessageFormat {
             get {

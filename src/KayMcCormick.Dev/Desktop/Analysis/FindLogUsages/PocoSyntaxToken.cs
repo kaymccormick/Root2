@@ -1,6 +1,6 @@
 namespace FindLogUsages
 {
-    public class PocoSyntaxToken
+    /*public class PocoSyntaxToken
     {
         private string _kind ;
         private int    rawKind ;
@@ -18,5 +18,5 @@ namespace FindLogUsages
         public int RawKind { get { return rawKind ; } set { rawKind = value ; } }
 
         public object Value { get { return value ; } set { this.value = value ; } }
-    }
+    }*/
 }
