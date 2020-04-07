@@ -174,7 +174,7 @@ namespace ProjInterface
                                                             , new ActionBlock < RejectedItem > (
                                                                                                 x => Debug
                                                                                                    .WriteLine (
-                                                                                                               x
+                                                                                                               x.Statement.ToString()
                                                                                                               )
                                                                                                )
                                                              ) ;

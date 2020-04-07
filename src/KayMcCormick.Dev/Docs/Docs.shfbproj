@@ -32,10 +32,12 @@
     </TransformComponentArguments>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Lib.Wpf.xml" />
-      <DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Dev.xml" />
-      <DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.dll" />
-      <DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Lib.Wpf\KayMcCormick.Lib.Wpf.dll" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="..\..\..\build\doc\KayMcCormick.Dev.xml" />
+<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Dev\KayMcCormick.Dev.dll" />
+<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\KayMcCormick.Lib.Wpf\KayMcCormick.Lib.Wpf.dll" />
+<DocumentationSource sourceFile="..\..\..\build\doc\AnalysisAppLib.xml" />
+<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\AnalysisAppLib\AnalysisAppLib.dll" />
+<DocumentationSource sourceFile="..\..\..\build\lib\Debug\x86\AnalysisAppLib\AnalysisAppLib.xml" /></DocumentationSources>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, Visual Basic, Visual Basic Usage, Managed C++, F#, XAML Usage, X#</SyntaxFilters>
     <PresentationStyle>VS2013</PresentationStyle>
