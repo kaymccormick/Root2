@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if EXPLORER
+#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -77,3 +78,4 @@ namespace ProjInterface
         #endregion
     }
 }
+#endif

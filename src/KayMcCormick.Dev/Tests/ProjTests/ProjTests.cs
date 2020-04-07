@@ -236,7 +236,7 @@ namespace ProjTests
                     default : throw new ArgumentOutOfRangeException ( nameof ( xNode ) ) ;
                 }
             }
-            options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
+            //options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
             options.WriteIndented = true ;
             var json = JsonSerializer.Serialize ( w , options ) ;
             File.WriteAllText ( @"C:\data\out.json" , json ) ;

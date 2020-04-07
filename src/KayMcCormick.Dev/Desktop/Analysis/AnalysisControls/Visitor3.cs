@@ -247,7 +247,7 @@ namespace AnalysisControls
             }
         }
 
-        private void DoTrivia ( in SyntaxTrivia syntaxTrivia )
+        private void DoTrivia ( SyntaxTrivia syntaxTrivia )
         {
             if ( syntaxTrivia.Kind ( ) == SyntaxKind.EndOfLineTrivia )
             {

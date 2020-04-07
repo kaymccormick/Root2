@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if TERMUI
+#region header
 // Kay McCormick (mccor)
 // 
 // Analysis
@@ -24,3 +25,4 @@ namespace ConsoleApp1
         }
     }
 }
+#endif

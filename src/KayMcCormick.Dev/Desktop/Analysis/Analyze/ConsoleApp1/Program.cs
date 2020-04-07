@@ -22,11 +22,12 @@ using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
 using AnalysisAppLib.Properties ;
+using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
-using ConsoleMenu ;
+
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
@@ -46,22 +47,37 @@ namespace ConsoleApp1
     internal sealed class AppContext
 
     {
+#if TERMUI
         private readonly TermUi _termUi ;
-
-        private IProjectBrowserViewModel _projectBrowserViewModel ;
-
-        //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
-
+        public TermUi Ui { get { return _termUi ; } }
         public AppContext (
             ILifetimeScope           scope
-          , IProjectBrowserViewModel projectBrowserViewModel
-          , TermUi                   termUi
+      , IProjectBrowserViewModel projectBrowserViewModel
+      , TermUi                   termUi
         )
         {
             _termUi          = termUi ;
             Scope            = scope ;
             BrowserViewModel = projectBrowserViewModel ;
         }
+#else
+        public AppContext(
+            ILifetimeScope           scope
+          , IProjectBrowserViewModel projectBrowserViewModel
+          
+        )
+        {
+            
+            Scope            = scope;
+            BrowserViewModel = projectBrowserViewModel;
+        }
+
+
+#endif
+
+        private IProjectBrowserViewModel _projectBrowserViewModel ;
+
+        //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
 
         public ILifetimeScope Scope { get ; }
 
@@ -72,7 +88,7 @@ namespace ConsoleApp1
             set { _projectBrowserViewModel = value ; }
         }
 
-        public TermUi Ui { get { return _termUi ; } }
+
     }
 
     internal sealed class AppModule : Module
@@ -81,13 +97,17 @@ namespace ConsoleApp1
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
-            var actionBlock = new ActionBlock < ILogInvocation > ( Program.Action ) ;
+            var actionBlock = new ActionBlock < ILogInvocation > (Action) ;
             builder.RegisterInstance ( actionBlock )
                    .As < ActionBlock < ILogInvocation > > ( )
                    .SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
+#if TERMUI
             builder.RegisterType < TermUi > ( ).AsSelf ( ) ;
+#endif
         }
+
+        private void Action ( ILogInvocation obj ) { }
     }
 
     internal static class Program
@@ -657,6 +677,7 @@ namespace ConsoleApp1
 
         private static void SelectVsInstance ( )
         {
+#if CONSOLEMENU
             var menu = new Menu ( "VS Instance" ) ;
             var vsInstances = MSBuildLocator.QueryVisualStudioInstances (
                                                                          new
@@ -710,6 +731,7 @@ namespace ConsoleApp1
 #endif
             Console.WriteLine ( "" ) ;
 
+#endif
 #endif
         }
 
@@ -869,14 +891,16 @@ namespace ConsoleApp1
             }
         }
 
-        private static void RunConsoleUi ( [ NotNull ] AppContext context )
+        private static void RunConsoleUi ( [ JetBrains.Annotations.NotNull ] AppContext context )
         {
+#if TERMUI
             context.Ui.Init ( ) ;
             context.Ui.Run ( ) ;
+#endif
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static async Task CodeGenAsync ( [ NotNull ] TypesViewModel model1 )
+        private static async Task CodeGenAsync ( [ JetBrains.Annotations.NotNull ] TypesViewModel model1 )
         {
             var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;//new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
             foreach ( Type mapKey in model1.Map.Keys )
@@ -1347,10 +1371,10 @@ namespace ConsoleApp1
     public sealed class ExampleTokens : IList , ICollection , IEnumerable
     {
         private readonly IList _listImplementation = new List < SToken > ( ) ;
-        #region Implementation of IEnumerable
+#region Implementation of IEnumerable
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
-        #endregion
-        #region Implementation of ICollection
+#endregion
+#region Implementation of ICollection
         public void CopyTo ( Array array , int index )
         {
             _listImplementation.CopyTo ( array , index ) ;
@@ -1361,8 +1385,8 @@ namespace ConsoleApp1
         public object SyncRoot { get { return _listImplementation.SyncRoot ; } }
 
         public bool IsSynchronized { get { return _listImplementation.IsSynchronized ; } }
-        #endregion
-        #region Implementation of IList
+#endregion
+#region Implementation of IList
         public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
 
         public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
@@ -1389,7 +1413,7 @@ namespace ConsoleApp1
         public bool IsReadOnly { get { return _listImplementation.IsReadOnly ; } }
 
         public bool IsFixedSize { get { return _listImplementation.IsFixedSize ; } }
-        #endregion
+#endregion
     }
 
     public class ExampleDict : IDictionary , ICollection , IEnumerable
@@ -1397,7 +1421,7 @@ namespace ConsoleApp1
         private readonly IDictionary _dictionaryImplementation =
             new Dictionary < SyntaxKind , ArrayList > ( ) ;
 
-        #region Implementation of IEnumerable
+#region Implementation of IEnumerable
         public bool Contains ( object key ) { return _dictionaryImplementation.Contains ( key ) ; }
 
         public void Add ( object key , object value )
@@ -1432,8 +1456,8 @@ namespace ConsoleApp1
         {
             return ( ( IEnumerable ) _dictionaryImplementation ).GetEnumerator ( ) ;
         }
-        #endregion
-        #region Implementation of ICollection
+#endregion
+#region Implementation of ICollection
         public void CopyTo ( Array array , int index )
         {
             _dictionaryImplementation.CopyTo ( array , index ) ;
@@ -1444,7 +1468,7 @@ namespace ConsoleApp1
         public object SyncRoot { get { return _dictionaryImplementation.SyncRoot ; } }
 
         public bool IsSynchronized { get { return _dictionaryImplementation.IsSynchronized ; } }
-        #endregion
+#endregion
     }
 
     [ ContentProperty ( "Example" ) ]
@@ -1501,9 +1525,9 @@ namespace ConsoleApp1
 
         public T Instance { get { return _instance ; } }
 
-        #region Overrides of Object
+#region Overrides of Object
         public override string ToString ( ) { return _renderFunc ( Instance ) ; }
-        #endregion
+#endregion
     }
 
     internal sealed class X

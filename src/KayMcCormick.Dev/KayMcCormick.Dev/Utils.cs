@@ -187,10 +187,8 @@ namespace KayMcCormick.Dev
             Debug.WriteLine ( eException.StackTrace ) ;
             if ( eException is FileNotFoundException fnf )
             {
-                if ( fnf.Message.Contains ( "KayMcCormick.Dev.XmlSerializers" ) )
-                {
                     return ;
-                }
+
             }
 
             if ( eException is FileLoadException
@@ -219,6 +217,7 @@ namespace KayMcCormick.Dev
                 var serializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
                 var sw = new StringWriter ( ) ;
                 serializer.Serialize ( sw , parsed ) ;
+#if TRACEPROVIDER
                 PROVIDER_GUID.EventWriteEXCEPTION_RAISED_EVENT (
                                                                 eException
                                                                    .GetType ( )
@@ -230,6 +229,7 @@ namespace KayMcCormick.Dev
                                                               , bytes
                                                               , sw.ToString ( )
                                                                ) ;
+#endif
                 Debug.WriteLine ( eException.ToString ( ) ) ;
             }
             catch ( Exception ex )

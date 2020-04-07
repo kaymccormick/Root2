@@ -2,14 +2,17 @@ using System ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
+using System.Reflection.Emit ;
 using System.Text ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using JetBrains.Annotations ;
 using MessageTemplates ;
 using MessageTemplates.Parsing ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using PropertyToken = MessageTemplates.Parsing.PropertyToken ;
 
 
 namespace FindLogUsages

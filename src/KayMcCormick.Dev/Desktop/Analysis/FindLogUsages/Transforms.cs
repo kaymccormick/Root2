@@ -1,7 +1,7 @@
 using System ;
 using System.Diagnostics ;
 using System.Linq ;
-
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -404,7 +404,7 @@ namespace FindLogUsages
         /// </summary>
         /// <param name="condOperatorToken"></param>
         /// <returns></returns>
-        public static object TransformOperatorToken ( in SyntaxToken condOperatorToken )
+        public static object TransformOperatorToken (  SyntaxToken condOperatorToken )
         {
             return condOperatorToken.Kind ( ).ToString ( ) ;
         }
@@ -435,7 +435,7 @@ namespace FindLogUsages
         /// </summary>
         /// <param name="argIdentifier"></param>
         /// <returns></returns>
-        public static object TransformIdentifier ( in SyntaxToken argIdentifier )
+        public static object TransformIdentifier (  SyntaxToken argIdentifier )
         {
             return new
                    {
@@ -666,7 +666,7 @@ namespace FindLogUsages
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
-        public static object TransformKeyword ( in SyntaxToken keyword )
+        public static object TransformKeyword ( SyntaxToken keyword )
         {
             return keyword.Kind ( ).ToString ( ) ;
         }

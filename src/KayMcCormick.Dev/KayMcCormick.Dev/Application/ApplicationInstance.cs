@@ -214,6 +214,7 @@ namespace KayMcCormick.Dev.Application
             _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost ;
 
             var serviceCollection = new ServiceCollection ( ) ;
+
             var protoLogger = ProtoLogger.Instance ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
@@ -311,7 +312,7 @@ namespace KayMcCormick.Dev.Application
             Utils.LogParsedExceptions ( e.Exception ) ;
         }
 
-        #region Overrides of ApplicationInstanceBase
+#region Overrides of ApplicationInstanceBase
         /// <summary>
         /// </summary>
         public override void Initialize ( )
@@ -319,7 +320,7 @@ namespace KayMcCormick.Dev.Application
             base.Initialize ( ) ;
             Container1 = BuildContainer ( ) ;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// </summary>
@@ -534,8 +535,8 @@ namespace KayMcCormick.Dev.Application
         }
 
 
-        #region IDisposable
-        #endregion
+#region IDisposable
+#endregion
     }
 
     /// <summary>
@@ -561,13 +562,13 @@ namespace KayMcCormick.Dev.Application
             _threadId = Thread.CurrentThread.ManagedThreadId ;
         }
 
-        #region Overrides of Object
+#region Overrides of Object
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         public override string ToString ( ) { return $"{nameof ( AppLogMessage )}[{_threadId}]: {Message}" ; }
-        #endregion
+#endregion
     }
 
     /// <summary>

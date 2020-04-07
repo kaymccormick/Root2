@@ -12,7 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+#if EXPLORER
 using ExplorerCtrl ;
+#endif
+
+
 
 namespace TestApp
 {

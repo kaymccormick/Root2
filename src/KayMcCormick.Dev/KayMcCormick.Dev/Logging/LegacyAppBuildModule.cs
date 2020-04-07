@@ -150,11 +150,14 @@ namespace KayMcCormick.Dev.Logging
             var reg = args.ComponentRegistration ;
             var activatorLimitType = reg.Activator.LimitType ;
             Logger.Trace ( "Registered {limitType}", activatorLimitType ) ;
+#if TRACEPROVIDER
             PROVIDER_GUID.EventWriteEVENT_COMPONENT_REGISTERED (
                                                                 activatorLimitType
                                                                    .AssemblyQualifiedName
                                                               , reg.Id
+
                                                                ) ;
+#endif
 
             reg.Activated += ( o , eventArgs ) => {
                 var instanceDesc = eventArgs.Instance ;

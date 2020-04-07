@@ -77,10 +77,12 @@ namespace KayMcCormick.Lib.Wpf
                                                                                           ApplicationInstance.ApplicationInstanceConfiguration (
                                                                                                                                                 message
                                                                                                                                                     => {
-                                                                                                                                                    PROVIDER_GUID
+#if TRACEPROVIDER
+                                                                                                                                                        PROVIDER_GUID
                                                                                                                                                        .EventWriteSETUP_LOGGING_EVENT (
                                                                                                                                                                                        message
                                                                                                                                                                                       ) ;
+#endif
                                                                                                                                                 }
                                                                                                                                               , ApplicationGuid
                                                                                                                                               , null
@@ -223,7 +225,7 @@ namespace KayMcCormick.Lib.Wpf
             return Array.Empty < IModule > ( ) ;
         }
 
-        #region Overrides of Application
+#region Overrides of Application
         /// <summary>
         /// </summary>
         /// <param name="e"></param>
@@ -263,13 +265,13 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         }
         public virtual Type[] OptionTypes => _optionType ;
 #endif
-        #endregion
+#endregion
 
-        #region IDisposable
+#region IDisposable
         /// <summary>
         /// </summary>
         public virtual void Dispose ( ) { _applicationInstance?.Dispose ( ) ; }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -277,7 +279,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
     /// </summary>
     public class InstanceInfoProvider : TypeDescriptionProvider
     {
-        #region Overrides of TypeDescriptionProvider
+#region Overrides of TypeDescriptionProvider
         public override ICustomTypeDescriptor GetTypeDescriptor (
             Type   objectType
           , object instance
@@ -289,6 +291,6 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
             }
             return base.GetTypeDescriptor ( objectType , instance ) ;
         }
-        #endregion
+#endregion
     }
 }

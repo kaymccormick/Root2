@@ -1,3 +1,4 @@
+#if TERMUI
 using System.Diagnostics ;
 using System.Linq ;
 using JetBrains.Annotations ;
@@ -118,3 +119,4 @@ namespace ConsoleApp1
         }
     }
 }
+#endif

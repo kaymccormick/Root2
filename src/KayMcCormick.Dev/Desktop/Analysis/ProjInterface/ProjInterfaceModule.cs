@@ -27,7 +27,9 @@ using Autofac.Core ;
 using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
+#if EXPLORER
 using ExplorerCtrl ;
+#endif
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
@@ -69,6 +71,7 @@ namespace ProjInterface
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
             //builder.RegisterType < PaneService > ( ) ;
+#if PYTHON
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
                                                                             , new Uri(
@@ -79,9 +82,13 @@ namespace ProjInterface
             builder.RegisterType < PythonViewModel > ( )
                    .AsSelf ( )
                    .SingleInstance ( ) ; //.AutoActivate();
-            builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > ( Adapter ) ;
+                        builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > ( Adapter ) ;
+#endif
+
+
             builder.RegisterType < EventLogView > ( ).AsSelf ( ) ;
             builder.RegisterType < EventLogViewModel > ( ) ;
+#if PYTHON
             builder.RegisterBuildCallback (
                                            scope => {
                                                var py = scope.Resolve < PythonViewModel > ( ) ;
@@ -94,9 +101,10 @@ namespace ProjInterface
                                                init.EndInit ( ) ;
                                            }
                                           ) ;
-
+#endif
             builder.RegisterModule < AnalysisAppLibModule > ( ) ; ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
+#if EXPLORER
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
                                                                          (
                                                                              context
@@ -111,6 +119,7 @@ namespace ProjInterface
                                                                              return r ;
                                                                          }
                                                                         ) ;
+#endif
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
@@ -136,6 +145,7 @@ namespace ProjInterface
                        > ( ControlViewCommandAdapter )
                       .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
 
+#if PYTHON
             builder.RegisterAssemblyTypes (
                                            Assembly.GetCallingAssembly ( )
                                          , typeof ( PythonControl ).Assembly
@@ -152,6 +162,7 @@ namespace ProjInterface
                    .As < IDisplayableAppCommand > ( )
                    .As < IAppCommand > ( )
                    .As < IDisplayable > ( ) ;
+#endif
 
             builder.Register (
                               ( context , parameters )
@@ -190,7 +201,7 @@ namespace ProjInterface
                                                       } ;
                 
         }
-
+#if PYTHON
         [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext                    c
@@ -209,7 +220,7 @@ namespace ProjInterface
                     } ;
             return r ;
         }
-
+#endif
         private static async Task < IAppCommandResult > CommandFunc ( [ NotNull ] LambdaAppCommand command )
         {
             var (viewFunc1 , pane1) =

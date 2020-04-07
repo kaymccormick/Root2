@@ -603,10 +603,12 @@ namespace KayMcCormick.Dev.Logging
 
         private static void LogAddTarget ( [ NotNull ] Target target )
         {
+#if TRACEPROVIDER
             PROVIDER_GUID.EventWriteLOGTARGET_ATTACHED_EVENT (
                                                               target.Name
                                                             , target.GetType ( ).FullName
                                                              ) ;
+#endif
         }
 
         [ NotNull ]
@@ -1180,7 +1182,7 @@ namespace KayMcCormick.Dev.Logging
         [ DllImport ( "kernel32.dll" ) ]
         private static extern void OutputDebugString ( string lpOutputString ) ;
 
-        #region Target Methods
+#region Target Methods
         /// <summary>Adds the supplied target to the current NLog configuration.</summary>
         /// <param name="target">The target.</param>
         /// <param name="minLevel"></param>
@@ -1217,7 +1219,7 @@ namespace KayMcCormick.Dev.Logging
                 LogManager.Configuration.LogFactory.ReconfigExistingLoggers ( ) ;
             }
         }
-        #endregion
+#endregion
 
     }
 }

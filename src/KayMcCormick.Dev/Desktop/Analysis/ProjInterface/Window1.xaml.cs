@@ -174,7 +174,7 @@ namespace ProjInterface
                                                             , new ActionBlock < RejectedItem > (
                                                                                                 x => Debug
                                                                                                    .WriteLine (
-                                                                                                               x
+                                                                                                               x.Statement.ToString()
                                                                                                               )
                                                                                                )
                                                              ) ;
@@ -236,9 +236,11 @@ namespace ProjInterface
 
         private void ExecutePythonCode ( object sender , ExecutedRoutedEventArgs e )
         {
+#if PYTHON
             var scope = ( ILifetimeScope ) GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
             var model = scope.Resolve < PythonViewModel > ( ) ;
             model.ExecutePythonScript ( textEditor.Text ) ;
+#endif
         }
 
         // AddHandler (
@@ -272,12 +274,12 @@ namespace ProjInterface
             Debug.WriteLine ( e.ActivatedType.FullName ) ;
         }
 
-        #region Implementation of IResourceResolver
+#region Implementation of IResourceResolver
         public object ResolveResource ( object resourceKey )
         {
             return TryFindResource ( resourceKey ) ;
         }
-        #endregion
+#endregion
     }
 
     public class Filter

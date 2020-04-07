@@ -56,8 +56,8 @@ namespace KayMcCormick.Dev.Serialization
 
         private class InnerConverter<T, X> : JsonConverter <T> where T : Lazy<X>
         {
-            #region Overrides of JsonConverter<T>
-            public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return default ; }
+                #region Overrides of JsonConverter<T>
+                public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null; }
 
             public override void Write (
                 Utf8JsonWriter        writer

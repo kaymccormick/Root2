@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if NETFRAMEWORK || NETCOREAPP3_0 || NETCOREAPP3_1
+#region header
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -19,7 +20,7 @@ using System.Text.Json.Serialization ;
 using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
-using Xunit.Abstractions ;
+
 using XamlWriter = System.Xaml.XamlWriter ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
@@ -41,13 +42,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// 
         /// </summary>
         /// <param name="output"></param>
-        public JsonFrameworkElementConverter ( ITestOutputHelper output ) { Output = output ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ITestOutputHelper Output { get ; }
-
+        
         #region Overrides of JsonConverter
         /// <summary>
         /// 
@@ -68,7 +63,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
         internal sealed class JsonWriter : XamlWriter
         {
             private readonly MemoryStream      _memoryStream ;
-            private readonly ITestOutputHelper _output ;
             private readonly Utf8JsonWriter    _writer ;
             private readonly XamlObjectReader  _xamlObjectReader ;
 
@@ -84,16 +78,15 @@ namespace KayMcCormick.Lib.Wpf.JSON
               , XamlObjectReader  xamlObjectReader
               , WriteContext      writeContext
               , MemoryStream      memoryStream
-              , ITestOutputHelper output
             )
             {
                 _context.Push ( writeContext ) ;
-                output.WriteLine ( _context.Count.ToString ( ) ) ;
+                
                 _writer           = writer ;
                 _schemaContext    = schemaContext ;
                 _xamlObjectReader = xamlObjectReader ;
                 _memoryStream     = memoryStream ;
-                _output           = output ;
+                
             }
 
             #region Overrides of XamlWriter
@@ -121,12 +114,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
                                                  , 0
                                                  , ( int ) _memoryStream.Length
                                                   ) ;
-                _output.WriteLine ( str ) ;
+                //_output.WriteLine ( str ) ;
 
                 if ( type.IsMarkupExtension
                      && type.UnderlyingType == typeof ( NullExtension ) )
                 {
-                    _output.WriteLine ( _context.Count.ToString ( ) ) ;
+                    //_output.WriteLine ( _context.Count.ToString ( ) ) ;
                     switch ( _context.Peek ( ) )
                     {
                         case WriteContext.PropertyName : throw new InvalidOperationException ( ) ;
@@ -143,7 +136,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 else
 
                 {
-                    _output.WriteLine ( _context.Count.ToString ( ) ) ;
+                    //_output.WriteLine ( _context.Count.ToString ( ) ) ;
                     switch ( _context.Peek ( ) )
                     {
                         case WriteContext.PropertyName :
@@ -162,7 +155,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             public override void WriteEndObject ( )
             {
-                _output.WriteLine ( _context.Count.ToString ( ) ) ;
+                //_output.WriteLine ( _context.Count.ToString ( ) ) ;
                 switch ( _context.Peek ( ) )
                 {
                     case WriteContext.PropertyName :
@@ -181,9 +174,9 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             public override void WriteStartMember ( XamlMember xamlMember )
             {
-                _output.WriteLine (
-                                   $"{nameof ( WriteStartMember )}: {_context.Count.ToString ( )}"
-                                  ) ;
+                //_output.WriteLine (
+                                   // $"{nameof ( WriteStartMember )}: {_context.Count.ToString ( )}"
+                                  // ) ;
 
                 if ( ! _context.Any ( ) )
                 {
@@ -193,7 +186,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                                                      , 0
                                                      , ( int ) _memoryStream.Length
                                                       ) ;
-                    _output.WriteLine ( str ) ;
+                    //_output.WriteLine ( str ) ;
                 }
 
                 ;
@@ -213,9 +206,9 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             public override void WriteEndMember ( )
             {
-                _output.WriteLine (
-                                   $"{nameof ( WriteEndMember )}: {_context.Count.ToString ( )}"
-                                  ) ;
+                //_output.WriteLine (
+                                   // $"{nameof ( WriteEndMember )}: {_context.Count.ToString ( )}"
+                                  // ) ;
 
                 if ( ! _context.Any ( ) )
                 {
@@ -225,7 +218,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                                                      , 0
                                                      , ( int ) _memoryStream.Length
                                                       ) ;
-                    _output.WriteLine ( str ) ;
+                    //_output.WriteLine ( str ) ;
                 }
 
                 ;
@@ -244,7 +237,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             public override void WriteValue ( object value )
             {
-                _output.WriteLine ( _context.Count.ToString ( ) ) ;
+                //_output.WriteLine ( _context.Count.ToString ( ) ) ;
                 switch ( _context.Peek ( ) )
                 {
                     case WriteContext.InArray :
@@ -262,9 +255,9 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
             public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration )
             {
-                _output.WriteLine (
-                                   $"{nameof ( WriteNamespace )}: {_context.Count.ToString ( )}"
-                                  ) ;
+                //_output.WriteLine (
+                                   // $"{nameof ( WriteNamespace )}: {_context.Count.ToString ( )}"
+                                  // ) ;
 
 
                 switch ( _context.Peek ( ) )
@@ -300,16 +293,16 @@ namespace KayMcCormick.Lib.Wpf.JSON
           , JsonSerializerOptions options
         )
         {
-            return new FrameworkElementJsonConverter ( typeToConvert , Output ) ;
+            return new FrameworkElementJsonConverter ( typeToConvert ) ;
         }
 
         private class FrameworkElementJsonConverter : JsonConverter < FrameworkElement >
         {
-            private readonly ITestOutputHelper _output ;
+            
 
-            public FrameworkElementJsonConverter ( Type typeToConvert , ITestOutputHelper output )
+            public FrameworkElementJsonConverter ( Type typeToConvert)
             {
-                _output = output ;
+                //_output = output ;
             }
 
             #region Overrides of JsonConverter<FrameworkElement>
@@ -347,7 +340,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                                                    , r
                                                    , WriteContext.PropertyName
                                                    , memoryStream
-                                                   , _output
+                                                   
                                                     ) ;
                     XamlServices.Transform ( r , xamlWriter ) ;
                     writer.WriteEndObject ( ) ;
@@ -399,3 +392,4 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
     }
 }
+#endif

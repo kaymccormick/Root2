@@ -160,7 +160,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         /// <param name="field"></param>
         /// <param name="elem"></param>
-        public void AddUnknown ( string field , in JsonElement elem )
+        public void AddUnknown ( string field , JsonElement elem )
         {
             UnknownFields[ field ] = elem ;
         }

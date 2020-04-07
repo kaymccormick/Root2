@@ -42,7 +42,14 @@ namespace AnalysisAppLib
         private class SyntaxConverter < T > : JsonConverter<T>
         {
             #region Overrides of JsonConverter<T>
-            public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return default ; }
+            public override T Read (
+                ref Utf8JsonReader    reader
+              , Type                  typeToConvert
+              , JsonSerializerOptions options
+            )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
 
             public override void Write (
                 Utf8JsonWriter        writer

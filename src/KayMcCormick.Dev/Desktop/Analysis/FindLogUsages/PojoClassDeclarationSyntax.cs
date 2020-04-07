@@ -16,7 +16,7 @@ namespace FindLogUsages
     public class PojoClassDeclarationSyntax
     {
         public PojoClassDeclarationSyntax (
-            in PocoSyntaxToken identifier
+            PocoSyntaxToken identifier
           , List < object >    members
         )
         {

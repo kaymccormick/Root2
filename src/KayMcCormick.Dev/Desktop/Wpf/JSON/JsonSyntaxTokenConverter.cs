@@ -33,7 +33,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
           , JsonSerializerOptions options
         )
         {
-            return default ;
+            throw new InvalidOperationException();
         }
 
         /// <summary>

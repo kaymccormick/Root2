@@ -84,17 +84,25 @@ namespace AnalysisControls
             builder.Register ( ( context , parameters ) => {
                 var stream = Assembly.GetExecutingAssembly ( )
                                      .GetManifestResourceStream (
-                                                                 "AnalysisControls.TypesViewModel.xaml"
+                                                                 "Corenet.Desktop.Analysis.AnalysisControls.TypesViewModel.xaml"
+                                                                 
                                                                 ) ;
                 if ( stream == null )
                 {
                     return new TypesViewModel();
                 } else 
                                   {
-                                      TypesViewModel v =
-                                          ( TypesViewModel ) XamlReader.Load ( stream ) ;
-                                      stream.Close ( ) ;
-                                      return v ;
+                                      try
+                                      {
+                                          TypesViewModel v =
+                                              ( TypesViewModel ) XamlReader.Load ( stream ) ;
+                                          stream.Close ( ) ;
+                                          return v ;
+                                      }
+                                      catch ( Exception )
+                                      {
+                                          return new TypesViewModel();
+                    }
                                   }
                               }
                              )

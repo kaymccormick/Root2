@@ -1,4 +1,5 @@
-﻿using System ;
+﻿#if PYTHON
+using System ;
 using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
@@ -390,3 +391,4 @@ namespace AnalysisControls.ViewModel
         #endregion
     }
 }
+#endif

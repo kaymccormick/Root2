@@ -13,6 +13,7 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
+using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
@@ -272,7 +273,7 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public static XmlDocument LoadDoc ( )
         {
-            var xml = Resources.doc ;
+            var xml = Resources.doc;
             var docuDoc = new XmlDocument ( ) ;
             docuDoc.LoadXml ( xml ) ;
             return docuDoc ;

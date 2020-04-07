@@ -5,7 +5,46 @@ using System.ComponentModel ;
 using System.Linq ;
 using System.Windows.Markup ;
 using System.Xml.Linq ;
+using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
+
+namespace AnalysisAppLib.Syntax
+{
+    /// <summary>
+    /// </summary>
+    public sealed class MethodDocumentation : MemberBaseDocumentation
+    {
+        private readonly string _parameters ;
+
+        /// <summary>
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="type"></param>
+        /// <param name="member"></param>
+        /// <param name="parameters"></param>
+        /// <param name="xmlDoc"></param>
+        public MethodDocumentation (
+            string                        elementId
+          , [ NotNull ] Type              type
+          , string                        member
+          , string                        parameters
+          , IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , type , member , xmlDoc )
+        {
+            _parameters = parameters ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MethodDocumentation ( ) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Parameters { get { return _parameters ; } }
+    }
+}
 
 namespace AnalysisAppLib
 {
@@ -489,41 +528,6 @@ namespace AnalysisAppLib
         /// </summary>
         public bool IsFixedSize { get { return ( ( IList ) _listImplementation ).IsFixedSize ; } }
         #endregion
-    }
-
-    /// <summary>
-    /// </summary>
-    public sealed class MethodDocumentation : MemberBaseDocumentation
-    {
-        private readonly string _parameters ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="elementId"></param>
-        /// <param name="type"></param>
-        /// <param name="member"></param>
-        /// <param name="parameters"></param>
-        /// <param name="xmlDoc"></param>
-        public MethodDocumentation (
-            string                        elementId
-          , [ NotNull ] Type              type
-          , string                        member
-          , string                        parameters
-          , IEnumerable < XmlDocElement > xmlDoc = null
-        ) : base ( elementId , type , member , xmlDoc )
-        {
-            _parameters = parameters ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public MethodDocumentation ( ) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Parameters { get { return _parameters ; } }
     }
 
     /// <summary>

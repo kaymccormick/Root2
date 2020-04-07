@@ -1,4 +1,5 @@
-﻿using System ;
+﻿#if XCEED
+using  System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
@@ -1186,3 +1187,4 @@ namespace KayMcCormick.Lib.Wpf
         }
     }
 }
+#endif
