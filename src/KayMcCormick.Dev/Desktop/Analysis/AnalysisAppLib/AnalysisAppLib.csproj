@@ -15,7 +15,8 @@
     <AssemblyName>AnalysisAppLib</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <DocumentationFile>$(DocOutputPath)KayMcCormick.Dev.xml</DocumentationFile>
+    <DocumentationFile>$(DocOutputPath)AnalysisAppLib.xml</DocumentationFile>
+    <GenerateDocumentation>true</GenerateDocumentation>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -44,7 +45,6 @@
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\..\..\..\build\lib\Debug\x86\AnalysisAppLib\AnalysisAppLib.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>

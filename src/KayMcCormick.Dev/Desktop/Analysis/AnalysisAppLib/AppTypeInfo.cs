@@ -4,10 +4,12 @@ using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Linq ;
+using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Windows.Markup ;
+using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp ;
 
@@ -551,5 +553,93 @@ namespace AnalysisAppLib
     /// </summary>
     public class SyntaxComponentCollection : ObservableCollection < ComponentInfo >
     {
+    }
+
+    public sealed class AppMethodInfo
+    {
+        private MethodInfo _methodInfo;
+
+        /// <summary>
+        /// </summary>
+        [JsonIgnore]
+        public MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value; } }
+
+        /// <summary>
+        /// </summary>
+        [CanBeNull] public Type ReflectedType { get { return MethodInfo.ReflectedType; } }
+
+        /// <summary>
+        /// </summary>
+        public Type DeclaringType { get { return MethodInfo.DeclaringType; } }
+
+        /// <summary>
+        /// </summary>
+        public string MethodName { get { return MethodInfo.Name; } }
+
+        /// <summary>
+        /// </summary>
+        public Type ReturnType { get { return MethodInfo.ReturnType; } }
+
+        /// <summary>
+        /// </summary>
+        public IEnumerable<AppParameterInfo> Parameters
+        {
+            get
+            {
+                return MethodInfo.GetParameters()
+                                 .Select(
+                                         (info, i) => new AppParameterInfo
+                                                      {
+                                                          Index = i
+                                                         ,
+                                                          ParameterType = info.ParameterType
+                                                         ,
+                                                          Name = info.Name
+                                                         ,
+                                                          IsOptional = info.IsOptional
+                                                      }
+                                        );
+            }
+        }
+
+        /// <summary>
+        /// </summary
+        [JsonIgnore]
+        public MethodDocumentation XmlDoc { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AppParameterInfo
+    {
+        private int    _index;
+        private bool   _isOptional;
+        private string _name;
+        private Type   _parameterType;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type ParameterType
+        {
+            get { return _parameterType; }
+            set { _parameterType = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get { return _name; } set { _name = value; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Index { get { return _index; } set { _index = value; } }
     }
 }

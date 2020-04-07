@@ -92,24 +92,25 @@ namespace ConsoleApp1
 
     internal static class Program
     {
-        private static string[] AssemblyRefs = new[]
-                                               {
-                                                   @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll"
-                                                 , @"C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\nlog\4.6.8\lib\net45\NLog.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Runtime.Serialization.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ServiceModel.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Transactions.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll"
-                                                 , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll"
-                                               };
+        private const string ModelXamlFilename = @"C:\data\logs\model.xaml";
+        private static readonly string[] AssemblyRefs = new[]
+                                                        {
+                                                            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll"
+                                                          , @"C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\nlog\4.6.8\lib\net45\NLog.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Runtime.Serialization.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ServiceModel.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Transactions.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll"
+                                                          , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll"
+                                                        };
         private static void PopulateJsonConverters ( bool disableLogging )
         {
             if ( ! disableLogging )
@@ -140,11 +141,13 @@ namespace ConsoleApp1
             }
         }
 
-        private static ILogger Logger = null ;
+        private static ILogger Logger ;
 
-        private static ApplicationInstance _appinst = null ;
+        private static ApplicationInstance _appinst ;
+        static Program ( ) { Logger = null ; }
 
         //============= Config [Edit these with your settings] =====================
+        // ReSharper disable once UnusedParameter.Local
         private static async Task < int > Main ( string[] args)
         {
             var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
@@ -721,7 +724,7 @@ namespace ConsoleApp1
         private static void WriteThisTypesViewModel ( TypesViewModel model )
         {
             var writer = XmlWriter.Create (
-                                           @"C:\data\logs\model.xaml"
+                                           ModelXamlFilename
                                          , new XmlWriterSettings { Indent = true , Async = true }
                                           ) ;
             XamlWriter.Save ( model , writer ) ;
@@ -1224,11 +1227,12 @@ namespace ConsoleApp1
                 var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
                 typ2.ElementName = xElement.Name.LocalName ;
                 var kinds1 = xElement.Elements ( XName.Get ( "Kind" ) ) ;
-                if ( kinds1.Any ( ) )
+                var xElements = kinds1 as XElement[] ?? kinds1.ToArray ( ) ;
+                if ( xElements.Any ( ) )
                 {
                     typ2.Kinds.Clear();
-                    var nodekinds = kinds1
-                                     .Select(element => element.Attribute("Name").Value)
+                    var nodekinds = xElements
+                                     .Select(element => element.Attribute("Name")?.Value)
                                      .ToList();
                     foreach ( var nodekind in nodekinds )
                     {
@@ -1267,15 +1271,15 @@ namespace ConsoleApp1
             }
         }
 
-        private static void ParseField ( XElement field , AppTypeInfo typ2 )
+        private static void ParseField ( [ NotNull ] XElement field , [ NotNull ] AppTypeInfo typ2 )
         {
-            var fieldName = field.Attribute ( XName.Get ( "Name" ) ).Value ;
-            var fieldType = field.Attribute ( XName.Get ( "Type" ) ).Value ;
+            var fieldName = field.Attribute ( XName.Get ( "Name" ) )?.Value ;
+            var fieldType = field.Attribute ( XName.Get ( "Type" ) )?.Value ;
             var @override = field.Attribute ( XName.Get ( "Override" ) )?.Value == "true" ;
             var optional = field.Attribute ( XName.Get ( "Optional" ) )?.Value  == "true" ;
 
             var kinds = field.Elements ( "Kind" )
-                             .Select ( element => element.Attribute ( "Name" ).Value )
+                             .Select ( element => element.Attribute ( "Name" )?.Value )
                              .ToList ( ) ;
             if ( kinds.Any ( ) )
             {
@@ -1329,7 +1333,7 @@ namespace ConsoleApp1
         private static void Init ( ) { }
     }
 
-    internal class SyntaxInfo
+    internal sealed class SyntaxInfo
     {
         public SyntaxKind Kind { get ; set ; }
 
@@ -1340,9 +1344,9 @@ namespace ConsoleApp1
     {
     }
 
-    public class ExampleTokens : IList , ICollection , IEnumerable
+    public sealed class ExampleTokens : IList , ICollection , IEnumerable
     {
-        private IList _listImplementation = new List < SToken > ( ) ;
+        private readonly IList _listImplementation = new List < SToken > ( ) ;
         #region Implementation of IEnumerable
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
         #endregion
@@ -1388,24 +1392,9 @@ namespace ConsoleApp1
         #endregion
     }
 
-    public class SToken
-    {
-        public SToken ( ) { }
-
-        public SToken ( string tokenKind , string tokenValue )
-        {
-            TokenKind  = tokenKind ;
-            TokenValue = tokenValue ;
-        }
-
-        public string TokenKind { get ; set ; }
-
-        public string TokenValue { get ; set ; }
-    }
-
     public class ExampleDict : IDictionary , ICollection , IEnumerable
     {
-        private IDictionary _dictionaryImplementation =
+        private readonly IDictionary _dictionaryImplementation =
             new Dictionary < SyntaxKind , ArrayList > ( ) ;
 
         #region Implementation of IEnumerable
@@ -1465,14 +1454,14 @@ namespace ConsoleApp1
         private string _example ;
         private string _typeName ;
 
-        private ExampleTokens _tokens = new ExampleTokens ( ) ;
+        private readonly ExampleTokens _tokens = new ExampleTokens ( ) ;
         private int           _id ;
 
         public ExampleSyntax (
             int             kind
           , string          example
           , string          typeName
-          , List < SToken > tokens
+          , [ NotNull ] List < SToken > tokens
           , int             id
         )
         {
