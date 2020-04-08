@@ -450,6 +450,11 @@ namespace AnalysisAppLib
         /// </summary>
         // ReSharper disable once UnusedMember.Global
         public bool Optional { get { return _optional ; } set { _optional = value ; } }
+
+        public override string ToString ( )
+        {
+            return $"TypeName: {TypeName}, Name: {Name}, Kinds: {Kinds}, Type: {Type}, Types: {Types}, ClrTypes: {ClrTypes}, Override: {Override}, Optional: {Optional}" ;
+        }
     }
 
     /// <summary>

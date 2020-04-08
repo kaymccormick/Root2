@@ -47,7 +47,7 @@ using Castle.DynamicProxy ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Command ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
@@ -58,7 +58,6 @@ using KayMcCormick.Lib.Wpf.View ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Moq ;
 using NLog ;
-using NLog.Layouts ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
@@ -69,6 +68,7 @@ using XamlWriter = System.Windows.Markup.XamlWriter ;
 namespace ProjTests
 {
 //    [ CollectionDefinition ( "GeneralPurpose" ) ]
+    // ReSharper disable once UnusedType.Global
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
 
     {
@@ -88,16 +88,20 @@ namespace ProjTests
       // , IClassFixture < ProjectFixture >
       : IDisposable
     {
+        private const string TypesViewModelXamlPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml";
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
         private readonly ITestOutputHelper _output ;
+#pragma warning disable 169
         private readonly LoggingFixture    _loggingFixture ;
+#pragma warning restore 169
+#pragma warning disable 169
         private readonly ProjectFixture    _projectFixture ;
+#pragma warning restore 169
 
-        private ILifetimeScope        _testScope ;
         private JsonSerializerOptions _testJsonSerializerOptions ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
@@ -127,7 +131,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TestRead ( )
         {
-            var x = XamlReader.Load ( new FileStream(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml", FileMode.Open ) ) ;
+            var x = XamlReader.Load ( new FileStream(TypesViewModelXamlPath, FileMode.Open ) ) ;
 //            var json = JsonSerializer.Serialize ( x ) ;
         }
         [ WpfFact ]
@@ -148,16 +152,16 @@ namespace ProjTests
             }
 
                 
-                XamlWriter.Save (viewModel, File.CreateText (
-                                                             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml"
-                                                            ) ); 
+            XamlWriter.Save (viewModel, File.CreateText (
+                                                         TypesViewModelXamlPath
+                                                        ) ); 
             
 
 
-            return;
-            var typesView = new TypesView ( viewModel ) ;
-            var w = new Window { Content = typesView } ;
-            w.ShowDialog ( ) ;
+         
+            // var typesView = new TypesView ( viewModel ) ;
+            // var w = new Window { Content = typesView } ;
+            // w.ShowDialog ( ) ;
         }
 
         [ Fact ]
@@ -201,18 +205,18 @@ namespace ProjTests
 
         }
 
-        [WpfFact ]
+        //[WpfFact ]
         public void TestJsonSerialization ( )
         {
             var w = new Window ( ) ;
             var options = new JsonSerializerOptions { WriteIndented = true } ;
             var xaml = XamlWriter.Save ( w ) ;
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml(xaml);
-            Utf8JsonWriter writer = new Utf8JsonWriter(new MemoryStream());
-            MyXmlWriter xxMyXmlWriter = new MyXmlWriter(writer);
+            var writer = new Utf8JsonWriter(new MemoryStream());
+            var xxMyXmlWriter = new MyXmlWriter(writer);
             XamlWriter.Save ( w , xxMyXmlWriter ) ;
-            XDocument xdoc = new XDocument();
+            var xdoc = new XDocument();
             XDocument.Parse ( xaml ) ;
 
             
@@ -994,7 +998,7 @@ namespace ProjTests
                 }
                 catch ( Exception ex )
                 {
-                    proc.Kill();
+                    proc?.Kill();
                     proc = null ;
                 }
 
@@ -1106,10 +1110,47 @@ namespace ProjTests
                                                      "AnalysisControls.g"
                                                    , typeof ( PythonControl ).Assembly
                                                     ) ;
+            // ReSharper disable once ResourceItemNotResolved
             var y = x.GetStream ( "mainstatusbar.baml" ) ;
-            var b = new Baml2006Reader(y, new XamlReaderSettings(){});
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var b = new Baml2006Reader(y, new XamlReaderSettings());
             var c = b.SchemaContext ;
             var t = c.GetXamlType ( typeof ( TypesViewModel ) ) ;
         }
+
+        [Fact]
+        public void TestLambdaAppCommand ( )
+        {
+            AppLoggingConfigHelper.EnsureLoggingConfigured ( SlogMethod ) ;
+            var c = new LambdaAppCommand (
+                                          "test"
+                                        , async command => {
+                                            Logger.Info($"{command}");
+                                            Logger.Info($"{command.Argument}");
+                                            return AppCommandResult.Success ;
+                                          }
+                                        , "arg"
+                                        , exception => Debug.WriteLine ( $"badness: {exception}" )
+                                         ) ;
+            c.ExecuteAsync ( )
+             .ContinueWith (
+                            task => {
+                                if ( task.IsFaulted )
+                                {
+                                    Debug.WriteLine ( "Faulted" ) ;
+                                }
+
+                                if ( task.IsCompleted )
+                                {
+                                    Debug.WriteLine ( "completed" ) ;
+                                    Debug.WriteLine ( task.Result.ToString ( ) ) ;
+                                }
+                            }
+                           )
+             .Wait (10000 ) ;
+
+        }
+
+        private void SlogMethod ( string message ) { }
     }
 }

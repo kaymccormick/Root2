@@ -14,12 +14,14 @@ using System.Diagnostics ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>
     /// </summary>
-    public class WrappedAppCommand : IAppCommand , ICommand
+    public sealed class WrappedAppCommand : IAppCommand , ICommand
     {
         private readonly IHandleException _handleException ;
         private readonly IAppCommand      _wrappedCommand ;
@@ -28,27 +30,29 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         /// <param name="wrappedCommand"></param>
         /// <param name="handleException"></param>
-        public WrappedAppCommand ( IAppCommand wrappedCommand , IHandleException handleException )
+        public WrappedAppCommand ( IAppCommand wrappedCommand , IHandleException handleException , object argument=null )
         {
             _wrappedCommand  = wrappedCommand ;
             _handleException = handleException ;
+            Argument = argument ;
         }
+
+        /// <inheritdoc />
+        public object Argument { get ; set ; }
 
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ ItemCanBeNull ]
         public async Task < IAppCommandResult > ExecuteAsync ( )
         {
-            Debug.WriteLine ( "Executinng command" ) ;
+            Debug.WriteLine ( "Executing command" ) ;
             IAppCommandResult r = null ;
             try
             {
                 r = await _wrappedCommand.ExecuteAsync ( )
                                          .ContinueWith (
-                                                        ( task , o ) => {
-                                                            return ( IAppCommandResult )
-                                                                AppCommandResult.Cancelled ;
-                                                        }
+                                                        ( task , o ) => AppCommandResult.Cancelled
                                                       , this
                                                       , CancellationToken.None
                                                       , TaskContinuationOptions.NotOnRanToCompletion
@@ -68,7 +72,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
-        public ICommand Command { get { return this ; } }
+        [ NotNull ] public ICommand Command { get { return this ; } }
 
         /// <summary>
         /// </summary>
@@ -91,7 +95,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <summary>
         /// </summary>
         /// <param name="parameter"></param>
-        public void Execute ( object parameter ) { ExecuteAsync ( ) ; }
+        public void Execute ( object parameter ) { ExecuteAsync ( ).Wait() ; }
 
         /// <summary>
         /// </summary>

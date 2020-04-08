@@ -29,6 +29,8 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Lib.Wpf.Command ;
+using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -191,9 +193,8 @@ namespace ConsoleApp1
 
         private async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
         {
-// #if MSBUILDLOCATOR
-//             SelectVsInstance ( ) ;
-// #endif
+             SelectVsInstance ( ) ;
+
             await RunConsoleUiAsync ( context ) ;
 
             return 1 ;
@@ -597,6 +598,18 @@ namespace ConsoleApp1
 
         private static void SelectVsInstance ( )
         {
+            var vsInstances = MSBuildLocator
+                             .QueryVisualStudioInstances (
+                                                          new VisualStudioInstanceQueryOptions
+                                                          {
+                                                              DiscoveryTypes =
+                                                                  DiscoveryType.VisualStudioSetup
+                                                          }
+                                                         )
+                             .Where ( inst => inst.Version.Major == 15 )
+                             .First ( ) ;
+            MSBuildLocator.RegisterInstance ( vsInstances ) ;
+            return;
 #if CONSOLEMENU
             var menu = new Menu ( "VS Instance" ) ;
             var vsInstances = MSBuildLocator.QueryVisualStudioInstances (
@@ -620,7 +633,7 @@ namespace ConsoleApp1
             var choices = visualStudioInstances.Select (
                                                         x => new MenuWrapper < VisualStudioInstance > (
                                                                                                        x
-                                                                                             , RenderFunc
+                                                                                         , RenderFunc
                                                                                                       )
                                                        ) ;
             menu.Config.SelectedAppearence =
@@ -641,8 +654,8 @@ namespace ConsoleApp1
             {
                 Logger?.Warn (
                              "Selected instance {instance} {path}"
-                   , ( object ) i2.Name
-                   , ( object ) i2.MSBuildPath
+               , ( object ) i2.Name
+               , ( object ) i2.MSBuildPath
                             ) ;
             }
 
@@ -718,36 +731,50 @@ namespace ConsoleApp1
                 throw new ArgumentNullException ( nameof ( context ) ) ;
             }
 
-            if ( ! context.Ui.Commands.Any ( ) )
+            var ui = context.Scope.Resolve < TermUi > ( ) ;
+            if ( ! ui.Commands.Any ( ) )
             {
                 Debug.WriteLine ( "No commands" ) ;
             }
 
-            foreach ( var cmd in context.Ui.Commands )
+            foreach ( var cmd in ui.Commands )
             {
                 Debug.WriteLine ( cmd.DisplayName ) ;
             }
 #if TERMUI
-            context.Ui.Init ( ) ;
-            context.Ui.Run ( ) ;
+            ui.Init ( ) ;
+            ui.Run ( ) ;
 #endif
         }
 
-        [ TitleMetadata ( "Code gen" ) ]
-        [ UsedImplicitly ]
-        public async Task CodeGenAsync ( [ NotNull ] AppContext context )
+        [TitleMetadata( "Code gen")]
+        [UsedImplicitly]
+        public async Task CodeGenAsync(IAppCommand command, [NotNull] AppContext context)
         {
+            await Task.Run ( ( ) => CodeGen( command , context ) ) ;
+        }
+
+        public async Task CodeGen(IAppCommand command, [NotNull] AppContext context)
+        {
+            Action<string> outputFunc = (Action<string>)command.Argument;
+            Action < string > debugOut = s1 => {
+                Debug.WriteLine ( s1 ) ;
+                outputFunc ( s1 ) ;
+            } ;
+            outputFunc ( "Beginning" ) ;
             var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
             var types =
                 new SyntaxList < MemberDeclarationSyntax
                 > ( ) ; //new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
+            outputFunc($"{model1.Map.Count} Entries in Type map");
             foreach ( Type mapKey in model1.Map.Keys )
             {
-                Logger.Debug ( $"{mapKey}" ) ;
+                debugOut( $"{mapKey}" ) ;
                 var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
                 var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
                 foreach ( SyntaxFieldInfo tField in t.Fields )
                 {
+                    debugOut ( $"{tField}" ) ;
                     if ( tField.Type        == null
                          && tField.TypeName != "bool" )
                     {
@@ -910,6 +937,7 @@ namespace ConsoleApp1
                 types = types.Add ( classDecl ) ;
             }
 
+            debugOut ( "About to build compilation unit" ) ;
             var compl = SyntaxFactory.CompilationUnit ( )
                                      .WithUsings (
                                                   new SyntaxList < UsingDirectiveSyntax > (
@@ -947,16 +975,18 @@ namespace ConsoleApp1
                                                                                               )
                                                   )
                                      .NormalizeWhitespace ( ) ;
+            debugOut("built");
             var tree = SyntaxFactory.SyntaxTree ( compl ) ;
             var src = tree.ToString ( ) ;
-            File.WriteAllText ( @"C:\data\logs\stuff.cs" , src ) ;
+
+            debugOut("Reparsing text ??");
             var tree2 = CSharpSyntaxTree.ParseText ( SourceText.From ( src ) ) ;
             //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
             var source = tree2.ToString ( ).Split ( new[] { "\r\n" } , StringSplitOptions.None ) ;
             //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
             var adhoc = new AdhocWorkspace ( ) ;
-
             var projectId = ProjectId.CreateNewId ( ) ;
+            debugOut("Add solution");
             var s = adhoc.AddSolution (
                                        SolutionInfo.Create (
                                                             SolutionId.CreateNewId ( )
@@ -1034,7 +1064,7 @@ namespace ConsoleApp1
             {
                 throw new InvalidOperationException ( ) ;
             }
-
+            debugOut("Applying assembly refs");
             foreach ( var ref1 in AssemblyRefs )
             {
                 var s3 = adhoc.CurrentSolution.AddMetadataReference (
@@ -1049,7 +1079,7 @@ namespace ConsoleApp1
                 }
             }
 
-
+            debugOut("Applying assembly done");
             var project = adhoc.CurrentSolution.Projects.First ( ) ;
             var compilation = await project.GetCompilationAsync ( ) ;
             using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )
@@ -1065,23 +1095,23 @@ namespace ConsoleApp1
                                 source[ diagnostic
                                        .Location.GetLineSpan ( )
                                        .StartLinePosition.Line ] ;
-                            Console.WriteLine ( diagnostic.ToString ( ) ) ;
                             await f.WriteLineAsync ( diagnostic.ToString ( ) ) ;
                         }
                     }
                 }
             }
 
+            debugOut ( "attempting emit" ) ;
             var result =
                 ( compilation ?? throw new InvalidOperationException ( ) ).Emit (
                                                                                  @"C:\data\logs\output.dll"
                                                                                 ) ;
             if ( result.Success )
             {
-                Console.WriteLine ( "Success" ) ;
+                debugOut( "Success" ) ;
             }
 
-            File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
+            //File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
         }
 
         // ReSharper disable once UnusedMember.Local

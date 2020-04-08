@@ -7,9 +7,8 @@ using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Threading.Tasks ;
 using AnalysisAppLib.Auth ;
+using AnalysisAppLib.Command ;
 using AnalysisAppLib.Dataflow ;
-using AnalysisAppLib.Project ;
-using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
@@ -56,22 +55,25 @@ namespace AnalysisAppLib
             registration.Activating += ( sender , args ) => {
                 var inst = args.Instance;
                 Debug.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
-                if ( inst is IViewModel) {
-                    if (inst is ISupportInitializeNotification xx)
+                if ( ! ( inst is IViewModel ) )
+                {
+                    return ;
+                }
+
+                if (inst is ISupportInitializeNotification xx)
+                {
+                    Debug.WriteLine("calling init on instance");
+                    if (!xx.IsInitialized)
                     {
-                        Debug.WriteLine("calling init on instance");
-                        if (!xx.IsInitialized)
-                        {
-                            xx.BeginInit();
-                            xx.EndInit();
-                        }
-                    } else 
-                    if ( inst is ISupportInitialize x )
-                    {
-                        Debug.WriteLine ( "calling init on instance" ) ;
-                        x.BeginInit ( ) ;
-                        x.EndInit ( ) ;
-                    } 
+                        xx.BeginInit();
+                        xx.EndInit();
+                    }
+                } else 
+                if ( inst is ISupportInitialize x )
+                {
+                    Debug.WriteLine ( "calling init on instance" ) ;
+                    x.BeginInit ( ) ;
+                    x.EndInit ( ) ;
                 }
             } ;
         }
@@ -85,7 +87,7 @@ namespace AnalysisAppLib
         {
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
             builder.RegisterType<ModelResources>().SingleInstance();
-
+            builder.RegisterType < CodeGenCommand > ( ).AsSelf ( ).AsImplementedInterfaces ( ) ;
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .Where (
                            type => {
@@ -95,18 +97,18 @@ namespace AnalysisAppLib
                                                                                                      type
                                                                                                     )
                                                                                   ) )
+                               {
                                    return false ;
+                               }
+
                                var b = typeof ( IViewModel ).IsAssignableFrom ( type ) ;
-//                               Debug.WriteLine ( $"{type.FullName} - {b}" ) ;
                                return b ;
                            }
-                           // || typeof ( IView1 ).IsAssignableFrom ( type )
                           )
                    .AsImplementedInterfaces ( )
                    .AsSelf ( )
                    .WithAttributedMetadata ( ) ;
 
-            //builder.RegisterType<DockWindowViewModel>().AsSelf();
 #if false
             
             
@@ -175,7 +177,7 @@ namespace AnalysisAppLib
             //                                    ) ;
             //  }
             // ) ;
-
+#if false
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly()  )
                    .Where (
                            t => t.FindInterfaces (
@@ -218,11 +220,8 @@ namespace AnalysisAppLib
                                  .Any ( )
                           )
                    .AsImplementedInterfaces ( ) ;
+#endif
 
-
-            //        .AsImplementedInterfaces ( )
-            //        .WithAttributeFiltering ( )
-            //        .InstancePerLifetimeScope ( ) ;
 
              builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
              .As ( typeof ( IAnalysisBlockProvider < , , > ) )
@@ -255,7 +254,7 @@ namespace AnalysisAppLib
                               }
                              )
                    .AsSelf ( ) ;
-            #endregion
+#endregion
 #if false
             builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
@@ -265,9 +264,10 @@ namespace AnalysisAppLib
 #endif
         }
 
-        private IPublicClientApplication MakePublicClientApplication (
+        [ NotNull ]
+        private static IPublicClientApplication MakePublicClientApplication (
             IComponentContext         context
-          , IEnumerable < Parameter > p
+          , [ NotNull ] IEnumerable < Parameter > p
         )
         {
             var typedAs = p.TypedAs < Guid > ( ) ;
@@ -286,6 +286,7 @@ namespace AnalysisAppLib
             return a ;
         }
 
+        [ NotNull ]
         private static GraphServiceClient MakeGraphServiceClient ( string bearerToken )
         {
             var parameter = bearerToken ;
@@ -297,6 +298,7 @@ namespace AnalysisAppLib
             return new GraphServiceClient ( auth ) ;
         }
 
+        [ NotNull ]
         private static AuthenticateRequestAsyncDelegate AuthenticateRequestAsyncDelegate (
             string parameter
         )

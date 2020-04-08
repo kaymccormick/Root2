@@ -309,7 +309,7 @@ namespace KayMcCormick.Dev.Application
           , [ NotNull ] FirstChanceExceptionEventArgs e
         )
         {
-            Utils.LogParsedExceptions ( e.Exception ) ;
+            // Utils.LogParsedExceptions ( e.Exception ) ;
         }
 
 #region Overrides of ApplicationInstanceBase

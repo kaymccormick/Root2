@@ -18,25 +18,126 @@ namespace AnalysisControls.Converters
     {
         /// <summary>The ancestors</summary>
         Ancestors
-      , AncestorsAndSelf
-      , GetFirstToken
-      , GetLocation
-      , GetLastToken
-      , GetReference
-      , GetText
-      , ToFullString
-      , ToString
-      , Kind
-      , ChildNodesAndTokens
-      , ChildNodes
-      , ChildTokens
-      , DescendantNodes
-      , DescendantNodesAndSelf
-      , DescendantNodesAndTokens
-      , DescendantNodesAndTokensAndSelf
-      , DescendantTokens
-      , DescendantTrivia
-      , GetLeadingTrivia
-      , Diagnostics
+      ,
+
+       /// <summary>
+       /// Get ancestors and self.
+       /// </summary>
+       AncestorsAndSelf
+      ,
+
+       /// <summary>
+       /// Get first token.
+       /// </summary>
+       GetFirstToken
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       GetLocation
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       GetLastToken
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       GetReference
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       GetText
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       ToFullString
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       ToString
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       Kind
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       ChildNodesAndTokens
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       ChildNodes
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       ChildTokens
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DescendantNodes
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DescendantNodesAndSelf
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DescendantNodesAndTokens
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DescendantNodesAndTokensAndSelf
+      ,
+
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DescendantTokens
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DescendantTrivia
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       GetLeadingTrivia
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       Diagnostics
     }
 }

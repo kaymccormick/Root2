@@ -15,6 +15,7 @@ using System.Threading.Tasks.Dataflow ;
 using Autofac ;
 using FindLogUsages ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Command ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Module = Autofac.Module ;
 
@@ -47,30 +48,33 @@ namespace ConsoleApp1
                 if ( title != null )
                 {
                     builder.Register (
-                                      ( c , p ) => new LambdaAppCommand (
-                                                                         title.Title
-                                                                       , async command => {
-                                                                             var @delegate =
-                                                                                 ( Util.
-                                                                                     AsyncCommandDelegate
-                                                                                 ) methodInfo
-                                                                                    .CreateDelegate (
-                                                                                                     typeof
-                                                                                                     ( Util
-                                                                                                         .AsyncCommandDelegate
-                                                                                                     ), c.Resolve<Program> (  )
-                                                                                                    ) ;
-                                                                             await @delegate
-                                                                                .Invoke (
-                                                                                         c.Resolve <
-                                                                                             AppContext
-                                                                                         > ( )
-                                                                                        ) ;
-                                                                             return AppCommandResult
-                                                                                .Success ;
-                                                                         }
-                                                                       , methodInfo
-                                                                        )
+                                      ( c , p ) => {
+                                          var program = c.Resolve < Program > ( ) ;
+                                          var appContext = c.Resolve
+                                          < AppContext
+                                          > ( ) ;
+                                          return new LambdaAppCommand (
+                                                                       title.Title
+                                                                     , async command => {
+                                                                           var @delegate =
+                                                                               ( Util.
+                                                                                   AsyncCommandDelegate
+                                                                               ) methodInfo
+                                                                                  .CreateDelegate (
+                                                                                                   typeof
+                                                                                                   ( Util
+                                                                                                       .AsyncCommandDelegate
+                                                                                                   )
+                                                                                                 , program);
+                                                                           await @delegate.Invoke (command,
+                                                                                                   appContext
+                                                                                                  ) ;
+                                                                           return AppCommandResult
+                                                                              .Success ;
+                                                                       }
+                                                                     , methodInfo
+                                                                      ) ;
+                                      }
                                      )
                            .AsImplementedInterfaces ( )
                            .AsSelf ( ) ;

@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Threading.Tasks ;
+using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
 {
@@ -18,7 +19,7 @@ namespace KayMcCormick.Lib.Wpf.Command
     /// </summary>
     public sealed class LambdaAppCommand : AppCommand
     {
-        private readonly object                                                 _argument ;
+        private object                                                 _argument ;
         private readonly Func < LambdaAppCommand , Task < IAppCommandResult > > _commandFunc ;
         private readonly Action < AggregateException >                          _onFaultDelegate ;
 
@@ -49,16 +50,19 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
-        public object Argument { get { return _argument ; } }
+        public override object Argument
+        {
+            get { return _argument ; }
+            set { _argument = value ; }
+        }
 
         #region Overrides of AppCommand
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public override async Task < IAppCommandResult > ExecuteAsync ( )
+        public override Task < IAppCommandResult > ExecuteAsync ( )
         {
-            var r = await CommandFunc ( this ) ;
-            return r ;
+            return CommandFunc ( this ) ;
         }
 
         /// <summary>

@@ -113,7 +113,6 @@
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
-    <Compile Include="ITypesViewModel.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>

@@ -16,20 +16,6 @@ namespace ConsoleApp1
 {
     internal sealed class AppContext
     {
-#if TERMUI
-        private readonly TermUi _termUi ;
-        public           TermUi Ui { get { return _termUi ; } }
-        public AppContext (
-            ILifetimeScope           scope
-          , IProjectBrowserViewModel projectBrowserViewModel
-          , TermUi                   termUi
-        )
-        {
-            _termUi          = termUi ;
-            Scope            = scope ;
-            BrowserViewModel = projectBrowserViewModel ;
-        }
-#else
         public AppContext (
             ILifetimeScope           scope
       , IProjectBrowserViewModel projectBrowserViewModel
@@ -40,7 +26,6 @@ namespace ConsoleApp1
         }
 
 
-#endif
 
         private IProjectBrowserViewModel _projectBrowserViewModel ;
 
@@ -53,11 +38,6 @@ namespace ConsoleApp1
             // ReSharper disable once UnusedMember.Global
             get { return _projectBrowserViewModel ; }
             set { _projectBrowserViewModel = value ; }
-        }
-
-        public AppContext NewCopy ( ILifetimeScope newScope )
-        {
-            return new AppContext(newScope, _projectBrowserViewModel, _termUi);
         }
     }
 }

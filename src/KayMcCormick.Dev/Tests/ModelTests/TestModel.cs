@@ -7,7 +7,6 @@ using System.Linq ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using System.Windows.Forms ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.ViewModel ;
@@ -16,12 +15,10 @@ using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
@@ -52,6 +49,9 @@ namespace ModelTests
             _app?.Dispose ( ) ;
         }
 
+        private const string LogTestSolution =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln" ;
+
         private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly        ITestOutputHelper   _outputHelper ;
         private readonly        LoggingFixture      _loggingFixture ;
@@ -70,12 +70,9 @@ namespace ModelTests
                                                                                                      LogMethod
                                                                                                    , ApplicationGuid
                                                                                                    , null
-                                                                                                   , disableLogging
-                                                                                                     : DisableLogging
-                                                                                                   , disableRuntimeConfiguration
-                                                                                                     : true
-                                                                                                   , disableServiceHost
-                                                                                                     : true
+                                                                                                   , DisableLogging
+                                                                                                   , true
+                                                                                                   , true
                                                                                                     )
                                                               ) ;
             applicationInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
@@ -189,7 +186,7 @@ namespace ModelTests
             Task < Tuple <
                 IAnalysisBlockProvider < Document , T , TransformManyBlock < Document , T > > ,
                 TransformManyBlock < Document , T > , BufferBlock < T > > > PerformTest < T > (
-                [ NotNull ] ILifetimeScope ls
+                [ NotNull ] IComponentContext ls
             )
         {
             var project = SetupAdHocWorkspace < T > ( ) ;
@@ -207,9 +204,12 @@ namespace ModelTests
             x.Completion.ContinueWith ( task => LogMethod ( x.OutputCount.ToString ( ) ) ) ;
 
             var compilation = await project.GetCompilationAsync ( ) ;
-            foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+            if ( compilation != null )
             {
-                Debug.WriteLine ( new DiagnosticFormatter ( ).Format ( diagnostic ) ) ;
+                foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+                {
+                    Debug.WriteLine ( new DiagnosticFormatter ( ).Format ( diagnostic ) ) ;
+                }
             }
 
             foreach ( var @ref in project.MetadataReferences )
@@ -238,27 +238,28 @@ namespace ModelTests
 
             if ( ! x.Post ( project.Documents.First ( ) ) )
             {
-                throw new InvalidOperationException ( "doco faild to post" ) ;
+                throw new InvalidOperationException ( "FAILED TO POST" ) ;
             }
 
             x.Complete ( ) ;
             return Tuple.Create ( f , x , bb ) ;
         }
 
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedTypeParameter
         private static async Task < Project > SetupMsBuildProject < T > ( )
         {
             var workspace = MSBuildWorkspace.Create ( ) ;
-            var solution = await workspace.OpenSolutionAsync (
-                                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
-                                                             ) ;
+            var solution = await workspace.OpenSolutionAsync ( LogTestSolution ) ;
             var project = solution.Projects.First ( ) ;
             return project ;
         }
 
+        // ReSharper disable once UnusedTypeParameter
         private static Project SetupAdHocWorkspace < T > ( )
         {
             var code = File.ReadAllText ( @"c:\temp\program-parse.cs" ) ;
-            var xxxx = AnalysisService.Parse ( code , "parse" ) ;
+
             var workspace = new AdhocWorkspace ( ) ;
             var projectId = ProjectId.CreateNewId ( ) ;
             var s = workspace.AddSolution (
@@ -304,9 +305,9 @@ namespace ModelTests
                                                                                            )
                                                                     )
                                                    ) ;
+            // ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
             var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ) ) ;
 
-            //var d = project.AddDocument ( "test.cs" , src ) ;
             var rb1 = workspace.TryApplyChanges ( s2 ) ;
             if ( ! rb1 )
             {
@@ -367,29 +368,6 @@ namespace ModelTests
             return project ;
         }
 
-
-        // [ Fact ]
-        // public void Te4t3 ( )
-        // {
-        // ITypesViewModel viewModel = new TypesViewModel ( ) ;
-        // try
-        // {
-        // var options = new JsonSerializerOptions ( ) ;
-        // options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
-        // options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
-        // options.WriteIndented = true ;
-        // var model =
-        // JsonSerializer.Deserialize < TypesViewModel > (
-        // File.ReadAllText (
-        // @"C:\data\logs\viewmodel.json"
-        // )
-        // ) ;
-        // }
-        // catch ( JsonException ex )
-        // {
-        // MessageBox.Show ( "Json failure" , ex.Message ) ;
-        // }
-        // }
 
         [ Fact ]
         public void Test1 ( )
@@ -462,7 +440,7 @@ namespace ModelTests
                                                                   Task < IEnumerable < NodeInfo > >
                                                               >
                                                           > (
-                                                             ( c ) => ( Document doc )
+                                                             ( c ) => doc
                                                                  => Task.FromResult (
                                                                                      Enumerable
                                                                                         .Empty <
@@ -509,25 +487,6 @@ namespace ModelTests
             }
         }
 
-        // [ Fact ]
-        // public void Test3 ( )
-        // {
-        //     ITypesViewModel viewModel = new TypesViewModel ( ) ;
-        //     try
-        //     {
-        //         var options = new JsonSerializerOptions ( ) ;
-        //         options.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
-        //         options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
-        //         options.WriteIndented = true ;
-        //         var json = JsonSerializer.Serialize ( viewModel , options ) ;
-        //         File.WriteAllText ( @"C:\data\logs\viewmodel.json" , json ) ;
-        //     }
-        //     catch ( JsonException ex )
-        //     {
-        //         MessageBox.Show ( "Json failure" , ex.Message ) ;
-        //     }
-        // }
-
         [ Fact ]
         public void TestAppStartup ( )
         {
@@ -537,12 +496,9 @@ namespace ModelTests
                                                                                                              LogMethod
                                                                                                            , ApplicationGuid
                                                                                                            , null
-                                                                                                           , disableLogging
-                                                                                                             : DisableLogging
-                                                                                                           , disableRuntimeConfiguration
-                                                                                                             : true
-                                                                                                           , disableServiceHost
-                                                                                                             : true
+                                                                                                           , DisableLogging
+                                                                                                           , true
+                                                                                                           , true
                                                                                                             )
                                                                       ) )
             {
@@ -570,35 +526,19 @@ namespace ModelTests
         [ Fact ]
         public void TestTransform1 ( )
         {
-            var result = GenTransforms.Transform_Expression (SyntaxFactory
-             .ParseExpression ( "x + y" ));   //SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, SyntaxFactory.expression)  )
-                                                          // GenTransforms.Transform_Binary_Expression (
-                                                          // ( BinaryExpressionSyntax ) SyntaxFactory
-                                                          // .ParseExpression ( "x + y" )
-                                                          // ) ;
-                                                          var opts = new JsonSerializerOptions ( ) ;
-                                                          opts.Converters.Add (new JsonPocoSyntaxConverter()  );
-                                                          var serialize =
-                                                              JsonSerializer.Serialize (
-                                                                                        result
-                                                                                      , opts
-                                                                                       ) ;
-                                                          Debug.WriteLine(serialize);
-
+            var result =
+                GenTransforms.Transform_Expression ( SyntaxFactory.ParseExpression ( "x + y" ) ) ;
+            var opts = new JsonSerializerOptions ( ) ;
+            opts.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
+            var serialize = JsonSerializer.Serialize ( result , opts ) ;
+            Debug.WriteLine ( serialize ) ;
         }
 
         [ Fact ]
         public void TestLog ( )
         {
             LogManager.ThrowExceptions = false ;
-            // var logName = EventLog.LogNameFromSourceName ( "Kay McCormick" , "." ) ;
-            // LogMethod(logName);
-            // foreach ( var eventLog1 in EventLog.GetEventLogs ( ) )
-            // {
-            //     LogMethod(eventLog1.ToString());
-            //     LogMethod(eventLog1.LogDisplayName);
-            //     LogMethod(eventLog1.Log);
-            // }
+
 #if false
             foreach (var eventLog1 in EventLog.GetEventLogs().Where (
             eventLog
@@ -627,174 +567,190 @@ namespace ModelTests
             {
                 LogMethod ( bytese.ToString ( ) ) ;
             }
-            // foreach ( EventLogEntry logEntry in log.Entries.OrderBy<>((x) => ((EventLogEntry)x).TimeGenerated) )
-            // {
-            // if ( logEntry.InstanceId == 8 )
-            // {
-            // Debug.WriteLine(logEntry.Source);
-            // StringBuilder bb = new StringBuilder();
-            // foreach ( var b in logEntry.Data )
-            // {
-            // bb.Append(((int)b).ToString ( "x2" )) ;
-
-            // }
-
-            // Debug.WriteLine(bb.ToString());
-
-            // }
-            // }
         }
 
-        [Fact]
-        public void TestZ ( )
+        [ Fact ]
+        public void TestTemplate ( )
         {
-            z ( ) ;
-        }
-        public void z ( )
-        {
-            List < JsonElement > types =
+            const string typePropertyName = "Type" ;
+            const string fullNamePropertyName = "FullName" ;
+            const string titlePropertyName = "Title" ;
+            const string elementNamePropertyName = "ElementName" ;
+            const string abstractnode = "AbstractNode" ;
+            const string predefinednode = "PredefinedNode" ;
+            const string subtypenamesPropertyName = "SubTypeNames" ;
+
+            // ReSharper disable once StringLiteralTypo
+            const string cDataLogsTypesJson = @"C:\data\logs\types.json" ;
+            var types =
                 JsonSerializer.Deserialize < List < JsonElement > > (
                                                                      File.ReadAllText (
-                                                                                       @"C:\data\logs\types.json"
+                                                                                       cDataLogsTypesJson
                                                                                       )
                                                                     ) ;
+            var dict = new Dictionary < string , string > ( ) ;
+            var dict2 = new Dictionary < string , JsonElement > ( ) ;
 
-            Dictionary < string , string > dict = new Dictionary < string , string > ( ) ;
 
-            Dictionary < string , JsonElement >
-                dict2 = new Dictionary < string , JsonElement > ( ) ;
             foreach ( var typ in types )
             {
-                var k = typ.GetProperty ( "Type" ).GetProperty ( "FullName" ).GetString ( ) ;
-                k          = k.Substring ( k.LastIndexOf ( '.' ) + 1 ) ;
-                dict[ k ]  = typ.GetProperty ( "Title" ).GetString ( ).Replace ( " " , "_" ) ;
+                var k = typ.GetProperty ( typePropertyName )
+                           .GetProperty ( fullNamePropertyName )
+                           .GetString ( ) ;
+                k = k.Substring ( k.LastIndexOf ( '.' ) + 1 ) ;
+
+                dict[ k ] = typ.GetProperty ( titlePropertyName )
+                               .GetString ( )
+                               .Replace ( " " , "_" ) ;
                 dict2[ k ] = typ ;
             }
 
-            foreach ( var typ in types )
+            using ( var fs = new StreamWriter ( @"C:\data\logs\methods.cs" ) )
             {
-                string body = "" ;
-                var typname = typ.GetProperty ( "Type" ).GetProperty ( "FullName" ).GetString ( ) ;
-                var shortname = typname.Substring ( typname.LastIndexOf ( '.' ) + 1 ) ;
-                var poco = "Poco" + shortname ;
-
-                if ( typ.GetProperty ( "ElementName" ).GetString ( ) == "AbstractNode" )
+                foreach ( var typ in types )
                 {
-                    IEnumerable < string > nodes ( string cname )
+                    var typeElement = typ.GetProperty ( typePropertyName ) ;
+                    var typeFullName =
+                        typeElement.GetProperty ( fullNamePropertyName ).GetString ( ) ;
+                    var typeShortName =
+                        typeFullName.Substring ( typeFullName.LastIndexOf ( '.' ) + 1 ) ;
+                    var pocoClassName = "Poco" + typeShortName ;
+
+
+                    var body = "" ;
+                    var elementName = typ.GetProperty ( elementNamePropertyName ).GetString ( ) ;
+                    Debug.WriteLine ($"{typeShortName}: {elementName}"  );
+                    if ( elementName    == abstractnode
+                         || elementName == predefinednode )
                     {
-                        if ( dict2[ cname ].GetProperty ( "ElementName" ).GetString ( )
-                             == "AbstractNode" )
+                        IEnumerable < string > nodes ( string cname )
                         {
-                            return dict2[ cname ]
-                                  .GetProperty ( "SubTypeNames" )
-                                  .EnumerateArray ( )
-                                  .SelectMany ( xx => nodes ( xx.GetString ( ) ) ) ;
-                        }
-                        else
-                        {
-                            return new[] { cname } ;
-                        }
-                    }
-
-                    var cases = string.Join (
-                                             ""
-                                           , nodes ( shortname )
-                                                .Select (
-                                                         sn
-                                                             => $"case {sn} _: return {dict[ sn ]}((sn)node); \n"
-                                                        )
-                                            ) ;
-                    body = $"switch(node) {{\\n{cases}\\n}}return null;\\n" ;
-                }
-                else
-                {
-
-                    var fields = typ.GetProperty ( "Fields" ) ;
-                    string props = "" ;
-                    foreach ( var f in typ.GetProperty ( "Fields" ).EnumerateArray ( ) )
-                    {
-
-                        var name = f.GetProperty ( "Name" ).GetString ( ) ;
-                        if ( ( typname.EndsWith ( "StatementSyntax" ) || poco == "PocoBlockSyntax" )
-                             && name == "AttributeLists" )
-                            continue ;
-                        var t1 = f.GetProperty ( "Type" ) ;
-                        string m = "" ;
-                        string value = "" ;
-                        string transform = "" ;
-                        string x = null ;
-                        string msg = null ;
-                        var typeName = f.GetProperty ( "TypeName" ).GetString ( ) ;
-                        if ( typeName == "bool" )
-                        {
-                            value = $"node.{name}" ;
-                            msg   = "bool" ;
-                        }
-                        else if ( t1.ValueKind == JsonValueKind.Object )
-                        {
-                            var k = t1.GetProperty ( "FullName" ).GetString ( ) ;
-                            k = k.Substring ( k.LastIndexOf ( '.' ) + 1 ) ;
-                            x = k ;
-
-                            if ( dict.TryGetValue ( k , out var method ) )
+                            if ( dict2[ cname ]
+                                .GetProperty ( elementNamePropertyName )
+                                .GetString ( )
+                                 == abstractnode
+                                 || dict2[ cname ]
+                                   .GetProperty ( elementNamePropertyName )
+                                   .GetString ( )
+                                 == predefinednode )
                             {
-                                value = $"Transform_{method}(node.{name})" ;
+                                return dict2[ cname ]
+                                      .GetProperty ( subtypenamesPropertyName )
+                                      .EnumerateArray ( )
+                                      .SelectMany ( xx => nodes ( xx.GetString ( ) ) ) ;
                             }
                             else
                             {
-                                msg = "not found" ;
-                                if ( f.GetProperty ( "TypeName" ).GetString ( ) == "SyntaxToken" )
-                                {
-                                    value =
-                                        $"new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
-                                }
-                                else if ( typeName.StartsWith ( "SyntaxList<" ) )
-                                {
-                                    var t2 = typeName.Substring ( 11 , typeName.Length - 12 ) ;
-                                    if ( dict.TryGetValue ( t2 , out var m2 ) )
-                                    {
-                                    }
-
-                                    transform = $".Select(Transform_{m2}).ToList()" ;
-                                }
-                                else if ( typeName.StartsWith ( "SeparatedSyntaxList<" ) )
-                                {
-                                    var t2 = typeName.Substring ( 20 , typeName.Length - 21 ) ;
-                                    if ( dict.TryGetValue ( t2 , out var m2 ) )
-                                    {
-                                    }
-                                    else
-                                    {
-
-                                    }
-
-                                    transform = $".Select(Transform_{m2}).ToList()" ;
-                                }
-                                else if ( k == "SyntaxTokenList" )
-                                {
-                                    transform =
-                                        ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()" ;
-                                }
+                                return new[] { cname } ;
                             }
                         }
 
-                        if ( transform != "" )
+                        var cases = string.Join (
+                                                 ""
+                                               , nodes ( typeShortName )
+                                                    .Select (
+                                                             sn
+                                                                 => $"case {sn} _: return Transform_{dict[ sn ]}(({sn})node); \n"
+                                                            )
+                                                ) ;
+                        body = $"switch(node) {{\n{cases}\n}}\nreturn null;\n";
+                    }
+                    else
+                    {
+                        var props = "" ;
+                        foreach ( var f in typ.GetProperty ( "Fields" ).EnumerateArray ( ) )
                         {
-                            value = $"node.{name}{transform}" ;
+                            var name = f.GetProperty ( "Name" ).GetString ( ) ;
+                            if ( ( typeFullName.EndsWith ( "StatementSyntax" )
+                                   || pocoClassName == "PocoBlockSyntax" )
+                                 && name == "AttributeLists" )
+                            {
+                                continue ;
+                            }
+
+                            var t1 = f.GetProperty ( typePropertyName ) ;
+                            var value = "" ;
+                            var transform = "" ;
+                            string msg = null ;
+                            var typeName = f.GetProperty ( "TypeName" ).GetString ( ) ;
+                            if ( typeName == "bool" )
+                            {
+                                value = $"node.{name}" ;
+                                msg   = "bool" ;
+                            }
+                            else if ( t1.ValueKind == JsonValueKind.Object )
+                            {
+                                var k = t1.GetProperty ( fullNamePropertyName ).GetString ( ) ;
+                                k = k.Substring ( k.LastIndexOf ( '.' ) + 1 ) ;
+
+                                if ( dict.TryGetValue ( k , out var method ) )
+                                {
+                                    value = $"Transform_{method}(node.{name})" ;
+                                }
+                                else
+                                {
+                                    msg = "not found" ;
+                                    if ( f.GetProperty ( "TypeName" ).GetString ( )
+                                         == "SyntaxToken" )
+                                    {
+                                        value =
+                                            $"new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
+                                    }
+                                    else if ( typeName.StartsWith ( "SyntaxList<" ) )
+                                    {
+                                        var t2 = typeName.Substring ( 11 , typeName.Length - 12 ) ;
+                                        if ( dict.TryGetValue ( t2 , out var m2 ) )
+                                        {
+                                        }
+
+                                        transform = $".Select(Transform_{m2}).ToList()" ;
+                                    }
+                                    else if ( typeName.StartsWith ( "SeparatedSyntaxList<" ) )
+                                    {
+                                        var t2 = typeName.Substring ( 20 , typeName.Length - 21 ) ;
+                                        if ( dict.TryGetValue ( t2 , out var m2 ) )
+                                        {
+                                        }
+                                        else
+                                        {
+                                        }
+
+                                        transform = $".Select(Transform_{m2}).ToList()" ;
+                                    }
+                                    else if ( k == "SyntaxTokenList" )
+                                    {
+                                        transform =
+                                            ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()" ;
+                                    }
+                                }
+                            }
+
+                            if ( transform != "" )
+                            {
+                                value = $"node.{name}{transform}" ;
+                            }
+
+                            if ( value == "" )
+                            {
+                                value = msg ;
+                            }
+
+                            var code = $"    {name} = {value}, " ;
+                            props = props + "\n" + code ;
                         }
 
-                        if ( value == "" ) value = msg ;
-                        var code = $"{name} = {value}, " ;
-                        props = props + "\n" + code ;
+                        body = $"return new {pocoClassName}() {{ {props} }};" ;
                     }
 
-                    body = $"return new {poco}() {{ {props} }};" ;
+                    var methodBody =
+                        $"\r\n        /// <summary></summary>\r\n        [NotNull]\r\n        public static {pocoClassName} Transform_{typ.GetProperty ( "Title" ).GetString ( ).Replace ( " " , "_" )} ([NotNull] {typeShortName} node) {{\r\n            if ( node == null )\r\n            {{\r\n                throw new ArgumentNullException ( nameof ( node ) ) ;\r\n            }}\r\n            {body.Replace ( "\n" , "\n            " )}\r\n\r\n        }}\r\n" ;
+                    fs.WriteLine ( methodBody ) ;
                 }
-
             }
         }
     }
 
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class NodeInfo
     {
     }

@@ -4,6 +4,7 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
 {
@@ -12,26 +13,19 @@ namespace KayMcCormick.Lib.Wpf.Command
     public abstract class AppCommand : IDisplayableAppCommand , ICommand
 
     {
-        private readonly string                     _displayName ;
-        // ReSharper disable once NotAccessedField.Local
-        private IAppCommandResult          _lastResult ;
-        // ReSharper disable once NotAccessedField.Local
-        private Task < IAppCommandResult > _lastTask ;
-
         /// <summary>
         /// </summary>
         /// <param name="displayName"></param>
-        protected AppCommand ( string displayName ) { _displayName = displayName ; }
+        protected AppCommand ( string displayName ) { DisplayName = displayName ; }
 
         #region Implementation of IDisplayable
         /// <summary>
         /// </summary>
-        public string DisplayName { get { return _displayName ; } }
+        public string DisplayName { get ; }
         #endregion
 
         // ReSharper disable once UnusedMember.Global
         /// <summary>
-        /// 
         /// </summary>
         protected void OnCanExecuteChanged ( )
         {
@@ -83,10 +77,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
-        public Task < IAppCommandResult > LastTask
-        {
-            set { _lastTask = value ; }
-        }
+        public Task < IAppCommandResult > LastTask { get ; set ; }
 
         /// <summary>
         /// </summary>
@@ -100,15 +91,15 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
-        public IAppCommandResult LastResult
-        {
-            set { _lastResult = value ; }
-        }
+        public IAppCommandResult LastResult { get ; set ; }
 
         /// <summary>
-        /// 
         /// </summary>
         public abstract object LargeImageSourceKey { get ; set ; }
+
+        /// <summary>
+        /// </summary>
+        public abstract object Argument { get ; set ; }
 
         /// <summary>
         /// </summary>

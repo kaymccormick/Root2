@@ -110,10 +110,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
+    <Compile Include="Command\AppCommandResult.cs" />
+    <Compile Include="Command\IAppCommandResult.cs" />
     <Compile Include="Configuration\ConfigurationSource.cs" />
     <Compile Include="Configuration\ContainerHelperSection.cs" />
     <Compile Include="Configuration\ContainerHelperSettings.cs" />
     <Compile Include="Configuration\LoggingSection.cs" />
+    <Compile Include="IBaseLibCommand.cs" />
     <Compile Include="IViewModel.cs" />
     <Compile Include="Logging\ExecutionContextImpl.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />

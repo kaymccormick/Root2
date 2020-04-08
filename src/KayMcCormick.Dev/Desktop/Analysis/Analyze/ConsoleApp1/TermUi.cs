@@ -3,9 +3,11 @@ using System ;
 using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Threading ;
 using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Command ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Terminal.Gui ;
 using Attribute = Terminal.Gui.Attribute ;
@@ -14,23 +16,42 @@ namespace ConsoleApp1
 {
     internal sealed class TermUi
     {
-        private const    string         FrameTitle = "Details" ;
-        private readonly ModelResources _modelResources ;
+        private          TaskFactory                            factory ;
+        private const    string                                 FrameTitle = "Details" ;
         private readonly IEnumerable < IDisplayableAppCommand > _commands ;
-        private          ConsoleDriver  _consoleDriver ;
-        private          int            _rows ;
-        private          int            _cols ;
-        private          ListView2      _listView ;
-        private          FrameView      _frame ;
-        private          TextView       _textView ;
-        private          MenuBar        _menuBar ;
-        private Toplevel _toplevel ;
+        private readonly ModelResources                         _modelResources ;
+        private          int                                    _cols ;
+        private          ConsoleDriver                          _consoleDriver ;
+        private          FrameView                              _frame ;
+        private          ListView2                              _listView ;
+        private          MenuBar                                _menuBar ;
+        private          int                                    _rows ;
+        private          TextView                               _textView ;
+        private          Toplevel                               _toplevel ;
+        private          Task                                   _commandTask ;
+        private          Action < string >                      _commandOutputAction ;
 
-        public TermUi ( ModelResources modelResources, IEnumerable<IDisplayableAppCommand> commands )
+        public TermUi (
+            ModelResources                                     modelResources
+          , [ NotNull ] IEnumerable < IDisplayableAppCommand > commands
+          , TaskFactory                                        factory = null
+        )
         {
             _modelResources = modelResources ;
-            _commands = commands ;
-            if ( ! commands.Any ( ) )
+            this.factory    = factory ;
+            if ( this.factory == null )
+            {
+                this.factory = new TaskFactory (
+                                                CancellationToken.None
+                                              , TaskCreationOptions.AttachedToParent
+                                              , TaskContinuationOptions.None
+                                              , TaskScheduler.Current
+                                               ) ;
+            }
+
+            var commandsary = commands as IDisplayableAppCommand[] ?? commands.ToArray ( ) ;
+            _commands = commandsary ;
+            if ( ! commandsary.Any ( ) )
             {
                 throw new InvalidOperationException ( "No commands" ) ;
             }
@@ -42,12 +63,11 @@ namespace ConsoleApp1
 
         private void TerminalResized ( )
         {
-
             _rows = _consoleDriver.Rows ;
             _cols = _consoleDriver.Cols ;
             var r1 = RecalculateRects ( _cols , _rows , out var r2 ) ;
             _listView.Frame = r1 ;
-            _frame.Frame = r2 ;
+            _frame.Frame    = r2 ;
         }
 
         public static Rect RecalculateRects ( int width , int height , out Rect r2 )
@@ -72,20 +92,25 @@ namespace ConsoleApp1
 
         public void Init ( )
         {
-            Application.Init();
-            _consoleDriver = Application.Driver;
+            Application.Init ( ) ;
+            _consoleDriver = Application.Driver ;
 
-            _cols = _consoleDriver.Cols;
-            _rows = _consoleDriver.Rows;
+            _cols = _consoleDriver.Cols ;
+            _rows = _consoleDriver.Rows ;
 
-            _menuBar = CreateMenuBar();
-            InitTopLevel();
-
+            _menuBar = CreateMenuBar ( ) ;
+            var window = new Window ( "MyApp" )
+                         {
+                             X = 1 , Y = 1 , Width = Dim.Fill ( ) , Height = Dim.Fill ( )
+                         } ;
+            _commandOutputAction = ShowCommandOutputView ( out var view ) ;
+            window.Add ( view ) ;
+            InitTopLevel ( window ) ;
         }
-        // ReSharper disable once UnusedMember.Global
-        public void InitResourceBrowser( )
-        {
 
+        // ReSharper disable once UnusedMember.Global
+        public void InitResourceBrowser ( )
+        {
             var listViewRect = RecalculateRects ( _cols , _rows , out var textViewRect ) ;
 
             _listView = new ListView2 (
@@ -108,30 +133,26 @@ namespace ConsoleApp1
                                           }
                         } ;
             _frame.Add ( _textView ) ;
-            _listView.SelectedChanged += ( ) => _textView.Text = _listView.List[ _listView.SelectedItem ].ToString ( ) ;
+            _listView.SelectedChanged += ( )
+                => _textView.Text = _listView.List[ _listView.SelectedItem ].ToString ( ) ;
 
             Application.Driver.SetTerminalResized ( TerminalResized ) ;
-
-
         }
 
-        private void InitTopLevel ( )
+        private void InitTopLevel ( Window w )
         {
             Toplevel1 = Application.Top ;
             Toplevel1.Add ( _menuBar ) ;
+            Toplevel1.Add ( w ) ;
             // Toplevel1.Add ( _listView ) ;
             // Toplevel1.Add ( _frame ) ;
         }
 
-        public void Run ( )
-        {
-            Application.Run();
-        }
+        public void Run ( ) { Application.Run ( ) ; }
 
         [ NotNull ]
         private MenuBar CreateMenuBar ( )
         {
-
             var quitItem = new MenuItem (
                                          "Quit"
                                        , ""
@@ -140,40 +161,67 @@ namespace ConsoleApp1
             var menuItems = new[] { quitItem } ;
             var menu1 = new MenuBarItem ( "File" , menuItems ) ;
 
-            List < MenuItem > list = new List < MenuItem > ( ) ;
+            var list = new List < MenuItem > ( ) ;
             foreach ( var command in Commands )
             {
-
                 list.Add ( new MenuItem ( command.DisplayName , "" , MenuAction ( command ) ) ) ;
             }
 
-            MenuItem[] commandsMenuItems = list
-                                                    .ToArray ( ) ;
-            var commandsMenu = new MenuBarItem ("Commands", commandsMenuItems  );
-            var items = new[] { menu1, commandsMenu } ;
+            var commandsMenuItems = list.ToArray ( ) ;
+            var commandsMenu = new MenuBarItem ( "Commands" , commandsMenuItems ) ;
+            var items = new[] { menu1 , commandsMenu } ;
             var menuBar = new MenuBar ( items ) ;
             return menuBar ;
         }
 
         [ NotNull ]
-        private Action MenuAction ( IDisplayableAppCommand command )
+        private Action MenuAction ( IAppCommand command )
         {
-            return ( ) => command.ExecuteAsync ( ).ContinueWith ( HandleResult ).Wait ( ) ;
+            return ( ) => {
+                var outputFunc = _commandOutputAction ;
+                command.Argument = outputFunc ;
+                Debug.WriteLine ( "Executing async command" ) ;
+                _commandTask = command.ExecuteAsync ( ).ContinueWith ( HandleResult ) ;
+                Debug.WriteLine ( "Returning from lambda" ) ;
+            } ;
         }
 
-        private void HandleResult ( [ NotNull ] Task < IAppCommandResult > obj )
+        [ NotNull ]
+        private Action < string > ShowCommandOutputView ( out View view )
+        {
+            var outputView = new TextView ( ) { CanFocus = false } ;
+            // var viewFrame = new FrameView ( "Output" ) { outputView } ;
+
+            view = outputView ;
+            return ( o ) => {
+                factory.StartNew(() => outputView.Text += "\r\n" + o) ;
+            } ;
+        }
+
+        private static void HandleResult ( [ NotNull ] Task < IAppCommandResult > obj )
         {
             if ( obj.IsFaulted )
-            {
 
-            } else if ( obj.IsCanceled )
             {
-
-            } else if ( obj.IsCompleted )
+                Debug.WriteLine ( $"faulted: {obj.Exception}" ) ;
+            }
+            else if ( obj.IsCanceled )
             {
-
+                Debug.WriteLine ( "cancelled" ) ;
+            }
+            else if ( obj.IsCompleted )
+            {
+                Debug.WriteLine ( "completed" ) ;
             }
         }
+    }
+
+    public class CommandOutput : View
+
+    {
+        #region Overrides of View
+        public override void Redraw ( Rect region ) { }
+        #endregion
     }
 }
 #endif

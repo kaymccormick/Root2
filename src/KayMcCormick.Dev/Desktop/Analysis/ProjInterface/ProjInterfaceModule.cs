@@ -26,6 +26,7 @@ using ExplorerCtrl ;
 #endif
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Command ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;

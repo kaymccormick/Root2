@@ -78,6 +78,7 @@
     <Compile Include="AppExplorerItem.cs" />
     <Compile Include="AppMethodInfo.cs" />
     <Compile Include="AppTypeInfo.cs" />
+    <Compile Include="Command\CodeGenCommand.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\DataflowTransformFuncProvider.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
     <Compile Include="ICodeRenderer.cs" />
+    <Compile Include="ITypesViewModel.cs" />
     <Compile Include="JsonPocoSyntaxConverter.cs" />
     <Compile Include="JsonPocoSyntaxConverter2.cs" />
     <Compile Include="Project\BrowserNode.cs" />
@@ -125,6 +127,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TextTemplate1.tt</DependentUpon>
     </Compile>
+    <Compile Include="TypeMapDictionary.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />

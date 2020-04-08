@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
