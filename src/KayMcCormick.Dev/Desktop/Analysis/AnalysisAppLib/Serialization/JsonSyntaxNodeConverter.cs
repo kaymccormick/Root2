@@ -130,7 +130,7 @@ namespace AnalysisAppLib.Serialization
                 // MemoryStream s = new MemoryStream();
                 // value.SerializeTo(s);
                 // writer.WriteBase64StringValue(s.GetBuffer());
-                var transformed = Transforms.TransformSyntaxNode ( value ) ;
+                var transformed = GenTransforms.Transform_CSharp_Node(value);
                 JsonSerializer.Serialize ( writer , transformed , options ) ;
                 writer.WriteEndObject ( ) ;
             }

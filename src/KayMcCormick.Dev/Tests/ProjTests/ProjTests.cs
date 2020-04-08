@@ -52,6 +52,7 @@ using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
 using Microsoft.CodeAnalysis.CSharp ;

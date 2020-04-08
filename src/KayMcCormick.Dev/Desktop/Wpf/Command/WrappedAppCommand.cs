@@ -15,7 +15,7 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>
     /// </summary>

@@ -4,6 +4,7 @@ using System.Text.Json ;
 using System.Windows.Data ;
 using FindLogUsages ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
 
 namespace AnalysisControls.Converters
 {
@@ -40,7 +41,7 @@ namespace AnalysisControls.Converters
                     return null ;
                 }
 
-                var r = Transforms.TransformSyntaxNode ( ( SyntaxNode ) value ) ;
+                var r = GenTransforms.Transform_CSharp_Node(( CSharpSyntaxNode ) value ) ;
                 return JsonSerializer.Serialize ( r ) ;
             }
             catch ( Exception ex )

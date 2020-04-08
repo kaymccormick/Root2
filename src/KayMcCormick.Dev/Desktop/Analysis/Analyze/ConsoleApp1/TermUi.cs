@@ -1,9 +1,14 @@
 #if TERMUI
+using System ;
+using System.Collections.Generic ;
 using System.Diagnostics ;
 using System.Linq ;
+using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf.Command ;
 using Terminal.Gui ;
+using Attribute = Terminal.Gui.Attribute ;
 
 namespace ConsoleApp1
 {
@@ -11,6 +16,7 @@ namespace ConsoleApp1
     {
         private const    string         FrameTitle = "Details" ;
         private readonly ModelResources _modelResources ;
+        private readonly IEnumerable < IDisplayableAppCommand > _commands ;
         private          ConsoleDriver  _consoleDriver ;
         private          int            _rows ;
         private          int            _cols ;
@@ -20,7 +26,11 @@ namespace ConsoleApp1
         private          MenuBar        _menuBar ;
         private Toplevel _toplevel ;
 
-        public TermUi ( ModelResources modelResources ) { _modelResources = modelResources ; }
+        public TermUi ( ModelResources modelResources, IEnumerable<IDisplayableAppCommand> commands )
+        {
+            _modelResources = modelResources ;
+            _commands = commands ;
+        }
 
         public Toplevel Toplevel1 { get { return _toplevel ; } set { _toplevel = value ; } }
 
@@ -54,15 +64,20 @@ namespace ConsoleApp1
             return r1 ;
         }
 
-        public void Init( )
+        public void Init ( )
         {
-            Application.Init ( ) ;
-            _consoleDriver = Application.Driver ;
+            Application.Init();
+            _consoleDriver = Application.Driver;
 
-            _cols = _consoleDriver.Cols ;
-            _rows = _consoleDriver.Rows ;
+            _cols = _consoleDriver.Cols;
+            _rows = _consoleDriver.Rows;
 
-            _menuBar = CreateMenuBar ( ) ;
+            _menuBar = CreateMenuBar();
+
+        }
+        // ReSharper disable once UnusedMember.Global
+        public void InitResourceBrowser( )
+        {
 
             var listViewRect = RecalculateRects ( _cols , _rows , out var textViewRect ) ;
 
@@ -105,6 +120,7 @@ namespace ConsoleApp1
         [ NotNull ]
         private MenuBar CreateMenuBar ( )
         {
+
             var quitItem = new MenuItem (
                                          "Quit"
                                        , ""
@@ -113,9 +129,39 @@ namespace ConsoleApp1
             var menuItems = new[] { quitItem } ;
             var menu1 = new MenuBarItem ( "File" , menuItems ) ;
 
-            var items = new[] { menu1 } ;
+            MenuItem[] commandsMenuItems = _commands.Select (
+                                                             command => new MenuItem (
+                                                                                      command
+                                                                                         .DisplayName
+                                                                                    , ""
+                                                                                    , MenuAction(command)
+                                                                                     )
+                                                            )
+                                                    .ToArray ( ) ;
+            var commandsMenu = new MenuBarItem ("Commands", commandsMenuItems  );
+            var items = new[] { menu1, commandsMenu } ;
             var menuBar = new MenuBar ( items ) ;
             return menuBar ;
+        }
+
+        [ NotNull ]
+        private Action MenuAction ( IDisplayableAppCommand command )
+        {
+            return ( ) => command.ExecuteAsync ( ).ContinueWith ( HandleResult ).Wait ( ) ;
+        }
+
+        private void HandleResult ( [ NotNull ] Task < IAppCommandResult > obj )
+        {
+            if ( obj.IsFaulted )
+            {
+
+            } else if ( obj.IsCanceled )
+            {
+
+            } else if ( obj.IsCompleted )
+            {
+
+            }
         }
     }
 }

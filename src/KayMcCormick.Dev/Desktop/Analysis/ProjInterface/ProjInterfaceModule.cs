@@ -11,20 +11,14 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
 using System.Diagnostics ;
-using System.Reflection ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Media ;
 using AnalysisAppLib ;
 using AnalysisControls ;
-using AnalysisControls.Scripting ;
-using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
-using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 #if EXPLORER
@@ -33,6 +27,7 @@ using ExplorerCtrl ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using NLog ;
@@ -61,9 +56,6 @@ namespace ProjInterface
     public sealed class ProjInterfaceModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        public ProjInterfaceModule ( ) {
-        }
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
@@ -102,7 +94,7 @@ namespace ProjInterface
                                            }
                                           ) ;
 #endif
-            builder.RegisterModule < AnalysisAppLibModule > ( ) ; ;
+            builder.RegisterModule < AnalysisAppLibModule > ( ) ;
             builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
 #if EXPLORER
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
@@ -174,12 +166,11 @@ namespace ProjInterface
 
         [ NotNull ]
         private Func < LayoutDocumentPane , IDisplayableAppCommand > ControlViewCommandAdapter (
-            IComponentContext                                               c
+            [ NotNull ] IComponentContext                                               c
           , IEnumerable < Parameter >                                       p
           , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView> >  metaFunc
         )
-        {
-            var r = c.Resolve < IResourceResolver > ( ) ;
+        { c.Resolve < IResourceResolver > ( ) ;
             metaFunc.Metadata.TryGetValue ( "Title" ,       out var titleo ) ;
             metaFunc.Metadata.TryGetValue ( "ImageSource" , out var imageSource ) ;
             // object res = r.ResolveResource ( imageSource ) ;
@@ -237,6 +228,7 @@ namespace ProjInterface
         }
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
         private static LambdaAppCommand LambdaAppCommandAdapter (
             [ NotNull ] Meta < Lazy < IViewWithTitle > > view
           , object                                       obj = null

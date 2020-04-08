@@ -94,7 +94,10 @@
     <Compile Include="Command\AppCommandResult.cs" />
     <Compile Include="Command\IAppCommand.cs" />
     <Compile Include="Command\IAppCommandResult.cs" />
+    <Compile Include="Command\IDisplayable.cs" />
     <Compile Include="Command\IDisplayableAppCommand.cs" />
+    <Compile Include="Command\LambdaAppCommand.cs" />
+    <Compile Include="Command\WrappedAppCommand.cs" />
     <Compile Include="ContentControlView.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="ExceptionUserControl.xaml.cs">
@@ -171,7 +174,6 @@
     <Compile Include="TypeInfoConverter.cs" />
     <Compile Include="ViewModel\AllResourcesTreeViewModel.cs" />
     <Compile Include="WpfAppCommands.cs" />
-    <Compile Include="WrappedAppCommand.cs" />
     <Compile Include="Xaml\XamlXmlDocumentConverter.cs" />
     <Compile Include="XmlViewer.xaml.cs">
       <DependentUpon>XmlViewer.xaml</DependentUpon>

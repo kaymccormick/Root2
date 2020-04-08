@@ -25,7 +25,9 @@ using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -281,7 +283,9 @@ namespace ConsoleApp1
                 typesViewModel.PopulateFieldTypes ( ati ) ;
             }
 
-            
+            List<IDisplayableAppCommand> commands = new List < IDisplayableAppCommand > ();
+
+
 
             WriteThisTypesViewModel ( typesViewModel ) ;
             typesViewModel.DetailFields ( ) ;
@@ -313,6 +317,7 @@ namespace ConsoleApp1
             return 1 ;
         }
 
+        [TitleMetadata("Load Syntax Examples")]
         private static async Task LoadSyntaxExamplesAsync ( AppContext context , SqlConnection c )
         {
             var bb2 = new SqlCommand (
@@ -678,6 +683,7 @@ namespace ConsoleApp1
             WriteThisTypesViewModel ( model ) ;
         }
 
+        [TitleMetadata("Write types view model")]
         private static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model )
         {
             var writer = XmlWriter.Create (
@@ -689,6 +695,7 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
+        [TitleMetadata("Process solution")]
         private static async Task ProcessSolutionAsync ( [ NotNull ] JsonSerializerOptions options )
         {
             options.WriteIndented = true ;
@@ -731,6 +738,7 @@ namespace ConsoleApp1
 #endif
         }
 
+        [TitleMetadata("Code gen")]
         // ReSharper disable once UnusedMember.Local
         private static async Task CodeGenAsync ( [ NotNull ] TypesViewModel model1 )
         {
