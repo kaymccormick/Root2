@@ -15,7 +15,6 @@ using Autofac ;
 namespace ConsoleApp1
 {
     internal sealed class AppContext
-
     {
 #if TERMUI
         private readonly TermUi _termUi ;
@@ -54,6 +53,11 @@ namespace ConsoleApp1
             // ReSharper disable once UnusedMember.Global
             get { return _projectBrowserViewModel ; }
             set { _projectBrowserViewModel = value ; }
+        }
+
+        public AppContext NewCopy ( ILifetimeScope newScope )
+        {
+            return new AppContext(newScope, _projectBrowserViewModel, _termUi);
         }
     }
 }

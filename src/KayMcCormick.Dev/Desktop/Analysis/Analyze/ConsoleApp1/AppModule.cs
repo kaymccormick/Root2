@@ -32,27 +32,48 @@ namespace ConsoleApp1
                    .As < ActionBlock < ILogInvocation > > ( )
                    .SingleInstance ( ) ;
             builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
-            foreach ( var methodInfo in typeof ( Program ).GetMethods ( BindingFlags.Static|BindingFlags.NonPublic ) )
+            foreach ( var methodInfo in typeof ( Program ).GetMethods (
+                                                                       BindingFlags.Instance
+                                                                       | BindingFlags.Public
+                                                                      ) )
             {
-                var title = (TitleMetadataAttribute)methodInfo.GetCustomAttribute ( typeof ( TitleMetadataAttribute ) ) ;
+                var title =
+                    ( TitleMetadataAttribute ) methodInfo.GetCustomAttribute (
+                                                                              typeof (
+                                                                                  TitleMetadataAttribute
+                                                                              )
+                                                                             ) ;
+                builder.RegisterType < Program > ( ) ;
                 if ( title != null )
                 {
-                    builder.RegisterInstance (
-                                      new LambdaAppCommand (
-                                                            title.Title
-                                                          , async command => {
-                                                                methodInfo.Invoke (
-                                                                                   null
-                                                                                 , Array
-                                                                                      .Empty <
-                                                                                           object
-                                                                                       > ( )
-                                                                                  ) ;
-                                                                return AppCommandResult.Success ;
-                                                            }
-                                                          , methodInfo
-                                                           )
-                                     ) ;
+                    builder.Register (
+                                      ( c , p ) => new LambdaAppCommand (
+                                                                         title.Title
+                                                                       , async command => {
+                                                                             var @delegate =
+                                                                                 ( Util.
+                                                                                     AsyncCommandDelegate
+                                                                                 ) methodInfo
+                                                                                    .CreateDelegate (
+                                                                                                     typeof
+                                                                                                     ( Util
+                                                                                                         .AsyncCommandDelegate
+                                                                                                     ), c.Resolve<Program> (  )
+                                                                                                    ) ;
+                                                                             await @delegate
+                                                                                .Invoke (
+                                                                                         c.Resolve <
+                                                                                             AppContext
+                                                                                         > ( )
+                                                                                        ) ;
+                                                                             return AppCommandResult
+                                                                                .Success ;
+                                                                         }
+                                                                       , methodInfo
+                                                                        )
+                                     )
+                           .AsImplementedInterfaces ( )
+                           .AsSelf ( ) ;
                 }
             }
 #if TERMUI

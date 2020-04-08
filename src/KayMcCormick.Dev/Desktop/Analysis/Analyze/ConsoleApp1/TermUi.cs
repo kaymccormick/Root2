@@ -30,9 +30,15 @@ namespace ConsoleApp1
         {
             _modelResources = modelResources ;
             _commands = commands ;
+            if ( ! commands.Any ( ) )
+            {
+                throw new InvalidOperationException ( "No commands" ) ;
+            }
         }
 
         public Toplevel Toplevel1 { get { return _toplevel ; } set { _toplevel = value ; } }
+
+        public IEnumerable < IDisplayableAppCommand > Commands { get { return _commands ; } }
 
         private void TerminalResized ( )
         {
@@ -73,6 +79,7 @@ namespace ConsoleApp1
             _rows = _consoleDriver.Rows;
 
             _menuBar = CreateMenuBar();
+            InitTopLevel();
 
         }
         // ReSharper disable once UnusedMember.Global
@@ -105,11 +112,15 @@ namespace ConsoleApp1
 
             Application.Driver.SetTerminalResized ( TerminalResized ) ;
 
+
+        }
+
+        private void InitTopLevel ( )
+        {
             Toplevel1 = Application.Top ;
             Toplevel1.Add ( _menuBar ) ;
-            Toplevel1.Add ( _listView ) ;
-            Toplevel1.Add ( _frame ) ;
-            
+            // Toplevel1.Add ( _listView ) ;
+            // Toplevel1.Add ( _frame ) ;
         }
 
         public void Run ( )
@@ -129,14 +140,14 @@ namespace ConsoleApp1
             var menuItems = new[] { quitItem } ;
             var menu1 = new MenuBarItem ( "File" , menuItems ) ;
 
-            MenuItem[] commandsMenuItems = _commands.Select (
-                                                             command => new MenuItem (
-                                                                                      command
-                                                                                         .DisplayName
-                                                                                    , ""
-                                                                                    , MenuAction(command)
-                                                                                     )
-                                                            )
+            List < MenuItem > list = new List < MenuItem > ( ) ;
+            foreach ( var command in Commands )
+            {
+
+                list.Add ( new MenuItem ( command.DisplayName , "" , MenuAction ( command ) ) ) ;
+            }
+
+            MenuItem[] commandsMenuItems = list
                                                     .ToArray ( ) ;
             var commandsMenu = new MenuBarItem ("Commands", commandsMenuItems  );
             var items = new[] { menu1, commandsMenu } ;

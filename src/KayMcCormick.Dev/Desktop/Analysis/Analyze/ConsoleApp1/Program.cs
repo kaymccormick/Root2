@@ -18,16 +18,17 @@ using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Project ;
 using AnalysisAppLib.Properties ;
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -39,7 +40,7 @@ using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 
 namespace ConsoleApp1
 {
-    internal static class Program
+    internal sealed class Program
     {
         private const string ModelXamlFilename = @"C:\data\logs\model.xaml" ;
 
@@ -149,8 +150,7 @@ namespace ConsoleApp1
                 _appinst.AddModule ( new AppModule ( ) ) ;
                 _appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 _appinst.AddModule ( new AnalysisControlsModule ( ) ) ;
-
-                PopulateJsonConverters ( false ) ;
+                    PopulateJsonConverters( false ) ;
                 ILifetimeScope scope ;
                 try
                 {
@@ -183,20 +183,24 @@ namespace ConsoleApp1
                     return 1 ;
                 }
 
-                return await MainCommandAsync ( context ) ;
+                var program = context.Scope.Resolve < Program > ( ) ;
+
+                    return await program.MainCommandAsync ( context ) ;
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        private static async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        private async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
         {
-#if MSBUILDLOCATOR
-            // var instances = MSBuildLocator.RegisterDefaults ( ) ;
-            SelectVsInstance ( ) ;
+// #if MSBUILDLOCATOR
+//             SelectVsInstance ( ) ;
+// #endif
+            await RunConsoleUiAsync ( context ) ;
 
-            //await            xx ( ) ;
-#if false
+            return 1 ;
+        }
+
+        public static async Task SelectProjectAsync ( [ NotNull ] AppContext context )
+        {
             var i = 0 ;
             var browserNodeCollection = context.BrowserViewModel.RootCollection ;
             var nodes = new List < IBrowserNode > ( browserNodeCollection.Count ) ;
@@ -267,14 +271,17 @@ namespace ConsoleApp1
                 Console.WriteLine ( "No commanad" ) ;
                 //return 1 ;
             }
-#endif
+        }
 
-            // ReSharper disable once UnusedVariable
+        private static async Task BuildTypeViewAsync ( AppContext context )
+        {
             var options = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
             // options.Converters.Add (new JsonPocoSyntaxConverter()  );
             // await            CollectDocs ( options ) ;
             // return 1 ;
+            await RunConsoleUiAsync ( context ) ;
             var typesViewModel = context.Scope.Resolve < TypesViewModel > ( ) ;
+
             WriteThisTypesViewModel ( typesViewModel ) ;
 
             LoadSyntax ( typesViewModel ) ;
@@ -283,42 +290,16 @@ namespace ConsoleApp1
                 typesViewModel.PopulateFieldTypes ( ati ) ;
             }
 
-            List<IDisplayableAppCommand> commands = new List < IDisplayableAppCommand > ();
-
-
-
             WriteThisTypesViewModel ( typesViewModel ) ;
             typesViewModel.DetailFields ( ) ;
             WriteThisTypesViewModel ( typesViewModel ) ;
             DumpModelToJson ( context , typesViewModel ) ;
             // return 1 ;
-            //var json = JsonSerializer.Serialize ( typesViewModel, jsonSerializerOptions ) ;
-//             File.WriteAllText ( @"C:\data\logs\model.json" , json ) ;
-            //await CodeGenAsync ( typesViewModel ) ;
-
-//            RunConsoleUi (context ) ;
-
-            //
-            // foreach ( var projFile in Directory.EnumerateFiles (
-            //                                                     @"e:\kay2020\source"
-            //                                                   , "*.csproj"
-            //                                                   , SearchOption.AllDirectories
-            //                                                    ) )
-            // {
-            //     //using Microsoft.CodeAnalysis.MSBuild;
-            //
-            //     Console.WriteLine ( projFile ) ;
-            // }
-
-            var c = await DumpSyntaxExamples ( ) ;
-
-            await LoadSyntaxExamplesAsync ( context , c ) ;
-
-            return 1 ;
         }
 
-        [TitleMetadata("Load Syntax Examples")]
-        private static async Task LoadSyntaxExamplesAsync ( AppContext context , SqlConnection c )
+        [ TitleMetadata ( "Load Syntax Examples" ) ]
+        [ UsedImplicitly ]
+        public static async Task LoadSyntaxExamplesAsync ( AppContext context , SqlConnection c )
         {
             var bb2 = new SqlCommand (
                                       "insert into syntaxexample2 (example, syntaxkind, typename, tokens) values (@example, @kind, @typename, @tokens)"
@@ -501,6 +482,7 @@ namespace ConsoleApp1
         }
 
         [ ItemNotNull ]
+        [ UsedImplicitly ]
         private static async Task < SqlConnection > DumpSyntaxExamples ( )
         {
             var b = new SqlConnectionStringBuilder
@@ -543,7 +525,7 @@ namespace ConsoleApp1
                 var reader1 = result.GetXmlReader ( 3 ) ;
                 // ReSharper disable once MethodHasAsyncOverload
 #pragma warning disable VSTHRD103 // Call async methods when in an async method
-                reader1.MoveToContent ( );
+                reader1.MoveToContent ( ) ;
 #pragma warning restore VSTHRD103 // Call async methods when in an async method
                 var tokens = ( XElement ) XNode.ReadFrom ( reader1 ) ;
                 var x = tokens.Elements ( )
@@ -638,7 +620,7 @@ namespace ConsoleApp1
             var choices = visualStudioInstances.Select (
                                                         x => new MenuWrapper < VisualStudioInstance > (
                                                                                                        x
-                                                                                                 , RenderFunc
+                                                                                             , RenderFunc
                                                                                                       )
                                                        ) ;
             menu.Config.SelectedAppearence =
@@ -659,8 +641,8 @@ namespace ConsoleApp1
             {
                 Logger?.Warn (
                              "Selected instance {instance} {path}"
-                       , ( object ) i2.Name
-                       , ( object ) i2.MSBuildPath
+                   , ( object ) i2.Name
+                   , ( object ) i2.MSBuildPath
                             ) ;
             }
 
@@ -671,7 +653,7 @@ namespace ConsoleApp1
             Console.WriteLine ( "" ) ;
 
 #endif
-#endif
+
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -683,8 +665,8 @@ namespace ConsoleApp1
             WriteThisTypesViewModel ( model ) ;
         }
 
-        [TitleMetadata("Write types view model")]
-        private static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model )
+        [ TitleMetadata ( "Write types view model" ) ]
+        public static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model )
         {
             var writer = XmlWriter.Create (
                                            ModelXamlFilename
@@ -695,8 +677,9 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        [TitleMetadata("Process solution")]
-        private static async Task ProcessSolutionAsync ( [ NotNull ] JsonSerializerOptions options )
+        [ TitleMetadata ( "Process solution" ) ]
+        [ UsedImplicitly ]
+        public static async Task ProcessSolutionAsync ( [ NotNull ] JsonSerializerOptions options )
         {
             options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
@@ -714,11 +697,11 @@ namespace ConsoleApp1
                     Console.WriteLine ( doc.Name ) ;
                     // ReSharper disable once UnusedVariable
                     var tree = await doc.GetSyntaxRootAsync ( ) ;
-                    
+
                     // var gen =
-                        // FindLogUsages.GenTransforms.Transform_CSharp_Node (
-                                                                           // ( CSharpSyntaxNode ) tree
-                                                                          // ) ;
+                    // FindLogUsages.GenTransforms.Transform_CSharp_Node (
+                    // ( CSharpSyntaxNode ) tree
+                    // ) ;
 
                     // Debug.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
                 }
@@ -726,11 +709,23 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static void RunConsoleUi ( [ NotNull ] AppContext context )
+#pragma warning disable 1998
+        private static async Task RunConsoleUiAsync ( [ NotNull ] AppContext context )
+#pragma warning restore 1998
         {
             if ( context == null )
             {
                 throw new ArgumentNullException ( nameof ( context ) ) ;
+            }
+
+            if ( ! context.Ui.Commands.Any ( ) )
+            {
+                Debug.WriteLine ( "No commands" ) ;
+            }
+
+            foreach ( var cmd in context.Ui.Commands )
+            {
+                Debug.WriteLine ( cmd.DisplayName ) ;
             }
 #if TERMUI
             context.Ui.Init ( ) ;
@@ -738,10 +733,11 @@ namespace ConsoleApp1
 #endif
         }
 
-        [TitleMetadata("Code gen")]
-        // ReSharper disable once UnusedMember.Local
-        private static async Task CodeGenAsync ( [ NotNull ] TypesViewModel model1 )
+        [ TitleMetadata ( "Code gen" ) ]
+        [ UsedImplicitly ]
+        public async Task CodeGenAsync ( [ NotNull ] AppContext context )
         {
+            var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
             var types =
                 new SyntaxList < MemberDeclarationSyntax
                 > ( ) ; //new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
@@ -1076,7 +1072,10 @@ namespace ConsoleApp1
                 }
             }
 
-            var result = (compilation ?? throw new InvalidOperationException ( )).Emit ( @"C:\data\logs\output.dll" ) ;
+            var result =
+                ( compilation ?? throw new InvalidOperationException ( ) ).Emit (
+                                                                                 @"C:\data\logs\output.dll"
+                                                                                ) ;
             if ( result.Success )
             {
                 Console.WriteLine ( "Success" ) ;
@@ -1130,7 +1129,10 @@ namespace ConsoleApp1
             Debug.WriteLine ( XamlWriter.Save ( model1 ) ) ;
         }
 
-        private static void ParseNodeBasics ( TypesViewModel model1 , [ NotNull ] XElement xElement )
+        private static void ParseNodeBasics (
+            TypesViewModel       model1
+          , [ NotNull ] XElement xElement
+        )
         {
             var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
             typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
@@ -1162,7 +1164,7 @@ namespace ConsoleApp1
                 // ReSharper disable once UnusedVariable
                 var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
                 //Debug.WriteLine ( comment ) ;
-                
+
                 typ2.Fields.Clear ( ) ;
                 var choices = xElement.Elements ( XName.Get ( "Choice" ) ) ;
                 var choiceAry = choices as XElement[] ?? choices.ToArray ( ) ;
@@ -1255,38 +1257,37 @@ namespace ConsoleApp1
         private static void Init ( ) { }
 
         // ReSharper disable once UnusedMember.Local
-        private static bool SupportsDocumentationComments([ CanBeNull ] MemberDeclarationSyntax member)
+        private static bool SupportsDocumentationComments (
+            [ CanBeNull ] MemberDeclarationSyntax member
+        )
         {
-            if (member == null)
+            if ( member == null )
             {
-                return false;
+                return false ;
             }
 
-            switch (member.Kind())
+            switch ( member.Kind ( ) )
             {
-                case SyntaxKind.ClassDeclaration:
-                case SyntaxKind.InterfaceDeclaration:
-                case SyntaxKind.StructDeclaration:
-                case SyntaxKind.DelegateDeclaration:
-                case SyntaxKind.EnumDeclaration:
-                case SyntaxKind.EnumMemberDeclaration:
-                case SyntaxKind.FieldDeclaration:
-                case SyntaxKind.MethodDeclaration:
-                case SyntaxKind.ConstructorDeclaration:
-                case SyntaxKind.DestructorDeclaration:
-                case SyntaxKind.PropertyDeclaration:
-                case SyntaxKind.IndexerDeclaration:
-                case SyntaxKind.EventDeclaration:
-                case SyntaxKind.EventFieldDeclaration:
-                case SyntaxKind.OperatorDeclaration:
-                case SyntaxKind.ConversionOperatorDeclaration:
-                    return true;
+                case SyntaxKind.ClassDeclaration :
+                case SyntaxKind.InterfaceDeclaration :
+                case SyntaxKind.StructDeclaration :
+                case SyntaxKind.DelegateDeclaration :
+                case SyntaxKind.EnumDeclaration :
+                case SyntaxKind.EnumMemberDeclaration :
+                case SyntaxKind.FieldDeclaration :
+                case SyntaxKind.MethodDeclaration :
+                case SyntaxKind.ConstructorDeclaration :
+                case SyntaxKind.DestructorDeclaration :
+                case SyntaxKind.PropertyDeclaration :
+                case SyntaxKind.IndexerDeclaration :
+                case SyntaxKind.EventDeclaration :
+                case SyntaxKind.EventFieldDeclaration :
+                case SyntaxKind.OperatorDeclaration :
+                case SyntaxKind.ConversionOperatorDeclaration :
+                    return true ;
 
-                default:
-                    return false;
+                default : return false ;
             }
         }
-
     }
-
 }

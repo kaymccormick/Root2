@@ -86,6 +86,7 @@
     <Compile Include="SyntaxInfo.cs" />
     <Compile Include="SyntaxWalker.cs" />
     <Compile Include="TermUi.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="X.cs" />
   </ItemGroup>
   <ItemGroup>
