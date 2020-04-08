@@ -293,7 +293,7 @@
       <Version>3.8.1</Version>
     </PackageReference>
     <PackageReference Include="KayMcCormick.Analyzer.LogUsage">
-      <Version>1.0.3</Version>
+      <Version>1.0.5</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

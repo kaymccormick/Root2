@@ -11,7 +11,7 @@
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.text.json\4.7.1\lib\net461\System.Text.Json.dll"#>
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.text.encodings.web\4.7.0\lib\netstandard2.0\System.Text.Encodings.Web.dll"#>
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.numerics.vectors\4.5.0\lib\net46\System.Numerics.Vectors.dll"#>
-
+<#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\microsoft.bcl.asyncinterfaces\1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll"#>
 <#@ output extension=".cs" #>
 <#@import namespace="System.Windows.Markup" #>
 <#@import namespace="System.IO" #>
@@ -109,6 +109,7 @@ public static class GenTransforms {
                     var props = "" ;
                     foreach ( var f in typ.GetProperty ( "Fields" ).EnumerateArray ( ) )
                     {
+						
                         var name = f.GetProperty ( "Name" ).GetString ( ) ;
                         if ( ( typeFullName.EndsWith ( "StatementSyntax" )
                                || pocoClassName == "PocoBlockSyntax" )
