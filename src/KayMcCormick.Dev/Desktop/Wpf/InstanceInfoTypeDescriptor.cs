@@ -35,6 +35,9 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public class WpfInstanceInfoConverter : InstanceInfoTypeConverter
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public WpfInstanceInfoConverter ( )
         {
             Debug.WriteLine ( "Instantiating WpfInst.." ) ;
@@ -42,6 +45,7 @@ namespace KayMcCormick.Lib.Wpf
 
 
         #region Overrides of InstanceInfoTypeConverter
+        /// <inheritdoc />
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
             if ( destinationType == typeof ( UIElement ) )
@@ -51,6 +55,7 @@ namespace KayMcCormick.Lib.Wpf
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
+        /// <inheritdoc />
         public override object ConvertTo (
             ITypeDescriptorContext context
           , CultureInfo            culture

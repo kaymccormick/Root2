@@ -102,7 +102,10 @@ namespace KayMcCormick.Dev.Serialization
         #endregion
     }
 
-    public class NoJsonConverterAttribute : Attribute
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class NoJsonConverterAttribute : Attribute
     {
     }
 
@@ -184,7 +187,6 @@ namespace KayMcCormick.Dev.Serialization
           , JsonSerializerOptions  options
         )
         {
-            var xx = ( ComponentRegistration ) value ;
             writer.WriteStartObject();
             writer.WriteStartObject("Metadata");
             foreach ( var keyValuePair in value.Metadata )
@@ -240,7 +242,7 @@ namespace KayMcCormick.Dev.Serialization
           , JsonSerializerOptions options
         )
         {
-            ConverterUtil.WritePreamble((JsonConverter)this, writer, value, options);
+            ConverterUtil.WritePreamble(this, writer, value, options);
             writer.WriteStartObject();
             writer.WritePropertyName("Tag");
             JsonSerializer.Serialize ( writer , value.Tag , value.Tag.GetType ( ) , options ) ;

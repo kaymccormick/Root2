@@ -84,7 +84,7 @@ namespace AnalysisControls
             builder.Register ( ( context , parameters ) => {
                 var stream = Assembly.GetExecutingAssembly ( )
                                      .GetManifestResourceStream (
-                                                                 "Corenet.Desktop.Analysis.AnalysisControls.TypesViewModel.xaml"
+                                                                 "AnalysisControls.TypesViewModel.xaml"
                                                                  
                                                                 ) ;
                 if ( stream == null )

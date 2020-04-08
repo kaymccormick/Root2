@@ -188,7 +188,7 @@ namespace AnalysisAppLib
                              ) ;
             }
 
-            Logger.Debug (
+            Logger.Info(
                           "{id} {result} {count}"
                         , Thread.CurrentThread.ManagedThreadId
                         , result.Status

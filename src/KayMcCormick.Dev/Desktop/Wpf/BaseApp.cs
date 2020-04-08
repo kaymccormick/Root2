@@ -1,19 +1,14 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.ComponentModel.DataAnnotations ;
 using System.Diagnostics ;
-using System.Linq ;
-using System.Text.Json ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.Tracing ;
 using NLog ;
-using NLog.Targets ;
 using Application = System.Windows.Application ;
 #if COMMANDLINE
 using CommandLine ;
@@ -280,7 +275,8 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
     public class InstanceInfoProvider : TypeDescriptionProvider
     {
 #region Overrides of TypeDescriptionProvider
-        public override ICustomTypeDescriptor GetTypeDescriptor (
+/// <inheritdoc />
+public override ICustomTypeDescriptor GetTypeDescriptor (
             Type   objectType
           , object instance
         )

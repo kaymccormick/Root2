@@ -2,7 +2,6 @@
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.Immutable ;
-using System.ComponentModel ;
 using System.Data ;
 using System.Data.SqlClient ;
 using System.Data.SqlTypes ;
@@ -15,24 +14,18 @@ using System.Reactive.Subjects ;
 using System.Text ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
 using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
-using AnalysisAppLib.Project ;
 using AnalysisAppLib.Properties ;
-using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
-
-using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
-using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -44,75 +37,13 @@ using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 
 namespace ConsoleApp1
 {
-    internal sealed class AppContext
-
-    {
-#if TERMUI
-        private readonly TermUi _termUi ;
-        public TermUi Ui { get { return _termUi ; } }
-        public AppContext (
-            ILifetimeScope           scope
-      , IProjectBrowserViewModel projectBrowserViewModel
-      , TermUi                   termUi
-        )
-        {
-            _termUi          = termUi ;
-            Scope            = scope ;
-            BrowserViewModel = projectBrowserViewModel ;
-        }
-#else
-        public AppContext(
-            ILifetimeScope           scope
-          , IProjectBrowserViewModel projectBrowserViewModel
-          
-        )
-        {
-            
-            Scope            = scope;
-            BrowserViewModel = projectBrowserViewModel;
-        }
-
-
-#endif
-
-        private IProjectBrowserViewModel _projectBrowserViewModel ;
-
-        //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
-
-        public ILifetimeScope Scope { get ; }
-
-        public IProjectBrowserViewModel BrowserViewModel
-        {
-            // ReSharper disable once UnusedMember.Global
-            get { return _projectBrowserViewModel ; }
-            set { _projectBrowserViewModel = value ; }
-        }
-
-
-    }
-
-    internal sealed class AppModule : Module
-    {
-        // ReSharper disable once AnnotateNotNullParameter
-        protected override void Load ( ContainerBuilder builder )
-        {
-            base.Load ( builder ) ;
-            var actionBlock = new ActionBlock < ILogInvocation > (Action) ;
-            builder.RegisterInstance ( actionBlock )
-                   .As < ActionBlock < ILogInvocation > > ( )
-                   .SingleInstance ( ) ;
-            builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
-#if TERMUI
-            builder.RegisterType < TermUi > ( ).AsSelf ( ) ;
-#endif
-        }
-
-        private void Action ( ILogInvocation obj ) { }
-    }
-
     internal static class Program
     {
-        private const string ModelXamlFilename = @"C:\data\logs\model.xaml";
+        private const string ModelXamlFilename = @"C:\data\logs\model.xaml" ;
+
+        private const string SolutionFilePath =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\ManagedProd.sln" ;
+
         private static readonly string[] AssemblyRefs = new[]
                                                         {
                                                             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
@@ -130,7 +61,8 @@ namespace ConsoleApp1
                                                           , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Transactions.dll"
                                                           , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll"
                                                           , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll"
-                                                        };
+                                                        } ;
+
         private static void PopulateJsonConverters ( bool disableLogging )
         {
             if ( ! disableLogging )
@@ -168,7 +100,7 @@ namespace ConsoleApp1
 
         //============= Config [Edit these with your settings] =====================
         // ReSharper disable once UnusedParameter.Local
-        private static async Task < int > Main ( string[] args)
+        private static async Task < int > Main ( string[] args )
         {
             var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
             var subject = new Subject < ILogger > ( ) ;
@@ -232,7 +164,7 @@ namespace ConsoleApp1
                 AppContext context ;
                 try
                 {
-                    context = scope.Resolve < AppContext > () ;
+                    context = scope.Resolve < AppContext > ( ) ;
                 }
                 catch ( DependencyResolutionException depex )
                 {
@@ -251,14 +183,6 @@ namespace ConsoleApp1
 
                 return await MainCommandAsync ( context ) ;
             }
-        }
-
-        public static void Action ( ILogInvocation invocation )
-        {
-            var json = JsonSerializer.Serialize ( invocation ) ;
-            Console.WriteLine ( json ) ;
-            // $"{invocation.MethodDisplayName}\t{invocation.SourceLocation}\t{invocation.Msgval}\t{invocation.Arguments}"
-            // ) ;
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -343,27 +267,31 @@ namespace ConsoleApp1
             }
 #endif
 
+            // ReSharper disable once UnusedVariable
             var options = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
             // options.Converters.Add (new JsonPocoSyntaxConverter()  );
             // await            CollectDocs ( options ) ;
             // return 1 ;
             var typesViewModel = context.Scope.Resolve < TypesViewModel > ( ) ;
-            WriteThisTypesViewModel(typesViewModel);
+            WriteThisTypesViewModel ( typesViewModel ) ;
 
-            LoadSyntax(typesViewModel);
+            LoadSyntax ( typesViewModel ) ;
             foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
             {
                 typesViewModel.PopulateFieldTypes ( ati ) ;
             }
-            WriteThisTypesViewModel(typesViewModel);
-            typesViewModel.DetailFields();
-            WriteThisTypesViewModel(typesViewModel);
-            DumpModelToJson( context , typesViewModel ) ;
+
+            
+
+            WriteThisTypesViewModel ( typesViewModel ) ;
+            typesViewModel.DetailFields ( ) ;
+            WriteThisTypesViewModel ( typesViewModel ) ;
+            DumpModelToJson ( context , typesViewModel ) ;
             // return 1 ;
             //var json = JsonSerializer.Serialize ( typesViewModel, jsonSerializerOptions ) ;
 //             File.WriteAllText ( @"C:\data\logs\model.json" , json ) ;
             //await CodeGenAsync ( typesViewModel ) ;
-            return 1 ;
+
 //            RunConsoleUi (context ) ;
 
             //
@@ -378,71 +306,15 @@ namespace ConsoleApp1
             //     Console.WriteLine ( projFile ) ;
             // }
 
-            var b = new SqlConnectionStringBuilder
-                    {
-                        IntegratedSecurity = true
-                      , DataSource         = @".\sql2017"
-                      , InitialCatalog     = "syntaxdb"
-                    } ;
-            var c = new SqlConnection ( b.ConnectionString ) ;
-            await c.OpenAsync ( ) ;
+            var c = await DumpSyntaxExamples ( ) ;
 
-            var bb1 = new SqlCommand (
-                                      "select example, syntaxkind, typename, tokens, id from syntaxexample2"
-                                    , c
-                                     ) ;
-            var result = await bb1.ExecuteReaderAsync ( ) ;
-            var d1 = new ExampleDict ( ) ;
-            for ( ; ; )
-            {
-                var moreRows = await result.ReadAsync ( ) ;
-                if ( ! moreRows )
-                {
-                    break ;
-                }
+            await LoadSyntaxExamplesAsync ( context , c ) ;
 
-                var kind = result.GetInt32 ( 1 ) ;
-                var k = Enum.GetName ( typeof ( SyntaxKind ) , ( uint ) kind ) ;
-                Enum.TryParse < SyntaxKind > ( k , out var k2 ) ;
-                ArrayList l = null ;
-                if ( ! d1.Contains ( k2 ) )
-                {
-                    l        = new ArrayList ( ) ;
-                    d1[ k2 ] = l ;
-                }
-                else
-                {
-                    l = ( ArrayList ) d1[ k2 ] ;
-                }
+            return 1 ;
+        }
 
-                var reader1 = result.GetXmlReader ( 3 ) ;
-                // ReSharper disable once MethodHasAsyncOverload
-                reader1.MoveToContent ( ) ;
-                var tokens = ( XElement ) XNode.ReadFrom ( reader1 ) ;
-                var x = tokens.Elements ( )
-                              .Select (
-                                       element => new SToken (
-                                                              element.Name.LocalName
-                                                            , element.Value
-                                                             )
-                                      )
-                              .ToList ( ) ;
-                var exampleSyntax = new ExampleSyntax (
-                                                       kind
-                                                     , result.GetString ( 0 )
-                                                     , result.GetString ( 2 )
-                                                     , x
-                                                     , result.GetInt32 ( 4 )
-                                                      ) ;
-                l.Add ( exampleSyntax ) ;
-            }
-
-            var d2 = ( IDictionary ) d1 ;
-            using ( var fileStream = File.OpenWrite ( @"C:\data\logs\xaml" ) )
-            {
-                XamlWriter.Save ( d2 , fileStream ) ;
-            }
-
+        private static async Task LoadSyntaxExamplesAsync ( AppContext context , SqlConnection c )
+        {
             var bb2 = new SqlCommand (
                                       "insert into syntaxexample2 (example, syntaxkind, typename, tokens) values (@example, @kind, @typename, @tokens)"
                                     , c
@@ -451,7 +323,7 @@ namespace ConsoleApp1
 
             var set = new HashSet < Type > ( ) ;
             var model = context.Scope.Resolve < TypesViewModel > ( ) ;
-            NewMethod ( model.Root.SubTypeInfos , set ) ;
+            PopulateSet ( model.Root.SubTypeInfos , set ) ;
             var syntaxdict =
                 new Dictionary < Type , Tuple < X , List < Tuple < SyntaxNode , string > > > > ( ) ;
             var xxx1 = new Dictionary < string , X > ( ) ;
@@ -476,13 +348,13 @@ namespace ConsoleApp1
                 // }
 
                 var comp = st.GetCompilationUnitRoot ( ) ;
-                Dictionary <SyntaxKind, SyntaxInfo> triviaDict = new Dictionary < SyntaxKind , SyntaxInfo > ();
+                var triviaDict = new Dictionary < SyntaxKind , SyntaxInfo > ( ) ;
                 foreach ( var syntaxTrivia in comp.DescendantTrivia ( x => true , true ) )
                 {
                     var kind = syntaxTrivia.Kind ( ) ;
-                    if (! triviaDict.TryGetValue ( kind , out var info ) )
+                    if ( ! triviaDict.TryGetValue ( kind , out var info ) )
                     {
-                        info = new SyntaxInfo ( ) { Kind = kind } ;
+                        info               = new SyntaxInfo ( ) { Kind = kind } ;
                         triviaDict[ kind ] = info ;
                     }
 
@@ -498,9 +370,8 @@ namespace ConsoleApp1
                                                               )
                                            )
                               ) ;
-                return 1 ;
-                foreach ( var o1 in comp
-                                      .DescendantNodesAndTokensAndSelf ( ) )
+
+                foreach ( var o1 in comp.DescendantNodesAndTokensAndSelf ( ) )
                 {
                     if ( o1.IsToken )
                     {
@@ -622,32 +493,93 @@ namespace ConsoleApp1
                                    / keyValuePair.Value.Item2.Count
                                   ) ;
             }
-
-            return 1 ;
-            // }
-
-
-            // if ( o.ToString ( ).Length < 80 )
-            // {
-            // Console.WriteLine ( o.GetType ( ).Name ) ;
-            // Console.WriteLine ( o ) ;
-            // i1 ++ ;
-            // if ( i1% 25 == 0 )
-            // {
-            // Console.ReadLine ( ) ;
-            // }
-            // }
         }
 
-        private static void DumpModelToJson ( AppContext context , TypesViewModel typesViewModel )
+        [ ItemNotNull ]
+        private static async Task < SqlConnection > DumpSyntaxExamples ( )
+        {
+            var b = new SqlConnectionStringBuilder
+                    {
+                        IntegratedSecurity = true
+                      , DataSource         = @".\sql2017"
+                      , InitialCatalog     = "syntaxdb"
+                    } ;
+            var c = new SqlConnection ( b.ConnectionString ) ;
+            await c.OpenAsync ( ) ;
+
+            var bb1 = new SqlCommand (
+                                      "select example, syntaxkind, typename, tokens, id from syntaxexample2"
+                                    , c
+                                     ) ;
+            var result = await bb1.ExecuteReaderAsync ( ) ;
+            var d1 = new ExampleDict ( ) ;
+            for ( ; ; )
+            {
+                var moreRows = await result.ReadAsync ( ) ;
+                if ( ! moreRows )
+                {
+                    break ;
+                }
+
+                var kind = result.GetInt32 ( 1 ) ;
+                var k = Enum.GetName ( typeof ( SyntaxKind ) , ( uint ) kind ) ;
+                Enum.TryParse < SyntaxKind > ( k , out var k2 ) ;
+                ArrayList l ;
+                if ( ! d1.Contains ( k2 ) )
+                {
+                    l        = new ArrayList ( ) ;
+                    d1[ k2 ] = l ;
+                }
+                else
+                {
+                    l = ( ArrayList ) d1[ k2 ] ;
+                }
+
+                var reader1 = result.GetXmlReader ( 3 ) ;
+                // ReSharper disable once MethodHasAsyncOverload
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                reader1.MoveToContent ( );
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+                var tokens = ( XElement ) XNode.ReadFrom ( reader1 ) ;
+                var x = tokens.Elements ( )
+                              .Select (
+                                       element => new SToken (
+                                                              element.Name.LocalName
+                                                            , element.Value
+                                                             )
+                                      )
+                              .ToList ( ) ;
+                var exampleSyntax = new ExampleSyntax (
+                                                       kind
+                                                     , result.GetString ( 0 )
+                                                     , result.GetString ( 2 )
+                                                     , x
+                                                     , result.GetInt32 ( 4 )
+                                                      ) ;
+                l.Add ( exampleSyntax ) ;
+            }
+
+            var d2 = ( IDictionary ) d1 ;
+            using ( var fileStream = File.OpenWrite ( @"C:\data\logs\xaml" ) )
+            {
+                XamlWriter.Save ( d2 , fileStream ) ;
+            }
+
+            return c ;
+        }
+
+        private static void DumpModelToJson (
+            [ NotNull ] AppContext     context
+          , [ NotNull ] TypesViewModel typesViewModel
+        )
         {
             using ( var utf8Json = File.Open ( @"C:\temp\out.json" , FileMode.Create ) )
             {
-                List < AppTypeInfo > infos = typesViewModel.Map.Values.Cast < AppTypeInfo > ( ).ToList ( ) ;
-                Utf8JsonWriter writer = new Utf8JsonWriter (
-                                                            utf8Json
-                                                          , new JsonWriterOptions ( ) { Indented = true }
-                                                           ) ;
+                var infos = typesViewModel.Map.Values.Cast < AppTypeInfo > ( ).ToList ( ) ;
+                var writer = new Utf8JsonWriter (
+                                                 utf8Json
+                                               , new JsonWriterOptions ( ) { Indented = true }
+                                                ) ;
                 var jsonSerializerOptions = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
                 jsonSerializerOptions.WriteIndented = true ;
                 if ( ! jsonSerializerOptions
@@ -667,8 +599,9 @@ namespace ConsoleApp1
                 {
                     JsonSerializer.Serialize ( writer , infos , jsonSerializerOptions ) ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
                 {
+                    // ignored
                 }
 
                 writer.Flush ( ) ;
@@ -688,7 +621,8 @@ namespace ConsoleApp1
                                                                                     .VisualStudioSetup
                                                                          }
                                                                         ) ;
-            var visualStudioInstances = vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
+            var visualStudioInstances =
+ vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray ( ) ;
 
             string RenderFunc ( VisualStudioInstance inst1 )
             {
@@ -699,7 +633,7 @@ namespace ConsoleApp1
             var choices = visualStudioInstances.Select (
                                                         x => new MenuWrapper < VisualStudioInstance > (
                                                                                                        x
-                                                                                                     , RenderFunc
+                                                                                                 , RenderFunc
                                                                                                       )
                                                        ) ;
             menu.Config.SelectedAppearence =
@@ -720,8 +654,8 @@ namespace ConsoleApp1
             {
                 Logger?.Warn (
                              "Selected instance {instance} {path}"
-                           , ( object ) i2.Name
-                           , ( object ) i2.MSBuildPath
+                       , ( object ) i2.Name
+                       , ( object ) i2.MSBuildPath
                             ) ;
             }
 
@@ -735,6 +669,7 @@ namespace ConsoleApp1
 #endif
         }
 
+        // ReSharper disable once UnusedMember.Local
         private static void WriteTypesViewModel ( )
         {
             var model = new TypesViewModel ( ) ;
@@ -743,7 +678,7 @@ namespace ConsoleApp1
             WriteThisTypesViewModel ( model ) ;
         }
 
-        private static void WriteThisTypesViewModel ( TypesViewModel model )
+        private static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model )
         {
             var writer = XmlWriter.Create (
                                            ModelXamlFilename
@@ -754,145 +689,42 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static async Task CollectDocs (JsonSerializerOptions options )
+        private static async Task ProcessSolutionAsync ( [ NotNull ] JsonSerializerOptions options )
         {
             options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
-            var solution = await workspace.OpenSolutionAsync (
-                                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\ManagedProd.sln"
-                                                             ) ;
+            var solution = await workspace.OpenSolutionAsync ( SolutionFilePath ) ;
             foreach ( var project in solution.Projects )
             {
                 Console.WriteLine ( project.Name ) ;
 
-
+                // ReSharper disable once UnusedVariable
                 var compilation = await project.GetCompilationAsync ( ) ;
                 foreach ( var doc in project.Documents )
                 {
+                    // ReSharper disable once UnusedVariable
                     var model = await doc.GetSemanticModelAsync ( ) ;
                     Console.WriteLine ( doc.Name ) ;
+                    // ReSharper disable once UnusedVariable
                     var tree = await doc.GetSyntaxRootAsync ( ) ;
-                    var gen = FindLogUsages.GenTransforms.Transform_CSharp_Node ( ( CSharpSyntaxNode ) tree ) ;
+                    
+                    // var gen =
+                        // FindLogUsages.GenTransforms.Transform_CSharp_Node (
+                                                                           // ( CSharpSyntaxNode ) tree
+                                                                          // ) ;
 
-                    Debug.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
-                    continue ;
-                    foreach ( var node in tree.DescendantNodesAndSelf ( )
-                                              .Where ( node => node.HasStructuredTrivia ) )
-                    {
-                        var nn = node.GetLeadingTrivia ( )
-                                     .Where (
-                                             triv => triv.Kind ( )
-                                                     == SyntaxKind.SingleLineDocumentationCommentTrivia
-                                            )
-                                     .ToList ( ) ;
-                        if ( nn.Count > 1 )
-                        {
-                            throw new InvalidOperationException ( ) ;
-                        }
-
-                        if ( ! nn.Any ( ) )
-                        {
-                            continue ;
-                        }
-
-                        try
-                        {
-                            CodeElementDocumentation xdoc = null ;
-                            var declaredSymbol = model.GetDeclaredSymbol ( node ) ;
-                            if ( declaredSymbol == null )
-                            {
-                                Console.WriteLine ( node.Kind ( ) ) ;
-                                continue ;
-                            }
-
-                            var declarationId =
-                                DocumentationCommentId.CreateDeclarationId ( declaredSymbol ) ;
-                            var coll = new XmlDocumentElementCollection ( ) ;
-                            switch ( node )
-                            {
-                                case MethodDeclarationSyntax m :
-                                    xdoc = new MethodDocumentation (
-                                                                    declarationId
-                                                                  , null
-                                                                  , m.Identifier.Text
-                                                                  , null
-                                                                   ) ;
-                                    break ;
-                                case ClassDeclarationSyntax cl :
-                                case InterfaceDeclarationSyntax idcl :
-                                case EnumDeclarationSyntax eds :
-                                    xdoc = new TypeDocumentation ( declarationId , null ) ;
-                                    break ;
-                                case DelegateDeclarationSyntax dds :
-                                    xdoc = new DelegateDocumentation ( declarationId ) ;
-                                    break ;
-                                case PropertyDeclarationSyntax pp :
-                                    xdoc = new PropertyDocumentation (
-                                                                      declarationId
-                                                                    , null
-                                                                    , pp.Identifier.Text
-                                                                     ) ;
-                                    break ;
-                                case ConstructorDeclarationSyntax cds :
-                                    xdoc = new ConstructorDocumentation ( declarationId ) ;
-                                    break ;
-                                case EnumMemberDeclarationSyntax ems :
-                                    xdoc = new EnumMemberDocumentation ( declarationId ) ;
-                                    break ;
-                                case EventDeclarationSyntax eds :
-                                    xdoc = new EventDocumentation ( declarationId ) ;
-                                    break ;
-                                case IndexerDeclarationSyntax ids :
-                                    xdoc = new IndexerDocumentation ( declarationId ) ;
-                                    break ;
-                                default :
-                                    throw new InvalidOperationException ( node.Kind ( ).ToString ( ) ) ;
-                            }
-
-                            foreach ( var syntaxTrivia in nn )
-                            {
-                                var structure = syntaxTrivia.GetStructure ( ) ;
-                                var x = ( DocumentationCommentTriviaSyntax ) structure ;
-                                foreach ( var xml in x.Content )
-                                {
-                                    XmlDocElement elem = null ;
-                                    //Console.WriteLine ( xml.GetType ( ).Name ) ;
-                                    switch ( xml )
-                                    {
-                                        case XmlCDataSectionSyntax xmlCDataSectionSyntax : break ;
-                                        case XmlCommentSyntax xmlCommentSyntax :           break ;
-                                        case XmlElementSyntax xmlElementSyntax :
-                                            var xdoc1 = XDocument.Parse ( xmlElementSyntax.ToString ( ) ) ;
-                                            elem = XmlDocElements.HandleXDocument ( xdoc1 ) ;
-
-                                            break ;
-                                        case XmlEmptyElementSyntax xmlEmptyElementSyntax : break ;
-                                        case XmlProcessingInstructionSyntax xmlProcessingInstructionSyntax :
-                                            break ;
-                                        case XmlTextSyntax xmlTextSyntax :
-                                            elem = new XmlDocText ( xmlTextSyntax.ToFullString ( ) ) ;
-                                            break ;
-                                    }
-
-                                    if ( elem != null )
-                                    {
-                                        xdoc.XmlDoc.Add ( elem ) ;
-                                    }
-                                }
-
-                                Console.WriteLine ( XamlWriter.Save ( xdoc ) ) ;
-                            }
-                        }
-                        catch ( Exception exx )
-                        {
-                        }
-                    }
+                    // Debug.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
                 }
             }
         }
 
-        private static void RunConsoleUi ( [ JetBrains.Annotations.NotNull ] AppContext context )
+        // ReSharper disable once UnusedMember.Local
+        private static void RunConsoleUi ( [ NotNull ] AppContext context )
         {
+            if ( context == null )
+            {
+                throw new ArgumentNullException ( nameof ( context ) ) ;
+            }
 #if TERMUI
             context.Ui.Init ( ) ;
             context.Ui.Run ( ) ;
@@ -900,17 +732,20 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static async Task CodeGenAsync ( [ JetBrains.Annotations.NotNull ] TypesViewModel model1 )
+        private static async Task CodeGenAsync ( [ NotNull ] TypesViewModel model1 )
         {
-            var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;//new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
+            var types =
+                new SyntaxList < MemberDeclarationSyntax
+                > ( ) ; //new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
             foreach ( Type mapKey in model1.Map.Keys )
             {
-                Logger.Debug ($"{mapKey}");
+                Logger.Debug ( $"{mapKey}" ) ;
                 var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
                 var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
                 foreach ( SyntaxFieldInfo tField in t.Fields )
                 {
-                    if ( tField.Type == null && tField.TypeName != "bool")
+                    if ( tField.Type        == null
+                         && tField.TypeName != "bool" )
                     {
                         continue ;
                     }
@@ -953,14 +788,16 @@ namespace ConsoleApp1
                     {
                         tFieldTypeName = "List<SyntaxToken>" ;
                     }
-                    else if (tFieldTypeName.StartsWith("SyntaxList<"))
+                    else if ( tFieldTypeName.StartsWith ( "SyntaxList<" ) )
                     {
-                        tFieldTypeName = tFieldTypeName.Replace("SyntaxList<", "List<");
+                        tFieldTypeName = tFieldTypeName.Replace ( "SyntaxList<" , "List<" ) ;
                     }
-                 else if (tFieldTypeName.StartsWith("SeparatedSyntaxList<"))
-                {
-                    tFieldTypeName = tFieldTypeName.Replace("SeparatedSyntaxList<", "List<");
-                }
+                    else if ( tFieldTypeName.StartsWith ( "SeparatedSyntaxList<" ) )
+                    {
+                        tFieldTypeName =
+                            tFieldTypeName.Replace ( "SeparatedSyntaxList<" , "List<" ) ;
+                    }
+
                     var typeSyntax =
                         SyntaxFactory.ParseTypeName (
                                                      tFieldTypeName
@@ -971,27 +808,26 @@ namespace ConsoleApp1
                                                                                                                 ) ;*/
                     if ( typeSyntax is GenericNameSyntax gen )
                     {
-                         SimpleNameSyntax ss = ( SimpleNameSyntax ) gen.TypeArgumentList.Arguments[ 0 ] ;
-                         typeSyntax = gen.WithTypeArgumentList (
-                                                                SyntaxFactory.TypeArgumentList (
-                                                                                                new
-                                                                                                        SeparatedSyntaxList
-                                                                                                        < TypeSyntax
-                                                                                                        > ( )
-                                                                                                   .Add (
-                                                                                                         SyntaxFactory
-                                                                                                            .ParseTypeName (
-                                                                                                                            "Poco"
-                                                                                                                            + ss
-                                                                                                                             .Identifier
-                                                                                                                             .Text
-                                                                                                                           )
-                                                                                                        )
-                                                                                               )
-                                                               ) ;
-
+                        var ss = ( SimpleNameSyntax ) gen.TypeArgumentList.Arguments[ 0 ] ;
+                        typeSyntax = gen.WithTypeArgumentList (
+                                                               SyntaxFactory.TypeArgumentList (
+                                                                                               new
+                                                                                                       SeparatedSyntaxList
+                                                                                                       < TypeSyntax
+                                                                                                       > ( )
+                                                                                                  .Add (
+                                                                                                        SyntaxFactory
+                                                                                                           .ParseTypeName (
+                                                                                                                           "Poco"
+                                                                                                                           + ss
+                                                                                                                            .Identifier
+                                                                                                                            .Text
+                                                                                                                          )
+                                                                                                       )
+                                                                                              )
+                                                              ) ;
                     }
-                    else if(tField.TypeName != "bool")
+                    else if ( tField.TypeName != "bool" )
                     {
                         typeSyntax =
                             SyntaxFactory.ParseTypeName (
@@ -1000,24 +836,26 @@ namespace ConsoleApp1
                                                           .Identifier.Text
                                                         ) ;
                     }
-                    List <SyntaxToken> tokens = new List < SyntaxToken > ();
-                    tokens.Add (SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-                    if ( tField.Override )
-                    {
-                        tokens.Add (SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-                    }
-                    else
-                    {
-                        tokens.Add(SyntaxFactory.Token(SyntaxKind.VirtualKeyword));
-                    }
 
-                    
+                    var tokens = new List < SyntaxToken >
+                                 {
+                                     SyntaxFactory.Token ( SyntaxKind.PublicKeyword )
+                                   , tField.Override
+                                         ? SyntaxFactory.Token ( SyntaxKind.OverrideKeyword )
+                                         : SyntaxFactory.Token ( SyntaxKind.VirtualKeyword )
+                                 } ;
+
+
                     members = members.Add (
                                            SyntaxFactory.PropertyDeclaration (
                                                                               new SyntaxList <
                                                                                   AttributeListSyntax
                                                                               > ( )
-                                                                            , SyntaxFactory.TokenList(tokens.ToArray()) 
+                                                                            , SyntaxFactory
+                                                                                 .TokenList (
+                                                                                             tokens
+                                                                                                .ToArray ( )
+                                                                                            )
                                                                             , typeSyntax
                                                                             , null
                                                                             , SyntaxFactory
@@ -1030,8 +868,17 @@ namespace ConsoleApp1
                                           ) ;
                 }
 
-                var classDecl =
-                    SyntaxFactory.ClassDeclaration ( "Poco" + mapKey.Name ).WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token (SyntaxKind.PublicKeyword))).WithMembers ( members ) ;
+                var classDecl = SyntaxFactory
+                               .ClassDeclaration ( "Poco" + mapKey.Name )
+                               .WithModifiers (
+                                               SyntaxTokenList.Create (
+                                                                       SyntaxFactory.Token (
+                                                                                            SyntaxKind
+                                                                                               .PublicKeyword
+                                                                                           )
+                                                                      )
+                                              )
+                               .WithMembers ( members ) ;
                 if ( t.ParentInfo != null )
                 {
                     classDecl = classDecl.WithBaseList (
@@ -1043,8 +890,10 @@ namespace ConsoleApp1
                                                                                                SyntaxFactory
                                                                                                   .SimpleBaseType (
                                                                                                                    SyntaxFactory
-                                                                                                                      .IdentifierName ("Poco" + 
-                                                                                                                                       t.ParentInfo
+                                                                                                                      .IdentifierName (
+                                                                                                                                       "Poco"
+                                                                                                                                       + t
+                                                                                                                                        .ParentInfo
                                                                                                                                         .Type
                                                                                                                                         .Name
                                                                                                                                       )
@@ -1059,24 +908,40 @@ namespace ConsoleApp1
 
             var compl = SyntaxFactory.CompilationUnit ( )
                                      .WithUsings (
-                                                  new SyntaxList < UsingDirectiveSyntax > (new [] {
-                                                                                           SyntaxFactory
-                                                                                              .UsingDirective (
-                                                                                                               SyntaxFactory
-                                                                                                                  .ParseName (
-                                                                                                                              "System"
-                                                                                                                             )
-                                                                                                              ),
-                                                                                           SyntaxFactory
-                                                                                              .UsingDirective(
-                                                                                                              SyntaxFactory
-                                                                                                                 .ParseName(
-                                                                                                                            "System.Collections.Generic"
-                                                                                                                           )
-                                                                                                             )}
+                                                  new SyntaxList < UsingDirectiveSyntax > (
+                                                                                           new[]
+                                                                                           {
+                                                                                               SyntaxFactory
+                                                                                                  .UsingDirective (
+                                                                                                                   SyntaxFactory
+                                                                                                                      .ParseName (
+                                                                                                                                  "System"
+                                                                                                                                 )
+                                                                                                                  )
+                                                                                             , SyntaxFactory
+                                                                                                  .UsingDirective (
+                                                                                                                   SyntaxFactory
+                                                                                                                      .ParseName (
+                                                                                                                                  "System.Collections.Generic"
+                                                                                                                                 )
+                                                                                                                  )
+                                                                                           }
                                                                                           )
                                                  )
-                                     .WithMembers (new SyntaxList<MemberDeclarationSyntax>(SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("PocoSyntax")).WithMembers(types) ))
+                                     .WithMembers (
+                                                   new SyntaxList < MemberDeclarationSyntax > (
+                                                                                               SyntaxFactory
+                                                                                                  .NamespaceDeclaration (
+                                                                                                                         SyntaxFactory
+                                                                                                                            .ParseName (
+                                                                                                                                        "PocoSyntax"
+                                                                                                                                       )
+                                                                                                                        )
+                                                                                                  .WithMembers (
+                                                                                                                types
+                                                                                                               )
+                                                                                              )
+                                                  )
                                      .NormalizeWhitespace ( ) ;
             var tree = SyntaxFactory.SyntaxTree ( compl ) ;
             var src = tree.ToString ( ) ;
@@ -1133,11 +998,31 @@ namespace ConsoleApp1
                                                                                            )
                                                                     )
                                                    ) ;
-            
-            var document2 = DocumentInfo.Create(DocumentId.CreateNewId(projectId), "misc", null, SourceCodeKind.Regular, TextLoader.From (TextAndVersion.Create(SourceText.From(
-                @"public class PocoSyntaxToken { public int RawKind { get; set; } public string Kind { get; set; } public object Value {get; set;} public string ValueText { get; set; } }"), VersionStamp.Create())));
-                
-            var s2 = s.AddDocuments ( ImmutableArray < DocumentInfo >.Empty.Add ( documentInfo ).Add (document2  ) ) ;
+
+            var document2 = DocumentInfo.Create (
+                                                 DocumentId.CreateNewId ( projectId )
+                                               , "misc"
+                                               , null
+                                               , SourceCodeKind.Regular
+                                               , TextLoader.From (
+                                                                  TextAndVersion.Create (
+                                                                                         SourceText
+                                                                                            .From (
+                                                                                                   @"public class PocoSyntaxToken { public int RawKind { get; set; } public string Kind { get; set; } public object Value {get; set;} public string ValueText { get; set; } }"
+                                                                                                  )
+                                                                                       , VersionStamp
+                                                                                            .Create ( )
+                                                                                        )
+                                                                 )
+                                                ) ;
+
+            //todo investigate
+            var s2 = s.AddDocuments (
+                                     ImmutableArray < DocumentInfo >
+                                         // ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
+                                        .Empty.Add ( documentInfo )
+                                        .Add ( document2 )
+                                    ) ;
 
             //var d = project.AddDocument ( "test.cs" , src ) ;
             var rb1 = adhoc.TryApplyChanges ( s2 ) ;
@@ -1146,21 +1031,21 @@ namespace ConsoleApp1
                 throw new InvalidOperationException ( ) ;
             }
 
-            foreach (var ref1 in AssemblyRefs)
+            foreach ( var ref1 in AssemblyRefs )
             {
-                var s3 = adhoc.CurrentSolution.AddMetadataReference(
-                                                                        projectId
-                                                                      , MetadataReference
-                                                                           .CreateFromFile(ref1)
-                                                                       );
-                var rb = adhoc.TryApplyChanges(s3);
-                if (!rb)
+                var s3 = adhoc.CurrentSolution.AddMetadataReference (
+                                                                     projectId
+                                                                   , MetadataReference
+                                                                        .CreateFromFile ( ref1 )
+                                                                    ) ;
+                var rb = adhoc.TryApplyChanges ( s3 ) ;
+                if ( ! rb )
                 {
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException ( ) ;
                 }
             }
 
-            
+
             var project = adhoc.CurrentSolution.Projects.First ( ) ;
             var compilation = await project.GetCompilationAsync ( ) ;
             using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )
@@ -1171,29 +1056,29 @@ namespace ConsoleApp1
                     {
                         if ( ! diagnostic.IsSuppressed )
                         {
+                            // ReSharper disable once UnusedVariable
                             var line =
                                 source[ diagnostic
                                        .Location.GetLineSpan ( )
                                        .StartLinePosition.Line ] ;
                             Console.WriteLine ( diagnostic.ToString ( ) ) ;
-                            f.WriteLine ( diagnostic.ToString ( ) ) ;
+                            await f.WriteLineAsync ( diagnostic.ToString ( ) ) ;
                         }
                     }
                 }
             }
 
-            var result =compilation.Emit ( @"C:\data\logs\output.dll" ) ;
-            if (result.Success)
+            var result = (compilation ?? throw new InvalidOperationException ( )).Emit ( @"C:\data\logs\output.dll" ) ;
+            if ( result.Success )
             {
-                Console.WriteLine("Success");
+                Console.WriteLine ( "Success" ) ;
             }
-            
+
             File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
-            
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static void LoadSyntax ( TypesViewModel model1 )
+        private static void LoadSyntax ( [ NotNull ] TypesViewModel model1 )
         {
             var syntax = XDocument.Parse ( Resources.Syntax ) ;
             if ( syntax.Root != null )
@@ -1203,7 +1088,7 @@ namespace ConsoleApp1
                     switch ( xElement.Name.LocalName )
                     {
                         case "PredefinedNode" :
-                            var typeName = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+                            var typeName = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
                             typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
                             var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName ) ;
                             if ( t == null )
@@ -1218,7 +1103,7 @@ namespace ConsoleApp1
 
                             break ;
                         case "AbstractNode" :
-                            ParseNodeBasics(model1, xElement);
+                            ParseNodeBasics ( model1 , xElement ) ;
                             break ;
                         case "Node" :
                             ParseNodeBasics ( model1 , xElement ) ;
@@ -1237,9 +1122,9 @@ namespace ConsoleApp1
             Debug.WriteLine ( XamlWriter.Save ( model1 ) ) ;
         }
 
-        private static void ParseNodeBasics ( TypesViewModel model1 , XElement xElement )
+        private static void ParseNodeBasics ( TypesViewModel model1 , [ NotNull ] XElement xElement )
         {
-            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) ).Value ;
+            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
             typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
             var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
             if ( t2 == null )
@@ -1254,36 +1139,41 @@ namespace ConsoleApp1
                 var xElements = kinds1 as XElement[] ?? kinds1.ToArray ( ) ;
                 if ( xElements.Any ( ) )
                 {
-                    typ2.Kinds.Clear();
+                    typ2.Kinds.Clear ( ) ;
                     var nodekinds = xElements
-                                     .Select(element => element.Attribute("Name")?.Value)
-                                     .ToList();
+                                   .Select ( element => element.Attribute ( "Name" )?.Value )
+                                   .ToList ( ) ;
                     foreach ( var nodekind in nodekinds )
                     {
                         typ2.Kinds.Add ( nodekind ) ;
                     }
+
                     Debug.WriteLine ( typ2.Title ) ;
-                    
                 }
+
+                // ReSharper disable once UnusedVariable
                 var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
                 //Debug.WriteLine ( comment ) ;
-                var fields = new List < Tuple < string , string , List < string > > > ( ) ;
+                
                 typ2.Fields.Clear ( ) ;
                 var choices = xElement.Elements ( XName.Get ( "Choice" ) ) ;
-                if ( choices.Any ( ) )
+                var choiceAry = choices as XElement[] ?? choices.ToArray ( ) ;
+                if ( choiceAry.Any ( ) )
                 {
-
-                    var choice = choices.First ( ) ;
+                    var choice = choiceAry.First ( ) ;
+                    // ReSharper disable once UnusedVariable
                     foreach ( var element in choice.Elements ( ) )
                     {
-
                     }
+
+                    // ReSharper disable once UnusedVariable
                     foreach ( var element in choice.Elements ( XName.Get ( "Field" ) ) )
                     {
-
                     }
+
                     Debug.WriteLine ( typ2.Title ) ;
                 }
+
                 foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) )
                                                .Concat (
                                                         xElement.Elements ( XName.Get ( "Choice" ) )
@@ -1338,7 +1228,7 @@ namespace ConsoleApp1
             await t.FlushAsync ( ) ;
         }
 
-        private static void NewMethod (
+        private static void PopulateSet (
             [ NotNull ] AppTypeInfoCollection subTypeInfos
           , HashSet < Type >                  set
         )
@@ -1350,188 +1240,45 @@ namespace ConsoleApp1
                     set.Add ( rootSubTypeInfo.Type ) ;
                 }
 
-                NewMethod ( rootSubTypeInfo.SubTypeInfos , set ) ;
+                PopulateSet ( rootSubTypeInfo.SubTypeInfos , set ) ;
             }
         }
 
         private static void Init ( ) { }
-    }
 
-    internal sealed class SyntaxInfo
-    {
-        public SyntaxKind Kind { get ; set ; }
-
-        public int Count { get ; set ; }
-    }
-
-    internal class MyVisitor : SymbolVisitor
-    {
-    }
-
-    public sealed class ExampleTokens : IList , ICollection , IEnumerable
-    {
-        private readonly IList _listImplementation = new List < SToken > ( ) ;
-#region Implementation of IEnumerable
-        public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
-#endregion
-#region Implementation of ICollection
-        public void CopyTo ( Array array , int index )
+        // ReSharper disable once UnusedMember.Local
+        private static bool SupportsDocumentationComments([ CanBeNull ] MemberDeclarationSyntax member)
         {
-            _listImplementation.CopyTo ( array , index ) ;
-        }
-
-        public int Count { get { return _listImplementation.Count ; } }
-
-        public object SyncRoot { get { return _listImplementation.SyncRoot ; } }
-
-        public bool IsSynchronized { get { return _listImplementation.IsSynchronized ; } }
-#endregion
-#region Implementation of IList
-        public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
-
-        public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
-
-        public void Clear ( ) { _listImplementation.Clear ( ) ; }
-
-        public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
-
-        public void Insert ( int index , object value )
-        {
-            _listImplementation.Insert ( index , value ) ;
-        }
-
-        public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
-
-        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
-
-        public object this [ int index ]
-        {
-            get { return _listImplementation[ index ] ; }
-            set { _listImplementation[ index ] = value ; }
-        }
-
-        public bool IsReadOnly { get { return _listImplementation.IsReadOnly ; } }
-
-        public bool IsFixedSize { get { return _listImplementation.IsFixedSize ; } }
-#endregion
-    }
-
-    public class ExampleDict : IDictionary , ICollection , IEnumerable
-    {
-        private readonly IDictionary _dictionaryImplementation =
-            new Dictionary < SyntaxKind , ArrayList > ( ) ;
-
-#region Implementation of IEnumerable
-        public bool Contains ( object key ) { return _dictionaryImplementation.Contains ( key ) ; }
-
-        public void Add ( object key , object value )
-        {
-            _dictionaryImplementation.Add ( key , value ) ;
-        }
-
-        public void Clear ( ) { _dictionaryImplementation.Clear ( ) ; }
-
-        public IDictionaryEnumerator GetEnumerator ( )
-        {
-            return _dictionaryImplementation.GetEnumerator ( ) ;
-        }
-
-        public void Remove ( object key ) { _dictionaryImplementation.Remove ( key ) ; }
-
-        public object this [ object key ]
-        {
-            get { return _dictionaryImplementation[ key ] ; }
-            set { _dictionaryImplementation[ key ] = value ; }
-        }
-
-        public ICollection Keys { get { return _dictionaryImplementation.Keys ; } }
-
-        public ICollection Values { get { return _dictionaryImplementation.Values ; } }
-
-        public bool IsReadOnly { get { return _dictionaryImplementation.IsReadOnly ; } }
-
-        public bool IsFixedSize { get { return _dictionaryImplementation.IsFixedSize ; } }
-
-        IEnumerator IEnumerable.GetEnumerator ( )
-        {
-            return ( ( IEnumerable ) _dictionaryImplementation ).GetEnumerator ( ) ;
-        }
-#endregion
-#region Implementation of ICollection
-        public void CopyTo ( Array array , int index )
-        {
-            _dictionaryImplementation.CopyTo ( array , index ) ;
-        }
-
-        public int Count { get { return _dictionaryImplementation.Count ; } }
-
-        public object SyncRoot { get { return _dictionaryImplementation.SyncRoot ; } }
-
-        public bool IsSynchronized { get { return _dictionaryImplementation.IsSynchronized ; } }
-#endregion
-    }
-
-    [ ContentProperty ( "Example" ) ]
-    public class ExampleSyntax
-    {
-        private int    _kind ;
-        private string _example ;
-        private string _typeName ;
-
-        private readonly ExampleTokens _tokens = new ExampleTokens ( ) ;
-        private int           _id ;
-
-        public ExampleSyntax (
-            int             kind
-          , string          example
-          , string          typeName
-          , [ NotNull ] List < SToken > tokens
-          , int             id
-        )
-        {
-            Kind     = kind ;
-            Example  = example ;
-            TypeName = typeName ;
-            Id       = id ;
-            foreach ( var sToken in tokens )
+            if (member == null)
             {
-                Tokens.Add ( sToken ) ;
+                return false;
+            }
+
+            switch (member.Kind())
+            {
+                case SyntaxKind.ClassDeclaration:
+                case SyntaxKind.InterfaceDeclaration:
+                case SyntaxKind.StructDeclaration:
+                case SyntaxKind.DelegateDeclaration:
+                case SyntaxKind.EnumDeclaration:
+                case SyntaxKind.EnumMemberDeclaration:
+                case SyntaxKind.FieldDeclaration:
+                case SyntaxKind.MethodDeclaration:
+                case SyntaxKind.ConstructorDeclaration:
+                case SyntaxKind.DestructorDeclaration:
+                case SyntaxKind.PropertyDeclaration:
+                case SyntaxKind.IndexerDeclaration:
+                case SyntaxKind.EventDeclaration:
+                case SyntaxKind.EventFieldDeclaration:
+                case SyntaxKind.OperatorDeclaration:
+                case SyntaxKind.ConversionOperatorDeclaration:
+                    return true;
+
+                default:
+                    return false;
             }
         }
 
-        public int Kind { get { return _kind ; } set { _kind = value ; } }
-
-        public string Example { get { return _example ; } set { _example = value ; } }
-
-        public string TypeName { get { return _typeName ; } set { _typeName = value ; } }
-
-        public int Id { get { return _id ; } set { _id = value ; } }
-
-        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Content ) ]
-        public ExampleTokens Tokens { get { return _tokens ; } }
     }
 
-    // ReSharper disable once UnusedType.Global
-    internal class MenuWrapper < T >
-    {
-        private readonly T                   _instance ;
-        private readonly Func < T , string > _renderFunc ;
-
-        public MenuWrapper ( T instance , Func < T , string > renderFunc )
-        {
-            _instance   = instance ;
-            _renderFunc = renderFunc ;
-        }
-
-        public T Instance { get { return _instance ; } }
-
-#region Overrides of Object
-        public override string ToString ( ) { return _renderFunc ( Instance ) ; }
-#endregion
-    }
-
-    internal sealed class X
-    {
-        public int len ;
-    }
 }

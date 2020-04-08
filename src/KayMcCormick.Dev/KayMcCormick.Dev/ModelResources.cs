@@ -29,7 +29,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// ViewModel designed to expose a hierarchy of resources in an application.
     /// </summary>
-    public class ModelResources: ISupportInitializeNotification, IViewModel
+    public sealed class ModelResources: ISupportInitializeNotification, IViewModel
     {
         /// <summary>
         /// 
@@ -38,7 +38,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        protected readonly ILifetimeScope _lifetimeScope ;
+        private readonly ILifetimeScope _lifetimeScope ;
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =new ObservableCollection < ResourceNodeInfo > ();
 
         /// <summary>
@@ -54,7 +54,8 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        public ObservableCollection < ResourceNodeInfo > AllResourcesItemList { get ; set ; } =
+        // ReSharper disable once CollectionNeverQueried.Global
+        public ObservableCollection < ResourceNodeInfo > AllResourcesItemList { get ; } =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        protected void PopulateObjects ( )
+        private void PopulateObjects ( )
         {
             var n1 = CreateNode ( null , "Objects" , null , false ) ;
             foreach ( var rootNode in _idProvider.GetRootNodes ( ) )
@@ -108,7 +109,7 @@ namespace KayMcCormick.Dev
                     }
 
                     CreateNode ( n3 , instanceInfo.Instance , instanceInfo.Instance , false ) ;
-                    if ( instanceInfo.Instance is IViewModel vm && object.ReferenceEquals(vm, this) == false)
+                    if ( instanceInfo.Instance is IViewModel vm && ReferenceEquals(vm, this) == false)
                     {
                         try
                         {
@@ -129,9 +130,11 @@ namespace KayMcCormick.Dev
                         }
                         catch ( Exception )
                         {
-
+                            // ignored
                         }
                     }
+                    // TODO implement
+                    // ReSharper disable once UnusedVariable
                     if ( instanceInfo.Instance is LifetimeScope ls )
                     {
                     }
@@ -191,7 +194,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="node"></param>
-        protected void PopulateLifetimeScope ( [ NotNull ] ILifetimeScope lifetimeScope , ResourceNodeInfo node )
+        private void PopulateLifetimeScope ( [ NotNull ] ILifetimeScope lifetimeScope , ResourceNodeInfo node )
         {
             var regs = CreateNode (
                                    node
@@ -228,7 +231,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected virtual object WrapValue ( object data )
+        private object WrapValue ( object data )
         {
             var wrapped = data ;
             return wrapped ;
@@ -237,7 +240,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        protected virtual void PopulateResourcesTree ( )
+        private void PopulateResourcesTree ( )
         {
             if ( IsEnabledPopulateObjects )
             {
@@ -286,8 +289,10 @@ namespace KayMcCormick.Dev
         #endregion
 
         #region Implementation of ISupportInitializeNotification
+        /// <inheritdoc />
         public bool IsInitialized { get ; set ;  }
 
+        /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
     }

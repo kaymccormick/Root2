@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Diagnostics ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Threading ;
@@ -95,7 +96,7 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( invocation ) ) ;
             }
 #if !NETSTANDARD2_0
-            Console.WriteLine ( JsonSerializer.Serialize ( invocation ) ) ;
+            Debug.WriteLine ( JsonSerializer.Serialize ( invocation ) ) ;
 #endif
             LogInvocations.Add ( invocation ) ;
         }
@@ -188,7 +189,7 @@ namespace AnalysisAppLib
                              ) ;
             }
 
-            Logger.Debug (
+            Logger.Info(
                           "{id} {result} {count}"
                         , Thread.CurrentThread.ManagedThreadId
                         , result.Status

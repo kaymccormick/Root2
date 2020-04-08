@@ -75,6 +75,9 @@ namespace AnalysisAppLib
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public List<string> Kinds
         {
@@ -104,6 +107,9 @@ namespace AnalysisAppLib
             set { _subTypeInfos = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<string> SubTypeNames => SubTypeInfos.Cast<AppTypeInfo>().Select(st => st.Type.Name).ToList();
 
         /// <summary>
@@ -316,21 +322,39 @@ namespace AnalysisAppLib
         /// <param name="value"></param>
         public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public object this [ int index ]
         {
             get { return _listImplementation[ index ] ; }
             set { _listImplementation[ index ] = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsReadOnly
         {
             get { return _listImplementation.IsReadOnly ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsFixedSize
         {
             get { return _listImplementation.IsFixedSize ; }
@@ -372,9 +396,12 @@ namespace AnalysisAppLib
 
         private string _name ;
         private string _typeName ;
-        private SyntaxKindCollection _kinds = new SyntaxKindCollection ();
+        private readonly SyntaxKindCollection _kinds = new SyntaxKindCollection ();
         private bool _optional ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Content)]
         public string TypeName  { get { return _typeName ; } set { _typeName = value ; } }
 
@@ -404,7 +431,14 @@ namespace AnalysisAppLib
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<AppTypeInfo> Types { get ;  } = new List < AppTypeInfo > ();
 
-        public IEnumerable< Type > ClrTypes => Types.Select ( typ => typ.Type ) ;
+        /// <summary>
+        /// 
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        [ NotNull ] public IEnumerable< Type > ClrTypes
+        {
+            get { return Types.Select ( typ => typ.Type ) ; }
+        }
 
         /// <summary>
         /// 
@@ -414,59 +448,120 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool Optional { get { return _optional ; } set { _optional = value ; } }
     }
 
-    public class SyntaxKindCollection : IList, ICollection, IEnumerable
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SyntaxKindCollection : IList, ICollection, IEnumerable
     {
-        private IList _listImplementation = new List < SyntaxKind > ( ) ;
+        private readonly IList _listImplementation = new List < SyntaxKind > ( ) ;
         #region Implementation of IEnumerable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return _listImplementation.Count ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot
         {
             get { return _listImplementation.SyncRoot ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSynchronized
         {
             get { return _listImplementation.IsSynchronized ; }
         }
         #endregion
         #region Implementation of IList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Clear ( ) { _listImplementation.Clear ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public object this [ int index ]
         {
             get { return _listImplementation[ index ] ; }
             set { _listImplementation[ index ] = value ; }
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get { return _listImplementation.IsReadOnly ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsFixedSize
         {
             get { return _listImplementation.IsFixedSize ; }
@@ -477,7 +572,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class AppTypeInfoCollection : IList, ICollection, IEnumerable
+    public sealed class AppTypeInfoCollection : IList, ICollection, IEnumerable
     {
         /// <summary>
         /// 
@@ -493,54 +588,105 @@ namespace AnalysisAppLib
             _list = new List < AppTypeInfo > ( ) ;
         }
 
-        private IList _list ;
+        private readonly IList _list ;
         #region Implementation of IEnumerable
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator ( ) { return _list.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo ( Array array , int index ) { _list.CopyTo ( array , index ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return _list.Count ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot
         {
             get { return _list.SyncRoot ; }
         }
 
+        /// <inheritdoc />
         public bool IsSynchronized
         {
             get { return _list.IsSynchronized ; }
         }
         #endregion
         #region Implementation of IList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int Add ( object value ) { return _list.Add ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public bool Contains ( object value ) { return _list.Contains ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Clear ( ) { _list.Clear ( ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int IndexOf ( object value ) { return _list.IndexOf ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public void Insert ( int index , object value ) { _list.Insert ( index , value ) ; }
 
+        /// <summary>
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void Remove ( object value ) { _list.Remove ( value ) ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public void RemoveAt ( int index ) { _list.RemoveAt ( index ) ; }
 
+        /// <inheritdoc />
         public object this [ int index ]
         {
             get { return _list[ index ] ; }
             set { _list[ index ] = value ; }
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get { return _list.IsReadOnly ; }
         }
 
+        /// <inheritdoc />
         public bool IsFixedSize
         {
             get { return _list.IsFixedSize ; }

@@ -8,7 +8,7 @@ using System.Xml.Linq ;
 using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 
-namespace AnalysisAppLib.Syntax
+namespace AnalysisAppLib
 {
     /// <summary>
     /// </summary>

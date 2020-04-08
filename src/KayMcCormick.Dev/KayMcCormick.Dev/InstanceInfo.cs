@@ -46,6 +46,7 @@ namespace KayMcCormick.Dev
     public class InstanceInfoTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
+        /// <inheritdoc />
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
             if ( destinationType == typeof ( string ) )
@@ -55,6 +56,7 @@ namespace KayMcCormick.Dev
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
+        /// <inheritdoc />
         public override object ConvertTo (
             ITypeDescriptorContext context
           , CultureInfo            culture

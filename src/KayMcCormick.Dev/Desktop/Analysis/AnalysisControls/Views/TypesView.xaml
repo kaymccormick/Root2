@@ -414,7 +414,7 @@
             </StackPanel>
           </DataTemplate>
           <DataTemplate
-            DataType="{x:Type syntax:MethodDocumentation}">
+            DataType="{x:Type analysisAppLib:MethodDocumentation}">
             <WrapPanel>
               <ItemsControl
                 ItemsSource="{Binding Path=XmlDoc}">
@@ -426,7 +426,12 @@
               </ItemsControl>
             </WrapPanel>
           </DataTemplate>
-
+          <DataTemplate DataType="{x:Type analysisAppLib:SyntaxFieldInfo}">
+            <StackPanel>
+            <TextBlock Text="{Binding Name}"/>
+            <TextBlock Text="{Binding Kinds}"/>
+            </StackPanel>
+          </DataTemplate>
           <DataTemplate
             DataType="{x:Type analysisAppLib:PropertyDocumentation}">
             <WrapPanel>
@@ -625,6 +630,6 @@
       </ItemsControl.Template>
     </ItemsControl>
     <ListBox Grid.Row="2" Grid.Column="1" Margin="10"
-             ItemsSource="{Binding ElementName=tv,Path=SelectedItem.AllComponents}" />
+             ItemsSource="{Binding ElementName=tv,Path=SelectedItem.Fields}" />
   </Grid>
 </UserControl>

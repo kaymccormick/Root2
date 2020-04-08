@@ -88,9 +88,13 @@
     <Compile Include="AllResourcesTree.xaml.cs">
       <DependentUpon>AllResourcesTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppCommand.cs" />
+    <Compile Include="Command\AppCommand.cs" />
     <Compile Include="ApplicationEntity.cs" />
     <Compile Include="ColorConverter.cs" />
+    <Compile Include="Command\AppCommandResult.cs" />
+    <Compile Include="Command\IAppCommand.cs" />
+    <Compile Include="Command\IAppCommandResult.cs" />
+    <Compile Include="Command\IDisplayableAppCommand.cs" />
     <Compile Include="ContentControlView.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="ExceptionUserControl.xaml.cs">

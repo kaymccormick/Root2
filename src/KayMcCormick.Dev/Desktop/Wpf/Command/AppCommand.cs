@@ -3,105 +3,20 @@ using System.Diagnostics ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
-using System.Windows.Media ;
+using JetBrains.Annotations ;
 
-namespace KayMcCormick.Lib.Wpf
+namespace KayMcCormick.Lib.Wpf.Command
 {
-    /// <summary>
-    /// An interface to an "Application command" provided by the application.
-    /// </summary>
-    public interface IAppCommand
-    {
-        /// <summary>
-        /// Access to the ICommand interface provided by the command.
-        /// </summary>
-        ICommand Command { get ; }
-
-        /// <summary>
-        /// An Async method to execute the command.
-        /// </summary>
-        /// <returns></returns>
-        Task < IAppCommandResult > ExecuteAsync ( ) ;
-
-        /// <summary>
-        /// A method to handle faults.
-        /// </summary>
-        /// <param name="exception">Exception</param>
-        void OnFault ( AggregateException exception ) ;
-    }
-
-    /// <summary>
-    /// </summary>
-    public interface IAppCommandResult
-    {
-        /// <summary>
-        /// </summary>
-        bool IsSuccess { get ; }
-    }
-
-    /// <summary>
-    /// </summary>
-    public class AppCommandResult : IAppCommandResult
-    {
-        /// <summary>
-        /// </summary>
-        public static IAppCommandResult Failed = new AppCommandResult { IsSuccess = false } ;
-
-        /// <summary>
-        /// </summary>
-        public static IAppCommandResult Success = new AppCommandResult { IsSuccess = true } ;
-
-        private Exception _exception ;
-        private bool      _isSuccess ;
-
-        /// <summary>
-        /// </summary>
-        public Exception Exception { get { return _exception ; } set { _exception = value ; } }
-
-        #region Implementation of IAppCommandResult
-        /// <summary>
-        /// </summary>
-        public bool IsSuccess { get { return _isSuccess ; } set { _isSuccess = value ; } }
-
-        public static IAppCommandResult Cancelled { get ; set ; } =
-            new AppCommandResult ( ) { IsSuccess = false } ;
-        #endregion
-
-
-        /// <summary>
-        /// </summary>
-        /// <param name="taskException"></param>
-        /// <returns></returns>
-        public static AppCommandResult Faulted ( AggregateException taskException )
-        {
-            return new AppCommandResult { IsSuccess = false , Exception = taskException } ;
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public interface IDisplayableAppCommand : IAppCommand , IDisplayable
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        ImageSource LargeImageSource { get ; set ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        object LargeImageSourceKey { get ; set ; }
-    }
-
     /// <summary>
     /// </summary>
     public abstract class AppCommand : IDisplayableAppCommand , ICommand
 
     {
-        private string                     _displayName ;
+        private readonly string                     _displayName ;
+        // ReSharper disable once NotAccessedField.Local
         private IAppCommandResult          _lastResult ;
+        // ReSharper disable once NotAccessedField.Local
         private Task < IAppCommandResult > _lastTask ;
-        private ImageSource _largeImageSource ;
 
         /// <summary>
         /// </summary>
@@ -111,12 +26,14 @@ namespace KayMcCormick.Lib.Wpf
         #region Implementation of IDisplayable
         /// <summary>
         /// </summary>
-        public string DisplayName { get { return _displayName ; } set { _displayName = value ; } }
+        public string DisplayName { get { return _displayName ; } }
         #endregion
 
+        // ReSharper disable once UnusedMember.Global
         /// <summary>
+        /// 
         /// </summary>
-        protected virtual void OnCanExecuteChanged ( )
+        protected void OnCanExecuteChanged ( )
         {
             CanExecuteChanged?.Invoke ( this , EventArgs.Empty ) ;
         }
@@ -129,7 +46,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public ICommand Command { get { return this ; } }
+        [ NotNull ] public ICommand Command { get { return this ; } }
         #endregion
         #region Implementation of ICommand
         /// <summary>
@@ -168,7 +85,6 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         public Task < IAppCommandResult > LastTask
         {
-            get { return _lastTask ; }
             set { _lastTask = value ; }
         }
 
@@ -180,22 +96,18 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <param name="result"></param>
-        protected virtual void OnResult ( IAppCommandResult result ) { LastResult = result ; }
+        protected void OnResult ( IAppCommandResult result ) { LastResult = result ; }
 
         /// <summary>
         /// </summary>
         public IAppCommandResult LastResult
         {
-            get { return _lastResult ; }
             set { _lastResult = value ; }
         }
 
-        public ImageSource LargeImageSource
-        {
-            get { return _largeImageSource ; }
-            set { _largeImageSource = value ; }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public abstract object LargeImageSourceKey { get ; set ; }
 
         /// <summary>
@@ -209,8 +121,8 @@ namespace KayMcCormick.Lib.Wpf
     public sealed class LambdaAppCommand : AppCommand
     {
         private readonly object                                        _argument ;
-        private          Func < LambdaAppCommand , Task < IAppCommandResult > > _commandFunc ;
-        private          Action < AggregateException >                 _onFaultDelegate ;
+        private readonly Func < LambdaAppCommand , Task < IAppCommandResult > > _commandFunc ;
+        private readonly Action < AggregateException >                 _onFaultDelegate ;
 
         /// <summary>
         /// </summary>
@@ -235,7 +147,6 @@ namespace KayMcCormick.Lib.Wpf
         public Func < LambdaAppCommand , Task < IAppCommandResult > > CommandFunc
         {
             get { return _commandFunc ; }
-            set { _commandFunc = value ; }
         }
 
         /// <summary>
@@ -271,9 +182,11 @@ namespace KayMcCormick.Lib.Wpf
         public Action < AggregateException > OnFaultDelegate
         {
             get { return _onFaultDelegate ; }
-            set { _onFaultDelegate = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override object LargeImageSourceKey { get ; set ; }
         #endregion
     }

@@ -177,18 +177,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <None Include="TypesViewModel.xaml">
+    <EmbeddedResource Include="TypesViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </None>
+    </EmbeddedResource>
     <Page Include="WorkspaceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Resource Include="TypesViewModel2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Page Include="Views\NodePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
