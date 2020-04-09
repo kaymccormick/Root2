@@ -15,6 +15,7 @@ using System.Diagnostics ;
 using System.Linq ;
 using System.Windows ;
 using System.Windows.Markup ;
+using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -42,11 +43,11 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( item == null )
             {
-                Debug.WriteLine ( "Selecting template for NuLL item" ) ;
+                DebugUtils.WriteLine ( "Selecting template for NuLL item" ) ;
             }
             else
             {
-                Debug.WriteLine ( $"Selecting template for {item} {item.GetType ( )}" ) ;
+                DebugUtils.WriteLine ( $"Selecting template for {item} {item.GetType ( )}" ) ;
             }
 
             var fe = ( FrameworkElement ) container ;
@@ -88,30 +89,30 @@ namespace KayMcCormick.Lib.Wpf
                 if ( tuple1 != null )
                 {
                     returnVal = tuple1.Item3 ;
-                    Debug.WriteLine ( "Obtained template" ) ;
+                    DebugUtils.WriteLine ( "Obtained template" ) ;
                     try
                     {
-                        Debug.WriteLine ( XamlWriter.Save ( returnVal ) ) ;
+                        DebugUtils.WriteLine ( XamlWriter.Save ( returnVal ) ) ;
                     }
                     catch ( Exception ex )
                     {
-                        Debug.WriteLine ( ex.ToString ( ) ) ;
+                        DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                     }
                 }
             }
 
             if ( returnVal == null )
             {
-                Debug.WriteLine ( "Calling base method for template" ) ;
+                DebugUtils.WriteLine ( "Calling base method for template" ) ;
 
                 returnVal = baseMethod?.Invoke ( item , container ) ;
                 if ( returnVal != null )
                 {
-                    Debug.WriteLine ( "Got template from base method" ) ;
+                    DebugUtils.WriteLine ( "Got template from base method" ) ;
                 }
                 else
                 {
-                    Debug.WriteLine ( "no template from base method" ) ;
+                    DebugUtils.WriteLine ( "no template from base method" ) ;
                 }
             }
 
@@ -121,8 +122,8 @@ namespace KayMcCormick.Lib.Wpf
         private static bool Predicate2 ( Tuple < object , FrameworkElement , DataTemplate > arg )
         {
             var (item1 , item2 , item3) = arg ;
-            Debug.WriteLine ( item1 ) ;
-            Debug.WriteLine ( $"[ {item1} ]\t\t\t{item2} {item3}" ) ;
+            DebugUtils.WriteLine ( item1.ToString() ) ;
+            DebugUtils.WriteLine ( $"[ {item1} ]\t\t\t{item2} {item3}" ) ;
             return item3 != null ;
         }
 
@@ -133,17 +134,17 @@ namespace KayMcCormick.Lib.Wpf
           , Predicate < DataTemplate > predicate
         )
         {
-            Debug.WriteLine ( $"Trying to find data template with resource key {resourceKey}" ) ;
+            DebugUtils.WriteLine ( $"Trying to find data template with resource key {resourceKey}" ) ;
 
             var resource = fe.TryFindResource ( resourceKey ) ;
             if ( resource != null )
             {
-                Debug.WriteLine ( $"Found resource of type {resource.GetType ( )}" ) ;
+                DebugUtils.WriteLine ( $"Found resource of type {resource.GetType ( )}" ) ;
                 var dt = ( DataTemplate ) resource ;
                 if ( predicate != null
                      && ! predicate ( dt ) )
                 {
-                    Debug.WriteLine ( "rejecting data template based on predicate" ) ;
+                    DebugUtils.WriteLine ( "rejecting data template based on predicate" ) ;
                     return null ;
                 }
 

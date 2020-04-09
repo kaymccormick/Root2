@@ -19,6 +19,7 @@ using System.Text ;
 using System.Text.Json ;
 using System.Xml ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
@@ -74,10 +75,10 @@ namespace AnalysisAppLib
             }
             catch ( SocketException ex )
             {
-                Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
 
-            Debug.WriteLine ( "Listening on port " + _port ) ;
+            DebugUtils.WriteLine ( "Listening on port " + _port ) ;
             Listen ( ) ;
         }
 
@@ -108,7 +109,7 @@ namespace AnalysisAppLib
         private void PacketReceived ( UdpReceiveResult resp )
         {
             var resultBuffer = resp.Buffer ;
-            Debug.WriteLine ( "received packet" ) ;
+            DebugUtils.WriteLine ( "received packet" ) ;
             var s = Encoding.UTF8.GetString ( resultBuffer ) ;
             try
             {
@@ -126,13 +127,13 @@ namespace AnalysisAppLib
                     }
                     catch ( XmlException xmlException )
                     {
-                        Debug.WriteLine ( xmlException.ToString ( ) ) ;
+                        DebugUtils.WriteLine ( xmlException.ToString ( ) ) ;
                     }
                 }
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
         }
 
@@ -200,7 +201,7 @@ namespace AnalysisAppLib
                     {
                         if ( elemChildNode is XmlElement elem2 )
                         {
-                            Debug.WriteLine ( elem2.Name ) ;
+                            DebugUtils.WriteLine ( elem2.Name ) ;
                             switch ( elem2.Name )
                             {
                                 case "log4j:message" :

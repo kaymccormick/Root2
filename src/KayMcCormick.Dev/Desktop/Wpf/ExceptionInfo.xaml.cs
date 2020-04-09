@@ -54,7 +54,7 @@ namespace KayMcCormick.Lib.Wpf
 
             // foreach (var x in result)
             // {
-            // Debug.WriteLine ( x ) ;
+            // DebugUtils.WriteLine ( x ) ;
             // }
         }
         #endregion

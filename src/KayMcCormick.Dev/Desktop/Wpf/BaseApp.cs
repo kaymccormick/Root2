@@ -268,25 +268,4 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         public virtual void Dispose ( ) { _applicationInstance?.Dispose ( ) ; }
 #endregion
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class InstanceInfoProvider : TypeDescriptionProvider
-    {
-#region Overrides of TypeDescriptionProvider
-/// <inheritdoc />
-public override ICustomTypeDescriptor GetTypeDescriptor (
-            Type   objectType
-          , object instance
-        )
-        {
-            if ( objectType == typeof ( InstanceInfo ) )
-            {
-                return new InstanceInfoTypeDescriptor();
-            }
-            return base.GetTypeDescriptor ( objectType , instance ) ;
-        }
-#endregion
-    }
 }

@@ -126,7 +126,7 @@ namespace KayMcCormick.Dev
                                                     , ( int ) serializationStream.Length
                                                      ) ;
                             var s = Encoding.UTF8.GetString ( buffer ) ;
-                            Debug.WriteLine ( s ) ;
+                            DebugUtils.WriteLine ( s ) ;
                         }
                         catch ( Exception )
                         {

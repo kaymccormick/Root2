@@ -15,6 +15,7 @@ using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
@@ -46,7 +47,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         [ ItemCanBeNull ]
         public async Task < IAppCommandResult > ExecuteAsync ( )
         {
-            Debug.WriteLine ( "Executing command" ) ;
+            DebugUtils.WriteLine ( "Executing command" ) ;
             IAppCommandResult r = null ;
             try
             {
@@ -63,10 +64,10 @@ namespace KayMcCormick.Lib.Wpf.Command
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine (ex.ToString()  );
+                DebugUtils.WriteLine (ex.ToString()  );
             }
 
-            Debug.WriteLine ( "Complete" ) ;
+            DebugUtils.WriteLine ( "Complete" ) ;
             return r ;
         }
 

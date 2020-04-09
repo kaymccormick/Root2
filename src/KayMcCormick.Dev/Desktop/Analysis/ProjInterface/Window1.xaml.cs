@@ -127,7 +127,7 @@ namespace ProjInterface
                 }
                 catch ( Exception ex )
                 {
-                    Debug.WriteLine ( ex.ToString ( ) ) ;
+                    DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 }
             }
 
@@ -271,7 +271,7 @@ namespace ProjInterface
                                                     ) ;
 
             docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
-            Debug.WriteLine ( e.ActivatedType.FullName ) ;
+            DebugUtils.WriteLine ( e.ActivatedType.FullName ) ;
         }
 
 #region Implementation of IResourceResolver

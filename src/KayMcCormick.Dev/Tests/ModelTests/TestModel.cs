@@ -2,11 +2,14 @@
 using System.Collections.Generic ;
 using System.Collections.Immutable ;
 using System.Diagnostics ;
+using System.Dynamic ;
 using System.IO ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using System.Xaml ;
+using System.Xml ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.Serialization ;
@@ -91,7 +94,7 @@ namespace ModelTests
         private void LogMethod ( string message )
         {
             //PROVIDER_GUID.EventWriteEVENT_TEST_OUTPUT ( message ) ;
-            Debug.WriteLine ( message ) ;
+            DebugUtils.WriteLine ( message ) ;
             Logger.Info ( "test output: {message}" , message ) ;
             _outputHelper.WriteLine ( message ) ;
         }
@@ -157,7 +160,7 @@ namespace ModelTests
                 var rj = r.GetRejectBlock ( ) ;
                 rj.LinkTo (
                            new ActionBlock < RejectedItem > (
-                                                             item => Debug.WriteLine (
+                                                             item => DebugUtils.WriteLine (
                                                                                       "reject: "
                                                                                       + item
                                                                                      )
@@ -210,7 +213,7 @@ namespace ModelTests
             {
                 foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
                 {
-                    Debug.WriteLine ( new DiagnosticFormatter ( ).Format ( diagnostic ) ) ;
+                    DebugUtils.WriteLine ( new DiagnosticFormatter ( ).Format ( diagnostic ) ) ;
                 }
             }
 
@@ -219,13 +222,13 @@ namespace ModelTests
                 switch ( @ref )
                 {
                     case CompilationReference compilationReference :
-                        Debug.WriteLine ( compilationReference.Display ) ;
+                        DebugUtils.WriteLine ( compilationReference.Display ) ;
                         break ;
                     case PortableExecutableReference portableExecutableReference :
-                        Debug.WriteLine ( portableExecutableReference.FilePath ) ;
+                        DebugUtils.WriteLine ( portableExecutableReference.FilePath ) ;
                         break ;
                     case UnresolvedMetadataReference unresolvedMetadataReference :
-                        Debug.WriteLine ( unresolvedMetadataReference.Display ) ;
+                        DebugUtils.WriteLine ( unresolvedMetadataReference.Display ) ;
                         break ;
                     default : throw new ArgumentOutOfRangeException ( nameof ( @ref ) ) ;
                 }
@@ -533,7 +536,7 @@ namespace ModelTests
             var opts = new JsonSerializerOptions ( ) ;
             opts.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
             var serialize = JsonSerializer.Serialize ( result , opts ) ;
-            Debug.WriteLine ( serialize ) ;
+            DebugUtils.WriteLine ( serialize ) ;
         }
 
         [ Fact ]
@@ -572,14 +575,17 @@ namespace ModelTests
         }
 
         [ Fact ]
+        public void TestModule1 ( )
+        {
+            ContainerBuilder b = new ContainerBuilder( );
+            b.RegisterModule < AnalysisAppLibModule > ( ) ;
+            var c = b.Build ( Autofac.Builder.ContainerBuildOptions.None ) ;
+
+
+        }
+        [ Fact ]
         public void TestTemplate ( )
         {
-            var xx1 = new ConvertedExpression1 ( ) ;
-            var y =(object[]) xx1.ConvertedExpression ;
-            foreach ( var o in y )
-            {
-                
-            }
             var expr = SyntaxFactory.ParseExpression("new object[] {}");
             var @expressionout = GenTransforms.Transform_Expression ( expr ) ;
             const string typePropertyName = "Type" ;
@@ -598,7 +604,7 @@ namespace ModelTests
                                                                                        cDataLogsTypesJson
                                                                                       )
                                                                     ) ;
-
+            
             var x = JsonSerializer.Deserialize <JsonElement>( "[1,2,3,4]" ) ;
             var expr1 = JsonElementCodeConverter.ConvertJsonElementToCode ( x ) ;
             expr1 = expr1.NormalizeWhitespace ( ) ;
@@ -639,7 +645,7 @@ namespace ModelTests
 
                     var body = "" ;
                     var elementName = typ.GetProperty ( elementNamePropertyName ).GetString ( ) ;
-                    Debug.WriteLine ($"{typeShortName}: {elementName}"  );
+                    DebugUtils.WriteLine ($"{typeShortName}: {elementName}"  );
                     if ( elementName    == abstractnode
                          || elementName == predefinednode )
                     {
@@ -854,17 +860,39 @@ namespace ModelTests
 
             foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
             {
-                Debug.WriteLine ( diagnostic ) ;
+                DebugUtils.WriteLine ( diagnostic ) ;
             }
 
             compilation.Emit ( @"c:\temp\expr1.dll" , @"C:\temp\expr1.pdb" ) ;
             return tree ;
         }
+        [Fact]
+        public void TestXaml1 ( )
+        {
+            XamlXmlWriter outwriter = new XamlXmlWriter (
+                                                         XmlWriter.Create (
+                                                                           @"c:\temp\out.xml"
+                                                                         , new XmlWriterSettings ( )
+                                                                           {
+                                                                               Indent = true
+                                                                           }
+                                                                          )
+                                                       , new XamlSchemaContext ( )
+                                                        ) ;
+            var @out = XamlServices.Save(
+                             new SyntaxFieldInfo
+                             {
+                                 Name = "test" , Type = typeof ( List < string > )
+                             }
+                            ) ;
+            Logger.Info (@out  );
+
+        }
+
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class NodeInfo
     {
     }
-
 }

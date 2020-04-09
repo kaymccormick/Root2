@@ -58,9 +58,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="expr1">
-      <HintPath>..\..\..\..\..\..\..\..\..\..\..\temp\expr1.dll</HintPath>
-    </Reference>
     <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,6 +78,8 @@
     <Compile Include="AppExplorerItem.cs" />
     <Compile Include="AppMethodInfo.cs" />
     <Compile Include="AppTypeInfo.cs" />
+    <Compile Include="AppTypeInfoTypeConverter.cs" />
+    <Compile Include="AppTypeInfoTypeDescriptionProvider.cs" />
     <Compile Include="Command\CodeGenCommand.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
@@ -126,11 +125,6 @@
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
-    <Compile Include="TextTemplate1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TextTemplate1.tt</DependentUpon>
-    </Compile>
     <Compile Include="TypeMapDictionary.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />
@@ -259,7 +253,12 @@
   <ItemGroup>
     <Content Include="TextTemplate1.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TextTemplate1.cs</LastGenOutput>
+      <LastGenOutput>TextTemplate1.txt</LastGenOutput>
+    </Content>
+    <Content Include="TextTemplate1.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextTemplate1.tt</DependentUpon>
     </Content>
   </ItemGroup>
   <ItemGroup>

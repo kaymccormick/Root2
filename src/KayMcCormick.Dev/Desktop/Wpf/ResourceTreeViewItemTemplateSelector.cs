@@ -53,12 +53,12 @@ namespace KayMcCormick.Lib.Wpf
                 {
                     var dType = node.Data.GetType ( ) ;
                     var dataTemplateKey = new DataTemplateKey ( dType ) ;
-                    Debug.WriteLine ( $"trying key {dataTemplateKey}" ) ;
+                    DebugUtils.WriteLine ( $"trying key {dataTemplateKey}" ) ;
                     var o = fe.TryFindResource ( dataTemplateKey ) ;
                     if ( o != null
                          && o is DataTemplate dt1 )
                     {
-                        Debug.WriteLine ( $"found key {dataTemplateKey}" ) ;
+                        DebugUtils.WriteLine ( $"found key {dataTemplateKey}" ) ;
                         return dt1 ;
                     }
 
@@ -80,13 +80,13 @@ namespace KayMcCormick.Lib.Wpf
                                   .FirstOrDefault ( ) ;
                     if ( dt != null )
                     {
-                        Debug.WriteLine ( $"using key {dt.Item1}" ) ;
+                        DebugUtils.WriteLine ( $"using key {dt.Item1}" ) ;
                         return dt.Item3 as DataTemplate ;
                     }
                 }
             }
 
-            Debug.WriteLine ( "using key ResourceNodeInfo;" ) ;
+            DebugUtils.WriteLine ( "using key ResourceNodeInfo;" ) ;
             var tryFindResource =
                 fe.TryFindResource ( new DataTemplateKey ( typeof ( ResourceNodeInfo ) ) ) ;
             var dt2 = tryFindResource as DataTemplate ;
@@ -98,7 +98,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( arg.Item3 != null )
             {
-                Debug.WriteLine ( $"{nameof ( Predicate3 )}: {arg.Item3.GetType ( ).FullName}" ) ;
+                DebugUtils.WriteLine ( $"{nameof ( Predicate3 )}: {arg.Item3.GetType ( ).FullName}" ) ;
             }
 
             var r = arg.Item3 is DataTemplate ;
@@ -119,7 +119,7 @@ namespace KayMcCormick.Lib.Wpf
                 return false ;
             }
 
-            Debug.WriteLine ( item1.FullName ) ;
+            DebugUtils.WriteLine ( item1.FullName ) ;
             Logger.Debug (
                           "[ {type} ]\t\t\t{fe} {resource}"
                         , item1

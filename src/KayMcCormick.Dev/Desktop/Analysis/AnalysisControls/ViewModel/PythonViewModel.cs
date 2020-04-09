@@ -177,16 +177,16 @@ namespace AnalysisControls.ViewModel
             // , Path   = new PropertyPath ( "CurrentItem" ),
             // Mode   = BindingMode.TwoWay
             // } ;
-            // Debug.WriteLine ( $"binding is {bindingBase}" ) ;
+            // DebugUtils.WriteLine ( $"binding is {bindingBase}" ) ;
             // BindingOperations.SetBinding (
             // this
             // , InputLineProperty
             // , bindingBase
             // ) ;
             var il = GetValue ( InputLineProperty ) ;
-            Debug.WriteLine ( $"value of input line is {il}" ) ;
+            DebugUtils.WriteLine ( $"value of input line is {il}" ) ;
             linesCollectionView.MoveCurrentToLast ( ) ;
-            Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
+            DebugUtils.WriteLine ( linesCollectionView.CurrentItem ) ;
 
             //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
         }
@@ -216,7 +216,7 @@ namespace AnalysisControls.ViewModel
                     continue ;
                 }
 
-                Debug.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
+                DebugUtils.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
                 _pyScope.SetVariable (
                                       pythonVariable.VariableName
                                     , pythonVariable.GetVariableValue ( )
@@ -235,7 +235,7 @@ namespace AnalysisControls.ViewModel
           , DependencyPropertyChangedEventArgs e
         )
         {
-            Debug.WriteLine ( $"input line changed. old = {e.OldValue}, new = {e.NewValue}" ) ;
+            DebugUtils.WriteLine ( $"input line changed. old = {e.OldValue}, new = {e.NewValue}" ) ;
         }
 
         private static void OnResultsChanged (
@@ -250,7 +250,7 @@ namespace AnalysisControls.ViewModel
           , DependencyPropertyChangedEventArgs e
         )
         {
-            Debug.WriteLine ( "Lines changed" ) ;
+            DebugUtils.WriteLine ( "Lines changed" ) ;
             var x = ( PythonViewModel ) d ;
             var old = ( StringObservableCollection ) e.OldValue ;
             if ( old != null )
@@ -267,11 +267,11 @@ namespace AnalysisControls.ViewModel
           , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
-            Debug.WriteLine ( $"In {nameof ( OnLinesCOllectionChanged )}" ) ;
+            DebugUtils.WriteLine ( $"In {nameof ( OnLinesCOllectionChanged )}" ) ;
             if ( e.Action == NotifyCollectionChangedAction.Add )
             {
                 var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
-                Debug.WriteLine ( $"Moving current to ${new1}" ) ;
+                DebugUtils.WriteLine ( $"Moving current to ${new1}" ) ;
                 linesCollectionView.MoveCurrentTo ( new1 ) ;
             }
         }

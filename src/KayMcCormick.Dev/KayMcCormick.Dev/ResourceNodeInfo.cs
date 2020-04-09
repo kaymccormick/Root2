@@ -66,7 +66,7 @@ namespace KayMcCormick.Dev
             get { return _internalIsExpanded.GetValueOrDefault ( ) ; }
             set
             {
-                Debug.WriteLine ( $"isExpanded = {value} for {Key}" ) ;
+                DebugUtils.WriteLine ( $"isExpanded = {value} for {Key}" ) ;
                 _internalIsExpanded = value ;
                 OnPropertyChanged ( ) ;
             }

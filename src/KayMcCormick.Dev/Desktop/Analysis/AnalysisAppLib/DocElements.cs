@@ -7,6 +7,7 @@ using System.Windows.Markup ;
 using System.Xml.Linq ;
 using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
+using PocoSyntax ;
 
 namespace AnalysisAppLib
 {
@@ -195,6 +196,9 @@ namespace AnalysisAppLib
         /// </summary>
         protected XmlDocumentElementCollection _xmlDoc ;
 
+        private bool _needsAttention ;
+        private PocoMemberDeclarationSyntax _poco ;
+
         /// <summary>
         /// 
         /// </summary>
@@ -220,8 +224,9 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        protected CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
+        public CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
 
+        
         /// <summary>
         /// </summary>
         public string ElementId { get { return _elementId ; } set { _elementId = value ; } }
@@ -239,6 +244,10 @@ namespace AnalysisAppLib
             get { return _xmlDoc ; }
             // set { _xmlDoc = value; }
         }
+
+        public bool NeedsAttention { get { return _needsAttention ; } set { _needsAttention = value ; } }
+
+        public PocoMemberDeclarationSyntax PocoMemberDelaration { get { return _poco ; } set { _poco = value ; } }
 
         /// <summary>
         /// </summary>

@@ -149,7 +149,7 @@ namespace KayMcCormick.Dev.Logging
 
             var reg = args.ComponentRegistration ;
             var activatorLimitType = reg.Activator.LimitType ;
-            Logger.Trace ( "Registered {limitType}", activatorLimitType ) ;
+            Logger.Trace ( "Registered {limitType} {activator}", activatorLimitType , args.ComponentRegistration.Activator) ;
 #if TRACEPROVIDER
             PROVIDER_GUID.EventWriteEVENT_COMPONENT_REGISTERED (
                                                                 activatorLimitType
@@ -502,7 +502,7 @@ namespace KayMcCormick.Dev.Logging
                 }
                 catch ( Exception eX )
                 {
-                    Debug.WriteLine ( eX ) ;
+                    DebugUtils.WriteLine ( eX.ToString ( ) ) ;
                 }
             }
 

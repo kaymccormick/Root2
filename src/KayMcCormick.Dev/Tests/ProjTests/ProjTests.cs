@@ -253,7 +253,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TestProxyUtils ( )
         {
-            Action < string > x = message => Debug.WriteLine ( message ) ;
+            Action < string > x = message => DebugUtils.WriteLine ( message ) ;
             var proxy = ProxyUtilsBase.CreateProxy (
                                                     x
                                                   , new BaseInterceptorImpl (
@@ -362,7 +362,7 @@ namespace ProjTests
         public void TestAdapter ( )
         {
             // var x = new TestApplication ( ) ;
-            Debug.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
+            DebugUtils.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
             using (var instance =
                 new ApplicationInstance(ApplicationInstance.CreateConfiguration(_output.WriteLine, ApplicationGuid)))
             {
@@ -392,20 +392,20 @@ namespace ProjTests
                 {
                     try
                     {
-                        Debug.WriteLine ( $"func is {func}" ) ;
+                        DebugUtils.WriteLine ( $"func is {func}" ) ;
                         var xx = func ( pane ) ;
-                        Debug.WriteLine ( xx.DisplayName ) ;
-                        Debug.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
+                        DebugUtils.WriteLine ( xx.DisplayName ) ;
+                        DebugUtils.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
                         xx.ExecuteAsync ( )
                           .ContinueWith (
                                          task => {
                                              if ( task.IsFaulted )
                                              {
-                                                 Debug.WriteLine ( task.Exception ) ;
+                                                 DebugUtils.WriteLine ( task.Exception.ToString ( ) ) ;
                                              }
                                              else
                                              {
-                                                 Debug.WriteLine ( task.Result ) ;
+                                                 DebugUtils.WriteLine ( task.Result.ToString ( ) ) ;
                                              }
                                          }
                                         )
@@ -413,7 +413,7 @@ namespace ProjTests
                     }
                     catch ( Exception ex )
                     {
-                        Debug.WriteLine ( ex.ToString ( ) ) ;
+                        DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                     }
                 }
 
@@ -422,7 +422,7 @@ namespace ProjTests
                 // x.TCS = source ;
                 // x.Run ( w ) ;
                 // Task.WaitAll ( x.TCS.Task ) ;
-                // Debug.WriteLine ( source.Task.Result ) ;
+                // DebugUtils.WriteLine ( source.Task.Result ) ;
             }
         }
 
@@ -574,7 +574,7 @@ namespace ProjTests
                 if ( dt != null )
                 {
                     var xaml = XamlWriter.Save ( dt ) ;
-                    Debug.WriteLine ( xaml ) ;
+                    DebugUtils.WriteLine ( xaml ) ;
                 }
 
                 Logger.Info (
@@ -756,7 +756,7 @@ namespace ProjTests
                 }
                 Logger.Error(msg);
 #endif
-                Debug.WriteLine ( "Exception: " + e.Exception ) ;
+                DebugUtils.WriteLine ( "Exception: " + e.Exception ) ;
                 var inner = e.Exception.InnerException ;
                 var seen = new HashSet < object > ( ) ;
                 while ( inner != null
@@ -766,14 +766,14 @@ namespace ProjTests
                     Logger.Error(inner, inner.ToString);
 #endif
 
-                    Debug.WriteLine ( "Exception: " + e.Exception ) ;
+                    DebugUtils.WriteLine ( "Exception: " + e.Exception ) ;
                     seen.Add ( inner ) ;
                     inner = inner.InnerException ;
                 }
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine ( "Exception: " + ex ) ;
+                DebugUtils.WriteLine ( "Exception: " + ex ) ;
             }
         }
 
@@ -825,7 +825,7 @@ namespace ProjTests
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine ( ex ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
 
             tcs.Task.Wait ( ) ;
@@ -883,7 +883,7 @@ namespace ProjTests
 
                 var options = JsonConverters.CreateJsonSerializeOptions ( ) ;
                 var json = JsonSerializer.Serialize ( p , options ) ;
-                Debug.WriteLine ( json ) ;
+                DebugUtils.WriteLine ( json ) ;
                 var vs = DependencyPropertyHelper.GetValueSource (
                                                                   p
                                                                 , PythonViewModel.InputLineProperty
@@ -976,7 +976,7 @@ namespace ProjTests
                                            , new Point ( 0 ,  0 )
                                            , new Point ( 10 , 10 )
                                             ) ;
-            Debug.WriteLine ( JsonSerializer.Serialize ( b , opt ) ) ;
+            DebugUtils.WriteLine ( JsonSerializer.Serialize ( b , opt ) ) ;
         }
 
         [ Fact ]
@@ -1018,10 +1018,10 @@ namespace ProjTests
                                                           , Condition.TrueCondition
                                                            ) )
                 {
-                    Debug.WriteLine ( o ) ;
+                    DebugUtils.WriteLine ( o ) ;
                     try
                     {
-                        Debug.WriteLine (
+                        DebugUtils.WriteLine (
                                          o.GetCachedPropertyValue (
                                                                    AutomationElement
                                                                       .ClassNameProperty
@@ -1039,7 +1039,7 @@ namespace ProjTests
                 // foreach ( var automationProperty in rCachedChild.GetSupportedProperties ( ) )
                 // {
                 // var v = rCachedChild.GetCachedPropertyValue ( automationProperty ) ;
-                // Debug.WriteLine ( v.ToString ( ) ) ;
+                // DebugUtils.WriteLine ( v.ToString ( ) ) ;
                 // }
                 // }
             }
@@ -1062,18 +1062,18 @@ namespace ProjTests
                     try
                     {
                         var propValue = child.GetCurrentPropertyValue ( automationProperty ) ;
-                        Debug.WriteLine ( automationProperty.ProgrammaticName ) ;
-                        Debug.WriteLine ( propValue ) ;
+                        DebugUtils.WriteLine ( automationProperty.ProgrammaticName ) ;
+                        DebugUtils.WriteLine ( propValue ) ;
                     }catch(Exception)
                     { }
                 }
                 var c = child.GetUpdatedCache ( cacheRequest ) ;
                 var cn = c.GetCachedPropertyValue ( AutomationElement.ClassNameProperty ) ;
-                Debug.WriteLine ( cn ) ;
+                DebugUtils.WriteLine ( cn ) ;
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine("Got exception " + ex.Message);
+                DebugUtils.WriteLine("Got exception " + ex.Message);
             }
         }
 
@@ -1082,12 +1082,12 @@ namespace ProjTests
         public void TestXmlDoc ( )
         {
             var x = TypesViewModel.LoadDoc ( ) ;
-            var y = TypesViewModel.DocMembers ( x ) ;
-            foreach ( var codeElementDocumentation in y.Select ( TypesViewModel.HandleDocElement ) )
+            var y = XmlDocElements.DocMembers ( x ) ;
+            foreach ( var codeElementDocumentation in y.Select ( XmlDocElements.HandleDocElement ) )
             {
                 if ( codeElementDocumentation != null )
                 {
-                    Debug.WriteLine ( codeElementDocumentation ) ;
+                    DebugUtils.WriteLine ( codeElementDocumentation.ToString ( ) ) ;
                 }
             }
 
@@ -1098,7 +1098,7 @@ namespace ProjTests
             // {
             // foreach ( var methodDocInfo in valuePair.Value )
             // {
-            // Debug.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
+            // DebugUtils.WriteLine ( string.Join ( "" , methodDocInfo.DocNode ) ) ;
             // }
             // }
             // }
@@ -1130,20 +1130,20 @@ namespace ProjTests
                                             return AppCommandResult.Success ;
                                           }
                                         , "arg"
-                                        , exception => Debug.WriteLine ( $"badness: {exception}" )
+                                        , exception => DebugUtils.WriteLine ( $"badness: {exception}" )
                                          ) ;
             c.ExecuteAsync ( )
              .ContinueWith (
                             task => {
                                 if ( task.IsFaulted )
                                 {
-                                    Debug.WriteLine ( "Faulted" ) ;
+                                    DebugUtils.WriteLine ( "Faulted" ) ;
                                 }
 
                                 if ( task.IsCompleted )
                                 {
-                                    Debug.WriteLine ( "completed" ) ;
-                                    Debug.WriteLine ( task.Result.ToString ( ) ) ;
+                                    DebugUtils.WriteLine ( "completed" ) ;
+                                    DebugUtils.WriteLine ( task.Result.ToString ( ) ) ;
                                 }
                             }
                            )
@@ -1152,5 +1152,40 @@ namespace ProjTests
         }
 
         private void SlogMethod ( string message ) { }
+
+        [ Fact ]
+        public void TestXaml1 ( )
+        {
+            // XamlXmlWriter outwriter = new XamlXmlWriter (
+            //                                              XmlWriter.Create (
+            //                                                                @"c:\temp\out.xml"
+            //                                                              , new XmlWriterSettings ( )
+            //                                                                {
+            //                                                                    Indent = true
+            //                                                                }
+            //                                                               )
+            //                                            , new XamlSchemaContext ( )
+            //                                             ) ;
+            var context = XamlReader.GetWpfSchemaContext ( ) ;
+            var xamlType = context.GetXamlType ( typeof ( Type ) ) ;
+            var xamlType2 = context.GetXamlType ( typeof ( SyntaxFieldInfo ) ) ;
+            var typeMember = xamlType2.GetMember ( "Type" ) ;
+            
+            var valueSerializer = xamlType.ValueSerializer ;
+            var typeConverter = xamlType.TypeConverter ;
+            var str1 = typeConverter.ConverterInstance.ConvertToString ( typeof ( List < string > ) ) ;
+            // var str = valueSerializer.ConverterInstance.ConvertToString (
+                                                               // typeof ( List < string > )
+                                                             // , null
+                                                              // ) ;
+            var @out = System.Windows.Markup.XamlWriter.Save(
+                                          new SyntaxFieldInfo
+                                          {
+                                              Name = "test" , Type = typeof ( List < string > )
+                                          }
+                                         ) ;
+            DebugUtils.WriteLine ( @out ) ;
+            Logger.Info ( @out ) ;
+        }
     }
-}
+    }

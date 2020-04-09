@@ -25,7 +25,9 @@ using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Module = Autofac.Module ;
@@ -59,6 +61,23 @@ namespace AnalysisControls
                                                               }              ).AsImplementedInterfaces().AsSelf().WithAttributedMetadata();
 
 #else
+            builder.RegisterAdapter < IBaseLibCommand , IAppCommand > (
+                                                                       (
+                                                                           context
+                                                                         , parameters
+                                                                         , arg3
+                                                                       ) => new LambdaAppCommand (
+                                                                                                  arg3
+                                                                                                     .ToString ( )
+                                                                                                , command
+                                                                                                      => arg3
+                                                                                                         .ExecuteAsync ( )
+                                                                                                , arg3
+                                                                                                     .Argument
+                                                                                                , arg3
+                                                                                                     .OnFault
+                                                                                                 )
+                                                                      ) ;
             builder.RegisterType < TypesView > ( )
                    .AsSelf ( )
                    .As<IControlView> (  )
@@ -77,7 +96,7 @@ namespace AnalysisControls
             // foreach ( var name in names )
             // {
             //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
-            //     Debug.WriteLine ( info.ResourceLocation ) ;
+            //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
             //
             // }
 
@@ -89,12 +108,13 @@ namespace AnalysisControls
                                                                 ) ;
                 if ( stream == null )
                 {
+                    DebugUtils.WriteLine ( "no stream" ) ;
                     return new TypesViewModel();
                 } else 
                                   {
                                       try
                                       {
-                                          TypesViewModel v =
+                                          var v =
                                               ( TypesViewModel ) XamlReader.Load ( stream ) ;
                                           stream.Close ( ) ;
                                           return v ;
@@ -112,7 +132,7 @@ namespace AnalysisControls
             //TypesViewModelContainer x = new TypesViewModelContainer();
             //x.VDocelems = new DocumentCollection(v.Docelems);
             // var xml = XamlWriter.Save(v);
-            // Debug.WriteLine ( xml ) ;
+            // DebugUtils.WriteLine ( xml ) ;
             // builder.RegisterInstance(v).As<ITypesViewModel> (  ).SingleInstance();
             
             //builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;

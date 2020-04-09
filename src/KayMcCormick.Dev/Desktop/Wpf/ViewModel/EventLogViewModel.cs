@@ -77,9 +77,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                                  ) ;
                 foreach ( var routedEvent in EventManager.GetRoutedEvents ( ) )
                 {
-                    Debug.WriteLine ( routedEvent.OwnerType.FullName ) ;
-                    Debug.WriteLine ( routedEvent.RoutingStrategy ) ;
-                    Debug.WriteLine ( routedEvent.Name ) ;
+                    DebugUtils.WriteLine ( routedEvent.OwnerType.FullName ) ;
+                    DebugUtils.WriteLine ( routedEvent.RoutingStrategy ) ;
+                    DebugUtils.WriteLine ( routedEvent.Name ) ;
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                                           .OrderByDescending ( entry => entry.TimeWritten ) ;
             foreach ( var eventLogEntry in eventLogEntries )
             {
-                Debug.WriteLine ( eventLogEntry.TimeWritten ) ;
+                DebugUtils.WriteLine ( eventLogEntry.TimeWritten ) ;
                 var parsedEventLogEntry = new ParsedEventLogEntry ( eventLogEntry ) ;
                 if ( parsedEventLogEntry.Exception1 != null )
                 {
@@ -130,15 +130,15 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             return ;
             if ( e.Command is RoutedUICommand rc )
             {
-                Debug.WriteLine ( $"PreviewCanExecute - {rc.Text} - {rc.Name}" ) ;
+                DebugUtils.WriteLine ( $"PreviewCanExecute - {rc.Text} - {rc.Name}" ) ;
             }
             else if ( e.Command is RoutedCommand rc2 )
             {
-                Debug.WriteLine ( $"PreviewCanExecute - {rc2.Name}" ) ;
+                DebugUtils.WriteLine ( $"PreviewCanExecute - {rc2.Name}" ) ;
             }
             else
             {
-                Debug.WriteLine ( $"PreviewCanExecute - {e.Command}" ) ;
+                DebugUtils.WriteLine ( $"PreviewCanExecute - {e.Command}" ) ;
             }
         }
 
@@ -163,23 +163,23 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 // _layoutService.AddToLayout ( paneWrapper ) ;
                 var w = new Window { Content = uc } ;
                 w.ShowDialog ( ) ;
-                Debug.WriteLine ( e.OriginalSource ) ;
-                Debug.WriteLine ( e.Source ) ;
-                Debug.WriteLine ( sender ) ;
-                Debug.WriteLine ( EventLogCollectionView.CurrentPosition ) ;
+                DebugUtils.WriteLine ( e.OriginalSource ) ;
+                DebugUtils.WriteLine ( e.Source ) ;
+                DebugUtils.WriteLine ( sender ) ;
+                DebugUtils.WriteLine ( EventLogCollectionView.CurrentPosition ) ;
             }
 
             if ( e.Command is RoutedUICommand rc )
             {
-                Debug.WriteLine ( $"PreviewExecuted - {rc.Text} - {rc.Name}" ) ;
+                DebugUtils.WriteLine ( $"PreviewExecuted - {rc.Text} - {rc.Name}" ) ;
             }
             else if ( e.Command is RoutedCommand rc2 )
             {
-                Debug.WriteLine ( $"PreviewExecuted- {rc2.Name}" ) ;
+                DebugUtils.WriteLine ( $"PreviewExecuted- {rc2.Name}" ) ;
             }
             else
             {
-                Debug.WriteLine ( $"PreviewExecuted- {e.Command}" ) ;
+                DebugUtils.WriteLine ( $"PreviewExecuted- {e.Command}" ) ;
             }
         }
     }
@@ -228,7 +228,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                     }
                     catch ( Exception ex )
                     {
-                        Debug.WriteLine ( ex.ToString ( ) ) ;
+                        DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                     }
                 }
             }

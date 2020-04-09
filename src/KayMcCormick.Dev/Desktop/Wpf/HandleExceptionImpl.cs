@@ -15,6 +15,7 @@ using System.IO ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Windows ;
+using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -58,7 +59,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
                 catch ( Exception ex )
                 {
-                    Debug.WriteLine ( ex.ToString ( ) ) ;
+                    DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 }
             }
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -16,13 +17,14 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
-    public class InstanceInfoTypeDescriptor : CustomTypeDescriptor
+    public sealed class InstanceInfoTypeDescriptor : CustomTypeDescriptor
     {
         #region Overrides of CustomTypeDescriptor
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public override TypeConverter GetConverter ( )
         {
             return new WpfInstanceInfoConverter ( ) ;
@@ -40,7 +42,7 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         public WpfInstanceInfoConverter ( )
         {
-            Debug.WriteLine ( "Instantiating WpfInst.." ) ;
+            DebugUtils.WriteLine ( "Instantiating WpfInst.." ) ;
         }
 
 

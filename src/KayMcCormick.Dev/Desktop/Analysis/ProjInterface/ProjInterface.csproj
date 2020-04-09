@@ -150,10 +150,6 @@
       <DependentUpon>ProjInterfaceApp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <DesignDataWithDesignTimeCreatableTypes Include="TypesViewModel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </DesignDataWithDesignTimeCreatableTypes>
     <Page Include="Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

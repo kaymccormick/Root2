@@ -30,7 +30,7 @@ namespace AnalysisControls.Views
         /// </summary>
         private TypesView ( )
         {
-            Debug.WriteLine ( "Initializing without ViewModel" ) ;
+            DebugUtils.WriteLine ( "Initializing without ViewModel" ) ;
             InitializeComponent ( ) ;
         }
 
@@ -40,7 +40,7 @@ namespace AnalysisControls.Views
         public TypesView ( ITypesViewModel viewModel )
         {
             _viewModel = viewModel ;
-            Debug.WriteLine ( "View model is " + _viewModel ) ;
+            DebugUtils.WriteLine ( "View model is " + _viewModel ) ;
             InitializeComponent ( ) ;
         }
 
@@ -57,7 +57,7 @@ namespace AnalysisControls.Views
             set
             {
                 _viewModel = value ;
-                Debug.WriteLine ( "Set viewModel" ) ;
+                DebugUtils.WriteLine ( "Set viewModel" ) ;
                 OnPropertyChanged ( ) ;
             }
         }
@@ -92,7 +92,7 @@ namespace AnalysisControls.Views
                 var dependencyObject = VisualTreeHelper.GetChild ( reference , i ) ;
                 var v = ( Visual ) dependencyObject ;
                 var contentBounds = VisualTreeHelper.GetContentBounds ( v ) ;
-                Debug.WriteLine (
+                DebugUtils.WriteLine (
                                  $"{v}{i} {contentBounds.Left},{contentBounds.Top} - {contentBounds.Right},{contentBounds.Bottom}"
                                 ) ;
                 DumpVisualRects ( v ) ;

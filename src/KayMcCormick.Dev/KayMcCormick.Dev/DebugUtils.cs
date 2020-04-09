@@ -1,4 +1,5 @@
 ﻿using System ;
+using System.Diagnostics ;
 using System.Linq ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
@@ -8,6 +9,10 @@ namespace KayMcCormick.Dev
     /// <summary>Extension methods for debug output.</summary>
     public static class DebugUtils
     {
+        public static void WriteLine (string line )
+        {
+            Debug.WriteLine ( "<KM> " + line ) ;
+        }
         /// <summary>Debugs the format.</summary>
         /// <param name="reg">The reg.</param>
         /// <returns></returns>
@@ -42,6 +47,11 @@ namespace KayMcCormick.Dev
             }
 
             return service.Description;
+        }
+
+        public static void WriteLine ( object obj )
+        {
+            WriteLine ( obj.ToString ( ) ) ;
         }
     }
 }

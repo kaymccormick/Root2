@@ -83,7 +83,7 @@ namespace KayMcCormick.Lib.Wpf
             if ( item != null )
             {
                 var try1 = $"{TemplatePartName}{item.GetType ( ).Name.Replace ( "." , "_" )}" ;
-                Debug.WriteLine ( try1 ) ;
+                DebugUtils.WriteLine ( try1 ) ;
                 resourceKeys.Add ( try1 ) ;
             }
 
@@ -94,7 +94,7 @@ namespace KayMcCormick.Lib.Wpf
                 if ( returnVal != null )
                 {
                     Logger.Debug ( "OBtained template" ) ;
-                    Debug.WriteLine ( XamlWriter.Save ( returnVal ) ) ;
+                    DebugUtils.WriteLine ( XamlWriter.Save ( returnVal ) ) ;
                 }
             }
 

@@ -20,55 +20,30 @@ namespace AnalysisAppLib.Serialization
                         SyntaxFactory.LiteralExpression ( SyntaxKind.NullLiteralExpression ) ;
                     break ;
                 case JsonValueKind.Object :
-                    var anon =
-                        new SeparatedSyntaxList < AnonymousObjectMemberDeclaratorSyntax > ( ) ;
-                    anon = anon.AddRange (
-                                          element.EnumerateObject ( ).Where (p => p.Value.ValueKind != JsonValueKind.Null  )
-                                                 .Select (
-                                                          p => SyntaxFactory
-                                                             .AnonymousObjectMemberDeclarator (
-                                                                                               SyntaxFactory
-                                                                                                  .NameEquals (
-                                                                                                               p.Name
-                                                                                                              )
-                                                                                             , ConvertJsonElementToCode (
-                                                                                                                         p.Value
-                                                                                                                        )
-                                                                                              )
-                                                         )
-                                         ) ;
-                    elementSyntax = SyntaxFactory.AnonymousObjectCreationExpression ( anon ) ;
+                    elementSyntax = AnonymousObject ( element ) ;
+                    
+
                     break ;
                 case JsonValueKind.Array :
-                    
+
                     var elems = element.EnumerateArray ( )
                                        .Select ( ConvertJsonElementToCode )
                                        .ToList ( ) ;
 
-                    elementSyntax = SyntaxFactory.ArrayCreationExpression (
-                                                                           SyntaxFactory.ArrayType (
-                                                                                                    SyntaxFactory
-                                                                                                       .PredefinedType (
-                                                                                                                        SyntaxFactory
-                                                                                                                           .Token (
-                                                                                                                                   SyntaxKind
-                                                                                                                                      .ObjectKeyword
-                                                                                                                                  )
-                                                                                                                       ), new SyntaxList < ArrayRankSpecifierSyntax > ().Add(SyntaxFactory.ArrayRankSpecifier(new SeparatedSyntaxList < ExpressionSyntax > ().Add (SyntaxFactory.OmittedArraySizeExpression()  )))
-                                                                                                   )
-                                                                         , SyntaxFactory
-                                                                              .InitializerExpression (
-                                                                                                      SyntaxKind
-                                                                                                         .ArrayInitializerExpression
-                                                                                                    , new
-                                                                                                              SeparatedSyntaxList
-                                                                                                              < ExpressionSyntax
-                                                                                                              > ( )
-                                                                                                         .AddRange (
-                                                                                                                    elems
-                                                                                                                   )
-                                                                                                     )
-                                                                          ) ;
+                    elementSyntax = SyntaxFactory.ImplicitArrayCreationExpression (
+                                                                                   SyntaxFactory
+                                                                                      .InitializerExpression (
+                                                                                                              SyntaxKind
+                                                                                                                 .ArrayInitializerExpression
+                                                                                                            , new
+                                                                                                                      SeparatedSyntaxList
+                                                                                                                      < ExpressionSyntax
+                                                                                                                      > ( )
+                                                                                                                 .AddRange (
+                                                                                                                            elems
+                                                                                                                           )
+                                                                                                             )
+                                                                                  ) ;
 
                     break ;
                 case JsonValueKind.String :
@@ -125,6 +100,41 @@ namespace AnalysisAppLib.Serialization
                 default : throw new ArgumentOutOfRangeException ( ) ;
             }
 
+            return elementSyntax ;
+        }
+
+        private static ExpressionSyntax AnonymousObject ( JsonElement element )
+        {
+            ExpressionSyntax elementSyntax ;
+            var anon = new SeparatedSyntaxList < AnonymousObjectMemberDeclaratorSyntax > ( ).AddRange (
+                                                                                                       element
+                                                                                                          .EnumerateObject ( )
+                                                                                                          .Where (
+                                                                                                                  p => p.Value
+                                                                                                                        .ValueKind
+                                                                                                                       != JsonValueKind
+                                                                                                                          .Null
+                                                                                                                 )
+                                                                                                          .Select (
+                                                                                                                   p
+                                                                                                                       => SyntaxFactory
+                                                                                                                          .AnonymousObjectMemberDeclarator (
+                                                                                                                                                            SyntaxFactory
+                                                                                                                                                               .NameEquals (
+                                                                                                                                                                            p.Name
+                                                                                                                                                                           )
+                                                                                                                                                          , ConvertJsonElementToCode (
+                                                                                                                                                                                      p.Value
+                                                                                                                                                                                     )
+                                                                                                                                                           )
+                                                                                                                  )
+                                                                                                      ) ;
+            elementSyntax =
+                SyntaxFactory.AnonymousObjectCreationExpression (
+                                                                 new SeparatedSyntaxList <
+                                                                     AnonymousObjectMemberDeclaratorSyntax
+                                                                 > ( )
+                                                                ) ;
             return elementSyntax ;
         }
     }

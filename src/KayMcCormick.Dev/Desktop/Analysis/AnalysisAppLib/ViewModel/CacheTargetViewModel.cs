@@ -16,6 +16,7 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Text.Json ;
 using System.Windows.Threading ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib.ViewModel
@@ -68,7 +69,7 @@ namespace AnalysisAppLib.ViewModel
                                              catch ( Exception ex )
                                              {
                                                  throw ;
-                                                 Debug.WriteLine ( ex.ToString ( ) ) ;
+                                                 DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                                              }
                                          }
                                      }

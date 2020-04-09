@@ -454,7 +454,7 @@ namespace KayMcCormick.Dev.Logging
                             }
                             catch ( Exception ex )
                             {
-                                Debug.WriteLine ( $"{p.Key}: {p.Value}: {ex}" ) ;
+                                DebugUtils.WriteLine ( $"{p.Key}: {p.Value}: {ex}" ) ;
                                 throw ;
                             }
                         }
@@ -481,7 +481,7 @@ namespace KayMcCormick.Dev.Logging
                     }
                     catch ( Exception ex )
                     {
-                        Debug.WriteLine ( $"{name}: {value1}: {ex}" ) ;
+                        DebugUtils.WriteLine ( $"{name}: {value1}: {ex}" ) ;
                         throw ;
                     }
                 }
@@ -507,7 +507,7 @@ namespace KayMcCormick.Dev.Logging
                     }
                     catch ( Exception ex )
                     {
-                        Debug.WriteLine ( $"{name}: {value1}: {ex}" ) ;
+                        DebugUtils.WriteLine ( $"{name}: {value1}: {ex}" ) ;
                         throw ;
                     }
                 }

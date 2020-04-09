@@ -1969,7 +1969,7 @@
       <Kind Name="CloseBraceToken"/>
     </Field>
   </Node>
-  <Node Name="itionStatementSyntax" Base="StatementSyntax">
+  <Node Name="LocalFunctionStatementSyntax" Base="StatementSyntax">
     <Kind Name="LocalFunctionStatement"/>
     <Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;" Override="true"/>
     <Field Name="Modifiers" Type="SyntaxList&lt;SyntaxToken&gt;"/>

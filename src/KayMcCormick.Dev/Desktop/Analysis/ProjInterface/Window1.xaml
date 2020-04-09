@@ -10,6 +10,9 @@
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
               xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
               xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+              xmlns:command="clr-namespace:KayMcCormick.Lib.Wpf.Command;assembly=KayMcCormick.Lib.Wpf"
+              xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
+              xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
               mc:Ignorable="d"
@@ -47,8 +50,6 @@
             <MenuItem Header="New Link"
                       IsEnabled="{Binding CanCreateLink}" />
           </ContextMenu>
-
-
           <ControlTemplate x:Key="ControlTemplate1">
             <Border BorderThickness="50" BorderBrush="Red">
               <ContentPresenter />
@@ -1015,6 +1016,9 @@
       </Style>
       <local:ImageSourceConverter x:Key="ImageSourceConverter" />
       <CollectionViewSource x:Key="RibbonCommands" Source=""></CollectionViewSource>
+      <x:Array Type="{x:Type analysisAppLib:AppTypeInfo}"  x:Key="types">
+        <analysisAppLib:AppTypeInfo Type="cSharp:CSharpSyntaxNode" Title="CSharp Node" ColorValue="4288462688" ElementName="{x:Null}"/>
+      </x:Array>
     </ResourceDictionary>
   </RibbonWindow.Resources>
   <RibbonWindow.CommandBindings>
@@ -1050,10 +1054,10 @@
         </Ribbon.ApplicationMenu>
         <RibbonTab Header="Views">
             <RibbonGroup
-              ItemsSource="{kmWpf:ResolveEnumerable kmWpf:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+              ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
             <RibbonGroup.ItemTemplate>
                 <DataTemplate
-                  DataType="kmWpf:IDisplayableAppCommand">
+                  DataType="command:IDisplayableAppCommand">
                   <RibbonButton
                     Label="{Binding DisplayName}"
                     LargeImageSource="{Binding LargeImageSourceKey}"
@@ -1123,7 +1127,10 @@
                                            x:Name="FrameDxocument" >
                   <anal:CustomControl1 DataContext=""  d:DataContext="{d:DesignData /TypesViewModel.xaml}" RootItemsSource="{Binding Root.SubTypeInfos}"/>
                 </avalondock:LayoutDocument>
-
+                <avalondock:LayoutDocument IsActive="True">
+                  <Grid>
+                  </Grid>
+                </avalondock:LayoutDocument>
                   <avalondock:LayoutDocument Title="Browser"
                                              IconSource="{StaticResource BrowserIcon}"
                                              x:Name="FrameDocument">
@@ -1205,11 +1212,8 @@
           </avalondock:LayoutRoot.LeftSide>
         </avalondock:LayoutRoot>
       </avalondock:DockingManager>
-      <StatusBar Grid.Row="3" Grid.Column="0" />
-      <RibbonTwoLineText HorizontalAlignment="Left"
-                         Margin="461,60.4,0,0" Grid.Row="2"
-                         VerticalAlignment="Top"
-                         Width="100" />
+      <StatusBar Grid.Row="3" Grid.Column="0">
+      </StatusBar>
     </Grid>
   </Border>
 </RibbonWindow>

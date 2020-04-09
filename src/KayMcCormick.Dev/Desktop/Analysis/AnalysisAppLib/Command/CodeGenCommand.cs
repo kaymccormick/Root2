@@ -58,7 +58,7 @@ namespace AnalysisAppLib.Command
 
             void DebugOut ( string s1 )
             {
-                Debug.WriteLine ( s1 ) ;
+                DebugUtils.WriteLine ( s1 ) ;
                 outputFunc ( s1 ) ;
             }
 

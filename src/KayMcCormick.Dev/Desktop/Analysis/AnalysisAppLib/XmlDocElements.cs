@@ -9,11 +9,18 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Collections.Generic ;
-using System.Linq ;
-using System.Xml.Linq ;
-using JetBrains.Annotations ;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using Microsoft.CodeAnalysis.CSharp;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using PocoSyntax ;
 
 namespace AnalysisAppLib
 {
@@ -188,6 +195,184 @@ namespace AnalysisAppLib
             }
 
             throw new InvalidOperationException ( ) ;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        [ NotNull ]
+        public static IEnumerable < XmlElement > DocMembers ( [ NotNull ] XmlDocument doc )
+        {
+            if ( doc.DocumentElement == null )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
+
+            return doc.DocumentElement.ChildNodes.OfType < XmlElement > ( )
+                      .First ( child => child.Name == "members" )
+                      .ChildNodes.OfType < XmlElement > ( ) ;
+        }
+
+        public static IEnumerable DocMembers ( [ NotNull ] XDocument doc )
+        {
+            if ( doc == null )
+            {
+                throw new ArgumentNullException ( nameof ( doc ) ) ;
+            }
+
+            return doc.Root.Elements ( "member" ) ;
+        }
+
+        [CanBeNull]
+        public static CodeElementDocumentation HandleDocElementNode (
+            [ NotNull ] XDocument   xDocument
+          , string                  elementId
+          , MemberDeclarationSyntax member
+          , ISymbol                declared
+        )
+        {
+            var xmlElement = xDocument?.Root ;
+
+            if (elementId == null)
+            {
+                elementId = xmlElement?.Attribute(XName.Get("name"))?.Value;
+            }
+
+            var xNodes = xmlElement?.Nodes() ?? Enumerable.Empty<XNode> (  );
+
+            var xmlDoc = (xNodes).Select(XmlDocElements.Selector);
+            CodeElementDocumentation docElem = null ;
+            var type = declared.ContainingType ;
+            
+            Dictionary < SyntaxKind , Type > kindType = new Dictionary < SyntaxKind , Type >
+                                                        {
+                                                            [ SyntaxKind.ClassDeclaration ] =
+                                                                typeof ( TypeDocumentation ),
+                                                            [SyntaxKind.InterfaceDeclaration] = typeof(TypeDocumentation),
+                                                            [SyntaxKind.StructDeclaration] = typeof(TypeDocumentation),
+                                                            [SyntaxKind.DelegateDeclaration] = typeof(DelegateDocumentation),
+                                                            
+                                                            [SyntaxKind.EnumDeclaration] =  typeof(TypeDocumentation),
+                                                            
+                                                            [SyntaxKind.EnumMemberDeclaration]  = typeof(EnumMemberDocumentation),
+                                                            
+                                                            [SyntaxKind.FieldDeclaration] = typeof(FieldDocumentation),
+                                                            
+                                                            [SyntaxKind.MethodDeclaration] = typeof(MethodDocumentation),
+
+                [SyntaxKind.ConstructorDeclaration] = typeof(ConstructorDocumentation),
+                                                            
+                                                            [SyntaxKind.DestructorDeclaration] = typeof(CodeElementDocumentation),
+                                                            
+                                                            [SyntaxKind.PropertyDeclaration] = typeof(PropertyDocumentation),
+
+                [SyntaxKind.IndexerDeclaration] = typeof(CodeElementDocumentation),
+
+                [SyntaxKind.EventDeclaration] = typeof(CodeElementDocumentation),
+
+                [SyntaxKind.EventFieldDeclaration] = typeof(CodeElementDocumentation),
+
+                [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
+
+                [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation),
+
+
+                                                        };
+            switch ( member )
+            {
+                case EventFieldDeclarationSyntax eventFieldDeclarationSyntax : break ;
+                case FieldDeclarationSyntax fieldDeclarationSyntax : break ;
+                case BaseFieldDeclarationSyntax baseFieldDeclarationSyntax : break ;
+                case ConstructorDeclarationSyntax constructorDeclarationSyntax :
+                    break ;
+                case ConversionOperatorDeclarationSyntax conversionOperatorDeclarationSyntax : break ;
+                case DestructorDeclarationSyntax destructorDeclarationSyntax : break ;
+                case MethodDeclarationSyntax methodDeclarationSyntax : break ;
+                case OperatorDeclarationSyntax operatorDeclarationSyntax : break ;
+                case BaseMethodDeclarationSyntax baseMethodDeclarationSyntax : break ;
+                case EventDeclarationSyntax eventDeclarationSyntax : break ;
+                case IndexerDeclarationSyntax indexerDeclarationSyntax : break ;
+                case PropertyDeclarationSyntax propertyDeclarationSyntax : break ;
+                case BasePropertyDeclarationSyntax basePropertyDeclarationSyntax : break ;
+                case ClassDeclarationSyntax classDeclarationSyntax : break ;
+                case EnumDeclarationSyntax enumDeclarationSyntax : break ;
+                case InterfaceDeclarationSyntax interfaceDeclarationSyntax : break ;
+                case StructDeclarationSyntax structDeclarationSyntax : break ;
+                case TypeDeclarationSyntax typeDeclarationSyntax : break ;
+                case BaseTypeDeclarationSyntax baseTypeDeclarationSyntax : break ;
+                case DelegateDeclarationSyntax delegateDeclarationSyntax : break ;
+                case EnumMemberDeclarationSyntax enumMemberDeclarationSyntax : break ;
+                case GlobalStatementSyntax globalStatementSyntax : break ;
+                case IncompleteMemberSyntax incompleteMemberSyntax : break ;
+                case NamespaceDeclarationSyntax namespaceDeclarationSyntax : break ;
+                default : throw new ArgumentOutOfRangeException ( nameof ( member ) ) ;
+            }
+
+            if ( kindType.TryGetValue ( member.Kind ( ) , out var kind1 ) )
+            {
+                docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
+            }
+
+#if false
+            docElem.PocoMemberDelaration = GenTransforms.Transform_Member_Declaration ( member ) ;
+            switch (docElem.PocoMemberDelaration)
+            {
+                case PocoBaseMethodDeclarationSyntax methodB:
+                    methodB.Body = null;
+                    break;
+            }
+
+            switch (docElem.PocoMemberDelaration)
+            {
+                case PocoEventFieldDeclarationSyntax pocoEventFieldDeclarationSyntax :
+                    break ;
+                case PocoFieldDeclarationSyntax pocoFieldDeclarationSyntax : break ;
+                case PocoBaseFieldDeclarationSyntax pocoBaseFieldDeclarationSyntax : break ;
+                case PocoConstructorDeclarationSyntax pocoConstructorDeclarationSyntax :
+                    pocoConstructorDeclarationSyntax.Initializer = null ;
+                    break ;
+                case PocoMethodDeclarationSyntax pocoMethodDeclarationSyntax :
+                    break ;
+                case PocoOperatorDeclarationSyntax pocoOperatorDeclarationSyntax : break ;
+                case PocoBaseMethodDeclarationSyntax pocoBaseMethodDeclarationSyntax : break ;
+                case PocoEventDeclarationSyntax pocoEventDeclarationSyntax : break ;
+                case PocoIndexerDeclarationSyntax pocoIndexerDeclarationSyntax : break ;
+                case PocoPropertyDeclarationSyntax pocoPropertyDeclarationSyntax : break ;
+                case PocoBasePropertyDeclarationSyntax pocoBasePropertyDeclarationSyntax : break ;
+                case PocoClassDeclarationSyntax pocoClassDeclarationSyntax :
+                    pocoClassDeclarationSyntax.Members.Clear();
+                    break ;
+                case PocoEnumDeclarationSyntax pocoEnumDeclarationSyntax :
+                    pocoEnumDeclarationSyntax.Members.Clear ( ) ;
+                    break ;
+                case PocoInterfaceDeclarationSyntax pocoInterfaceDeclarationSyntax : break ;
+                case PocoStructDeclarationSyntax pocoStructDeclarationSyntax :
+                    pocoStructDeclarationSyntax.Members.Clear();
+                    break ;
+                case PocoTypeDeclarationSyntax pocoTypeDeclarationSyntax :
+                    pocoTypeDeclarationSyntax.Members.Clear();
+                    break ;
+                case PocoBaseTypeDeclarationSyntax pocoBaseTypeDeclarationSyntax : break ;
+                case PocoDelegateDeclarationSyntax pocoDelegateDeclarationSyntax : break ;
+                case PocoEnumMemberDeclarationSyntax pocoEnumMemberDeclarationSyntax : break ;
+                case PocoGlobalStatementSyntax pocoGlobalStatementSyntax : break ;
+                case PocoIncompleteMemberSyntax pocoIncompleteMemberSyntax : break ;
+                case PocoNamespaceDeclarationSyntax pocoNamespaceDeclarationSyntax :
+                    pocoNamespaceDeclarationSyntax.Members.Clear();
+                    break ;
+                default : throw new ArgumentOutOfRangeException ( ) ;
+            }
+#endif
+            docElem.ElementId = elementId ;
+
+            foreach ( var xmlDocElement in xmlDoc )
+            {
+                docElem.XmlDoc.Add ( xmlDocElement ) ;
+            }
+
+            return docElem ;
         }
     }
 

@@ -5,7 +5,6 @@ using System.Collections.Immutable ;
 using System.Data ;
 using System.Data.SqlClient ;
 using System.Data.SqlTypes ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
@@ -26,10 +25,10 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -112,7 +111,7 @@ namespace ConsoleApp1
             subject.Subscribe (
                                logger => {
                                    logger.Warn ( "Received logger" ) ;
-                                   Debug.WriteLine ( "got logger" ) ;
+                                   DebugUtils.WriteLine ( "got logger" ) ;
                                    Logger = logger ;
                                    if ( _appinst != null )
                                    {
@@ -152,7 +151,7 @@ namespace ConsoleApp1
                 _appinst.AddModule ( new AppModule ( ) ) ;
                 _appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 _appinst.AddModule ( new AnalysisControlsModule ( ) ) ;
-                    PopulateJsonConverters( false ) ;
+                PopulateJsonConverters ( false ) ;
                 ILifetimeScope scope ;
                 try
                 {
@@ -187,13 +186,13 @@ namespace ConsoleApp1
 
                 var program = context.Scope.Resolve < Program > ( ) ;
 
-                    return await program.MainCommandAsync ( context ) ;
+                return await program.MainCommandAsync ( context ) ;
             }
         }
 
         private async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
         {
-             SelectVsInstance ( ) ;
+            SelectVsInstance ( ) ;
 
             await RunConsoleUiAsync ( context ) ;
 
@@ -274,13 +273,13 @@ namespace ConsoleApp1
             }
         }
 
-        private static async Task BuildTypeViewAsync ( AppContext context )
+        [ TitleMetadata ( "Build Types View" ) ]
+        public async Task BuildTypeViewAsync ( IBaseLibCommand command , AppContext context )
         {
             var options = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
             // options.Converters.Add (new JsonPocoSyntaxConverter()  );
             // await            CollectDocs ( options ) ;
             // return 1 ;
-            await RunConsoleUiAsync ( context ) ;
             var typesViewModel = context.Scope.Resolve < TypesViewModel > ( ) ;
 
             WriteThisTypesViewModel ( typesViewModel ) ;
@@ -446,7 +445,7 @@ namespace ConsoleApp1
                         }
                         catch ( Exception ex )
                         {
-                            Debug.WriteLine ( ex.ToString ( ) ) ;
+                            DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                         }
 
                         if ( l.Item2.Count >= 100 )
@@ -609,7 +608,7 @@ namespace ConsoleApp1
                              .Where ( inst => inst.Version.Major == 15 )
                              .First ( ) ;
             MSBuildLocator.RegisterInstance ( vsInstances ) ;
-            return;
+            return ;
 #if CONSOLEMENU
             var menu = new Menu ( "VS Instance" ) ;
             var vsInstances = MSBuildLocator.QueryVisualStudioInstances (
@@ -633,7 +632,7 @@ namespace ConsoleApp1
             var choices = visualStudioInstances.Select (
                                                         x => new MenuWrapper < VisualStudioInstance > (
                                                                                                        x
-                                                                                         , RenderFunc
+                                                                             , RenderFunc
                                                                                                       )
                                                        ) ;
             menu.Config.SelectedAppearence =
@@ -654,8 +653,8 @@ namespace ConsoleApp1
             {
                 Logger?.Warn (
                              "Selected instance {instance} {path}"
-               , ( object ) i2.Name
-               , ( object ) i2.MSBuildPath
+   , ( object ) i2.Name
+   , ( object ) i2.MSBuildPath
                             ) ;
             }
 
@@ -666,7 +665,6 @@ namespace ConsoleApp1
             Console.WriteLine ( "" ) ;
 
 #endif
-
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -678,9 +676,9 @@ namespace ConsoleApp1
             WriteThisTypesViewModel ( model ) ;
         }
 
-        [ TitleMetadata ( "Write types view model" ) ]
         public static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model )
         {
+            DebugUtils.WriteLine ( $"Writing {ModelXamlFilename}" ) ;
             var writer = XmlWriter.Create (
                                            ModelXamlFilename
                                          , new XmlWriterSettings { Indent = true , Async = true }
@@ -692,15 +690,17 @@ namespace ConsoleApp1
         // ReSharper disable once UnusedMember.Local
         [ TitleMetadata ( "Process solution" ) ]
         [ UsedImplicitly ]
-        public static async Task ProcessSolutionAsync ( [ NotNull ] JsonSerializerOptions options )
+        public async Task ProcessSolutionAsync (
+            IBaseLibCommand        command
+          , [ NotNull ] AppContext context
+        )
         {
-            options.WriteIndented = true ;
+            //options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
             var solution = await workspace.OpenSolutionAsync ( SolutionFilePath ) ;
-            foreach ( var project in solution.Projects )
+            var documentsOut = new List < CodeElementDocumentation > ( ) ;
+            foreach ( var project in solution.Projects.Where ( proj => proj.Name != "Explorer" ) )
             {
-                Console.WriteLine ( project.Name ) ;
-
                 // ReSharper disable once UnusedVariable
                 var compilation = await project.GetCompilationAsync ( ) ;
                 foreach ( var doc in project.Documents )
@@ -711,14 +711,102 @@ namespace ConsoleApp1
                     // ReSharper disable once UnusedVariable
                     var tree = await doc.GetSyntaxRootAsync ( ) ;
 
+                    foreach ( var node in tree
+                                         .DescendantNodesAndSelf ( )
+                                         .OfType < MemberDeclarationSyntax > ( ) )
+                    {
+                        //
+                        // if ( SupportsDocumentationComments ( tuple ) )
+                        // {
+                        //     
+                        var declared = model.GetDeclaredSymbol ( node ) ;
+                        if ( declared != null )
+                        {
+                            var xml1 = declared.GetDocumentationCommentXml ( ) ;
+                            if ( declared.DeclaredAccessibility == Accessibility.Public
+                                 && SupportsDocumentationComments ( node ) )
+                            {
+                                var docid = declared.GetDocumentationCommentId ( ) ;
+                                // if ( xml1 == null
+                                //      || String.IsNullOrEmpty ( xml1 ) )
+                                // {
+                                var o = new
+                                        {
+                                            docId    = docid
+                                          , xml      = xml1
+                                          , declared = declared.ToDisplayString ( )
+                                        } ;
+
+                                try
+                                {
+                                    XDocument doc1 = null ;
+                                    if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
+                                    {
+                                        doc1 = XDocument.Parse ( xml1 ) ;
+                                    }
+
+
+                                    var o1 = XmlDocElements.HandleDocElementNode (
+                                                                                  doc1
+                                                                                , docid
+                                                                                , node
+                                                                                , ( ISymbol )
+                                                                                  declared
+                                                                                 ) ;
+                                    if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
+                                    {
+                                        o1.NeedsAttention = true ;
+                                    }
+
+                                    documentsOut.Add ( o1 ) ;
+                                }
+                                catch
+                                {
+                                }
+
+
+
+
+                                // DebugUtils.WriteLine ( JsonSerializer.Serialize ( o ) ) ;
+                            }
+                        }
+                    }
+
+                    // => tuple.Item2.Symbol
+                    // != null
+                    // && tuple.Item2.Symbol
+                    // .DeclaredAccessibility
+                    // == Accessibility.Public
+                    // ) )
+                    // {
+                    // if ( ! tuple.Item1.GetLeadingTrivia ( )
+                    // .Any ( SyntaxKind.SingleLineDocumentationCommentTrivia ) )
+                    // {
+                    // DebugUtils.WriteLine(DocumentationCommentId.CreateDeclarationId(tuple.Item2.Symbol));
+                    // }
+
                     // var gen =
                     // FindLogUsages.GenTransforms.Transform_CSharp_Node (
                     // ( CSharpSyntaxNode ) tree
                     // ) ;
 
-                    // Debug.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
+                    // DebugUtils.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
                 }
             }
+
+            var li = new ArrayList ( ) ;
+            foreach ( var codeElementDocumentation in documentsOut )
+            {
+                li.Add ( codeElementDocumentation ) ;
+            }
+
+            XamlWriter.Save (
+                             li
+                           , XmlWriter.Create (
+                                               @"C:\temp\docs.xaml"
+                                             , new XmlWriterSettings ( ) { Indent = true }
+                                              )
+                            ) ;
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -734,12 +822,12 @@ namespace ConsoleApp1
             var ui = context.Scope.Resolve < TermUi > ( ) ;
             if ( ! ui.Commands.Any ( ) )
             {
-                Debug.WriteLine ( "No commands" ) ;
+                DebugUtils.WriteLine ( "No commands" ) ;
             }
 
             foreach ( var cmd in ui.Commands )
             {
-                Debug.WriteLine ( cmd.DisplayName ) ;
+                DebugUtils.WriteLine ( cmd.DisplayName ) ;
             }
 #if TERMUI
             ui.Init ( ) ;
@@ -747,18 +835,18 @@ namespace ConsoleApp1
 #endif
         }
 
-        [TitleMetadata( "Code gen")]
-        [UsedImplicitly]
-        public async Task CodeGenAsync(IAppCommand command, [NotNull] AppContext context)
+        [ TitleMetadata ( "Code gen" ) ]
+        [ UsedImplicitly ]
+        public async Task CodeGenAsync ( IBaseLibCommand command , [ NotNull ] AppContext context )
         {
-            await Task.Run ( ( ) => CodeGen( command , context ) ) ;
+            await Task.Run ( ( ) => CodeGen ( command , context ) ) ;
         }
 
-        public async Task CodeGen(IAppCommand command, [NotNull] AppContext context)
+        public async Task CodeGen ( IBaseLibCommand command , [ NotNull ] AppContext context )
         {
-            Action<string> outputFunc = (Action<string>)command.Argument;
+            var outputFunc = ( Action < string > ) command.Argument ;
             Action < string > debugOut = s1 => {
-                Debug.WriteLine ( s1 ) ;
+                DebugUtils.WriteLine ( s1 ) ;
                 outputFunc ( s1 ) ;
             } ;
             outputFunc ( "Beginning" ) ;
@@ -766,16 +854,29 @@ namespace ConsoleApp1
             var types =
                 new SyntaxList < MemberDeclarationSyntax
                 > ( ) ; //new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
-            outputFunc($"{model1.Map.Count} Entries in Type map");
+            outputFunc ( $"{model1.Map.Count} Entries in Type map" ) ;
             foreach ( Type mapKey in model1.Map.Keys )
             {
-                debugOut( $"{mapKey}" ) ;
+                debugOut ( $"{mapKey}" ) ;
                 var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
                 var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
                 foreach ( SyntaxFieldInfo tField in t.Fields )
                 {
                     debugOut ( $"{tField}" ) ;
+                    if ( tField.ClrTypeName != null
+                         && tField.Type     == null )
+                    {
+                        tField.Type = Type.GetType ( tField.ClrTypeName ) ;
+                        if ( tField.Type == null )
+                        {
+                            DebugUtils.WriteLine (
+                                                  $"unable to resolve typ{tField.ClrTypeName}e "
+                                                 ) ;
+                        }
+                    }
+
                     if ( tField.Type        == null
+                         && tField.Type     != typeof ( bool )
                          && tField.TypeName != "bool" )
                     {
                         continue ;
@@ -877,26 +978,69 @@ namespace ConsoleApp1
                                  } ;
 
 
-                    members = members.Add (
-                                           SyntaxFactory.PropertyDeclaration (
-                                                                              new SyntaxList <
-                                                                                  AttributeListSyntax
-                                                                              > ( )
-                                                                            , SyntaxFactory
-                                                                                 .TokenList (
-                                                                                             tokens
-                                                                                                .ToArray ( )
-                                                                                            )
-                                                                            , typeSyntax
-                                                                            , null
-                                                                            , SyntaxFactory
-                                                                                 .Identifier (
-                                                                                              tField
-                                                                                                 .Name
+                    var nameSyntax = SyntaxFactory.MemberAccessExpression (
+                                                                           SyntaxKind
+                                                                              .SimpleMemberAccessExpression
+                                                                         , SyntaxFactory
+                                                                              .IdentifierName (
+                                                                                               "DesignerSerializationVisibility"
+                                                                                              )
+                                                                         , SyntaxFactory
+                                                                              .IdentifierName (
+                                                                                               "Content"
+                                                                                              )
+                                                                          ) ;
+                    ////.ParseName ( "System.ComponentModel.DesignerSerializationVisibility" ) ;
+                    var attributeSyntax = SyntaxFactory.Attribute (
+                                                                   SyntaxFactory.ParseName (
+                                                                                            "DesignerSerializationVisibility"
+                                                                                           )
+                                                                 , SyntaxFactory
+                                                                      .AttributeArgumentList (
+                                                                                              SyntaxFactory
+                                                                                                 .SeparatedList
+                                                                                                  < AttributeArgumentSyntax
+                                                                                                  > (
+                                                                                                     new
+                                                                                                     []
+                                                                                                     {
+                                                                                                         SyntaxFactory
+                                                                                                            .AttributeArgument (
+                                                                                                                                nameSyntax
+                                                                                                                               )
+                                                                                                     }
+                                                                                                    )
                                                                                              )
-                                                                            , accessorListSyntax
-                                                                             )
-                                          ) ;
+                                                                  ) ;
+                    DebugUtils.WriteLine ( attributeSyntax ) ;
+                    var separatedSyntaxList =
+                        new SeparatedSyntaxList < AttributeSyntax > ( ).Add ( attributeSyntax ) ;
+                    var attributeListSyntaxes = SyntaxFactory.List (
+                                                                    new[]
+                                                                    {
+                                                                        SyntaxFactory
+                                                                           .AttributeList (
+                                                                                           separatedSyntaxList
+                                                                                          )
+                                                                    }
+                                                                   ) ;
+                    var syntaxTokenList = SyntaxFactory.TokenList ( tokens.ToArray ( ) ) ;
+                    var propertyName = SyntaxFactory.Identifier ( tField.Name ) ;
+                    var propertyDeclarationSyntax =
+                        SyntaxFactory.PropertyDeclaration (
+                                                           attributeListSyntaxes
+                                                         , syntaxTokenList
+                                                         , typeSyntax
+                                                         , null
+                                                         , propertyName
+                                                         , accessorListSyntax
+                                                          ) ;
+                    DebugUtils.WriteLine (
+                                          propertyDeclarationSyntax
+                                             .NormalizeWhitespace ( )
+                                             .ToFullString ( )
+                                         ) ;
+                    members = members.Add ( propertyDeclarationSyntax ) ;
                 }
 
                 var classDecl = SyntaxFactory
@@ -957,7 +1101,15 @@ namespace ConsoleApp1
                                                                                                                                   "System.Collections.Generic"
                                                                                                                                  )
                                                                                                                   )
-                                                                                           }
+                                                                                             , SyntaxFactory
+                                                                                                  .UsingDirective(
+                                                                                                                  SyntaxFactory
+                                                                                                                     .ParseName(
+                                                                                                                                "System.ComponentModel"
+                                                                                                                               )
+                                                                                                                 )
+
+        }
                                                                                           )
                                                  )
                                      .WithMembers (
@@ -975,18 +1127,21 @@ namespace ConsoleApp1
                                                                                               )
                                                   )
                                      .NormalizeWhitespace ( ) ;
-            debugOut("built");
+            debugOut ( "built" ) ;
             var tree = SyntaxFactory.SyntaxTree ( compl ) ;
             var src = tree.ToString ( ) ;
 
-            debugOut("Reparsing text ??");
-            var tree2 = CSharpSyntaxTree.ParseText ( SourceText.From ( src ) ) ;
+            debugOut ( "Reparsing text ??" ) ;
+            var tree2 = CSharpSyntaxTree.Create(compl,new CSharpParseOptions(LanguageVersion.CSharp7_3));
+
+            File.WriteAllText(@"C:\data\logs\gen.cs", compl.ToString());
+
             //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
             var source = tree2.ToString ( ).Split ( new[] { "\r\n" } , StringSplitOptions.None ) ;
             //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
             var adhoc = new AdhocWorkspace ( ) ;
             var projectId = ProjectId.CreateNewId ( ) ;
-            debugOut("Add solution");
+            debugOut ( "Add solution" ) ;
             var s = adhoc.AddSolution (
                                        SolutionInfo.Create (
                                                             SolutionId.CreateNewId ( )
@@ -1064,8 +1219,10 @@ namespace ConsoleApp1
             {
                 throw new InvalidOperationException ( ) ;
             }
-            debugOut("Applying assembly refs");
-            foreach ( var ref1 in AssemblyRefs )
+
+            debugOut ( "Applying assembly refs" ) ;
+            
+            foreach ( var ref1 in AssemblyRefs.Union(new [] {typeof(DesignerSerializationOptions).Assembly.Location}) )
             {
                 var s3 = adhoc.CurrentSolution.AddMetadataReference (
                                                                      projectId
@@ -1079,7 +1236,7 @@ namespace ConsoleApp1
                 }
             }
 
-            debugOut("Applying assembly done");
+            debugOut ( "Applying assembly done" ) ;
             var project = adhoc.CurrentSolution.Projects.First ( ) ;
             var compilation = await project.GetCompilationAsync ( ) ;
             using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )
@@ -1101,6 +1258,12 @@ namespace ConsoleApp1
                 }
             }
 
+            var errors = compilation.GetDiagnostics ( )
+                                 .Where ( d => d.Severity == DiagnosticSeverity.Error ).ToList() ;
+            if ( errors .Any())
+            {
+                DebugUtils.WriteLine ( string.Join ( "\n" , errors ) ) ;
+            }
             debugOut ( "attempting emit" ) ;
             var result =
                 ( compilation ?? throw new InvalidOperationException ( ) ).Emit (
@@ -1108,10 +1271,10 @@ namespace ConsoleApp1
                                                                                 ) ;
             if ( result.Success )
             {
-                debugOut( "Success" ) ;
+                debugOut ( "Success" ) ;
             }
 
-            //File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
+            //File.WriteAllText ( @"C:\data\logs\gen.cs" , comp.ToString ( ) ) ;
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -1130,7 +1293,7 @@ namespace ConsoleApp1
                             var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName ) ;
                             if ( t == null )
                             {
-                                Debug.WriteLine ( "No type for " + typeName ) ;
+                                DebugUtils.WriteLine ( "No type for " + typeName ) ;
                             }
                             else if ( model1.Map.Contains ( t ) )
                             {
@@ -1154,9 +1317,9 @@ namespace ConsoleApp1
             }
 
             var d = new TypeMapDictionary { [ typeof ( string ) ] = new AppTypeInfo ( ) } ;
-            Debug.WriteLine ( XamlWriter.Save ( d ) ) ;
+            DebugUtils.WriteLine ( XamlWriter.Save ( d ) ) ;
 
-            Debug.WriteLine ( XamlWriter.Save ( model1 ) ) ;
+            DebugUtils.WriteLine ( XamlWriter.Save ( model1 ) ) ;
         }
 
         private static void ParseNodeBasics (
@@ -1169,7 +1332,7 @@ namespace ConsoleApp1
             var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
             if ( t2 == null )
             {
-                Debug.WriteLine ( "No type for " + typeName2 ) ;
+                DebugUtils.WriteLine ( "No type for " + typeName2 ) ;
             }
             else
             {
@@ -1188,12 +1351,12 @@ namespace ConsoleApp1
                         typ2.Kinds.Add ( nodekind ) ;
                     }
 
-                    Debug.WriteLine ( typ2.Title ) ;
+                    DebugUtils.WriteLine ( typ2.Title ) ;
                 }
 
                 // ReSharper disable once UnusedVariable
                 var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                //Debug.WriteLine ( comment ) ;
+                //DebugUtils.WriteLine ( comment ) ;
 
                 typ2.Fields.Clear ( ) ;
                 var choices = xElement.Elements ( XName.Get ( "Choice" ) ) ;
@@ -1211,7 +1374,7 @@ namespace ConsoleApp1
                     {
                     }
 
-                    Debug.WriteLine ( typ2.Title ) ;
+                    DebugUtils.WriteLine ( typ2.Title ) ;
                 }
 
                 foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) )
@@ -1237,10 +1400,10 @@ namespace ConsoleApp1
                              .ToList ( ) ;
             if ( kinds.Any ( ) )
             {
-                //Debug.WriteLine(string.Join(", ", kinds));
+                //DebugUtils.WriteLine(string.Join(", ", kinds));
             }
 
-            //Debug.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
+            //DebugUtils.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
             typ2.Fields.Add (
                              new SyntaxFieldInfo ( fieldName , fieldType , kinds.ToArray ( ) )
                              {
@@ -1273,7 +1436,7 @@ namespace ConsoleApp1
           , HashSet < Type >                  set
         )
         {
-            foreach ( AppTypeInfo rootSubTypeInfo in subTypeInfos )
+            foreach ( var rootSubTypeInfo in subTypeInfos )
             {
                 if ( rootSubTypeInfo.Type.IsAbstract == false )
                 {

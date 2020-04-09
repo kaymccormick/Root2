@@ -5,6 +5,7 @@ using System.Linq ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
@@ -22,7 +23,7 @@ namespace AnalysisAppLib.Dataflow
           , Func < ILogInvocation >                                                  factory
         )
         {
-            Debug.WriteLine ( $"creating {nameof ( FindLogInvocations )}" ) ;
+            DebugUtils.WriteLine ( $"creating {nameof ( FindLogInvocations )}" ) ;
             _provider = provider ?? throw new ArgumentNullException ( nameof ( provider ) ) ;
             _factory  = factory ;
         }

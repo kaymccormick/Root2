@@ -9,6 +9,7 @@ using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Navigation ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using Microsoft.CSharp ;
 using NLog ;
 
@@ -86,7 +87,7 @@ namespace KayMcCormick.Lib.Wpf
             RenderedTypeChanged += OnRenderedTypeChanged ;
             InitializeComponent ( ) ;
             var t = GetValue ( RenderedTypeProperty ) ;
-            Debug.WriteLine ( "t: " + t ?? "null" ) ;
+            DebugUtils.WriteLine ( "t: " + t ?? "null" ) ;
             PopulateControl ( ( Type ) t ) ;
         }
 
@@ -159,7 +160,7 @@ namespace KayMcCormick.Lib.Wpf
         private void PopulateControl ( Type myType )
         {
             IAddChild addChild ;
-            Debug.WriteLine ( myType?.FullName ?? "null" ) ;
+            DebugUtils.WriteLine ( myType?.FullName ?? "null" ) ;
             if ( Detailed )
             {
                 var paragraph = new Paragraph ( ) ;

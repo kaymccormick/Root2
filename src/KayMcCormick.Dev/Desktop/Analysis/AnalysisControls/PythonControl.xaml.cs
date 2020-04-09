@@ -50,7 +50,7 @@ namespace AnalysisControls
         {
             if ( e.Key == Key.Enter )
             {
-                Debug.WriteLine ( "rceived key " + e.Key ) ;
+                DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
                 var textBox = ( TextBox ) sender ;
                 ViewModel.TakeLine ( textBox.Text ) ;
                 textBox.Text = "" ;
@@ -63,7 +63,7 @@ namespace AnalysisControls
 
         private void UIElement_OnPreviewKeyDown ( object sender , KeyEventArgs e )
         {
-            Debug.WriteLine ( "rceived key " + e.Key ) ;
+            DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
             if ( e.Key == Key.Up )
             {
                 ViewModel.HistoryUp ( ) ;

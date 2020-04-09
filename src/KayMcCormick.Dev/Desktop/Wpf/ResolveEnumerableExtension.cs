@@ -18,6 +18,7 @@ using System.Windows.Markup ;
 using System.Xaml ;
 using Autofac ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -156,7 +157,7 @@ namespace KayMcCormick.Lib.Wpf
                             }
                             catch ( Exception ex )
                             {
-                                Debug.WriteLine ( ex.ToString ( ) ) ;
+                                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                             }
                         }
 

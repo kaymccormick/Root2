@@ -74,7 +74,7 @@ namespace KayMcCormick.Dev
                 }
                 catch ( Exception ex )
                 {
-                    Debug.WriteLine ( "Exception: " + ex ) ;
+                    DebugUtils.WriteLine ( "Exception: " + ex ) ;
                 }
             }
         }
@@ -182,9 +182,9 @@ namespace KayMcCormick.Dev
         /// <param name="eException"></param>
         public static void LogParsedExceptions ( [ NotNull ] Exception eException )
         {
-            Debug.WriteLine ( eException.GetType ( ).FullName ) ;
-            Debug.WriteLine ( eException.Message ) ;
-            Debug.WriteLine ( eException.StackTrace ) ;
+            DebugUtils.WriteLine ( eException.GetType ( ).FullName ) ;
+            DebugUtils.WriteLine ( eException.Message ) ;
+            DebugUtils.WriteLine ( eException.StackTrace ) ;
             if ( eException is FileNotFoundException fnf )
             {
                     return ;
@@ -230,7 +230,7 @@ namespace KayMcCormick.Dev
                                                               , sw.ToString ( )
                                                                ) ;
 #endif
-                Debug.WriteLine ( eException.ToString ( ) ) ;
+                DebugUtils.WriteLine ( eException.ToString ( ) ) ;
             }
             catch ( Exception ex )
             {

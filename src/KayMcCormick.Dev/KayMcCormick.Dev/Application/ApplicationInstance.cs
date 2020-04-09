@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Configuration ;
 using System.Diagnostics ;
 using System.Linq ;
@@ -25,6 +26,7 @@ using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.StackTrace ;
 using Microsoft.Extensions.DependencyInjection ;
 using NLog ;
+using IContainer = Autofac.IContainer ;
 
 namespace KayMcCormick.Dev.Application
 {
@@ -237,14 +239,14 @@ namespace KayMcCormick.Dev.Application
                 // LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
                 {
-                    Debug.WriteLine ( "logging enableD" ) ;
+                    DebugUtils.WriteLine ( "logging enableD" ) ;
                 }
 
                 if ( LogManager.Configuration != null )
                 {
                     foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
                     {
-                        Debug.WriteLine ( configurationAllTarget ) ;
+                        DebugUtils.WriteLine ( configurationAllTarget.ToString()) ;
                     }
                 }
 
@@ -695,4 +697,5 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public string TypeName { get { return _typeName ; } }
     }
+
 }

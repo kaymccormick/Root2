@@ -14,11 +14,13 @@ using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
+using ComponentInfo = AnalysisAppLib.ComponentInfo ;
 
 namespace AnalysisControls.ViewModel
 {
@@ -29,6 +31,7 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
+        private DateTime _initializationDateTime ;
         private bool _showBordersIsChecked ;
 
         private uint[] _hierarchyColors =
@@ -56,7 +59,10 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         // ReSharper disable once EmptyConstructor
-        public TypesViewModel ( ) { }
+        public TypesViewModel ( )
+        {
+            InitializationDateTime = DateTime.Now ;
+        }
 
         internal void LoadSyntaxFactoryDocs ( )
         {
@@ -85,13 +91,13 @@ namespace AnalysisControls.ViewModel
                                                      => parameterInfo.ParameterType.FullName
                                                 )
                                         ) ;
-                    //Debug.WriteLine ( $"xx: {p}" ) ;
+                    //DebugUtils.WriteLine ( $"xx: {p}" ) ;
                     foreach ( var methodDocumentation in mdoc )
                     {
-                        //  Debug.WriteLine ( methodDocumentation.Parameters ) ;
+                        //  DebugUtils.WriteLine ( methodDocumentation.Parameters ) ;
                         if ( methodDocumentation.Parameters == p )
                         {
-                            //    Debug.WriteLine ( $"Docs for {methodInfo}" ) ;
+                            //    DebugUtils.WriteLine ( $"Docs for {methodInfo}" ) ;
                             appMethodInfo.XmlDoc = methodDocumentation ;
                             CollectDoc ( methodDocumentation ) ;
                         }
@@ -193,16 +199,19 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public static Dictionary < Type , TypeDocInfo > LoadXmlDoc ( )
         {
-            var docDict = new Dictionary < Type , TypeDocInfo > ( ) ;
+            var docDict = new Dictionary<Type, TypeDocInfo>();
+            return docDict ;
+#if false
+
             var doc = LoadDoc ( ) ;
             if ( doc.DocumentElement == null )
             {
                 throw new InvalidOperationException ( ) ;
             }
 
-            foreach ( var xmlElement in DocMembers ( doc ) )
+            foreach ( var xmlElement in XmlDocElements.DocMembers ( doc ) )
             {
-                var elem = HandleDocElement ( xmlElement ) ;
+                var elem = XmlDocElements.HandleDocElement ( xmlElement ) ;
                 if ( elem == null )
                 {
                     continue ;
@@ -210,7 +219,7 @@ namespace AnalysisControls.ViewModel
 
                 if ( ! docDict.TryGetValue ( elem.Type , out var info ) )
                 {
-                    info                 = new TypeDocInfo ( ) ;
+                    info = new TypeDocInfo ( ) ;
                     docDict[ elem.Type ] = info ;
                 }
 
@@ -223,7 +232,7 @@ namespace AnalysisControls.ViewModel
                     case MethodDocumentation methodDocumentation :
                         if ( ! info.MethodDocumentation.TryGetValue (
                                                                      methodDocumentation.MemberName
-                                                                   , out var docs
+                                                               , out var docs
                                                                     ) )
                         {
                             docs =
@@ -246,24 +255,7 @@ namespace AnalysisControls.ViewModel
             }
 
             return docDict ;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="doc"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ NotNull ]
-        public static IEnumerable < XmlElement > DocMembers ( [ NotNull ] XmlDocument doc )
-        {
-            if ( doc.DocumentElement == null )
-            {
-                throw new InvalidOperationException ( ) ;
-            }
-
-            return doc.DocumentElement.ChildNodes.OfType < XmlElement > ( )
-                      .First ( child => child.Name == "members" )
-                      .ChildNodes.OfType < XmlElement > ( ) ;
+#endif
         }
 
         /// <summary>
@@ -276,87 +268,6 @@ namespace AnalysisControls.ViewModel
             var docuDoc = new XmlDocument ( ) ;
             docuDoc.LoadXml ( xml ) ;
             return docuDoc ;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="xmlElement"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ CanBeNull ]
-        public static CodeElementDocumentation HandleDocElement (
-            [ NotNull ] XmlElement xmlElement
-        )
-        {
-            if ( xmlElement == null )
-            {
-                throw new ArgumentNullException ( nameof ( xmlElement ) ) ;
-            }
-
-            var elementId = xmlElement.GetAttribute ( "name" ) ;
-            var doc = XDocument.Parse ( xmlElement.OuterXml ) ;
-            var xNodes = doc.Element ( "member" )?.Nodes ( ) ;
-
-            var xmlDoc = ( xNodes ?? throw new InvalidOperationException ( ) ).Select ( XmlDocElements.Selector ) ;
-            var kind = elementId[ 0 ] ;
-            var type = elementId.Substring ( 2 ) ;
-            string parameters = null ;
-            if ( type.Contains ( '(' ) )
-            {
-                var leftParen = type.IndexOf ( '(' ) ;
-                var rightParen = type.LastIndexOf ( ')' ) ;
-
-                parameters = type.Substring ( leftParen + 1 , rightParen - leftParen - 1 ) ;
-                type       = type.Substring ( 0 ,             leftParen ) ;
-            }
-
-            string memberName = null ;
-            if ( kind    == 'M'
-                 || kind == 'P'
-                 || kind == 'F' )
-            {
-                memberName = type.Substring ( type.LastIndexOf ( '.' ) + 1 ) ;
-                type       = type.Substring ( 0 , type.LastIndexOf ( '.' ) ) ;
-            }
-
-            var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( type ) ;
-            if ( t == null )
-            {
-                Debug.WriteLine ( $"cant find type {type}" ) ;
-                return null ;
-            }
-
-            //var t = Type.GetType ( type ) ;
-            switch ( kind )
-            {
-                case 'T' : return new TypeDocumentation ( elementId , t , xmlDoc ) ;
-                case 'M' :
-                    return new MethodDocumentation (
-                                                    elementId
-                                                  , t
-                                                  , memberName
-                                                  , parameters
-                                                  , xmlDoc
-                                                   ) ;
-                case 'P' :
-                    return new PropertyDocumentation (
-                                                      elementId
-                                                    , t
-                                                    , memberName
-                                                      ?? throw new InvalidOperationException ( )
-                                                    , xmlDoc
-                                                     ) ;
-                case 'F' :
-                    return new FieldDocumentation (
-                                                   elementId
-                                                 , t
-                                                 , memberName
-                                                   ?? throw new InvalidOperationException ( )
-                                                 , xmlDoc
-                                                  ) ;
-                default : throw new InvalidOperationException ( kind.ToString ( ) ) ;
-            }
         }
 
         /// <summary>
@@ -453,13 +364,13 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-        #region Implementation of ISerializable
+#region Implementation of ISerializable
         /// <summary>
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
+#endregion
 
         /// <summary>
         /// </summary>
@@ -471,7 +382,7 @@ namespace AnalysisControls.ViewModel
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
-        #region Implementation of ISupportInitialize
+#region Implementation of ISupportInitialize
         /// <summary>
         /// 
         /// </summary>
@@ -616,7 +527,7 @@ namespace AnalysisControls.ViewModel
                                                                     ) ;
                     if ( t0 == null )
                     {
-                        Debug.WriteLine ( "fail" + id ) ;
+                        DebugUtils.WriteLine ( "fail" + id ) ;
                     }
                     else
                     {
@@ -651,7 +562,7 @@ namespace AnalysisControls.ViewModel
                                                                    ) ;
                         if ( t == null )
                         {
-                            Debug.WriteLine ( rField.TypeName ) ;
+                            DebugUtils.WriteLine ( rField.TypeName ) ;
                         }
                     }
 
@@ -690,17 +601,23 @@ namespace AnalysisControls.ViewModel
                               .ToList ( ) ;
             Root = CollectTypeInfos ( null , rootR ) ;
         }
-        #endregion
+#endregion
 
-        #region Implementation of ISupportInitializeNotification
+#region Implementation of ISupportInitializeNotification
         /// <summary>
         /// 
         /// </summary>
         public bool IsInitialized { get ; set ; }
 
+        public DateTime InitializationDateTime
+        {
+            get { return _initializationDateTime ; }
+            set { _initializationDateTime = value ; }
+        }
+
         /// <summary>
         /// </summary>
         public event EventHandler Initialized ;
-        #endregion
+#endregion
     }
 }

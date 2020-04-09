@@ -79,7 +79,7 @@ namespace KayMcCormick.Dev.TestLib
                                                      + methodUnderTest.Name
                                                      + ".txt"
                                                     ) ;
-            Debug.WriteLine ( fileTarget.FileName ) ;
+            DebugUtils.WriteLine ( fileTarget.FileName.ToString() ) ;
             LogManager.LogFactory.Configuration.AddTarget ( fileTarget ) ;
             var loggingRule = new LoggingRule ( "*" , LogLevel.Trace , fileTarget ) ;
             TestLoggingRule = loggingRule ;

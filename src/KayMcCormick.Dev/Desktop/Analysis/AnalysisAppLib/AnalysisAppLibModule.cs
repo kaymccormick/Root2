@@ -36,7 +36,7 @@ namespace AnalysisAppLib
         /// </summary>
         public AnalysisAppLibModule ( )
         {
-             Debug.WriteLine ( "here" ) ;
+             DebugUtils.WriteLine ( "here" ) ;
         }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -54,7 +54,7 @@ namespace AnalysisAppLib
         {
             registration.Activating += ( sender , args ) => {
                 var inst = args.Instance;
-                Debug.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
+                DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
                 if ( ! ( inst is IViewModel ) )
                 {
                     return ;
@@ -62,7 +62,7 @@ namespace AnalysisAppLib
 
                 if (inst is ISupportInitializeNotification xx)
                 {
-                    Debug.WriteLine("calling init on instance");
+                    DebugUtils.WriteLine("calling init on instance");
                     if (!xx.IsInitialized)
                     {
                         xx.BeginInit();
@@ -71,7 +71,7 @@ namespace AnalysisAppLib
                 } else 
                 if ( inst is ISupportInitialize x )
                 {
-                    Debug.WriteLine ( "calling init on instance" ) ;
+                    DebugUtils.WriteLine ( "calling init on instance" ) ;
                     x.BeginInit ( ) ;
                     x.EndInit ( ) ;
                 }

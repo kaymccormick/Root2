@@ -253,6 +253,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <AdditionalFiles Include="..\..\..\DependencyValidation1\DependencyValidation1.layerdiagram">
       <Link>DependencyValidation1.layerdiagram</Link>

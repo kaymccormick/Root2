@@ -175,14 +175,14 @@ namespace ConsoleApp1
         }
 
         [ NotNull ]
-        private Action MenuAction ( IAppCommand command )
+        private Action MenuAction ( IBaseLibCommand command )
         {
             return ( ) => {
                 var outputFunc = _commandOutputAction ;
                 command.Argument = outputFunc ;
-                Debug.WriteLine ( "Executing async command" ) ;
+                DebugUtils.WriteLine ( "Executing async command" ) ;
                 _commandTask = command.ExecuteAsync ( ).ContinueWith ( HandleResult ) ;
-                Debug.WriteLine ( "Returning from lambda" ) ;
+                DebugUtils.WriteLine ( "Returning from lambda" ) ;
             } ;
         }
 
@@ -203,15 +203,15 @@ namespace ConsoleApp1
             if ( obj.IsFaulted )
 
             {
-                Debug.WriteLine ( $"faulted: {obj.Exception}" ) ;
+                DebugUtils.WriteLine ( $"faulted: {obj.Exception}" ) ;
             }
             else if ( obj.IsCanceled )
             {
-                Debug.WriteLine ( "cancelled" ) ;
+                DebugUtils.WriteLine ( "cancelled" ) ;
             }
             else if ( obj.IsCompleted )
             {
-                Debug.WriteLine ( "completed" ) ;
+                DebugUtils.WriteLine ( "completed" ) ;
             }
         }
     }

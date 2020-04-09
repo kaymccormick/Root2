@@ -10,12 +10,13 @@
 // ---
 #endregion
 using System.Threading.Tasks ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf.Command ;
 
 namespace ConsoleApp1
 {
     internal class Util
     {
-        public  delegate Task AsyncCommandDelegate(IAppCommand command, AppContext context);
+        public  delegate Task AsyncCommandDelegate(IBaseLibCommand command, AppContext context);
     }
 }

@@ -29,7 +29,7 @@ namespace KayMcCormick.Dev.TestLib
         public static void DisableLoggingConfiguration ( )
         {
             DisableLogging = true ;
-            Debug.WriteLine ( $"{typeof ( LogHelper ).FullName} - Logging disabled." ) ;
+            DebugUtils.WriteLine ( $"{typeof ( LogHelper ).FullName} - Logging disabled." ) ;
             Environment.SetEnvironmentVariable (
                                                 AppLoggingConfigHelper.DisableLoggingEnvVar
                                               , "yes"

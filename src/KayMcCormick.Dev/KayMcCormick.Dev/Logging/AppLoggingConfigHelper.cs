@@ -215,10 +215,10 @@ namespace KayMcCormick.Dev.Logging
 
         private static void DoLogMessage ( string message )
         {
-            System.Diagnostics.Debug.WriteLine (
+            DebugUtils.WriteLine (
                                                 nameof ( AppLoggingConfigHelper ) + ":" + message
                                                ) ;
-            // System.Diagnostics.Debug.WriteLine ( nameof(AppLoggingConfigHelper) + ":" + message ) ;
+            // DebugUtils.WriteLine ( nameof(AppLoggingConfigHelper) + ":" + message ) ;
         }
 
 
@@ -312,7 +312,7 @@ namespace KayMcCormick.Dev.Logging
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine ( "Using stock log factory" ) ;
+                DebugUtils.WriteLine ( "Using stock log factory" ) ;
                 useFactory = LogManager.LogFactory ;
             }
 
@@ -589,14 +589,14 @@ namespace KayMcCormick.Dev.Logging
                 LogManager.Configuration = lConf ;
                 Logger                   = LogManager.GetCurrentClassLogger ( ) ;
                 _loggingConfigured       = true ;
-                System.Diagnostics.Debug.WriteLine (
+                DebugUtils.WriteLine (
                                                     $"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}"
                                                    ) ;
                 return useFactory ;
             }
             catch ( Exception ex )
             {
-                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 throw ;
             }
         }
@@ -801,7 +801,7 @@ namespace KayMcCormick.Dev.Logging
         )
         {
             
-            System.Diagnostics.Debug.WriteLine("Logging");
+            DebugUtils.WriteLine("Logging");
             try
             {
                 var logMethod = slogMethod != null
@@ -850,7 +850,7 @@ namespace KayMcCormick.Dev.Logging
                           ) ;
                 if ( ! Performant && DumpExistingConfig )
                 {
-                    void Collect ( string s ) { System.Diagnostics.Debug.WriteLine ( s ) ; }
+                    void Collect ( string s ) { DebugUtils.WriteLine ( s ) ; }
 
                     var x = new StringWriter ( ) ;
                     Utils.PerformLogConfigDump ( x ) ;
@@ -872,7 +872,7 @@ namespace KayMcCormick.Dev.Logging
             }
             catch ( SecurityException ex )
             {
-                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 ProtoLogger.ProtoLogDelegate ( ex.ToString ( ) ) ;
             }
 
@@ -894,7 +894,7 @@ namespace KayMcCormick.Dev.Logging
 
                 if ( fieldInfo2 == null )
                 {
-                    System.Diagnostics.Debug.WriteLine (
+                    DebugUtils.WriteLine (
                                                         "no field _configLoaded for "
                                                         + LogManager.LogFactory
                                                        ) ;
@@ -920,7 +920,7 @@ namespace KayMcCormick.Dev.Logging
                     {
                         configLoaded = config != null ;
 
-                        System.Diagnostics.Debug.WriteLine (
+                        DebugUtils.WriteLine (
                                                             "no field _configLoaded for "
                                                             + LogManager.LogFactory
                                                            ) ;
@@ -938,7 +938,7 @@ namespace KayMcCormick.Dev.Logging
             }
             catch ( SecurityException ex )
             {
-                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
 
             return null ;

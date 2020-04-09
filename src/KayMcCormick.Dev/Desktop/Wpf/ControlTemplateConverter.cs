@@ -5,6 +5,7 @@ using System.Reflection ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
+using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -39,7 +40,7 @@ namespace KayMcCormick.Lib.Wpf
                                                     BindingFlags.Instance | BindingFlags.NonPublic
                                                    ) )
             {
-                Debug.WriteLine ( fieldInfo.Name ) ;
+                DebugUtils.WriteLine ( fieldInfo.Name ) ;
             }
 
             foreach ( var fieldInfo in t.GetType ( )
@@ -48,15 +49,15 @@ namespace KayMcCormick.Lib.Wpf
                                                         | BindingFlags.NonPublic
                                                        ) )
             {
-                Debug.WriteLine ( fieldInfo.Name ) ;
+                DebugUtils.WriteLine ( fieldInfo.Name ) ;
             }
 
             try
             {
                 var xaml = XamlWriter.Save ( value ) ;
-                Debug.WriteLine ( xaml ) ;
+                DebugUtils.WriteLine ( xaml ) ;
                 var result = XamlReader.Parse ( xaml ) ;
-                Debug.WriteLine ( $"{result.GetType ( ).FullName}" ) ;
+                DebugUtils.WriteLine ( $"{result.GetType ( ).FullName}" ) ;
                 return result ;
             }
             catch ( Exception ex )

@@ -58,15 +58,15 @@ namespace ProjInterface
           , NotifyCollectionChangedEventArgs e
         )
         {
-            Debug.WriteLine ( e.Action ) ;
+            DebugUtils.WriteLine ( e.Action ) ;
         }
 
         #region Overrides of FrameworkElement
         public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
-            Debug.WriteLine ( DataContext ) ;
-            Debug.WriteLine ( _defView ) ;
+            DebugUtils.WriteLine ( DataContext ) ;
+            DebugUtils.WriteLine ( _defView ) ;
             var groupDescription = new PropertyGroupDescription { PropertyName = "LoggerName" } ;
             DefView = CollectionViewSource.GetDefaultView ( lv.ItemsSource ) ;
             if ( DefView == null )
@@ -87,8 +87,8 @@ namespace ProjInterface
                 return ;
             }
 
-            Debug.WriteLine ( e.CollectionView.GetType ( ) ) ;
-            Debug.WriteLine ( e.CollectionView.Count ) ;
+            DebugUtils.WriteLine ( e.CollectionView.GetType ( ) ) ;
+            DebugUtils.WriteLine ( e.CollectionView.Count ) ;
             if ( ! ( e.CollectionView is ListCollectionView l )
                  || l.ItemProperties == null )
             {
@@ -97,7 +97,7 @@ namespace ProjInterface
 
             foreach ( var itemPropertyInfo in l.ItemProperties )
             {
-                Debug.WriteLine (
+                DebugUtils.WriteLine (
                                  itemPropertyInfo.Name
                                  + "\t"
                                  + itemPropertyInfo.PropertyType
@@ -106,7 +106,7 @@ namespace ProjInterface
                                 ) ;
                 if ( itemPropertyInfo.Descriptor is PropertyDescriptor r )
                 {
-                    Debug.WriteLine ( r.ComponentType ) ;
+                    DebugUtils.WriteLine ( r.ComponentType ) ;
                     if ( r.ComponentType != typeof ( LogEventInstance ) )
                     {
                         return ;

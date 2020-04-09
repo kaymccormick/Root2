@@ -148,7 +148,7 @@ namespace ProjInterface
                                var isAssignableFrom =
                                    typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
                                    && type != typeof ( LambdaAppCommand ) ;
-                               Debug.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
+                               DebugUtils.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
                                return isAssignableFrom ;
                            }
                           )
@@ -166,7 +166,7 @@ namespace ProjInterface
         }
 
         [ NotNull ]
-        private Func < LayoutDocumentPane , IDisplayableAppCommand > ControlViewCommandAdapter (
+        private static Func < LayoutDocumentPane , IDisplayableAppCommand > ControlViewCommandAdapter (
             [ NotNull ] IComponentContext                                               c
           , IEnumerable < Parameter >                                       p
           , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView> >  metaFunc
@@ -221,7 +221,7 @@ namespace ProjInterface
 
             var n = DateTime.Now ;
             var view = viewFunc1 ( pane1 ) ;
-            Debug.WriteLine(DateTime.Now - n);
+            DebugUtils.WriteLine((DateTime.Now - n).ToString ( ));
             var doc = new LayoutDocument { Content = view } ;
             pane1.Children.Add ( doc ) ;
             pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
@@ -260,7 +260,7 @@ namespace ProjInterface
                                              }
                                              catch ( Exception ex )
                                              {
-                                                 Debug.WriteLine ( ex.ToString ( ) ) ;
+                                                 DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                                              }
 
                                              return AppCommandResult.Failed ;

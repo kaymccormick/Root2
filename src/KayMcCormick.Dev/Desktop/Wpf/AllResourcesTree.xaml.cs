@@ -26,7 +26,7 @@ namespace KayMcCormick.Lib.Wpf
       , object           item
         )
         {
-            Debug.WriteLine ( item ) ;
+            DebugUtils.WriteLine ( item ) ;
             ( ( TreeViewItem1 ) element ).SetCurrentValue(TagProperty, item) ;
             base.PrepareContainerForItemOverride ( element , item ) ;
         }
@@ -50,7 +50,7 @@ namespace KayMcCormick.Lib.Wpf
             catch (Exception ex)
             {
 
-                Debug.WriteLine(Tag + ":" + ex.ToString());
+                DebugUtils.WriteLine(Tag + ":" + ex.ToString());
             }
 
             return returnVal;
@@ -103,7 +103,7 @@ namespace KayMcCormick.Lib.Wpf
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
 
             return measureOverride ;
@@ -411,7 +411,7 @@ namespace KayMcCormick.Lib.Wpf
 
         protected override void AddChild ( object value )
         {
-            Debug.WriteLine ( nameof ( AddChild ) ) ;
+            DebugUtils.WriteLine ( nameof ( AddChild ) ) ;
             base.AddChild ( value ) ;
         }
 
@@ -420,7 +420,7 @@ namespace KayMcCormick.Lib.Wpf
       , object           item
         )
         {
-            Debug.WriteLine (
+            DebugUtils.WriteLine (
                              $"{GetType ( ).FullName}.{nameof ( PrepareContainerForItemOverride )} {element.GetType ( ).FullName} {item.GetType ( ).FullName} {item.ToString ( )}"
                             ) ;
             (element as TreeViewItem1).Tag = item;
@@ -430,7 +430,7 @@ namespace KayMcCormick.Lib.Wpf
 
         protected override bool ExpandSubtree ( TreeViewItem container )
         {
-            Debug.WriteLine ( $"{GetType ( ).FullName}:{nameof ( ExpandSubtree )}" ) ;
+            DebugUtils.WriteLine ( $"{GetType ( ).FullName}:{nameof ( ExpandSubtree )}" ) ;
             return base.ExpandSubtree ( container ) ;
         }
     #endregion

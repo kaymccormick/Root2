@@ -15,6 +15,7 @@ using System.Text ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -75,7 +76,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            Debug.WriteLine (
+            DebugUtils.WriteLine (
                              $"{GetType ( ).FullName} calling TemplateSelectorHelper.HelpSelectDataTemplate with {itemRepr}, {containerRepr} and base.SelectTemplate"
                             ) ;
             var template =

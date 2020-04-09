@@ -68,7 +68,7 @@ namespace KayMcCormick.Dev.Configuration
             set
             {
                 var level = LogLevel.FromString ( value.ToString ( ) ) ;
-                Debug.WriteLine ( $"Setting MinLogLevel to {level}" ) ;
+                DebugUtils.WriteLine ( $"Setting MinLogLevel to {level}" ) ;
                 this[ nameof ( MinLogLevel ) ] = level ;
             }
         }

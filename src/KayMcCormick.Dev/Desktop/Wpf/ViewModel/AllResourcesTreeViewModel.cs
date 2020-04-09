@@ -115,7 +115,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             var appResources = CreateNode ( _appNode , "Resources" , current.Resources , true ) ;
             AddResourceNodeInfos ( appResources ) ;
 
-            Debug.WriteLine ( Thread.CurrentThread.ManagedThreadId ) ;
+            DebugUtils.WriteLine ( Thread.CurrentThread.ManagedThreadId.ToString ( ) ) ;
             foreach ( Window currentWindow in current.Windows )
             {
                 HandleWindow ( currentWindow ) ;

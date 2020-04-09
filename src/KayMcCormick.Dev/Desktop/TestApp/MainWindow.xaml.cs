@@ -50,7 +50,7 @@ namespace TestApp
             if ( !allocConsole )
             {
                 // var win32Error = Kernel32.GetLastError ( ) ;
-                // Debug.WriteLine(win32Error.ToHRESULT().Code.ToString("08x"));
+                // DebugUtils.WriteLine(win32Error.ToHRESULT().Code.ToString("08x"));
             }
 
             _consoleScreenBuffer =
@@ -99,9 +99,9 @@ namespace TestApp
                                        , IntPtr.Zero
                                                     );
 
-            Debug.WriteLine ($"{writen} bytes written to console"  );
+            DebugUtils.WriteLine ($"{writen} bytes written to console"  );
 #endif
-            Debug.WriteLine ( message ) ;
+            DebugUtils.WriteLine ( message ) ;
         }
 
         public MainWindow ( ) : this ( null ) { }
@@ -186,7 +186,7 @@ namespace TestApp
 #endif
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
-            Debug.WriteLine ( "Persisting" ) ;
+            DebugUtils.WriteLine ( "Persisting" ) ;
             var typesView = ( TypesView ) sender ;
             try
             {
