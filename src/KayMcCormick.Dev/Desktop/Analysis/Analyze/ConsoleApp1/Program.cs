@@ -46,7 +46,7 @@ namespace ConsoleApp1
         private const string ModelXamlFilename = @"C:\data\logs\model.xaml" ;
 
         private const string SolutionFilePath =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\ManagedProd.sln" ;
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
         private static readonly string[] AssemblyRefs = new[]
                                                         {
