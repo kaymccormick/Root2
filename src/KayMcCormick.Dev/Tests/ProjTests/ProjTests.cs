@@ -1083,13 +1083,13 @@ namespace ProjTests
         {
             var x = TypesViewModel.LoadDoc ( ) ;
             var y = XmlDocElements.DocMembers ( x ) ;
-            foreach ( var codeElementDocumentation in y.Select ( XmlDocElements.HandleDocElement ) )
-            {
-                if ( codeElementDocumentation != null )
-                {
-                    DebugUtils.WriteLine ( codeElementDocumentation.ToString ( ) ) ;
-                }
-            }
+            // foreach ( var codeElementDocumentation in y.Select ( XmlDocElements.HandleDocElement ) )
+            // {
+                // if ( codeElementDocumentation != null )
+                // {
+                    // DebugUtils.WriteLine ( codeElementDocumentation.ToString ( ) ) ;
+                // }
+            // }
 
             // var x = TypesViewModel.LoadXmlDoc ( ) ;
             // foreach ( var keyValuePair in x )

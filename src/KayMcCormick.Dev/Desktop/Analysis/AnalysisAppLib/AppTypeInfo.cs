@@ -409,6 +409,9 @@ namespace AnalysisAppLib
         private readonly SyntaxKindCollection _kinds = new SyntaxKindCollection();
         private bool _optional;
         private Type _type;
+        private string _elementTypeMetadataName ;
+        private bool _isCollection ;
+        private string _elementTypeNamspaceMetadaataName ;
 
         /// <summary>
         /// 
@@ -475,6 +478,10 @@ namespace AnalysisAppLib
         public bool Optional { get { return _optional; } set { _optional = value; } }
 
         public string ClrTypeName { get { return _clrTypeName; } set { _clrTypeName = value; } }
+
+        public string ElementTypeMetadataName { get { return _elementTypeMetadataName ; } set { _elementTypeMetadataName = value ; } }
+
+        public bool IsCollection { get { return _isCollection ; } set { _isCollection = value ; } }
 
         public override string ToString()
         {
@@ -581,116 +588,34 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class SyntaxKindCollection : IList, ICollection, IEnumerable
     {
-        private readonly IList _listImplementation = new List < SyntaxKind > ( ) ;
-        #region Implementation of IEnumerable
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
-        #endregion
-        #region Implementation of ICollection
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        public void CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+        private readonly IList _list = new List < SyntaxKind > ( ) ;
+        public IEnumerator GetEnumerator ( ) => _list.GetEnumerator ( ) ;
+        public void CopyTo ( Array array , int index ) => _list.CopyTo ( array , index ) ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Count
-        {
-            get { return _listImplementation.Count ; }
-        }
+        public int Count => _list.Count ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public object SyncRoot
-        {
-            get { return _listImplementation.SyncRoot ; }
-        }
+        public object SyncRoot => _list.SyncRoot ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsSynchronized
-        {
-            get { return _listImplementation.IsSynchronized ; }
-        }
-        #endregion
-        #region Implementation of IList
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
+        public bool IsSynchronized => _list.IsSynchronized ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
+        public int Add ( object value ) => _list.Add ( value ) ;
+        public bool Contains ( object value ) => _list.Contains ( value ) ;
+        public void Clear ( ) => _list.Clear ( ) ;
+        public int IndexOf ( object value ) => _list.IndexOf ( value ) ;
+        public void Insert ( int index , object value ) => _list.Insert ( index , value ) ;
+        public void Remove ( object value ) => _list.Remove ( value ) ;
+        public void RemoveAt ( int index ) => _list.RemoveAt ( index ) ;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Clear ( ) { _listImplementation.Clear ( ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
-        public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
         public object this [ int index ]
         {
-            get { return _listImplementation[ index ] ; }
-            set { _listImplementation[ index ] = value ; }
+            get => _list[ index ] ;
+            set => _list[ index ] = value ;
         }
 
-        /// <inheritdoc />
-        public bool IsReadOnly
-        {
-            get { return _listImplementation.IsReadOnly ; }
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsFixedSize
-        {
-            get { return _listImplementation.IsFixedSize ; }
-        }
-        #endregion
+        public bool IsReadOnly => false ;
+
+        public bool IsFixedSize => _list.IsFixedSize ;
     }
 
     /// <summary>

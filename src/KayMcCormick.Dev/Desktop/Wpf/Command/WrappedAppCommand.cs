@@ -56,7 +56,7 @@ namespace KayMcCormick.Lib.Wpf.Command
                                                         ( task , o ) => AppCommandResult.Cancelled
                                                       , this
                                                       , CancellationToken.None
-                                                      , TaskContinuationOptions.NotOnRanToCompletion
+                                                      , TaskContinuationOptions.None
                                                       , TaskScheduler
                                                            .FromCurrentSynchronizationContext ( )
                                                        ) ;

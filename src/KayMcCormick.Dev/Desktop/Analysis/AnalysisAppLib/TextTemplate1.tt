@@ -12,7 +12,7 @@
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.text.encodings.web\4.7.0\lib\netstandard2.0\System.Text.Encodings.Web.dll"#>
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.numerics.vectors\4.5.0\lib\net46\System.Numerics.Vectors.dll"#>
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\microsoft.bcl.asyncinterfaces\1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll"#>
-<#@ output extension=".txt" #>
+<#@ output extension=".txt"#>
 <#@import namespace="System.Windows.Markup" #>
 <#@import namespace="System.IO" #>
 <#@import namespace="System.Xml" #>
@@ -135,7 +135,7 @@ public static class GenTransforms {
 
                             if ( dict.TryGetValue ( k , out var method ) )
                             {
-                                value = $"Transform_{method}(node.{name})" ;
+                                value = $"Transform_{method}(node?.{name})" ;
                             }
                             else
                             {
@@ -143,7 +143,7 @@ public static class GenTransforms {
                                 if ( f.GetProperty ( "TypeName" ).GetString ( ) == "SyntaxToken" )
                                 {
                                     value =
-                                        $"new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
+                                        $"node == null ? null : new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
                                 }
                                 else if ( typeName.StartsWith ( "SyntaxList<" ) )
                                 {
@@ -176,7 +176,7 @@ public static class GenTransforms {
 
                         if ( transform != "" )
                         {
-                            value = $"node.{name}{transform}" ;
+                            value = $"node?.{name}{transform}" ;
                         }
 
                         if ( value == "" )
@@ -195,10 +195,6 @@ public static class GenTransforms {
         /// <summary></summary>
         [NotNull]
         public static <#=pocoClassName#> Transform_<#=typ.GetProperty("Title").GetString().Replace(" ", "_")#> ([NotNull] <#=typeShortName#> node) {
-            if ( node == null )
-            {
-                throw new ArgumentNullException ( nameof ( node ) ) ;
-            }
             <#= body.Replace("\n", "\n            ") #>
 
         }

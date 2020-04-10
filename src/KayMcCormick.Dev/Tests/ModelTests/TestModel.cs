@@ -2,7 +2,6 @@
 using System.Collections.Generic ;
 using System.Collections.Immutable ;
 using System.Diagnostics ;
-using System.Dynamic ;
 using System.IO ;
 using System.Linq ;
 using System.Text.Json ;
@@ -42,6 +41,8 @@ namespace ModelTests
         )
         {
             _outputHelper = outputHelper ;
+            _pocoSyntaxTokenTypeName = $"{_pocoSyntaxNamespaceName}.PocoSyntaxToken" ;
+            _pocoBlockSyntaxClassName = $"{_pocoSyntaxNamespaceName}.PocoBlockSyntax" ;
             loggingFixture.SetOutputHelper ( _outputHelper ) ;
             _loggingFixture = loggingFixture ;
             _disableLogging = false ;
@@ -56,8 +57,11 @@ namespace ModelTests
 
         private const string LogTestSolution =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln" ;
-
-        private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private const string PocoTypeNamePrefix = "Poco";
+        private string _pocoSyntaxNamespaceName = "PocoSyntax" ;
+        private string _pocoBlockSyntaxClassName ;
+        private string _pocoSyntaxTokenTypeName ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly        ITestOutputHelper   _outputHelper ;
         private readonly        LoggingFixture      _loggingFixture ;
         private readonly        ApplicationInstance _app ;
@@ -595,7 +599,9 @@ namespace ModelTests
             const string abstractnode = "AbstractNode" ;
             const string predefinednode = "PredefinedNode" ;
             const string subtypenamesPropertyName = "SubTypeNames" ;
-
+            const string typeNamePropertyName = "TypeName";
+            const string IsCollectionroprtyName = "IsCollection" ;
+            const string ElementTypeMetadataNamePropertyName = "ElementTypeMetadataName" ;
             // ReSharper disable once StringLiteralTypo
             const string cDataLogsTypesJson = @"C:\data\logs\types.json" ;
             var types =
@@ -640,10 +646,11 @@ namespace ModelTests
                         typeElement.GetProperty ( fullNamePropertyName ).GetString ( ) ;
                     var typeShortName =
                         typeFullName.Substring ( typeFullName.LastIndexOf ( '.' ) + 1 ) ;
-                    var pocoClassName = "Poco" + typeShortName ;
 
+                    var pocoClassName = string.Format ( "{0}{1}" , PocoTypeNamePrefix , typeShortName ) ;
 
-                    var body = "" ;
+                    string body 
+                        ;
                     var elementName = typ.GetProperty ( elementNamePropertyName ).GetString ( ) ;
                     DebugUtils.WriteLine ($"{typeShortName}: {elementName}"  );
                     if ( elementName    == abstractnode
@@ -676,7 +683,7 @@ namespace ModelTests
                                                , nodes ( typeShortName )
                                                     .Select (
                                                              sn
-                                                                 => $"case {sn} _: return Transform_{dict[ sn ]}(({sn})node); \n"
+                                                                 => $"case {sn} {sn.ToLowerInvariant()}: return Transform_{dict[ sn ]}({sn.ToLowerInvariant()}); \n"
                                                             )
                                                 ) ;
                         body = $"switch(node) {{\n{cases}\n}}\nreturn null;\n";
@@ -690,7 +697,7 @@ namespace ModelTests
                             var name = f.GetProperty("Name").GetString();
 
                             if ( ( typeFullName.EndsWith ( "StatementSyntax" )
-                                   || pocoClassName == "PocoBlockSyntax" )
+                                   || pocoClassName == PocoBlockSyntaxClassName )
                                  && name == "AttributeLists" )
                             {
                                 continue ;
@@ -698,9 +705,9 @@ namespace ModelTests
 
                             var t1 = f.GetProperty ( typePropertyName ) ;
                             var value = "" ;
-                            var transform = "" ;
+                            string transform ;
                             string msg = null ;
-                            var typeName = f.GetProperty ( "TypeName" ).GetString ( ) ;
+                            var typeName = f.GetProperty ( typeNamePropertyName ).GetString ( ) ;
                             if ( typeName == "bool" )
                             {
                                 value = $"node.{name}" ;
@@ -718,40 +725,54 @@ namespace ModelTests
                                 else
                                 {
                                     msg = "not found" ;
-                                    if ( f.GetProperty ( "TypeName" ).GetString ( )
+                                    if ( f.GetProperty ( typeNamePropertyName ).GetString ( )
                                          == "SyntaxToken" )
                                     {
                                         value =
-                                            $"new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
-                                    }
-                                    else if ( typeName.StartsWith ( "SyntaxList<" ) )
-                                    {
-                                        var t2 = typeName.Substring ( 11 , typeName.Length - 12 ) ;
-                                        if ( dict.TryGetValue ( t2 , out var m2 ) )
-                                        {
-                                        }
-
-                                        transform = $".Select(Transform_{m2}).ToList()" ;
-                                    }
-                                    else if ( typeName.StartsWith ( "SeparatedSyntaxList<" ) )
-                                    {
-                                        var t2 = typeName.Substring ( 20 , typeName.Length - 21 ) ;
-                                        if ( dict.TryGetValue ( t2 , out var m2 ) )
-                                        {
-                                        }
-                                        else
-                                        {
-                                        }
-
-                                        transform = $".Select(Transform_{m2}).ToList()" ;
-                                    }
-                                    else if ( k == "SyntaxTokenList" )
-                                    {
-                                        transform =
-                                            ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()" ;
+                                            $"new {PocoSyntaxTokenTypeName} {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
                                     }
                                 }
                             }
+
+                            // else if ( typeName.StartsWith ( "SyntaxList<" ) )
+                                    // {
+                                        // var t2 = typeName.Substring ( 11 , typeName.Length - 12 ) ;
+                                        // if ( dict.TryGetValue ( t2 , out var m2 ) )
+                                        // {
+                                        // }
+
+                                        // transform = $".Select(Transform_{m2}).ToList()" ;
+                                    // }
+                                    // else if ( typeName.StartsWith ( "SeparatedSyntaxList<" ) )
+                                    // {
+                                        // var t2 = typeName.Substring ( 20 , typeName.Length - 21 ) ;
+                                        // if ( dict.TryGetValue ( t2 , out var m2 ) )
+                                        // {
+                                        // }
+                                        // else
+                                        // {
+                                        // }
+
+                                        // transform = $".Select(Transform_{m2}).ToList()" ;
+                                    // }
+                                    // else if ( k == "SyntaxTokenList" )
+                                    // {
+                                        // transform =
+                                            // ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()" ;
+
+                                            
+                                            var t2 = f
+                                                    .GetProperty (
+                                                                  ElementTypeMetadataNamePropertyName
+                                                                 )
+                                                    .GetString ( ) ;
+                                            if ( t2 == "PocoSyntax.PocoSyntaxTokenCollection")
+                                            {
+                                                
+                                            }
+                                            var m2 = dict[ t2 ] ;
+                                            transform = $".Select(Transform_{m2}).ToList()" ;
+                        
 
                             if ( transform != "" )
                             {
@@ -777,7 +798,11 @@ namespace ModelTests
             }
         }
 
-        private static SyntaxTree CompileExpression ( ExpressionSyntax expression )
+        public string PocoSyntaxTokenTypeName { get { return _pocoSyntaxTokenTypeName ; } }
+
+        public string PocoBlockSyntaxClassName { get { return _pocoBlockSyntaxClassName ; } }
+
+        private static SyntaxTree CompileExpression ( [ NotNull ] ExpressionSyntax expression )
         {
             var comp = SyntaxFactory.CompilationUnit ( )
                                     .WithMembers (
@@ -869,22 +894,14 @@ namespace ModelTests
         [Fact]
         public void TestXaml1 ( )
         {
-            XamlXmlWriter outwriter = new XamlXmlWriter (
-                                                         XmlWriter.Create (
-                                                                           @"c:\temp\out.xml"
-                                                                         , new XmlWriterSettings ( )
-                                                                           {
-                                                                               Indent = true
-                                                                           }
-                                                                          )
-                                                       , new XamlSchemaContext ( )
-                                                        ) ;
+            using ( XamlXmlWriter outwriter = new XamlXmlWriter ( XmlWriter.Create ( @"c:\temp\out.xml" , new XmlWriterSettings ( ) { Indent = true } ) , new XamlSchemaContext ( ) ) ) { }
+
             var @out = XamlServices.Save(
-                             new SyntaxFieldInfo
-                             {
-                                 Name = "test" , Type = typeof ( List < string > )
-                             }
-                            ) ;
+                                         new SyntaxFieldInfo
+                                         {
+                                             Name = "test" , Type = typeof ( List < string > )
+                                         }
+                                        ) ;
             Logger.Info (@out  );
 
         }

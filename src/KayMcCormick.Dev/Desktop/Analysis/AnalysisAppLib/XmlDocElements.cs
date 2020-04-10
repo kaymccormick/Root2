@@ -20,7 +20,9 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+#if POCO
 using PocoSyntax ;
+#endif
 
 namespace AnalysisAppLib
 {

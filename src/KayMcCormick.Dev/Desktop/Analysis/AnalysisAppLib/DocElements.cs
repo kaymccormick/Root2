@@ -7,7 +7,9 @@ using System.Windows.Markup ;
 using System.Xml.Linq ;
 using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
+#if POCO
 using PocoSyntax ;
+#endif
 
 namespace AnalysisAppLib
 {
@@ -197,7 +199,9 @@ namespace AnalysisAppLib
         protected XmlDocumentElementCollection _xmlDoc ;
 
         private bool _needsAttention ;
+#if POCO
         private PocoMemberDeclarationSyntax _poco ;
+#endif
 
         /// <summary>
         /// 
@@ -247,8 +251,9 @@ namespace AnalysisAppLib
 
         public bool NeedsAttention { get { return _needsAttention ; } set { _needsAttention = value ; } }
 
+#if POCO
         public PocoMemberDeclarationSyntax PocoMemberDelaration { get { return _poco ; } set { _poco = value ; } }
-
+#endif
         /// <summary>
         /// </summary>
         /// <returns></returns>
@@ -351,7 +356,7 @@ namespace AnalysisAppLib
         }
 
         private readonly List < XmlDocElement > _listImplementation ;
-        #region Implementation of IEnumerable
+#region Implementation of IEnumerable
         /// <summary>
         /// 
         /// </summary>
@@ -365,8 +370,8 @@ namespace AnalysisAppLib
         {
             return ( ( IEnumerable ) _listImplementation ).GetEnumerator ( ) ;
         }
-        #endregion
-        #region Implementation of ICollection
+#endregion
+#region Implementation of ICollection
         /// <summary>
         /// 
         /// </summary>
@@ -402,8 +407,8 @@ namespace AnalysisAppLib
         {
             get { return ( ( ICollection ) _listImplementation ).IsSynchronized ; }
         }
-        #endregion
-        #region Implementation of IList
+#endregion
+#region Implementation of IList
         /// <summary>
         /// 
         /// </summary>
@@ -536,7 +541,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         public bool IsFixedSize { get { return ( ( IList ) _listImplementation ).IsFixedSize ; } }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -568,13 +573,13 @@ namespace AnalysisAppLib
         /// <returns></returns>
         public override string ToString ( ) { return $"{Text}" ; }
 
-        #region Overrides of XmlDocElement
+#region Overrides of XmlDocElement
         /// <summary>
         /// 
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
         public override XmlDocumentElementCollection DocumentElementCollection { get ; }
-        #endregion
+#endregion
     }
 
     /// <summary>

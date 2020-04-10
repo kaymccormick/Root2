@@ -1,4 +1,5 @@
-﻿#region header
+﻿#if POCO
+#region header
 // Kay McCormick (mccor)
 // 
 // Analysis
@@ -66,3 +67,4 @@ namespace AnalysisAppLib
         #endregion
     }
 }
+#endif
