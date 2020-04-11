@@ -11,7 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

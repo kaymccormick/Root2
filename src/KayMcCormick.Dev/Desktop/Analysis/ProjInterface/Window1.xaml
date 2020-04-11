@@ -9,7 +9,7 @@
               xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
               xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
-              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
               xmlns:command="clr-namespace:KayMcCormick.Lib.Wpf.Command;assembly=KayMcCormick.Lib.Wpf"
               xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
               xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"

@@ -11,7 +11,7 @@
 #endregion
 using KayMcCormick.Dev ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// </summary>
@@ -29,8 +29,14 @@ namespace AnalysisAppLib
         /// </summary>
         uint[] HierarchyColors { get ; set ; }
 
+        /// <summary>
+        /// Home of all the <see cref="AppTypeInfo"/> instances.
+        /// </summary>
         TypeMapDictionary Map { get ; set ; }
 
+        /// <summary>
+        /// <see cref="AppTypeInfo"/> ordered by structure and natural containment.
+        /// </summary>
         AppTypeInfoCollection StructureRoot { get ; set ; }
     }
 }

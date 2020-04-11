@@ -3,7 +3,7 @@ using System.ComponentModel ;
 using System.Threading.Tasks ;
 using KayMcCormick.Dev.Logging ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// 

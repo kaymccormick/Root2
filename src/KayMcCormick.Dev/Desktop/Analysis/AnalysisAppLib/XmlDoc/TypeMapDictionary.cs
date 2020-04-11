@@ -2,14 +2,17 @@
 using System.Collections ;
 using System.Collections.Generic ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 
     /// </summary>
     public class TypeMapDictionary : IDictionary , ICollection , IEnumerable
     {
-        public Dictionary < Type , AppTypeInfo >
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly Dictionary < Type , AppTypeInfo >
             dict = new Dictionary < Type , AppTypeInfo > ( ) ;
 
         private IDictionary _dict ;

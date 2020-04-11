@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel ;
-using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.XmlDoc.Syntax ;
 using KayMcCormick.Dev ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// 

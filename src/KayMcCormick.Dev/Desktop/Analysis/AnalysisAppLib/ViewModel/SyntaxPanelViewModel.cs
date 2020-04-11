@@ -15,7 +15,7 @@ using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// 

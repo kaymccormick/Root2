@@ -15,7 +15,7 @@ using Newtonsoft.Json ;
 using NLog ;
 using Logger = NLog.Logger ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// 

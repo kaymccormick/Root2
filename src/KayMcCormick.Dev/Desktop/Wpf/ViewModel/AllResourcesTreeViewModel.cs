@@ -11,27 +11,20 @@
 #endregion
 using System ;
 using System.Collections ;
-using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Windows ;
 using System.Windows.Controls ;
-using Autofac ;
-using Autofac.Core ;
-using Autofac.Core.Lifetime ;
-using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Interfaces ;
 
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
     /// </summary>
-    public sealed class AllResourcesTreeViewModel : IViewModel, ISupportInitializeNotification
+    public sealed class AllResourcesTreeViewModel : IViewModel , ISupportInitializeNotification
     {
         private readonly ModelResources _modelResources ;
 
@@ -39,11 +32,13 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         private ResourceNodeInfo _appNode ;
-        public ObservableCollection<ResourceNodeInfo> AllResourcesItemList { get; set; } =
-            new ObservableCollection<ResourceNodeInfo>();
 
         /// <summary>
-        /// 
+        /// </summary>
+        public ObservableCollection < ResourceNodeInfo > AllResourcesItemList { get ; set ; } =
+            new ObservableCollection < ResourceNodeInfo > ( ) ;
+
+        /// <summary>
         /// </summary>
         /// <param name="modelResources"></param>
         public AllResourcesTreeViewModel ( ModelResources modelResources )
@@ -51,6 +46,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             _modelResources = modelResources ;
         }
 
+        /// <summary>
+        /// </summary>
         public ObservableCollection < ResourceNodeInfo > AllResourcesCollection
         {
             get { return _allResourcesCollection ; }
@@ -58,7 +55,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 #if false
         private void PopulateInstances (
             ResourceNodeInfo       res
-          , IComponentRegistration registration
+      , IComponentRegistration registration
         )
         {
             var n = CreateNode ( res , "Instances" , null , false ) ;
@@ -68,37 +65,36 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 var key = _idProvider.GetObjectInstanceIdentifier ( instanceInfo.Instance ) ;
                 CreateNode (
                             n
-                          , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
-                          , instanceInfo.Parameters
-                          , true
+                      , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
+                      , instanceInfo.Parameters
+                      , true
                            ) ;
             }
         }
 #endif
-        private ResourceNodeInfo CreateNode(
-            [CanBeNull] ResourceNodeInfo parent
-          , object                       key
-          , object                       data
-          , bool?                        isValueChildren = null)
+        private ResourceNodeInfo CreateNode (
+            [ CanBeNull ] ResourceNodeInfo parent
+          , object                         key
+          , object                         data
+          , bool ?                         isValueChildren = null
+        )
         {
-            var wrapped = WrapValue(data);
+            var wrapped = WrapValue ( data ) ;
             var r = new ResourceNodeInfo
                     {
-                        Key             = key,
-                        Data            = wrapped,
-                        IsValueChildren = isValueChildren
-                    };
-            if (parent == null)
+                        Key = key , Data = wrapped , IsValueChildren = isValueChildren
+                    } ;
+            if ( parent == null )
             {
-                AllResourcesCollection.Add(r);
+                AllResourcesCollection.Add ( r ) ;
             }
             else
             {
-                parent.Children.Add(r);
-                r.Depth = parent.Depth + 1;
+                parent.Children.Add ( r ) ;
+                r.Depth = parent.Depth + 1 ;
             }
 
-            AllResourcesItemList.Add(r);
+            AllResourcesItemList.Add ( r ) ;
             return r ;
         }
 
@@ -137,7 +133,6 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="resNode"></param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -238,62 +233,58 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-#region Overrides of ModelResources
+        #region Overrides of ModelResources
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         protected object WrapValue ( object data )
         {
-            if (data is UIElement uie)
+            if ( data is UIElement uie )
             {
-                return new ControlWrap<UIElement>(uie);
+                return new ControlWrap < UIElement > ( uie ) ;
             }
 
             return data ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        protected void PopulateResourcesTree ( )
+        protected void PopulateResourcesTree ( ) { PopulateAppNode ( ) ; }
+        #endregion
+        #region Implementation of ISupportInitialize
+        public void BeginInit ( )
         {
-            PopulateAppNode();
+            // if ( IsInitializing )
+            // {
+            //     throw new InvalidOperationException("Cannot initialize twice");
+            // }
+            //
+            // IsInitializing = true ;
         }
-#endregion
-#region Implementation of ISupportInitialize
-public void BeginInit ( )
-{
-    // if ( IsInitializing )
-    // {
-    //     throw new InvalidOperationException("Cannot initialize twice");
-    // }
-    //
-    // IsInitializing = true ;
-}
 
 //public bool IsInitializing { get ; set ; }
 
+/// <inheritdoc />
 public void EndInit ( )
-{
-    foreach ( var resourceNodeInfo in _modelResources.AllResourcesCollection )
-    {
-        AllResourcesCollection.Add ( resourceNodeInfo ) ;
-    }
-    PopulateResourcesTree();
-    IsInitialized = true ;
-}
+        {
+            foreach ( var resourceNodeInfo in _modelResources.AllResourcesCollection )
+            {
+                AllResourcesCollection.Add ( resourceNodeInfo ) ;
+            }
 
-#endregion
-#region Implementation of ISerializable
-public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-#endregion
+            PopulateResourcesTree ( ) ;
+            IsInitialized = true ;
+        }
+        #endregion
+        #region Implementation of ISerializable
+        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
+        #endregion
 
-#region Implementation of ISupportInitializeNotification
-public bool IsInitialized { get ; set ; }
+        #region Implementation of ISupportInitializeNotification
+        public bool IsInitialized { get ; set ; }
 
-public event EventHandler Initialized ;
-#endregion
+        public event EventHandler Initialized ;
+        #endregion
     }
 }

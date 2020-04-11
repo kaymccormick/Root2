@@ -13,7 +13,7 @@ using System.Collections.ObjectModel ;
 using System.Runtime.Serialization ;
 using KayMcCormick.Dev ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

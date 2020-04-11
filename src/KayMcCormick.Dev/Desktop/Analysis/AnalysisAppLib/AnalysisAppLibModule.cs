@@ -1,14 +1,13 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Threading.Tasks ;
-using AnalysisAppLib.Auth ;
-using AnalysisAppLib.Command ;
-using AnalysisAppLib.Dataflow ;
+using AnalysisAppLib.XmlDoc.Auth ;
+using AnalysisAppLib.XmlDoc.Command ;
+using AnalysisAppLib.XmlDoc.Dataflow ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
@@ -21,10 +20,8 @@ using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
-using NLog ;
-using Logger = NLog.Logger ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 
@@ -39,8 +36,6 @@ namespace AnalysisAppLib
              DebugUtils.WriteLine ( "here" ) ;
         }
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
         #region Overrides of Module
         /// <summary>
         /// 
@@ -49,6 +44,7 @@ namespace AnalysisAppLib
         /// <param name="registration"></param>
         protected override void AttachToComponentRegistration (
             IComponentRegistryBuilder componentRegistry
+            // ReSharper disable once AnnotateNotNullParameter
           , IComponentRegistration    registration
         )
         {
@@ -226,22 +222,22 @@ namespace AnalysisAppLib
              builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
              .As ( typeof ( IAnalysisBlockProvider < , , > ) )
              .WithAttributeFiltering ( )
-             .InstancePerLifetimeScope ( ) ;
+             .InstancePerLifetimeScope ( ).WithMetadata("Purpose", "Analysis") ;
 
             builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
              .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
              .WithAttributeFiltering ( )
-             .InstancePerLifetimeScope ( ) ;
+             .InstancePerLifetimeScope ( ).WithMetadata("Purpose", "Analysis"); ;
 
             builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
              .As(typeof(IAnalysisBlockProvider<,,>))
              .WithAttributeFiltering()
-             .InstancePerLifetimeScope(); 
+             .InstancePerLifetimeScope().WithMetadata("Purpose", "Analysis"); ; 
 
              builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
              .As(typeof(IDataflowTransformFuncProvider<,>))
              .WithAttributeFiltering()
-             .InstancePerLifetimeScope();
+             .InstancePerLifetimeScope().WithMetadata("Purpose", "Analysis"); ;
 
 
 #region MS LOGIN
@@ -315,6 +311,7 @@ namespace AnalysisAppLib
     /// 
     /// </summary>
     [ TitleMetadata ( "Find and analyze usages of NLog logging." ) ]
+    // ReSharper disable once UnusedType.Global
     public sealed class FindLogUsagesAnalysisDefinition : IAnalysisDefinition < ILogInvocation >
     {
         private Type _dataflowOutputType = typeof ( ILogInvocation ) ;
@@ -333,11 +330,13 @@ namespace AnalysisAppLib
     /// 
     /// </summary>
     /// <typeparam name="TOutput"></typeparam>
+    // ReSharper disable once UnusedTypeParameter
     public interface IAnalysisDefinition < TOutput >
     {
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         Type DataflowOutputType { get ; set ; }
     }
 }

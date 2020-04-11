@@ -4,14 +4,12 @@ using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
 using System.Windows.Markup ;
-using System.Xml.Linq ;
-using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 #if POCO
 using PocoSyntax ;
 #endif
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// </summary>
@@ -29,7 +27,7 @@ namespace AnalysisAppLib
         public MethodDocumentation (
             string                        elementId
           , [ NotNull ] Type              type
-          , string                        member
+          , [ NotNull ] string                        member
           , string                        parameters
           , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , type , member , xmlDoc )
@@ -49,16 +47,18 @@ namespace AnalysisAppLib
     }
 }
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 
     /// </summary>
     ///
-    public class Returns : BlockDocElem
+    public sealed class Returns : BlockDocElem
     {
-        public Returns ( IEnumerable < XmlDocElement > @select ) : base ( @select ) { }
+        /// <inheritdoc />
+        public Returns ( IEnumerable < XmlDocElement > select ) : base ( select ) { }
 
+        /// <inheritdoc />
         public Returns ( ) { }
     }
 
@@ -108,7 +108,7 @@ namespace AnalysisAppLib
 
         /// <summary>
         /// </summary>
-        public string MemberName { get { return _memberName ; } set { _memberName = value ; } }
+        public string MemberName { [ UsedImplicitly ] get { return _memberName ; } set { _memberName = value ; } }
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ namespace AnalysisAppLib
 
     /// <summary>
     /// </summary>
-    public class PropertyDocumentation : MemberBaseDocumentation
+    public sealed class PropertyDocumentation : MemberBaseDocumentation
     {
         /// <summary>
         /// </summary>
@@ -153,6 +153,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        [ UsedImplicitly ]
         public PropertyDocumentation ( ) { }
     }
 
@@ -196,7 +197,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        protected XmlDocumentElementCollection _xmlDoc ;
+        protected readonly XmlDocumentElementCollection _xmlDoc ;
 
         private bool _needsAttention ;
 #if POCO
@@ -213,14 +214,7 @@ namespace AnalysisAppLib
           , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         )
         {
-            if ( xmlDoc != null )
-            {
-                _xmlDoc = new XmlDocumentElementCollection ( xmlDoc.ToList ( ) ) ;
-            }
-            else
-            {
-                _xmlDoc = new XmlDocumentElementCollection ( ) ;
-            }
+            _xmlDoc = xmlDoc != null ? new XmlDocumentElementCollection ( xmlDoc.ToList ( ) ) : new XmlDocumentElementCollection ( ) ;
 
             ElementId = elementId ;
         }
@@ -228,7 +222,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        public CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
+        protected CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
 
         
         /// <summary>
@@ -249,9 +243,15 @@ namespace AnalysisAppLib
             // set { _xmlDoc = value; }
         }
 
+        /// <summary>
+        /// Flag indicating that this documentation element needs attention.
+        /// </summary>
         public bool NeedsAttention { get { return _needsAttention ; } set { _needsAttention = value ; } }
 
 #if POCO
+        /// <summary>
+        /// 
+        /// </summary>
         public PocoMemberDeclarationSyntax PocoMemberDelaration { get { return _poco ; } set { _poco = value ; } }
 #endif
         /// <summary>
@@ -265,6 +265,9 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class IndexerDocumentation : CodeElementDocumentation
     {
         public IndexerDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
@@ -275,6 +278,9 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class EventDocumentation : CodeElementDocumentation
     {
         public EventDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
@@ -285,6 +291,9 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class EnumMemberDocumentation : CodeElementDocumentation
     {
         public EnumMemberDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
@@ -295,6 +304,9 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class DelegateDocumentation : CodeElementDocumentation
     {
         public DelegateDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
@@ -578,6 +590,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public override XmlDocumentElementCollection DocumentElementCollection { get ; }
 #endregion
     }
@@ -610,8 +623,9 @@ namespace AnalysisAppLib
     }
 
     /// <summary>
+    /// According to Sandcastle this is neither block nor inline.
     /// </summary>
-    public class Example : BlockDocElem
+    public sealed class Example : XmlDocElement
     {
         /// <summary>
         /// </summary>
@@ -696,7 +710,7 @@ namespace AnalysisAppLib
 
     /// <summary>
     /// </summary>
-    public class Pre : XmlDocElement
+    public sealed class Pre : XmlDocElement
     {
         /// <summary>
         /// 
@@ -712,7 +726,7 @@ namespace AnalysisAppLib
 
     /// <summary>
     /// </summary>
-    public class Em : InlineDocElem
+    public sealed class Em : InlineDocElem
     {
         /// <summary>
         /// </summary>
@@ -763,7 +777,7 @@ namespace AnalysisAppLib
 
     /// <summary>
     /// </summary>
-    public class Paramref : InlineDocElem
+    public sealed class Paramref : InlineDocElem
     {
         private string _paramName ;
 
@@ -799,7 +813,7 @@ namespace AnalysisAppLib
 
     /// <summary>
     /// </summary>
-    public class Crossref : InlineDocElem
+    public sealed class Crossref : InlineDocElem
     {
         private string _xRefId ;
 
@@ -827,19 +841,17 @@ namespace AnalysisAppLib
     [ ContentWrapper ( typeof ( XmlDocElement ) ) ]
     public class XmlDocElement
     {
-        private readonly XElement _element ;
-
         /// <summary>
         /// 
         /// </summary>
-        protected XmlDocumentElementCollection _xmlDocumentElementCollection ;
+        protected readonly XmlDocumentElementCollection _xmlDocumentElementCollection ;
 
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        protected XmlDocElement ( IEnumerable < XmlDocElement > elements )
+        protected XmlDocElement ( [ NotNull ] IEnumerable < XmlDocElement > elements )
         {
             _xmlDocumentElementCollection =
                 new XmlDocumentElementCollection ( elements.ToList ( ) ) ;
@@ -990,11 +1002,6 @@ namespace AnalysisAppLib
     public class MemberDocInfo : DocInfo
     {
         private string _memberName ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string MemberName { get { return _memberName ; } set { _memberName = value ; } }
     }
 
     /// <summary>

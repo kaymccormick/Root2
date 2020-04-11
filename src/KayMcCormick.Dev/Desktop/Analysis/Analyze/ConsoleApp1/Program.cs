@@ -16,9 +16,9 @@ using System.Threading.Tasks ;
 using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Project ;
-using AnalysisAppLib.Properties ;
+using AnalysisAppLib.XmlDoc ;
+using AnalysisAppLib.XmlDoc.Project ;
+using AnalysisAppLib.XmlDoc.Properties ;
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
@@ -53,6 +53,9 @@ namespace ConsoleApp1
         private const string _predefinedNodeElementName = "PredefinedNode" ;
         private const string _abstractNodeElementName   = "AbstractNode" ;
         private const string _nodeElementName           = "Node" ;
+        private const string _collectionSuffix          = "Collection" ;
+        private const string _pocosyntaxnamespace       = "PocoSyntax" ;
+        private const string _icollection               = "ICollection" ;
 
         private static readonly string[] AssemblyRefs =
         {
@@ -77,12 +80,9 @@ namespace ConsoleApp1
         private static ILogger Logger ;
 
         private static          ApplicationInstance _appinst ;
-        private static readonly string              Pocosyntaxtoken   = @"PocoSyntaxToken" ;
-        private static string _ilist = "IList" ;
-        private static string _ienumerable = "IEnumerable" ;
-        private const        string              _collectionSuffix = "Collection" ;
-        private const string _pocosyntaxnamespace = "PocoSyntax" ;
-        private const string Icollection = "ICollection" ;
+        private static readonly string              Pocosyntaxtoken = @"PocoSyntaxToken" ;
+        private static readonly string              _ilist          = "IList" ;
+        private static readonly string              _ienumerable    = "IEnumerable" ;
         static Program ( ) { Logger = null ; }
 
         [ NotNull ] public string PocoPrefix { get { return _pocoPrefix ; } }
@@ -653,7 +653,7 @@ namespace ConsoleApp1
             var choices = visualStudioInstances.Select (
                                                         x => new MenuWrapper < VisualStudioInstance > (
                                                                                                        x
-         , RenderFunc
+, RenderFunc
                                                                                                       )
                                                        ) ;
             menu.Config.SelectedAppearence =
@@ -891,41 +891,24 @@ namespace ConsoleApp1
                                              ) ;
 
 
-            var types =
-                new SyntaxList < MemberDeclarationSyntax
-                > ( ) ; //new [] { SyntaxFactory.ClassDeclaration("SyntaxToken")} ) ;
+            var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;
             outputFunc ( $"{model1.Map.Count} Entries in Type map" ) ;
-            SyntaxRewriter1 rewriter1 = new SyntaxRewriter1(model1);
+            var rewriter1 = new SyntaxRewriter1 ( model1 ) ;
             foreach ( Type mapKey in model1.Map.Keys )
             {
                 DebugOut ( $"{mapKey}" ) ;
                 var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
 
-                var colType = $"{PocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
+                var colTypeClassName = $"{PocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
 
                 var classDecl1 = CreatePoco ( mapKey , t ) ;
-                var curComp = x.ReplaceSyntaxTree (
-                                                   x.SyntaxTrees[ 0 ]
-                                                 , SyntaxTree (
-                                                               CompilationUnit ( )
-                                                                  .WithMembers (
-                                                                                List <
-                                                                                    MemberDeclarationSyntax
-                                                                                > (
-                                                                                   new[]
-                                                                                   {
-                                                                                       classDecl1
-                                                                                   }
-                                                                                  )
-                                                                               )
-                                                              )
-                                                  ) ;
+                var curComp = ReplaceSyntaxTree ( x , classDecl1 ) ;
                 var classDecl1Type =
                     curComp.GetTypeByMetadataName ( classDecl1.Identifier.ValueText ) ;
                 var Ilist1 = SimpleBaseType ( ParseTypeName ( _ilist ) ) ;
                 var IEnumerable1 = SimpleBaseType ( ParseTypeName ( _ienumerable ) ) ;
-                var ICollectionType = SimpleBaseType ( ParseTypeName ( Icollection ) ) ;
-                var classDecl = ClassDeclaration ( colType )
+                var ICollectionType = SimpleBaseType ( ParseTypeName ( _icollection ) ) ;
+                var classContainerDecl = ClassDeclaration ( colTypeClassName )
                    .WithBaseList (
                                   BaseList ( ).AddTypes ( Ilist1 , IEnumerable1 , ICollectionType )
                                  ) ;
@@ -956,18 +939,18 @@ namespace ConsoleApp1
                 {
                     //var prov = CSharpCodeProvider.CreateProvider ( LanguageNames.CSharp ) ;
 
-                    var t123 =
+                    var typeByMetadataName =
                         x.GetTypeByMetadataName (
                                                  type1.FullName
                                                  ?? throw new InvalidOperationException ( )
                                                 ) ;
-                    if ( t123 == null )
+                    if ( typeByMetadataName == null )
                     {
                         continue ;
                     }
 
                     var generic1 =
-                        t123 ; // t123.ConstructUnboundGenericType ( ).Construct ( classDecl1Type ) ;
+                        typeByMetadataName ; // t123.ConstructUnboundGenericType ( ).Construct ( classDecl1Type ) ;
 
                     // var i = model.GetSymbolInfo ( SyntaxFactory.ParseTypeName ( s1 ) ) ;
 
@@ -1169,14 +1152,10 @@ namespace ConsoleApp1
                                                          IParameterSymbol p1
                                                      )
                                                      {
-                                                         var typeSyntax1 =
-                                                             ParseTypeName (
-                                                                            p1.Type.MetadataName
-                                                                           ) ;
                                                          if ( p1.Type.SpecialType
                                                               == SpecialType.System_Object )
                                                          {
-                                                             typeSyntax1 = genericinternalListType ;
+                                                             DebugUtils.WriteLine ( $"{p1.Type}" ) ;
                                                          }
 
                                                          return Parameter (
@@ -1205,7 +1184,7 @@ namespace ConsoleApp1
                                                                                SyntaxTriviaList
                                                                                   .Create (
                                                                                            Comment (
-                                                                                                    $"// {t123.ToDisplayString ( )}"
+                                                                                                    $"// {typeByMetadataName.ToDisplayString ( )}"
                                                                                                    )
                                                                                           )
                                                                               )
@@ -1273,16 +1252,27 @@ namespace ConsoleApp1
                                                                                ) ;
                                                  }
                                                 ) ;
-                    classDecl = classDecl.WithMembers (
-                                                       List (
-                                                             classDecl.Members.Concat ( memb1 )
-                                                                      .Concat ( props1 )
-                                                                      .Concat ( indexers )
-                                                            )
-                                                      ) ;
-                    
+
+                    classContainerDecl = classContainerDecl.WithMembers (
+                                                                         List (
+                                                                               classContainerDecl
+                                                                                  .Members
+                                                                                  .Concat ( memb1 )
+                                                                                  .Concat ( props1 )
+                                                                                  .Concat (
+                                                                                           indexers
+                                                                                          )
+                                                                              )
+                                                                        ) ;
+
                     classDecl1 = ( ClassDeclarationSyntax ) rewriter1.Visit ( classDecl1 ) ;
-                    DebugUtils.WriteLine ( classDecl.NormalizeWhitespace ( ).ToFullString ( ) ) ;
+                    DebugUtils.WriteLine (
+                                          "\n***\n"
+                                          + classContainerDecl
+                                           .NormalizeWhitespace ( )
+                                           .ToFullString ( )
+                                          + "\n****\n"
+                                         ) ;
                 }
 
 
@@ -1323,13 +1313,19 @@ namespace ConsoleApp1
                                                                        )
                                                               )
                                            ) ;
-                classDecl = classDecl.WithMembers (
-                                                   List (
-                                                         classDecl.Members.Concat ( new[] { fds } )
-                                                        )
-                                                  ) ;
+                classContainerDecl = classContainerDecl.WithMembers (
+                                                                     List (
+                                                                           classContainerDecl
+                                                                              .Members.Concat (
+                                                                                               new[]
+                                                                                               {
+                                                                                                   fds
+                                                                                               }
+                                                                                              )
+                                                                          )
+                                                                    ) ;
 
-                types = types.Add ( classDecl ) ;
+                types = types.Add ( classContainerDecl ) ;
                 var members = new SyntaxList < MemberDeclarationSyntax > ( ) ;
                 foreach ( SyntaxFieldInfo tField in t.Fields )
                 {
@@ -1352,32 +1348,31 @@ namespace ConsoleApp1
                         continue ;
                     }
 
-                    var acdsl =
-                        new SyntaxList < AccessorDeclarationSyntax > (
-                                                                      new[]
-                                                                      {
-                                                                          AccessorDeclaration (
-                                                                                               SyntaxKind
-                                                                                                  .GetAccessorDeclaration
-                                                                                              )
-                                                                             .WithSemicolonToken (
-                                                                                                  Token (
-                                                                                                         SyntaxKind
-                                                                                                            .SemicolonToken
-                                                                                                        )
-                                                                                                 )
-                                                                        , AccessorDeclaration (
-                                                                                               SyntaxKind
-                                                                                                  .SetAccessorDeclaration
-                                                                                              )
-                                                                         .WithSemicolonToken (
-                                                                                              Token (
-                                                                                                     SyntaxKind
-                                                                                                        .SemicolonToken
-                                                                                                    )
-                                                                                             )
-                                                                      }
-                                                                     ) ;
+                    var acdsl = new SyntaxList < AccessorDeclarationSyntax > (
+                                                                              new[]
+                                                                              {
+                                                                                  AccessorDeclaration (
+                                                                                                       SyntaxKind
+                                                                                                          .GetAccessorDeclaration
+                                                                                                      )
+                                                                                     .WithSemicolonToken (
+                                                                                                          Token (
+                                                                                                                 SyntaxKind
+                                                                                                                    .SemicolonToken
+                                                                                                                )
+                                                                                                         )
+                                                                                , AccessorDeclaration (
+                                                                                                       SyntaxKind
+                                                                                                          .SetAccessorDeclaration
+                                                                                                      )
+                                                                                     .WithSemicolonToken (
+                                                                                                          Token (
+                                                                                                                 SyntaxKind
+                                                                                                                    .SemicolonToken
+                                                                                                                )
+                                                                                                         )
+                                                                              }
+                                                                             ) ;
                     var accessorListSyntax = AccessorList ( acdsl ) ;
 
                     TypeSyntax type = null ;
@@ -1389,7 +1384,7 @@ namespace ConsoleApp1
                     {
                         var tFieldTypeName = tField.TypeName ;
 
-                        type = ParseTypeName ( tFieldTypeName ) ; 
+                        type = ParseTypeName ( tFieldTypeName ) ;
                     }
 
                     if ( type is GenericNameSyntax gen )
@@ -1459,7 +1454,11 @@ namespace ConsoleApp1
                     var propertyDeclarationSyntax = PropertyDeclaration (
                                                                          attributeListSyntaxes
                                                                        , syntaxTokenList
-                                                                       , SubstituteType ( tField, type, collectionMap )
+                                                                       , SubstituteType (
+                                                                                         tField
+                                                                                       , type
+                                                                                       , collectionMap
+                                                                                        )
                                                                        , null
                                                                        , propertyName
                                                                        , accessorListSyntax
@@ -1485,7 +1484,6 @@ namespace ConsoleApp1
                                                                                    NamespaceDeclaration (
                                                                                                          ParseName (
                                                                                                                     _pocosyntaxnamespace
-
                                                                                                                    )
                                                                                                         )
                                                                                       .WithMembers (
@@ -1494,11 +1492,11 @@ namespace ConsoleApp1
                                                                                   )
                                       )
                          .NormalizeWhitespace ( ) ;
-            
+
             foreach ( var token in compl.DescendantTokens ( ) )
             {
-                
             }
+
             DebugOut ( "built" ) ;
             var tree = SyntaxTree ( compl ) ;
             var src = tree.ToString ( ) ;
@@ -1686,7 +1684,24 @@ namespace ConsoleApp1
             //File.WriteAllText ( @"C:\data\logs\gen.cs" , comp.ToString ( ) ) ;
         }
 
-        private TypeSyntax SubstituteTransformedPocoType (
+        private static CSharpCompilation ReplaceSyntaxTree (
+            CSharpCompilation      x
+          , ClassDeclarationSyntax classDecl1
+        )
+        {
+            return x.ReplaceSyntaxTree (
+                                        x.SyntaxTrees[ 0 ]
+                                      , SyntaxTree (
+                                                    CompilationUnit ( )
+                                                       .WithMembers (
+                                                                     List < MemberDeclarationSyntax
+                                                                     > ( new[] { classDecl1 } )
+                                                                    )
+                                                   )
+                                       ) ;
+        }
+
+        private static TypeSyntax SubstituteTransformedPocoType (
             TypeSyntax                                               parseTypeName
           , [ NotNull ] IReadOnlyDictionary < AppTypeInfo , object > collectionMap
           , [ NotNull ] AppTypeInfo                                  appTypeInfo
@@ -1721,7 +1736,7 @@ namespace ConsoleApp1
 
         private TypeSyntax SubstituteType (
             SyntaxFieldInfo                              tField
-          , TypeSyntax                                   type
+          , [ CanBeNull ] TypeSyntax                     type
           , IReadOnlyDictionary < AppTypeInfo , object > collectionMap
         )
         {
@@ -1730,11 +1745,7 @@ namespace ConsoleApp1
                 return TransformParsePocoType ( type ) ;
             }
 
-            return SubstituteTransformedPocoType (
-                                                  type
-                                                , collectionMap
-                                                , null
-                                                 ) ;
+            return SubstituteTransformedPocoType ( type , collectionMap , null ) ;
         }
 
         [ NotNull ]
@@ -1973,40 +1984,16 @@ namespace ConsoleApp1
             ITypeSymbol arg = null ;
             if ( fTypeP is GenericNameSyntax g )
             {
-                var propertyDeclarationSyntax = PropertyDeclaration ( g , "type1" ) ;
-                //var nullLiteral = LiteralExpression ( SyntaxKind.NullLiteralExpression ) ;
-                //var arrowExpressionClauseSyntax = ArrowExpressionClause (
-                // nullLiteral
-                // ) ;
-                var memberDeclarationSyntax = propertyDeclarationSyntax.WithAccessorList (
-                                                                                          AccessorList (
-                                                                                                        new
-                                                                                                            SyntaxList
-                                                                                                            < AccessorDeclarationSyntax
-                                                                                                            > (
-                                                                                                               AccessorDeclaration (
-                                                                                                                                    SyntaxKind
-                                                                                                                                       .SetAccessorDeclaration
-                                                                                                                                  , Block (
-                                                                                                                                           Token (
-                                                                                                                                                  SyntaxKind
-                                                                                                                                                     .OpenBraceToken
-                                                                                                                                                 )
-                                                                                                                                         , new
-                                                                                                                                               SyntaxList
-                                                                                                                                               < StatementSyntax
-                                                                                                                                               > ( )
-                                                                                                                                         , Token (
-                                                                                                                                                  SyntaxKind
-                                                                                                                                                     .CloseBraceToken
-                                                                                                                                                 )
-                                                                                                                                          )
-                                                                                                                                   )
-                                                                                                              )
-                                                                                                       )
-                                                                                         ) ;
-                var declarationSyntaxes =
-                    SingletonList < MemberDeclarationSyntax > ( memberDeclarationSyntax ) ;
+                var pds = PropertyDeclaration ( g , "type1" ) ;
+                var openBrace = Token ( SyntaxKind.OpenBraceToken ) ;
+                var closeBrace = Token ( SyntaxKind.CloseBraceToken ) ;
+                var empty = new SyntaxList < StatementSyntax > ( ) ;
+                var blockSyntax = Block ( openBrace , empty , closeBrace ) ;
+                var ads1 = AccessorDeclaration ( SyntaxKind.SetAccessorDeclaration , blockSyntax ) ;
+                var ads = new SyntaxList < AccessorDeclarationSyntax > ( ads1 ) ;
+                var als = AccessorList ( ads ) ;
+                var mds = pds.WithAccessorList ( als ) ;
+                var declarationSyntaxes = SingletonList < MemberDeclarationSyntax > ( mds ) ;
                 var memberDeclarationSyntaxes =
                     SingletonList < MemberDeclarationSyntax > (
                                                                ClassDeclaration ( "placeholder" )
@@ -2017,6 +2004,7 @@ namespace ConsoleApp1
                 var syntaxTrees = SyntaxTree (
                                               WithCollectionUsings ( CompilationUnit ( ) )
                                                  .WithMembers ( memberDeclarationSyntaxes )
+                                                 .NormalizeWhitespace ( )
                                              ) ;
                 var compilation = CSharpCompilation.Create (
                                                             "test"
@@ -2054,6 +2042,9 @@ namespace ConsoleApp1
 
                 var syntaxTree = compilation.SyntaxTrees.First ( ) ;
                 var model = compilation.GetSemanticModel ( syntaxTree ) ;
+                var source = syntaxTree.ToString ( )
+                                       .Split ( new[] { "\n" } , StringSplitOptions.None ) ;
+
                 foreach ( var diagnostic1 in compilation
                                             .GetDiagnostics ( )
                                             .Where (
@@ -2062,7 +2053,33 @@ namespace ConsoleApp1
                                                            == DiagnosticSeverity.Error
                                                    ) )
                 {
-                    DebugUtils.WriteLine ( diagnostic1.ToString ( ) ) ;
+                    var startLine =
+                        diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line - 1 ;
+                    var count = diagnostic1.Location.GetLineSpan ( ).EndLinePosition.Line
+                                - diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line
+                                + 1 ;
+                    var locationSourceSpan = diagnostic1.Location.SourceSpan ;
+                    var code = diagnostic1.Location.SourceTree.GetText ( ) ;
+                    var end = locationSourceSpan.End     + 10 ;
+                    var start = locationSourceSpan.Start - 10 ;
+                    if ( start < 0 )
+                    {
+                        start = 0 ;
+                    }
+
+                    if ( end >= code.Length )
+                    {
+                        end = code.Length - 1 ;
+                    }
+
+                    var sp = new TextSpan ( start , end - start ) ;
+                    var codePart = code.GetSubText ( sp ) ;
+                    var lines = string.Join (
+                                             "\n"
+                                           , code.Lines.Skip ( startLine ).Take ( count ).ToList ( )
+                                            ) ;
+                    var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
+                    DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
                 }
 
                 var declarationSyntax = syntaxTree.GetRoot ( )
@@ -2216,16 +2233,21 @@ namespace ConsoleApp1
     internal class SyntaxRewriter1 : CSharpSyntaxRewriter
     {
         private readonly IReadOnlyDictionary < string , object > _map ;
+        private readonly TypesViewModel                          _model1 ;
         #region Overrides of CSharpSyntaxRewriter
-        public SyntaxRewriter1 ( IReadOnlyDictionary <string, object> map, bool visitIntoStructuredTrivia = false ) : base ( visitIntoStructuredTrivia )
+        public SyntaxRewriter1 (
+            IReadOnlyDictionary < string , object > map
+          , bool                                    visitIntoStructuredTrivia = false
+        ) : base ( visitIntoStructuredTrivia )
         {
             _map = map ;
         }
 
-        public SyntaxRewriter1 ( TypesViewModel model1 ) : base ( false) { }
+        public SyntaxRewriter1 ( TypesViewModel model1 ) : base ( ) { _model1 = model1 ; }
 
-        public override SyntaxNode  VisitGenericName ( GenericNameSyntax node )
+        public override SyntaxNode VisitGenericName ( GenericNameSyntax node )
         {
+            DebugUtils.WriteLine ( $"{node.Identifier} {node.TypeArgumentList}" ) ;
             if ( node.Arity                   == 1
                  && node.IsUnboundGenericName == false
                  && node.Identifier.ValueText == "SeparatedSyntaxList" )
@@ -2235,30 +2257,52 @@ namespace ConsoleApp1
                 {
                     //return node.ReplaceNode ( node , node , _map[ sns.Identifier.ValueText ] ) ;
                 }
-                
             }
+
             return base.VisitGenericName ( node ) ;
         }
 
-        public override SyntaxNode  VisitPredefinedType ( PredefinedTypeSyntax node ) { return base.VisitPredefinedType ( node ) ; }
+        public override SyntaxNode VisitPredefinedType ( PredefinedTypeSyntax node )
+        {
+            return base.VisitPredefinedType ( node ) ;
+        }
 
         public override SyntaxList < TNode > VisitList < TNode > ( SyntaxList < TNode > list )
         {
-
             return base.VisitList ( list ) ;
         }
 
-        public override TNode VisitListElement < TNode > ( TNode node ) { return base.VisitListElement ( node ) ; }
+        public override TNode VisitListElement < TNode > ( TNode node )
+        {
+            return base.VisitListElement ( node ) ;
+        }
 
-        public override SeparatedSyntaxList < TNode > VisitList < TNode > ( SeparatedSyntaxList < TNode > list ) { return base.VisitList ( list ) ; }
+        public override SeparatedSyntaxList < TNode > VisitList < TNode > (
+            SeparatedSyntaxList < TNode > list
+        )
+        {
+            return base.VisitList ( list ) ;
+        }
 
-        public override SyntaxToken VisitListSeparator ( SyntaxToken separator ) { return base.VisitListSeparator ( separator ) ; }
+        public override SyntaxToken VisitListSeparator ( SyntaxToken separator )
+        {
+            return base.VisitListSeparator ( separator ) ;
+        }
 
-        public override SyntaxTokenList VisitList ( SyntaxTokenList list ) { return base.VisitList ( list ) ; }
+        public override SyntaxTokenList VisitList ( SyntaxTokenList list )
+        {
+            return base.VisitList ( list ) ;
+        }
 
-        public override SyntaxTriviaList VisitList ( SyntaxTriviaList list ) { return base.VisitList ( list ) ; }
+        public override SyntaxTriviaList VisitList ( SyntaxTriviaList list )
+        {
+            return base.VisitList ( list ) ;
+        }
 
-        public override SyntaxTrivia VisitListElement ( SyntaxTrivia element ) { return base.VisitListElement ( element ) ; }
+        public override SyntaxTrivia VisitListElement ( SyntaxTrivia element )
+        {
+            return base.VisitListElement ( element ) ;
+        }
         #endregion
     }
 }

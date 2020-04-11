@@ -2,7 +2,7 @@
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

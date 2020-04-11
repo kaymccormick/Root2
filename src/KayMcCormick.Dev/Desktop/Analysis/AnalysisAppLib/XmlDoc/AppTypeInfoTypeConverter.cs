@@ -11,24 +11,29 @@
 #endregion
 using System ;
 using System.Collections ;
-using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.Diagnostics ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis.CSharp ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
-    public class AppTypeInfoTypeConverter : TypeConverter
+    /// <summary>
+    /// Prototypical Type converter for <see cref="AppTypeInfo"/>
+    /// </summary>
+    public sealed class AppTypeInfoTypeConverter : TypeConverter
     {
         #region Overrides of TypoeConverter
         #region Overrides of TypeConverter
+        /// <inheritdoc />
         public override bool GetCreateInstanceSupported ( ITypeDescriptorContext context )
         {
             return true ;
         }
         #endregion
         #region Overrides of TypeConverter
+        /// <inheritdoc />
+        [ NotNull ]
         public override object CreateInstance (
             ITypeDescriptorContext context
           , IDictionary            propertyValues
@@ -48,13 +53,16 @@ namespace AnalysisAppLib
         }
         #endregion
 
-        public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
+        /// <inheritdoc />
+        public override bool CanConvertTo ( [ CanBeNull ] ITypeDescriptorContext context , Type destinationType )
         {
-            DebugUtils.WriteLine ($"Can convert from {context?.Instance?.GetType()} to {destinationType}?"  );
+            //DebugUtils.WriteLine ($"Can convert from {context?.Instance?.GetType()} to {destinationType}?"  );
             return base.CanConvertTo ( context , destinationType ) ;
         }
         #endregion
         #region Overrides of TypeConverter
+        /// <inheritdoc />
+        [ NotNull ]
         public override StandardValuesCollection GetStandardValues (
             ITypeDescriptorContext context
         )

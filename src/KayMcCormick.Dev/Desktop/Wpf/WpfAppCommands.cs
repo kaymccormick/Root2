@@ -99,9 +99,15 @@ namespace KayMcCormick.Lib.Wpf
                                , typeof ( WpfAppCommands )
                                 ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedUICommand CreateWorkspace = new RoutedUICommand("Create workspacE", nameof(CreateWorkspace),
                                                                                      typeof(WpfAppCommands));
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly RoutedUICommand AddDocument =
             new RoutedUICommand (
                                  "Add document"

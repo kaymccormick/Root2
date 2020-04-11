@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls ;
 using System.Windows.Data ;
-using AnalysisAppLib.Project ;
-using AnalysisAppLib.ViewModel ;
+using AnalysisAppLib.XmlDoc.Project ;
+using AnalysisAppLib.XmlDoc.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;

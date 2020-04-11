@@ -16,7 +16,7 @@ using System.Linq ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib.Syntax
+namespace AnalysisAppLib.XmlDoc.Syntax
 {
     /// <summary>Extension class</summary>
     public static class Ext

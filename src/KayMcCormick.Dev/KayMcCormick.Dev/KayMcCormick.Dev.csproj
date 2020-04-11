@@ -281,7 +281,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Container\" />
-    <Folder Include="Modules\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib.Dataflow
+namespace AnalysisAppLib.XmlDoc.Dataflow
 {
     internal class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
             TransformManyBlock < Document , ILogInvocation > >

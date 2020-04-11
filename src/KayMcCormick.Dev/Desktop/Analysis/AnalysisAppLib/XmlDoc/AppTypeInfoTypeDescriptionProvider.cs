@@ -11,9 +11,10 @@
 #endregion
 using System.ComponentModel ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
-    public class AppTypeInfoTypeDescriptionProvider : CustomTypeDescriptor
+    /// <inheritdoc />
+    public sealed class AppTypeInfoTypeDescriptionProvider : CustomTypeDescriptor
     {
     }
 }

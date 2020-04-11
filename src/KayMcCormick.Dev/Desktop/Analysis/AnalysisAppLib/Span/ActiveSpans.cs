@@ -16,7 +16,7 @@ using System.Linq ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.Text ;
 
-namespace AnalysisAppLib.Span
+namespace AnalysisAppLib.XmlDoc.Span
 {
     /// <summary>
     /// </summary>

@@ -76,10 +76,9 @@
     <Compile Include="AnalyzeCommand.cs" />
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppExplorerItem.cs" />
-    <Compile Include="AppMethodInfo.cs" />
-    <Compile Include="AppTypeInfo.cs" />
-    <Compile Include="AppTypeInfoTypeConverter.cs" />
-    <Compile Include="AppTypeInfoTypeDescriptionProvider.cs" />
+    <Compile Include="XmlDoc\AppTypeInfo.cs" />
+    <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
+    <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />
     <Compile Include="Command\CodeGenCommand.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
@@ -125,12 +124,11 @@
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
-    <Compile Include="TypeMapDictionary.cs" />
+    <Compile Include="XmlDoc\TypeMapDictionary.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
-    <Compile Include="CodeAnalyseContext.cs" />
-    <Compile Include="CodeAnalyseContext2.cs" />
+    <Compile Include="XmlDoc\CodeAnalyseContext.cs" />
     <Compile Include="ICodeAnalyseContext.cs" />
     <Compile Include="ICompilationUnitRootContext.cs" />
     <Compile Include="ISemanticModelContext.cs" />
@@ -242,9 +240,7 @@
   <ItemGroup>
     <None Include="doc.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Projects\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\Syntax.xml">
       <SubType>Designer</SubType>

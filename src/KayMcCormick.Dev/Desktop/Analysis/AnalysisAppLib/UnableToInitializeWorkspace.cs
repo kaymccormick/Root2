@@ -6,7 +6,7 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.MSBuild ;
 #endif
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

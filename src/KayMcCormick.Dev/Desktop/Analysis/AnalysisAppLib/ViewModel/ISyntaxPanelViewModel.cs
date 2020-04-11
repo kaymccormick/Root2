@@ -13,7 +13,7 @@ using System.ComponentModel ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// </summary>

@@ -22,6 +22,7 @@ namespace KayMcCormick.Lib.Wpf
     public sealed class MiscInstanceInfoProvider : TypeDescriptionProvider
     {
         #region Overrides of TypeDescriptionProvider
+        /// <inheritdoc />
         public override ICustomTypeDescriptor GetTypeDescriptor (
             Type   objectType
           , object instance

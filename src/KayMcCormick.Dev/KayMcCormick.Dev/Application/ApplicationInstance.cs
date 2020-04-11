@@ -50,7 +50,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// Application GUID for a basic command-line configuration test application.
         /// </summary>
-        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once UnusedMember.Global"
         public static Guid ConfigTest { get ; set ; } =
             new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
 
@@ -59,6 +59,8 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public static Guid ClassLibTests { get ; set ; } =
             new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
+
+        public static Guid BasicWinForms { get ; set ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
     }
 
     /// <summary>

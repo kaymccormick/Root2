@@ -5,11 +5,21 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib.Serialization
+namespace AnalysisAppLib.XmlDoc.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class JsonElementCodeConverter
     {
         // ReSharper disable once UnusedMember.Global
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static ExpressionSyntax ConvertJsonElementToCode ( JsonElement element )
         {
             ExpressionSyntax elementSyntax = null ;

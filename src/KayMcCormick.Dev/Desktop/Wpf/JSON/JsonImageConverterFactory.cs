@@ -177,9 +177,11 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
     }
 
+    /// <inheritdoc />
     public class JsonDrawingConverter : JsonConverter <Drawing>
     {
         #region Overrides of JsonConverter<Drawing>
+        /// <inheritdoc />
         public override Drawing Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 
         public override void Write (
@@ -213,11 +215,14 @@ namespace KayMcCormick.Lib.Wpf.JSON
         #endregion
     }
 
+    /// <inheritdoc />
     public class JsonGeometryConverter :JsonConverter <Geometry>
     {
         #region Overrides of JsonConverter<Geometry>
+        /// <inheritdoc />
         public override Geometry Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 
+        /// <inheritdoc />
         public override void Write (
             Utf8JsonWriter        writer
           , Geometry              value

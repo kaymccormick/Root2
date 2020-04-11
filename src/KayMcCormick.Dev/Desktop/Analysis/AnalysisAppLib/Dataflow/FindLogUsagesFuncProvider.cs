@@ -6,7 +6,7 @@ using FindLogUsages ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib.Dataflow
+namespace AnalysisAppLib.XmlDoc.Dataflow
 {
     /// <summary>
     /// 

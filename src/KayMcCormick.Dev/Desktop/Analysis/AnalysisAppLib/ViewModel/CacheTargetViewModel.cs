@@ -19,7 +19,7 @@ using System.Windows.Threading ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AnalysisAppLib.Properties {
+namespace AnalysisAppLib.XmlDoc.Properties {
     using System;
     
     

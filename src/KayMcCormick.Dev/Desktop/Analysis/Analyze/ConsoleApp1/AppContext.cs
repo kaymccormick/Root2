@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-using AnalysisAppLib.Project ;
+using AnalysisAppLib.XmlDoc.Project ;
 using Autofac ;
 
 namespace ConsoleApp1

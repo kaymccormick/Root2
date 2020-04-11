@@ -2,7 +2,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 
-namespace AnalysisAppLib.Dataflow
+namespace AnalysisAppLib.XmlDoc.Dataflow
 {
     /// <summary>
     /// 

@@ -12,7 +12,7 @@
 using System ;
 using System.Text.Json.Serialization ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

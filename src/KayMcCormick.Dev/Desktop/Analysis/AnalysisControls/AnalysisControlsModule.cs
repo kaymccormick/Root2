@@ -12,14 +12,12 @@
 using System ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.Reflection ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
-using AnalysisAppLib.ViewModel ;
-using AnalysisControls.Properties ;
+using AnalysisAppLib.XmlDoc.ViewModel ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
@@ -28,10 +26,8 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
-using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Module = Autofac.Module ;
-using XamlWriter = System.Windows.Markup.XamlWriter ;
 
 namespace AnalysisControls
 {
@@ -45,7 +41,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="builder"></param>
-        protected override void Load ( [ NotNull ] ContainerBuilder builder )
+        protected override void Load ( ContainerBuilder builder )
         {
 #if false
             builder.RegisterAssemblyTypes(ThisAssembly).Where(type => {
@@ -111,19 +107,19 @@ namespace AnalysisControls
                     DebugUtils.WriteLine ( "no stream" ) ;
                     return new TypesViewModel();
                 } else 
-                                  {
-                                      try
-                                      {
-                                          var v =
-                                              ( TypesViewModel ) XamlReader.Load ( stream ) ;
-                                          stream.Close ( ) ;
-                                          return v ;
-                                      }
-                                      catch ( Exception )
-                                      {
-                                          return new TypesViewModel();
+                {
+                    try
+                    {
+                        var v =
+                            ( TypesViewModel ) XamlReader.Load ( stream ) ;
+                        stream.Close ( ) ;
+                        return v ;
                     }
-                                  }
+                    catch ( Exception )
+                    {
+                        return new TypesViewModel();
+                    }
+                }
                               }
                              )
                    .AsSelf ( )

@@ -6,22 +6,32 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Threading.Tasks;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class JsonPocoSyntaxConverter : JsonConverterFactory
     {
         private readonly Type _excludeType ;
+
+        /// <inheritdoc />
         public JsonPocoSyntaxConverter ( Type excludeType ) { _excludeType = excludeType ; }
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
         public JsonPocoSyntaxConverter ( ) {
         }
 
+        /// <inheritdoc />
         public override bool CanConvert(Type typeToConvert)
         {
             return typeToConvert != _excludeType && typeof(FindLogUsages.PocoCSharpSyntaxNode).IsAssignableFrom(typeToConvert);
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <inheritdoc />
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

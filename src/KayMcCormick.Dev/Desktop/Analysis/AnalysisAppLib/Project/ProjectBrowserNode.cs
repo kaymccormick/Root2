@@ -11,7 +11,7 @@
 #endregion
 using System ;
 
-namespace AnalysisAppLib.Project
+namespace AnalysisAppLib.XmlDoc.Project
 {
     /// <summary>
     /// 

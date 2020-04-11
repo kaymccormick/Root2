@@ -34,8 +34,8 @@ using System.Windows.Media.Imaging ;
 using System.Xaml ;
 using System.Xml ;
 using System.Xml.Linq ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Serialization ;
+using AnalysisAppLib.XmlDoc ;
+using AnalysisAppLib.XmlDoc.Serialization ;
 using AnalysisControls ;
 using AnalysisControls.Properties ;
 using AnalysisControls.ViewModel ;
@@ -83,12 +83,14 @@ namespace ProjTests
     // [ LoggingRule ( typeof ( ProjTests ) ,               nameof ( LogLevel.Trace ) ) ]
     // [ LoggingRule ( "*" ,                                nameof ( LogLevel.Info ) ) ]
     // [ BeforeAfterLogger ]
-    public sealed class ProjTests 
+    public sealed class ProjTests
         // : IClassFixture < LoggingFixture >
-      // , IClassFixture < ProjectFixture >
-      : IDisposable
+        // , IClassFixture < ProjectFixture >
+        : IDisposable
     {
-        private const string TypesViewModelXamlPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml";
+        private const string TypesViewModelXamlPath =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml" ;
+
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
 
@@ -96,19 +98,19 @@ namespace ProjTests
 
         private readonly ITestOutputHelper _output ;
 #pragma warning disable 169
-        private readonly LoggingFixture    _loggingFixture ;
+        private readonly LoggingFixture _loggingFixture ;
 #pragma warning restore 169
 #pragma warning disable 169
-        private readonly ProjectFixture    _projectFixture ;
+        private readonly ProjectFixture _projectFixture ;
 #pragma warning restore 169
 
         private JsonSerializerOptions _testJsonSerializerOptions ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
-            ITestOutputHelper            output
-          // , [ CanBeNull ] LoggingFixture loggingFixture
-          // , ProjectFixture               projectFixture
+            ITestOutputHelper output
+            // , [ CanBeNull ] LoggingFixture loggingFixture
+            // , ProjectFixture               projectFixture
         )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
@@ -123,7 +125,7 @@ namespace ProjTests
 
                 // if ( _loggingFixture != null )
                 // {
-                    // _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
+                // _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
                 // }
             }
         }
@@ -131,34 +133,32 @@ namespace ProjTests
         [ WpfFact ]
         public void TestRead ( )
         {
-            var x = XamlReader.Load ( new FileStream(TypesViewModelXamlPath, FileMode.Open ) ) ;
+            var x = XamlReader.Load ( new FileStream ( TypesViewModelXamlPath , FileMode.Open ) ) ;
 //            var json = JsonSerializer.Serialize ( x ) ;
         }
+
         [ WpfFact ]
         public void TEstTypesview ( )
         {
-            TypesViewModel viewModel = new TypesViewModel ( ) ;
-            viewModel.BeginInit();
-            viewModel.EndInit();
-            var stringWriter = new StringWriter() ;
-            using ( XmlWriter x = XmlWriter.Create (stringWriter
-                                
-                                                    
-                                                  , new XmlWriterSettings ( ) { Indent = true }
-                                                   ) )
-            { 
-                XamlWriter.Save ( viewModel, x ) ;
-                x.Flush();
+            var viewModel = new TypesViewModel ( ) ;
+            viewModel.BeginInit ( ) ;
+            viewModel.EndInit ( ) ;
+            var stringWriter = new StringWriter ( ) ;
+            using ( var x = XmlWriter.Create (
+                                              stringWriter
+                                            , new XmlWriterSettings ( ) { Indent = true }
+                                             ) )
+            {
+                XamlWriter.Save ( viewModel , x ) ;
+                x.Flush ( ) ;
             }
 
-                
-            XamlWriter.Save (viewModel, File.CreateText (
-                                                         TypesViewModelXamlPath
-                                                        ) ); 
-            
+
+            XamlWriter.Save ( viewModel , File.CreateText ( TypesViewModelXamlPath ) ) ;
 
 
-         
+
+
             // var typesView = new TypesView ( viewModel ) ;
             // var w = new Window { Content = typesView } ;
             // w.ShowDialog ( ) ;
@@ -168,26 +168,27 @@ namespace ProjTests
         public void TestDoc ( )
         {
             // var xml = "<Summary xmlns=\"clr-namespace:AnalysisControls.ViewModel;"
-                      // + "assembly=AnalysisControls\">Hello</Summary>" ;
+            // + "assembly=AnalysisControls\">Hello</Summary>" ;
             // var s1 = XamlReader.Parse ( xml ) ;
             // _output.WriteLine(XamlWriter.Save(s1));
-            Summary s = new Summary();
+            var s = new Summary ( ) ;
             var p = new Para ( new XmlDocText ( "hello" ) ) ;
-            s.DocumentElementCollection.Add (p) ;
+            s.DocumentElementCollection.Add ( p ) ;
             var x = XamlWriter.Save ( s ) ;
-            _output.WriteLine(x);
+            _output.WriteLine ( x ) ;
         }
+
         [ WpfFact ]
         public void TEstTypesview2 ( )
         {
-            TypesViewModel viewModel = new TypesViewModel ( ) ;
+            var viewModel = new TypesViewModel ( ) ;
             viewModel.BeginInit ( ) ;
             viewModel.EndInit ( ) ;
             var stringWriter = new StringWriter ( ) ;
-            using ( XmlWriter x = XmlWriter.Create (
-                                                    stringWriter
-                                                  , new XmlWriterSettings ( ) { Indent = true }
-                                                   ) )
+            using ( var x = XmlWriter.Create (
+                                              stringWriter
+                                            , new XmlWriterSettings ( ) { Indent = true }
+                                             ) )
             {
                 XamlWriter.Save ( viewModel , x ) ;
                 x.Flush ( ) ;
@@ -200,9 +201,6 @@ namespace ProjTests
                                               @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\Types.xaml"
                                              )
                             ) ;
-
-
-
         }
 
         //[WpfFact ]
@@ -211,36 +209,39 @@ namespace ProjTests
             var w = new Window ( ) ;
             var options = new JsonSerializerOptions { WriteIndented = true } ;
             var xaml = XamlWriter.Save ( w ) ;
-            var doc = new XmlDocument();
-            doc.LoadXml(xaml);
-            var writer = new Utf8JsonWriter(new MemoryStream());
-            var xxMyXmlWriter = new MyXmlWriter(writer);
+            var doc = new XmlDocument ( ) ;
+            doc.LoadXml ( xaml ) ;
+            var writer = new Utf8JsonWriter ( new MemoryStream ( ) ) ;
+            var xxMyXmlWriter = new MyXmlWriter ( writer ) ;
             XamlWriter.Save ( w , xxMyXmlWriter ) ;
-            var xdoc = new XDocument();
+            var xdoc = new XDocument ( ) ;
             XDocument.Parse ( xaml ) ;
 
-            
+
 
             foreach ( var xNode in xdoc.Nodes ( ) )
             {
                 switch ( xNode )
                 {
                     case XComment xComment : break ;
-                    case XCData xcData : break ;
+                    case XCData xcData :     break ;
                     case XDocument xDocument :
-                        writer.WriteStartObject();
-                        writer.WriteString( "Kind" , nameof ( XDocument ) ) ;
+                        writer.WriteStartObject ( ) ;
+                        writer.WriteString ( "Kind" , nameof ( XDocument ) ) ;
                         break ;
 
                     case XElement xElement :
 
-                    case XContainer xContainer : break ;
-                    case XDocumentType xDocumentType : break ;
+                    case XContainer xContainer :
+                        break ;
+                    case XDocumentType xDocumentType :                   break ;
                     case XProcessingInstruction xProcessingInstruction : break ;
-                    case XText xText : break ;
-                    default : throw new ArgumentOutOfRangeException ( nameof ( xNode ) ) ;
+                    case XText xText :                                   break ;
+                    default :
+                        throw new ArgumentOutOfRangeException ( nameof ( xNode ) ) ;
                 }
             }
+
             //options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
             options.WriteIndented = true ;
             var json = JsonSerializer.Serialize ( w , options ) ;
@@ -335,7 +336,7 @@ namespace ProjTests
                 Logger.Warn ( "in callback" ) ;
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
-                                                         , lifetimescope
+                                                     , lifetimescope
                                                               .Resolve < IObjectIdProvider > ( )
                                                           ) ;
                 var tree = new AllResourcesTree ( model ) ;
@@ -356,15 +357,22 @@ namespace ProjTests
         }
 
 #endif
-        public Guid ApplicationGuid { get ; set ; } = new Guid ( "d4870a23-f1ad-4618-b955-6b342c6afab6" ) ;
+        public Guid ApplicationGuid { get ; set ; } =
+            new Guid ( "d4870a23-f1ad-4618-b955-6b342c6afab6" ) ;
 
         [ WpfFact ]
         public void TestAdapter ( )
         {
             // var x = new TestApplication ( ) ;
             DebugUtils.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
-            using (var instance =
-                new ApplicationInstance(ApplicationInstance.CreateConfiguration(_output.WriteLine, ApplicationGuid)))
+            using ( var instance = new ApplicationInstance (
+                                                            ApplicationInstance
+                                                               .CreateConfiguration (
+                                                                                     _output
+                                                                                        .WriteLine
+                                                                                   , ApplicationGuid
+                                                                                    )
+                                                           ) )
             {
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
@@ -395,13 +403,17 @@ namespace ProjTests
                         DebugUtils.WriteLine ( $"func is {func}" ) ;
                         var xx = func ( pane ) ;
                         DebugUtils.WriteLine ( xx.DisplayName ) ;
-                        DebugUtils.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
+                        DebugUtils.WriteLine (
+                                              $"{Thread.CurrentThread.ManagedThreadId} projTests"
+                                             ) ;
                         xx.ExecuteAsync ( )
                           .ContinueWith (
                                          task => {
                                              if ( task.IsFaulted )
                                              {
-                                                 DebugUtils.WriteLine ( task.Exception.ToString ( ) ) ;
+                                                 DebugUtils.WriteLine (
+                                                                       task.Exception.ToString ( )
+                                                                      ) ;
                                              }
                                              else
                                              {
@@ -484,7 +496,7 @@ namespace ProjTests
 
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
-                                                         , lifetimescope
+                                                     , lifetimescope
                                                               .Resolve < IObjectIdProvider > ( )
                                                           ) ;
                 var tree = new AllResourcesTree ( model ) ;
@@ -494,52 +506,46 @@ namespace ProjTests
         }
 #endif
 
-        [ WpfFact(Timeout = 30000) ]
+        [ WpfFact ( Timeout = 30000 ) ]
         public void Test123 ( )
         {
             // AppLoggingConfigHelper.Performant = true ;
             // for (int i = 0 ; i < 100; i++ )
             // {
-                // AppLoggingConfigHelper.EnsureLoggingConfiguredAsync ( message => { } )
-                                      // .ContinueWith ( task => AppLoggingConfigHelper.Shutdown ( ) )
-                                      // .Wait ( ) ;
+            // AppLoggingConfigHelper.EnsureLoggingConfiguredAsync ( message => { } )
+            // .ContinueWith ( task => AppLoggingConfigHelper.Shutdown ( ) )
+            // .Wait ( ) ;
             // }
         }
-        [WpfFact]
+
+        [ WpfFact ]
         private void Dump1 ( )
         {
-            JsonImageConverterFactory factory = new JsonImageConverterFactory();
-            LineGeometry x = new LineGeometry ( new Point ( 0 , 0 ) , new Point ( 10 , 10 ) ) ;
-            GeometryDrawing y = new GeometryDrawing (
-                                                     new SolidColorBrush ( Colors.Blue )
-                                                   , new Pen (
-                                                              new SolidColorBrush ( Colors.Green ), 2
-                                                             )
-                                                   , x
-                                                    ) ;
+            var factory = new JsonImageConverterFactory ( ) ;
+            var x = new LineGeometry ( new Point ( 0 , 0 ) , new Point ( 10 , 10 ) ) ;
+            var y = new GeometryDrawing (
+                                         new SolidColorBrush ( Colors.Blue )
+                                       , new Pen ( new SolidColorBrush ( Colors.Green ) , 2 )
+                                       , x
+                                        ) ;
             ImageSource xx = new DrawingImage ( y ) ;
             var jsonConverter =
-                (JsonConverter<ImageSource>)factory.CreateConverter ( xx.GetType ( ) , new JsonSerializerOptions ( ) ) ;
+                ( JsonConverter < ImageSource > ) factory.CreateConverter (
+                                                                           xx.GetType ( )
+                                                                         , new
+                                                                               JsonSerializerOptions ( )
+                                                                          ) ;
             var memoryStream = new MemoryStream ( ) ;
-            var jsonwriterxx = new JsonWriterOptions();
-            var jsonWriterOptions = new JsonSerializerOptions( ) ;
-            var utf8JsonWriter = new Utf8JsonWriter (
-                                                     memoryStream
-                                                   , jsonwriterxx
-                                                    ) ;
-            jsonConverter.Write (
-                                 utf8JsonWriter, xx, jsonWriterOptions
-                                ) ;
-            utf8JsonWriter.Flush();
-            memoryStream.Flush();
-            byte[] bytes = new byte[memoryStream.Length] ;
+            var jsonwriterxx = new JsonWriterOptions ( ) ;
+            var jsonWriterOptions = new JsonSerializerOptions ( ) ;
+            var utf8JsonWriter = new Utf8JsonWriter ( memoryStream , jsonwriterxx ) ;
+            jsonConverter.Write ( utf8JsonWriter , xx , jsonWriterOptions ) ;
+            utf8JsonWriter.Flush ( ) ;
+            memoryStream.Flush ( ) ;
+            var bytes = new byte[ memoryStream.Length ] ;
             memoryStream.Seek ( 0 , SeekOrigin.Begin ) ;
             var read = memoryStream.Read ( bytes , 0 , ( int ) memoryStream.Length ) ;
             var json = Encoding.UTF8.GetString ( bytes ) ;
-
-
-
-
         }
 
         private void DumpTree (
@@ -871,10 +877,14 @@ namespace ProjTests
         [ Fact ]
         public void TestPython1 ( )
         {
-            using ( var instance =
-                new ApplicationInstance (
-                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
-                                        ) )
+            using ( var instance = new ApplicationInstance (
+                                                            new ApplicationInstance.
+                                                                ApplicationInstanceConfiguration (
+                                                                                                  _output
+                                                                                                     .WriteLine
+                                                                                                , ApplicationGuid
+                                                                                                 )
+                                                           ) )
             {
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
@@ -906,7 +916,7 @@ namespace ProjTests
             AppDomain.CurrentDomain.FirstChanceException -= CurrentDomainOnFirstChanceException ;
             // if ( ! _disableLogging )
             // {
-                // _loggingFixture.SetOutputHelper ( null ) ;
+            // _loggingFixture.SetOutputHelper ( null ) ;
             // }
         }
 
@@ -935,10 +945,14 @@ namespace ProjTests
         [ WpfFact ]
         public void TestView1 ( )
         {
-            using ( var instance =
-                new ApplicationInstance (
-                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
-                                        ) )
+            using ( var instance = new ApplicationInstance (
+                                                            new ApplicationInstance.
+                                                                ApplicationInstanceConfiguration (
+                                                                                                  _output
+                                                                                                     .WriteLine
+                                                                                                , ApplicationGuid
+                                                                                                 )
+                                                           ) )
             {
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
@@ -982,14 +996,16 @@ namespace ProjTests
         [ Fact ]
         public void TestApp ( )
         {
-            ProcessStartInfo info = new ProcessStartInfo(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\build\bin\debug\x86\ProjInterface\ProjInterface.exe");
+            var info = new ProcessStartInfo (
+                                             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\build\bin\debug\x86\ProjInterface\ProjInterface.exe"
+                                            ) ;
             var proc = Process.Start ( info ) ;
-            
-            Thread.Sleep(5000);
+
+            Thread.Sleep ( 5000 ) ;
             try
             {
-                TreeWalker walker = new TreeWalker ( Condition.TrueCondition ) ;
-                
+                var walker = new TreeWalker ( Condition.TrueCondition ) ;
+
                 var r = AutomationElement.RootElement ;
                 AutomationElement child = null ;
                 try
@@ -998,21 +1014,23 @@ namespace ProjTests
                 }
                 catch ( Exception ex )
                 {
-                    proc?.Kill();
+                    proc?.Kill ( ) ;
                     proc = null ;
                 }
 
                 var lastChild = child ;
                 for ( ; ; )
                 {
-                    HandleChild(lastChild);
+                    HandleChild ( lastChild ) ;
                     var next = walker.GetNextSibling ( lastChild ) ;
                     if ( next == null )
                     {
                         break ;
                     }
+
                     lastChild = next ;
                 }
+
                 foreach ( AutomationElement o in r.FindAll (
                                                             TreeScope.Children
                                                           , Condition.TrueCondition
@@ -1022,15 +1040,14 @@ namespace ProjTests
                     try
                     {
                         DebugUtils.WriteLine (
-                                         o.GetCachedPropertyValue (
-                                                                   AutomationElement
-                                                                      .ClassNameProperty
-                                                                  )
-                                        ) ;
+                                              o.GetCachedPropertyValue (
+                                                                        AutomationElement
+                                                                           .ClassNameProperty
+                                                                       )
+                                             ) ;
                     }
                     catch
                     {
-
                     }
                 }
 
@@ -1045,10 +1062,8 @@ namespace ProjTests
             }
             finally
             {
-                proc?.Kill();
+                proc?.Kill ( ) ;
             }
-
-            
         }
 
         private static void HandleChild ( AutomationElement child )
@@ -1064,16 +1079,19 @@ namespace ProjTests
                         var propValue = child.GetCurrentPropertyValue ( automationProperty ) ;
                         DebugUtils.WriteLine ( automationProperty.ProgrammaticName ) ;
                         DebugUtils.WriteLine ( propValue ) ;
-                    }catch(Exception)
-                    { }
+                    }
+                    catch ( Exception )
+                    {
+                    }
                 }
+
                 var c = child.GetUpdatedCache ( cacheRequest ) ;
                 var cn = c.GetCachedPropertyValue ( AutomationElement.ClassNameProperty ) ;
                 DebugUtils.WriteLine ( cn ) ;
             }
             catch ( Exception ex )
             {
-                DebugUtils.WriteLine("Got exception " + ex.Message);
+                DebugUtils.WriteLine ( "Got exception " + ex.Message ) ;
             }
         }
 
@@ -1085,10 +1103,10 @@ namespace ProjTests
             var y = XmlDocElements.DocMembers ( x ) ;
             // foreach ( var codeElementDocumentation in y.Select ( XmlDocElements.HandleDocElement ) )
             // {
-                // if ( codeElementDocumentation != null )
-                // {
-                    // DebugUtils.WriteLine ( codeElementDocumentation.ToString ( ) ) ;
-                // }
+            // if ( codeElementDocumentation != null )
+            // {
+            // DebugUtils.WriteLine ( codeElementDocumentation.ToString ( ) ) ;
+            // }
             // }
 
             // var x = TypesViewModel.LoadXmlDoc ( ) ;
@@ -1103,34 +1121,36 @@ namespace ProjTests
             // }
             // }
         }
-        [WpfFact]
+
+        [ WpfFact ]
         public void Test111 ( )
         {
-            ResourceManager x = new ResourceManager (
-                                                     "AnalysisControls.g"
-                                                   , typeof ( PythonControl ).Assembly
-                                                    ) ;
+            var x = new ResourceManager (
+                                         "AnalysisControls.g"
+                                       , typeof ( PythonControl ).Assembly
+                                        ) ;
             // ReSharper disable once ResourceItemNotResolved
             var y = x.GetStream ( "mainstatusbar.baml" ) ;
             // ReSharper disable once AssignNullToNotNullAttribute
-            var b = new Baml2006Reader(y, new XamlReaderSettings());
+            var b = new Baml2006Reader ( y , new XamlReaderSettings ( ) ) ;
             var c = b.SchemaContext ;
             var t = c.GetXamlType ( typeof ( TypesViewModel ) ) ;
         }
 
-        [Fact]
+        [ Fact ]
         public void TestLambdaAppCommand ( )
         {
             AppLoggingConfigHelper.EnsureLoggingConfigured ( SlogMethod ) ;
             var c = new LambdaAppCommand (
                                           "test"
                                         , async command => {
-                                            Logger.Info($"{command}");
-                                            Logger.Info($"{command.Argument}");
-                                            return AppCommandResult.Success ;
+                                              Logger.Info ( $"{command}" ) ;
+                                              Logger.Info ( $"{command.Argument}" ) ;
+                                              return AppCommandResult.Success ;
                                           }
                                         , "arg"
-                                        , exception => DebugUtils.WriteLine ( $"badness: {exception}" )
+                                        , exception
+                                              => DebugUtils.WriteLine ( $"badness: {exception}" )
                                          ) ;
             c.ExecuteAsync ( )
              .ContinueWith (
@@ -1147,8 +1167,7 @@ namespace ProjTests
                                 }
                             }
                            )
-             .Wait (10000 ) ;
-
+             .Wait ( 10000 ) ;
         }
 
         private void SlogMethod ( string message ) { }
@@ -1170,22 +1189,23 @@ namespace ProjTests
             var xamlType = context.GetXamlType ( typeof ( Type ) ) ;
             var xamlType2 = context.GetXamlType ( typeof ( SyntaxFieldInfo ) ) ;
             var typeMember = xamlType2.GetMember ( "Type" ) ;
-            
+
             var valueSerializer = xamlType.ValueSerializer ;
             var typeConverter = xamlType.TypeConverter ;
-            var str1 = typeConverter.ConverterInstance.ConvertToString ( typeof ( List < string > ) ) ;
+            var str1 =
+                typeConverter.ConverterInstance.ConvertToString ( typeof ( List < string > ) ) ;
             // var str = valueSerializer.ConverterInstance.ConvertToString (
-                                                               // typeof ( List < string > )
-                                                             // , null
-                                                              // ) ;
-            var @out = System.Windows.Markup.XamlWriter.Save(
-                                          new SyntaxFieldInfo
-                                          {
-                                              Name = "test" , Type = typeof ( List < string > )
-                                          }
-                                         ) ;
+            // typeof ( List < string > )
+            // , null
+            // ) ;
+            var @out = XamlWriter.Save (
+                                        new SyntaxFieldInfo
+                                        {
+                                            Name = "test" , Type = typeof ( List < string > )
+                                        }
+                                       ) ;
             DebugUtils.WriteLine ( @out ) ;
             Logger.Info ( @out ) ;
         }
     }
-    }
+}

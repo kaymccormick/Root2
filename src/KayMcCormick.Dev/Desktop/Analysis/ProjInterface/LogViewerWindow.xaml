@@ -6,7 +6,7 @@
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:projInterface="clr-namespace:ProjInterface"
                  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-                 xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+                 xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
                  xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
                  Name="logViewerWindow"
                  mc:Ignorable="d"

@@ -17,7 +17,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     internal class CodeAnalyseContext : ICodeAnalyseContext
     {

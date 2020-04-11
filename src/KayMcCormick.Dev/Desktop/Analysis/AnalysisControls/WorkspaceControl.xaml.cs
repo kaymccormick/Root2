@@ -35,6 +35,7 @@ namespace AnalysisControls
     {
         private readonly WorkspaceViewModel _viewModel;
 
+        /// <inheritdoc />
         public WorkspaceControl( WorkspaceViewModel viewModel )
         {
             _viewModel = viewModel ;
@@ -42,6 +43,7 @@ namespace AnalysisControls
         }
 
         #region Implementation of IView<out WorkspaceViewModel>
+        /// <inheritdoc />
         public WorkspaceViewModel ViewModel => _viewModel;
         #endregion
 
@@ -51,6 +53,7 @@ namespace AnalysisControls
         }
 
         #region Implementation of IViewWithTitle
+        /// <inheritdoc />
         public string ViewTitle { get ; } = "workspaces" ;
         #endregion
 
@@ -67,8 +70,12 @@ namespace AnalysisControls
         }
     }
 
-    public class WorkspaceViewModel : IViewModel, INotifyPropertyChanged
+    /// <inheritdoc />
+    public sealed class WorkspaceViewModel : IViewModel, INotifyPropertyChanged
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ICollectionView ProjectCollectionView
         {
             get
@@ -87,9 +94,13 @@ namespace AnalysisControls
 
         private AdhocWorkspace _workspace ;
         #region Implementation of ISerializable
+        /// <inheritdoc />
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void CreateWorkspace ( )
         {
             AdhocWorkspace workspace = new AdhocWorkspace();
@@ -124,6 +135,9 @@ namespace AnalysisControls
             Workspace = workspace ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AdhocWorkspace Workspace
         {
             get { return _workspace ; }
@@ -193,10 +207,11 @@ namespace AnalysisControls
 
         private void DocumentAdded ( WorkspaceChangeEventArgs workspaceChangeEventArgs ) { }
 
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
-        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
@@ -226,6 +241,9 @@ namespace AnalysisControls
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectId CurrentProjectId => Workspace.CurrentSolution.Projects.First ( ).Id ;
     }
 }

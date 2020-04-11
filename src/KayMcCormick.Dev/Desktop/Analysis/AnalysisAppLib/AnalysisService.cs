@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

@@ -16,7 +16,7 @@ using System.Threading.Tasks ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
 
-namespace AnalysisAppLib.ViewModel
+namespace AnalysisAppLib.XmlDoc.ViewModel
 {
     /// <summary>
     /// 

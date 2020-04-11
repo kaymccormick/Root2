@@ -10,7 +10,6 @@
 // ---
 #endregion
 using JetBrains.Annotations;
-using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections;
@@ -18,13 +17,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 #if POCO
-using PocoSyntax ;
+
 #endif
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 
@@ -217,6 +217,12 @@ namespace AnalysisAppLib
                       .ChildNodes.OfType < XmlElement > ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IEnumerable DocMembers ( [ NotNull ] XDocument doc )
         {
             if ( doc == null )
@@ -224,9 +230,23 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( doc ) ) ;
             }
 
-            return doc.Root.Elements ( "member" ) ;
+            if ( doc.Root != null )
+            {
+                return doc.Root.Elements ( "member" ) ;
+            }
+
+            throw new InvalidOperationException ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xDocument"></param>
+        /// <param name="elementId"></param>
+        /// <param name="member"></param>
+        /// <param name="declared"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         [CanBeNull]
         public static CodeElementDocumentation HandleDocElementNode (
             [ NotNull ] XDocument   xDocument
@@ -367,23 +387,38 @@ namespace AnalysisAppLib
                 default : throw new ArgumentOutOfRangeException ( ) ;
             }
 #endif
-            docElem.ElementId = elementId ;
-
-            foreach ( var xmlDocElement in xmlDoc )
+            if ( docElem != null )
             {
-                docElem.XmlDoc.Add ( xmlDocElement ) ;
+                docElem.ElementId = elementId ;
+
+                foreach ( var xmlDocElement in xmlDoc )
+                {
+                    docElem.XmlDoc.Add ( xmlDocElement ) ;
+                }
+
+                return docElem ;
             }
 
-            return docElem ;
+            throw new InvalidOperationException ( ) ;
         }
     }
 
+    /// <summary>
+    /// Quote inline block XML documentation element.
+    /// </summary>
     public class Quoteinline : BlockDocElem
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Quoteinline ( ) {
         }
 
-        public Quoteinline ( IEnumerable < XmlDocElement > @select ) : base(@select)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="select"></param>
+        public Quoteinline ( IEnumerable < XmlDocElement > select ) : base(select)
         {
 
         }

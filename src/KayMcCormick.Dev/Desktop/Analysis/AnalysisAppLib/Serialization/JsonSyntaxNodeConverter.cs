@@ -14,13 +14,13 @@ using System.Collections.Generic ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.XmlDoc.Syntax ;
 using FindLogUsages ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
-namespace AnalysisAppLib.Serialization
+namespace AnalysisAppLib.XmlDoc.Serialization
 {
     /// <summary>
     /// 

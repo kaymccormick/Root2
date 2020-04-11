@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
              xmlns:projInterface="clr-namespace:ProjInterface"
-             xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+             xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
              xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">

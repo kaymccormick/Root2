@@ -20,7 +20,7 @@ using KayMcCormick.Dev ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

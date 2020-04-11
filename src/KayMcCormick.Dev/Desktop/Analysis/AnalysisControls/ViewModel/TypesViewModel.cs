@@ -9,28 +9,27 @@ using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
 using System.Xml ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Properties ;
+using AnalysisAppLib.XmlDoc ;
+using AnalysisAppLib.XmlDoc.Properties ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using NLog ;
-using ComponentInfo = AnalysisAppLib.ComponentInfo ;
+using ComponentInfo = AnalysisAppLib.XmlDoc.ComponentInfo ;
 
 namespace AnalysisControls.ViewModel
 {
     /// <summary>
     /// </summary>
-    [NoJsonConverter]
+    [ NoJsonConverter ]
     public sealed class TypesViewModel : ITypesViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
         private DateTime _initializationDateTime ;
-        private bool _showBordersIsChecked ;
+        private bool     _showBordersIsChecked ;
 
         private uint[] _hierarchyColors =
         {
@@ -47,7 +46,6 @@ namespace AnalysisControls.ViewModel
 #if false
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
-        private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
 #endif
 
         private Dictionary < Type , TypeDocInfo >
@@ -57,10 +55,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         // ReSharper disable once EmptyConstructor
-        public TypesViewModel ( )
-        {
-            InitializationDateTime = DateTime.Now ;
-        }
+        public TypesViewModel ( ) { InitializationDateTime = DateTime.Now ; }
 
         internal void LoadSyntaxFactoryDocs ( )
         {
@@ -197,10 +192,9 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public static Dictionary < Type , TypeDocInfo > LoadXmlDoc ( )
         {
-            var docDict = new Dictionary<Type, TypeDocInfo>();
+            var docDict = new Dictionary < Type , TypeDocInfo > ( ) ;
             return docDict ;
 #if false
-
             var doc = LoadDoc ( ) ;
             if ( doc.DocumentElement == null )
             {
@@ -230,7 +224,7 @@ namespace AnalysisControls.ViewModel
                     case MethodDocumentation methodDocumentation :
                         if ( ! info.MethodDocumentation.TryGetValue (
                                                                      methodDocumentation.MemberName
-                                                               , out var docs
+                                                           , out var docs
                                                                     ) )
                         {
                             docs =
@@ -262,7 +256,7 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public static XmlDocument LoadDoc ( )
         {
-            var xml = Resources.doc;
+            var xml = Resources.doc ;
             var docuDoc = new XmlDocument ( ) ;
             docuDoc.LoadXml ( xml ) ;
             return docuDoc ;
@@ -272,7 +266,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
-        [JsonIgnore]
+        [ JsonIgnore ]
         public AppTypeInfo Root
         {
             get { return root ; }
@@ -317,7 +311,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection();
+        public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection ( ) ;
 
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos (
@@ -362,13 +356,13 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-#region Implementation of ISerializable
+        #region Implementation of ISerializable
         /// <summary>
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-#endregion
+        #endregion
 
         /// <summary>
         /// </summary>
@@ -380,7 +374,7 @@ namespace AnalysisControls.ViewModel
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
 
-#region Implementation of ISupportInitialize
+        #region Implementation of ISupportInitialize
         /// <summary>
         /// 
         /// </summary>
@@ -446,7 +440,8 @@ namespace AnalysisControls.ViewModel
                     }
                     else
                     {
-                        if ( rField.Type != null && Map.Contains(rField.Type))
+                        if ( rField.Type != null
+                             && Map.Contains ( rField.Type ) )
                         {
                             rField.Types.Add ( Map.dict[ rField.Type ] ) ;
                         }
@@ -466,9 +461,9 @@ namespace AnalysisControls.ViewModel
 
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos2 (
-            AppTypeInfo parentTypeInfo
-          , [ NotNull ] Type        rootR
-          , int         level = 0
+            AppTypeInfo      parentTypeInfo
+          , [ NotNull ] Type rootR
+          , int              level = 0
         )
         {
             // if (_docs.TryGetValue(
@@ -500,6 +495,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="r"></param>
         public void PopulateFieldTypes ( [ NotNull ] AppTypeInfo r )
         {
+            // find way to eliminate this
             foreach ( SyntaxFieldInfo rField in r.Fields )
             {
                 if ( rField.TypeName == "SyntaxList<SyntaxToken>" )
@@ -521,7 +517,9 @@ namespace AnalysisControls.ViewModel
                 {
                     var id = gns.Identifier.ValueText ;
                     var t0 = typeof ( SyntaxNode ).Assembly.GetType (
-                                                                     "Microsoft.CodeAnalysis." + id + "`1"
+                                                                     "Microsoft.CodeAnalysis."
+                                                                     + id
+                                                                     + "`1"
                                                                     ) ;
                     if ( t0 == null )
                     {
@@ -532,7 +530,8 @@ namespace AnalysisControls.ViewModel
                         var s = ( SimpleNameSyntax ) gns.TypeArgumentList.Arguments[ 0 ] ;
                         var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType (
                                                                                "Microsoft.CodeAnalysis.CSharp.Syntax."
-                                                                               + s.Identifier.ValueText
+                                                                               + s.Identifier
+                                                                                  .ValueText
                                                                               ) ;
                         if ( t1 == null )
                         {
@@ -560,7 +559,7 @@ namespace AnalysisControls.ViewModel
                                                                    ) ;
                         if ( t == null )
                         {
-                            DebugUtils.WriteLine ( rField.TypeName ) ;
+                            //DebugUtils.WriteLine ( rField.TypeName ) ;
                         }
                     }
 
@@ -576,7 +575,7 @@ namespace AnalysisControls.ViewModel
                 types.Add ( ati ) ;
             }
 
-            foreach ( AppTypeInfo atiSubTypeInfo in ati.SubTypeInfos )
+            foreach ( var atiSubTypeInfo in ati.SubTypeInfos )
             {
                 Collect ( atiSubTypeInfo , types ) ;
             }
@@ -585,7 +584,7 @@ namespace AnalysisControls.ViewModel
         private void PopulateMap ( [ NotNull ] AppTypeInfo appTypeInfo )
         {
             Map[ appTypeInfo.Type ] = appTypeInfo ;
-            foreach ( AppTypeInfo subTypeInfo in appTypeInfo.SubTypeInfos )
+            foreach ( var subTypeInfo in appTypeInfo.SubTypeInfos )
             {
                 PopulateMap ( subTypeInfo ) ;
             }
@@ -599,23 +598,23 @@ namespace AnalysisControls.ViewModel
                               .ToList ( ) ;
             Root = CollectTypeInfos ( null , rootR ) ;
         }
-#endregion
+        #endregion
 
-#region Implementation of ISupportInitializeNotification
-        /// <summary>
-        /// 
-        /// </summary>
+        #region Implementation of ISupportInitializeNotification
+        /// <inheritdoc />
         public bool IsInitialized { get ; set ; }
 
+        /// <summary>
+        /// An approximate time as to when the view model was initialized and/or populated with extended information.
+        /// </summary>
         public DateTime InitializationDateTime
         {
-            get { return _initializationDateTime ; }
+            [ UsedImplicitly ] get { return _initializationDateTime ; }
             set { _initializationDateTime = value ; }
         }
 
-        /// <summary>
-        /// </summary>
+        /// <inheritdoc />
         public event EventHandler Initialized ;
-#endregion
+        #endregion
     }
 }

@@ -11,9 +11,9 @@
   xmlns:analysisControls="clr-namespace:AnalysisControls"
   xmlns:interfaces="clr-namespace:AnalysisControls.Interfaces"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
-  xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
-  xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
+  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
+  xmlns:viewModel="clr-namespace:AnalysisAppLib.XmlDoc.ViewModel;assembly=AnalysisAppLib"
+  xmlns:syntax="clr-namespace:AnalysisAppLib.XmlDoc.Syntax;assembly=AnalysisAppLib"
   mc:Ignorable="d" FontSize="18.0"
   Title="Window1" Height="450" Width="800">
   <kmWpf:AppWindow.Resources>

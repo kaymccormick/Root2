@@ -15,13 +15,13 @@ using System.Text.Json ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using AnalysisAppLib.Project ;
+using AnalysisAppLib.XmlDoc.Project ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.StackTrace ;
 using NLog ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

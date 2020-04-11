@@ -15,7 +15,7 @@ using System.Diagnostics ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
-using AnalysisAppLib ;
+using AnalysisAppLib.XmlDoc ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;

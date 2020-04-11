@@ -57,6 +57,7 @@ namespace KayMcCormick.Dev.Command
             return new AppCommandResult { IsSuccess = false , Exception = taskException } ;
         }
 
+        /// <inheritdoc />
         public override string ToString ( ) { return $"Exception: {Exception}, IsSuccess: {IsSuccess}" ; }
     }
 }

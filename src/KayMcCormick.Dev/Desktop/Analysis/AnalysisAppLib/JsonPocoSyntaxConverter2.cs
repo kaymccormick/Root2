@@ -15,22 +15,30 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using PocoSyntax ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class JsonPocoSyntaxConverter2 : JsonConverterFactory
     {
         private readonly Type _excludeType ;
+
+        /// <inheritdoc />
         public JsonPocoSyntaxConverter2 ( Type excludeType ) { _excludeType = excludeType ; }
         #region Overrides of JsonConverter
+        /// <inheritdoc />
         public JsonPocoSyntaxConverter2 ( ) {
         }
 
+        /// <inheritdoc />
         public override bool CanConvert(Type typeToConvert)
         {
             return typeToConvert != _excludeType && typeof(PocoCSharpSyntaxNode).IsAssignableFrom(typeToConvert);
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <inheritdoc />
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

@@ -11,7 +11,7 @@
 #endregion
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 

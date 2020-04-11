@@ -3,7 +3,6 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Globalization ;
 using System.Linq ;
 using System.Reflection ;
@@ -12,12 +11,11 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Text.RegularExpressions ;
 using System.Windows.Markup ;
-using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis.CSharp ;
 
-namespace AnalysisAppLib
+namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     ///     <para>Represents a Syntax Node type in the application.</para>
@@ -477,21 +475,33 @@ namespace AnalysisAppLib
         // ReSharper disable once UnusedMember.Global
         public bool Optional { get { return _optional; } set { _optional = value; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ClrTypeName { get { return _clrTypeName; } set { _clrTypeName = value; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ElementTypeMetadataName { get { return _elementTypeMetadataName ; } set { _elementTypeMetadataName = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsCollection { get { return _isCollection ; } set { _isCollection = value ; } }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"TypeName: {TypeName}, Name: {Name}, Kinds: {Kinds}, Type: {Type}, Types: {Types}, ClrTypes: {ClrTypes}, Override: {Override}, Optional: {Optional}";
         }
     }
 
+    /// <inheritdoc />
     public class SyntaxFieldInfoTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
+        /// <inheritdoc />
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
             if ( destinationType == typeof ( string ) )
@@ -499,10 +509,11 @@ namespace AnalysisAppLib
                 return true ;
             }
 
-            DebugUtils.WriteLine ( $"Ca convert to {destinationType}" ) ;
+            //DebugUtils.WriteLine ( $"Ca convert to {destinationType}" ) ;
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
+        /// <inheritdoc />
         public override object ConvertTo (
             ITypeDescriptorContext context
           , CultureInfo            culture
@@ -523,9 +534,11 @@ namespace AnalysisAppLib
         #endregion
     }
 
-    public class SyntaxFieldTypeTypeConverter : TypeConverter
+    /// <inheritdoc />
+    public sealed class SyntaxFieldTypeTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
+        /// <inheritdoc />
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
             if(destinationType == typeof(string))
@@ -535,6 +548,7 @@ namespace AnalysisAppLib
             return base.CanConvertTo ( context , destinationType ) ;
         }
 
+        /// <inheritdoc />
         public override object ConvertTo (
             ITypeDescriptorContext context
           , CultureInfo            culture
@@ -551,9 +565,11 @@ namespace AnalysisAppLib
         #endregion
     }
 
+    /// <inheritdoc />
     public class SyntaxFieldTypeValueSerializer : ValueSerializer
     {
         #region Overrides of ValueSerializer
+        /// <inheritdoc />
         public override bool CanConvertToString ( object value , IValueSerializerContext context )
         {
             if ( value is Type )
@@ -563,6 +579,7 @@ namespace AnalysisAppLib
             return base.CanConvertToString ( value , context ) ;
         }
 
+        /// <inheritdoc />
         public override string ConvertToString ( object value , IValueSerializerContext context )
         {
             if ( value is Type t )
@@ -589,23 +606,37 @@ namespace AnalysisAppLib
     public sealed class SyntaxKindCollection : IList, ICollection, IEnumerable
     {
         private readonly IList _list = new List < SyntaxKind > ( ) ;
+
+        /// <inheritdoc />
         public IEnumerator GetEnumerator ( ) => _list.GetEnumerator ( ) ;
+        /// <inheritdoc />
         public void CopyTo ( Array array , int index ) => _list.CopyTo ( array , index ) ;
 
+        /// <inheritdoc />
         public int Count => _list.Count ;
 
+        /// <inheritdoc />
         public object SyncRoot => _list.SyncRoot ;
 
+        /// <inheritdoc />
         public bool IsSynchronized => _list.IsSynchronized ;
 
+        /// <inheritdoc />
         public int Add ( object value ) => _list.Add ( value ) ;
+        /// <inheritdoc />
         public bool Contains ( object value ) => _list.Contains ( value ) ;
+        /// <inheritdoc />
         public void Clear ( ) => _list.Clear ( ) ;
+        /// <inheritdoc />
         public int IndexOf ( object value ) => _list.IndexOf ( value ) ;
+        /// <inheritdoc />
         public void Insert ( int index , object value ) => _list.Insert ( index , value ) ;
+        /// <inheritdoc />
         public void Remove ( object value ) => _list.Remove ( value ) ;
+        /// <inheritdoc />
         public void RemoveAt ( int index ) => _list.RemoveAt ( index ) ;
-
+        
+        /// <inheritdoc />
         public object this [ int index ]
         {
             get => _list[ index ] ;
@@ -613,8 +644,10 @@ namespace AnalysisAppLib
         }
 
 
+        /// <inheritdoc />
         public bool IsReadOnly => false ;
 
+        /// <inheritdoc />
         public bool IsFixedSize => _list.IsFixedSize ;
     }
 
@@ -685,6 +718,10 @@ namespace AnalysisAppLib
     {
     }
 
+    /// <summary>
+    /// Wrapper class around <see cref="MethodInfo"/>. Supplies extra information if necessary and other potentially =
+    /// usel information anf facilities. Method parameters are individually wrapped in <see cref="AppParameterInfo"/>
+    /// </summary>
     public sealed class AppMethodInfo
     {
         private MethodInfo _methodInfo;
@@ -733,15 +770,15 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// </summary
+        /// </summary>
         [JsonIgnore]
         public MethodDocumentation XmlDoc { get; set; }
     }
 
     /// <summary>
-    /// 
+    /// See <see cref="AppMethodInfo"/>.
     /// </summary>
-    public class AppParameterInfo
+    public sealed class AppParameterInfo
     {
         private int    _index;
         private bool   _isOptional;
@@ -749,7 +786,7 @@ namespace AnalysisAppLib
         private Type   _parameterType;
 
         /// <summary>
-        /// 
+        /// Type of parameter.
         /// </summary>
         public Type ParameterType
         {
@@ -758,17 +795,17 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// 
+        /// Is parameter optional?
         /// </summary>
         public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
 
         /// <summary>
-        /// 
+        /// Name of parameter
         /// </summary>
         public string Name { get { return _name; } set { _name = value; } }
 
         /// <summary>
-        /// 
+        /// Zero-based index of parameter.
         /// </summary>
         public int Index { get { return _index; } set { _index = value; } }
     }

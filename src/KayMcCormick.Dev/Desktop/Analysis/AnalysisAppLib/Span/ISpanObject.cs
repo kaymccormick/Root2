@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace AnalysisAppLib.Span
+namespace AnalysisAppLib.XmlDoc.Span
 {
     /// <summary>
     /// 
