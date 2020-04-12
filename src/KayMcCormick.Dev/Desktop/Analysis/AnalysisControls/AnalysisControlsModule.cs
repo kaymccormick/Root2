@@ -33,19 +33,18 @@ namespace AnalysisControls
 {
     // made internal 3/11
     /// <summary>
-    /// 
     /// </summary>
     public sealed class AnalysisControlsModule : Module
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="builder"></param>
         protected override void Load ( ContainerBuilder builder )
         {
 #if false
             builder.RegisterAssemblyTypes(ThisAssembly).Where(type => {
-                                                                  var isAssignableFrom = typeof ( IViewModel )
+                                                                  var isAssignableFrom =
+ typeof ( IViewModel )
                                                                                             .IsAssignableFrom (
                                                                                                                type
                                                                                                               )
@@ -76,12 +75,10 @@ namespace AnalysisControls
                                                                       ) ;
             builder.RegisterType < TypesView > ( )
                    .AsSelf ( )
-                   .As<IControlView> (  )
+                   .As < IControlView > ( )
                    .WithMetadata (
                                   "ImageSource"
-                                , 
-                                           "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
-                                          
+                                , "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
                                  )
                    .WithMetadata ( "Ribbon" , true ) ;
 
@@ -98,47 +95,47 @@ namespace AnalysisControls
 
             builder.Register (
                               ( context , parameters ) => {
-                                  if ( parameters.TypedAs < bool > ( ) == false )
+                                  try
                                   {
-                                      return new TypesViewModel ( ) ;
+                                      if ( parameters.TypedAs < bool > ( ) == false )
+                                      {
+                                          return new TypesViewModel ( ) ;
+                                      }
                                   }
-                                  else
+                                  catch ( Exception ex )
                                   {
-                                      var stream = Assembly.GetExecutingAssembly ( )
-                                                           .GetManifestResourceStream (
-                                                                                       "AnalysisControls.TypesViewModel.xaml"
-                                                                                      ) ;
+                                      DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                                  }
+
+                                  using ( var stream = Assembly
+                                                      .GetExecutingAssembly ( )
+                                                      .GetManifestResourceStream (
+                                                                                  "AnalysisControls.TypesViewModel.xaml"
+                                                                                 ) )
+                                  {
                                       if ( stream == null )
                                       {
                                           DebugUtils.WriteLine ( "no stream" ) ;
                                           return new TypesViewModel ( ) ;
                                       }
-                                      else
+
+                                      try
                                       {
-                                          try
-                                          {
-                                              var v = ( TypesViewModel ) XamlReader
-                                                 .Load ( stream ) ;
-                                              stream.Close ( ) ;
-                                              return v ;
-                                          }
-                                          catch ( Exception )
-                                          {
-                                              return new TypesViewModel ( ) ;
-                                          }
+                                          var v = ( TypesViewModel ) XamlReader.Load ( stream ) ;
+                                          stream.Close ( ) ;
+                                          return v ;
+                                      }
+                                      catch ( Exception )
+                                      {
+                                          return new TypesViewModel ( ) ;
                                       }
                                   }
                               }
-                             ).AsSelf ( )
+                             )
+                   .AsSelf ( )
                    .AsImplementedInterfaces ( ) ;
-            
-            //TypesViewModelContainer x = new TypesViewModelContainer();
-            //x.VDocelems = new DocumentCollection(v.Docelems);
-            // var xml = XamlWriter.Save(v);
-            // DebugUtils.WriteLine ( xml ) ;
-            // builder.RegisterInstance(v).As<ITypesViewModel> (  ).SingleInstance();
-            
-            //builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
+
+
             builder.RegisterType < SyntaxPanel > ( )
                    .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
                    .AsSelf ( ) ;
@@ -146,20 +143,15 @@ namespace AnalysisControls
                    .AsImplementedInterfaces ( )
                    .AsSelf ( ) ;
 #endif
-
-            // builder.Register (
-            //                   ( c , p ) => {
-            //                       var listView = Func ( c , p ) ;
-            //                       return new ContentControlView { Content = listView } ;
-            //                   }
-            //                  )
-            //        .WithMetadata ( "Title" , "Syntax Token View" )
-            //        .As < IControlView > ( ) ;
-            // builder.RegisterType < PythonViewModel > ( ).AsSelf ( ) ;
         }
 
         [ NotNull ]
-        private FrameworkElement Func ( [ NotNull ] IComponentContext c1 , IEnumerable < Parameter > p1 )
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        private FrameworkElement Func (
+            [ NotNull ] IComponentContext c1
+          , IEnumerable < Parameter >     p1
+        )
         {
             var gridView = new GridView ( ) ;
             gridView.Columns.Add (
@@ -206,142 +198,86 @@ namespace AnalysisControls
     }
 
     /// <summary>
-    /// 
     /// </summary>
-    [ContentProperty("VDocelems")]
-    public class TypesViewModelContainer
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public DocumentCollection VDocelems { get ; set ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public TypesViewModelContainer ( ) {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vDocelems"></param>
-        public TypesViewModelContainer (
-            DocumentCollection vDocelems
-        )
-        {
-            VDocelems = vDocelems ;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DocumentCollection : IList, ICollection, IEnumerable 
+    public class DocumentCollection : IList , ICollection , IEnumerable
 
     {
-        private IList _list ;
+        private readonly IList _list ;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="list"></param>
         public DocumentCollection ( IList list ) { _list = list ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public DocumentCollection ( ) {
-            _list = new ArrayList();
-        }
+        public DocumentCollection ( ) { _list = new ArrayList ( ) ; }
 
         #region Implementation of IEnumerable
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public IEnumerator GetEnumerator ( ) { return _list.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="array"></param>
         /// <param name="index"></param>
         public void CopyTo ( Array array , int index ) { _list.CopyTo ( array , index ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
-        public int Count
-        {
-            get { return _list.Count ; }
-        }
+        public int Count { get { return _list.Count ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public object SyncRoot
-        {
-            get { return _list.SyncRoot ; }
-        }
+        public object SyncRoot { get { return _list.SyncRoot ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool IsSynchronized
-        {
-            get { return _list.IsSynchronized ; }
-        }
+        public bool IsSynchronized { get { return _list.IsSynchronized ; } }
         #endregion
         #region Implementation of IList
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public int Add ( object value ) { return _list.Add ( value ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public bool Contains ( object value ) { return _list.Contains ( value ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         public void Clear ( ) { _list.Clear ( ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public int IndexOf ( object value ) { return _list.IndexOf ( value ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
         public void Insert ( int index , object value ) { _list.Insert ( index , value ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         public void Remove ( object value ) { _list.Remove ( value ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="index"></param>
         public void RemoveAt ( int index ) { _list.RemoveAt ( index ) ; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="index"></param>
         public object this [ int index ]
@@ -351,20 +287,12 @@ namespace AnalysisControls
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool IsReadOnly
-        {
-            get { return _list.IsReadOnly ; }
-        }
+        public bool IsReadOnly { get { return _list.IsReadOnly ; } }
 
         /// <summary>
-        /// 
         /// </summary>
-        public bool IsFixedSize
-        {
-            get { return _list.IsFixedSize ; }
-        }
+        public bool IsFixedSize { get { return _list.IsFixedSize ; } }
         #endregion
     }
 }

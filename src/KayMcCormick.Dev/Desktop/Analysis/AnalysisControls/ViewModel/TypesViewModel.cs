@@ -131,7 +131,9 @@ namespace AnalysisControls.ViewModel
                         AppTypeInfo otherTypeInfo = null ;
                         if ( t.IsGenericType )
                         {
+                            DebugUtils.WriteLine ( $"{t} is Generic" ) ;
                             var targ = t.GenericTypeArguments[ 0 ] ;
+                            DebugUtils.WriteLine ( $"{targ}") ;
                             if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
                                  && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                             {
@@ -264,33 +266,43 @@ namespace AnalysisControls.ViewModel
                                   , out var info
                                    ) )
             {
-                docNode = info.TypeDocumentation ;
+                if ( info.TypeDocumentation != null )
+                {
+                    docNode = info.TypeDocumentation ;
+                }
             }
 
-            CollectDoc ( docNode ) ;
-            var r = new AppTypeInfo
-                    {
-                        Type           = rootR
-                      , DocInfo        = docNode
-                      , ParentInfo     = parentTypeInfo
-                      , HierarchyLevel = level
-                      , ColorValue     = HierarchyColors[ level ]
-                    } ;
-            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
-            {
-                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
-            }
-
-            Map[ rootR ] = r ;
-            return r ;
-        }
-
-        private void CollectDoc ( [ CanBeNull ] CodeElementDocumentation docNode )
-        {
             if ( docNode != null )
             {
-                DocumentCollection.Add ( docNode ) ;
+                CollectDoc ( docNode ) ;
+                var r = new AppTypeInfo
+                        {
+                            Type           = rootR
+                          , DocInfo        = docNode
+                          , ParentInfo     = parentTypeInfo
+                          , HierarchyLevel = level
+                          , ColorValue     = HierarchyColors[ level ]
+                        } ;
+                foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+                {
+                    r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
+                }
+
+                Map[ rootR ] = r ;
+                return r ;
             }
+        }
+
+        private void CollectDoc ( [ NotNull ] CodeElementDocumentation docNode )
+        {
+            if ( docNode == null )
+            {
+                throw new ArgumentNullException ( nameof ( docNode ) ) ;
+            }
+
+                DebugUtils.WriteLine($"{docNode}")
+                DocumentCollection.Add ( docNode ) ;
+            
         }
 
         #region Implementation of ISerializable

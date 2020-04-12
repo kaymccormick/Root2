@@ -1717,6 +1717,11 @@ namespace ConsoleApp1
           , [ NotNull ] AppTypeInfo                                  appTypeInfo
         )
         {
+            if ( appTypeInfo == null )
+            {
+                throw new ArgumentNullException ( nameof ( appTypeInfo ) ) ;
+            }
+
             var q =
                 from SyntaxFieldInfo field in appTypeInfo.Fields
                 let s = parseTypeName as SimpleNameSyntax
@@ -1784,7 +1789,7 @@ namespace ConsoleApp1
         {
             return compl.WithUsings (
                                      new SyntaxList < UsingDirectiveSyntax > (
-                                                                              new[]
+                                                                             new[]
                                                                               {
                                                                                   UsingDirective (
                                                                                                   ParseName (
@@ -1962,11 +1967,9 @@ namespace ConsoleApp1
                 throw new ArgumentNullException ( nameof ( collectionMap ) ) ;
             }
 
-            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
             
-            typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
-
-            var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
+            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
+            var t2 = MapTypeNameToSyntaxNode ( model1, typeName2 ) ;
             if ( t2 == null )
             {
                 DebugUtils.WriteLine ( "No type for " + typeName2 ) ;
@@ -2026,20 +2029,32 @@ namespace ConsoleApp1
             }
         }
 
+        private static Type MapTypeNameToSyntaxNode ( TypesViewModel model1 , string typeName2 )
+        {
+            return model1.Map.dict.First ( k => k.Value.Type.Name == typeName2 ).Value.Type ;
+        }
+
         private static void ParseField ( [ NotNull ] XElement field , [ NotNull ] AppTypeInfo typ2 )
         {
-            var fieldName = field.Attribute ( XName.Get ( "Name" ) )?.Value ;
-            var fieldType = field.Attribute ( XName.Get ( "Type" ) )?.Value ;
-            var @override = field.Attribute ( XName.Get ( "Override" ) )?.Value == "true" ;
-            var optional = field.Attribute ( XName.Get ( "Optional" ) )?.Value  == "true" ;
+            var NameAttributeName = XName.Get ( "Name" ) ;
+            var typeAttributeName = XName.Get("Type");
+            var overrideAttributeName = XName.Get("Override");
+            var optionalAttributeName = XName.Get("Optional");
+
+            var fieldName = field.Attribute ( NameAttributeName )?.Value ;
+            var fieldType = field.Attribute ( typeAttributeName )?.Value ;
+            var @override = field.Attribute ( overrideAttributeName )?.Value == "true" ;
+            var optional = field.Attribute ( optionalAttributeName )?.Value  == "true" ;
 
             var kinds = field.Elements ( "Kind" )
                              .Select ( element => element.Attribute ( "Name" )?.Value )
                              .ToList ( ) ;
             if ( kinds.Any ( ) )
             {
-                //DebugUtils.WriteLine(string.Join(", ", kinds));
+                
+                   DebugUtils.WriteLine(string.Join(", ", kinds));
             }
+
 
             var fTypeP = ParseTypeName ( fieldType ) ;
             var enumerable = false ;
