@@ -318,7 +318,7 @@ namespace ConsoleApp1
                                   $"InitializationDateTime : {typesViewModel.InitializationDateTime}"
                                  ) ;
 
-            var collectionMap = CollectionMap ( typesViewModel , s => DebugUtils.WriteLine ( s ) ) ;
+            var collectionMap = XmlDocElements.CollectionMap ( typesViewModel , s => DebugUtils.WriteLine ( s ) ) ;
 
             LoadSyntax ( typesViewModel , collectionMap ) ;
             // foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
@@ -730,7 +730,9 @@ namespace ConsoleApp1
             var workspace = MSBuildWorkspace.Create ( ) ;
             var solution = await workspace.OpenSolutionAsync ( SolutionFilePath ) ;
             var documentsOut = new List < CodeElementDocumentation > ( ) ;
-            foreach ( var project in solution.Projects.Where ( proj => proj.Name != "Explorer" ) )
+            var solutionProjects = solution.Projects ;
+            
+            foreach ( var project in solutionProjects.Where ( proj => proj.Name != "Explorer" ) )
             {
                 // ReSharper disable once UnusedVariable
                 var compilation = await project.GetCompilationAsync ( ) ;
@@ -751,56 +753,55 @@ namespace ConsoleApp1
                         // {
                         //     
                         var declared = model.GetDeclaredSymbol ( node ) ;
-                        if ( declared != null )
+                        if ( declared == null )
                         {
-                            var xml1 = declared.GetDocumentationCommentXml ( ) ;
-                            if ( declared.DeclaredAccessibility == Accessibility.Public
-                                 && SupportsDocumentationComments ( node ) )
+                            continue ;
+                        }
+
+                        var xml1 = declared.GetDocumentationCommentXml ( ) ;
+                        if ( declared.DeclaredAccessibility != Accessibility.Public || ! SupportsDocumentationComments ( node ) )
+                        {
+                            var docid = declared.GetDocumentationCommentId ( ) ;
+                               
+                            // ReSharper disable once UnusedVariable
+                            var o = new
+                                    {
+                                        docId    = docid
+                                      , xml      = xml1
+                                      , declared = declared.ToDisplayString ( )
+                                    } ;
+
+                            try
                             {
-                                var docid = declared.GetDocumentationCommentId ( ) ;
-                                // if ( xml1 == null
-                                //      || String.IsNullOrEmpty ( xml1 ) )
-                                // {
-                                // ReSharper disable once UnusedVariable
-                                var o = new
-                                        {
-                                            docId    = docid
-                                          , xml      = xml1
-                                          , declared = declared.ToDisplayString ( )
-                                        } ;
-
-                                try
+                                XDocument doc1 = null ;
+                                if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
                                 {
-                                    XDocument doc1 = null ;
-                                    if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
-                                    {
-                                        doc1 = XDocument.Parse ( xml1 ) ;
-                                    }
-
-
-                                    var o1 = XmlDocElements.HandleDocElementNode (
-                                                                                  doc1
-                                                                                , docid
-                                                                                , node
-                                                                                , declared
-                                                                                 ) ;
-                                    if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
-                                    {
-                                        o1.NeedsAttention = true ;
-                                    }
-
-                                    documentsOut.Add ( o1 ) ;
-                                }
-                                catch ( Exception ex )
-                                {
-                                    DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                                    doc1 = XDocument.Parse ( xml1 ) ;
                                 }
 
 
+                                var o1 = XmlDocElements.HandleDocElementNode (
+                                                                              doc1
+                                                                            , docid
+                                                                            , node
+                                                                            , declared
+                                                                             ) ;
+                                if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
+                                {
+                                    o1.NeedsAttention = true ;
+                                }
 
-
-                                // DebugUtils.WriteLine ( JsonSerializer.Serialize ( o ) ) ;
+                                documentsOut.Add ( o1 ) ;
                             }
+                            catch ( Exception ex )
+                            {
+                                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                            }
+
+
+
+
+                            // DebugUtils.WriteLine ( JsonSerializer.Serialize ( o ) ) ;
                         }
                     }
 
@@ -889,7 +890,7 @@ namespace ConsoleApp1
             }
 
             var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
-            var collectionMap = CollectionMap ( model1 , DebugOut ) ;
+            var collectionMap = XmlDocElements.CollectionMap ( model1 , DebugOut ) ;
             outputFunc ( "Beginning" ) ;
             var x = CSharpCompilation.Create (
                                               "test"
@@ -973,13 +974,13 @@ namespace ConsoleApp1
                     {
                         var propTypeSymbol = prop.Type ;
                         var propTypeSymbolMetadataName = propTypeSymbol.MetadataName ;
-                        var propertyTypeParsed = SubstituteTransformedPocoType (
-                                                                                ParseTypeName (
-                                                                                               propTypeSymbolMetadataName
-                                                                                              )
-                                                                              , collectionMap
-                                                                              , t
-                                                                               ) ;
+                        var propertyTypeParsed = XmlDocElements.SubstituteTransformedPocoType (
+                                                                                   ParseTypeName (
+                                                                                                  propTypeSymbolMetadataName
+                                                                                                 )
+                                                                                 , collectionMap
+                                                                                 , t
+                                                                                  ) ;
                         var propDescl = PropertyDeclaration ( propertyTypeParsed , prop.Name ) ;
                         propDescl = propDescl.WithModifiers ( publicKeyword ) ;
                         var propertyIdentifierNameSyntax = IdentifierName ( prop.Name ) ;
@@ -1416,7 +1417,7 @@ namespace ConsoleApp1
                     {
                         if ( tField.TypeName != "bool" )
                         {
-                            type = TransformParsePocoType ( type ) ;
+                            type = XmlDocElements.TransformParsePocoType ( type ) ;
                         }
                     }
 
@@ -1464,11 +1465,11 @@ namespace ConsoleApp1
                     var propertyDeclarationSyntax = PropertyDeclaration (
                                                                          attributeListSyntaxes
                                                                        , syntaxTokenList
-                                                                       , SubstituteType (
-                                                                                         tField
-                                                                                       , type
-                                                                                       , collectionMap
-                                                                                        )
+                                                                       , XmlDocElements.SubstituteType (
+                                                                                            tField
+                                                                                          , type
+                                                                                          , collectionMap
+                                                                                           )
                                                                        , null
                                                                        , propertyName
                                                                        , accessorListSyntax
@@ -1709,78 +1710,6 @@ namespace ConsoleApp1
                                                                     )
                                                    )
                                        ) ;
-        }
-
-        private static TypeSyntax SubstituteTransformedPocoType (
-            TypeSyntax                                               parseTypeName
-          , [ NotNull ] IReadOnlyDictionary < AppTypeInfo , object > collectionMap
-          , [ NotNull ] AppTypeInfo                                  appTypeInfo
-        )
-        {
-            if ( appTypeInfo == null )
-            {
-                throw new ArgumentNullException ( nameof ( appTypeInfo ) ) ;
-            }
-
-            var q =
-                from SyntaxFieldInfo field in appTypeInfo.Fields
-                let s = parseTypeName as SimpleNameSyntax
-                where field.Name == s?.Identifier.Text
-                select field.Types ;
-
-            var key = q.FirstOrDefault ( )?.FirstOrDefault ( ) ;
-            if ( key != null
-                 && collectionMap.TryGetValue ( key , out var fieldTypeName ) )
-            {
-                return ParseTypeName ( ( string ) fieldTypeName ) ;
-            }
-
-            return parseTypeName ;
-        }
-
-        private static TypeSyntax TransformParsePocoType ( TypeSyntax type )
-        {
-            if ( type is SimpleNameSyntax sns )
-            {
-                var pocoType = ParseTypeName ( _pocoPrefix + sns.Identifier.Text ) ;
-                return pocoType ;
-            }
-
-            return null ;
-        }
-
-        private TypeSyntax SubstituteType (
-            SyntaxFieldInfo                              tField
-          , [ CanBeNull ] TypeSyntax                     type
-          , IReadOnlyDictionary < AppTypeInfo , object > collectionMap
-        )
-        {
-            if ( type != null )
-            {
-                return TransformParsePocoType ( type ) ;
-            }
-
-            return SubstituteTransformedPocoType ( type , collectionMap , null ) ;
-        }
-
-        [ NotNull ]
-        private static IReadOnlyDictionary < AppTypeInfo , object > CollectionMap (
-            [ NotNull ] TypesViewModel model1
-          , Action < string >          DebugOut
-        )
-        {
-            DebugUtils.WriteLine ( $"Populating collectionMap" ) ;
-            var collectionMap = new Dictionary < AppTypeInfo , object > ( ) ;
-            foreach ( Type mapKey in model1.Map.Keys )
-            {
-                DebugOut ( $"{mapKey}" ) ;
-                var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
-                var collection = "Collection" ;
-                var colType = $"{_pocoPrefix}{t.Type.Name}{collection}" ;
-                collectionMap[ t ] = colType ;
-            }
-
-            return collectionMap ;
         }
 
         [ NotNull ]

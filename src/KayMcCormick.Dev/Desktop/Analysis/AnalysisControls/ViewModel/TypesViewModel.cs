@@ -29,7 +29,6 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
-        
         private DateTime _initializationDateTime ;
         private bool     _showBordersIsChecked ;
 
@@ -55,7 +54,6 @@ namespace AnalysisControls.ViewModel
             _docs = new Dictionary < Type , TypeDocInfo > ( ) ;
 
         /// <summary>
-        /// 
         /// </summary>
         // ReSharper disable once EmptyConstructor
         public TypesViewModel ( ) { }
@@ -133,7 +131,7 @@ namespace AnalysisControls.ViewModel
                         {
                             DebugUtils.WriteLine ( $"{t} is Generic" ) ;
                             var targ = t.GenericTypeArguments[ 0 ] ;
-                            DebugUtils.WriteLine ( $"{targ}") ;
+                            DebugUtils.WriteLine ( $"{targ}" ) ;
                             if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
                                  && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                             {
@@ -202,7 +200,6 @@ namespace AnalysisControls.ViewModel
         }
 
         /// <summary>
-        /// 
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
         [ JsonIgnore ]
@@ -238,22 +235,25 @@ namespace AnalysisControls.ViewModel
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
 
         /// <summary>
-        /// 
         /// </summary>
         public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
 
         /// <summary>
-        /// 
         /// </summary>
         public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection ( ) ;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="parentTypeInfo"></param>
+        /// <param name="rootR"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         [ NotNull ]
-        private AppTypeInfo CollectTypeInfos (
+        public AppTypeInfo CollectTypeInfos (
             AppTypeInfo      parentTypeInfo
           , [ NotNull ] Type rootR
           , int              level = 0
@@ -291,6 +291,8 @@ namespace AnalysisControls.ViewModel
                 Map[ rootR ] = r ;
                 return r ;
             }
+
+            throw new InvalidOperationException ( ) ;
         }
 
         private void CollectDoc ( [ NotNull ] CodeElementDocumentation docNode )
@@ -300,9 +302,8 @@ namespace AnalysisControls.ViewModel
                 throw new ArgumentNullException ( nameof ( docNode ) ) ;
             }
 
-                DebugUtils.WriteLine($"{docNode}")
-                DocumentCollection.Add ( docNode ) ;
-            
+            DebugUtils.WriteLine ( $"{docNode}" ) ;
+            DocumentCollection.Add ( docNode ) ;
         }
 
         #region Implementation of ISerializable
@@ -325,18 +326,16 @@ namespace AnalysisControls.ViewModel
 
         #region Implementation of ISupportInitialize
         /// <summary>
-        /// 
         /// </summary>
         public void BeginInit ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         public void EndInit ( )
         {
-            Logger.Info (nameof(EndInit)  );
+            Logger.Info ( nameof ( EndInit ) ) ;
             var mapCount = Map.Count ;
-            Logger.Info ($"Map Count {mapCount}");
+            Logger.Info ( $"Map Count {mapCount}" ) ;
             if ( mapCount != 0 )
             {
                 LoadTypeInfo2 ( ) ;
@@ -355,16 +354,20 @@ namespace AnalysisControls.ViewModel
 
             LoadSyntaxFactoryDocs ( ) ;
 //            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
-            IsInitialized = true ;
-            InitializationDateTime = DateTime.Now;
+            IsInitialized          = true ;
+            InitializationDateTime = DateTime.Now ;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public void DetailFields ( )
         {
-            foreach ( var rField in Map.dict.SelectMany ( keyValuePair => keyValuePair.Value.Fields.Cast < SyntaxFieldInfo > ( ) ) )
+            foreach ( var rField in Map.dict.SelectMany (
+                                                         keyValuePair
+                                                             => keyValuePair
+                                                               .Value.Fields
+                                                               .Cast < SyntaxFieldInfo > ( )
+                                                        ) )
             {
                 if ( rField.Type != null
                      && rField.Type.IsGenericType
@@ -399,7 +402,7 @@ namespace AnalysisControls.ViewModel
 
         private void LoadTypeInfo2 ( )
         {
-            DebugUtils.WriteLine($"Performing {nameof(LoadTypeInfo2)}");
+            DebugUtils.WriteLine ( $"Performing {nameof ( LoadTypeInfo2 )}" ) ;
             var rootR = typeof ( CSharpSyntaxNode ) ;
             _nodeTypes = rootR.Assembly.GetExportedTypes ( )
                               .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
@@ -414,7 +417,7 @@ namespace AnalysisControls.ViewModel
           , int              level = 0
         )
         {
-            DebugUtils.WriteLine($"{rootR}");
+            DebugUtils.WriteLine ( $"{rootR}" ) ;
             // if (_docs.TryGetValue(
             //                       rootR ?? throw new InvalidOperationException()
             //                     , out var info
@@ -426,10 +429,10 @@ namespace AnalysisControls.ViewModel
 //            CollectDoc(docNode);
             if ( ! Map.dict.TryGetValue ( rootR , out var curTypeInfo ) )
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException ( ) ;
             }
-            
-            DebugUtils.WriteLine($"{curTypeInfo}");
+
+            DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
             var r = Map.dict[ rootR ] ;
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
@@ -437,7 +440,7 @@ namespace AnalysisControls.ViewModel
             foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
             {
                 var theTypeInfo = CollectTypeInfos2 ( r , type1 , level + 1 ) ;
-                r.SubTypeInfos.Add ( theTypeInfo) ;
+                r.SubTypeInfos.Add ( theTypeInfo ) ;
             }
 
             PopulateFieldTypes ( r ) ;
@@ -446,7 +449,6 @@ namespace AnalysisControls.ViewModel
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="r"></param>
         public void PopulateFieldTypes ( [ NotNull ] AppTypeInfo r )
@@ -561,7 +563,8 @@ namespace AnalysisControls.ViewModel
         public bool IsInitialized { get ; set ; }
 
         /// <summary>
-        /// An approximate time as to when the view model was initialized and/or populated with extended information.
+        ///     An approximate time as to when the view model was initialized and/or
+        ///     populated with extended information.
         /// </summary>
         public DateTime InitializationDateTime
         {

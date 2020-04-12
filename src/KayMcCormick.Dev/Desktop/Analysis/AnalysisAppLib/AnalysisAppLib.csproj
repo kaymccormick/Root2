@@ -161,7 +161,7 @@
     <Compile Include="ViewModel\SyntaxPanelViewModel.cs" />
     <Compile Include="ViewModel\SyntaxTokenViewModel.cs" />
     <Compile Include="Visitor2.cs" />
-    <Compile Include="XmlDocElements.cs" />
+    <Compile Include="XmlDoc\XmlDocElements.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
