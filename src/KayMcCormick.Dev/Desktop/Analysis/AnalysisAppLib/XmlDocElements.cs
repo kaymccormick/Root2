@@ -251,7 +251,7 @@ namespace AnalysisAppLib.XmlDoc
         public static CodeElementDocumentation HandleDocElementNode (
             [ NotNull ] XDocument   xDocument
           , string                  elementId
-          , MemberDeclarationSyntax member
+          , [ NotNull ] MemberDeclarationSyntax member
           , ISymbol                declared
         )
         {

@@ -1,19 +1,17 @@
-﻿using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
-using System.ComponentModel ;
-using System.Globalization ;
-using System.Linq ;
-using System.Reflection ;
-using System.Runtime.CompilerServices ;
-using System.Text.Json ;
-using System.Text.Json.Serialization ;
-using System.Text.RegularExpressions ;
-using System.Windows.Markup ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using Microsoft.CodeAnalysis.CSharp ;
+﻿using JetBrains.Annotations;
+using Microsoft.CodeAnalysis.CSharp;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using System.Windows.Markup;
 
 namespace AnalysisAppLib.XmlDoc
 {
@@ -26,6 +24,8 @@ namespace AnalysisAppLib.XmlDoc
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
+        private DateTime _createdDateTime= DateTime.Now;
+        private DateTime _updatedDateTime;
         private string _elementName;
         private readonly SyntaxFieldCollection _fields = new SyntaxFieldCollection();
         private AppTypeInfoCollection _subTypeInfos;
@@ -41,13 +41,13 @@ namespace AnalysisAppLib.XmlDoc
         private AppTypeInfo _parentInfo;
         private string _title;
         private Type _type;
-        private List<string> _kinds= new List < string > ();
+        private readonly List<string> _kinds= new List < string > ();
 
 
         /// <summary>
         /// </summary>
         /// <param name="subTypeInfos"></param>
-        public AppTypeInfo(AppTypeInfoCollection subTypeInfos = null)
+        public AppTypeInfo(  AppTypeInfoCollection subTypeInfos = null)
         {
             if (subTypeInfos == null)
             {
@@ -63,7 +63,7 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
-        public AppTypeInfo() : this(null) { }
+        public AppTypeInfo( ) : this(  null) { }
 
         /// <summary>
         /// </summary>
@@ -114,7 +114,16 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
-        public List<string> SubTypeNames => SubTypeInfos.Cast<AppTypeInfo>().Select(st => st.Type.Name).ToList();
+        // ReSharper disable once UnusedMember.Global
+        [ NotNull ] public List<string> SubTypeNames
+        {
+            get
+            {
+                return SubTypeInfos
+                                   .Select ( st => st.Type.Name )
+                                   .ToList ( ) ;
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -146,53 +155,6 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [NotNull]
-        public IEnumerable<ComponentInfo> AllComponents
-        {
-            get
-            {
-                var type = ParentInfo;
-                var allComponentInfos =
-                    Components?.ToList() ?? Enumerable.Empty<ComponentInfo>();
-                while (type != null)
-                {
-                    allComponentInfos = allComponentInfos.Concat(
-                                                                  type.Components.Select(
-                                                                                          info
-                                                                                              => new
-                                                                                                 ComponentInfo
-                                                                                              {
-                                                                                                  OwningTypeInfo
-                                                                                                         = info
-                                                                                                            .OwningTypeInfo
-                                                                                                   ,
-                                                                                                  IsList
-                                                                                                         = info
-                                                                                                            .IsList
-                                                                                                   ,
-                                                                                                  IsSelfOwned
-                                                                                                         = false
-                                                                                                   ,
-                                                                                                  PropertyName
-                                                                                                         = info
-                                                                                                            .PropertyName
-                                                                                                   ,
-                                                                                                  TypeInfo
-                                                                                                         = info
-                                                                                                            .TypeInfo
-                                                                                              }
-                                                                                         )
-                                                                 );
-                    type = type.ParentInfo;
-                }
-
-                return allComponentInfos;
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore]
         public AppTypeInfo ParentInfo
         {
@@ -209,6 +171,7 @@ namespace AnalysisAppLib.XmlDoc
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int HierarchyLevel
         {
+            // ReSharper disable once UnusedMember.Global
             get { return _hierarchyLevel; }
             set { _hierarchyLevel = value; }
         }
@@ -224,6 +187,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string ElementName { get { return _elementName; } set { _elementName = value; } }
 
 
@@ -237,12 +201,33 @@ namespace AnalysisAppLib.XmlDoc
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public DateTime UpdatedDateTime
+        {
+            // ReSharper disable once UnusedMember.Global
+            get { return _updatedDateTime ; }
+            set { _updatedDateTime = value ; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public DateTime CreatedDateTime
+        {
+            get { return _createdDateTime ; }
+            set { _createdDateTime = value ; }
+        }
+
+        /// <summary>
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            UpdatedDateTime = DateTime.Now;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
@@ -250,9 +235,9 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
-    public class SyntaxFieldCollection : IList , ICollection, IEnumerable
+    public sealed class SyntaxFieldCollection : IList , ICollection, IEnumerable
     {
-        private IList _listImplementation = new List < SyntaxFieldInfo > ( ) ;
+        private readonly IList _listImplementation = new List < SyntaxFieldInfo > ( ) ;
         #region Implementation of IEnumerable
         /// <summary>
         /// 
@@ -389,7 +374,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="name"></param>
         /// <param name="typeName"></param>
         /// <param name="kinds"></param>
-        public SyntaxFieldInfo(string name, string typeName, params string[] kinds)
+        public SyntaxFieldInfo(string name, string typeName, [ NotNull ] params string[] kinds)
         {
             _name = name;
             _typeName = typeName;
@@ -409,7 +394,6 @@ namespace AnalysisAppLib.XmlDoc
         private Type _type;
         private string _elementTypeMetadataName ;
         private bool _isCollection ;
-        private string _elementTypeNamspaceMetadaataName ;
 
         /// <summary>
         /// 
@@ -439,7 +423,7 @@ namespace AnalysisAppLib.XmlDoc
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type Type
         {
-            get => _type;
+            get { return _type ; }
             set
             {
                 _type = value ;
@@ -478,6 +462,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string ClrTypeName { get { return _clrTypeName; } set { _clrTypeName = value; } }
 
         /// <summary>
@@ -495,43 +480,6 @@ namespace AnalysisAppLib.XmlDoc
         {
             return $"TypeName: {TypeName}, Name: {Name}, Kinds: {Kinds}, Type: {Type}, Types: {Types}, ClrTypes: {ClrTypes}, Override: {Override}, Optional: {Optional}";
         }
-    }
-
-    /// <inheritdoc />
-    public class SyntaxFieldInfoTypeConverter : TypeConverter
-    {
-        #region Overrides of TypeConverter
-        /// <inheritdoc />
-        public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
-        {
-            if ( destinationType == typeof ( string ) )
-            {
-                return true ;
-            }
-
-            //DebugUtils.WriteLine ( $"Ca convert to {destinationType}" ) ;
-            return base.CanConvertTo ( context , destinationType ) ;
-        }
-
-        /// <inheritdoc />
-        public override object ConvertTo (
-            ITypeDescriptorContext context
-          , CultureInfo            culture
-          , object                 value
-          , Type                   destinationType
-        )
-        {
-            if ( destinationType == typeof ( string ) )
-            {
-                if ( value is SyntaxFieldInfo f )
-                {
-                    var json = JsonSerializer.Serialize ( f ) ;
-                    return json ;
-                }
-            }
-            return base.ConvertTo ( context , culture , value , destinationType ) ;
-        }
-        #endregion
     }
 
     /// <inheritdoc />
@@ -566,7 +514,7 @@ namespace AnalysisAppLib.XmlDoc
     }
 
     /// <inheritdoc />
-    public class SyntaxFieldTypeValueSerializer : ValueSerializer
+    public sealed class SyntaxFieldTypeValueSerializer : ValueSerializer
     {
         #region Overrides of ValueSerializer
         /// <inheritdoc />
@@ -658,51 +606,63 @@ namespace AnalysisAppLib.XmlDoc
       , ICollection < AppTypeInfo >
       , IEnumerable < AppTypeInfo >, ICollection
     {
-        private IList < AppTypeInfo > _listImplementation = new List < AppTypeInfo > ();
+        private readonly IList < AppTypeInfo > _listImplementation = new List < AppTypeInfo > ();
         private object _syncRoot ;
         private bool _isSynchronized ;
         #region Implementation of IEnumerable
-        public AppTypeInfoCollection ( ) {
-        }
-
+        /// <inheritdoc />
         public IEnumerator < AppTypeInfo > GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
 
         IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _listImplementation ).GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection<AppTypeInfo>
+        /// <inheritdoc />
         public void Add ( AppTypeInfo item ) { _listImplementation.Add ( item ) ; }
 
+        /// <inheritdoc />
         public void Clear ( ) { _listImplementation.Clear ( ) ; }
 
+        /// <inheritdoc />
         public bool Contains ( AppTypeInfo item ) { return _listImplementation.Contains ( item ) ; }
 
+        /// <inheritdoc />
         public void CopyTo ( AppTypeInfo[] array , int arrayIndex ) { _listImplementation.CopyTo ( array , arrayIndex ) ; }
 
+        /// <inheritdoc />
         public bool Remove ( AppTypeInfo item ) { return _listImplementation.Remove ( item ) ; }
 
+        /// <inheritdoc />
         public void CopyTo ( Array array , int index ) { }
 
+        /// <inheritdoc />
         public int Count
         {
             get { return _listImplementation.Count ; }
         }
 
+        /// <inheritdoc />
         public object SyncRoot { get { return _syncRoot ; } }
 
+        /// <inheritdoc />
         public bool IsSynchronized { get { return _isSynchronized ; } }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get { return _listImplementation.IsReadOnly ; }
         }
         #endregion
         #region Implementation of IList<AppTypeInfo>
+        /// <inheritdoc />
         public int IndexOf ( AppTypeInfo item ) { return _listImplementation.IndexOf ( item ) ; }
 
+        /// <inheritdoc />
         public void Insert ( int index , AppTypeInfo item ) { _listImplementation.Insert ( index , item ) ; }
 
+        /// <inheritdoc />
         public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
 
+        /// <inheritdoc />
         public AppTypeInfo this [ int index ]
         {
             get { return _listImplementation[ index ] ; }
@@ -714,13 +674,13 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
-    public class SyntaxComponentCollection : ObservableCollection < ComponentInfo >
+    public sealed class SyntaxComponentCollection : ObservableCollection < ComponentInfo >
     {
     }
 
     /// <summary>
     /// Wrapper class around <see cref="MethodInfo"/>. Supplies extra information if necessary and other potentially =
-    /// usel information anf facilities. Method parameters are individually wrapped in <see cref="AppParameterInfo"/>
+    /// useful information and facilities. Method parameters are individually wrapped in <see cref="AppParameterInfo"/>
     /// </summary>
     public sealed class AppMethodInfo
     {
@@ -733,23 +693,26 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
-        [CanBeNull] public Type ReflectedType { get { return MethodInfo.ReflectedType; } }
+        [CanBeNull] [ UsedImplicitly ] public Type ReflectedType { get { return MethodInfo.ReflectedType; } }
 
         /// <summary>
         /// </summary>
-        public Type DeclaringType { get { return MethodInfo.DeclaringType; } }
+        // ReSharper disable once UnusedMember.Global
+        [ CanBeNull ] public Type DeclaringType { get { return MethodInfo.DeclaringType; } }
 
         /// <summary>
         /// </summary>
-        public string MethodName { get { return MethodInfo.Name; } }
+        [ NotNull ] [ UsedImplicitly ] public string MethodName { get { return MethodInfo.Name; } }
 
         /// <summary>
         /// </summary>
-        public Type ReturnType { get { return MethodInfo.ReturnType; } }
+        // ReSharper disable once UnusedMember.Global
+        [ NotNull ] public Type ReturnType { get { return MethodInfo.ReturnType; } }
 
         /// <summary>
         /// </summary>
-        public IEnumerable<AppParameterInfo> Parameters
+        // ReSharper disable once UnusedMember.Global
+        [ NotNull ] public IEnumerable<AppParameterInfo> Parameters
         {
             get
             {
@@ -790,23 +753,24 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         public Type ParameterType
         {
-            get { return _parameterType; }
+            [ UsedImplicitly ] get { return _parameterType; }
             set { _parameterType = value; }
         }
 
         /// <summary>
         /// Is parameter optional?
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
 
         /// <summary>
         /// Name of parameter
         /// </summary>
-        public string Name { get { return _name; } set { _name = value; } }
+        public string Name { [ UsedImplicitly ] get { return _name; } set { _name = value; } }
 
         /// <summary>
         /// Zero-based index of parameter.
         /// </summary>
-        public int Index { get { return _index; } set { _index = value; } }
+        public int Index { [ UsedImplicitly ] get { return _index; } set { _index = value; } }
     }
 }

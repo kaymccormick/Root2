@@ -96,33 +96,40 @@ namespace AnalysisControls
             //
             // }
 
-            builder.Register ( ( context , parameters ) => {
-                var stream = Assembly.GetExecutingAssembly ( )
-                                     .GetManifestResourceStream (
-                                                                 "AnalysisControls.TypesViewModel.xaml"
-                                                                 
-                                                                ) ;
-                if ( stream == null )
-                {
-                    DebugUtils.WriteLine ( "no stream" ) ;
-                    return new TypesViewModel();
-                } else 
-                {
-                    try
-                    {
-                        var v =
-                            ( TypesViewModel ) XamlReader.Load ( stream ) ;
-                        stream.Close ( ) ;
-                        return v ;
-                    }
-                    catch ( Exception )
-                    {
-                        return new TypesViewModel();
-                    }
-                }
+            builder.Register (
+                              ( context , parameters ) => {
+                                  if ( parameters.TypedAs < bool > ( ) == false )
+                                  {
+                                      return new TypesViewModel ( ) ;
+                                  }
+                                  else
+                                  {
+                                      var stream = Assembly.GetExecutingAssembly ( )
+                                                           .GetManifestResourceStream (
+                                                                                       "AnalysisControls.TypesViewModel.xaml"
+                                                                                      ) ;
+                                      if ( stream == null )
+                                      {
+                                          DebugUtils.WriteLine ( "no stream" ) ;
+                                          return new TypesViewModel ( ) ;
+                                      }
+                                      else
+                                      {
+                                          try
+                                          {
+                                              var v = ( TypesViewModel ) XamlReader
+                                                 .Load ( stream ) ;
+                                              stream.Close ( ) ;
+                                              return v ;
+                                          }
+                                          catch ( Exception )
+                                          {
+                                              return new TypesViewModel ( ) ;
+                                          }
+                                      }
+                                  }
                               }
-                             )
-                   .AsSelf ( )
+                             ).AsSelf ( )
                    .AsImplementedInterfaces ( ) ;
             
             //TypesViewModelContainer x = new TypesViewModelContainer();

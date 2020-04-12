@@ -124,6 +124,7 @@
     <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
+    <Compile Include="XmlDoc\SyntaxFieldInfoTypeConverter.cs" />
     <Compile Include="XmlDoc\TypeMapDictionary.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />

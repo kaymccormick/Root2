@@ -305,17 +305,27 @@ namespace ConsoleApp1
                 throw new ArgumentNullException ( nameof ( context ) ) ;
             }
 
+            DebugUtils.WriteLine ( "Begin initialize TypeViewModel" ) ;
             var options = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
-            var typesViewModel = context.Scope.Resolve < TypesViewModel > ( ) ;
-            var collectionMap = CollectionMap ( typesViewModel , s => DebugUtils.WriteLine ( s ) ) ;
-            WriteThisTypesViewModel ( typesViewModel ) ;
-            LoadSyntax ( typesViewModel , collectionMap ) ;
-            foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
-            {
-                typesViewModel.PopulateFieldTypes ( ati ) ;
-            }
+            var typesViewModel =
+                context.Scope.Resolve < TypesViewModel > (
+                                                          new TypedParameter (
+                                                                              typeof ( bool )
+                                                                            , false
+                                                                             )
+                                                         ) ;
+            DebugUtils.WriteLine (
+                                  $"InitializationDateTime : {typesViewModel.InitializationDateTime}"
+                                 ) ;
 
-            WriteThisTypesViewModel ( typesViewModel ) ;
+            var collectionMap = CollectionMap ( typesViewModel , s => DebugUtils.WriteLine ( s ) ) ;
+
+            LoadSyntax ( typesViewModel , collectionMap ) ;
+            // foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
+            // {
+            // typesViewModel.PopulateFieldTypes ( ati ) ;
+            // }
+
             typesViewModel.DetailFields ( ) ;
             WriteThisTypesViewModel ( typesViewModel ) ;
             DumpModelToJson ( context , typesViewModel ) ;
@@ -1754,6 +1764,7 @@ namespace ConsoleApp1
           , Action < string >          DebugOut
         )
         {
+            DebugUtils.WriteLine ( $"Populating collectionMap" ) ;
             var collectionMap = new Dictionary < AppTypeInfo , object > ( ) ;
             foreach ( Type mapKey in model1.Map.Keys )
             {
@@ -1848,46 +1859,97 @@ namespace ConsoleApp1
           , IReadOnlyDictionary < AppTypeInfo , object > collectionMap
         )
         {
-            var syntax = XDocument.Parse ( Resources.Syntax ) ;
-            if ( syntax.Root != null )
+            using ( var stream =
+                typeof ( AnalysisAppLibModule ).Assembly.GetManifestResourceStream (
+                                                                                    "AnalysisAppLib.Resources.Syntax.xml"
+                                                                                   ) )
             {
-                foreach ( var xElement in syntax.Root.Elements ( ) )
+
+                var reader = XmlReader.Create (
+                                               stream
+                                             , new XmlReaderSettings ( ) { Async = true }
+                                              ) ;
+
+                var syntax = XDocument.Load ( reader ) ;
+                if ( syntax.Root != null )
                 {
-                    switch ( xElement.Name.LocalName )
+                    var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
+                    if ( model1.Map.Values != null )
+                    { var result = model1.Map.dict.Where ( pair => pair.Value.Type.Name == rootType ) ;
+                        // var result = (valueCollection.Where ( t => {
+                                                                 // DebugUtils.WriteLine(t.Type.Name);
+                                                                 // var b = t.Type.Name
+                                                                         // == rootType ;
+                                                                 // if ( b )
+                                                                     // DebugUtils
+                                                                        // .WriteLine ( "true" ) ;
+                                                                 // return b ;
+                                                                      // }
+                                                                     // )) ;
+                        AppTypeInfo ati =null;
+                        if ( ! result.Any ( ) )
+                        {
+                            DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
+                        }
+                        else
+                        {
+                            ati = result.First ( ).Value ;
+                            DebugUtils.WriteLine ( $"{ati}" ) ;
+                        }
+                    }
+
+                    foreach ( var xElement in syntax.Root.Elements ( ) )
                     {
-                        case _predefinedNodeElementName :
-                            var typeName = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
-                            typeName = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName}" ;
-                            var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName ) ;
-                            if ( t == null )
-                            {
-                                DebugUtils.WriteLine ( "No type for " + typeName ) ;
-                            }
-                            else if ( model1.Map.Contains ( t ) )
-                            {
-                                var typ = ( AppTypeInfo ) model1.Map[ t ] ;
-                                typ.ElementName = xElement.Name.LocalName ;
-                            }
+                        Type t = null;
+                        var xElementNameElementNameLocalName = xElement.Name.LocalName ;
+                        switch ( xElementNameElementNameLocalName )
+                        {
+                            case _predefinedNodeElementName :
+                                var xName_Name = XName.Get ( "Name" ) ;
+                                var typeName = xElement.Attribute ( xName_Name )?.Value ;
+                                switch ( typeName )
+                                {
+                                    case nameof(CSharpSyntaxNode):
+                                        t = typeof ( CSharpSyntaxNode ) ;
+                                        break ;
+                                    case nameof(SyntaxNode):
+                                        t = typeof ( SyntaxNode ) ;
+                                        break ;
+                                    case nameof(StructuredTriviaSyntax):
+                                        t = typeof ( StructuredTriviaSyntax ) ;
+                                        break ;
+                                }
 
-                            break ;
-                        case _abstractNodeElementName :
-                            ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                            break ;
-                        case _nodeElementName :
-                            ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                            break ;
+                                if ( t == null )
+                                {
+                                    DebugUtils.WriteLine ( "No type for " + typeName ) ;
+                                }
+                                else if ( model1.Map.Contains ( t ) )
+                                {
+                                    var typ = ( AppTypeInfo ) model1.Map[ t ] ;
+                                    typ.ElementName = xElementNameElementNameLocalName ;
+                                }
 
+                                break ;
+                            case _abstractNodeElementName :
+                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
+                                break ;
+                            case _nodeElementName :
+                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
+                                break ;
 
-                        default : throw new InvalidOperationException ( ) ;
+                            default : throw new InvalidOperationException ( ) ;
+                        }
                     }
                 }
+
+
+                var d = new TypeMapDictionary { [ typeof ( string ) ] = new AppTypeInfo ( ) } ;
+                DebugUtils.WriteLine ( XamlWriter.Save ( d ) ) ;
+                DebugUtils.WriteLine ( XamlWriter.Save ( model1 ) ) ;
             }
-
-
-            var d = new TypeMapDictionary { [ typeof ( string ) ] = new AppTypeInfo ( ) } ;
-            DebugUtils.WriteLine ( XamlWriter.Save ( d ) ) ;
-            DebugUtils.WriteLine ( XamlWriter.Save ( model1 ) ) ;
         }
+
 
         private static void ParseNodeBasics (
             TypesViewModel                                           model1
@@ -1901,6 +1963,7 @@ namespace ConsoleApp1
             }
 
             var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
+            
             typeName2 = $"Microsoft.CodeAnalysis.CSharp.Syntax.{typeName2}" ;
 
             var t2 = typeof ( CSharpSyntaxNode ).Assembly.GetType ( typeName2 ) ;
