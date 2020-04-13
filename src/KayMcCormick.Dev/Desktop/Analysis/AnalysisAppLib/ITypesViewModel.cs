@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System.Collections ;
 using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib.XmlDoc
@@ -38,5 +39,12 @@ namespace AnalysisAppLib.XmlDoc
         /// <see cref="AppTypeInfo"/> ordered by structure and natural containment.
         /// </summary>
         AppTypeInfoCollection StructureRoot { get ; set ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        AppTypeInfo GetAppTypeInfo ( object identifier ) ;
     }
 }

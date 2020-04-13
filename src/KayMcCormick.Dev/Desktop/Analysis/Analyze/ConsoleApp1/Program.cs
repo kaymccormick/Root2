@@ -16,6 +16,7 @@ using System.Threading.Tasks ;
 using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
+using AnalysisAppLib ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisAppLib.XmlDoc.Project ;
 using AnalysisAppLib.XmlDoc.Properties ;
@@ -318,7 +319,8 @@ namespace ConsoleApp1
                                   $"InitializationDateTime : {typesViewModel.InitializationDateTime}"
                                  ) ;
 
-            var collectionMap = XmlDocElements.CollectionMap ( typesViewModel , s => DebugUtils.WriteLine ( s ) ) ;
+            var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
+            var collectionMap = sts.CollectionMap ( ) ;
 
             LoadSyntax ( typesViewModel , collectionMap ) ;
             // foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
@@ -889,8 +891,9 @@ namespace ConsoleApp1
                 outputFunc ( s1 ) ;
             }
 
-            var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
-            var collectionMap = XmlDocElements.CollectionMap ( model1 , DebugOut ) ;
+            var model1 = context.Scope.Resolve<TypesViewModel>();
+            var sts = context.Scope.Resolve<ISyntaxTypesService>();
+            IReadOnlyDictionary < string, object > collectionMap = sts.CollectionMap () ;
             outputFunc ( "Beginning" ) ;
             var x = CSharpCompilation.Create (
                                               "test"
@@ -905,15 +908,15 @@ namespace ConsoleApp1
             var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;
             outputFunc ( $"{model1.Map.Count} Entries in Type map" ) ;
             var rewriter1 = new SyntaxRewriter1 ( model1 ) ;
-            foreach ( Type mapKey in model1.Map.Keys )
+            foreach ( var mapKey1 in model1.Map.dict.Keys )
             {
-                DebugOut ( $"{mapKey}" ) ;
-                var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
-
+                var t = model1.Map.dict[ mapKey1 ] ;
+                var curIterAppTypeInfo = t ;
                 var colTypeClassName = $"{PocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
 
-                var classDecl1 = CreatePoco ( mapKey , t ) ;
+                var classDecl1 = CreatePoco ( mapKey1 , t ) ;
                 var curComp = ReplaceSyntaxTree ( x , classDecl1 ) ;
+                
                 var classDecl1Type =
                     curComp.GetTypeByMetadataName ( classDecl1.Identifier.ValueText ) ;
                 var Ilist1 = SimpleBaseType ( ParseTypeName ( _ilist ) ) ;
@@ -974,7 +977,7 @@ namespace ConsoleApp1
                     {
                         var propTypeSymbol = prop.Type ;
                         var propTypeSymbolMetadataName = propTypeSymbol.MetadataName ;
-                        var propertyTypeParsed = XmlDocElements.SubstituteTransformedPocoType (
+                        var propertyTypeParsed = SyntaxTypesService.FieldPocoCollectionType (
                                                                                    ParseTypeName (
                                                                                                   propTypeSymbolMetadataName
                                                                                                  )
@@ -1390,6 +1393,7 @@ namespace ConsoleApp1
                     if ( tField.IsCollection )
                     {
                         type = ParseTypeName ( tField.ElementTypeMetadataName ) ;
+                        
                     }
                     else
                     {
@@ -1413,13 +1417,7 @@ namespace ConsoleApp1
                                                                           )
                                                         ) ;
                     }
-                    else
-                    {
-                        if ( tField.TypeName != "bool" )
-                        {
-                            type = XmlDocElements.TransformParsePocoType ( type ) ;
-                        }
-                    }
+                  
 
                     var tokens = new List < SyntaxToken >
                                  {
@@ -1451,7 +1449,7 @@ namespace ConsoleApp1
                                                                                           )
                                                                            )
                                                     ) ;
-                    DebugUtils.WriteLine ( attributeSyntax ) ;
+                    DebugUtils.WriteLine ( attributeSyntax.ToFullString() ) ;
                     var separatedSyntaxList =
                         new SeparatedSyntaxList < AttributeSyntax > ( ).Add ( attributeSyntax ) ;
                     var attributeListSyntaxes = List (
@@ -1469,7 +1467,8 @@ namespace ConsoleApp1
                                                                                             tField
                                                                                           , type
                                                                                           , collectionMap
-                                                                                           )
+                                                                                           , sts
+                                                                                                       )
                                                                        , null
                                                                        , propertyName
                                                                        , accessorListSyntax
@@ -1691,6 +1690,10 @@ namespace ConsoleApp1
             {
                 DebugOut ( "Success" ) ;
             }
+            else
+            {
+                DebugUtils.WriteLine ( "Failure" ) ;
+            }
 
             //File.WriteAllText ( @"C:\data\logs\gen.cs" , comp.ToString ( ) ) ;
         }
@@ -1762,11 +1765,11 @@ namespace ConsoleApp1
 
         [ NotNull ]
         private static ClassDeclarationSyntax CreatePoco (
-            [ NotNull ] Type        mapKey
+            [ NotNull ] AppTypeInfoKey        mapKey
           , [ NotNull ] AppTypeInfo t
         )
         {
-            var classDecl1 = ClassDeclaration ( $"{_pocoPrefix}{mapKey.Name}" )
+            var classDecl1 = ClassDeclaration ( $"{_pocoPrefix}{mapKey.StringValue}" )
                .WithModifiers ( SyntaxTokenList.Create ( Token ( SyntaxKind.PublicKeyword ) ) ) ;
 
             if ( t.ParentInfo != null )
@@ -1790,7 +1793,7 @@ namespace ConsoleApp1
         // ReSharper disable once UnusedMember.Local
         private static void LoadSyntax (
             [ NotNull ] TypesViewModel                   model1
-          , IReadOnlyDictionary < AppTypeInfo , object > collectionMap
+          , IReadOnlyDictionary < string, object > collectionMap
         )
         {
             using ( var stream =
@@ -1888,7 +1891,7 @@ namespace ConsoleApp1
         private static void ParseNodeBasics (
             TypesViewModel                                           model1
           , [ NotNull ] XElement                                     xElement
-          , [ NotNull ] IReadOnlyDictionary < AppTypeInfo , object > collectionMap
+          , [ NotNull ] IReadOnlyDictionary < string , object > collectionMap
         )
         {
             if ( collectionMap == null )

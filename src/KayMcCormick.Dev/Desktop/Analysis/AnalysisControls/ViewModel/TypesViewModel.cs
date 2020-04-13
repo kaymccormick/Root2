@@ -1,14 +1,13 @@
 ﻿using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.IO ;
 using System.Linq ;
-using System.Reflection ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
 using System.Xml ;
+using AnalysisAppLib ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisAppLib.XmlDoc.Properties ;
 using JetBrains.Annotations ;
@@ -18,14 +17,13 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-using ComponentInfo = AnalysisAppLib.XmlDoc.ComponentInfo ;
 
 namespace AnalysisControls.ViewModel
 {
     /// <summary>
     /// </summary>
     [ NoJsonConverter ]
-    public sealed class TypesViewModel : ITypesViewModel
+    public class TypesViewModel : ITypesViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
@@ -50,141 +48,14 @@ namespace AnalysisControls.ViewModel
 #endif
 
         private readonly Dictionary < Type , TypeDocInfo >
-            // ReSharper disable once CollectionNeverUpdated.Local
             _docs = new Dictionary < Type , TypeDocInfo > ( ) ;
+
+        private DocumentCollection _documentCollection = new DocumentCollection ( ) ;
 
         /// <summary>
         /// </summary>
         // ReSharper disable once EmptyConstructor
         public TypesViewModel ( ) { }
-
-        internal void LoadSyntaxFactoryDocs ( )
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            _docs.TryGetValue ( typeof ( SyntaxFactory ) , out var si ) ;
-            var methodInfos = typeof ( SyntaxFactory )
-                             .GetMethods ( BindingFlags.Static | BindingFlags.Public )
-                             .ToList ( ) ;
-
-            foreach ( var methodInfo in methodInfos.Where (
-                                                           info => typeof ( SyntaxNode )
-                                                              .IsAssignableFrom ( info.ReturnType )
-                                                          ) )
-            {
-                var info = ( AppTypeInfo ) Map[ methodInfo.ReturnType ] ;
-                var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
-                if ( si != null
-                     && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var mdoc ) )
-                {
-                    var p = string.Join (
-                                         ","
-                                       , methodInfo
-                                        .GetParameters ( )
-                                        .Select (
-                                                 parameterInfo
-                                                     => parameterInfo.ParameterType.FullName
-                                                )
-                                        ) ;
-                    //DebugUtils.WriteLine ( $"xx: {p}" ) ;
-                    foreach ( var methodDocumentation in mdoc )
-                    {
-                        //  DebugUtils.WriteLine ( methodDocumentation.Parameters ) ;
-                        if ( methodDocumentation.Parameters == p )
-                        {
-                            //    DebugUtils.WriteLine ( $"Docs for {methodInfo}" ) ;
-                            appMethodInfo.XmlDoc = methodDocumentation ;
-                            CollectDoc ( methodDocumentation ) ;
-                        }
-                    }
-                }
-
-                info.FactoryMethods.Add ( appMethodInfo ) ;
-                //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
-            }
-
-            foreach ( var pair in Map.dict.Where ( pair => pair.Key != typeof ( CSharpSyntaxNode ) )
-            )
-            {
-                //}.Where ( pair => pair.Key.IsAbstract == false ) )
-                {
-                    foreach ( var propertyInfo in pair.Key.GetProperties (
-                                                                          BindingFlags.DeclaredOnly
-                                                                          | BindingFlags.Instance
-                                                                          | BindingFlags.Public
-                                                                         ) )
-                    {
-                        if ( propertyInfo.DeclaringType != pair.Key )
-                        {
-                            continue ;
-                        }
-
-                        var t = propertyInfo.PropertyType ;
-                        // if ( t == typeof ( SyntaxToken ) )
-                        // {
-                        // continue ;
-                        // }
-
-                        var isList = false ;
-                        AppTypeInfo typeInfo = null ;
-                        AppTypeInfo otherTypeInfo = null ;
-                        if ( t.IsGenericType )
-                        {
-                            DebugUtils.WriteLine ( $"{t} is Generic" ) ;
-                            var targ = t.GenericTypeArguments[ 0 ] ;
-                            DebugUtils.WriteLine ( $"{targ}" ) ;
-                            if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
-                                 && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
-                            {
-                                isList   = true ;
-                                typeInfo = ( AppTypeInfo ) Map[ targ ] ;
-                            }
-                        }
-                        else
-                        {
-                            if ( ! Map.dict.TryGetValue ( t , out typeInfo ) )
-                            {
-                                if ( ! otherTyps.TryGetValue ( t , out otherTypeInfo ) )
-                                {
-                                    otherTypeInfo = otherTyps[ t ] = new AppTypeInfo { Type = t } ;
-                                }
-                            }
-                        }
-
-                        if ( typeInfo         == null
-                             && otherTypeInfo == null )
-                        {
-                            continue ;
-                        }
-
-                        PropertyDocumentation propDoc = null ;
-                        if ( pair.Value.Type != null
-                             && _docs.TryGetValue ( pair.Value.Type , out var info ) )
-                        {
-                            if ( info.PropertyDocumentation.TryGetValue (
-                                                                         propertyInfo.Name
-                                                                       , out propDoc
-                                                                        ) )
-                            {
-                            }
-                        }
-
-                        CollectDoc ( propDoc ) ;
-                        pair.Value.Components.Add (
-                                                   new ComponentInfo
-                                                   {
-                                                       XmlDoc         = propDoc
-                                                     , IsSelfOwned    = true
-                                                     , OwningTypeInfo = pair.Value
-                                                     , IsList         = isList
-                                                     , TypeInfo       = typeInfo ?? otherTypeInfo
-                                                     , PropertyName   = propertyInfo.Name
-                                                   }
-                                                  ) ;
-                        //Logger.Info ( t.ToString ( ) ) ;
-                    }
-                }
-            }
-        }
 
 
         /// <summary>
@@ -236,7 +107,11 @@ namespace AnalysisControls.ViewModel
 
         /// <summary>
         /// </summary>
-        public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
+        public DocumentCollection DocumentCollection
+        {
+            get { return _documentCollection ; }
+            set { _documentCollection = value ; }
+        }
 
         /// <summary>
         /// </summary>
@@ -246,9 +121,11 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection ( ) ;
 
+        public AppTypeInfo GetAppTypeInfo ( object identifier ) { return null ; }
+
         /// <summary>
         /// </summary>
-        /// <param name="parentTypeInfo"></param>
+        /// <param name="p  tTypeInfo"></param>
         /// <param name="rootR"></param>
         /// <param name="level"></param>
         /// <returns></returns>
@@ -275,31 +152,30 @@ namespace AnalysisControls.ViewModel
             if ( docNode != null )
             {
                 CollectDoc ( docNode ) ;
-                var r = new AppTypeInfo
-                        {
-                            Type           = rootR
-                          , DocInfo        = docNode
-                          , ParentInfo     = parentTypeInfo
-                          , HierarchyLevel = level
-                          , ColorValue     = HierarchyColors[ level ]
-                        } ;
-                foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
-                {
-                    r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
-                }
-
-                Map[ rootR ] = r ;
-                return r ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            var r = new AppTypeInfo
+                    {
+                        Type           = rootR
+                      , DocInfo        = docNode
+                      , ParentInfo     = parentTypeInfo
+                      , HierarchyLevel = level
+                      , ColorValue     = HierarchyColors[ level ]
+                    } ;
+            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+            {
+                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
+            }
+
+            Map.dict[ new AppTypeInfoKey ( rootR ) ] = r ;
+            return r ;
         }
 
-        private void CollectDoc ( [ NotNull ] CodeElementDocumentation docNode )
+        private void CollectDoc ( [ CanBeNull ] CodeElementDocumentation docNode )
         {
             if ( docNode == null )
             {
-                throw new ArgumentNullException ( nameof ( docNode ) ) ;
+                return ;
             }
 
             DebugUtils.WriteLine ( $"{docNode}" ) ;
@@ -338,7 +214,7 @@ namespace AnalysisControls.ViewModel
             Logger.Info ( $"Map Count {mapCount}" ) ;
             if ( mapCount != 0 )
             {
-                LoadTypeInfo2 ( ) ;
+                CreateSubtypeLinkages ( ) ;
             }
             else if ( Root                       == null
                       || Root.SubTypeInfos.Count == 0 )
@@ -352,7 +228,7 @@ namespace AnalysisControls.ViewModel
 
             DetailFields ( ) ;
 
-            LoadSyntaxFactoryDocs ( ) ;
+            //LoadSyntaxFactoryDocs ( _docs ) ;
 //            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
             IsInitialized          = true ;
             InitializationDateTime = DateTime.Now ;
@@ -369,6 +245,11 @@ namespace AnalysisControls.ViewModel
                                                                .Cast < SyntaxFieldInfo > ( )
                                                         ) )
             {
+                if ( rField.Type == null )
+                {
+                    DebugUtils.WriteLine ( $"type is null for {rField.TypeName}" ) ;
+                }
+
                 if ( rField.Type != null
                      && rField.Type.IsGenericType
                      && ( rField.Type.GetGenericTypeDefinition ( ) == typeof ( SyntaxList <> )
@@ -381,7 +262,7 @@ namespace AnalysisControls.ViewModel
                         continue ;
                     }
 
-                    var ati = Map.dict[ tz ] ;
+                    var ati = Map.dict[ new AppTypeInfoKey ( tz ) ] ;
                     var types = new List < AppTypeInfo > ( ) ;
                     Collect ( ati , types ) ;
                     foreach ( var appTypeInfo in types )
@@ -394,15 +275,15 @@ namespace AnalysisControls.ViewModel
                     if ( rField.Type != null
                          && Map.Contains ( rField.Type ) )
                     {
-                        rField.Types.Add ( Map.dict[ rField.Type ] ) ;
+                        rField.Types.Add ( Map.dict[ new AppTypeInfoKey ( rField.Type ) ] ) ;
                     }
                 }
             }
         }
 
-        private void LoadTypeInfo2 ( )
+        private void CreateSubtypeLinkages ( )
         {
-            DebugUtils.WriteLine ( $"Performing {nameof ( LoadTypeInfo2 )}" ) ;
+            DebugUtils.WriteLine ( $"Performing {nameof ( CreateSubtypeLinkages )}" ) ;
             var rootR = typeof ( CSharpSyntaxNode ) ;
             _nodeTypes = rootR.Assembly.GetExportedTypes ( )
                               .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
@@ -427,13 +308,14 @@ namespace AnalysisControls.ViewModel
             // }
 
 //            CollectDoc(docNode);
-            if ( ! Map.dict.TryGetValue ( rootR , out var curTypeInfo ) )
+            if ( ! Map.dict.TryGetValue ( new AppTypeInfoKey ( 
+                rootR ) , out var curTypeInfo ) )
             {
                 throw new InvalidOperationException ( ) ;
             }
 
             DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
-            var r = Map.dict[ rootR ] ;
+            var r = Map.dict[ new AppTypeInfoKey ( rootR ) ] ;
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             r.ColorValue     = HierarchyColors[ level ] ;
@@ -575,5 +457,18 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
+    }
+
+    public class ComponentTypesViewModel : TypesViewModel
+    {
+        public ComponentTypesViewModel ( )
+        {
+
+
+            // System.Windows.Application.LoadComponent ( this , new Uri (
+                                                                       // @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml"
+                                                                      // ) );
+
+        }
     }
 }

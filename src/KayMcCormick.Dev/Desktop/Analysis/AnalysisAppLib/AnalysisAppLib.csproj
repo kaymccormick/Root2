@@ -76,6 +76,10 @@
     <Compile Include="AnalyzeCommand.cs" />
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppExplorerItem.cs" />
+    <Compile Include="DocumentCollection.cs" />
+    <Compile Include="IDocInterface.cs" />
+    <Compile Include="ISyntaxTypesService.cs" />
+    <Compile Include="SyntaxTypesService.cs" />
     <Compile Include="XmlDoc\AppTypeInfo.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />

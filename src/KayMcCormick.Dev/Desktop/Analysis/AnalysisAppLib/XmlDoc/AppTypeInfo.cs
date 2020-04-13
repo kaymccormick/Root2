@@ -42,6 +42,7 @@ namespace AnalysisAppLib.XmlDoc
         private string _title;
         private Type _type;
         private readonly List<string> _kinds= new List < string > ();
+        private object _keyValue ;
 
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
-        public AppTypeInfo( ) : this(  null) { }
+        public AppTypeInfo( ) : this(null) { }
 
         /// <summary>
         /// </summary>
@@ -219,6 +220,11 @@ namespace AnalysisAppLib.XmlDoc
             get { return _createdDateTime ; }
             set { _createdDateTime = value ; }
         }
+
+        /// <summary>
+        /// Key for the Type that isn't the object itself.
+        /// </summary>
+        public object KeyValue { get { return _keyValue ; } set { _keyValue = value ; } }
 
         /// <summary>
         /// </summary>
@@ -772,5 +778,67 @@ namespace AnalysisAppLib.XmlDoc
         /// Zero-based index of parameter.
         /// </summary>
         public int Index { [ UsedImplicitly ] get { return _index; } set { _index = value; } }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AppTypeInfoKey : IComparable < AppTypeInfoKey >
+    {
+        private string _unqualifiedTypeName ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string StringValue
+        {
+            get { return _unqualifiedTypeName ; }
+            set { _unqualifiedTypeName = value ; }
+        }
+
+        #region Relational members
+        public int CompareTo ( AppTypeInfoKey other )
+        {
+            if ( ReferenceEquals ( this , other ) )
+            {
+                return 0 ;
+            }
+
+            if ( ReferenceEquals ( null , other ) )
+            {
+                return 1 ;
+            }
+
+            return string.Compare ( StringValue , other.StringValue , StringComparison.Ordinal ) ;
+        }
+        #endregion
+
+        public AppTypeInfoKey ( string unqualifiedTypeName )
+        {
+            StringValue = unqualifiedTypeName ;
+        }
+
+        public AppTypeInfoKey ( Type type )
+        {
+            StringValue = type.Name ;
+
+        }
+
+        #region Equality members
+        public bool Equals ( AppTypeInfoKey other )
+        {
+            return StringValue == other.StringValue ;
+        }
+
+        public override bool Equals ( object obj )
+        {
+            return obj is AppTypeInfoKey other && Equals ( other ) ;
+        }
+
+        public override int GetHashCode ( )
+        {
+            return ( StringValue != null ? StringValue.GetHashCode ( ) : 0 ) ;
+        }
+        #endregion
     }
 }

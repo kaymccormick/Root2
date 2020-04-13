@@ -1,10 +1,14 @@
 ﻿using System ;
+using System.Data.SqlClient ;
 using System.Linq ;
+using System.Reflection ;
 using System.Text.Json ;
 using System.Windows ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
@@ -36,8 +40,97 @@ namespace ProjInterface
                  )
 
         {
+            var b = new SqlConnectionStringBuilder
+                    {
+                        IntegratedSecurity = true
+                       ,
+                        DataSource = @".\sql2017"
+                       ,
+                        InitialCatalog = "syntaxdb"
+                    };
+            var conn = new SqlConnection(b.ConnectionString);
+
+            System.Uri resourceLocater = new System.Uri("/ProjInterface;component/AppResources.xaml", System.UriKind.Relative);
+            var rs = GetResourceStream ( resourceLocater ) ;
+            foreach ( var referencedAssembly in Assembly
+                                               .GetExecutingAssembly ( )
+                                               .GetReferencedAssemblies ( ) )
+            {
+                if ( referencedAssembly.Name == "WindowsBase" )
+                {
+                    DebugUtils.WriteLine(referencedAssembly.ToString());
+                    var assembly = AppDomain.CurrentDomain.GetAssemblies ( ) ;
+                    foreach ( var assembly1 in assembly )
+                    {
+                        if ( assembly1.GetName ( ).Name == "WindowsBase" )
+                        {
+                            DebugUtils.WriteLine ( assembly1.FullName ) ;
+                            foreach ( var type in assembly1.GetTypes ( ) )
+                            {
+                                DebugUtils.WriteLine($"Assembly type {type.FullName}: public={type.IsPublic}");
+                                var staticFields = type.GetFields ( BindingFlags.NonPublic | BindingFlags.Static ) ;
+                                foreach ( var staticField in staticFields )
+                                {
+                                    DebugUtils.WriteLine($"{type.FullName}.{staticField.Name}: t[{staticField.FieldType.FullName}]");
+                                    object val ;
+                                    try
+                                    {
+                                        val = staticField.GetValue ( null ) ;
+                                        if ( val == null )
+                                        {
+                                            DebugUtils.WriteLine($"val is null");
+                                        }
+                                        else
+                                        {
+                                            DebugUtils.WriteLine ( $"val is {val}" ) ;
+                                            DumpTypeInstanceInfo ( val ) ;
+                                        }
+                                    }
+                                    catch ( Exception ex )
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            }
+            ComponentTypesViewModel m = new ComponentTypesViewModel();
             //PresentationTraceSources.Refresh();
             //PopulateJsonConverters ( disableLogging ) ;
+        }
+
+        private void DumpTypeInstanceInfo ( object val )
+        {
+            if ( val.GetType ( ).IsPrimitive )
+            {
+                return ;
+            }
+            var nonPublicFields = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+            var publicProperties = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+            var nonPublicProperties = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach ( var nonPublicField in nonPublicFields )
+            {
+                object v = null ;
+                try
+                {
+                    v = nonPublicField.GetValue ( val ) ;
+                }
+                catch ( Exception ex )
+                {
+                    DebugUtils.WriteLine ( "Unable to get field value" ) ;
+                }
+
+                if ( v == null)
+                {
+                    continue ;
+                }
+
+                var t = v.GetType ( ) ;
+                DebugUtils.WriteLine($"nonpublic field {nonPublicField.Name} is of type {t.FullName} and value {v}");
+            }
         }
 
         private static void PopulateJsonConverters ( bool disableLogging )

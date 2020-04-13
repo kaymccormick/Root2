@@ -10,9 +10,12 @@ using System.Threading.Tasks.Dataflow ;
 using System.Xaml ;
 using System.Xml ;
 using AnalysisAppLib ;
-using AnalysisAppLib.Dataflow ;
-using AnalysisAppLib.Serialization ;
-using AnalysisAppLib.ViewModel ;
+
+// ReSharper disable once RedundantUsingDirective
+using AnalysisAppLib.XmlDoc ;
+using AnalysisAppLib.XmlDoc.Dataflow ;
+using AnalysisAppLib.XmlDoc.Serialization ;
+using AnalysisAppLib.XmlDoc.ViewModel ;
 using Autofac ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
@@ -25,9 +28,13 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
+using Microsoft.Graph ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
+using Directory = System.IO.Directory ;
+using Document = Microsoft.CodeAnalysis.Document ;
+using File = System.IO.File ;
 
 namespace ModelTests
 {
@@ -58,9 +65,9 @@ namespace ModelTests
         private const string LogTestSolution =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln" ;
         private const string PocoTypeNamePrefix = "Poco";
-        private string _pocoSyntaxNamespaceName = "PocoSyntax" ;
-        private string _pocoBlockSyntaxClassName ;
-        private string _pocoSyntaxTokenTypeName ;
+        private readonly string _pocoSyntaxNamespaceName = "PocoSyntax" ;
+        private readonly string _pocoBlockSyntaxClassName ;
+        private readonly string _pocoSyntaxTokenTypeName ;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly        ITestOutputHelper   _outputHelper ;
         private readonly        LoggingFixture      _loggingFixture ;
@@ -210,7 +217,7 @@ namespace ModelTests
             var bb = new BufferBlock < T > ( ) ;
             x.LinkTo ( bb , new DataflowLinkOptions { PropagateCompletion = true } ) ;
             //var pipeline = ls.Resolve<Pipeline>();
-            x.Completion.ContinueWith ( task => LogMethod ( x.OutputCount.ToString ( ) ) ) ;
+            var continueWith = x.Completion.ContinueWith ( task => LogMethod ( x.OutputCount.ToString ( ) ) ) ;
 
             var compilation = await project.GetCompilationAsync ( ) ;
             if ( compilation != null )
@@ -584,7 +591,7 @@ namespace ModelTests
             ContainerBuilder b = new ContainerBuilder( );
             b.RegisterModule < AnalysisAppLibModule > ( ) ;
             var c = b.Build ( Autofac.Builder.ContainerBuildOptions.None ) ;
-
+            var model = c.Resolve < ITypesViewModel > ( ) ;
 
         }
         [ Fact ]
@@ -903,6 +910,13 @@ namespace ModelTests
                                          }
                                         ) ;
             Logger.Info (@out  );
+
+        }
+
+
+        [ Fact ]
+        public void TestTypesService ( )
+        {
 
         }
 

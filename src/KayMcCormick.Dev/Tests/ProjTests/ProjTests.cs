@@ -34,6 +34,7 @@ using System.Windows.Media.Imaging ;
 using System.Xaml ;
 using System.Xml ;
 using System.Xml.Linq ;
+using AnalysisAppLib ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisAppLib.XmlDoc.Serialization ;
 using AnalysisControls ;
@@ -55,13 +56,18 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
+using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Microsoft.Graph ;
 using Moq ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
 using Condition = System.Windows.Automation.Condition ;
+using File = System.IO.File ;
+using Process = System.Diagnostics.Process ;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
 
@@ -89,7 +95,9 @@ namespace ProjTests
         : IDisposable
     {
         private const string TypesViewModelXamlPath =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml" ;
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml";
+        private const string InputTypesViewModelXamlPath =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml";
 
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
         private static readonly bool   _disableLogging = true ;
@@ -105,6 +113,7 @@ namespace ProjTests
 #pragma warning restore 169
 
         private JsonSerializerOptions _testJsonSerializerOptions ;
+        private object _xamlWriter ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
@@ -133,11 +142,98 @@ namespace ProjTests
         [ WpfFact ]
         public void TestRead ( )
         {
-            var x = XamlReader.Load ( new FileStream ( TypesViewModelXamlPath , FileMode.Open ) ) ;
-//            var json = JsonSerializer.Serialize ( x ) ;
+            var fileStream = new FileStream ( TypesViewModelXamlPath , FileMode.Open ) ;
+            var x = XamlReader.Load ( fileStream ) ;
+
         }
 
-        [ WpfFact ]
+        [ Fact ]
+        public void TestSubstitteType ( )
+        {
+            using ( var instance = new ApplicationInstance (
+                                                            new ApplicationInstance.
+                                                                ApplicationInstanceConfiguration (
+                                                                                                  _output
+                                                                                                     .WriteLine
+                                                                                                , ApplicationGuid
+                                                                                                 )
+                                                           ) )
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize ( ) ;
+                var lifetimescope = instance.GetLifetimeScope ( ) ;
+                //var model = lifetimescope.Resolve<TypesViewModel>();
+                var sts = lifetimescope.Resolve<ISyntaxTypesService>();
+                var cmap = sts.CollectionMap () ;
+                AppTypeInfo appTypeInfo =  sts.GetAppTypeInfo( typeof ( AssignmentExpressionSyntax ) ) ;
+                SyntaxFieldInfo field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
+                var typeSyntax =
+                    SyntaxFactory.ParseTypeName ( typeof ( ArgumentSyntax ).FullName ) ;
+                var substType =
+                    XmlDocElements.SubstituteType ( field , typeSyntax , cmap , sts) ;
+            }
+        }
+
+        private static ITypesViewModel GetBasicTypesViewModel ( )
+        {
+            var model = new TypesViewModel ( ) ;
+            model.BeginInit ( ) ;
+            model.EndInit ( ) ;
+            return model ;
+        }
+
+        [WpfFact]
+        public void TestXaml2 ( )
+        {
+            var model = new TypesViewModel ( ) ;
+            StringWriter output = new StringWriter();
+            Action < string > writeOut = output.WriteLine ;
+            var pu = new ProxyUtils (writeOut, ProxyUtils.CreateInterceptor(writeOut) ) ;
+            pu.TransformXaml ( model ) ;
+            File.WriteAllText(@"C:\data\logs\xaml.txt", output.ToString());
+        }
+        [WpfFact]
+        public void TestXaml3()
+        {
+            var model = new TypesViewModel();
+            StringWriter output = new StringWriter();
+            Action<string> writeOut = output.WriteLine;
+            var pu = new ProxyUtils(writeOut, ProxyUtils.CreateInterceptor(writeOut));
+            var inst = pu.TransformXaml2(InputTypesViewModelXamlPath);
+            File.WriteAllText(@"C:\data\logs\xaml2.txt", output.ToString());
+        }
+
+        private static ITypesViewModel GetComponentTypesViewModel()
+        {
+
+            var xamlSchemaContext = new XamlSchemaContext();
+            XamlObjectWriter setings = new XamlObjectWriter(xamlSchemaContext);
+            
+            var xamlXmlReaderSettings = new XamlXmlReaderSettings() {} ;
+            XamlWriter1 objectWriter1 = new XamlWriter1(xamlSchemaContext);
+
+            XamlXmlReader xml = new XamlXmlReader ( ProjTests.TypesViewModelXamlPath, xamlSchemaContext, xamlXmlReaderSettings ) ;
+            
+            var model = new ComponentTypesViewModel();
+            if ( ! model.IsInitialized )
+            {
+                model.BeginInit ( ) ;
+                model.EndInit ( ) ;
+            }
+
+            return model;
+        }
+
+        [WpfFact ]
+        public void TEstTypesview1 ( )
+        {
+            TestApp1 app1 = new TestApp1();
+            var model = GetComponentTypesViewModel( ) ;
+            
+        }
+
+        [WpfFact ]
         public void TEstTypesview ( )
         {
             var viewModel = new TypesViewModel ( ) ;
@@ -1048,6 +1144,7 @@ namespace ProjTests
                     }
                     catch
                     {
+                        // ignored
                     }
                 }
 
@@ -1069,8 +1166,8 @@ namespace ProjTests
         private static void HandleChild ( AutomationElement child )
         {
             try
-            {
-                var cacheRequest = new CacheRequest ( ) { } ;
+            { 
+                var cacheRequest = new CacheRequest ( ) ;
                 cacheRequest.Add ( AutomationElement.ClassNameProperty ) ;
                 foreach ( var automationProperty in child.GetSupportedProperties ( ) )
                 {
@@ -1078,16 +1175,21 @@ namespace ProjTests
                     {
                         var propValue = child.GetCurrentPropertyValue ( automationProperty ) ;
                         DebugUtils.WriteLine ( automationProperty.ProgrammaticName ) ;
-                        DebugUtils.WriteLine ( propValue ) ;
+#pragma warning disable CS0612 // Type or member is obsolete
+                        DebugUtils.WriteLine ( propValue );
+#pragma warning restore CS0612 // Type or member is obsolete
                     }
                     catch ( Exception )
                     {
+                        // ignored
                     }
                 }
 
                 var c = child.GetUpdatedCache ( cacheRequest ) ;
                 var cn = c.GetCachedPropertyValue ( AutomationElement.ClassNameProperty ) ;
+#pragma warning disable 612
                 DebugUtils.WriteLine ( cn ) ;
+#pragma warning restore 612
             }
             catch ( Exception ex )
             {
@@ -1141,13 +1243,17 @@ namespace ProjTests
         public void TestLambdaAppCommand ( )
         {
             AppLoggingConfigHelper.EnsureLoggingConfigured ( SlogMethod ) ;
+
+            async Task < IAppCommandResult > CommandFunc ( LambdaAppCommand command )
+            {
+                Logger.Info ( $"{command}" ) ;
+                Logger.Info ( $"{command.Argument}" ) ;
+                return AppCommandResult.Success ;
+            }
+
             var c = new LambdaAppCommand (
                                           "test"
-                                        , async command => {
-                                              Logger.Info ( $"{command}" ) ;
-                                              Logger.Info ( $"{command.Argument}" ) ;
-                                              return AppCommandResult.Success ;
-                                          }
+                                        , CommandFunc
                                         , "arg"
                                         , exception
                                               => DebugUtils.WriteLine ( $"badness: {exception}" )
@@ -1175,16 +1281,6 @@ namespace ProjTests
         [ Fact ]
         public void TestXaml1 ( )
         {
-            // XamlXmlWriter outwriter = new XamlXmlWriter (
-            //                                              XmlWriter.Create (
-            //                                                                @"c:\temp\out.xml"
-            //                                                              , new XmlWriterSettings ( )
-            //                                                                {
-            //                                                                    Indent = true
-            //                                                                }
-            //                                                               )
-            //                                            , new XamlSchemaContext ( )
-            //                                             ) ;
             var context = XamlReader.GetWpfSchemaContext ( ) ;
             var xamlType = context.GetXamlType ( typeof ( Type ) ) ;
             var xamlType2 = context.GetXamlType ( typeof ( SyntaxFieldInfo ) ) ;
@@ -1206,6 +1302,53 @@ namespace ProjTests
                                        ) ;
             DebugUtils.WriteLine ( @out ) ;
             Logger.Info ( @out ) ;
+        }
+
+    }
+
+    public class TestApp1 : System.Windows.Application
+    {
+        #region Overrides of Application
+        protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
+        #endregion
+    }
+
+    public class XamlWriter1 : XamlObjectWriter
+    {
+        #region Overrides of XamlObjectWriter
+        protected override void OnAfterBeginInit ( object value ) { base.OnAfterBeginInit ( value ) ; }
+
+        protected override void OnBeforeProperties ( object value ) { base.OnBeforeProperties ( value ) ; }
+
+        protected override void OnAfterProperties ( object value ) { base.OnAfterProperties ( value ) ; }
+
+        protected override void OnAfterEndInit ( object value ) { base.OnAfterEndInit ( value ) ; }
+
+        protected override bool OnSetValue ( object eventSender , XamlMember member , object value ) { return base.OnSetValue ( eventSender , member , value ) ; }
+
+        public override void WriteGetObject ( ) { base.WriteGetObject ( ) ; }
+
+        public override void WriteStartObject ( XamlType xamlType ) { base.WriteStartObject ( xamlType ) ; }
+
+        public override void WriteEndObject ( ) { base.WriteEndObject ( ) ; }
+
+        public override void WriteStartMember ( XamlMember property ) { base.WriteStartMember ( property ) ; }
+
+        public override void WriteEndMember ( ) { base.WriteEndMember ( ) ; }
+
+        public override void WriteValue ( object value ) { base.WriteValue ( value ) ; }
+
+        public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration ) { base.WriteNamespace ( namespaceDeclaration ) ; }
+
+        protected override void Dispose ( bool disposing ) { base.Dispose ( disposing ) ; }
+        #endregion
+
+        public XamlWriter1 ( [ NotNull ] XamlSchemaContext schemaContext ) : base ( schemaContext )
+        {
+        }
+
+        public XamlWriter1 ( [ NotNull ] XamlSchemaContext schemaContext , XamlObjectWriterSettings settings ) : base ( schemaContext , settings )
+        {
         }
     }
 }

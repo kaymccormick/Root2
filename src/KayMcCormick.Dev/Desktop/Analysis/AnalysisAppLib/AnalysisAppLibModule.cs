@@ -31,10 +31,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
-        public AnalysisAppLibModule ( )
-        {
-             DebugUtils.WriteLine ( "here" ) ;
-        }
+        public AnalysisAppLibModule ( ) { DebugUtils.WriteLine ( "here" ) ; }
 
         #region Overrides of Module
         /// <summary>
@@ -45,27 +42,27 @@ namespace AnalysisAppLib.XmlDoc
         protected override void AttachToComponentRegistration (
             IComponentRegistryBuilder componentRegistry
             // ReSharper disable once AnnotateNotNullParameter
-          , IComponentRegistration    registration
+          , IComponentRegistration registration
         )
         {
             registration.Activating += ( sender , args ) => {
-                var inst = args.Instance;
+                var inst = args.Instance ;
                 DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
                 if ( ! ( inst is IViewModel ) )
                 {
                     return ;
                 }
 
-                if (inst is ISupportInitializeNotification xx)
+                if ( inst is ISupportInitializeNotification xx )
                 {
-                    DebugUtils.WriteLine("calling init on instance");
-                    if (!xx.IsInitialized)
+                    DebugUtils.WriteLine ( "calling init on instance" ) ;
+                    if ( ! xx.IsInitialized )
                     {
-                        xx.BeginInit();
-                        xx.EndInit();
+                        xx.BeginInit ( ) ;
+                        xx.EndInit ( ) ;
                     }
-                } else 
-                if ( inst is ISupportInitialize x )
+                }
+                else if ( inst is ISupportInitialize x )
                 {
                     DebugUtils.WriteLine ( "calling init on instance" ) ;
                     x.BeginInit ( ) ;
@@ -81,8 +78,10 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType < SyntaxTypesService > ( ).As < ISyntaxTypesService > ( ) ;
+            builder.RegisterType < DocInterface > ( ).As < IDocInterface > ( ) ;
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
-            builder.RegisterType<ModelResources>().SingleInstance();
+            builder.RegisterType < ModelResources > ( ).SingleInstance ( ) ;
             builder.RegisterType < CodeGenCommand > ( ).AsSelf ( ).AsImplementedInterfaces ( ) ;
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .Where (
@@ -106,8 +105,6 @@ namespace AnalysisAppLib.XmlDoc
                    .WithAttributedMetadata ( ) ;
 
 #if false
-            
-            
             builder.RegisterType < LogUsageAnalysisViewModel > ( )
                    .As < ILogUsageAnalysisViewModel > ( ) ;
             builder.RegisterType < FileSystemExplorerItemProvider > ( )
@@ -118,7 +115,7 @@ namespace AnalysisAppLib.XmlDoc
 
             builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )
                    .As ( typeof ( IAnalyzeCommand2 <> ) ) ;
-            builder.RegisterType<Pipeline>().AsSelf();
+            builder.RegisterType < Pipeline > ( ).AsSelf ( ) ;
 
 
 #if false
@@ -211,7 +208,7 @@ namespace AnalysisAppLib.XmlDoc
 
                                                       return false ;
                                                   }
-                                                , t
+                                            , t
                                                  )
                                  .Any ( )
                           )
@@ -219,28 +216,35 @@ namespace AnalysisAppLib.XmlDoc
 #endif
 
 
-             builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
-             .As ( typeof ( IAnalysisBlockProvider < , , > ) )
-             .WithAttributeFiltering ( )
-             .InstancePerLifetimeScope ( ).WithMetadata("Purpose", "Analysis") ;
+            builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
+                   .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                   .WithAttributeFiltering ( )
+                   .InstancePerLifetimeScope ( )
+                   .WithMetadata ( "Purpose" , "Analysis" ) ;
 
             builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
-             .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-             .WithAttributeFiltering ( )
-             .InstancePerLifetimeScope ( ).WithMetadata("Purpose", "Analysis"); ;
+                   .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+                   .WithAttributeFiltering ( )
+                   .InstancePerLifetimeScope ( )
+                   .WithMetadata ( "Purpose" , "Analysis" ) ;
+            ;
 
-            builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
-             .As(typeof(IAnalysisBlockProvider<,,>))
-             .WithAttributeFiltering()
-             .InstancePerLifetimeScope().WithMetadata("Purpose", "Analysis"); ; 
+            builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider < , , > ) )
+                   .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                   .WithAttributeFiltering ( )
+                   .InstancePerLifetimeScope ( )
+                   .WithMetadata ( "Purpose" , "Analysis" ) ;
+            ;
 
-             builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
-             .As(typeof(IDataflowTransformFuncProvider<,>))
-             .WithAttributeFiltering()
-             .InstancePerLifetimeScope().WithMetadata("Purpose", "Analysis"); ;
+            builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider < , > ) )
+                   .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+                   .WithAttributeFiltering ( )
+                   .InstancePerLifetimeScope ( )
+                   .WithMetadata ( "Purpose" , "Analysis" ) ;
+            ;
 
 
-#region MS LOGIN
+            #region MS LOGIN
             builder.Register ( MakePublicClientApplication ).As < IPublicClientApplication > ( ) ;
 
             builder.Register (
@@ -250,7 +254,7 @@ namespace AnalysisAppLib.XmlDoc
                               }
                              )
                    .AsSelf ( ) ;
-#endregion
+            #endregion
 #if false
             builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
             builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
@@ -262,7 +266,7 @@ namespace AnalysisAppLib.XmlDoc
 
         [ NotNull ]
         private static IPublicClientApplication MakePublicClientApplication (
-            IComponentContext         context
+            IComponentContext                     context
           , [ NotNull ] IEnumerable < Parameter > p
         )
         {

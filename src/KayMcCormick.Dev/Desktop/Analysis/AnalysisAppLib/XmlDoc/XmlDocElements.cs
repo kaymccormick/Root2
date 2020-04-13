@@ -33,6 +33,7 @@ namespace AnalysisAppLib.XmlDoc
     public static class XmlDocElements
     {
         private static string _pocoPrefix = "Poco";
+        private static readonly string _collectionSuffix = "Collection" ;
 
         /// <summary>
         /// 
@@ -417,65 +418,54 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="parseTypeName"></param>
-        /// <param name="collectionMap"></param>
-        /// <param name="appTypeInfo"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static TypeSyntax SubstituteTransformedPocoType (
-            TypeSyntax                                               parseTypeName
-          , [ NotNull ] IReadOnlyDictionary < AppTypeInfo , object > collectionMap
-          , [ NotNull ] AppTypeInfo                                  appTypeInfo
-        )
-        {
-            if ( appTypeInfo == null )
-            {
-                throw new ArgumentNullException ( nameof ( appTypeInfo ) ) ;
-            }
-
-            var q =
-                from SyntaxFieldInfo field in appTypeInfo.Fields
-                let s = parseTypeName as SimpleNameSyntax
-                where field.Name == s?.Identifier.Text
-                select field.Types ;
-
-            var key = q.FirstOrDefault ( )?.FirstOrDefault ( ) ;
-            if ( key != null
-                 && collectionMap.TryGetValue ( key , out var fieldTypeName ) )
-            {
-                return SyntaxFactory.ParseTypeName ( ( string ) fieldTypeName ) ;
-            }
-
-            return parseTypeName ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         public static TypeSyntax TransformParsePocoType ( TypeSyntax type )
         {
-            if ( type is SimpleNameSyntax sns )
+            if ( type is PredefinedTypeSyntax )
             {
-                var pocoType = SyntaxFactory.ParseTypeName ( _pocoPrefix + sns.Identifier.Text ) ;
-                return pocoType ;
+                DebugUtils.WriteLine($"Predefined type {type} does not apply for poco transform.");
+                return type;
+            }
+            SimpleNameSyntax sns1 = null ;
+            if ( type is QualifiedNameSyntax qual )
+            {
+                if ( qual.Right is SimpleNameSyntax sns )
+                {
+                    sns1 = sns ;
+                }
+            } else if ( type is SimpleNameSyntax sns )
+            {
+                sns1 = sns ;
+            }
+            else
+            {
+                throw new InvalidOperationException();
             }
 
-            return null ;
+            if ( sns1.Identifier.Text.StartsWith ( _pocoPrefix ) )
+            {
+                throw new InvalidOperationException ( "Type already has poco prefix" ) ;
+            }
+            var pocoType = SyntaxFactory.ParseTypeName ( _pocoPrefix + sns1.Identifier.Text ) ;
+            return pocoType ;
         }
 
+
         /// <summary>
-        /// 
+        /// Called when generating PropertyDeclarationSyntax nodes for
+        /// generated Poco-style properties.
         /// </summary>
         /// <param name="tField"></param>
         /// <param name="type"></param>
         /// <param name="collectionMap"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         public static TypeSyntax SubstituteType (
-            [ NotNull ] SyntaxFieldInfo                              tField
+            [ NotNull ]   SyntaxFieldInfo                tField
           , [ CanBeNull ] TypeSyntax                     type
-          , IReadOnlyDictionary < AppTypeInfo , object > collectionMap
+          , IReadOnlyDictionary < string , object > collectionMap
+          , ISyntaxTypesService model
         )
         {
             if ( tField == null )
@@ -485,41 +475,27 @@ namespace AnalysisAppLib.XmlDoc
 
             if ( type != null )
             {
-                return XmlDocElements.TransformParsePocoType ( type ) ;
+                return TransformParsePocoType ( type ) ;
             }
 
+            
             string info = null;
-            if(collectionMap.TryGetValue(type, out var info2)) { 
+            var typeSyntax = type as SimpleNameSyntax ;
+
+            var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
+            if ( appTypeInfo == null )
+            {
+                throw new InvalidOperationException ( "Invalid type info" ) ;
+            }
+            if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) { 
                 info = ( string ) info2 ;
             }
-            return XmlDocElements.SubstituteTransformedPocoType ( type , collectionMap ,info 
-                                                                ) ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model1"></param>
-        /// <param name="DebugOut"></param>
-        /// <returns></returns>
-        [ NotNull ]
-        public static IReadOnlyDictionary < AppTypeInfo , object > CollectionMap (
-            [ NotNull ] ITypesViewModel model1
-          , Action < string >          DebugOut
-        )
-        {
-            DebugUtils.WriteLine ( "Populating collectionMap" ) ;
-            var collectionMap = new Dictionary < AppTypeInfo , object > ( ) ;
-            foreach ( Type mapKey in model1.Map.Keys )
+            else
             {
-                DebugOut ( $"{mapKey}" ) ;
-                var t = ( AppTypeInfo ) model1.Map[ mapKey ] ;
-                var collection = "Collection" ;
-                var colType = $"{_pocoPrefix}{t.Type.Name}{collection}" ;
-                collectionMap[ t ] = colType ;
+                throw new InvalidOperationException ( "No collection type in the map." ) ;
             }
-
-            return collectionMap ;
+            return SyntaxTypesService.FieldPocoCollectionType( type , collectionMap ,appTypeInfo
+                                             ) ;
         }
     }
 

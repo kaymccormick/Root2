@@ -12,10 +12,9 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
-        public readonly Dictionary < Type , AppTypeInfo >
-            dict = new Dictionary < Type , AppTypeInfo > ( ) ;
+        public readonly Dictionary < AppTypeInfoKey , AppTypeInfo > dict = new Dictionary < AppTypeInfoKey , AppTypeInfo > ( ) ;
 
-        private IDictionary _dict ;
+        private readonly IDictionary _dict ;
         /// <summary>
         /// 
         /// </summary>
@@ -110,5 +109,21 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         public bool IsSynchronized { get { return _dict.IsSynchronized ; } }
         #endregion
+
+        /// <summary>
+        /// Get the <see cref="AppTypeInfo"/> for a particular .net CLR type.
+        /// </summary>
+        /// <param name="type">The .NET CLR type</param>
+        /// <returns>The <see cref="AppTypeInfo"/> instance.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public AppTypeInfo GetAppTypeInfoForType ( AppTypeInfoKey typeKey )
+        {
+            if (! dict.ContainsKey ( typeKey ) )
+            {
+                throw new InvalidOperationException ( "No such type" ) ;
+            }
+
+            return dict[ typeKey ] ;
+        }
     }
 }
