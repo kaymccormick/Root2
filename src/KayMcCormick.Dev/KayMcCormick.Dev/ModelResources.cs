@@ -30,17 +30,22 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// ViewModel designed to expose a hierarchy of resources in an application.
     /// </summary>
-    public sealed class ModelResources: ISupportInitializeNotification, IViewModel
+    public sealed class ModelResources : ISupportInitializeNotification , IViewModel
     {
         /// <summary>
         /// 
         /// </summary>
         internal readonly IObjectIdProvider _idProvider ;
+
         /// <summary>
         /// 
         /// </summary>
         private readonly ILifetimeScope _lifetimeScope ;
-        private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =new ObservableCollection < ResourceNodeInfo > ();
+
+        private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
+            new ObservableCollection < ResourceNodeInfo > ( ) ;
+
+        private bool _doPopulateAppContext ;
 
         /// <summary>
         /// </summary>
@@ -63,22 +68,17 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public ModelResources ( ) {
-        }
+        public ModelResources ( ) { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
-        public ModelResources(
-            ILifetimeScope    lifetimeScope
-          , IObjectIdProvider idProvider
-        )
+        public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider )
         {
-            _lifetimeScope = lifetimeScope;
-            _idProvider    = idProvider;
-
+            _lifetimeScope = lifetimeScope ;
+            _idProvider    = idProvider ;
         }
 
         /// <summary>
@@ -117,17 +117,18 @@ namespace KayMcCormick.Dev
                     }
 
                     CreateNode ( n3 , instanceInfo.Instance , instanceInfo.Instance , false ) ;
-                    if ( instanceInfo.Instance is IViewModel vm && ReferenceEquals(vm, this) == false)
+                    if ( instanceInfo.Instance is IViewModel vm
+                         && ReferenceEquals ( vm , this ) == false )
                     {
                         try
                         {
-                            SoapFormatter x = new SoapFormatter ( ) ;
+                            var x = new SoapFormatter ( ) ;
                             var serializationStream = new MemoryStream ( ) ;
 
                             x.Serialize ( serializationStream , vm ) ;
                             serializationStream.Flush ( ) ;
                             serializationStream.Seek ( 0 , SeekOrigin.Begin ) ;
-                            byte[] buffer = new byte[ serializationStream.Length ] ;
+                            var buffer = new byte[ serializationStream.Length ] ;
                             serializationStream.Read (
                                                       buffer
                                                     , 0
@@ -141,6 +142,7 @@ namespace KayMcCormick.Dev
                             // ignored
                         }
                     }
+
                     // TODO implement
                     // ReSharper disable once UnusedVariable
                     if ( instanceInfo.Instance is LifetimeScope ls )
@@ -149,8 +151,8 @@ namespace KayMcCormick.Dev
 
                     // if ( instanceInfo.Instance is FrameworkElement fe )
                     // {
-                        // var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
-                        // AddResourceNodeInfos ( res ) ;
+                    // var res = CreateNode ( n3 , "Resources" , fe.Resources , true ) ;
+                    // AddResourceNodeInfos ( res ) ;
                     // }
 
                     var n4 = CreateNode ( n3 , "Parameters" , instanceInfo.Parameters , true ) ;
@@ -202,7 +204,10 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="node"></param>
-        private void PopulateLifetimeScope ( [ NotNull ] ILifetimeScope lifetimeScope , ResourceNodeInfo node )
+        private void PopulateLifetimeScope (
+            [ NotNull ] ILifetimeScope lifetimeScope
+          , ResourceNodeInfo           node
+        )
         {
             var regs = CreateNode (
                                    node
@@ -260,16 +265,29 @@ namespace KayMcCormick.Dev
                                  , CreateNode ( null , "LifetimeScope" , _lifetimeScope , true )
                                   ) ;
 
-            PopulateAppContext(AppDomain.CurrentDomain
-                             , CreateNode(null, "Current App Domain", AppDomain.CurrentDomain, true)) ;
+            if ( DoPopulateAppContext )
+            {
+                PopulateAppContext (
+                                    AppDomain.CurrentDomain
+                                  , CreateNode (
+                                                null
+                                              , "Current App Domain"
+                                              , AppDomain.CurrentDomain
+                                              , true
+                                               )
+                                   ) ;
+            }
+        }
 
-            
+        public bool DoPopulateAppContext
+        {
+            get { return _doPopulateAppContext ; }
+            set { _doPopulateAppContext = value ; }
         }
 
         private void PopulateAppContext ( AppDomain currentDomain , ResourceNodeInfo createNode )
         {
-            var convNode
-            = CreateNode( createNode , "Converters" , null , false ) ;
+            var convNode = CreateNode ( createNode , "Converters" , null , false ) ;
 
             foreach ( var assembly in currentDomain.GetAssemblies ( ) )
             {
@@ -279,19 +297,23 @@ namespace KayMcCormick.Dev
                                       , assembly
                                       , true
                                        ) ;
-                
-                if ( assembly.IsDynamic ) continue ;
+
+                if ( assembly.IsDynamic )
+                {
+                    continue ;
+                }
+
                 foreach ( var typ in assembly.ExportedTypes )
                 {
                     // var cc = typ.GetCustomAttribute < TypeConverterAttribute > ( ) ;
-                    
-                     var typnode = CreateNode ( anode , typ.FullName , typ , true ) ;
+
+                    var typnode = CreateNode ( anode , typ.FullName , typ , true ) ;
                     // var conv = CreateNode ( typnode , "Converter" , null , false ) ;
 
                     // TypeConverter converter = null ;
                     // try
                     // {
-                        // converter = TypeDescriptor.GetConverter ( typ.UnderlyingSystemType ) ;
+                    // converter = TypeDescriptor.GetConverter ( typ.UnderlyingSystemType ) ;
                     // }
                     // catch ( Exception ex )
                     // {
@@ -299,9 +321,9 @@ namespace KayMcCormick.Dev
                     // }
 
                     // var c11 = CreateNode ( conv, converter , converter , true ) ;
-                     // CreateNode(convNode, converter, converter, true);
-                    var bases = CreateNode ( typnode , "Bases" , null , false ) ;
-                    var atts = CreateNode ( typnode , "Attributes" , null , false ) ;
+                    // CreateNode(convNode, converter, converter, true);
+                    var bases = CreateNode ( typnode , "Bases" ,      null , false ) ;
+                    var atts = CreateNode ( typnode ,  "Attributes" , null , false ) ;
                     try
                     {
                         foreach ( var c in typ.CustomAttributes )
@@ -313,8 +335,10 @@ namespace KayMcCormick.Dev
                                 CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
                             }
                         }
-                    }catch
-                    { }
+                    }
+                    catch
+                    {
+                    }
 
                     var bas = typ.BaseType ;
                     while ( bas != null )
@@ -331,17 +355,23 @@ namespace KayMcCormick.Dev
                     {
                         var p = CreateNode ( props , propertyInfo.Name , propertyInfo , true ) ;
                     }
-                    var methods = CreateNode(typnode, "Methods", null, false);
-                    foreach (var  methodInfo in typ.GetMethods(
-                                                                   BindingFlags.Instance
-                                                                   | BindingFlags.Public
-                                                              ).Where (m => !m.IsSpecialName  ))
+
+                    var methods = CreateNode ( typnode , "Methods" , null , false ) ;
+                    foreach ( var methodInfo in typ
+                                               .GetMethods (
+                                                            BindingFlags.Instance
+                                                            | BindingFlags.Public
+                                                           )
+                                               .Where ( m => ! m.IsSpecialName ) )
                     {
-                        var p = CreateNode(methods, methodInfo.ToString(), methodInfo, true);
+                        var p = CreateNode (
+                                            methods
+                                          , methodInfo.ToString ( )
+                                          , methodInfo
+                                          , true
+                                           ) ;
                     }
-
                 }
-
             }
         }
 
@@ -366,7 +396,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         public void EndInit ( )
         {
-            PopulateResourcesTree();
+            PopulateResourcesTree ( ) ;
             IsInitialized = true ;
         }
         #endregion
@@ -381,7 +411,7 @@ namespace KayMcCormick.Dev
 
         #region Implementation of ISupportInitializeNotification
         /// <inheritdoc />
-        public bool IsInitialized { get ; set ;  }
+        public bool IsInitialized { get ; set ; }
 
         /// <inheritdoc />
         public event EventHandler Initialized ;

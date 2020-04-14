@@ -917,7 +917,9 @@ namespace ModelTests
         [ Fact ]
         public void TestTypesService ( )
         {
-
+            SyntaxTypesService sns= new SyntaxTypesService();
+            sns.BeginInit();
+            sns.EndInit();
         }
 
     }

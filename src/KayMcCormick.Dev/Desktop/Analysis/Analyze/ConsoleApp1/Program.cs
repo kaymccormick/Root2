@@ -50,9 +50,6 @@ namespace ConsoleApp1
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
         private const string _pocoPrefix                = "Poco" ;
-        private const string _predefinedNodeElementName = "PredefinedNode" ;
-        private const string _abstractNodeElementName   = "AbstractNode" ;
-        private const string _nodeElementName           = "Node" ;
         private const string _collectionSuffix          = "Collection" ;
         private const string _pocosyntaxnamespace       = "PocoSyntax" ;
         private const string _icollection               = "ICollection" ;
@@ -85,7 +82,7 @@ namespace ConsoleApp1
         private static readonly string              _ienumerable    = "IEnumerable" ;
         static Program ( ) { Logger = null ; }
 
-        [ NotNull ] public string PocoPrefix { get { return _pocoPrefix ; } }
+        [ NotNull ] public static string PocoPrefix { get { return _pocoPrefix ; } }
 
         private static void PopulateJsonConverters ( bool disableLogging )
         {
@@ -215,7 +212,9 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
+#pragma warning disable 1998
         private static async Task SelectProjectAsync ( [ NotNull ] AppContext context )
+#pragma warning restore 1998
         {
             var i = 0 ;
             var browserNodeCollection = context.BrowserViewModel.RootCollection ;
@@ -257,25 +256,10 @@ namespace ConsoleApp1
 
                 break ;
             }
-
-
-            Meta < Lazy < IAnalyzeCommand3 > > command2 = null ;
-            // foreach ( var cmd in context.AnalyzeCommands )
-            // {
-            // Console.WriteLine("Command #" + j);
-            // foreach ( var keyValuePair in cmd.Metadata )
-            // {
-            // Console.WriteLine ( $"  {keyValuePair.Key}: {keyValuePair.Value}" ) ;
-            // }
-
-            // command2 = cmd ;
-            // }
-
             Console.ReadLine ( ) ;
 
             Console.WriteLine ( projectNode.SolutionPath ) ;
             Console.ReadLine ( ) ;
-
         }
 
 
@@ -313,7 +297,7 @@ namespace ConsoleApp1
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = sts.CollectionMap ( ) ;
 
-            LoadSyntax ( typesViewModel , collectionMap ) ;
+            SyntaxTypesService.LoadSyntax ( typesViewModel , collectionMap ) ;
             // foreach ( AppTypeInfo ati in typesViewModel.Map.Values )
             // {
             // typesViewModel.PopulateFieldTypes ( ati ) ;
@@ -752,9 +736,13 @@ namespace ConsoleApp1
                         }
 
                         var xml1 = declared.GetDocumentationCommentXml ( ) ;
-                        if ( declared.DeclaredAccessibility != Accessibility.Public || ! SupportsDocumentationComments ( node ) )
+                        if ( declared.DeclaredAccessibility != Accessibility.Public
+                             || ! SupportsDocumentationComments ( node ) )
                         {
-                            var docid = declared.GetDocumentationCommentId ( ) ;
+                            DebugUtils.WriteLine($"Documentation accessibility is {declared.DeclaredAccessibility}");
+                        } else { 
+
+                        var docid = declared.GetDocumentationCommentId ( ) ;
                                
                             // ReSharper disable once UnusedVariable
                             var o = new
@@ -772,13 +760,31 @@ namespace ConsoleApp1
                                     doc1 = XDocument.Parse ( xml1 ) ;
                                 }
 
-
-                                var o1 = XmlDocElements.HandleDocElementNode (
+                                CodeElementDocumentation o1 = null ;
+                                if ( doc1 != null )
+                                {
+                                    o1 = XmlDocElements.HandleDocElementNode (
                                                                               doc1
                                                                             , docid
                                                                             , node
                                                                             , declared
-                                                                             ) ;
+                                                                             )
+                                         ?? throw new InvalidOperationException (
+                                                                                 "Null from HandleDocElementNode"
+                                                                                ) ;
+                                }
+                                else
+                                {
+                                    o1 = XmlDocElements.CreateCodeDocumentationElementType (
+                                                                                            node
+                                                                                          , docid
+                                                                                           )
+                                         ?? throw new InvalidOperationException (
+                                                                                 "Null from CreateCodeDocumentationElementType"
+                                                                                ) ;
+
+                                }
+
                                 if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
                                 {
                                     o1.NeedsAttention = true ;
@@ -790,10 +796,6 @@ namespace ConsoleApp1
                             {
                                 DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                             }
-
-
-
-
                             // DebugUtils.WriteLine ( JsonSerializer.Serialize ( o ) ) ;
                         }
                     }
@@ -823,7 +825,10 @@ namespace ConsoleApp1
             var li = new ArrayList ( ) ;
             foreach ( var codeElementDocumentation in documentsOut )
             {
-                li.Add ( codeElementDocumentation ) ;
+                if ( codeElementDocumentation != null )
+                {
+                    li.Add ( codeElementDocumentation ) ;
+                }
             }
 
             var xmlWriter = XmlWriter.Create (
@@ -1481,7 +1486,7 @@ namespace ConsoleApp1
             DebugOut ( "About to build compilation unit" ) ;
 
             var compl = CompilationUnit ( ) ;
-            compl = WithCollectionUsings ( compl ) ;
+            compl = SyntaxTypesService.WithCollectionUsings ( compl ) ;
             compl = compl.WithMembers (
                                        new SyntaxList < MemberDeclarationSyntax > (
                                                                                    NamespaceDeclaration (
@@ -1710,54 +1715,6 @@ namespace ConsoleApp1
         }
 
         [ NotNull ]
-        private static CompilationUnitSyntax
-            WithCollectionUsings ( [ NotNull ] CompilationUnitSyntax compl )
-        {
-            return compl.WithUsings (
-                                     new SyntaxList < UsingDirectiveSyntax > (
-                                                                             new[]
-                                                                              {
-                                                                                  UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "System"
-                                                                                                            )
-                                                                                                 )
-                                                                                , UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "System.Collections.Generic"
-                                                                                                            )
-                                                                                                 )
-                                                                                , UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "System.Collections"
-                                                                                                            )
-                                                                                                 )
-                                                                                , UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "System.ComponentModel"
-                                                                                                            )
-                                                                                                 )
-                                                                                , UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "Microsoft.CodeAnalysis"
-                                                                                                            )
-                                                                                                 )
-                                                                                , UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "Microsoft.CodeAnalysis.CSharp"
-                                                                                                            )
-                                                                                                 )
-                                                                                , UsingDirective (
-                                                                                                  ParseName (
-                                                                                                             "Microsoft.CodeAnalysis.CSharp.Syntax"
-                                                                                                            )
-                                                                                                 )
-                                                                              }
-                                                                             )
-                                    ) ;
-        }
-
-        [ NotNull ]
         private static ClassDeclarationSyntax CreatePoco (
             [ NotNull ] AppTypeInfoKey        mapKey
           , [ NotNull ] AppTypeInfo t
@@ -1784,357 +1741,6 @@ namespace ConsoleApp1
             return classDecl1 ;
         }
 
-        // ReSharper disable once UnusedMember.Local
-        private static void LoadSyntax (
-            [ NotNull ] TypesViewModel                   model1
-          , IReadOnlyDictionary < string, object > collectionMap
-        )
-        {
-            using ( var stream =
-                typeof ( AnalysisAppLibModule ).Assembly.GetManifestResourceStream (
-                                                                                    "AnalysisAppLib.Resources.Syntax.xml"
-                                                                                   ) )
-            {
-
-                var reader = XmlReader.Create (
-                                               stream ?? throw new InvalidOperationException ( )
-                                             , new XmlReaderSettings ( ) { Async = true }
-                                              ) ;
-
-                var syntax = XDocument.Load ( reader ) ;
-                if ( syntax.Root != null )
-                {
-                    var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
-                    if ( model1.Map.Values != null )
-                    { var result = model1.Map.dict.Where ( pair => pair.Value.Type.Name == rootType ) ;
-                        // var result = (valueCollection.Where ( t => {
-                                                                 // DebugUtils.WriteLine(t.Type.Name);
-                                                                 // var b = t.Type.Name
-                                                                         // == rootType ;
-                                                                 // if ( b )
-                                                                     // DebugUtils
-                                                                        // .WriteLine ( "true" ) ;
-                                                                 // return b ;
-                                                                      // }
-                                                                     // )) ;
-                        AppTypeInfo ati =null;
-                        if ( ! result.Any ( ) )
-                        {
-                            DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
-                        }
-                        else
-                        {
-                            ati = result.First ( ).Value ;
-                            DebugUtils.WriteLine ( $"{ati}" ) ;
-                        }
-                    }
-
-                    foreach ( var xElement in syntax.Root.Elements ( ) )
-                    {
-                        Type t = null;
-                        var xElementNameElementNameLocalName = xElement.Name.LocalName ;
-                        switch ( xElementNameElementNameLocalName )
-                        {
-                            case _predefinedNodeElementName :
-                                var xName_Name = XName.Get ( "Name" ) ;
-                                var typeName = xElement.Attribute ( xName_Name )?.Value ;
-                                switch ( typeName )
-                                {
-                                    case nameof(CSharpSyntaxNode):
-                                        t = typeof ( CSharpSyntaxNode ) ;
-                                        break ;
-                                    case nameof(SyntaxNode):
-                                        t = typeof ( SyntaxNode ) ;
-                                        break ;
-                                    case nameof(StructuredTriviaSyntax):
-                                        t = typeof ( StructuredTriviaSyntax ) ;
-                                        break ;
-                                }
-
-                                if ( t == null )
-                                {
-                                    DebugUtils.WriteLine ( "No type for " + typeName ) ;
-                                }
-                                else if ( model1.Map.Contains ( t ) )
-                                {
-                                    var typ = ( AppTypeInfo ) model1.Map[ t ] ;
-                                    typ.ElementName = xElementNameElementNameLocalName ;
-                                }
-
-                                break ;
-                            case _abstractNodeElementName :
-                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                                break ;
-                            case _nodeElementName :
-                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                                break ;
-
-                            default : throw new InvalidOperationException ( ) ;
-                        }
-                    }
-                }
-
-
-                var d = new TypeMapDictionary { [ typeof ( string ) ] = new AppTypeInfo ( ) } ;
-                DebugUtils.WriteLine ( XamlWriter.Save ( d ) ) ;
-                DebugUtils.WriteLine ( XamlWriter.Save ( model1 ) ) ;
-            }
-        }
-
-
-        private static void ParseNodeBasics (
-            [ NotNull ] TypesViewModel                                           model1
-          , [ NotNull ] XElement                                     xElement
-          , [ NotNull ] IReadOnlyDictionary < string , object > collectionMap
-        )
-        {
-            if ( collectionMap == null )
-            {
-                throw new ArgumentNullException ( nameof ( collectionMap ) ) ;
-            }
-
-            
-            var typeName2 = xElement.Attribute ( XName.Get ( "Name" ) )?.Value ;
-            var t2 = MapTypeNameToSyntaxNode ( model1, typeName2 ) ;
-            if ( t2 == null )
-            {
-                DebugUtils.WriteLine ( "No type for " + typeName2 ) ;
-            }
-
-            else
-            {
-                var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
-                typ2.ElementName = xElement.Name.LocalName ;
-                var kinds1 = xElement.Elements ( XName.Get ( "Kind" ) ) ;
-                var xElements = kinds1 as XElement[] ?? kinds1.ToArray ( ) ;
-                if ( xElements.Any ( ) )
-                {
-                    typ2.Kinds.Clear ( ) ;
-                    var nodekinds = xElements
-                                   .Select ( element => element.Attribute ( "Name" )?.Value )
-                                   .ToList ( ) ;
-                    foreach ( var nodekind in nodekinds )
-                    {
-                        typ2.Kinds.Add ( nodekind ) ;
-                    }
-
-                    DebugUtils.WriteLine ( typ2.Title ) ;
-                }
-
-                // ReSharper disable once UnusedVariable
-                var comment = xElement.Element ( XName.Get ( "TypeComment" ) ) ;
-                //DebugUtils.WriteLine ( comment ) ;
-
-                typ2.Fields.Clear ( ) ;
-                var choices = xElement.Elements ( XName.Get ( "Choice" ) ) ;
-                var choiceAry = choices as XElement[] ?? choices.ToArray ( ) ;
-                if ( choiceAry.Any ( ) )
-                {
-                    var choice = choiceAry.First ( ) ;
-                    // ReSharper disable once UnusedVariable
-                    foreach ( var element in choice.Elements ( ) )
-                    {
-                    }
-
-                    // ReSharper disable once UnusedVariable
-                    foreach ( var element in choice.Elements ( XName.Get ( "Field" ) ) )
-                    {
-                    }
-
-                    DebugUtils.WriteLine ( typ2.Title ) ;
-                }
-
-                foreach ( var field in xElement.Elements ( XName.Get ( "Field" ) )
-                                               .Concat (
-                                                        xElement.Elements ( XName.Get ( "Choice" ) )
-                                                                .Elements ( XName.Get ( "Field" ) )
-                                                       ) )
-                {
-                    ParseField ( field , typ2 ) ;
-                }
-            }
-        }
-
-        private static Type MapTypeNameToSyntaxNode ( [ NotNull ] TypesViewModel model1 , string typeName2 )
-        {
-            return model1.Map.dict.First ( k => k.Value.Type.Name == typeName2 ).Value.Type ;
-        }
-
-        private static void ParseField ( [ NotNull ] XElement field , [ NotNull ] AppTypeInfo typ2 )
-        {
-            var NameAttributeName = XName.Get ( "Name" ) ;
-            var typeAttributeName = XName.Get("Type");
-            var overrideAttributeName = XName.Get("Override");
-            var optionalAttributeName = XName.Get("Optional");
-
-            var fieldName = field.Attribute ( NameAttributeName )?.Value ;
-            var fieldType = field.Attribute ( typeAttributeName )?.Value ;
-            var @override = field.Attribute ( overrideAttributeName )?.Value == "true" ;
-            var optional = field.Attribute ( optionalAttributeName )?.Value  == "true" ;
-
-            var kinds = field.Elements ( "Kind" )
-                             .Select ( element => element.Attribute ( "Name" )?.Value )
-                             .ToList ( ) ;
-            if ( kinds.Any ( ) )
-            {
-                
-                   DebugUtils.WriteLine(string.Join(", ", kinds));
-            }
-
-
-            var fTypeP = ParseTypeName ( fieldType ) ;
-            var enumerable = false ;
-
-            ITypeSymbol arg = null ;
-            if ( fTypeP is GenericNameSyntax g )
-            {
-                var pds = PropertyDeclaration ( g , "type1" ) ;
-                var openBrace = Token ( SyntaxKind.OpenBraceToken ) ;
-                var closeBrace = Token ( SyntaxKind.CloseBraceToken ) ;
-                var empty = new SyntaxList < StatementSyntax > ( ) ;
-                var blockSyntax = Block ( openBrace , empty , closeBrace ) ;
-                var ads1 = AccessorDeclaration ( SyntaxKind.SetAccessorDeclaration , blockSyntax ) ;
-                var ads = new SyntaxList < AccessorDeclarationSyntax > ( ads1 ) ;
-                var als = AccessorList ( ads ) ;
-                var mds = pds.WithAccessorList ( als ) ;
-                var declarationSyntaxes = SingletonList < MemberDeclarationSyntax > ( mds ) ;
-                var memberDeclarationSyntaxes =
-                    SingletonList < MemberDeclarationSyntax > (
-                                                               ClassDeclaration ( "placeholder" )
-                                                                  .WithMembers (
-                                                                                declarationSyntaxes
-                                                                               )
-                                                              ) ;
-                var syntaxTrees = SyntaxTree (
-                                              WithCollectionUsings ( CompilationUnit ( ) )
-                                                 .WithMembers ( memberDeclarationSyntaxes )
-                                                 .NormalizeWhitespace ( )
-                                             ) ;
-                var compilation = CSharpCompilation.Create (
-                                                            "test"
-                                                          , new[] { syntaxTrees }
-                                                          , AssemblyRefs
-                                                           .Concat (
-                                                                    new[]
-                                                                    {
-                                                                        typeof ( SyntaxFactory )
-                                                                      , typeof ( ValueType )
-                                                                      , typeof ( SyntaxNode )
-                                                                      , typeof ( TypeSyntax )
-                                                                      , typeof ( object )
-                                                                      , typeof (
-                                                                            DesignerSerializationOptionsAttribute
-                                                                        )
-                                                                    }.Select (
-                                                                              t => t
-                                                                                  .Assembly
-                                                                                  .Location
-                                                                             )
-                                                                   )
-                                                           .Select (
-                                                                    ar => MetadataReference
-                                                                       .CreateFromFile ( ar )
-                                                                   )
-                                                          , new CSharpCompilationOptions (
-                                                                                          OutputKind
-                                                                                             .DynamicallyLinkedLibrary
-                                                                                         )
-                                                           ) ;
-                var ms = new MemoryStream ( ) ;
-                var result = compilation.Emit ( ms ) ;
-                var win = ( bool ? ) result.Success ?? throw new InvalidOperationException ( ) ;
-
-                var syntaxTree = compilation.SyntaxTrees.First ( ) ;
-                var model = compilation.GetSemanticModel ( syntaxTree ) ;
-                var source = syntaxTree.ToString ( )
-                                       .Split ( new[] { "\n" } , StringSplitOptions.None ) ;
-
-                foreach ( var diagnostic1 in compilation
-                                            .GetDiagnostics ( )
-                                            .Where (
-                                                    diagnostic
-                                                        => diagnostic.Severity
-                                                           == DiagnosticSeverity.Error
-                                                   ) )
-                {
-                    var startLine =
-                        diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line - 1 ;
-                    var count = diagnostic1.Location.GetLineSpan ( ).EndLinePosition.Line
-                                - diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line
-                                + 1 ;
-                    var locationSourceSpan = diagnostic1.Location.SourceSpan ;
-                    if ( diagnostic1.Location.SourceTree != null )
-                    {
-                        var code = diagnostic1.Location.SourceTree.GetText ( ) ;
-                        var end = locationSourceSpan.End     + 10 ;
-                        var start = locationSourceSpan.Start - 10 ;
-                        if ( start < 0 )
-                        {
-                            start = 0 ;
-                        }
-
-                        if ( end >= code.Length )
-                        {
-                            end = code.Length - 1 ;
-                        }
-
-                        var sp = new TextSpan ( start , end - start ) ;
-                        // ReSharper disable once UnusedVariable
-                        var codePart = code.GetSubText ( sp ) ;
-                        var lines = string.Join (
-                                                 "\n"
-                                               , code.Lines.Skip ( startLine ).Take ( count ).ToList ( )
-                                                ) ;
-                        // ReSharper disable once UnusedVariable
-                        var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
-                        DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
-                    }
-                }
-
-                var declarationSyntax = syntaxTree.GetRoot ( )
-                                                  .DescendantNodes ( )
-                                                  .OfType < PropertyDeclarationSyntax > ( )
-                                                  .First ( ) ;
-                // ReSharper disable once UnusedVariable
-                var typeSyntax = declarationSyntax.Type ;
-                var x1 = model.GetDeclaredSymbol ( declarationSyntax ) ;
-                
-                var symbol1 = model.GetSymbolInfo ( declarationSyntax ) ;
-                if ( symbol1 is INamedTypeSymbol namedTypeSymbol )
-                {
-
-                    enumerable = namedTypeSymbol.AllInterfaces.Any (
-                                                                    i => i.SpecialType
-                                                                         == SpecialType
-                                                                            .System_Collections_IEnumerable
-                                                                         || i.SpecialType
-                                                                         == SpecialType
-                                                                            .System_Collections_Generic_IEnumerable_T
-                                                                   ) ;
-                    if ( namedTypeSymbol.IsGenericType )
-                    {
-                        arg = namedTypeSymbol.TypeArguments.First ( ) ;
-                        namedTypeSymbol.TypeParameters.First ( ) ;
-                    }
-                }
-            }
-            
-            var syntaxFieldInfo = new SyntaxFieldInfo ( fieldName , fieldType , kinds.ToArray ( ) )
-                                  {
-                                      Override = @override , Optional = optional
-                                  } ;
-            if ( enumerable )
-            {
-                syntaxFieldInfo.IsCollection = true ;
-                if ( arg != null )
-                {
-                    syntaxFieldInfo.ElementTypeMetadataName = arg.ToDisplayString ( ) ;
-                }
-            }
-
-            //DebugUtils.WriteLine ($"{typ2.Title}: {fieldName}: {fieldType} = {string.Join(", ", kinds)}"  );
-            typ2.Fields.Add ( syntaxFieldInfo ) ;
-        }
 
         // ReSharper disable once UnusedMember.Local
         private static async Task ListenNetAsync ( )
@@ -2204,85 +1810,5 @@ namespace ConsoleApp1
                 default : return false ;
             }
         }
-    }
-
-    internal sealed class SyntaxRewriter1 : CSharpSyntaxRewriter
-    {
-        // ReSharper disable once NotAccessedField.Local
-        private readonly IReadOnlyDictionary < string , object > _map ;
-        // ReSharper disable once NotAccessedField.Local
-        private readonly TypesViewModel                          _model1 ;
-        #region Overrides of CSharpSyntaxRewriter
-        // ReSharper disable once UnusedMember.Global
-        public SyntaxRewriter1 (
-            IReadOnlyDictionary < string , object > map
-          , bool                                    visitIntoStructuredTrivia = false
-        ) : base ( visitIntoStructuredTrivia )
-        {
-            _map = map ;
-        }
-
-        public SyntaxRewriter1 ( TypesViewModel model1 ) { _model1 = model1 ; }
-
-        public override SyntaxNode VisitGenericName ( [ NotNull ] GenericNameSyntax node )
-        {
-            DebugUtils.WriteLine ( $"{node.Identifier} {node.TypeArgumentList}" ) ;
-            if ( node.Arity                   == 1
-                 && node.IsUnboundGenericName == false
-                 && node.Identifier.ValueText == "SeparatedSyntaxList" )
-            {
-                var typeSyntax = node.TypeArgumentList.Arguments[ 0 ] ;
-                if ( typeSyntax is SimpleNameSyntax sns )
-                {
-                    //return node.ReplaceNode ( node , node , _map[ sns.Identifier.ValueText ] ) ;
-                }
-            }
-
-            return base.VisitGenericName ( node ) ;
-        }
-
-        [ CanBeNull ]
-        public override SyntaxNode VisitPredefinedType ( PredefinedTypeSyntax node )
-        {
-            return base.VisitPredefinedType ( node ) ;
-        }
-
-        public override SyntaxList < TNode > VisitList < TNode > ( SyntaxList < TNode > list )
-        {
-            return base.VisitList ( list ) ;
-        }
-
-        public override TNode VisitListElement < TNode > ( TNode node )
-        {
-            return base.VisitListElement ( node ) ;
-        }
-
-        public override SeparatedSyntaxList < TNode > VisitList < TNode > (
-            SeparatedSyntaxList < TNode > list
-        )
-        {
-            return base.VisitList ( list ) ;
-        }
-
-        public override SyntaxToken VisitListSeparator ( SyntaxToken separator )
-        {
-            return base.VisitListSeparator ( separator ) ;
-        }
-
-        public override SyntaxTokenList VisitList ( SyntaxTokenList list )
-        {
-            return base.VisitList ( list ) ;
-        }
-
-        public override SyntaxTriviaList VisitList ( SyntaxTriviaList list )
-        {
-            return base.VisitList ( list ) ;
-        }
-
-        public override SyntaxTrivia VisitListElement ( SyntaxTrivia element )
-        {
-            return base.VisitListElement ( element ) ;
-        }
-        #endregion
     }
 }

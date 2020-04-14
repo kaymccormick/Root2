@@ -35,6 +35,41 @@ namespace AnalysisAppLib.XmlDoc
         private static readonly string _pocoPrefix = "Poco";
         private static readonly string _collectionSuffix = "Collection" ;
 
+        private static Dictionary < SyntaxKind , Type > _kindType = new Dictionary < SyntaxKind , Type >
+                                                                    {
+                                                                        [ SyntaxKind.ClassDeclaration ] =
+                                                                            typeof ( TypeDocumentation ),
+                                                                        [SyntaxKind.InterfaceDeclaration] = typeof(TypeDocumentation),
+                                                                        [SyntaxKind.StructDeclaration]    = typeof(TypeDocumentation),
+                                                                        [SyntaxKind.DelegateDeclaration]  = typeof(DelegateDocumentation),
+                                                            
+                                                                        [SyntaxKind.EnumDeclaration] =  typeof(TypeDocumentation),
+                                                            
+                                                                        [SyntaxKind.EnumMemberDeclaration] = typeof(EnumMemberDocumentation),
+                                                            
+                                                                        [SyntaxKind.FieldDeclaration] = typeof(FieldDocumentation),
+                                                            
+                                                                        [SyntaxKind.MethodDeclaration] = typeof(MethodDocumentation),
+
+                                                                        [SyntaxKind.ConstructorDeclaration] = typeof(ConstructorDocumentation),
+                                                            
+                                                                        [SyntaxKind.DestructorDeclaration] = typeof(CodeElementDocumentation),
+                                                            
+                                                                        [SyntaxKind.PropertyDeclaration] = typeof(PropertyDocumentation),
+
+                                                                        [SyntaxKind.IndexerDeclaration] = typeof(CodeElementDocumentation),
+
+                                                                        [SyntaxKind.EventDeclaration] = typeof(CodeElementDocumentation),
+
+                                                                        [SyntaxKind.EventFieldDeclaration] = typeof(CodeElementDocumentation),
+
+                                                                        [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
+
+                                                                        [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation),
+
+
+                                                                    } ;
+
         /// <summary>
         /// 
         /// </summary>
@@ -262,11 +297,24 @@ namespace AnalysisAppLib.XmlDoc
           , ISymbol                declared
         )
         {
-            var xmlElement = xDocument.Root ;
-
-            if (elementId == null)
+            if ( xDocument == null || xDocument.Root == null)
             {
-                elementId = xmlElement?.Attribute(XName.Get("name"))?.Value;
+                throw new ArgumentNullException ( nameof ( xDocument ) ) ;
+            }
+
+            var xmlElement = xDocument.Root ;
+            var embeddedEleementId = xmlElement.Attribute(XName.Get("name"))?.Value;
+            
+            if (elementId != null)
+            {
+                if ( elementId.Equals ( embeddedEleementId) )
+                {
+                    DebugUtils.WriteLine ($"Element id match {elementId}");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Mismathed element Id ({elementId} != {embeddedEleementId}");
+                }
             }
 
             var xNodes = xmlElement?.Nodes() ?? Enumerable.Empty<XNode> (  );
@@ -274,84 +322,8 @@ namespace AnalysisAppLib.XmlDoc
             var xmlDoc = (xNodes).Select(XmlDocElements.Selector);
             CodeElementDocumentation docElem = null ;
 
-            Dictionary < SyntaxKind , Type > kindType = new Dictionary < SyntaxKind , Type >
-                                                        {
-                                                            [ SyntaxKind.ClassDeclaration ] =
-                                                                typeof ( TypeDocumentation ),
-                                                            [SyntaxKind.InterfaceDeclaration] = typeof(TypeDocumentation),
-                                                            [SyntaxKind.StructDeclaration] = typeof(TypeDocumentation),
-                                                            [SyntaxKind.DelegateDeclaration] = typeof(DelegateDocumentation),
-                                                            
-                                                            [SyntaxKind.EnumDeclaration] =  typeof(TypeDocumentation),
-                                                            
-                                                            [SyntaxKind.EnumMemberDeclaration]  = typeof(EnumMemberDocumentation),
-                                                            
-                                                            [SyntaxKind.FieldDeclaration] = typeof(FieldDocumentation),
-                                                            
-                                                            [SyntaxKind.MethodDeclaration] = typeof(MethodDocumentation),
+            docElem = CreateCodeDocumentationElementType ( member, elementId ) ;
 
-                                                            [SyntaxKind.ConstructorDeclaration] = typeof(ConstructorDocumentation),
-                                                            
-                                                            [SyntaxKind.DestructorDeclaration] = typeof(CodeElementDocumentation),
-                                                            
-                                                            [SyntaxKind.PropertyDeclaration] = typeof(PropertyDocumentation),
-
-                                                            [SyntaxKind.IndexerDeclaration] = typeof(CodeElementDocumentation),
-
-                                                            [SyntaxKind.EventDeclaration] = typeof(CodeElementDocumentation),
-
-                                                            [SyntaxKind.EventFieldDeclaration] = typeof(CodeElementDocumentation),
-
-                                                            [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
-
-                                                            [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation),
-
-
-                                                        };
-            switch ( member )
-            {
-                // ReSharper disable once UnusedVariable
-                case EventFieldDeclarationSyntax eventFieldDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case FieldDeclarationSyntax fieldDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case ConstructorDeclarationSyntax constructorDeclarationSyntax :
-                    break ;
-                // ReSharper disable once UnusedVariable
-                case ConversionOperatorDeclarationSyntax conversionOperatorDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case DestructorDeclarationSyntax destructorDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case MethodDeclarationSyntax methodDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case OperatorDeclarationSyntax operatorDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case EventDeclarationSyntax eventDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case IndexerDeclarationSyntax indexerDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case PropertyDeclarationSyntax propertyDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case ClassDeclarationSyntax classDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case EnumDeclarationSyntax enumDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case InterfaceDeclarationSyntax interfaceDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case StructDeclarationSyntax structDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case DelegateDeclarationSyntax delegateDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case EnumMemberDeclarationSyntax enumMemberDeclarationSyntax : break ;
-                // ReSharper disable once UnusedVariable
-                case NamespaceDeclarationSyntax namespaceDeclarationSyntax : break ;
-                default : throw new ArgumentOutOfRangeException ( nameof ( member ) ) ;
-            }
-
-            if ( kindType.TryGetValue ( member.Kind ( ) , out var kind1 ) )
-            {
-                docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
-            }
 
 #if false
             docElem.PocoMemberDelaration = GenTransforms.Transform_Member_Declaration ( member ) ;
@@ -403,19 +375,49 @@ namespace AnalysisAppLib.XmlDoc
                 default : throw new ArgumentOutOfRangeException ( ) ;
             }
 #endif
-            if ( docElem != null )
+            if ( docElem == null )
             {
-                docElem.ElementId = elementId ;
-
-                foreach ( var xmlDocElement in xmlDoc )
-                {
-                    docElem.XmlDoc.Add ( xmlDocElement ) ;
-                }
-
-                return docElem ;
+                throw new InvalidOperationException ( ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            docElem.ElementId = elementId ;
+
+            foreach ( var xmlDocElement in xmlDoc )
+            {
+                docElem.XmlDoc.Add ( xmlDocElement ) ;
+            }
+
+            return docElem ;
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="elementId"></param>
+        /// <returns></returns>
+        [ CanBeNull ]
+        public static CodeElementDocumentation CreateCodeDocumentationElementType (
+            [ NotNull ] MemberDeclarationSyntax member
+          , string                  elementId
+        )
+        {
+            CodeElementDocumentation docElem = null ;
+            if (_kindType.TryGetValue(member.Kind(), out var kind1))
+            {
+                docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
+            } else
+            {
+                throw new InvalidOperationException($"Unrecognized member kind {member.Kind (  )}");
+            }
+
+            if ( docElem != null )
+            {
+                docElem.ElementId = elementId;
+            }
+
+            return docElem ;
         }
 
         /// <summary>
@@ -481,7 +483,6 @@ namespace AnalysisAppLib.XmlDoc
                 return TransformParsePocoType ( candidateTypeSyntax ) ;
             }
 
-            string info = null;
             var typeSyntax = ( SimpleNameSyntax ) candidateTypeSyntax ;
 
             var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
@@ -491,7 +492,6 @@ namespace AnalysisAppLib.XmlDoc
             }
             if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) { 
                 // ReSharper disable once RedundantAssignment
-                info = ( string ) info2 ;
             }
             else
             {

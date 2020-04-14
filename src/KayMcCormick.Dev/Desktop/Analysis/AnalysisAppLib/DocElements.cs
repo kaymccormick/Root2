@@ -222,7 +222,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
-        protected CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
+        public CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
 
         
         /// <summary>
