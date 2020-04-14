@@ -21,6 +21,11 @@ namespace AnalysisAppLib
     /// </summary>
     public interface ISyntaxTypesService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
         AppTypeInfo GetAppTypeInfo(object identifier);
 
 

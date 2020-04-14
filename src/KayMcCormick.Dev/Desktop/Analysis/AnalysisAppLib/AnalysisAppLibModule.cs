@@ -78,6 +78,8 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+
+            
             builder.RegisterType < SyntaxTypesService > ( ).As < ISyntaxTypesService > ( ) ;
             builder.RegisterType < DocInterface > ( ).As < IDocInterface > ( ) ;
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
@@ -145,6 +147,7 @@ namespace AnalysisAppLib.XmlDoc
                    .WithAttributeFiltering ( )
                    .AsSelf ( )
                    .InstancePerLifetimeScope ( ) ;
+
 
 
             //builder.Register()
@@ -227,14 +230,15 @@ namespace AnalysisAppLib.XmlDoc
                    .WithAttributeFiltering ( )
                    .InstancePerLifetimeScope ( )
                    .WithMetadata ( "Purpose" , "Analysis" ) ;
-            ;
+            
+            builder.RegisterType < Example1TransformFuncProvider > ( ).AsSelf().AsImplementedInterfaces() ;
 
             builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider < , , > ) )
                    .As ( typeof ( IAnalysisBlockProvider < , , > ) )
                    .WithAttributeFiltering ( )
                    .InstancePerLifetimeScope ( )
                    .WithMetadata ( "Purpose" , "Analysis" ) ;
-            ;
+
 
             builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider < , > ) )
                    .As ( typeof ( IDataflowTransformFuncProvider < , > ) )

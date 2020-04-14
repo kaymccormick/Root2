@@ -508,6 +508,7 @@ namespace ProjTests
                                              if ( task.IsFaulted )
                                              {
                                                  DebugUtils.WriteLine (
+                                                                       // ReSharper disable once PossibleNullReferenceException
                                                                        task.Exception.ToString ( )
                                                                       ) ;
                                              }
@@ -1108,7 +1109,7 @@ namespace ProjTests
                 {
                     child = walker.GetFirstChild ( r ) ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
                 {
                     proc?.Kill ( ) ;
                     proc = null ;
@@ -1132,14 +1133,14 @@ namespace ProjTests
                                                           , Condition.TrueCondition
                                                            ) )
                 {
-                    DebugUtils.WriteLine ( o ) ;
+                    DebugUtils.WriteLine ( o.ToString() ) ;
                     try
                     {
                         DebugUtils.WriteLine (
                                               o.GetCachedPropertyValue (
                                                                         AutomationElement
                                                                            .ClassNameProperty
-                                                                       )
+                                                                       ).ToString()
                                              ) ;
                     }
                     catch
@@ -1202,7 +1203,7 @@ namespace ProjTests
         public void TestXmlDoc ( )
         {
             var x = TypesViewModel.LoadDoc ( ) ;
-            var y = XmlDocElements.DocMembers ( x ) ;
+            XmlDocElements.DocMembers ( x ) ;
             // foreach ( var codeElementDocumentation in y.Select ( XmlDocElements.HandleDocElement ) )
             // {
             // if ( codeElementDocumentation != null )

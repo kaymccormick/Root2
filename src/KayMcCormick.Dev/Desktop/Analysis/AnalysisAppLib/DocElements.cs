@@ -270,10 +270,18 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public class IndexerDocumentation : CodeElementDocumentation
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
         public IndexerDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IndexerDocumentation ( ) {
         }
     }
@@ -283,10 +291,18 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public class EventDocumentation : CodeElementDocumentation
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
         public EventDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public EventDocumentation ( ) {
         }
     }
@@ -296,10 +312,18 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public class EnumMemberDocumentation : CodeElementDocumentation
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
         public EnumMemberDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public EnumMemberDocumentation ( ) {
         }
     }
@@ -309,10 +333,18 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public class DelegateDocumentation : CodeElementDocumentation
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="xmlDoc"></param>
         public DelegateDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DelegateDocumentation ( ) {
         }
     }

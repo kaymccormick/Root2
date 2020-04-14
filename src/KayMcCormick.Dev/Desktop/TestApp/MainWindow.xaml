@@ -6,8 +6,9 @@
                  xmlns:local="clr-namespace:TestApp"
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
-                 xmlns:viewModel="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
                  xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
+                 xmlns:viewModel="clr-namespace:KayMcCormick.Lib.Wpf.ViewModel;assembly=KayMcCormick.Lib.Wpf"
+                 xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
                  mc:Ignorable="d"
                  Title="MainWindow" Height="450"
                  Width="800">
@@ -22,24 +23,5 @@
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
   <Grid>
-    <views:TypesView VerticalAlignment="Stretch"
-                     HorizontalAlignment="Stretch"
-                     >
-      <views:TypesView.CommandBindings>
-        <CommandBinding Command="Save"
-                        Executed="CommandBinding_OnExecuted" />
-        <CommandBinding Command="Open"
-                        Executed="CommandBinding_OnExecuted2" />
-      </views:TypesView.CommandBindings>
-      <views:TypesView.InputBindings>
-        <KeyBinding Key="S" Modifiers="Control"
-                    Command="Save" />
-        <KeyBinding Key="L" Modifiers="Control"
-                    Command="Open" />
-      </views:TypesView.InputBindings>
-      <views:TypesView.ViewModel>
-        <viewModel1:TypesViewModel />
-      </views:TypesView.ViewModel>
-    </views:TypesView>
   </Grid>
 </kmWpf:AppWindow>

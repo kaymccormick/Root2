@@ -7,7 +7,7 @@ using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
-using AnalysisAppLib.ViewModel ;
+
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
@@ -45,6 +45,8 @@ namespace TestApp
             }
 
             _instance = this ;
+
+            
 #if ENABLE_CONSOLE
             var allocConsole = Kernel32.AllocConsole ( ) ;
             if ( !allocConsole )

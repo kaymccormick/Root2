@@ -38,7 +38,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        private ResolveUiComponentExtension ( ) { }
+        public ResolveUiComponentExtension ( ) { }
 
         /// <summary>
         /// </summary>

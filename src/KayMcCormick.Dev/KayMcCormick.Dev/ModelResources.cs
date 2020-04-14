@@ -14,6 +14,8 @@ using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.IO ;
+using System.Linq ;
+using System.Reflection ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Soap ;
 using System.Text ;
@@ -56,6 +58,13 @@ namespace KayMcCormick.Dev
         // ReSharper disable once CollectionNeverQueried.Global
         public ObservableCollection < ResourceNodeInfo > AllResourcesItemList { get ; } =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ModelResources ( ) {
+        }
 
         /// <summary>
         /// 
@@ -251,6 +260,89 @@ namespace KayMcCormick.Dev
                                  , CreateNode ( null , "LifetimeScope" , _lifetimeScope , true )
                                   ) ;
 
+            PopulateAppContext(AppDomain.CurrentDomain
+                             , CreateNode(null, "Current App Domain", AppDomain.CurrentDomain, true)) ;
+
+            
+        }
+
+        private void PopulateAppContext ( AppDomain currentDomain , ResourceNodeInfo createNode )
+        {
+            var convNode
+            = CreateNode( createNode , "Converters" , null , false ) ;
+
+            foreach ( var assembly in currentDomain.GetAssemblies ( ) )
+            {
+                var anode = CreateNode (
+                                        createNode
+                                      , assembly.GetName ( ).Name
+                                      , assembly
+                                      , true
+                                       ) ;
+                
+                if ( assembly.IsDynamic ) continue ;
+                foreach ( var typ in assembly.ExportedTypes )
+                {
+                    // var cc = typ.GetCustomAttribute < TypeConverterAttribute > ( ) ;
+                    
+                     var typnode = CreateNode ( anode , typ.FullName , typ , true ) ;
+                    // var conv = CreateNode ( typnode , "Converter" , null , false ) ;
+
+                    // TypeConverter converter = null ;
+                    // try
+                    // {
+                        // converter = TypeDescriptor.GetConverter ( typ.UnderlyingSystemType ) ;
+                    // }
+                    // catch ( Exception ex )
+                    // {
+
+                    // }
+
+                    // var c11 = CreateNode ( conv, converter , converter , true ) ;
+                     // CreateNode(convNode, converter, converter, true);
+                    var bases = CreateNode ( typnode , "Bases" , null , false ) ;
+                    var atts = CreateNode ( typnode , "Attributes" , null , false ) ;
+                    try
+                    {
+                        foreach ( var c in typ.CustomAttributes )
+                        {
+                            var at1 = CreateNode ( atts , c.AttributeType.FullName , c , false ) ;
+                            for ( var i = 0 ; i < c.Constructor.GetParameters ( ).Length ; i ++ )
+                            {
+                                var ci = c.Constructor.GetParameters ( )[ i ] ;
+                                CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
+                            }
+                        }
+                    }catch
+                    { }
+
+                    var bas = typ.BaseType ;
+                    while ( bas != null )
+                    {
+                        var basenode = CreateNode ( bases , bas.FullName , bas , true ) ;
+                        bas = bas.BaseType ;
+                    }
+
+                    var props = CreateNode ( typnode , "Properties" , null , false ) ;
+                    foreach ( var propertyInfo in typ.GetProperties (
+                                                                     BindingFlags.Instance
+                                                                     | BindingFlags.Public
+                                                                    ) )
+                    {
+                        var p = CreateNode ( props , propertyInfo.Name , propertyInfo , true ) ;
+                    }
+                    var methods = CreateNode(typnode, "Methods", null, false);
+                    foreach (var  methodInfo in typ.GetMethods(
+                                                                   BindingFlags.Instance
+                                                                   | BindingFlags.Public
+                                                              ).Where (m => !m.IsSpecialName  ))
+                    {
+                        var p = CreateNode(methods, methodInfo.ToString(), methodInfo, true);
+                    }
+
+                }
+
+            }
         }
 
         #region Implementation of ISupportInitialize

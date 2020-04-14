@@ -32,7 +32,7 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public static class XmlDocElements
     {
-        private static string _pocoPrefix = "Poco";
+        private static readonly string _pocoPrefix = "Poco";
         private static readonly string _collectionSuffix = "Collection" ;
 
         /// <summary>
@@ -41,6 +41,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="name"></param>
         /// <returns></returns>
         [ CanBeNull ]
+        // ReSharper disable once UnusedMember.Global
         public static XmlDocElement HandleName(string name) {
             
             XmlDocElement r = null ;
@@ -192,6 +193,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         [ CanBeNull ]
+        // ReSharper disable once UnusedMember.Global
         public static XmlDocElement HandleXDocument ( [ NotNull ] XDocument xdoc )
         {
             if ( xdoc.Root != null )
@@ -227,6 +229,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Global
         public static IEnumerable DocMembers ( [ NotNull ] XDocument doc )
         {
             if ( doc == null )
@@ -420,7 +423,7 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static TypeSyntax TransformParsePocoType ( TypeSyntax type )
+        public static TypeSyntax TransformParsePocoType ( [ NotNull ] TypeSyntax type )
         {
             if ( type is PredefinedTypeSyntax )
             {
@@ -457,13 +460,13 @@ namespace AnalysisAppLib.XmlDoc
         /// generated Poco-style properties.
         /// </summary>
         /// <param name="tField"></param>
-        /// <param name="type"></param>
+        /// <param name="candidateTypeSyntax"></param>
         /// <param name="collectionMap"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         public static TypeSyntax SubstituteType (
             [ NotNull ]   SyntaxFieldInfo                tField
-          , [ CanBeNull ] TypeSyntax                     type
+          , [ CanBeNull ] TypeSyntax                     candidateTypeSyntax
           , IReadOnlyDictionary < string , object > collectionMap
           , ISyntaxTypesService model
         )
@@ -473,14 +476,13 @@ namespace AnalysisAppLib.XmlDoc
                 throw new ArgumentNullException ( nameof ( tField ) ) ;
             }
 
-            if ( type != null )
+            if ( candidateTypeSyntax != null )
             {
-                return TransformParsePocoType ( type ) ;
+                return TransformParsePocoType ( candidateTypeSyntax ) ;
             }
 
-            
             string info = null;
-            var typeSyntax = type as SimpleNameSyntax ;
+            var typeSyntax = ( SimpleNameSyntax ) candidateTypeSyntax ;
 
             var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
             if ( appTypeInfo == null )
@@ -488,13 +490,14 @@ namespace AnalysisAppLib.XmlDoc
                 throw new InvalidOperationException ( "Invalid type info" ) ;
             }
             if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) { 
+                // ReSharper disable once RedundantAssignment
                 info = ( string ) info2 ;
             }
             else
             {
                 throw new InvalidOperationException ( "No collection type in the map." ) ;
             }
-            return SyntaxTypesService.FieldPocoCollectionType( type , collectionMap ,appTypeInfo
+            return SyntaxTypesService.FieldPocoCollectionType( candidateTypeSyntax , collectionMap ,appTypeInfo
                                              ) ;
         }
     }
@@ -502,11 +505,12 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// Quote inline block XML documentation element.
     /// </summary>
-    public class Quoteinline : BlockDocElem
+    public sealed class Quoteinline : BlockDocElem
     {
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public Quoteinline ( ) {
         }
 

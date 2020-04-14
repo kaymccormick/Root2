@@ -114,6 +114,7 @@
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="JsonConverters.cs" />
+    <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>

@@ -65,6 +65,9 @@ namespace AnalysisAppLib
             DocumentCollection.Add(docNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DocumentCollection DocumentCollection { get { return _documentCollection ; } set { _documentCollection = value ; } }
         #endregion
     }

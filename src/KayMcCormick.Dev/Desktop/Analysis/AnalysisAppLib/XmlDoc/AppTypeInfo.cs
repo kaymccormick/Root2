@@ -797,6 +797,11 @@ namespace AnalysisAppLib.XmlDoc
         }
 
         #region Relational members
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareTo ( AppTypeInfoKey other )
         {
             if ( ReferenceEquals ( this , other ) )
@@ -813,11 +818,19 @@ namespace AnalysisAppLib.XmlDoc
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unqualifiedTypeName"></param>
         public AppTypeInfoKey ( string unqualifiedTypeName )
         {
             StringValue = unqualifiedTypeName ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
         public AppTypeInfoKey ( Type type )
         {
             StringValue = type.Name ;
@@ -825,16 +838,30 @@ namespace AnalysisAppLib.XmlDoc
         }
 
         #region Equality members
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals ( AppTypeInfoKey other )
         {
             return StringValue == other.StringValue ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals ( object obj )
         {
             return obj is AppTypeInfoKey other && Equals ( other ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode ( )
         {
             return ( StringValue != null ? StringValue.GetHashCode ( ) : 0 ) ;

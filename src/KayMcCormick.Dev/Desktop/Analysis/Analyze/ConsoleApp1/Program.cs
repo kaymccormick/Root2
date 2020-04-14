@@ -19,7 +19,6 @@ using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisAppLib.XmlDoc.Project ;
-using AnalysisAppLib.XmlDoc.Properties ;
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
@@ -215,6 +214,7 @@ namespace ConsoleApp1
             return 1 ;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private static async Task SelectProjectAsync ( [ NotNull ] AppContext context )
         {
             var i = 0 ;
@@ -276,19 +276,11 @@ namespace ConsoleApp1
             Console.WriteLine ( projectNode.SolutionPath ) ;
             Console.ReadLine ( ) ;
 
-            //    ITargetBlock <RejectedItem> rejectTarget = new ActionBlock < RejectedItem > (item => Console.WriteLine($"Reject: {item.Statement}"));
-            if ( command2 != null )
-            {
-                await command2.Value.Value.AnalyzeCommandAsync ( projectNode ) ;
-            }
-            else
-            {
-                Console.WriteLine ( "No command" ) ;
-                //return 1 ;
-            }
         }
 
+
         [ TitleMetadata ( "Build Types View" ) ]
+        [ UsedImplicitly ]
 #pragma warning disable 1998
         public async Task BuildTypeViewAsync (
 #pragma warning restore 1998
@@ -307,7 +299,6 @@ namespace ConsoleApp1
             }
 
             DebugUtils.WriteLine ( "Begin initialize TypeViewModel" ) ;
-            var options = context.Scope.Resolve < JsonSerializerOptions > ( ) ;
             var typesViewModel =
                 context.Scope.Resolve < TypesViewModel > (
                                                           new TypedParameter (
@@ -911,12 +902,14 @@ namespace ConsoleApp1
             foreach ( var mapKey1 in model1.Map.dict.Keys )
             {
                 var t = model1.Map.dict[ mapKey1 ] ;
+                // ReSharper disable once UnusedVariable
                 var curIterAppTypeInfo = t ;
                 var colTypeClassName = $"{PocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
 
                 var classDecl1 = CreatePoco ( mapKey1 , t ) ;
                 var curComp = ReplaceSyntaxTree ( x , classDecl1 ) ;
                 
+                // ReSharper disable once UnusedVariable
                 var classDecl1Type =
                     curComp.GetTypeByMetadataName ( classDecl1.Identifier.ValueText ) ;
                 var Ilist1 = SimpleBaseType ( ParseTypeName ( _ilist ) ) ;
@@ -1698,8 +1691,9 @@ namespace ConsoleApp1
             //File.WriteAllText ( @"C:\data\logs\gen.cs" , comp.ToString ( ) ) ;
         }
 
+        [ NotNull ]
         private static CSharpCompilation ReplaceSyntaxTree (
-            CSharpCompilation      x
+            [ NotNull ] CSharpCompilation      x
           , ClassDeclarationSyntax classDecl1
         )
         {
@@ -1803,7 +1797,7 @@ namespace ConsoleApp1
             {
 
                 var reader = XmlReader.Create (
-                                               stream
+                                               stream ?? throw new InvalidOperationException ( )
                                              , new XmlReaderSettings ( ) { Async = true }
                                               ) ;
 
@@ -1889,7 +1883,7 @@ namespace ConsoleApp1
 
 
         private static void ParseNodeBasics (
-            TypesViewModel                                           model1
+            [ NotNull ] TypesViewModel                                           model1
           , [ NotNull ] XElement                                     xElement
           , [ NotNull ] IReadOnlyDictionary < string , object > collectionMap
         )
@@ -1961,7 +1955,7 @@ namespace ConsoleApp1
             }
         }
 
-        private static Type MapTypeNameToSyntaxNode ( TypesViewModel model1 , string typeName2 )
+        private static Type MapTypeNameToSyntaxNode ( [ NotNull ] TypesViewModel model1 , string typeName2 )
         {
             return model1.Map.dict.First ( k => k.Value.Type.Name == typeName2 ).Value.Type ;
         }
@@ -2069,90 +2063,62 @@ namespace ConsoleApp1
                                 - diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line
                                 + 1 ;
                     var locationSourceSpan = diagnostic1.Location.SourceSpan ;
-                    var code = diagnostic1.Location.SourceTree.GetText ( ) ;
-                    var end = locationSourceSpan.End     + 10 ;
-                    var start = locationSourceSpan.Start - 10 ;
-                    if ( start < 0 )
+                    if ( diagnostic1.Location.SourceTree != null )
                     {
-                        start = 0 ;
-                    }
+                        var code = diagnostic1.Location.SourceTree.GetText ( ) ;
+                        var end = locationSourceSpan.End     + 10 ;
+                        var start = locationSourceSpan.Start - 10 ;
+                        if ( start < 0 )
+                        {
+                            start = 0 ;
+                        }
 
-                    if ( end >= code.Length )
-                    {
-                        end = code.Length - 1 ;
-                    }
+                        if ( end >= code.Length )
+                        {
+                            end = code.Length - 1 ;
+                        }
 
-                    var sp = new TextSpan ( start , end - start ) ;
-                    var codePart = code.GetSubText ( sp ) ;
-                    var lines = string.Join (
-                                             "\n"
-                                           , code.Lines.Skip ( startLine ).Take ( count ).ToList ( )
-                                            ) ;
-                    var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
-                    DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
+                        var sp = new TextSpan ( start , end - start ) ;
+                        // ReSharper disable once UnusedVariable
+                        var codePart = code.GetSubText ( sp ) ;
+                        var lines = string.Join (
+                                                 "\n"
+                                               , code.Lines.Skip ( startLine ).Take ( count ).ToList ( )
+                                                ) ;
+                        // ReSharper disable once UnusedVariable
+                        var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
+                        DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
+                    }
                 }
 
                 var declarationSyntax = syntaxTree.GetRoot ( )
                                                   .DescendantNodes ( )
                                                   .OfType < PropertyDeclarationSyntax > ( )
                                                   .First ( ) ;
+                // ReSharper disable once UnusedVariable
                 var typeSyntax = declarationSyntax.Type ;
-                var t1i = model.GetTypeInfo ( typeSyntax ) ;
                 var x1 = model.GetDeclaredSymbol ( declarationSyntax ) ;
-                var x2 = model.GetDeclaredSymbol ( typeSyntax ) ;
+                
                 var symbol1 = model.GetSymbolInfo ( declarationSyntax ) ;
-                var symbol2 = model.GetSpeculativeSymbolInfo (
-                                                              typeSyntax
-                                                                 .GetLocation ( )
-                                                                 .SourceSpan.Start
-                                                            , declarationSyntax
-                                                            , SpeculativeBindingOption
-                                                                 .BindAsTypeOrNamespace
-                                                             ) ;
-                if ( x1 != null )
+                if ( symbol1 is INamedTypeSymbol namedTypeSymbol )
                 {
-                    switch ( x1.Type )
-                    {
-                        case IAliasSymbol aliasSymbol :                   break ;
-                        case IArrayTypeSymbol arrayTypeSymbol :           break ;
-                        case ISourceAssemblySymbol sourceAssemblySymbol : break ;
-                        case IAssemblySymbol assemblySymbol :             break ;
-                        case IDiscardSymbol discardSymbol :               break ;
-                        case IDynamicTypeSymbol dynamicTypeSymbol :       break ;
-                        case IErrorTypeSymbol errorTypeSymbol :           break ;
-                        case IEventSymbol eventSymbol :                   break ;
-                        case IFieldSymbol fieldSymbol :                   break ;
-                        case ILabelSymbol labelSymbol :                   break ;
-                        case ILocalSymbol localSymbol :                   break ;
-                        case IMethodSymbol methodSymbol :                 break ;
-                        case IModuleSymbol moduleSymbol :                 break ;
-                        case INamedTypeSymbol namedTypeSymbol :
-                            enumerable = namedTypeSymbol.AllInterfaces.Any (
-                                                                            i => i.SpecialType
-                                                                                 == SpecialType
-                                                                                    .System_Collections_IEnumerable
-                                                                                 || i.SpecialType
-                                                                                 == SpecialType
-                                                                                    .System_Collections_Generic_IEnumerable_T
-                                                                           ) ;
-                            if ( namedTypeSymbol.IsGenericType )
-                            {
-                                arg = namedTypeSymbol.TypeArguments.First ( ) ;
-                                namedTypeSymbol.TypeParameters.First ( ) ;
-                            }
 
-                            break ;
-                        case INamespaceSymbol namespaceSymbol :         break ;
-                        case IPointerTypeSymbol pointerTypeSymbol :     break ;
-                        case ITypeParameterSymbol typeParameterSymbol : break ;
-                        case ITypeSymbol typeSymbol :                   break ;
-                        default :
-                            throw new ArgumentOutOfRangeException ( nameof ( symbol1 ) ) ;
+                    enumerable = namedTypeSymbol.AllInterfaces.Any (
+                                                                    i => i.SpecialType
+                                                                         == SpecialType
+                                                                            .System_Collections_IEnumerable
+                                                                         || i.SpecialType
+                                                                         == SpecialType
+                                                                            .System_Collections_Generic_IEnumerable_T
+                                                                   ) ;
+                    if ( namedTypeSymbol.IsGenericType )
+                    {
+                        arg = namedTypeSymbol.TypeArguments.First ( ) ;
+                        namedTypeSymbol.TypeParameters.First ( ) ;
                     }
                 }
             }
-
-
+            
             var syntaxFieldInfo = new SyntaxFieldInfo ( fieldName , fieldType , kinds.ToArray ( ) )
                                   {
                                       Override = @override , Optional = optional
@@ -2240,11 +2206,14 @@ namespace ConsoleApp1
         }
     }
 
-    internal class SyntaxRewriter1 : CSharpSyntaxRewriter
+    internal sealed class SyntaxRewriter1 : CSharpSyntaxRewriter
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly IReadOnlyDictionary < string , object > _map ;
+        // ReSharper disable once NotAccessedField.Local
         private readonly TypesViewModel                          _model1 ;
         #region Overrides of CSharpSyntaxRewriter
+        // ReSharper disable once UnusedMember.Global
         public SyntaxRewriter1 (
             IReadOnlyDictionary < string , object > map
           , bool                                    visitIntoStructuredTrivia = false
@@ -2253,9 +2222,9 @@ namespace ConsoleApp1
             _map = map ;
         }
 
-        public SyntaxRewriter1 ( TypesViewModel model1 ) : base ( ) { _model1 = model1 ; }
+        public SyntaxRewriter1 ( TypesViewModel model1 ) { _model1 = model1 ; }
 
-        public override SyntaxNode VisitGenericName ( GenericNameSyntax node )
+        public override SyntaxNode VisitGenericName ( [ NotNull ] GenericNameSyntax node )
         {
             DebugUtils.WriteLine ( $"{node.Identifier} {node.TypeArgumentList}" ) ;
             if ( node.Arity                   == 1
@@ -2272,6 +2241,7 @@ namespace ConsoleApp1
             return base.VisitGenericName ( node ) ;
         }
 
+        [ CanBeNull ]
         public override SyntaxNode VisitPredefinedType ( PredefinedTypeSyntax node )
         {
             return base.VisitPredefinedType ( node ) ;

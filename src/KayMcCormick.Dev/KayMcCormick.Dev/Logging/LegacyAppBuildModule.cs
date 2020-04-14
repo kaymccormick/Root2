@@ -148,6 +148,7 @@ namespace KayMcCormick.Dev.Logging
             }
 
             var reg = args.ComponentRegistration ;
+            reg.Metadata[ "RegisteredDatetime" ] = DateTime.Now ;
             var activatorLimitType = reg.Activator.LimitType ;
             Logger.Trace ( "Registered {limitType} {activator}", activatorLimitType , args.ComponentRegistration.Activator) ;
 #if TRACEPROVIDER

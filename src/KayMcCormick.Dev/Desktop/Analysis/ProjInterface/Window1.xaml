@@ -1129,6 +1129,7 @@
                 </avalondock:LayoutDocument>
                 <avalondock:LayoutDocument IsActive="True">
                   <Grid>
+                    <kmWpf:ResolveUiComponent ComponentType="{x:Type kmWpf:AllResourcesTree}" />
                   </Grid>
                 </avalondock:LayoutDocument>
                   <avalondock:LayoutDocument Title="Browser"

@@ -13,6 +13,7 @@ using System ;
 using System.Collections ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Reflection ;
 using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Windows ;
@@ -32,6 +33,12 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         private ResourceNodeInfo _appNode ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public AllResourcesTreeViewModel ( ) {
+        }
 
         /// <summary>
         /// </summary>
@@ -250,9 +257,16 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         /// <summary>
         /// </summary>
-        protected void PopulateResourcesTree ( ) { PopulateAppNode ( ) ; }
+        protected void PopulateResourcesTree ( )
+        {
+            PopulateAppNode ( ) ;
+            
+            
+
+        }
         #endregion
         #region Implementation of ISupportInitialize
+        /// <inheritdoc />
         public void BeginInit ( )
         {
             // if ( IsInitializing )
@@ -278,12 +292,15 @@ public void EndInit ( )
         }
         #endregion
         #region Implementation of ISerializable
+        /// <inheritdoc />
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
         #region Implementation of ISupportInitializeNotification
+        /// <inheritdoc />
         public bool IsInitialized { get ; set ; }
 
+        /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
     }

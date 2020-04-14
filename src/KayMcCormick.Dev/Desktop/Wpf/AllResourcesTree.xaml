@@ -8,6 +8,7 @@
   xmlns:registration="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
   xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
   xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+  xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   Background="AliceBlue"
   DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
   FontSize="{DynamicResource DefaultFontSize}"
@@ -16,6 +17,7 @@
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <ResourceDictionary>
+
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="SharedResources.xaml" />
@@ -59,6 +61,20 @@
             <Setter Property="IsExpanded"
                     Value="{Binding IsExpanded, Mode=TwoWay}" />
           </Style>
+          <DataTemplate DataType="{x:Type reflection:MethodInfo}" x:Key="PreviewRuntimeMethodInfo">
+            <StackPanel Orientation="Horizontal">
+              <ListView ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
+<ListView.View>
+                  <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=ParameterType}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=HasDefaultValue}"/>
+                  </GridView>
+</ListView.View>
+
+              </ListView>
+            </StackPanel>
+          </DataTemplate>
           <DataTemplate DataType="{x:Type FontFamily}"
                         x:Key="PreviewFontFamily">
             <TextBlock FontFamily="{Binding}"

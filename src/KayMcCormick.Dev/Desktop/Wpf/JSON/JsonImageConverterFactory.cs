@@ -10,16 +10,14 @@
 // ---
 #endregion
 using System ;
-using System.ComponentModel ;
-using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows.Interop ;
-using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
+// ReSharper disable UnusedVariable
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
@@ -34,12 +32,13 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
+        [ NotNull ]
+        public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
-            return new MyImageSourceConverter ( typeToConvert , options ) ;
+            return new MyImageSourceConverter ( ) ;
         }
         #endregion
         #region Overrides of JsonConverter
@@ -59,21 +58,8 @@ namespace KayMcCormick.Lib.Wpf.JSON
 
         /// <summary>
         /// </summary>
-        private class MyImageSourceConverter : JsonConverter < ImageSource >
+        private sealed class MyImageSourceConverter : JsonConverter < ImageSource >
         {
-            private JsonSerializerOptions options ;
-            private Type                  typeToConvert ;
-
-            /// <summary>
-            /// </summary>
-            /// <param name="typeToConvert"></param>
-            /// <param name="options"></param>
-            public MyImageSourceConverter ( Type typeToConvert , JsonSerializerOptions options )
-            {
-                this.typeToConvert = typeToConvert ;
-                this.options       = options ;
-            }
-
             #region Overrides of JsonConverter<ImageSource>
             /// <summary>
             /// </summary>
@@ -81,6 +67,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             /// <returns></returns>
+            [ CanBeNull ]
             public override ImageSource Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -96,12 +83,12 @@ namespace KayMcCormick.Lib.Wpf.JSON
             /// <param name="value"></param>
             /// <param name="options"></param>
             public override void Write (
-                Utf8JsonWriter        writer
-              , ImageSource           value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] ImageSource           value
               , JsonSerializerOptions options
             )
             {
-                ConverterUtil.WritePreamble ( (JsonConverter)this, writer , value , options ) ;
+                ConverterUtil.WritePreamble ( this, writer , value , options ) ;
                 writer.WriteStartObject();
                 writer.WriteString (
                                     "Converter"
@@ -132,45 +119,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     default : throw new ArgumentOutOfRangeException ( nameof ( value ) ) ;
                 }
                 writer.WriteEndObject();
-                
-                return ;
-                var att = ( ValueSerializerAttribute ) value
-                                                      .GetType ( )
-                                                      .GetCustomAttribute (
-                                                                           typeof (
-                                                                               ValueSerializerAttribute
-                                                                           )
-                                                                          ) ;
-                ValueSerializer ser = null ;
-                if ( att != null )
-                {
-                    if ( att.ValueSerializerType != null )
-                    {
-                        ser = ( ValueSerializer ) Activator.CreateInstance (
-                                                                            att.ValueSerializerType
-                                                                           ) ;
-                    }
-                }
-
-                if ( ser != null )
-                {
-                    var p = TypeDescriptor.GetProvider ( value ) ;
-                    var t = p.GetTypeDescriptor ( value ) ;
-
-                    var str = ser.ConvertToString ( value , null ) ;
-                    if ( str != null )
-                    {
-                        writer.WriteStringValue ( str ) ;
-                    }
-                    else
-                    {
-                        writer.WriteNullValue ( ) ;
-                    }
-                }
-                else
-                {
-                    writer.WriteStringValue ( value.ToString ( ) ) ;
-                }
             }
             #endregion
         }
@@ -178,15 +126,17 @@ namespace KayMcCormick.Lib.Wpf.JSON
     }
 
     /// <inheritdoc />
-    public class JsonDrawingConverter : JsonConverter <Drawing>
+    public sealed class JsonDrawingConverter : JsonConverter <Drawing>
     {
         #region Overrides of JsonConverter<Drawing>
         /// <inheritdoc />
+        [ CanBeNull ]
         public override Drawing Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 
+        /// <inheritdoc />
         public override void Write (
             Utf8JsonWriter        writer
-          , Drawing               value
+          , [ NotNull ] Drawing               value
           , JsonSerializerOptions options
         )
         {
@@ -216,16 +166,17 @@ namespace KayMcCormick.Lib.Wpf.JSON
     }
 
     /// <inheritdoc />
-    public class JsonGeometryConverter :JsonConverter <Geometry>
+    public sealed class JsonGeometryConverter :JsonConverter <Geometry>
     {
         #region Overrides of JsonConverter<Geometry>
         /// <inheritdoc />
+        [ CanBeNull ]
         public override Geometry Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 
         /// <inheritdoc />
         public override void Write (
             Utf8JsonWriter        writer
-          , Geometry              value
+          , [ NotNull ] Geometry              value
           , JsonSerializerOptions options
         )
         {

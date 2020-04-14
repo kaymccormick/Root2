@@ -6,6 +6,8 @@ using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
+using AnalysisAppLib.XmlDoc.Dataflow ;
+using Autofac ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -79,12 +81,17 @@ namespace AnalysisAppLib.XmlDoc.ViewModel
         /// <param name="providers"></param>
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IViewWithTitle > > > views
-          , IEnumerable < IExplorerItemProvider >            providers
-            
+          , IEnumerable<IExplorerItemProvider> providers
+          , IEnumerable<IAnalysisBlockProvider1 > blocks
+            , ILifetimeScope lifetime
         )
         {
             _views     = views ;
             _providers = providers ;
+            foreach ( var analysisBlockProvider1 in blocks )
+            {
+                DebugUtils.WriteLine(analysisBlockProvider1.ToString());
+            }
 
             foreach ( var explorerItemProvider in _providers )
             {

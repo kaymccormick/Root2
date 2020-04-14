@@ -21,6 +21,11 @@ namespace AnalysisAppLib.XmlDoc.Dataflow
         /// </summary>
         /// <returns></returns>
         public abstract TBlock GetDataflowBlock ( ) ;
+
+        #region Implementation of IAnalysisBlockProvider1
+        /// <inheritdoc />
+        public abstract IDataflowBlock GetDataflowBlockObj ( ) ;
+        #endregion
     }
 
     /// <summary>
@@ -70,6 +75,9 @@ namespace AnalysisAppLib.XmlDoc.Dataflow
         /// </summary>
         /// <returns></returns>
         public override TBlock GetDataflowBlock ( ) { return _block ; }
+
+        /// <inheritdoc />
+        public override IDataflowBlock GetDataflowBlockObj ( ) { return _block ; }
         #endregion
 
         #region Overrides of AnalysisBlockProvider<TSource,TDest,TBlock>

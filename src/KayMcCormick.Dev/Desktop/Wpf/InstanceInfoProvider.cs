@@ -42,36 +42,53 @@ namespace KayMcCormick.Lib.Wpf
         private bool _isReadOnly ;
         private Type _propertyType ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="attrs"></param>
         public CustomPropertyDescriptor ( [ NotNull ] string name , Attribute[] attrs ) : base ( name , attrs )
         {
         }
 
+        /// <inheritdoc />
         public CustomPropertyDescriptor ( [ NotNull ] MemberDescriptor descr ) : base ( descr )
         {
         }
 
+        /// <inheritdoc />
         public CustomPropertyDescriptor ( [ NotNull ] MemberDescriptor descr , Attribute[] attrs ) : base ( descr , attrs )
         {
         }
 
         #region Overrides of PropertyDescriptor
+        /// <inheritdoc />
         public override bool CanResetValue ( object component ) { return false ; }
 
+        /// <inheritdoc />
         public override object GetValue ( object component ) { return null ; }
 
+        /// <inheritdoc />
         public override void ResetValue ( object component ) { }
 
+        /// <inheritdoc />
         public override void SetValue ( object component , object value ) { }
 
+        /// <inheritdoc />
         public override bool ShouldSerializeValue ( object component ) { return false ; }
 
+        /// <inheritdoc />
         public override Type ComponentType { get { return _componentType ; } }
 
+        /// <inheritdoc />
         public override bool IsReadOnly { get { return _isReadOnly ; } }
 
+        /// <inheritdoc />
         public override Type PropertyType { get { return _propertyType ; } }
         #endregion
     }
+
+    /// <inheritdoc />
     public class ComponentRegistrationTypeDescriptor : CustomTypeDescriptor
     {
     }

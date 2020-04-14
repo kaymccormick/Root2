@@ -60,6 +60,10 @@ namespace KayMcCormick.Dev
             return service.Description;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         [Obsolete]
         public static void WriteLine ( object obj )
         {

@@ -1,11 +1,8 @@
 ﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.ComponentModel ;
 using System.Configuration ;
-using System.Diagnostics ;
 using System.Linq ;
-using System.Reactive.Linq ;
 using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
@@ -60,6 +57,9 @@ namespace KayMcCormick.Dev.Application
         public static Guid ClassLibTests { get ; set ; } =
             new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
 
+        /// <summary>
+        /// Basic win forms app
+        /// </summary>
         public static Guid BasicWinForms { get ; set ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
     }
 
@@ -548,8 +548,8 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class AppLogMessage
     {
-        private string _message ;
-        private int _threadId ;
+        private readonly string _message ;
+        private readonly int _threadId ;
 
         /// <summary>
         /// 
@@ -593,7 +593,7 @@ namespace KayMcCormick.Dev.Application
         public ContainerBuildException ( string message ) : base ( message ) { }
 
         /// <summary>
-        /// Construcotr
+        /// Constructor
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -662,6 +662,7 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class ParsedStackInfo
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly string _exMessage ;
 
         private readonly string                   _typeName ;

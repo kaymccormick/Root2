@@ -45,6 +45,8 @@ namespace AnalysisAppLib.XmlDoc.Dataflow
                                                                             .GetAsyncTransformFunction ( )
                                                                         ) ;
         }
+
+        public override IDataflowBlock GetDataflowBlockObj ( ) { return GetDataflowBlock() ; }
     }
 
     /// <summary>

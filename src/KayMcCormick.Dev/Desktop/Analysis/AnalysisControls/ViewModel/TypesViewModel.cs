@@ -121,6 +121,11 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
         public AppTypeInfo GetAppTypeInfo ( object identifier ) { return null ; }
 
         /// <summary>
@@ -457,18 +462,5 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
-    }
-
-    public class ComponentTypesViewModel : TypesViewModel
-    {
-        public ComponentTypesViewModel ( )
-        {
-
-
-            // System.Windows.Application.LoadComponent ( this , new Uri (
-                                                                       // @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml"
-                                                                      // ) );
-
-        }
     }
 }
