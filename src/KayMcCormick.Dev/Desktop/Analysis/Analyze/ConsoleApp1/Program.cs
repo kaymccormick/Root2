@@ -23,7 +23,6 @@ using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
-using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
@@ -49,10 +48,10 @@ namespace ConsoleApp1
         private const string SolutionFilePath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
-        private const string _pocoPrefix                = "Poco" ;
-        private const string _collectionSuffix          = "Collection" ;
-        private const string _pocosyntaxnamespace       = "PocoSyntax" ;
-        private const string _icollection               = "ICollection" ;
+        private const string _pocoPrefix          = "Poco" ;
+        private const string _collectionSuffix    = "Collection" ;
+        private const string _pocosyntaxnamespace = "PocoSyntax" ;
+        private const string _icollection         = "ICollection" ;
 
         private static readonly string[] AssemblyRefs =
         {
@@ -256,6 +255,7 @@ namespace ConsoleApp1
 
                 break ;
             }
+
             Console.ReadLine ( ) ;
 
             Console.WriteLine ( projectNode.SolutionPath ) ;
@@ -708,13 +708,142 @@ namespace ConsoleApp1
             var solution = await workspace.OpenSolutionAsync ( SolutionFilePath ) ;
             var documentsOut = new List < CodeElementDocumentation > ( ) ;
             var solutionProjects = solution.Projects ;
-            
-            foreach ( var project in solutionProjects.Where ( proj => proj.Name != "Explorer" ) )
+
+            foreach ( var project in solutionProjects.Where (
+                                                             proj => proj.Name != "Explorer"
+                                                                     && proj.CompilationOptions
+                                                                           ?.OutputKind
+                                                                     == OutputKind
+                                                                        .DynamicallyLinkedLibrary
+                                                                     || proj.CompilationOptions
+                                                                           ?.OutputKind
+                                                                     == OutputKind
+                                                                        .WindowsApplication
+                                                            ) )
             {
+                var callers = new List < CallerInfo > ( ) ;
+
+                DebugUtils.WriteLine ( $"{project} {project.CompilationOptions.OutputKind}" ) ;
                 // ReSharper disable once UnusedVariable
                 var compilation = await project.GetCompilationAsync ( ) ;
+                foreach ( var diagnostic in compilation
+                                           .GetDiagnostics ( )
+                                           .Where (
+                                                   d => ! d.IsSuppressed
+                                                        && d.Severity >= DiagnosticSeverity.Info
+                                                  ) )
+                {
+                    DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
+                }
+
+                foreach ( var symbol in compilation.GetSymbolsWithName (
+                                                                        ( s ) => true
+                                                                      , SymbolFilter.TypeAndMember
+                                                                       ) )
+                {
+                    if ( symbol.ContainingAssembly != compilation.Assembly )
+                    {
+                        DebugUtils.WriteLine ( $"Skipping {symbol}" ) ;
+                        continue ;
+                    }
+
+                    DebugUtils.WriteLine (
+                                          string.Join (
+                                                       ";"
+                                                     , compilation.SyntaxTrees.Select (
+                                                                                       dt => dt
+                                                                                          .FilePath
+                                                                                      )
+                                                      )
+                                         ) ;
+                    DebugUtils.WriteLine (
+                                          $"{symbol.ToDisplayString ( )} {symbol.DeclaredAccessibility}"
+                                         ) ;
+                    var res =
+                        await Microsoft.CodeAnalysis.FindSymbols.SymbolFinder.FindCallersAsync (
+                                                                                                symbol
+                                                                                              , solution
+                                                                                               ) ;
+                    var uses = 0 ;
+                    foreach ( var use in res )
+                    {
+                        DebugUtils.WriteLine ( "Symbol kind "   + use.CalledSymbol.Kind ) ;
+                        DebugUtils.WriteLine ( "Called symbol " + use.CalledSymbol.ToString ( ) ) ;
+                        DebugUtils.WriteLine (
+                                              "Calling symbol " + use.CallingSymbol.ToString ( )
+                                             ) ;
+                        callers.Add (
+                                     new CallerInfo (
+                                                     use.CalledSymbol.ToDisplayString ( )
+                                                   , use.CallingSymbol.ToDisplayString ( )
+                                                   , use.IsDirect
+                                                   , use.Locations.Select (
+                                                                           l => {
+                                                                               var
+                                                                                   fileLinePositionSpan
+                                                                                       = l
+                                                                                          .GetMappedLineSpan ( ) ;
+                                                                               return new
+                                                                                   LocationInfo (
+                                                                                                 fileLinePositionSpan
+                                                                                                    .Path
+                                                                                               , fileLinePositionSpan
+                                                                                                .StartLinePosition
+                                                                                                .Character
+                                                                                               , fileLinePositionSpan
+                                                                                                .StartLinePosition
+                                                                                                .Line
+                                                                                               , fileLinePositionSpan
+                                                                                                .EndLinePosition
+                                                                                                .Character
+                                                                                               , fileLinePositionSpan
+                                                                                                    .EndLinePosition.Line
+                                                                                               , l
+                                                                                                .MetadataModule
+                                                                                               ?.MetadataName
+                                                                                               , l
+                                                                                                .SourceSpan
+                                                                                                .Start
+                                                                                               , l
+                                                                                                .SourceSpan
+                                                                                                .End
+                                                                                                ) ;
+                                                                           }
+                                                                          )
+                                                    )
+                                    ) ;
+                        uses += use.Locations.Count ( ) ;
+                    }
+
+                    if ( uses > 0 )
+                    {
+                        DebugUtils.WriteLine ( "Total usages is " + uses ) ;
+                    }
+                    else
+                    {
+                        DebugUtils.WriteLine ( "0 uses" ) ;
+                        DebugUtils.WriteLine ( "Symbol kind "   + symbol.Kind ) ;
+                        DebugUtils.WriteLine ( "Called symbol " + symbol.ToString ( ) ) ;
+                    }
+                }
+
                 foreach ( var doc in project.Documents )
                 {
+                    // var textAsync = await doc.GetTextAsync() ;
+                    // var classified = await Microsoft.CodeAnalysis.Classification.Classifier.GetClassifiedSpansAsync (
+                    // doc
+                    // , new
+                    // TextSpan (
+                    // 0
+                    // , textAsync
+                    // .Length
+                    // )
+                    // ) ;
+
+                    // foreach ( var classifiedSpan in classified )
+                    // {
+                    // DebugUtils.WriteLine($"{classifiedSpan.ClassificationType} : {classifiedSpan.TextSpan}");
+                    // }
                     // ReSharper disable once UnusedVariable
                     var model = await doc.GetSemanticModelAsync ( ) ;
                     Console.WriteLine ( doc.Name ) ;
@@ -725,10 +854,6 @@ namespace ConsoleApp1
                                          .DescendantNodesAndSelf ( )
                                          .OfType < MemberDeclarationSyntax > ( ) )
                     {
-                        //
-                        // if ( SupportsDocumentationComments ( tuple ) )
-                        // {
-                        //     
                         var declared = model.GetDeclaredSymbol ( node ) ;
                         if ( declared == null )
                         {
@@ -739,11 +864,14 @@ namespace ConsoleApp1
                         if ( declared.DeclaredAccessibility != Accessibility.Public
                              || ! SupportsDocumentationComments ( node ) )
                         {
-                            DebugUtils.WriteLine($"Documentation accessibility is {declared.DeclaredAccessibility}");
-                        } else { 
+                            DebugUtils.WriteLine (
+                                                  $"Documentation accessibility is {declared.DeclaredAccessibility}"
+                                                 ) ;
+                        }
+                        else
+                        {
+                            var docid = declared.GetDocumentationCommentId ( ) ;
 
-                        var docid = declared.GetDocumentationCommentId ( ) ;
-                               
                             // ReSharper disable once UnusedVariable
                             var o = new
                                     {
@@ -782,10 +910,9 @@ namespace ConsoleApp1
                                          ?? throw new InvalidOperationException (
                                                                                  "Null from CreateCodeDocumentationElementType"
                                                                                 ) ;
-
                                 }
 
-                                if ( ! string.IsNullOrWhiteSpace ( xml1 ) )
+                                if ( string.IsNullOrWhiteSpace ( xml1 ) )
                                 {
                                     o1.NeedsAttention = true ;
                                 }
@@ -796,6 +923,7 @@ namespace ConsoleApp1
                             {
                                 DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                             }
+
                             // DebugUtils.WriteLine ( JsonSerializer.Serialize ( o ) ) ;
                         }
                     }
@@ -820,6 +948,15 @@ namespace ConsoleApp1
 
                     // DebugUtils.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
                 }
+
+                var jsonout = JsonSerializer.Serialize (
+                                                        callers
+                                                      , new JsonSerializerOptions ( )
+                                                        {
+                                                            WriteIndented = true
+                                                        }
+                                                       ) ;
+                File.WriteAllText ( @"C:\temp\" + project.Name + ".json" , jsonout ) ;
             }
 
             var li = new ArrayList ( ) ;
@@ -830,6 +967,7 @@ namespace ConsoleApp1
                     li.Add ( codeElementDocumentation ) ;
                 }
             }
+
 
             var xmlWriter = XmlWriter.Create (
                                               @"C:\temp\docs.xaml"
@@ -887,9 +1025,9 @@ namespace ConsoleApp1
                 outputFunc ( s1 ) ;
             }
 
-            var model1 = context.Scope.Resolve<TypesViewModel>();
-            var sts = context.Scope.Resolve<ISyntaxTypesService>();
-            IReadOnlyDictionary < string, object > collectionMap = sts.CollectionMap () ;
+            var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
+            var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
+            var collectionMap = sts.CollectionMap ( ) ;
             outputFunc ( "Beginning" ) ;
             var x = CSharpCompilation.Create (
                                               "test"
@@ -913,7 +1051,7 @@ namespace ConsoleApp1
 
                 var classDecl1 = CreatePoco ( mapKey1 , t ) ;
                 var curComp = ReplaceSyntaxTree ( x , classDecl1 ) ;
-                
+
                 // ReSharper disable once UnusedVariable
                 var classDecl1Type =
                     curComp.GetTypeByMetadataName ( classDecl1.Identifier.ValueText ) ;
@@ -976,12 +1114,12 @@ namespace ConsoleApp1
                         var propTypeSymbol = prop.Type ;
                         var propTypeSymbolMetadataName = propTypeSymbol.MetadataName ;
                         var propertyTypeParsed = SyntaxTypesService.FieldPocoCollectionType (
-                                                                                   ParseTypeName (
-                                                                                                  propTypeSymbolMetadataName
-                                                                                                 )
-                                                                                 , collectionMap
-                                                                                 , t
-                                                                                  ) ;
+                                                                                             ParseTypeName (
+                                                                                                            propTypeSymbolMetadataName
+                                                                                                           )
+                                                                                           , collectionMap
+                                                                                           , t
+                                                                                            ) ;
                         var propDescl = PropertyDeclaration ( propertyTypeParsed , prop.Name ) ;
                         propDescl = propDescl.WithModifiers ( publicKeyword ) ;
                         var propertyIdentifierNameSyntax = IdentifierName ( prop.Name ) ;
@@ -1391,7 +1529,6 @@ namespace ConsoleApp1
                     if ( tField.IsCollection )
                     {
                         type = ParseTypeName ( tField.ElementTypeMetadataName ) ;
-                        
                     }
                     else
                     {
@@ -1415,7 +1552,7 @@ namespace ConsoleApp1
                                                                           )
                                                         ) ;
                     }
-                  
+
 
                     var tokens = new List < SyntaxToken >
                                  {
@@ -1447,7 +1584,7 @@ namespace ConsoleApp1
                                                                                           )
                                                                            )
                                                     ) ;
-                    DebugUtils.WriteLine ( attributeSyntax.ToFullString() ) ;
+                    DebugUtils.WriteLine ( attributeSyntax.ToFullString ( ) ) ;
                     var separatedSyntaxList =
                         new SeparatedSyntaxList < AttributeSyntax > ( ).Add ( attributeSyntax ) ;
                     var attributeListSyntaxes = List (
@@ -1461,12 +1598,13 @@ namespace ConsoleApp1
                     var propertyDeclarationSyntax = PropertyDeclaration (
                                                                          attributeListSyntaxes
                                                                        , syntaxTokenList
-                                                                       , XmlDocElements.SubstituteType (
-                                                                                            tField
-                                                                                          , type
-                                                                                          , collectionMap
+                                                                       , XmlDocElements
+                                                                            .SubstituteType (
+                                                                                             tField
+                                                                                           , type
+                                                                                           , collectionMap
                                                                                            , sts
-                                                                                                       )
+                                                                                            )
                                                                        , null
                                                                        , propertyName
                                                                        , accessorListSyntax
@@ -1698,8 +1836,8 @@ namespace ConsoleApp1
 
         [ NotNull ]
         private static CSharpCompilation ReplaceSyntaxTree (
-            [ NotNull ] CSharpCompilation      x
-          , ClassDeclarationSyntax classDecl1
+            [ NotNull ] CSharpCompilation x
+          , ClassDeclarationSyntax        classDecl1
         )
         {
             return x.ReplaceSyntaxTree (
@@ -1716,8 +1854,8 @@ namespace ConsoleApp1
 
         [ NotNull ]
         private static ClassDeclarationSyntax CreatePoco (
-            [ NotNull ] AppTypeInfoKey        mapKey
-          , [ NotNull ] AppTypeInfo t
+            [ NotNull ] AppTypeInfoKey mapKey
+          , [ NotNull ] AppTypeInfo    t
         )
         {
             var classDecl1 = ClassDeclaration ( $"{_pocoPrefix}{mapKey.StringValue}" )
@@ -1809,6 +1947,96 @@ namespace ConsoleApp1
 
                 default : return false ;
             }
+        }
+    }
+
+    public sealed class LocationInfo
+    {
+        public string FileName { get ; }
+
+        public int CharStart { get ; }
+
+        public int LineStart { get ; }
+
+        public int CharEnd { get ; }
+
+        public int LineEnd { get ; }
+
+        public LocationInfo (
+            string metadataModuleMetadataName
+          , int    sourceSpanStart
+          , int    sourceSpanEnd
+        )
+        {
+            MetadataModuleMetadataName = metadataModuleMetadataName ;
+            SourceSpanStart            = sourceSpanStart ;
+            SourceSpanEnd              = sourceSpanEnd ;
+        }
+
+        public LocationInfo (
+            string          fileName
+          , int             charStart
+          , int             lineStart
+          , int             charEnd
+          , int lineEnd
+          , string          metadataModuleMetadataName
+          , int             sourceSpanStart
+          , int             sourceSpanEnd
+        )
+        {
+            FileName = fileName ;
+            CharStart = charStart ;
+            LineStart = lineStart ;
+            CharEnd = charEnd ;
+            LineEnd = lineEnd ;
+            MetadataModuleMetadataName = metadataModuleMetadataName ;
+            SourceSpanStart = sourceSpanStart ;
+            SourceSpanEnd = sourceSpanEnd ;
+        }
+
+        public string MetadataModuleMetadataName { get ; set ; }
+
+        public int SourceSpanStart { get ; set ; }
+
+        public int SourceSpanEnd { get ; set ; }
+    }
+
+    public class CallerInfo
+    {
+        private List < LocationInfo > _locations = new List < LocationInfo > ( ) ;
+
+        public string CalledSymbol { get ; }
+
+        public string CallingSymbol { get ; }
+
+        public bool IsDirect { get ; }
+
+        public CallerInfo (
+            ImmutableArray < SymbolDisplayPart > toDisplayParts
+          , ImmutableArray < SymbolDisplayPart > symbolDisplayParts
+          , bool                                 useIsDirect
+          , IEnumerable < LocationInfo >         @select
+        )
+        {
+        }
+
+        public CallerInfo (
+            string                       calledSymbol
+          , string                       callingSymbol
+          , bool                         isDirect
+          , IEnumerable < LocationInfo > @select
+        )
+        {
+            CalledSymbol  = calledSymbol ;
+            CallingSymbol = callingSymbol ;
+            IsDirect      = isDirect ;
+            Locations.AddRange ( @select ) ;
+        }
+
+        public List < LocationInfo > Locations
+        {
+            get { return _locations ; }
+            set { _locations = value ; }
         }
     }
 }

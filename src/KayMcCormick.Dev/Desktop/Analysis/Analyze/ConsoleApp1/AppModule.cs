@@ -50,9 +50,7 @@ namespace ConsoleApp1
                     builder.Register (
                                       ( c , p ) => {
                                           var program = c.Resolve < Program > ( ) ;
-                                          var appContext = c.Resolve
-                                          < AppContext
-                                          > ( ) ;
+                                          var appContext = c.Resolve < AppContext > ( ) ;
                                           return new LambdaAppCommand (
                                                                        title.Title
                                                                      , async command => {
@@ -65,9 +63,11 @@ namespace ConsoleApp1
                                                                                                    ( Util
                                                                                                        .AsyncCommandDelegate
                                                                                                    )
-                                                                                                 , program);
-                                                                           await @delegate.Invoke (command,
-                                                                                                   appContext
+                                                                                                 , program
+                                                                                                  ) ;
+                                                                           await @delegate.Invoke (
+                                                                                                   command
+                                                                                                 , appContext
                                                                                                   ) ;
                                                                            return AppCommandResult
                                                                               .Success ;

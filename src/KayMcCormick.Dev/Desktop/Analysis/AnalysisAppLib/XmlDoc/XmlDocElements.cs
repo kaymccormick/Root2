@@ -33,42 +33,44 @@ namespace AnalysisAppLib.XmlDoc
     public static class XmlDocElements
     {
         private static readonly string _pocoPrefix = "Poco";
+#pragma warning disable 414
         private static readonly string _collectionSuffix = "Collection" ;
+#pragma warning restore 414
 
-        private static Dictionary < SyntaxKind , Type > _kindType = new Dictionary < SyntaxKind , Type >
-                                                                    {
-                                                                        [ SyntaxKind.ClassDeclaration ] =
-                                                                            typeof ( TypeDocumentation ),
-                                                                        [SyntaxKind.InterfaceDeclaration] = typeof(TypeDocumentation),
-                                                                        [SyntaxKind.StructDeclaration]    = typeof(TypeDocumentation),
-                                                                        [SyntaxKind.DelegateDeclaration]  = typeof(DelegateDocumentation),
+        private static readonly Dictionary < SyntaxKind , Type > _kindType = new Dictionary < SyntaxKind , Type >
+                                                                             {
+                                                                                 [ SyntaxKind.ClassDeclaration ] =
+                                                                                     typeof ( TypeDocumentation ),
+                                                                                 [SyntaxKind.InterfaceDeclaration] = typeof(TypeDocumentation),
+                                                                                 [SyntaxKind.StructDeclaration]    = typeof(TypeDocumentation),
+                                                                                 [SyntaxKind.DelegateDeclaration]  = typeof(DelegateDocumentation),
                                                             
-                                                                        [SyntaxKind.EnumDeclaration] =  typeof(TypeDocumentation),
+                                                                                 [SyntaxKind.EnumDeclaration] =  typeof(TypeDocumentation),
                                                             
-                                                                        [SyntaxKind.EnumMemberDeclaration] = typeof(EnumMemberDocumentation),
+                                                                                 [SyntaxKind.EnumMemberDeclaration] = typeof(EnumMemberDocumentation),
                                                             
-                                                                        [SyntaxKind.FieldDeclaration] = typeof(FieldDocumentation),
+                                                                                 [SyntaxKind.FieldDeclaration] = typeof(FieldDocumentation),
                                                             
-                                                                        [SyntaxKind.MethodDeclaration] = typeof(MethodDocumentation),
+                                                                                 [SyntaxKind.MethodDeclaration] = typeof(MethodDocumentation),
 
-                                                                        [SyntaxKind.ConstructorDeclaration] = typeof(ConstructorDocumentation),
+                                                                                 [SyntaxKind.ConstructorDeclaration] = typeof(ConstructorDocumentation),
                                                             
-                                                                        [SyntaxKind.DestructorDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.DestructorDeclaration] = typeof(CodeElementDocumentation),
                                                             
-                                                                        [SyntaxKind.PropertyDeclaration] = typeof(PropertyDocumentation),
+                                                                                 [SyntaxKind.PropertyDeclaration] = typeof(PropertyDocumentation),
 
-                                                                        [SyntaxKind.IndexerDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.IndexerDeclaration] = typeof(CodeElementDocumentation),
 
-                                                                        [SyntaxKind.EventDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.EventDeclaration] = typeof(CodeElementDocumentation),
 
-                                                                        [SyntaxKind.EventFieldDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.EventFieldDeclaration] = typeof(CodeElementDocumentation),
 
-                                                                        [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
 
-                                                                        [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation),
 
 
-                                                                    } ;
+                                                                             } ;
 
         /// <summary>
         /// 
@@ -292,12 +294,17 @@ namespace AnalysisAppLib.XmlDoc
         [CanBeNull]
         public static CodeElementDocumentation HandleDocElementNode (
             [ NotNull ] XDocument   xDocument
-          , string                  elementId
+          , [ CanBeNull ] string                  elementId
           , [ NotNull ] MemberDeclarationSyntax member
-          , ISymbol                declared
+          , [ NotNull ] ISymbol                declared
         )
         {
-            if ( xDocument == null || xDocument.Root == null)
+            if ( declared == null )
+            {
+                throw new ArgumentNullException ( nameof ( declared ) ) ;
+            }
+
+            if ( xDocument?.Root == null)
             {
                 throw new ArgumentNullException ( nameof ( xDocument ) ) ;
             }
@@ -313,14 +320,14 @@ namespace AnalysisAppLib.XmlDoc
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Mismathed element Id ({elementId} != {embeddedEleementId}");
+                    throw new InvalidOperationException($"Mismatched element Id ({elementId} != {embeddedEleementId}");
                 }
             }
 
-            var xNodes = xmlElement?.Nodes() ?? Enumerable.Empty<XNode> (  );
+            var xNodes = xmlElement.Nodes ( ) ;
 
             var xmlDoc = (xNodes).Select(XmlDocElements.Selector);
-            CodeElementDocumentation docElem = null ;
+            CodeElementDocumentation docElem ;
 
             docElem = CreateCodeDocumentationElementType ( member, elementId ) ;
 
@@ -403,7 +410,7 @@ namespace AnalysisAppLib.XmlDoc
           , string                  elementId
         )
         {
-            CodeElementDocumentation docElem = null ;
+            CodeElementDocumentation docElem ;
             if (_kindType.TryGetValue(member.Kind(), out var kind1))
             {
                 docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
