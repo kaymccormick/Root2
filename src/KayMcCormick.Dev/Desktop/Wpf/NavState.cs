@@ -4,7 +4,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class NavState
+    public sealed class NavState
     {
         /// <summary>
         /// </summary>

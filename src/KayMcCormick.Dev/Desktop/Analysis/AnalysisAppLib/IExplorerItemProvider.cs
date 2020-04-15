@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System.Collections.Generic ;
-using AnalysisAppLib.XmlDoc ;
 
 namespace AnalysisAppLib
 {

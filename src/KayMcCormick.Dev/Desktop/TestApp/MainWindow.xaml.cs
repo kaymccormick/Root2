@@ -1,21 +1,17 @@
 ﻿using System ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
-
-using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf ;
 

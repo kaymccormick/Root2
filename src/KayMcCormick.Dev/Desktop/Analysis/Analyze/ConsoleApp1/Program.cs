@@ -41,6 +41,7 @@ using NLog ;
 using NLog.Targets ;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
+// ReSharper disable AnnotateNotNullParameter
 
 namespace ConsoleApp1
 {
@@ -198,12 +199,17 @@ namespace ConsoleApp1
                     return 1 ;
                 }
 
-                Options myOptions = new Options();
+
+                var myOptions = new Options();
                 bool fExit = false ;
                 var program = context.Scope.Resolve < Program > ( ) ;
-                CommandLine.Parser.Default.ParseArguments < Options > ( args )
+                Parser.Default.ParseArguments < Options > ( args )
                            .WithParsed ( o => myOptions = o ).WithNotParsed(errors => fExit = true) ;
-                if ( fExit ) return 1 ;
+                if ( fExit )
+                {
+                    return 1 ;
+                }
+
                 return await program.MainCommandAsync(context, myOptions);
             }
         }
@@ -932,7 +938,7 @@ namespace ConsoleApp1
                                     doc1 = XDocument.Parse ( xml1 ) ;
                                 }
 
-                                CodeElementDocumentation o1 = null ;
+                                CodeElementDocumentation o1 ;
                                 if ( doc1 != null )
                                 {
                                     o1 = XmlDocElements.HandleDocElementNode (
@@ -2077,7 +2083,7 @@ namespace ConsoleApp1
             string                       calledSymbol
           , string                       callingSymbol
           , bool                         isDirect
-          , IEnumerable < LocationInfo > @select
+          , [ NotNull ] IEnumerable < LocationInfo > @select
         )
         {
             CalledSymbol  = calledSymbol ;
@@ -2207,6 +2213,7 @@ namespace ConsoleApp1
             {
                 throw new InvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
             }
+            // ReSharper disable once PossibleNullReferenceException
             var rt = symbol.ReturnType ;
             var origDef = rt.OriginalDefinition ;
             var displayString = rt.ToDisplayString ( ) ;

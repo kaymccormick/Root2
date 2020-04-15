@@ -5,7 +5,6 @@ using System.Windows.Markup ;
 using System.Windows.Media ;
 using System.Windows.Threading ;
 using AnalysisAppLib ;
-using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

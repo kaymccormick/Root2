@@ -9,6 +9,7 @@
              xmlns:analysisControls="clr-namespace:AnalysisControls"
              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+             xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              mc:Ignorable="d" FontSize="20"
           Foreground="CornflowerBlue"
@@ -426,7 +427,7 @@
               </ItemsControl>
             </WrapPanel>
           </DataTemplate>
-          <DataTemplate DataType="{x:Type analysisAppLib:SyntaxFieldInfo}">
+          <DataTemplate DataType="{x:Type syntax:SyntaxFieldInfo}">
             <StackPanel>
             <TextBlock Text="{Binding Name}"/>
             <TextBlock Text="{Binding Kinds}"/>
@@ -459,7 +460,7 @@
             </WrapPanel>
           </DataTemplate>
           <HierarchicalDataTemplate
-            DataType="{x:Type analysisAppLib:AppTypeInfo}"
+            DataType="{x:Type syntax:AppTypeInfo}"
             ItemsSource="{Binding SubTypeInfos}">
             <Grid HorizontalAlignment="Stretch"
                   ShowGridLines="True">
@@ -487,7 +488,7 @@
             </Grid>
           </HierarchicalDataTemplate>
           <DataTemplate
-            DataType="{x:Type analysisAppLib:AppMethodInfo}">
+            DataType="{x:Type syntax:AppMethodInfo}">
             <ContentControl Content="{Binding MethodInfo}">
               <ContentControl.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />

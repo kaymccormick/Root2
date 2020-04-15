@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// </summary>
-    public class StackTraceToken
+    public sealed class StackTraceToken
     {
         /// <summary>
         /// </summary>

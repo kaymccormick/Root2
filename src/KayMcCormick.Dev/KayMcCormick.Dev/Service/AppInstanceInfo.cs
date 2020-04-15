@@ -5,7 +5,7 @@ namespace KayMcCormick.Dev.Service
 {
     /// <summary>
     /// </summary>
-    public class AppInstanceInfo
+    public sealed class AppInstanceInfo
     {
         private readonly List < WireComponentInfo > _componentInfos =
             new List < WireComponentInfo > ( ) ;

@@ -1,19 +1,17 @@
-﻿using System ;
-using System.Collections.Specialized ;
-using System.ComponentModel ;
-using System.Diagnostics ;
-using System.Linq ;
-using System.Runtime.CompilerServices ;
-using System.Windows ;
-using System.Windows.Controls ;
-using System.Windows.Data ;
-using AnalysisAppLib ;
-using AnalysisAppLib.XmlDoc ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Lib.Wpf ;
+﻿using System;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using AnalysisAppLib;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Lib.Wpf;
 
 namespace ProjInterface
 {

@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace FindLogUsages
 {
-    internal class LogInvocationArgument : ILogInvocationArgument
+    internal sealed class LogInvocationArgument : ILogInvocationArgument
     {
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
         private readonly ArgumentSyntax _syntax ;

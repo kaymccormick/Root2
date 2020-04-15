@@ -1,19 +1,20 @@
-﻿using JetBrains.Annotations;
-using Microsoft.CodeAnalysis.CSharp;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Windows.Markup;
+﻿using System ;
+using System.Collections ;
+using System.Collections.Generic ;
+using System.Collections.ObjectModel ;
+using System.ComponentModel ;
+using System.Globalization ;
+using System.Linq ;
+using System.Reflection ;
+using System.Runtime.CompilerServices ;
+using System.Text.Json.Serialization ;
+using System.Text.RegularExpressions ;
+using System.Windows.Markup ;
+using AnalysisAppLib.XmlDoc ;
+using JetBrains.Annotations ;
+using Microsoft.CodeAnalysis.CSharp ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib.Syntax
 {
     /// <summary>
     ///     <para>Represents a Syntax Node type in the application.</para>

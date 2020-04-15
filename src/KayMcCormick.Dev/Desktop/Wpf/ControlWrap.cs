@@ -63,6 +63,7 @@ namespace KayMcCormick.Lib.Wpf
                 }
                 catch ( Exception )
                 {
+                    // ignored
                 }
 
                 return new BitmapImage ( ) ;

@@ -14,6 +14,7 @@
               xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
               xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
               xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+              xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
               mc:Ignorable="d"
@@ -1017,8 +1018,8 @@
       </Style>
       <local:ImageSourceConverter x:Key="ImageSourceConverter" />
       <CollectionViewSource x:Key="RibbonCommands" Source=""></CollectionViewSource>
-      <x:Array Type="{x:Type analysisAppLib:AppTypeInfo}"  x:Key="types">
-        <analysisAppLib:AppTypeInfo Type="cSharp:CSharpSyntaxNode" Title="CSharp Node" ColorValue="4288462688" ElementName="{x:Null}"/>
+      <x:Array Type="{x:Type syntax:AppTypeInfo}"  x:Key="types">
+        <syntax:AppTypeInfo Type="cSharp:CSharpSyntaxNode" Title="CSharp Node" ColorValue="4288462688" ElementName="{x:Null}"/>
       </x:Array>
     </ResourceDictionary>
   </RibbonWindow.Resources>
@@ -1102,12 +1103,12 @@
                 <Grid>
                   <TreeView ItemsSource="{Binding Source={kmWpf:Resolve analysisAppLib1:ITypesViewModel},Path=StructureRoot}">
                     <TreeView.Resources>
-                      <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:AppTypeInfo}" ItemsSource="{Binding Fields}">
+                      <HierarchicalDataTemplate DataType="{x:Type syntax:AppTypeInfo}" ItemsSource="{Binding Fields}">
                         <StackPanel Orientation="Horizontal">
                           <TextBlock Text="{Binding Title}"></TextBlock>
                         </StackPanel>
                       </HierarchicalDataTemplate>
-                      <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:SyntaxFieldInfo}" ItemsSource="{Binding Types}">
+                      <HierarchicalDataTemplate DataType="{x:Type syntax:SyntaxFieldInfo}" ItemsSource="{Binding Types}">
                         <StackPanel Orientation="Horizontal">
                           <TextBlock Text="{Binding Name}"></TextBlock>
                           <TextBlock Text=" "></TextBlock>

@@ -1,13 +1,14 @@
 ﻿using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using AnalysisAppLib.Syntax ;
 
 namespace AnalysisAppLib.XmlDoc
 {
     /// <summary>
     /// 
     /// </summary>
-    public class TypeMapDictionary : IDictionary , ICollection , IEnumerable
+    public sealed class TypeMapDictionary : IDictionary , ICollection , IEnumerable
     {
         /// <summary>
         /// 

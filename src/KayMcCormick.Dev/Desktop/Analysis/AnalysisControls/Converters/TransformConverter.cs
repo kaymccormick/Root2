@@ -3,7 +3,6 @@ using System.Globalization ;
 using System.Text.Json ;
 using System.Windows.Data ;
 using FindLogUsages ;
-using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 
 namespace AnalysisControls.Converters

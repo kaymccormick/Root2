@@ -1,5 +1,4 @@
 ﻿using System.Configuration ;
-using System.Diagnostics ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;

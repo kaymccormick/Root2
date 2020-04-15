@@ -85,7 +85,7 @@
     <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />
     <Compile Include="SyntaxTypesService.cs" />
     <Compile Include="ViewModel\MicrosoftUserViewModel.cs" />
-    <Compile Include="XmlDoc\AppTypeInfo.cs" />
+    <Compile Include="Syntax\AppTypeInfo.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />
     <Compile Include="Command\CodeGenCommand.cs" />

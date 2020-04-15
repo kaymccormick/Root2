@@ -12,7 +12,6 @@
 using System ;
 using System.Linq ;
 using AnalysisAppLib.Span ;
-using AnalysisAppLib.XmlDoc.Span ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

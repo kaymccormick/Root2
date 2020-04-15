@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics ;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
@@ -28,9 +27,11 @@ namespace KayMcCormick.Lib.Wpf.Command
         private readonly IAppCommand      _wrappedCommand ;
 
         /// <summary>
+        /// 
         /// </summary>
         /// <param name="wrappedCommand"></param>
         /// <param name="handleException"></param>
+        /// <param name="argument"></param>
         public WrappedAppCommand ( IAppCommand wrappedCommand , IHandleException handleException , object argument=null )
         {
             _wrappedCommand  = wrappedCommand ;

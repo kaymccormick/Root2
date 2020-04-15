@@ -1,14 +1,13 @@
-﻿using System.ComponentModel ;
-using System.Runtime.CompilerServices ;
-using System.Windows ;
-using System.Windows.Controls.Primitives ;
-using AnalysisAppLib ;
-using AnalysisAppLib.XmlDoc ;
-using Autofac ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Lib.Wpf ;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using AnalysisAppLib;
+using Autofac;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
+using KayMcCormick.Lib.Wpf;
 
 namespace ProjInterface
 {

@@ -1,12 +1,11 @@
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
-using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 
 namespace ProjInterface
 {
-    public class ImageSourceConverter : IValueConverter
+    public sealed class ImageSourceConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         public object Convert (

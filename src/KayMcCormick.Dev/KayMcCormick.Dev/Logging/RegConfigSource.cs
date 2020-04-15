@@ -4,7 +4,6 @@
 
     internal class RegConfigSource
     {
-        public string PathForLogFile ( ILogFileSpecification spec ) { return "" ; }
     }
 
 

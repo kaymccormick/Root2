@@ -1,6 +1,5 @@
 using System ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
@@ -13,7 +12,6 @@ using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.AppBuild ;
 using KayMcCormick.Dev.Interfaces ;
-using KayMcCormick.Dev.Tracing ;
 using NLog ;
 using Module = Autofac.Module ;
 

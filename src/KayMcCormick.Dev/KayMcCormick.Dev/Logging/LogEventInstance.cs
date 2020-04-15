@@ -6,7 +6,7 @@ namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// </summary>
-    public class LogEventInstance
+    public sealed class LogEventInstance
     {
         private readonly IDictionary < string , object > _properties =
             new Dictionary < string , object > ( ) ;

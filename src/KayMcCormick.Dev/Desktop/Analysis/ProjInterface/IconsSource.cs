@@ -30,7 +30,7 @@ namespace ProjInterface
             get { return _iconsResources ; }
             set
             {
-                if ( _iconsResources != value )
+                if ( ! Equals ( _iconsResources , value ) )
                 {
                     _iconsResources = value ;
                 }

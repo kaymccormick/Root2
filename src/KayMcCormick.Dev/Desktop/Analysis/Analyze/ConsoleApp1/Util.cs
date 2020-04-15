@@ -11,7 +11,6 @@
 #endregion
 using System.Threading.Tasks ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Lib.Wpf.Command ;
 
 namespace ConsoleApp1
 {

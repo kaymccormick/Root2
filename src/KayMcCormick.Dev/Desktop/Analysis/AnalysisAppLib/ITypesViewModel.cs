@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using KayMcCormick.Dev ;
 

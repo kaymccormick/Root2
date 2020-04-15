@@ -1,6 +1,5 @@
 ﻿using System ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Drawing ;
 using System.IO ;
 using System.Runtime.Serialization ;
@@ -183,7 +182,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         {
             get
             {
-                Bitmap bmp = new Bitmap(DeserializeFromBase64Text(img));
+                var bmp = new Bitmap(DeserializeFromBase64Text(img));
                 return bmp;
             }
         }
@@ -192,9 +191,9 @@ namespace KayMcCormick.Lib.Wpf.Command
         private Image DeserializeFromBase64Text(string text)
         {
             Image img = null;
-            byte[] memBytes = Convert.FromBase64String(text);
+            var memBytes = Convert.FromBase64String(text);
             IFormatter formatter = new BinaryFormatter();
-            MemoryStream stream = new MemoryStream(memBytes);
+            var stream = new MemoryStream(memBytes);
             img = (Image)formatter.Deserialize(stream);
             stream.Close();
             return img;

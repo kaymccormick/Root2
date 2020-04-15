@@ -19,6 +19,7 @@ using System.Reflection ;
 using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

@@ -4,6 +4,7 @@ using System.Collections.Immutable ;
 using System.IO ;
 using System.Linq ;
 using System.Threading.Tasks ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;

@@ -13,6 +13,7 @@ using System ;
 using System.ComponentModel ;
 using System.Globalization ;
 using System.Text.Json ;
+using AnalysisAppLib.Syntax ;
 
 namespace AnalysisAppLib.XmlDoc
 {

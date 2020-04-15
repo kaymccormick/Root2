@@ -2,7 +2,6 @@
 using System.CodeDom.Compiler ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.Diagnostics.CodeAnalysis ;
 using System.IO ;
 using System.Linq ;
@@ -13,7 +12,6 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.StackTrace ;
-using KayMcCormick.Dev.Tracing ;
 using NLog ;
 using NLog.Fluent ;
 

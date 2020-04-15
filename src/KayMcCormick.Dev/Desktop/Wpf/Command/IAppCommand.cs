@@ -9,11 +9,8 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Threading.Tasks ;
 using System.Windows.Input ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
 {

@@ -90,6 +90,7 @@ namespace AnalysisAppLib.Syntax
         {
             if ( doc.FilePath != null )
             {
+                // ReSharper disable once AssignNullToNotNullAttribute
                 return GetRelativePath ( doc.Project.FilePath , doc.FilePath ) ;
             }
 

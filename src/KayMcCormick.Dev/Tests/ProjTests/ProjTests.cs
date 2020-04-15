@@ -187,7 +187,7 @@ namespace ProjTests
         public void TestXaml2 ( )
         {
             var model = new TypesViewModel ( ) ;
-            StringWriter output = new StringWriter();
+            var output = new StringWriter();
             Action < string > writeOut = output.WriteLine ;
             var pu = new ProxyUtils (writeOut, ProxyUtils.CreateInterceptor(writeOut) ) ;
             pu.TransformXaml ( model ) ;
@@ -197,7 +197,7 @@ namespace ProjTests
         public void TestXaml3()
         {
             var model = new TypesViewModel();
-            StringWriter output = new StringWriter();
+            var output = new StringWriter();
             Action<string> writeOut = output.WriteLine;
             var pu = new ProxyUtils(writeOut, ProxyUtils.CreateInterceptor(writeOut));
             var inst = pu.TransformXaml2(InputTypesViewModelXamlPath);
@@ -208,12 +208,12 @@ namespace ProjTests
         {
 
             var xamlSchemaContext = new XamlSchemaContext();
-            XamlObjectWriter setings = new XamlObjectWriter(xamlSchemaContext);
+            var setings = new XamlObjectWriter(xamlSchemaContext);
             
             var xamlXmlReaderSettings = new XamlXmlReaderSettings {} ;
-            XamlWriter1 objectWriter1 = new XamlWriter1(xamlSchemaContext);
+            var objectWriter1 = new XamlWriter1(xamlSchemaContext);
 
-            XamlXmlReader xml = new XamlXmlReader ( ProjTests.TypesViewModelXamlPath, xamlSchemaContext, xamlXmlReaderSettings ) ;
+            XamlXmlReader xml = new XamlXmlReader ( TypesViewModelXamlPath, xamlSchemaContext, xamlXmlReaderSettings ) ;
             
             var model = new ComponentTypesViewModel();
             if ( ! model.IsInitialized )
@@ -228,7 +228,7 @@ namespace ProjTests
         [WpfFact ]
         public void TEstTypesview1 ( )
         {
-            TestApp1 app1 = new TestApp1();
+            var app1 = new TestApp1();
             var model = GetComponentTypesViewModel( ) ;
             
         }

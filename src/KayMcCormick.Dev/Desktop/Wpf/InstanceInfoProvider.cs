@@ -11,7 +11,6 @@
 #endregion
 using System ;
 using System.ComponentModel ;
-using Autofac.Core ;
 using Autofac.Core.Registration ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

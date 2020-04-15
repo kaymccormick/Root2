@@ -12,6 +12,7 @@
 using System ;
 using System.Collections ;
 using System.ComponentModel ;
+using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis.CSharp ;

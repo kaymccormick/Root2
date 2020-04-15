@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Text.Json.Serialization ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 
 namespace AnalysisAppLib

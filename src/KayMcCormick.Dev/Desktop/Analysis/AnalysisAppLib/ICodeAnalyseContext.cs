@@ -1,6 +1,4 @@
-﻿using AnalysisAppLib.XmlDoc ;
-
-namespace AnalysisAppLib
+﻿namespace AnalysisAppLib
 {
     /// <summary>
     /// 
