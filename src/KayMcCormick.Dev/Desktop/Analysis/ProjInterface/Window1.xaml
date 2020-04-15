@@ -13,6 +13,7 @@
               xmlns:command="clr-namespace:KayMcCormick.Lib.Wpf.Command;assembly=KayMcCormick.Lib.Wpf"
               xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
               xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
+              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
               mc:Ignorable="d"
@@ -1099,7 +1100,7 @@
               DockWidth="200">
               <avalondock:LayoutAnchorable Title="Two">
                 <Grid>
-                  <TreeView ItemsSource="{Binding Source={kmWpf:Resolve analysisAppLib:ITypesViewModel},Path=StructureRoot}">
+                  <TreeView ItemsSource="{Binding Source={kmWpf:Resolve analysisAppLib1:ITypesViewModel},Path=StructureRoot}">
                     <TreeView.Resources>
                       <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:AppTypeInfo}" ItemsSource="{Binding Fields}">
                         <StackPanel Orientation="Horizontal">

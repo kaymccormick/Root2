@@ -8,6 +8,7 @@
              xmlns:projInterface="clr-namespace:ProjInterface"
              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
              xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
+             xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
@@ -47,7 +48,7 @@
       </Grid>
     </DataTemplate>
     <HierarchicalDataTemplate
-      DataType="{x:Type analysisAppLib:ViewerLoggerInfo}"
+      DataType="{x:Type analysisAppLib1:ViewerLoggerInfo}"
       ItemsSource="{Binding Children}">
       <TextBlock MinWidth="80" Text="{Binding DisplayName}" />
     </HierarchicalDataTemplate>

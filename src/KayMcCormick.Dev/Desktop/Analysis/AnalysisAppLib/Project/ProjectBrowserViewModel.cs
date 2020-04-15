@@ -12,9 +12,8 @@
 using System ;
 using System.Linq ;
 using System.Runtime.Serialization ;
-using AnalysisAppLib.XmlDoc.ViewModel ;
 
-namespace AnalysisAppLib.XmlDoc.Project
+namespace AnalysisAppLib.Project
 {
     /// <summary>
     /// 

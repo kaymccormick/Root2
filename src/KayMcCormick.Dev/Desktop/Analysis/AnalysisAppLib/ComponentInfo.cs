@@ -11,8 +11,9 @@
 #endregion
 using System ;
 using System.Text.Json.Serialization ;
+using AnalysisAppLib.XmlDoc ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

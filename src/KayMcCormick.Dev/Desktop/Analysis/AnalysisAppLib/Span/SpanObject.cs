@@ -9,9 +9,10 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib.XmlDoc.Span ;
 using Microsoft.CodeAnalysis.Text ;
 
-namespace AnalysisAppLib.XmlDoc.Span
+namespace AnalysisAppLib.Span
 {
     /// <summary>
     /// 

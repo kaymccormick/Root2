@@ -14,7 +14,7 @@ using System.Reflection ;
 using System.Security.Cryptography ;
 using Microsoft.Identity.Client ;
 
-namespace AnalysisAppLib.XmlDoc.Auth
+namespace AnalysisAppLib.Auth
 {
     internal static class TokenCacheHelper
     {

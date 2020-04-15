@@ -13,12 +13,12 @@ using System ;
 using System.Linq ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using AnalysisAppLib.XmlDoc.Project ;
+using AnalysisAppLib.Project ;
 using FindLogUsages ;
 using KayMcCormick.Dev.StackTrace ;
 using NLog ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

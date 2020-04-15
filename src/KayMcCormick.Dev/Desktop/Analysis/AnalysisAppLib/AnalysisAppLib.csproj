@@ -129,7 +129,6 @@
     <Compile Include="Span\SyntaxNodeSpanObject.cs" />
     <Compile Include="Span\TokenSpanObject.cs" />
     <Compile Include="Span\TriviaSpanObject.cs" />
-    <Compile Include="Syntax\AppParameterInfo.cs" />
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
     <Compile Include="XmlDoc\SyntaxFieldInfoTypeConverter.cs" />

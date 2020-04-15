@@ -13,7 +13,7 @@ using System ;
 using System.Runtime.Serialization ;
 using JetBrains.Annotations ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     [ Serializable ]
     internal class AnalyzeException : Exception

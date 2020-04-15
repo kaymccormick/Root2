@@ -10,9 +10,9 @@
 // ---
 #endregion
 using System.Threading.Tasks ;
-using AnalysisAppLib.XmlDoc.Project ;
+using AnalysisAppLib.Project ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

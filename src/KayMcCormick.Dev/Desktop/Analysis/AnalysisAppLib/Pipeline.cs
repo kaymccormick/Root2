@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis ;
 using NLog ;
 using NLog.Fluent ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

@@ -13,7 +13,7 @@ using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
 
-namespace AnalysisAppLib.XmlDoc.Project
+namespace AnalysisAppLib.Project
 {
     /// <summary>
     /// 

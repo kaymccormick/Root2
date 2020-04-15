@@ -10,7 +10,7 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using NLog ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     ///     Class to write type information to XML file.

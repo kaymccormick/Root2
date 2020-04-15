@@ -1,13 +1,12 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Threading.Tasks ;
-using AnalysisAppLib.XmlDoc.Auth ;
-using AnalysisAppLib.XmlDoc.Command ;
-using AnalysisAppLib.XmlDoc.Dataflow ;
+using AnalysisAppLib.Auth ;
+using AnalysisAppLib.Command ;
+using AnalysisAppLib.Dataflow ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
@@ -21,7 +20,7 @@ using KayMcCormick.Dev.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

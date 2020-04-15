@@ -8,7 +8,7 @@
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
              xmlns:analysisControls="clr-namespace:AnalysisControls"
              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
-             xmlns:syntax="clr-namespace:AnalysisAppLib.XmlDoc.Syntax;assembly=AnalysisAppLib"
+             xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              mc:Ignorable="d" FontSize="20"
           Foreground="CornflowerBlue"
@@ -566,7 +566,7 @@
           </DataTemplate>
 
           <DataTemplate
-            DataType="{x:Type analysisAppLib:ComponentInfo}">
+            DataType="{x:Type analysisAppLib1:ComponentInfo}">
             <TextBlock>
               <TextBlock.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />

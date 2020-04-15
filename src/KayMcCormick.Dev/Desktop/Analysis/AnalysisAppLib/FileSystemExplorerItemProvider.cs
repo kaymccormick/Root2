@@ -12,8 +12,9 @@
 using System ;
 using System.Collections.Generic ;
 using System.IO ;
+using AnalysisAppLib.XmlDoc ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

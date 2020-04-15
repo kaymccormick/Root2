@@ -15,7 +15,7 @@ using FindLogUsages ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 
-namespace AnalysisAppLib.XmlDoc.Span
+namespace AnalysisAppLib.Span
 {
     /// <summary>
     /// 

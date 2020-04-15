@@ -18,7 +18,7 @@ using System.Linq ;
 using System.Runtime.CompilerServices ;
 using JetBrains.Annotations ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

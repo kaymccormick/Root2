@@ -12,7 +12,7 @@
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 
-namespace AnalysisAppLib.XmlDoc.Syntax
+namespace AnalysisAppLib.Syntax
 {
     /// <summary>
     /// 

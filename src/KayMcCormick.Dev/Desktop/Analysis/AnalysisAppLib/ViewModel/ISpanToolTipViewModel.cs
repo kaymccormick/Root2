@@ -12,7 +12,7 @@
 using System.Collections.Generic ;
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib.XmlDoc.ViewModel
+namespace AnalysisAppLib.ViewModel
 {
     /// <summary>
     /// 

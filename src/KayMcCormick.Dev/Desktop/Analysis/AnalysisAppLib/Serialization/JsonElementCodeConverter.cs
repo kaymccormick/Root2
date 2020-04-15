@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
-namespace AnalysisAppLib.XmlDoc.Serialization
+namespace AnalysisAppLib.Serialization
 {
     /// <summary>
     /// 

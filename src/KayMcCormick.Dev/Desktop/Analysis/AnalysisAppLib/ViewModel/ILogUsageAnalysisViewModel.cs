@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Threading.Tasks ;
+using AnalysisAppLib.XmlDoc ;
 using KayMcCormick.Dev.Logging ;
 
-namespace AnalysisAppLib.XmlDoc.ViewModel
+namespace AnalysisAppLib.ViewModel
 {
     /// <summary>
     /// 

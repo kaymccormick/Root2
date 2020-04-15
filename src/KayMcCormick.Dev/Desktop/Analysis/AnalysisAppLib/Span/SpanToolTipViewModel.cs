@@ -10,10 +10,10 @@
 // ---
 #endregion
 using System.Collections.Generic ;
-using AnalysisAppLib.XmlDoc.ViewModel ;
+using AnalysisAppLib.ViewModel ;
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib.XmlDoc.Span
+namespace AnalysisAppLib.Span
 {
     internal class SpanToolTipViewModel : ISpanToolTipViewModel
     {

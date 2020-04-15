@@ -1,6 +1,6 @@
-using AnalysisAppLib.XmlDoc.Project ;
+using AnalysisAppLib.Project ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// </summary>

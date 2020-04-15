@@ -12,12 +12,12 @@
 using System ;
 using System.Collections.ObjectModel ;
 using System.Runtime.Serialization ;
-using AnalysisAppLib.XmlDoc.Syntax ;
+using AnalysisAppLib.Syntax ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
 
-namespace AnalysisAppLib.XmlDoc.ViewModel
+namespace AnalysisAppLib.ViewModel
 {
     /// <summary>
     /// 

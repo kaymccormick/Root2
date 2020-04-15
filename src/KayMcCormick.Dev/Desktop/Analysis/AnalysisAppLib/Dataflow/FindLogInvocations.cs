@@ -1,6 +1,5 @@
 using System ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
@@ -8,7 +7,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 
-namespace AnalysisAppLib.XmlDoc.Dataflow
+namespace AnalysisAppLib.Dataflow
 {
     internal class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
             TransformManyBlock < Document , ILogInvocation > >

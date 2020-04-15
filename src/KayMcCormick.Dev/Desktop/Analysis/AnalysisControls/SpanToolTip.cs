@@ -12,7 +12,7 @@
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
-using AnalysisAppLib.XmlDoc.ViewModel ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
 
 namespace AnalysisControls

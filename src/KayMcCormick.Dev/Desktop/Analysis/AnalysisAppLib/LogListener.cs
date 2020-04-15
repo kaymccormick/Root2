@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
@@ -18,11 +17,12 @@ using System.Net.Sockets ;
 using System.Text ;
 using System.Text.Json ;
 using System.Xml ;
+using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls.Primitives ;
+using AnalysisAppLib ;
 using AnalysisAppLib.XmlDoc ;
 using Autofac ;
 using JetBrains.Annotations ;

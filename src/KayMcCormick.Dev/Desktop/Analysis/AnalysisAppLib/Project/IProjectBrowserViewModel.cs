@@ -11,7 +11,7 @@
 #endregion
 using KayMcCormick.Dev ;
 
-namespace AnalysisAppLib.XmlDoc.Project
+namespace AnalysisAppLib.Project
 {
     /// <summary>
     /// 

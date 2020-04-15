@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
-using AnalysisAppLib.XmlDoc.ViewModel ;
+using AnalysisAppLib.ViewModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;

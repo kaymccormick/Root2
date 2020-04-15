@@ -16,7 +16,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
-using AnalysisAppLib.XmlDoc.ViewModel ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;

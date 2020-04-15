@@ -12,7 +12,7 @@
 using System.Threading.Tasks ;
 using Microsoft.CodeAnalysis.CodeRefactorings ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     ///     Refactoring for logging.

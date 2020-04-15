@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
+using AnalysisAppLib ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using AnalysisAppLib.XmlDoc.Project ;
+using AnalysisAppLib.Project ;
 using FindLogUsages ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

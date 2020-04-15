@@ -16,11 +16,9 @@ using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.VisualBasic ;
-using Microsoft.VisualStudio.Threading ;
 
-namespace AnalysisAppLib.XmlDoc.Dataflow
+namespace AnalysisAppLib.Dataflow
 {
     /// <summary>
     /// 

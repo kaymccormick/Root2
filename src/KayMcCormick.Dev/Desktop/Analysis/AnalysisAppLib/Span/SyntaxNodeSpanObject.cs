@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
 
-namespace AnalysisAppLib.XmlDoc.Span
+namespace AnalysisAppLib.Span
 {
     /// <summary>
     /// 

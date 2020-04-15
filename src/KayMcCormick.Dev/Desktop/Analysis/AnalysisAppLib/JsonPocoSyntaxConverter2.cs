@@ -15,7 +15,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using PocoSyntax ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

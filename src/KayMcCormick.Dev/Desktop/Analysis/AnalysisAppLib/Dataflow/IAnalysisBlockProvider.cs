@@ -1,6 +1,6 @@
 using System.Threading.Tasks.Dataflow ;
 
-namespace AnalysisAppLib.XmlDoc.Dataflow
+namespace AnalysisAppLib.Dataflow
 {
     /// <summary>
     /// 

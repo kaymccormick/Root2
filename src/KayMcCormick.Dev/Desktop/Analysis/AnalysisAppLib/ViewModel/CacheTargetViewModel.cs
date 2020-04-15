@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
@@ -19,7 +18,7 @@ using System.Windows.Threading ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
-namespace AnalysisAppLib.XmlDoc.ViewModel
+namespace AnalysisAppLib.ViewModel
 {
     /// <summary>
     /// 

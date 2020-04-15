@@ -15,7 +15,7 @@ using System.Text.Json.Serialization ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 
-namespace AnalysisAppLib.XmlDoc.Serialization
+namespace AnalysisAppLib.Serialization
 {
     /// <summary>
     /// 

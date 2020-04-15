@@ -10,15 +10,13 @@ using System.Threading.Tasks.Dataflow ;
 using System.Xaml ;
 using System.Xml ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
 
 // ReSharper disable once RedundantUsingDirective
 using AnalysisAppLib.XmlDoc ;
-using AnalysisAppLib.XmlDoc.Dataflow ;
-using AnalysisAppLib.XmlDoc.Serialization ;
-using AnalysisAppLib.XmlDoc.ViewModel ;
 using Autofac ;
 using FindLogUsages ;
 using JetBrains.Annotations ;

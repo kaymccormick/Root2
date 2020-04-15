@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System ;
+using System.Collections.Generic ;
 using System.Collections.Immutable ;
-using System.Diagnostics ;
 using System.IO ;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Linq ;
+using System.Threading.Tasks ;
+using AnalysisAppLib.XmlDoc ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
 using Microsoft.CodeAnalysis ;
@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.Text ;
 
-namespace AnalysisAppLib.XmlDoc.Command
+namespace AnalysisAppLib.Command
 {
     /// <summary>
     /// 

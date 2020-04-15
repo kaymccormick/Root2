@@ -10,8 +10,9 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using AnalysisAppLib.XmlDoc ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 

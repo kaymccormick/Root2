@@ -12,6 +12,7 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
 
@@ -23,12 +24,15 @@ namespace AnalysisAppLib.Serialization
     public class JsonSymbolConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
+        /// <inheritdoc />
         public override bool CanConvert ( Type typeToConvert )
         {
             return typeof ( ISymbol ).IsAssignableFrom ( typeToConvert ) ;
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <inheritdoc />
+        [ NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -37,9 +41,9 @@ namespace AnalysisAppLib.Serialization
             return new Converter (options ) ;
         }
 
-        private class Converter : JsonConverter<ISymbol>
+        private sealed class Converter : JsonConverter<ISymbol>
         {
-            private JsonSerializerOptions options;
+            private readonly JsonSerializerOptions options;
 
             public Converter(JsonSerializerOptions options)
             {
@@ -47,11 +51,11 @@ namespace AnalysisAppLib.Serialization
             }
 
             #region Overrides of JsonConverter<ISymbol>
-            public override ISymbol Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
+            [ CanBeNull ] public override ISymbol Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 
             public override void Write (
-                Utf8JsonWriter        writer
-              , ISymbol               value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] ISymbol               value
               , JsonSerializerOptions options
             )
             {

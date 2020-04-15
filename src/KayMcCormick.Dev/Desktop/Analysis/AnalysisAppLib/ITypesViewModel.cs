@@ -9,10 +9,10 @@
 // 
 // ---
 #endregion
-using System.Collections ;
+using AnalysisAppLib.XmlDoc ;
 using KayMcCormick.Dev ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
     /// <summary>
     /// </summary>

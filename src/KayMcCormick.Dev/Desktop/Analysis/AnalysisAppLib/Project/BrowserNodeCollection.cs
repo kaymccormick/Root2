@@ -12,7 +12,7 @@
 using System ;
 using System.Collections.ObjectModel ;
 
-namespace AnalysisAppLib.XmlDoc.Project
+namespace AnalysisAppLib.Project
 {
     [Serializable]
     internal class BrowserNodeCollection : ObservableCollection < IBrowserNode >

@@ -13,10 +13,11 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Linq ;
+using AnalysisAppLib.XmlDoc.Span ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.Text ;
 
-namespace AnalysisAppLib.XmlDoc.Span
+namespace AnalysisAppLib.Span
 {
     /// <summary>
     /// </summary>
