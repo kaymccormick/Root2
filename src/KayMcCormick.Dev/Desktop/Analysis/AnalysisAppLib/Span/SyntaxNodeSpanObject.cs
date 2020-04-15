@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
@@ -28,10 +29,10 @@ namespace AnalysisAppLib.Span
         /// </summary>
         /// <param name="span"></param>
         /// <param name="instance"></param>
-        public SyntaxNodeSpanObject ( TextSpan span , SyntaxNode instance ) : base (
-                                                                                    span
-                                                                                  , instance
-                                                                                   )
+        public SyntaxNodeSpanObject ( TextSpan span , [ NotNull ] SyntaxNode instance ) : base (
+                                                                                                span
+                                                                                              , instance
+                                                                                               )
         {
             _kind = instance.Kind ( ) ;
         }
