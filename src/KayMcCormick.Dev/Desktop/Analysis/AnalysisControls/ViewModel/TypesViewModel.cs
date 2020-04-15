@@ -30,8 +30,9 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
-        private static readonly string _pocoPrefix       = "Poco";
-        private static readonly string _collectionSuffix = "Collection";
+        private readonly        JsonSerializerOptions _options ;
+        private static readonly string                _pocoPrefix       = "Poco" ;
+        private static readonly string                _collectionSuffix = "Collection" ;
 
         private DateTime _initializationDateTime ;
         private bool     _showBordersIsChecked ;
@@ -44,8 +45,8 @@ namespace AnalysisControls.ViewModel
         private AppTypeInfo   root ;
         private List < Type > _nodeTypes ;
 
-        private TypeMapDictionary map = new TypeMapDictionary();
-        private TypeMapDictionary2 _map2 = new TypeMapDictionary2();
+        private TypeMapDictionary  map   = new TypeMapDictionary ( ) ;
+        private TypeMapDictionary2 _map2 = new TypeMapDictionary2 ( ) ;
 
 
 #if true
@@ -53,15 +54,19 @@ namespace AnalysisControls.ViewModel
 #else
 #endif
 
-        private readonly Dictionary < Type , TypeDocInfo >
-            _docs = new Dictionary < Type , TypeDocInfo > ( ) ;
+        private readonly Dictionary < Type , TypeDocInfo > _docs =
+            new Dictionary < Type , TypeDocInfo > ( ) ;
 
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
 
         /// <summary>
         /// </summary>
         // ReSharper disable once EmptyConstructor
-        public TypesViewModel ( ) { }
+        public TypesViewModel ( JsonSerializerOptions options )
+        {
+            _options               = options ;
+            _options.WriteIndented = true ;
+        }
 
 
         /// <summary>
@@ -113,14 +118,11 @@ namespace AnalysisControls.ViewModel
 
         /// <summary>
         /// </summary>
-        public DocumentCollection DocumentCollection
-        {
-            get { return _documentCollection ; }
-        }
+        public DocumentCollection DocumentCollection { get { return _documentCollection ; } }
 
         /// <summary>
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
         public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
 
         /// <summary>
@@ -135,60 +137,61 @@ namespace AnalysisControls.ViewModel
         [ CanBeNull ]
         public AppTypeInfo GetAppTypeInfo ( object identifier )
         {
-            AppTypeInfoKey key = null;
-            string unqualifiedTypeName = null;
-            if (identifier is Type type)
+            AppTypeInfoKey key = null ;
+            string unqualifiedTypeName = null ;
+            if ( identifier is Type type )
             {
-                unqualifiedTypeName = type.Name;
+                unqualifiedTypeName = type.Name ;
             }
-            else if (identifier is string s1)
+            else if ( identifier is string s1 )
             {
-                unqualifiedTypeName = s1;
+                unqualifiedTypeName = s1 ;
             }
-            else if (identifier is AppTypeInfoKey k1)
+            else if ( identifier is AppTypeInfoKey k1 )
             {
-                key = k1;
+                key = k1 ;
             }
             else
             {
-                throw new InvalidOperationException("Bad key");
+                throw new InvalidOperationException ( "Bad key" ) ;
             }
 
-            if (unqualifiedTypeName != null
-                && key              == null)
+            if ( unqualifiedTypeName != null
+                 && key              == null )
             {
-                key = new AppTypeInfoKey(unqualifiedTypeName);
+                key = new AppTypeInfoKey ( unqualifiedTypeName ) ;
             }
 
-            if (Map.dict.TryGetValue(key, out var typeInfo))
+            if ( Map.dict.TryGetValue ( key , out var typeInfo ) )
             {
-                return typeInfo;
+                return typeInfo ;
             }
 
-            throw new InvalidOperationException("No such type");
-
+            throw new InvalidOperationException ( "No such type" ) ;
         }
 
         /// <summary>
-        /// 
+        /// Discover information about the given Syntax Node class and all children recursively, depth-first.
         /// </summary>
+        /// <param name="clrSyntaxNodeType"></param>
         /// <param name="parentTypeInfo"></param>
-        /// <param name="rootR"></param>
         /// <param name="level"></param>
         /// <returns></returns>
         [ NotNull ]
         public AppTypeInfo CollectTypeInfos (
-            AppTypeInfo      parentTypeInfo
-          , [ NotNull ] Type rootR
-          , int              level = 0
+            [ NotNull ] Type clrSyntaxNodeType
+          , AppTypeInfo      parentTypeInfo = null
+          , int              level          = 0
         )
         {
+            if ( clrSyntaxNodeType == null )
+            {
+                throw new ArgumentNullException ( nameof ( clrSyntaxNodeType ) ) ;
+            }
+
             TypeDocumentation docNode = null ;
 
-            if ( _docs.TryGetValue (
-                                    rootR ?? throw new InvalidOperationException ( )
-                                  , out var info
-                                   ) )
+            if ( _docs.TryGetValue ( clrSyntaxNodeType , out var info ) )
             {
                 if ( info.TypeDocumentation != null )
                 {
@@ -202,24 +205,27 @@ namespace AnalysisControls.ViewModel
             }
 
             /* Construct appTypeInfo */
+            var appTypeInfoKey = new AppTypeInfoKey ( clrSyntaxNodeType ) ;
             var version = 1 ;
-            var r = new AppTypeInfo
+            var appTypeInfo = new AppTypeInfo
                     {
-                        Type           = rootR
+                        Type           = clrSyntaxNodeType
                       , DocInfo        = docNode
                       , ParentInfo     = parentTypeInfo
                       , HierarchyLevel = level
                       , ColorValue     = HierarchyColors[ level ]
-                        , Version = version
+                      , Version        = version
+                      , KeyValue       = appTypeInfoKey.StringValue
                     } ;
-            DebugUtils.WriteLine($"{JsonSerializer.Serialize(r, options)}");
-            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+            DebugUtils.WriteLine ( $"{JsonSerializer.Serialize ( appTypeInfo , _options )}" ) ;
+            /* Descend into related subtypes to populate complete syntax node structure. */
+            foreach ( var subType in _nodeTypes.Where ( type => type.BaseType == clrSyntaxNodeType ) )
             {
-                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
+                appTypeInfo.SubTypeInfos.Add ( CollectTypeInfos ( subType , appTypeInfo , level + 1 ) ) ;
             }
 
-            Map.dict[ new AppTypeInfoKey ( rootR ) ] = r ;
-            return r ;
+            Map.dict[ appTypeInfoKey ] = appTypeInfo ;
+            return appTypeInfo ;
         }
 
         private void CollectDoc ( [ CanBeNull ] CodeElementDocumentation docNode )
@@ -263,8 +269,9 @@ namespace AnalysisControls.ViewModel
             Logger.Info ( nameof ( EndInit ) ) ;
             foreach ( var keyValuePair in Map2.dict )
             {
-                Map.dict[ new AppTypeInfoKey(keyValuePair.Key) ] = keyValuePair.Value ;
+                Map.dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
             }
+
             var mapCount = Map.Count ;
             Logger.Info ( $"Map Count {mapCount}" ) ;
             if ( mapCount != 0 )
@@ -363,8 +370,7 @@ namespace AnalysisControls.ViewModel
             // }
 
 //            CollectDoc(docNode);
-            if ( ! Map.dict.TryGetValue ( new AppTypeInfoKey ( 
-                rootR ) , out var curTypeInfo ) )
+            if ( ! Map.dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
             {
                 throw new InvalidOperationException ( ) ;
             }
@@ -485,13 +491,16 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-        private void LoadTypeInfo ( )
+        public void LoadTypeInfo ( )
         {
-            var rootR = typeof ( CSharpSyntaxNode ) ;
-            _nodeTypes = rootR.Assembly.GetExportedTypes ( )
-                              .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
-                              .ToList ( ) ;
-            Root = CollectTypeInfos ( null , rootR ) ;
+            var CSharpRootSyntaxNodeType = typeof ( CSharpSyntaxNode ) ;
+            _nodeTypes = CSharpRootSyntaxNodeType.Assembly.GetExportedTypes ( )
+                                                 .Where (
+                                                         t => typeof ( CSharpSyntaxNode )
+                                                            .IsAssignableFrom ( t )
+                                                        )
+                                                 .ToList ( ) ;
+            Root = CollectTypeInfos ( CSharpRootSyntaxNodeType , null ) ;
         }
         #endregion
 
@@ -517,23 +526,21 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
-        [NotNull]
-        public IReadOnlyDictionary<string, object> CollectionMap(
-        )
+
+        [ NotNull ]
+        public IReadOnlyDictionary < string , object > CollectionMap ( )
         {
-            DebugUtils.WriteLine("Populating collectionMap");
-            var collectionMap = new Dictionary<string, object>();
-            foreach (var kvp in Map.dict)
+            DebugUtils.WriteLine ( "Populating collectionMap" ) ;
+            var collectionMap = new Dictionary < string , object > ( ) ;
+            foreach ( var kvp in Map.dict )
             {
-                var mapKey = kvp.Key;
-                var t = (AppTypeInfo)Map[mapKey];
-                var colType = $"{_pocoPrefix}{t.Type.Name}{_collectionSuffix}";
-                collectionMap[(string)t.Type.Name] = colType;
+                var mapKey = kvp.Key ;
+                var t = ( AppTypeInfo ) Map[ mapKey ] ;
+                var colType = $"{_pocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
+                collectionMap[ ( string ) t.Type.Name ] = colType ;
             }
 
-            return collectionMap;
+            return collectionMap ;
         }
-
-
     }
 }

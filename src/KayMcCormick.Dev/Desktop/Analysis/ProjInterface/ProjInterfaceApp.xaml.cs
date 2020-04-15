@@ -5,7 +5,6 @@ using System.Reflection ;
 using System.Text.Json ;
 using System.Windows ;
 using AnalysisControls ;
-using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using KayMcCormick.Dev ;
@@ -99,7 +98,7 @@ namespace ProjInterface
                 }
                 
             }
-            var m = new ComponentTypesViewModel();
+            //var m = new ComponentTypesViewModel();
             //PresentationTraceSources.Refresh();
             //PopulateJsonConverters ( disableLogging ) ;
         }

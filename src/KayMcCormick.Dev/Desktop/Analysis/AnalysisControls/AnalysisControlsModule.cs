@@ -12,6 +12,7 @@
 using System ;
 using System.Collections.Generic ;
 using System.Reflection ;
+using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
@@ -98,7 +99,7 @@ namespace AnalysisControls
                                   {
                                       if ( parameters.TypedAs < bool > ( ) == false )
                                       {
-                                          return new TypesViewModel ( ) ;
+                                          return new TypesViewModel (context.Resolve<JsonSerializerOptions>()) ;
                                       }
                                   }
                                   catch ( Exception ex )
@@ -115,7 +116,7 @@ namespace AnalysisControls
                                       if ( stream == null )
                                       {
                                           DebugUtils.WriteLine ( "no stream" ) ;
-                                          return new TypesViewModel ( ) ;
+                                          return new TypesViewModel (context.Resolve<JsonSerializerOptions>()) ;
                                       }
 
                                       try
@@ -126,7 +127,7 @@ namespace AnalysisControls
                                       }
                                       catch ( Exception )
                                       {
-                                          return new TypesViewModel ( ) ;
+                                          return new TypesViewModel (context.Resolve<JsonSerializerOptions>() ) ;
                                       }
                                   }
                               }

@@ -49,7 +49,7 @@ namespace ConsoleApp1
     internal sealed class Program
     {
         private const string ModelXamlFilename = @"C:\data\logs\model.xaml" ;
-
+        private static string _dataOutputPath = @"C:\data\logs\";
         private const string SolutionFilePath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
@@ -57,7 +57,8 @@ namespace ConsoleApp1
         private const string _collectionSuffix    = "Collection" ;
         private const string _pocosyntaxnamespace = "PocoSyntax" ;
         private const string _icollection         = "ICollection" ;
-
+        private const string TypesJsonFilename = "types.json";
+        private const string ModelXamlFilenamePart = "model.xaml";
         private static readonly string[] AssemblyRefs =
         {
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
@@ -84,6 +85,7 @@ namespace ConsoleApp1
         private static readonly string              Pocosyntaxtoken = @"PocoSyntaxToken" ;
         private static readonly string              _ilist          = "IList" ;
         private static readonly string              _ienumerable    = "IEnumerable" ;
+        
         static Program ( ) { Logger = null ; }
 
         [ NotNull ] public static string PocoPrefix { get { return _pocoPrefix ; } }
@@ -305,18 +307,10 @@ namespace ConsoleApp1
             }
 
             DebugUtils.WriteLine ( "Begin initialize TypeViewModel" ) ;
-            var typesViewModel =
-                context.Scope.Resolve < TypesViewModel > (
-                                                          new TypedParameter (
-                                                                              typeof ( bool )
-                                                                            , false
-                                                                             )
-                                                         ) ;
-            DebugUtils.WriteLine (
-                                  $"InitializationDateTime : {typesViewModel.InitializationDateTime}"
-                                 ) ;
 
-            var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
+            var typesViewModel = TypesViewModel_Stage1 ( context ) ;
+
+            var sts = context.Scope.Resolve<ISyntaxTypesService>();
             var collectionMap = sts.CollectionMap ( ) ;
 
             SyntaxTypesService.LoadSyntax ( typesViewModel , collectionMap ) ;
@@ -327,7 +321,28 @@ namespace ConsoleApp1
 
             typesViewModel.DetailFields ( ) ;
             WriteThisTypesViewModel ( typesViewModel ) ;
-            DumpModelToJson ( context , typesViewModel ) ;
+            DumpModelToJson ( context , typesViewModel, Path.Combine(_dataOutputPath, TypesJsonFilename) ) ;
+        }
+
+        [ NotNull ]
+        private static TypesViewModel TypesViewModel_Stage1 ( [ NotNull ] AppContext context )
+        {
+            if ( context == null )
+            {
+                throw new ArgumentNullException ( nameof ( context ) ) ;
+            }
+
+            var typesViewModel =
+                new TypesViewModel ( context.Scope.Resolve < JsonSerializerOptions > ( ) ) ;
+            DebugUtils.WriteLine ( $"InitializationDateTime : {typesViewModel.InitializationDateTime}" ) ;
+            typesViewModel.LoadTypeInfo ( ) ;
+
+            WriteThisTypesViewModel (
+                                     typesViewModel
+                                   , ( model ) => Path.Combine ( $@"{_dataOutputPath}model-v1.xaml" )
+                                    ) ;
+            DumpModelToJson ( context , typesViewModel , @"C:\data\logs\types-v1.json" ) ;
+            return typesViewModel ;
         }
 
         [ TitleMetadata ( "Load Syntax Examples" ) ]
@@ -590,9 +605,11 @@ namespace ConsoleApp1
         private static void DumpModelToJson (
             [ NotNull ] AppContext     context
           , [ NotNull ] TypesViewModel typesViewModel
+            , string jsonFilename = null
         )
         {
-            using ( var utf8Json = File.Open ( @"C:\temp\out.json" , FileMode.Create ) )
+            
+            using ( var utf8Json = File.Open ( jsonFilename, FileMode.Create ) )
             {
                 var infos = typesViewModel.Map.Values.Cast < AppTypeInfo > ( ).ToList ( ) ;
                 var writer = new Utf8JsonWriter (
@@ -699,19 +716,22 @@ namespace ConsoleApp1
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static void WriteTypesViewModel ( )
-        {
-            var model = new TypesViewModel ( ) ;
-            model.BeginInit ( ) ;
-            model.EndInit ( ) ;
-            WriteThisTypesViewModel ( model ) ;
-        }
 
-        public static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model )
+        public static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model, Func<TypesViewModel, string> filenameFunc = null  )
         {
-            DebugUtils.WriteLine ( $"Writing {ModelXamlFilename}" ) ;
+            string xamlFilename;
+            if ( filenameFunc == null )
+            {
+                xamlFilename = ModelXamlFilename ;
+            }
+            else
+            {
+                xamlFilename = filenameFunc(model);
+            }
+            
+            DebugUtils.WriteLine ( $"Writing {xamlFilename}" ) ;
             var writer = XmlWriter.Create (
-                                           ModelXamlFilename
+                                           xamlFilename
                                          , new XmlWriterSettings { Indent = true , Async = true }
                                           ) ;
             foreach ( var keyValuePair in model.Map.dict )

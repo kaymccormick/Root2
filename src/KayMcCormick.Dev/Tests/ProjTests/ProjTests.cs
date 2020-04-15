@@ -176,18 +176,10 @@ namespace ProjTests
             }
         }
 
-        private static ITypesViewModel GetBasicTypesViewModel ( )
-        {
-            var model = new TypesViewModel ( ) ;
-            model.BeginInit ( ) ;
-            model.EndInit ( ) ;
-            return model ;
-        }
-
         [WpfFact]
         public void TestXaml2 ( )
         {
-            var model = new TypesViewModel ( ) ;
+            var model = new TypesViewModel (new JsonSerializerOptions() ) ;
             var output = new StringWriter();
             Action < string > writeOut = output.WriteLine ;
             var pu = new ProxyUtils (writeOut, ProxyUtils.CreateInterceptor(writeOut) ) ;
@@ -197,7 +189,7 @@ namespace ProjTests
         [WpfFact]
         public void TestXaml3()
         {
-            var model = new TypesViewModel();
+            var model = new TypesViewModel(new JsonSerializerOptions());
             var output = new StringWriter();
             Action<string> writeOut = output.WriteLine;
             var pu = new ProxyUtils(writeOut, ProxyUtils.CreateInterceptor(writeOut));
@@ -205,39 +197,39 @@ namespace ProjTests
             File.WriteAllText(@"C:\data\logs\xaml2.txt", output.ToString());
         }
 
-        private static ITypesViewModel GetComponentTypesViewModel()
-        {
+        // private static ITypesViewModel GetComponentTypesViewModel()
+        // {
+        //
+        //     var xamlSchemaContext = new XamlSchemaContext();
+        //     var setings = new XamlObjectWriter(xamlSchemaContext);
+        //     
+        //     var xamlXmlReaderSettings = new XamlXmlReaderSettings {} ;
+        //     var objectWriter1 = new XamlWriter1(xamlSchemaContext);
+        //
+        //     XamlXmlReader xml = new XamlXmlReader ( TypesViewModelXamlPath, xamlSchemaContext, xamlXmlReaderSettings ) ;
+        //     
+        //     var model = new ComponentTypesViewModel();
+        //     if ( ! model.IsInitialized )
+        //     {
+        //         model.BeginInit ( ) ;
+        //         model.EndInit ( ) ;
+        //     }
+        //
+        //     return model;
+        // }
 
-            var xamlSchemaContext = new XamlSchemaContext();
-            var setings = new XamlObjectWriter(xamlSchemaContext);
+        // [WpfFact ]
+        // public void TEstTypesview1 ( )
+        // {
+            // var app1 = new TestApp1();
+            // var model = GetComponentTypesViewModel( ) ;
             
-            var xamlXmlReaderSettings = new XamlXmlReaderSettings {} ;
-            var objectWriter1 = new XamlWriter1(xamlSchemaContext);
-
-            XamlXmlReader xml = new XamlXmlReader ( TypesViewModelXamlPath, xamlSchemaContext, xamlXmlReaderSettings ) ;
-            
-            var model = new ComponentTypesViewModel();
-            if ( ! model.IsInitialized )
-            {
-                model.BeginInit ( ) ;
-                model.EndInit ( ) ;
-            }
-
-            return model;
-        }
-
-        [WpfFact ]
-        public void TEstTypesview1 ( )
-        {
-            var app1 = new TestApp1();
-            var model = GetComponentTypesViewModel( ) ;
-            
-        }
+        // }
 
         [WpfFact ]
         public void TEstTypesview ( )
         {
-            var viewModel = new TypesViewModel ( ) ;
+            var viewModel = new TypesViewModel (new JsonSerializerOptions() ) ;
             viewModel.BeginInit ( ) ;
             viewModel.EndInit ( ) ;
             var stringWriter = new StringWriter ( ) ;
@@ -278,7 +270,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TEstTypesview2 ( )
         {
-            var viewModel = new TypesViewModel ( ) ;
+            var viewModel = new TypesViewModel (new JsonSerializerOptions()) ;
             viewModel.BeginInit ( ) ;
             viewModel.EndInit ( ) ;
             var stringWriter = new StringWriter ( ) ;
