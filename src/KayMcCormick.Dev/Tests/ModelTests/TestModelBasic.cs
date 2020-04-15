@@ -10,12 +10,9 @@
 // ---
 #endregion
 using System.IO ;
-using System.Xaml ;
 using System.Xml ;
 using AnalysisAppLib ;
-using AnalysisAppLib.XmlDoc ;
 using Autofac ;
-using Microsoft.CodeAnalysis.CSharp ;
 using Xunit ;
 
 namespace ModelTests
