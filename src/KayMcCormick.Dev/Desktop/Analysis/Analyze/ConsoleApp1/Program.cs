@@ -1,64 +1,67 @@
-﻿using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Collections.Immutable ;
-using System.Data ;
-using System.Data.SqlClient ;
-using System.Data.SqlTypes ;
-using System.IO ;
-using System.Linq ;
-using System.Net ;
-using System.Net.Sockets ;
-using System.Reactive.Subjects ;
-using System.Text ;
-using System.Text.Json ;
-using System.Threading.Tasks ;
-using System.Windows.Markup ;
-using System.Xml ;
-using System.Xml.Linq ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Project ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.XmlDoc ;
-using AnalysisControls ;
-using AnalysisControls.ViewModel ;
-using Autofac ;
-using Autofac.Core ;
-using CommandLine ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Lib.Wpf.Command ;
-using Microsoft.Build.Locator ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.CodeAnalysis.MSBuild ;
-using Microsoft.CodeAnalysis.Text ;
-using Microsoft.CodeAnalysis.VisualBasic.Symbols ;
-using NLog ;
-using NLog.Targets ;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
-using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reactive.Subjects;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows.Markup;
+using System.Xml;
+using System.Xml.Linq;
+using AnalysisAppLib;
+using AnalysisAppLib.Project;
+using AnalysisAppLib.Syntax;
+using AnalysisAppLib.XmlDoc;
+using AnalysisControls;
+using AnalysisControls.ViewModel;
+using Autofac;
+using Autofac.Core;
+using CommandLine;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.Attributes;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Lib.Wpf.Command;
+using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis.Text;
+using NLog;
+using NLog.Targets;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters;
+
 // ReSharper disable AnnotateNotNullParameter
 
 namespace ConsoleApp1
 {
     internal sealed class Program
     {
-        private const string ModelXamlFilename = @"C:\data\logs\model.xaml" ;
-        private static string _dataOutputPath = @"C:\data\logs\";
+        [ NotNull ] private static string ModelXamlFilename =>
+            Path.Combine ( _dataOutputPath , ModelXamlFilenamePart ) ;
+        private static readonly string _dataOutputPath   = @"C:\data\logs" ;
+        private const string TypesJsonFilename     = "types.json";
+        private const string ModelXamlFilenamePart = "model.xaml";
+
         private const string SolutionFilePath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
-        private const string _pocoPrefix          = "Poco" ;
-        private const string _collectionSuffix    = "Collection" ;
-        private const string _pocosyntaxnamespace = "PocoSyntax" ;
-        private const string _icollection         = "ICollection" ;
-        private const string TypesJsonFilename = "types.json";
-        private const string ModelXamlFilenamePart = "model.xaml";
+        private const string _pocoPrefix           = "Poco" ;
+        private const string _collectionSuffix     = "Collection" ;
+        private const string _pocosyntaxnamespace  = "PocoSyntax" ;
+        private const string _icollection          = "ICollection" ;
+
         private static readonly string[] AssemblyRefs =
         {
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
@@ -85,7 +88,7 @@ namespace ConsoleApp1
         private static readonly string              Pocosyntaxtoken = @"PocoSyntaxToken" ;
         private static readonly string              _ilist          = "IList" ;
         private static readonly string              _ienumerable    = "IEnumerable" ;
-        
+
         static Program ( ) { Logger = null ; }
 
         [ NotNull ] public static string PocoPrefix { get { return _pocoPrefix ; } }
@@ -203,22 +206,26 @@ namespace ConsoleApp1
                 }
 
 
-                var myOptions = new Options();
-                bool fExit = false ;
+                var myOptions = new Options ( ) ;
+                var fExit = false ;
                 var program = context.Scope.Resolve < Program > ( ) ;
                 Parser.Default.ParseArguments < Options > ( args )
-                           .WithParsed ( o => myOptions = o ).WithNotParsed(errors => fExit = true) ;
+                      .WithParsed ( o => myOptions     = o )
+                      .WithNotParsed ( errors => fExit = true ) ;
                 if ( fExit )
                 {
                     return 1 ;
                 }
 
-                return await program.MainCommandAsync(context, myOptions);
+                return await program.MainCommandAsync ( context , myOptions ) ;
             }
         }
 
         // ReSharper disable once MemberCanBeMadeStatic.Local
-        private async Task < int > MainCommandAsync ( [ NotNull ] AppContext context, [ NotNull ] Options options )
+        private async Task < int > MainCommandAsync (
+            [ NotNull ] AppContext context
+          , [ NotNull ] Options    options
+        )
         {
             var cmds = context.Scope.Resolve < IEnumerable < IDisplayableAppCommand > > ( ) ;
             if ( ! string.IsNullOrEmpty ( options.Action )
@@ -226,10 +233,11 @@ namespace ConsoleApp1
             {
                 throw new InvalidOperationException ( ) ;
             }
+
             SelectVsInstance ( ) ;
 
             context.Options = options ;
-            await RunConsoleUiAsync ( context  ) ;
+            await RunConsoleUiAsync ( context ) ;
 
             return 1 ;
         }
@@ -310,7 +318,7 @@ namespace ConsoleApp1
 
             var typesViewModel = TypesViewModel_Stage1 ( context ) ;
 
-            var sts = context.Scope.Resolve<ISyntaxTypesService>();
+            var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = sts.CollectionMap ( ) ;
 
             SyntaxTypesService.LoadSyntax ( typesViewModel , collectionMap ) ;
@@ -321,7 +329,11 @@ namespace ConsoleApp1
 
             typesViewModel.DetailFields ( ) ;
             WriteThisTypesViewModel ( typesViewModel ) ;
-            DumpModelToJson ( context , typesViewModel, Path.Combine(_dataOutputPath, TypesJsonFilename) ) ;
+            DumpModelToJson (
+                             context
+                           , typesViewModel
+                           , Path.Combine ( _dataOutputPath , TypesJsonFilename )
+                            ) ;
         }
 
         [ NotNull ]
@@ -334,14 +346,17 @@ namespace ConsoleApp1
 
             var typesViewModel =
                 new TypesViewModel ( context.Scope.Resolve < JsonSerializerOptions > ( ) ) ;
-            DebugUtils.WriteLine ( $"InitializationDateTime : {typesViewModel.InitializationDateTime}" ) ;
+            DebugUtils.WriteLine (
+                                  $"InitializationDateTime : {typesViewModel.InitializationDateTime}"
+                                 ) ;
             typesViewModel.LoadTypeInfo ( ) ;
 
             WriteThisTypesViewModel (
                                      typesViewModel
-                                   , ( model ) => Path.Combine ( $@"{_dataOutputPath}model-v1.xaml" )
+                                   , ( model )
+                                         => Path.Combine (_dataOutputPath, "model-v1.xaml" )
                                     ) ;
-            DumpModelToJson ( context , typesViewModel , @"C:\data\logs\types-v1.json" ) ;
+            DumpModelToJson ( context , typesViewModel , Path.Combine(_dataOutputPath, "types-v1.json" )) ;
             return typesViewModel ;
         }
 
@@ -605,11 +620,10 @@ namespace ConsoleApp1
         private static void DumpModelToJson (
             [ NotNull ] AppContext     context
           , [ NotNull ] TypesViewModel typesViewModel
-            , string jsonFilename = null
+          , string                     jsonFilename = null
         )
         {
-            
-            using ( var utf8Json = File.Open ( jsonFilename, FileMode.Create ) )
+            using ( var utf8Json = File.Open ( jsonFilename , FileMode.Create ) )
             {
                 var infos = typesViewModel.Map.Values.Cast < AppTypeInfo > ( ).ToList ( ) ;
                 var writer = new Utf8JsonWriter (
@@ -646,7 +660,11 @@ namespace ConsoleApp1
 
         private static void SelectVsInstance ( )
         {
-            if ( ! MSBuildLocator.CanRegister ) return ;
+            if ( ! MSBuildLocator.CanRegister )
+            {
+                return ;
+            }
+
             var vsInstances = MSBuildLocator
                              .QueryVisualStudioInstances (
                                                           new VisualStudioInstanceQueryOptions
@@ -717,18 +735,21 @@ namespace ConsoleApp1
 
         // ReSharper disable once UnusedMember.Local
 
-        public static void WriteThisTypesViewModel ( [ NotNull ] TypesViewModel model, Func<TypesViewModel, string> filenameFunc = null  )
+        public static void WriteThisTypesViewModel (
+            [ NotNull ] TypesViewModel       model
+          , Func < TypesViewModel , string > filenameFunc = null
+        )
         {
-            string xamlFilename;
+            string xamlFilename ;
             if ( filenameFunc == null )
             {
                 xamlFilename = ModelXamlFilename ;
             }
             else
             {
-                xamlFilename = filenameFunc(model);
+                xamlFilename = filenameFunc ( model ) ;
             }
-            
+
             DebugUtils.WriteLine ( $"Writing {xamlFilename}" ) ;
             var writer = XmlWriter.Create (
                                            xamlFilename
@@ -738,6 +759,7 @@ namespace ConsoleApp1
             {
                 model.Map2.dict[ keyValuePair.Key.StringValue ] = keyValuePair.Value ;
             }
+
             XamlWriter.Save ( model , writer ) ;
             writer.Close ( ) ;
         }
@@ -752,7 +774,7 @@ namespace ConsoleApp1
         {
             //options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
-            var optionsSolutionFile = context.Options?.SolutionFile ?? SolutionFilePath;
+            var optionsSolutionFile = context.Options?.SolutionFile ?? SolutionFilePath ;
             if ( string.IsNullOrEmpty ( optionsSolutionFile ) )
             {
                 throw new InvalidOperationException ( "No solution file" ) ;
@@ -790,16 +812,15 @@ namespace ConsoleApp1
                 }
 
                 var compilationAssembly = compilation.Assembly ;
-                foreach(var tn in compilationAssembly.TypeNames )
+                foreach ( var tn in compilationAssembly.TypeNames )
                 {
-                    DebugUtils.WriteLine(compilationAssembly.Name);
-                    DebugUtils.WriteLine(tn);
+                    DebugUtils.WriteLine ( compilationAssembly.Name ) ;
+                    DebugUtils.WriteLine ( tn ) ;
                 }
-                foreach ( var symbol in compilation.GetSymbolsWithName (
-                                                                        ( s ) => true
-                                                                       ) )
+
+                foreach ( var symbol in compilation.GetSymbolsWithName ( ( s ) => true ) )
                 {
-                    if ( !symbol.ContainingAssembly.Equals( compilationAssembly) )
+                    if ( ! symbol.ContainingAssembly.Equals ( compilationAssembly ) )
                     {
                         DebugUtils.WriteLine ( $"Skipping {symbol}" ) ;
                         continue ;
@@ -817,7 +838,7 @@ namespace ConsoleApp1
                     DebugUtils.WriteLine (
                                           $"{symbol.ToDisplayString ( )} {symbol.DeclaredAccessibility}"
                                          ) ;
-                    
+
                     var res =
                         await Microsoft.CodeAnalysis.FindSymbols.SymbolFinder.FindCallersAsync (
                                                                                                 symbol
@@ -829,8 +850,8 @@ namespace ConsoleApp1
                         // DebugUtils.WriteLine ( "Symbol kind "   + use.CalledSymbol.Kind ) ;
                         // DebugUtils.WriteLine ( "Called symbol " + use.CalledSymbol.ToString ( ) ) ;
                         // DebugUtils.WriteLine (
-                                              // "Calling symbol " + use.CallingSymbol.ToString ( )
-                                             // ) ;
+                        // "Calling symbol " + use.CallingSymbol.ToString ( )
+                        // ) ;
                         callers.Add (
                                      new CallerInfo (
                                                      use.CalledSymbol.ToDisplayString ( )
@@ -856,7 +877,8 @@ namespace ConsoleApp1
                                                                                                 .EndLinePosition
                                                                                                 .Character
                                                                                                , fileLinePositionSpan
-                                                                                                    .EndLinePosition.Line
+                                                                                                .EndLinePosition
+                                                                                                .Line
                                                                                                , l
                                                                                                 .MetadataModule
                                                                                                ?.MetadataName
@@ -885,19 +907,19 @@ namespace ConsoleApp1
                         DebugUtils.WriteLine ( "Called symbol " + symbol ) ;
                     }
                 }
-                
+
                 // foreach ( var namespaceOrTypeSymbol in compilation
-                                                      // .GetCompilationNamespace (compilationAssembly.ContainingNamespace )
-                                                      // .GetMembers ( ) )
+                // .GetCompilationNamespace (compilationAssembly.ContainingNamespace )
+                // .GetMembers ( ) )
                 // {
-                    // if ( namespaceOrTypeSymbol.IsNamespace )
-                    // {
-                        
-                    // } else if ( namespaceOrTypeSymbol.IsType )
-                    // {
-                        // var c = namespaceOrTypeSymbol.ContainingType ;
-                        
-                    // }
+                // if ( namespaceOrTypeSymbol.IsNamespace )
+                // {
+
+                // } else if ( namespaceOrTypeSymbol.IsType )
+                // {
+                // var c = namespaceOrTypeSymbol.ContainingType ;
+
+                // }
                 // }
                 foreach ( var doc in project.Documents )
                 {
@@ -916,15 +938,15 @@ namespace ConsoleApp1
                     // {
                     // DebugUtils.WriteLine($"{classifiedSpan.ClassificationType} : {classifiedSpan.TextSpan}");
                     // }
-                    
+
                     // ReSharper disable once UnusedVariable
                     var model = await doc.GetSemanticModelAsync ( ) ;
 
                     Console.WriteLine ( doc.Name ) ;
                     // ReSharper disable once UnusedVariable
                     var tree = await doc.GetSyntaxRootAsync ( ) ;
-                    
-                    var visitor = new SyntaxWalker2(model);
+
+                    var visitor = new SyntaxWalker2 ( model ) ;
                     visitor.Visit ( tree ) ;
                     foreach ( var node in tree
                                          .DescendantNodesAndSelf ( )
@@ -1004,7 +1026,7 @@ namespace ConsoleApp1
                         }
                     }
 
-                    
+
                     // => tuple.Item2.Symbol
                     // != null
                     // && tuple.Item2.Symbol
@@ -2029,9 +2051,10 @@ namespace ConsoleApp1
 
     internal sealed class Options
     {
-        [Option('s', "sln", Required = false)]
+        [ Option ( 's' , "sln" , Required = false ) ]
         public string SolutionFile { get ; set ; }
-        [Option('a', "action", Required = false)]
+
+        [ Option ( 'a' , "action" , Required = false ) ]
         public string Action { get ; set ; }
     }
 
@@ -2059,24 +2082,24 @@ namespace ConsoleApp1
         }
 
         public LocationInfo (
-            string          fileName
-          , int             charStart
-          , int             lineStart
-          , int             charEnd
-          , int lineEnd
-          , string          metadataModuleMetadataName
-          , int             sourceSpanStart
-          , int             sourceSpanEnd
+            string fileName
+          , int    charStart
+          , int    lineStart
+          , int    charEnd
+          , int    lineEnd
+          , string metadataModuleMetadataName
+          , int    sourceSpanStart
+          , int    sourceSpanEnd
         )
         {
-            FileName = fileName ;
-            CharStart = charStart ;
-            LineStart = lineStart ;
-            CharEnd = charEnd ;
-            LineEnd = lineEnd ;
+            FileName                   = fileName ;
+            CharStart                  = charStart ;
+            LineStart                  = lineStart ;
+            CharEnd                    = charEnd ;
+            LineEnd                    = lineEnd ;
             MetadataModuleMetadataName = metadataModuleMetadataName ;
-            SourceSpanStart = sourceSpanStart ;
-            SourceSpanEnd = sourceSpanEnd ;
+            SourceSpanStart            = sourceSpanStart ;
+            SourceSpanEnd              = sourceSpanEnd ;
         }
 
         public string MetadataModuleMetadataName { get ; set ; }
@@ -2106,9 +2129,9 @@ namespace ConsoleApp1
         }
 
         public CallerInfo (
-            string                       calledSymbol
-          , string                       callingSymbol
-          , bool                         isDirect
+            string                                   calledSymbol
+          , string                                   callingSymbol
+          , bool                                     isDirect
           , [ NotNull ] IEnumerable < LocationInfo > select
         )
         {
@@ -2130,12 +2153,13 @@ namespace ConsoleApp1
         private readonly SemanticModel model ;
 
         #region Overrides of CSharpSyntaxVisitor
-        public SyntaxWalker2 ( SemanticModel model , SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node ) : base ( depth )
+        public SyntaxWalker2 (
+            SemanticModel     model
+          , SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node
+        ) : base ( depth )
         {
             this.model = model ;
         }
-
-        public override void VisitCompilationUnit ( CompilationUnitSyntax node ) { base.VisitCompilationUnit ( node ) ; }
 
         public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
         {
@@ -2145,45 +2169,26 @@ namespace ConsoleApp1
 
         public override void VisitClassDeclaration ( ClassDeclarationSyntax node )
         {
-            var classSymbol = model.GetDeclaredSymbol(node);
+            var classSymbol = model.GetDeclaredSymbol ( node ) ;
             if ( classSymbol == null )
             {
                 throw new InvalidOperationException ( "No class symbol" ) ;
             }
+
             foreach ( var member in classSymbol.GetMembers ( ) )
             {
                 switch ( member )
                 {
-                    case IAliasSymbol aliasSymbol : break ;
-                    case IArrayTypeSymbol arrayTypeSymbol : break ;
-                    case ISourceAssemblySymbol sourceAssemblySymbol : break ;
-                    case IAssemblySymbol assemblySymbol : break ;
-                    case IDiscardSymbol discardSymbol : break ;
-                    case IDynamicTypeSymbol dynamicTypeSymbol : break ;
-                    case IErrorTypeSymbol errorTypeSymbol : break ;
-                    case IEventSymbol eventSymbol : break ;
-                    case IFieldSymbol fieldSymbol : break ;
-                    case ILabelSymbol labelSymbol : break ;
-                    case ILocalSymbol localSymbol : break ;
                     case IMethodSymbol methodSymbol :
                         var m = CreateMethodInfo ( methodSymbol ) ;
                         var json = JsonSerializer.Serialize ( m ) ;
-                        DebugUtils.WriteLine(json);
+                        DebugUtils.WriteLine ( json ) ;
                         break ;
-                    case IModuleSymbol moduleSymbol : break ;
-                    case INamedTypeSymbol namedTypeSymbol : break ;
-                    case INamespaceSymbol namespaceSymbol : break ;
-                    case IPointerTypeSymbol pointerTypeSymbol : break ;
-                    case ITypeParameterSymbol typeParameterSymbol : break ;
-                    case ITypeSymbol typeSymbol : break ;
-                    case INamespaceOrTypeSymbol namespaceOrTypeSymbol : break ;
-                    case IParameterSymbol parameterSymbol : break ;
-                    case IPreprocessingSymbol preprocessingSymbol : break ;
-                    case IPropertySymbol propertySymbol : break ;
-                    case IRangeVariableSymbol rangeVariableSymbol : break ;
-                    default : throw new ArgumentOutOfRangeException ( nameof ( member ) ) ;
+                    default :
+                        break ;
                 }
             }
+
             base.VisitClassDeclaration ( node ) ;
         }
 
@@ -2218,27 +2223,52 @@ namespace ConsoleApp1
             return m ;
         }
 
-        public override void VisitStructDeclaration ( StructDeclarationSyntax node ) { base.VisitStructDeclaration ( node ) ; }
+        public override void VisitStructDeclaration ( StructDeclarationSyntax node )
+        {
+            base.VisitStructDeclaration ( node ) ;
+        }
 
-        public override void VisitInterfaceDeclaration ( InterfaceDeclarationSyntax node ) { base.VisitInterfaceDeclaration ( node ) ; }
+        public override void VisitInterfaceDeclaration ( InterfaceDeclarationSyntax node )
+        {
+            base.VisitInterfaceDeclaration ( node ) ;
+        }
 
-        public override void VisitEnumDeclaration ( EnumDeclarationSyntax node ) { base.VisitEnumDeclaration ( node ) ; }
+        public override void VisitEnumDeclaration ( EnumDeclarationSyntax node )
+        {
+            base.VisitEnumDeclaration ( node ) ;
+        }
 
-        public override void VisitDelegateDeclaration ( DelegateDeclarationSyntax node ) { base.VisitDelegateDeclaration ( node ) ; }
+        public override void VisitDelegateDeclaration ( DelegateDeclarationSyntax node )
+        {
+            base.VisitDelegateDeclaration ( node ) ;
+        }
 
-        public override void VisitFieldDeclaration ( FieldDeclarationSyntax node ) { base.VisitFieldDeclaration ( node ) ; }
+        public override void VisitFieldDeclaration ( FieldDeclarationSyntax node )
+        {
+            base.VisitFieldDeclaration ( node ) ;
+        }
 
-        public override void VisitEventFieldDeclaration ( EventFieldDeclarationSyntax node ) { base.VisitEventFieldDeclaration ( node ) ; }
+        public override void VisitEventFieldDeclaration ( EventFieldDeclarationSyntax node )
+        {
+            base.VisitEventFieldDeclaration ( node ) ;
+        }
 
-        public override void VisitExplicitInterfaceSpecifier ( ExplicitInterfaceSpecifierSyntax node ) { base.VisitExplicitInterfaceSpecifier ( node ) ; }
+        public override void VisitExplicitInterfaceSpecifier (
+            ExplicitInterfaceSpecifierSyntax node
+        )
+        {
+            base.VisitExplicitInterfaceSpecifier ( node ) ;
+        }
 
         public override void VisitMethodDeclaration ( MethodDeclarationSyntax node )
         {
             var symbol = model.GetDeclaredSymbol ( node ) ;
-            if ( symbol != null && symbol.MethodKind != MethodKind.Ordinary )
+            if ( symbol               != null
+                 && symbol.MethodKind != MethodKind.Ordinary )
             {
                 throw new InvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
             }
+
             // ReSharper disable once PossibleNullReferenceException
             var rt = symbol.ReturnType ;
             var origDef = rt.OriginalDefinition ;
@@ -2246,7 +2276,10 @@ namespace ConsoleApp1
             base.VisitMethodDeclaration ( node ) ;
         }
 
-        public override void VisitParameterList ( ParameterListSyntax node ) { base.VisitParameterList ( node ) ; }
+        public override void VisitParameterList ( ParameterListSyntax node )
+        {
+            base.VisitParameterList ( node ) ;
+        }
 
         public override void VisitParameter ( ParameterSyntax node )
         {
@@ -2255,72 +2288,73 @@ namespace ConsoleApp1
             {
                 var k = ( int ) symbolDisplayPart.Kind ;
                 var s = symbolDisplayPart.Symbol ;
-                string interfaces ="";
+                var interfaces = "" ;
                 if ( s != null )
                 {
                     interfaces = string.Join (
                                               ", "
                                             , s.GetType ( )
-                                                .GetInterfaces ( )
-                                                .Select ( i => i.FullName )
+                                               .GetInterfaces ( )
+                                               .Select ( i => i.FullName )
                                              ) ;
                 }
 
-                DebugUtils.WriteLine($"{symbolDisplayPart} {s?.Kind} {s?.GetType().FullName} {interfaces ?? ""}");
-                switch ( s )
-                {
-                    case IAliasSymbol aliasSymbol : break ;
-                    case IArrayTypeSymbol arrayTypeSymbol : break ;
-                    case ISourceAssemblySymbol sourceAssemblySymbol : break ;
-                    case IAssemblySymbol assemblySymbol : break ;
-                    case IDiscardSymbol discardSymbol : break ;
-                    case IDynamicTypeSymbol dynamicTypeSymbol : break ;
-                    case IErrorTypeSymbol errorTypeSymbol : break ;
-                    case IEventSymbol eventSymbol : break ;
-                    case IFieldSymbol fieldSymbol : break ;
-                    case ILabelSymbol labelSymbol : break ;
-                    case ILocalSymbol localSymbol : break ;
-                    case IMethodSymbol methodSymbol : break ;
-                    case IModuleSymbol moduleSymbol : break ;
-                    case INamedTypeSymbol namedTypeSymbol : break ;
-                    case INamespaceSymbol namespaceSymbol : break ;
-                    case IPointerTypeSymbol pointerTypeSymbol : break ;
-                    case ITypeParameterSymbol typeParameterSymbol : break ;
-                    case ITypeSymbol typeSymbol : break ;
-                    case INamespaceOrTypeSymbol namespaceOrTypeSymbol : break ;
-                    case IParameterSymbol parameterSymbol : break ;
-                    case IPreprocessingSymbol preprocessingSymbol : break ;
-                    case IPropertySymbol propertySymbol : break ;
-                    case IRangeVariableSymbol rangeVariableSymbol : break ;
-                    default : throw new ArgumentOutOfRangeException ( nameof ( s ) ) ;
-                }
+                DebugUtils.WriteLine (
+                                      $"{symbolDisplayPart} {s?.Kind} {s?.GetType ( ).FullName} {interfaces ?? ""}"
+                                     ) ;
             }
+
             base.VisitParameter ( node ) ;
+            
         }
 
-        public override void VisitOperatorDeclaration ( OperatorDeclarationSyntax node ) { base.VisitOperatorDeclaration ( node ) ; }
+        public override void VisitOperatorDeclaration ( OperatorDeclarationSyntax node )
+        {
+            base.VisitOperatorDeclaration ( node ) ;
+        }
 
-        public override void VisitConversionOperatorDeclaration ( ConversionOperatorDeclarationSyntax node ) { base.VisitConversionOperatorDeclaration ( node ) ; }
+        public override void VisitConversionOperatorDeclaration (
+            ConversionOperatorDeclarationSyntax node
+        )
+        {
+            base.VisitConversionOperatorDeclaration ( node ) ;
+        }
 
-        public override void VisitConstructorDeclaration ( ConstructorDeclarationSyntax node ) { base.VisitConstructorDeclaration ( node ) ; }
+        public override void VisitConstructorDeclaration ( ConstructorDeclarationSyntax node )
+        {
+            base.VisitConstructorDeclaration ( node ) ;
+        }
 
-        public override void VisitDestructorDeclaration ( DestructorDeclarationSyntax node ) { base.VisitDestructorDeclaration ( node ) ; }
+        public override void VisitDestructorDeclaration ( DestructorDeclarationSyntax node )
+        {
+            base.VisitDestructorDeclaration ( node ) ;
+        }
 
-        public override void VisitPropertyDeclaration ( PropertyDeclarationSyntax node ) { base.VisitPropertyDeclaration ( node ) ; }
+        public override void VisitPropertyDeclaration ( PropertyDeclarationSyntax node )
+        {
+            base.VisitPropertyDeclaration ( node ) ;
+        }
 
-        public override void VisitEventDeclaration ( EventDeclarationSyntax node ) { base.VisitEventDeclaration ( node ) ; }
+        public override void VisitEventDeclaration ( EventDeclarationSyntax node )
+        {
+            base.VisitEventDeclaration ( node ) ;
+        }
 
-        public override void VisitIndexerDeclaration ( IndexerDeclarationSyntax node ) { base.VisitIndexerDeclaration ( node ) ; }
+        public override void VisitIndexerDeclaration ( IndexerDeclarationSyntax node )
+        {
+            base.VisitIndexerDeclaration ( node ) ;
+        }
         #endregion
     }
 
     public class MethodInfo
     {
-        private string _name ;
-        private List<ParameterInfo> _params = new List<ParameterInfo>();
+        private string                 _name ;
+        private List < ParameterInfo > _params = new List < ParameterInfo > ( ) ;
+
         public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > select )
         {
-            this.Name = methodSymbolName ;
+            Name = methodSymbolName ;
             Parameters.AddRange ( select ) ;
         }
 
@@ -2341,8 +2375,8 @@ namespace ConsoleApp1
 
         public string TypeFullName { get ; }
 
-        public 
-            List <CustommodifierInfo> custommodifiers = new List < CustommodifierInfo > ();
+        public List < CustommodifierInfo > custommodifiers = new List < CustommodifierInfo > ( ) ;
+
         public ParameterInfo (
             string                             name
           , ITypeSymbol                        typeSymbol
@@ -2350,12 +2384,13 @@ namespace ConsoleApp1
           , string                             typeDisplayString
         )
         {
-            Name = name ;
+            Name              = name ;
             TypeDisplayString = typeDisplayString ;
             TypeFullName = typeSymbol.ContainingNamespace.MetadataName
                            + '.'
-                           + typeSymbol.MetadataName ; ;
-            custommodifiers.AddRange (select  );
+                           + typeSymbol.MetadataName ;
+            ;
+            custommodifiers.AddRange ( select ) ;
         }
     }
 
@@ -2367,7 +2402,7 @@ namespace ConsoleApp1
 
         public CustommodifierInfo ( bool isOptional , string displayString )
         {
-            IsOptional = isOptional ;
+            IsOptional    = isOptional ;
             DisplayString = displayString ;
         }
     }
