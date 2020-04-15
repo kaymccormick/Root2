@@ -28,6 +28,7 @@ namespace ConsoleApp1
 
 
         private IProjectBrowserViewModel _projectBrowserViewModel ;
+        private Options _options ;
 
         //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
 
@@ -39,5 +40,7 @@ namespace ConsoleApp1
             get { return _projectBrowserViewModel ; }
             set { _projectBrowserViewModel = value ; }
         }
+
+        public Options Options { get { return _options ; } set { _options = value ; } }
     }
 }

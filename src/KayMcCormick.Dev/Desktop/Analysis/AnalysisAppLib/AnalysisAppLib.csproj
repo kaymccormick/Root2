@@ -80,7 +80,9 @@
     <Compile Include="DocumentCollection.cs" />
     <Compile Include="IDocInterface.cs" />
     <Compile Include="ISyntaxTypesService.cs" />
+    <None Include="Resources\Program-Parse.cs" />
     <Compile Include="SyntaxTypesService.cs" />
+    <Compile Include="ViewModel\MicrosoftUserViewModel.cs" />
     <Compile Include="XmlDoc\AppTypeInfo.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />
@@ -151,7 +153,6 @@
     <Compile Include="LogViewerAppViewModel.cs" />
     <Compile Include="LogViewerConfig.cs" />
     <Compile Include="LogViewModel.cs" />
-    <Compile Include="MicrosoftUserViewModel.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

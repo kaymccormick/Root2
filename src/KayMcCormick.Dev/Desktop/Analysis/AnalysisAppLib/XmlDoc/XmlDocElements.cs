@@ -304,7 +304,7 @@ namespace AnalysisAppLib.XmlDoc
                 throw new ArgumentNullException ( nameof ( declared ) ) ;
             }
 
-            if ( xDocument?.Root == null)
+            if ( xDocument.Root == null)
             {
                 throw new ArgumentNullException ( nameof ( xDocument ) ) ;
             }
@@ -327,9 +327,8 @@ namespace AnalysisAppLib.XmlDoc
             var xNodes = xmlElement.Nodes ( ) ;
 
             var xmlDoc = (xNodes).Select(XmlDocElements.Selector);
-            CodeElementDocumentation docElem ;
 
-            docElem = CreateCodeDocumentationElementType ( member, elementId ) ;
+            var docElem = CreateCodeDocumentationElementType ( member, elementId ) ;
 
 
 #if false
@@ -492,11 +491,13 @@ namespace AnalysisAppLib.XmlDoc
 
             var typeSyntax = ( SimpleNameSyntax ) candidateTypeSyntax ;
 
+            // ReSharper disable once PossibleNullReferenceException
             var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
             if ( appTypeInfo == null )
             {
                 throw new InvalidOperationException ( "Invalid type info" ) ;
             }
+            // ReSharper disable once UnusedVariable
             if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) { 
                 // ReSharper disable once RedundantAssignment
             }
@@ -504,8 +505,9 @@ namespace AnalysisAppLib.XmlDoc
             {
                 throw new InvalidOperationException ( "No collection type in the map." ) ;
             }
+            // ReSharper disable once AssignNullToNotNullAttribute
             return SyntaxTypesService.FieldPocoCollectionType( candidateTypeSyntax , collectionMap ,appTypeInfo
-                                             ) ;
+                                                             ) ;
         }
     }
 

@@ -35,7 +35,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
-    public class WpfInstanceInfoConverter : InstanceInfoTypeConverter
+    public sealed class WpfInstanceInfoConverter : InstanceInfoTypeConverter
     {
         /// <summary>
         /// 
@@ -69,13 +69,23 @@ namespace KayMcCormick.Lib.Wpf
             if ( destinationType == typeof ( UIElement ) )
             {
                 var v = ( InstanceInfo ) value ;
+                var grid = new Grid ( ) ;
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
                 var tb = new TextBlock() { Text = v.Instance.ToString() };
                 var sp = new StackPanel { Orientation = Orientation.Horizontal } ;
                 var uie = new Border { BorderBrush = Brushes.Crimson, BorderThickness = new Thickness(3),  CornerRadius = new CornerRadius(1, 2, 1, 2 )} ;
                 sp.Children.Add ( tb ) ;
                 ToolTip tp = new ToolTip { Content = v.Instance.GetType ( ).FullName } ;
                 uie.ToolTip = tp ;
-                uie.Child = sp ;
+                uie.Child = grid ;
+                var textBlock = new TextBlock ( ) { Text = "InstanceInfo" , FontSize = 12, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom} ;
+                textBlock.SetValue ( Panel.ZIndexProperty , 100 ) ;
+                textBlock.Background = Brushes.Azure ;
+
+                grid.Children.Add ( textBlock ) ;
+
+                grid.Children.Add ( sp ) ;
                 return uie ;
             }
             return base.ConvertTo ( context , culture , value , destinationType ) ;

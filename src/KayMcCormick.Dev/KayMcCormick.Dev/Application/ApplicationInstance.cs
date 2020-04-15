@@ -306,6 +306,7 @@ namespace KayMcCormick.Dev.Application
             _host?.Dispose ( ) ;
             _lifetimeScope?.Dispose ( ) ;
             Container1?.Dispose ( ) ;
+            _subject?.Dispose();
         }
 
         private static void CurrentDomain_FirstChanceException (

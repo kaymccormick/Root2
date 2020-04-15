@@ -12,7 +12,7 @@
   Background="AliceBlue"
   DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
   FontSize="18"
-  x:Class="KayMcCormick.Lib.Wpf.AllResourcesTree"
+  x:Class="KayMcCormick.Lib.Wpf.AllResourcesView"
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
@@ -207,13 +207,18 @@
             BorderThickness="3" CornerRadius="2"
             Grid.Row="1" Grid.Column="0"
             Grid.RowSpan="3">
-      <wpf:TreeView1 x:Name="tv"
-                     x:FieldModifier="public"
-                     VerticalAlignment="Stretch"
-                     ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}"
-                     ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}"
-                     ItemsSource="{Binding Path=AllResourcesCollection}"
-                     Margin="0,0,0,0.2" />
+      <ListView x:Name="lv"
+                x:FieldModifier="public"
+                VerticalAlignment="Stretch"
+                ItemsSource="{Binding Path=AllResourcesItemList}"
+                Margin="0,0,0,0.2">
+        <ListView.View>
+          <GridView>
+            <GridViewColumn DisplayMemberBinding="{Binding Key}"></GridViewColumn>
+            <GridViewColumn DisplayMemberBinding="{Binding Data}"></GridViewColumn>
+          </GridView>
+        </ListView.View>
+      </ListView>
     </Border>
 
     <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"

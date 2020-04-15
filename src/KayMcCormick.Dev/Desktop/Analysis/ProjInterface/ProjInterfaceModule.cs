@@ -113,11 +113,16 @@ namespace ProjInterface
                                                                          }
                                                                         ) ;
 #endif
-            builder.RegisterType < AllResourcesTree > ( )
-                   .As < UserControl > ( )
-                   .AsSelf ( )
-                   .As < IViewWithTitle > ( ) 
-                   .As < IControlView > ( ) ;
+            builder.RegisterType<AllResourcesTree>()
+                   .As<UserControl>()
+                   .AsSelf()
+                   .As<IViewWithTitle>()
+                   .As<IControlView>();
+            builder.RegisterType<AllResourcesView>()
+                   .As<UserControl>()
+                   .AsSelf()
+                   .As<IViewWithTitle>()
+                   .As<IControlView>();
             builder.RegisterType < WorkspaceControl > ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( ) ;
@@ -181,7 +186,7 @@ namespace ProjInterface
 
             return pane => ( IDisplayableAppCommand ) new LambdaAppCommand (
                                                                             title
-                                                                          , CommandFunc
+                                                                          , CommandFuncAsync
                                                                           , Tuple.Create (
                                                                                           metaFunc
                                                                                              .Value
@@ -213,7 +218,7 @@ namespace ProjInterface
             return r ;
         }
 #endif
-        private static async Task < IAppCommandResult > CommandFunc ( [ NotNull ] LambdaAppCommand command )
+        private static async Task < IAppCommandResult > CommandFuncAsync ( [ NotNull ] LambdaAppCommand command )
         {
             var (viewFunc1 , pane1) =
                 ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )

@@ -20,7 +20,7 @@ using KayMcCormick.Dev ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib.ViewModel
 {
     /// <summary>
     /// 
@@ -114,7 +114,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task Login ( )
+        public async Task LoginAsync ( )
         {
             var scopes = new[] { "user.read.all" , "group.read.all" , "contacts.read" } ;
 

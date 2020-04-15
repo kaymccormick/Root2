@@ -26,16 +26,13 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
-        AppTypeInfo GetAppTypeInfo(object identifier);
+        AppTypeInfo GetAppTypeInfo ( object identifier ) ;
 
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="model1"></param>
-        /// <param name="DebugOut"></param>
         /// <returns></returns>
-        IReadOnlyDictionary<string, object> CollectionMap(
-        ) ;
+        IReadOnlyDictionary < string , object > CollectionMap ( ) ;
     }
 }

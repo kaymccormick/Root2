@@ -18,7 +18,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class ResolveUiComponentTypeConverter : TypeConverter
+    public sealed class ResolveUiComponentTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
         /// <summary>

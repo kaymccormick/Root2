@@ -3,7 +3,6 @@ using System ;
 using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
@@ -106,7 +105,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ JsonIgnore ]
-        public ILifetimeScope Scope { get ; set ; }
+        public ILifetimeScope Scope { get ; }
 
         /// <summary>
         /// 
@@ -314,14 +313,14 @@ namespace AnalysisControls.ViewModel
                 {
                     strRep = result?.__repr__ ( result ) ?? "None" ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
 
                 {
                     try
                     {
                         strRep = result.ToString ( ) ;
                     }
-                    catch ( Exception ex2 )
+                    catch ( Exception )
                     {
                         strRep = result.__name__ ;
                     }
@@ -344,6 +343,7 @@ namespace AnalysisControls.ViewModel
         }
 
         [ NotifyPropertyChangedInvocator ]
+        // ReSharper disable once UnusedMember.Local
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
@@ -353,8 +353,6 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         public void HistoryDown ( ) { linesCollectionView.MoveCurrentToNext ( ) ; }
-
-        private int RunPython ( object state ) { return 0 ; }
 
 
         /// <summary>

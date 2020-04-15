@@ -117,6 +117,7 @@
     <Compile Include="Configuration\ContainerHelperSettings.cs" />
     <Compile Include="Configuration\LoggingSection.cs" />
     <Compile Include="IBaseLibCommand.cs" />
+    <Compile Include="IHierarchicalNode.cs" />
     <Compile Include="IViewModel.cs" />
     <Compile Include="Logging\ExecutionContextImpl.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />

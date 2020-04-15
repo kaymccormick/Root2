@@ -1132,9 +1132,14 @@
                     <kmWpf:ResolveUiComponent ComponentType="{x:Type kmWpf:AllResourcesTree}" />
                   </Grid>
                 </avalondock:LayoutDocument>
+                <avalondock:LayoutDocument IsActive="True">
+                  <Grid>
+                    <kmWpf:ResolveUiComponent ComponentType="{x:Type kmWpf:AllResourcesView}" />
+                  </Grid>
+                </avalondock:LayoutDocument>
                   <avalondock:LayoutDocument Title="Browser"
-                                             IconSource="{StaticResource BrowserIcon}"
-                                             x:Name="FrameDocument">
+                                           IconSource="{StaticResource BrowserIcon}"
+                                           x:Name="FrameDocument">
                   <Frame Background="{x:Null}"
                          Navigating="BrowserFrame_OnNavigating"
                          x:Name="BrowserFrame"

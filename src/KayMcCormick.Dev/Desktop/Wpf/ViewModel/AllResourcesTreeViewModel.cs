@@ -13,11 +13,11 @@ using System ;
 using System.Collections ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.Reflection ;
 using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Markup ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
@@ -37,8 +37,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public AllResourcesTreeViewModel ( ) {
-        }
+        public AllResourcesTreeViewModel ( ) { }
 
         /// <summary>
         /// </summary>
@@ -62,7 +61,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 #if false
         private void PopulateInstances (
             ResourceNodeInfo       res
-      , IComponentRegistration registration
+  , IComponentRegistration registration
         )
         {
             var n = CreateNode ( res , "Instances" , null , false ) ;
@@ -72,13 +71,14 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 var key = _idProvider.GetObjectInstanceIdentifier ( instanceInfo.Instance ) ;
                 CreateNode (
                             n
-                      , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
-                      , instanceInfo.Parameters
-                      , true
+                  , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
+                  , instanceInfo.Parameters
+                  , true
                            ) ;
             }
         }
 #endif
+        [ NotNull ]
         private ResourceNodeInfo CreateNode (
             [ CanBeNull ] ResourceNodeInfo parent
           , object                         key
@@ -110,6 +110,21 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             var current = Application.Current ;
             _appNode = CreateNode ( null , "Application" , current , false ) ;
 
+            var schemaContext = XamlReader.GetWpfSchemaContext ( ) ;
+            var scmNode = CreateNode ( _appNode , schemaContext , schemaContext , false ) ;
+            foreach ( var ns in schemaContext.GetAllXamlNamespaces ( ) )
+            {
+                var ns1 = CreateNode ( scmNode , ns , ns , false ) ;
+                foreach ( var allXamlType in schemaContext.GetAllXamlTypes ( ns) )
+                {
+                    var t1 = CreateNode ( ns1 , allXamlType , allXamlType , false ) ;
+                    foreach ( var xamlMember in allXamlType.GetAllMembers ( ) )
+                    {
+                        var member1 = CreateNode ( t1 , xamlMember , xamlMember , false ) ;
+                    }
+                }
+            }
+
             if ( current == null )
             {
                 return ;
@@ -135,8 +150,32 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             winNode.TemplateKey = "WindowTemplate" ;
 
 
+            // ReSharper disable once UnusedVariable
             var winRes = CreateNode ( winNode , "Resources" , w.Resources , true ) ;
-//            AddResourceNodeInfos ( winRes ) ;
+            AddResourceNodeInfos ( winRes ) ;
+
+            try
+            {
+                var log = CreateNode ( winNode , "Logical children" , null , false ) ;
+                AddLogicalChildren ( w , log ) ;
+            }
+            catch
+            {
+            }
+        }
+
+        private void AddLogicalChildren ( DependencyObject w , ResourceNodeInfo log )
+        {
+            DebugUtils.WriteLine ( w.ToString ( ) ) ;
+            var children = LogicalTreeHelper.GetChildren ( w ) ;
+            foreach ( var child in children )
+            {
+                var logchild = CreateNode ( log , child.ToString() , null , false ) ;
+                if ( child is DependencyObject @do )
+                {
+                     //AddLogicalChildren ( ( DependencyObject ) @do , logchild ) ;
+                }
+            }
         }
 
         /// <summary>
@@ -144,7 +183,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// <param name="resNode"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        protected void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
+        private void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
         {
             if ( resNode == null )
             {
@@ -165,78 +204,87 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 AddResourceNodeInfos ( mdr ) ;
             }
 
-            foreach ( DictionaryEntry haveResourcesResource in res )
+            try
             {
-                if ( haveResourcesResource.Key      == null
-                     || haveResourcesResource.Value == null )
+                foreach ( DictionaryEntry haveResourcesResource in res )
                 {
-                    continue ;
-                }
-
-                var key = haveResourcesResource.Key ;
-                if ( key is ResourceKey rkey )
-                {
-                    switch ( rkey )
-                    {
-                        case ComponentResourceKey componentResourceKey : break ;
-
-
-                        case ItemContainerTemplateKey itemContainerTemplateKey : break ;
-
-                        case DataTemplateKey dataTemplateKey : break ;
-
-                        case TemplateKey templateKey : break ;
-                        default :
-                            key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
-                            break ;
-                    }
-                }
-
-                var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
-                if ( haveResourcesResource.Value is FrameworkTemplate ft )
-                {
-                    var resourcesNode = CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
-                    AddResourceNodeInfos ( resourcesNode ) ;
-                }
-
-                if ( haveResourcesResource.Value is Style sty )
-                {
-                    var settersNode = CreateNode ( resourceInfo , "Setters" , null ) ;
-                    settersNode.IsExpanded = true ;
-                    foreach ( var setter in sty.Setters )
-                    {
-                        switch ( setter )
-                        {
-                            case EventSetter _ : break ;
-                            case Setter setter1 :
-                                CreateNode ( settersNode , setter1.Property , setter1.Value ) ;
-
-                                break ;
-                            default : throw new InvalidOperationException ( ) ;
-                        }
-                    }
-                }
-
-                if ( haveResourcesResource.Value is IDictionary dict )
-                {
-                    foreach ( var key2 in dict.Keys )
-                    {
-                        CreateNode ( resourceInfo , key2 , dict[ key2 ] ) ;
-                    }
-                }
-                else
-                {
-                    if ( ! ( haveResourcesResource.Value is IEnumerable enumerable )
-                         || haveResourcesResource.Value is string )
+                    if ( haveResourcesResource.Key      == null
+                         || haveResourcesResource.Value == null )
                     {
                         continue ;
                     }
 
-                    foreach ( var child in enumerable )
+                    var key = haveResourcesResource.Key ;
+                    if ( key is ResourceKey rkey )
                     {
-                        CreateNode ( resourceInfo , child , null ) ;
+                        switch ( rkey )
+                        {
+                            case ComponentResourceKey componentResourceKey : break ;
+
+
+                            case ItemContainerTemplateKey itemContainerTemplateKey : break ;
+
+                            case DataTemplateKey dataTemplateKey : break ;
+
+                            case TemplateKey templateKey : break ;
+                            default :
+                                key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
+                                break ;
+                        }
+                    }
+
+
+
+                    var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
+                    if ( haveResourcesResource.Value is FrameworkTemplate ft )
+                    {
+                        var resourcesNode =
+                            CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
+                        AddResourceNodeInfos ( resourcesNode ) ;
+                    }
+
+                    if ( haveResourcesResource.Value is Style sty )
+                    {
+                        var settersNode = CreateNode ( resourceInfo , "Setters" , null ) ;
+                        settersNode.IsExpanded = true ;
+                        foreach ( var setter in sty.Setters )
+                        {
+                            switch ( setter )
+                            {
+                                case EventSetter _ : break ;
+                                case Setter setter1 :
+                                    CreateNode ( settersNode , setter1.Property , setter1.Value ) ;
+
+                                    break ;
+                                default : throw new InvalidOperationException ( ) ;
+                            }
+                        }
+                    }
+
+                    if ( haveResourcesResource.Value is IDictionary dict )
+                    {
+                        foreach ( var key2 in dict.Keys )
+                        {
+                            CreateNode ( resourceInfo , key2 , dict[ key2 ] ) ;
+                        }
+                    }
+                    else
+                    {
+                        if ( ! ( haveResourcesResource.Value is IEnumerable enumerable )
+                             || haveResourcesResource.Value is string )
+                        {
+                            continue ;
+                        }
+
+                        foreach ( var child in enumerable )
+                        {
+                            CreateNode ( resourceInfo , child , null ) ;
+                        }
                     }
                 }
+            }
+            catch ( Exception )
+            {
             }
         }
 
@@ -245,7 +293,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected object WrapValue ( object data )
+        private object WrapValue ( object data )
         {
             if ( data is UIElement uie )
             {
@@ -257,13 +305,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         /// <summary>
         /// </summary>
-        protected void PopulateResourcesTree ( )
-        {
-            PopulateAppNode ( ) ;
-            
-            
-
-        }
+        private void PopulateResourcesTree ( ) { PopulateAppNode ( ) ; }
         #endregion
         #region Implementation of ISupportInitialize
         /// <inheritdoc />
@@ -279,8 +321,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
 //public bool IsInitializing { get ; set ; }
 
-/// <inheritdoc />
-public void EndInit ( )
+        /// <inheritdoc />
+        public void EndInit ( )
         {
             foreach ( var resourceNodeInfo in _modelResources.AllResourcesCollection )
             {

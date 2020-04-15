@@ -8,8 +8,8 @@ using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
 using System.Xml ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Properties ;
 using AnalysisAppLib.XmlDoc ;
-using AnalysisAppLib.XmlDoc.Properties ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
@@ -40,8 +40,6 @@ namespace AnalysisControls.ViewModel
 
         private TypeMapDictionary map = new TypeMapDictionary ( ) ;
 
-        private readonly Dictionary < Type , AppTypeInfo > otherTyps =
-            new Dictionary < Type , AppTypeInfo > ( ) ;
 #if true
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
@@ -50,7 +48,7 @@ namespace AnalysisControls.ViewModel
         private readonly Dictionary < Type , TypeDocInfo >
             _docs = new Dictionary < Type , TypeDocInfo > ( ) ;
 
-        private DocumentCollection _documentCollection = new DocumentCollection ( ) ;
+        private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
 
         /// <summary>
         /// </summary>
@@ -110,7 +108,6 @@ namespace AnalysisControls.ViewModel
         public DocumentCollection DocumentCollection
         {
             get { return _documentCollection ; }
-            set { _documentCollection = value ; }
         }
 
         /// <summary>
@@ -126,11 +123,13 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public AppTypeInfo GetAppTypeInfo ( object identifier ) { return null ; }
 
         /// <summary>
+        /// 
         /// </summary>
-        /// <param name="p  tTypeInfo"></param>
+        /// <param name="parentTypeInfo"></param>
         /// <param name="rootR"></param>
         /// <param name="level"></param>
         /// <returns></returns>

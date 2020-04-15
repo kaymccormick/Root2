@@ -10,6 +10,8 @@ using System.Threading.Tasks.Dataflow ;
 using System.Xaml ;
 using System.Xml ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Properties ;
+using AnalysisAppLib.ViewModel ;
 
 // ReSharper disable once RedundantUsingDirective
 using AnalysisAppLib.XmlDoc ;
@@ -922,6 +924,27 @@ namespace ModelTests
             sns.EndInit();
         }
 
+        [Fact]
+        public void TestSerializeISymbl ( )
+        {
+            var conv = new JsonSymbolConverterFactory ( ) ;
+            JsonSerializerOptions options = new JsonSerializerOptions ( ) ;
+            options.Converters.Add ( conv ) ;
+            CSharpCompilation comp = CSharpCompilation.Create("test", new[] { SyntaxFactory.ParseSyntaxTree(Resources.Program_Parse)});
+            foreach ( var diagnostic in comp.GetDiagnostics() ) {
+                if ( diagnostic.Severity >= DiagnosticSeverity.Info )
+                {
+                    DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
+                }
+            }
+
+            if ( comp.ObjectType != null )
+            {
+                var outjson = JsonSerializer.Serialize ( comp.ObjectType , options ) ;
+                DebugUtils.WriteLine ( outjson ) ;
+            }
+
+        }
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global

@@ -11,6 +11,7 @@ using System.Windows.Controls.Ribbon ;
 using System.Windows.Input ;
 using System.Windows.Interop ;
 using System.Windows.Navigation ;
+using AnalysisAppLib.ViewModel ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisAppLib.XmlDoc.Project ;
 using AnalysisAppLib.XmlDoc.ViewModel ;

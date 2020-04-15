@@ -111,10 +111,10 @@ namespace AnalysisAppLib.XmlDoc
         #endregion
 
         /// <summary>
-        /// Get the <see cref="AppTypeInfo"/> for a particular .net CLR type.
+        /// 
         /// </summary>
-        /// <param name="type">The .NET CLR type</param>
-        /// <returns>The <see cref="AppTypeInfo"/> instance.</returns>
+        /// <param name="typeKey"></param>
+        /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public AppTypeInfo GetAppTypeInfoForType ( AppTypeInfoKey typeKey )
         {

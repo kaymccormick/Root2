@@ -6,6 +6,7 @@ using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
+using AnalysisAppLib.XmlDoc ;
 using AnalysisAppLib.XmlDoc.Dataflow ;
 using Autofac ;
 using Autofac.Features.Metadata ;
@@ -17,7 +18,7 @@ using Newtonsoft.Json ;
 using NLog ;
 using Logger = NLog.Logger ;
 
-namespace AnalysisAppLib.XmlDoc.ViewModel
+namespace AnalysisAppLib.ViewModel
 {
     /// <summary>
     /// 
@@ -59,6 +60,7 @@ namespace AnalysisAppLib.XmlDoc.ViewModel
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly IEnumerable < IExplorerItemProvider > _providers ;
+        private readonly ILifetimeScope _lifetime ;
 
         private readonly IEnumerable < Meta < Lazy < IViewWithTitle > > > _views ;
         private          IAccount                                         _account ;
@@ -79,15 +81,18 @@ namespace AnalysisAppLib.XmlDoc.ViewModel
         /// </summary>
         /// <param name="views"></param>
         /// <param name="providers"></param>
+        /// <param name="blocks"></param>
+        /// <param name="lifetime"></param>
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IViewWithTitle > > > views
           , IEnumerable<IExplorerItemProvider> providers
-          , IEnumerable<IAnalysisBlockProvider1 > blocks
+          , [ NotNull ] IEnumerable<IAnalysisBlockProvider1 > blocks
             , ILifetimeScope lifetime
         )
         {
             _views     = views ;
             _providers = providers ;
+            _lifetime = lifetime ;
             foreach ( var analysisBlockProvider1 in blocks )
             {
                 DebugUtils.WriteLine(analysisBlockProvider1.ToString());

@@ -13,12 +13,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public partial class ExceptionUserControl : UserControl
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        // public static readonly byte[] DataBytes =
-            // File.ReadAllBytes ( @"C:\data\logs\exception.bin" ) ;
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -29,24 +24,6 @@ namespace KayMcCormick.Lib.Wpf
         /// 
         /// </summary>
         public ExceptionUserControl ( ) { InitializeComponent ( ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        // public static Exception DesignException { get ; } =
-            // BinaryFormatter.Deserialize ( new MemoryStream ( DataBytes ) ) as Exception ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        // public ExceptionDataInfo DataInfo { get ; }; = new ExceptionDataInfo
-                                                      // {
-                                                          // Exception =DesignException
-                                                        // , ParsedExceptions =
-                                                              // Utils.GenerateParsedException (
-                                                                                             // DesignException
-                                                                                            // )
-                                                      // } ;
 
         /// <summary>
         /// 

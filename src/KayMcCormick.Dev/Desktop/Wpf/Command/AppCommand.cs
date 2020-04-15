@@ -141,6 +141,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         // Returns the properties of the specified component extended with 
         // a CategoryAttribute reflecting the name of the type of the property.
+        /// <inheritdoc />
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(object component, System.Attribute[] attributes)
         {
             PropertyDescriptorCollection props;
@@ -159,12 +160,14 @@ namespace KayMcCormick.Lib.Wpf.Command
             return new PropertyDescriptorCollection(propArray);
         }
 
+        /// <inheritdoc />
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(object component)
         {
             return this.GetProperties(component, null);
         }
 
         // Provides the name for the property tab.
+        /// <inheritdoc />
         public override string TabName
         {
             get
@@ -174,6 +177,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         }
 
         // Provides an image for the property tab.
+        /// <inheritdoc />
         public override System.Drawing.Bitmap Bitmap
         {
             get

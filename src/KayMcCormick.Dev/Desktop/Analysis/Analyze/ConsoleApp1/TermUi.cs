@@ -16,7 +16,7 @@ namespace ConsoleApp1
 {
     internal sealed class TermUi
     {
-        private          TaskFactory                            factory ;
+        private readonly TaskFactory                            factory ;
         private const    string                                 FrameTitle = "Details" ;
         private readonly IEnumerable < IDisplayableAppCommand > _commands ;
         private readonly ModelResources                         _modelResources ;
@@ -187,7 +187,7 @@ namespace ConsoleApp1
         }
 
         [ NotNull ]
-        private Action < string > ShowCommandOutputView ( out View view )
+        private Action < string > ShowCommandOutputView ( [ NotNull ] out View view )
         {
             var outputView = new TextView ( ) { CanFocus = false } ;
             // var viewFrame = new FrameView ( "Output" ) { outputView } ;

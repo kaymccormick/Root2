@@ -23,17 +23,20 @@ using AnalysisControls ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
+using CommandLine ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.Build.Locator ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
+using Microsoft.CodeAnalysis.VisualBasic.Symbols ;
 using NLog ;
 using NLog.Targets ;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
@@ -195,17 +198,29 @@ namespace ConsoleApp1
                     return 1 ;
                 }
 
+                Options myOptions = new Options();
+                bool fExit = false ;
                 var program = context.Scope.Resolve < Program > ( ) ;
-
-                return await program.MainCommandAsync ( context ) ;
+                CommandLine.Parser.Default.ParseArguments < Options > ( args )
+                           .WithParsed ( o => myOptions = o ).WithNotParsed(errors => fExit = true) ;
+                if ( fExit ) return 1 ;
+                return await program.MainCommandAsync(context, myOptions);
             }
         }
 
-        private async Task < int > MainCommandAsync ( [ NotNull ] AppContext context )
+        // ReSharper disable once MemberCanBeMadeStatic.Local
+        private async Task < int > MainCommandAsync ( [ NotNull ] AppContext context, [ NotNull ] Options options )
         {
+            var cmds = context.Scope.Resolve < IEnumerable < IDisplayableAppCommand > > ( ) ;
+            if ( ! string.IsNullOrEmpty ( options.Action )
+                 && cmds.All ( a => a.DisplayName != options.Action ) )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
             SelectVsInstance ( ) ;
 
-            await RunConsoleUiAsync ( context ) ;
+            context.Options = options ;
+            await RunConsoleUiAsync ( context  ) ;
 
             return 1 ;
         }
@@ -705,7 +720,13 @@ namespace ConsoleApp1
         {
             //options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
-            var solution = await workspace.OpenSolutionAsync ( SolutionFilePath ) ;
+            var optionsSolutionFile = context.Options?.SolutionFile ?? SolutionFilePath;
+            if ( string.IsNullOrEmpty ( optionsSolutionFile ) )
+            {
+                throw new InvalidOperationException ( "No solution file" ) ;
+            }
+
+            var solution = await workspace.OpenSolutionAsync ( optionsSolutionFile ) ;
             var documentsOut = new List < CodeElementDocumentation > ( ) ;
             var solutionProjects = solution.Projects ;
 
@@ -736,12 +757,17 @@ namespace ConsoleApp1
                     DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
                 }
 
+                var compilationAssembly = compilation.Assembly ;
+                foreach(var tn in compilationAssembly.TypeNames )
+                {
+                    DebugUtils.WriteLine(compilationAssembly.Name);
+                    DebugUtils.WriteLine(tn);
+                }
                 foreach ( var symbol in compilation.GetSymbolsWithName (
                                                                         ( s ) => true
-                                                                      , SymbolFilter.TypeAndMember
                                                                        ) )
                 {
-                    if ( symbol.ContainingAssembly != compilation.Assembly )
+                    if ( !symbol.ContainingAssembly.Equals( compilationAssembly) )
                     {
                         DebugUtils.WriteLine ( $"Skipping {symbol}" ) ;
                         continue ;
@@ -759,6 +785,7 @@ namespace ConsoleApp1
                     DebugUtils.WriteLine (
                                           $"{symbol.ToDisplayString ( )} {symbol.DeclaredAccessibility}"
                                          ) ;
+                    
                     var res =
                         await Microsoft.CodeAnalysis.FindSymbols.SymbolFinder.FindCallersAsync (
                                                                                                 symbol
@@ -767,11 +794,11 @@ namespace ConsoleApp1
                     var uses = 0 ;
                     foreach ( var use in res )
                     {
-                        DebugUtils.WriteLine ( "Symbol kind "   + use.CalledSymbol.Kind ) ;
-                        DebugUtils.WriteLine ( "Called symbol " + use.CalledSymbol.ToString ( ) ) ;
-                        DebugUtils.WriteLine (
-                                              "Calling symbol " + use.CallingSymbol.ToString ( )
-                                             ) ;
+                        // DebugUtils.WriteLine ( "Symbol kind "   + use.CalledSymbol.Kind ) ;
+                        // DebugUtils.WriteLine ( "Called symbol " + use.CalledSymbol.ToString ( ) ) ;
+                        // DebugUtils.WriteLine (
+                                              // "Calling symbol " + use.CallingSymbol.ToString ( )
+                                             // ) ;
                         callers.Add (
                                      new CallerInfo (
                                                      use.CalledSymbol.ToDisplayString ( )
@@ -823,10 +850,23 @@ namespace ConsoleApp1
                     {
                         DebugUtils.WriteLine ( "0 uses" ) ;
                         DebugUtils.WriteLine ( "Symbol kind "   + symbol.Kind ) ;
-                        DebugUtils.WriteLine ( "Called symbol " + symbol.ToString ( ) ) ;
+                        DebugUtils.WriteLine ( "Called symbol " + symbol ) ;
                     }
                 }
-
+                
+                // foreach ( var namespaceOrTypeSymbol in compilation
+                                                      // .GetCompilationNamespace (compilationAssembly.ContainingNamespace )
+                                                      // .GetMembers ( ) )
+                // {
+                    // if ( namespaceOrTypeSymbol.IsNamespace )
+                    // {
+                        
+                    // } else if ( namespaceOrTypeSymbol.IsType )
+                    // {
+                        // var c = namespaceOrTypeSymbol.ContainingType ;
+                        
+                    // }
+                // }
                 foreach ( var doc in project.Documents )
                 {
                     // var textAsync = await doc.GetTextAsync() ;
@@ -844,12 +884,16 @@ namespace ConsoleApp1
                     // {
                     // DebugUtils.WriteLine($"{classifiedSpan.ClassificationType} : {classifiedSpan.TextSpan}");
                     // }
+                    
                     // ReSharper disable once UnusedVariable
                     var model = await doc.GetSemanticModelAsync ( ) ;
+
                     Console.WriteLine ( doc.Name ) ;
                     // ReSharper disable once UnusedVariable
                     var tree = await doc.GetSyntaxRootAsync ( ) ;
-
+                    
+                    var visitor = new SyntaxWalker2(model);
+                    visitor.Visit ( tree ) ;
                     foreach ( var node in tree
                                          .DescendantNodesAndSelf ( )
                                          .OfType < MemberDeclarationSyntax > ( ) )
@@ -928,6 +972,7 @@ namespace ConsoleApp1
                         }
                     }
 
+                    
                     // => tuple.Item2.Symbol
                     // != null
                     // && tuple.Item2.Symbol
@@ -1950,6 +1995,14 @@ namespace ConsoleApp1
         }
     }
 
+    internal sealed class Options
+    {
+        [Option('s', "sln", Required = false)]
+        public string SolutionFile { get ; set ; }
+        [Option('a', "action", Required = false)]
+        public string Action { get ; set ; }
+    }
+
     public sealed class LocationInfo
     {
         public string FileName { get ; }
@@ -2037,6 +2090,252 @@ namespace ConsoleApp1
         {
             get { return _locations ; }
             set { _locations = value ; }
+        }
+    }
+
+    public class SyntaxWalker2 : CSharpSyntaxWalker
+    {
+        private readonly SemanticModel model ;
+
+        #region Overrides of CSharpSyntaxVisitor
+        public SyntaxWalker2 ( SemanticModel model , SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node ) : base ( depth )
+        {
+            this.model = model ;
+        }
+
+        public override void VisitCompilationUnit ( CompilationUnitSyntax node ) { base.VisitCompilationUnit ( node ) ; }
+
+        public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
+        {
+            var nsSymbol = model.GetDeclaredSymbol ( node ) ;
+            base.VisitNamespaceDeclaration ( node ) ;
+        }
+
+        public override void VisitClassDeclaration ( ClassDeclarationSyntax node )
+        {
+            var classSymbol = model.GetDeclaredSymbol(node);
+            if ( classSymbol == null )
+            {
+                throw new InvalidOperationException ( "No class symbol" ) ;
+            }
+            foreach ( var member in classSymbol.GetMembers ( ) )
+            {
+                switch ( member )
+                {
+                    case IAliasSymbol aliasSymbol : break ;
+                    case IArrayTypeSymbol arrayTypeSymbol : break ;
+                    case ISourceAssemblySymbol sourceAssemblySymbol : break ;
+                    case IAssemblySymbol assemblySymbol : break ;
+                    case IDiscardSymbol discardSymbol : break ;
+                    case IDynamicTypeSymbol dynamicTypeSymbol : break ;
+                    case IErrorTypeSymbol errorTypeSymbol : break ;
+                    case IEventSymbol eventSymbol : break ;
+                    case IFieldSymbol fieldSymbol : break ;
+                    case ILabelSymbol labelSymbol : break ;
+                    case ILocalSymbol localSymbol : break ;
+                    case IMethodSymbol methodSymbol :
+                        var m = CreateMethodInfo ( methodSymbol ) ;
+                        var json = JsonSerializer.Serialize ( m ) ;
+                        DebugUtils.WriteLine(json);
+                        break ;
+                    case IModuleSymbol moduleSymbol : break ;
+                    case INamedTypeSymbol namedTypeSymbol : break ;
+                    case INamespaceSymbol namespaceSymbol : break ;
+                    case IPointerTypeSymbol pointerTypeSymbol : break ;
+                    case ITypeParameterSymbol typeParameterSymbol : break ;
+                    case ITypeSymbol typeSymbol : break ;
+                    case INamespaceOrTypeSymbol namespaceOrTypeSymbol : break ;
+                    case IParameterSymbol parameterSymbol : break ;
+                    case IPreprocessingSymbol preprocessingSymbol : break ;
+                    case IPropertySymbol propertySymbol : break ;
+                    case IRangeVariableSymbol rangeVariableSymbol : break ;
+                    default : throw new ArgumentOutOfRangeException ( nameof ( member ) ) ;
+                }
+            }
+            base.VisitClassDeclaration ( node ) ;
+        }
+
+        [ NotNull ]
+        private static MethodInfo CreateMethodInfo ( [ NotNull ] IMethodSymbol methodSymbol )
+        {
+            var m = new MethodInfo (
+                                    methodSymbol.Name
+                                  , methodSymbol.Parameters.Select (
+                                                                    p => new ParameterInfo (
+                                                                                            p.Name
+                                                                                          , p.Type
+                                                                                          , p
+                                                                                           .CustomModifiers
+                                                                                           .Select (
+                                                                                                    md
+                                                                                                        => new
+                                                                                                            CustommodifierInfo (
+                                                                                                                                md
+                                                                                                                                   .IsOptional
+                                                                                                                              , md
+                                                                                                                               .Modifier
+                                                                                                                               .ToDisplayString ( )
+                                                                                                                               )
+                                                                                                   )
+                                                                                          , p
+                                                                                           .Type
+                                                                                           .ToDisplayString ( )
+                                                                                           )
+                                                                   )
+                                   ) ;
+            return m ;
+        }
+
+        public override void VisitStructDeclaration ( StructDeclarationSyntax node ) { base.VisitStructDeclaration ( node ) ; }
+
+        public override void VisitInterfaceDeclaration ( InterfaceDeclarationSyntax node ) { base.VisitInterfaceDeclaration ( node ) ; }
+
+        public override void VisitEnumDeclaration ( EnumDeclarationSyntax node ) { base.VisitEnumDeclaration ( node ) ; }
+
+        public override void VisitDelegateDeclaration ( DelegateDeclarationSyntax node ) { base.VisitDelegateDeclaration ( node ) ; }
+
+        public override void VisitFieldDeclaration ( FieldDeclarationSyntax node ) { base.VisitFieldDeclaration ( node ) ; }
+
+        public override void VisitEventFieldDeclaration ( EventFieldDeclarationSyntax node ) { base.VisitEventFieldDeclaration ( node ) ; }
+
+        public override void VisitExplicitInterfaceSpecifier ( ExplicitInterfaceSpecifierSyntax node ) { base.VisitExplicitInterfaceSpecifier ( node ) ; }
+
+        public override void VisitMethodDeclaration ( MethodDeclarationSyntax node )
+        {
+            var symbol = model.GetDeclaredSymbol ( node ) ;
+            if ( symbol.MethodKind != MethodKind.Ordinary )
+            {
+                throw new InvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
+            }
+            var rt = symbol.ReturnType ;
+            var origDef = rt.OriginalDefinition ;
+            var displayString = rt.ToDisplayString ( ) ;
+            base.VisitMethodDeclaration ( node ) ;
+        }
+
+        public override void VisitParameterList ( ParameterListSyntax node ) { base.VisitParameterList ( node ) ; }
+
+        public override void VisitParameter ( ParameterSyntax node )
+        {
+            var symbol = model.GetDeclaredSymbol ( node ) ;
+            foreach ( var symbolDisplayPart in symbol.ToDisplayParts ( ) )
+            {
+                var k = ( int ) symbolDisplayPart.Kind ;
+                var s = symbolDisplayPart.Symbol ;
+                string interfaces ="";
+                if ( s != null )
+                {
+                    interfaces = string.Join (
+                                              ", "
+                                            , s.GetType ( )
+                                                .GetInterfaces ( )
+                                                .Select ( i => i.FullName )
+                                             ) ;
+                }
+
+                DebugUtils.WriteLine($"{symbolDisplayPart} {s?.Kind} {s?.GetType().FullName} {interfaces ?? ""}");
+                switch ( s )
+                {
+                    case IAliasSymbol aliasSymbol : break ;
+                    case IArrayTypeSymbol arrayTypeSymbol : break ;
+                    case ISourceAssemblySymbol sourceAssemblySymbol : break ;
+                    case IAssemblySymbol assemblySymbol : break ;
+                    case IDiscardSymbol discardSymbol : break ;
+                    case IDynamicTypeSymbol dynamicTypeSymbol : break ;
+                    case IErrorTypeSymbol errorTypeSymbol : break ;
+                    case IEventSymbol eventSymbol : break ;
+                    case IFieldSymbol fieldSymbol : break ;
+                    case ILabelSymbol labelSymbol : break ;
+                    case ILocalSymbol localSymbol : break ;
+                    case IMethodSymbol methodSymbol : break ;
+                    case IModuleSymbol moduleSymbol : break ;
+                    case INamedTypeSymbol namedTypeSymbol : break ;
+                    case INamespaceSymbol namespaceSymbol : break ;
+                    case IPointerTypeSymbol pointerTypeSymbol : break ;
+                    case ITypeParameterSymbol typeParameterSymbol : break ;
+                    case ITypeSymbol typeSymbol : break ;
+                    case INamespaceOrTypeSymbol namespaceOrTypeSymbol : break ;
+                    case IParameterSymbol parameterSymbol : break ;
+                    case IPreprocessingSymbol preprocessingSymbol : break ;
+                    case IPropertySymbol propertySymbol : break ;
+                    case IRangeVariableSymbol rangeVariableSymbol : break ;
+                    default : throw new ArgumentOutOfRangeException ( nameof ( s ) ) ;
+                }
+            }
+            base.VisitParameter ( node ) ;
+        }
+
+        public override void VisitOperatorDeclaration ( OperatorDeclarationSyntax node ) { base.VisitOperatorDeclaration ( node ) ; }
+
+        public override void VisitConversionOperatorDeclaration ( ConversionOperatorDeclarationSyntax node ) { base.VisitConversionOperatorDeclaration ( node ) ; }
+
+        public override void VisitConstructorDeclaration ( ConstructorDeclarationSyntax node ) { base.VisitConstructorDeclaration ( node ) ; }
+
+        public override void VisitDestructorDeclaration ( DestructorDeclarationSyntax node ) { base.VisitDestructorDeclaration ( node ) ; }
+
+        public override void VisitPropertyDeclaration ( PropertyDeclarationSyntax node ) { base.VisitPropertyDeclaration ( node ) ; }
+
+        public override void VisitEventDeclaration ( EventDeclarationSyntax node ) { base.VisitEventDeclaration ( node ) ; }
+
+        public override void VisitIndexerDeclaration ( IndexerDeclarationSyntax node ) { base.VisitIndexerDeclaration ( node ) ; }
+        #endregion
+    }
+
+    public class MethodInfo
+    {
+        private string _name ;
+        private List<ParameterInfo> _params = new List<ParameterInfo>();
+        public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > @select )
+        {
+            this.Name = methodSymbolName ;
+            Parameters.AddRange ( @select ) ;
+        }
+
+        public string Name { get { return _name ; } set { _name = value ; } }
+
+        public List < ParameterInfo > Parameters
+        {
+            get { return _params ; }
+            set { _params = value ; }
+        }
+    }
+
+    public class ParameterInfo
+    {
+        public string Name { get ; }
+
+        public string TypeDisplayString { get ; }
+
+        public string TypeFullName { get ; }
+
+        public 
+            List <CustommodifierInfo> custommodifiers = new List < CustommodifierInfo > ();
+        public ParameterInfo (
+            string                             name
+          , ITypeSymbol                        typeSymbol
+          , IEnumerable < CustommodifierInfo > @select
+          , string                             typeDisplayString
+        )
+        {
+            Name = name ;
+            TypeDisplayString = typeDisplayString ;
+            TypeFullName = typeSymbol.ContainingNamespace.MetadataName
+                           + '.'
+                           + typeSymbol.MetadataName ; ;
+            custommodifiers.AddRange (@select  );
+        }
+    }
+
+    public class CustommodifierInfo
+    {
+        public bool IsOptional { get ; }
+
+        public string DisplayString { get ; }
+
+        public CustommodifierInfo ( bool isOptional , string displayString )
+        {
+            IsOptional = isOptional ;
+            DisplayString = displayString ;
         }
     }
 }

@@ -18,6 +18,7 @@ using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.VisualBasic ;
+using Microsoft.VisualStudio.Threading ;
 
 namespace AnalysisAppLib.XmlDoc.Dataflow
 {
@@ -111,7 +112,6 @@ namespace AnalysisAppLib.XmlDoc.Dataflow
 
                     throw new InvalidOperationException ( "Faulted transform" ) ;
                 }
-
                 return task.Result ;
             } ;
         }
