@@ -29,6 +29,9 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
+        private static readonly string _pocoPrefix       = "Poco";
+        private static readonly string _collectionSuffix = "Collection";
+
         private DateTime _initializationDateTime ;
         private bool     _showBordersIsChecked ;
 
@@ -129,7 +132,41 @@ namespace AnalysisControls.ViewModel
         /// <param name="identifier"></param>
         /// <returns></returns>
         [ CanBeNull ]
-        public AppTypeInfo GetAppTypeInfo ( object identifier ) { return null ; }
+        public AppTypeInfo GetAppTypeInfo ( object identifier )
+        {
+            AppTypeInfoKey key = null;
+            string unqualifiedTypeName = null;
+            if (identifier is Type type)
+            {
+                unqualifiedTypeName = type.Name;
+            }
+            else if (identifier is string s1)
+            {
+                unqualifiedTypeName = s1;
+            }
+            else if (identifier is AppTypeInfoKey k1)
+            {
+                key = k1;
+            }
+            else
+            {
+                throw new InvalidOperationException("Bad key");
+            }
+
+            if (unqualifiedTypeName != null
+                && key              == null)
+            {
+                key = new AppTypeInfoKey(unqualifiedTypeName);
+            }
+
+            if (Map.dict.TryGetValue(key, out var typeInfo))
+            {
+                return typeInfo;
+            }
+
+            throw new InvalidOperationException("No such type");
+
+        }
 
         /// <summary>
         /// 
@@ -219,6 +256,10 @@ namespace AnalysisControls.ViewModel
         public void EndInit ( )
         {
             Logger.Info ( nameof ( EndInit ) ) ;
+            foreach ( var keyValuePair in Map2.dict )
+            {
+                Map.dict[ new AppTypeInfoKey(keyValuePair.Key) ] = keyValuePair.Value ;
+            }
             var mapCount = Map.Count ;
             Logger.Info ( $"Map Count {mapCount}" ) ;
             if ( mapCount != 0 )
@@ -349,7 +390,7 @@ namespace AnalysisControls.ViewModel
             {
                 if ( rField.TypeName == "SyntaxList<SyntaxToken>" )
                 {
-                    rField.TypeName = "SyntaxTokenList" ;
+//                    rField.TypeName = "SyntaxTokenList" ;
                 }
 
                 TypeSyntax typs ;
@@ -471,5 +512,23 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
+        [NotNull]
+        public IReadOnlyDictionary<string, object> CollectionMap(
+        )
+        {
+            DebugUtils.WriteLine("Populating collectionMap");
+            var collectionMap = new Dictionary<string, object>();
+            foreach (var kvp in Map.dict)
+            {
+                var mapKey = kvp.Key;
+                var t = (AppTypeInfo)Map[mapKey];
+                var colType = $"{_pocoPrefix}{t.Type.Name}{_collectionSuffix}";
+                collectionMap[(string)t.Type.Name] = colType;
+            }
+
+            return collectionMap;
+        }
+
+
     }
 }

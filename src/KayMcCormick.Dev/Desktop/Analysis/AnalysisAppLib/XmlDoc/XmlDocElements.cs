@@ -477,7 +477,7 @@ namespace AnalysisAppLib.XmlDoc
             [ NotNull ]   SyntaxFieldInfo                tField
           , [ CanBeNull ] TypeSyntax                     candidateTypeSyntax
           , IReadOnlyDictionary < string , object > collectionMap
-          , ISyntaxTypesService model
+          , ITypesViewModel model
         )
         {
             if ( tField == null )
@@ -485,12 +485,12 @@ namespace AnalysisAppLib.XmlDoc
                 throw new ArgumentNullException ( nameof ( tField ) ) ;
             }
 
-            if ( candidateTypeSyntax != null )
+            if ( candidateTypeSyntax != null && tField.IsCollection == false)
             {
                 return TransformParsePocoType ( candidateTypeSyntax ) ;
             }
 
-            var typeSyntax = ( SimpleNameSyntax ) candidateTypeSyntax ;
+            var typeSyntax = candidateTypeSyntax is QualifiedNameSyntax q ? q.Right : ( SimpleNameSyntax ) candidateTypeSyntax ;
 
             // ReSharper disable once PossibleNullReferenceException
             var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
@@ -499,8 +499,9 @@ namespace AnalysisAppLib.XmlDoc
                 throw new InvalidOperationException ( "Invalid type info" ) ;
             }
             // ReSharper disable once UnusedVariable
-            if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) { 
+            if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) {
                 // ReSharper disable once RedundantAssignment
+                return SyntaxFactory.ParseTypeName((string)info2);
             }
             else
             {

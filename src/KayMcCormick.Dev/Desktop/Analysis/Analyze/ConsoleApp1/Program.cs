@@ -1084,7 +1084,7 @@ namespace ConsoleApp1
 
             var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
-            var collectionMap = sts.CollectionMap ( ) ;
+            var collectionMap = model1.CollectionMap ( ) ;
             outputFunc ( "Beginning" ) ;
             var x = CSharpCompilation.Create (
                                               "test"
@@ -1660,7 +1660,7 @@ namespace ConsoleApp1
                                                                                              tField
                                                                                            , type
                                                                                            , collectionMap
-                                                                                           , sts
+                                                                                           , model1
                                                                                             )
                                                                        , null
                                                                        , propertyName
