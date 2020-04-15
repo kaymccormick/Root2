@@ -23,12 +23,12 @@ using Microsoft.Identity.Client ;
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
+    /// Autofac module for the base Analysis App Lib
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
         /// <summary>
-        /// 
+        /// Parameterless constructor.
         /// </summary>
         public AnalysisAppLibModule ( ) { DebugUtils.WriteLine ( "here" ) ; }
 
@@ -244,7 +244,6 @@ namespace AnalysisAppLib
                    .WithAttributeFiltering ( )
                    .InstancePerLifetimeScope ( )
                    .WithMetadata ( "Purpose" , "Analysis" ) ;
-            ;
 
 
             #region MS LOGIN

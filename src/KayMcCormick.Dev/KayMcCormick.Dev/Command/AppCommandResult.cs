@@ -43,7 +43,7 @@ namespace KayMcCormick.Dev.Command
         /// 
         /// </summary>
         public static IAppCommandResult Cancelled { get ; } =
-            new AppCommandResult ( ) { IsSuccess = false } ;
+            new AppCommandResult { IsSuccess = false } ;
         #endregion
 
 

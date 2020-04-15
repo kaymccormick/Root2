@@ -151,7 +151,7 @@ namespace KayMcCormick.Lib.Wpf.Command
                 props = TypeDescriptor.GetProperties(component, attributes);
 
             PropertyDescriptor[] propArray = new PropertyDescriptor[props.Count];
-            for (int i = 0; i < props.Count; i++)
+            for (var i = 0; i < props.Count; i++)
             {
                 // Create a new PropertyDescriptor from the old one, with 
                 // a CategoryAttribute matching the name of the type.
@@ -163,7 +163,8 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <inheritdoc />
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(object component)
         {
-            return this.GetProperties(component, null);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            return GetProperties(component, null);
         }
 
         // Provides the name for the property tab.

@@ -2203,7 +2203,7 @@ namespace ConsoleApp1
         public override void VisitMethodDeclaration ( MethodDeclarationSyntax node )
         {
             var symbol = model.GetDeclaredSymbol ( node ) ;
-            if ( symbol.MethodKind != MethodKind.Ordinary )
+            if ( symbol != null && symbol.MethodKind != MethodKind.Ordinary )
             {
                 throw new InvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
             }

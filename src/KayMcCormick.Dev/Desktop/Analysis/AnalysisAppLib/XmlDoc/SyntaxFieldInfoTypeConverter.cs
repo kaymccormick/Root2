@@ -40,15 +40,18 @@ namespace AnalysisAppLib.XmlDoc
           , Type                   destinationType
         )
         {
-            if ( destinationType == typeof ( string ) )
+            if ( destinationType != typeof ( string ) )
             {
-                if ( value is SyntaxFieldInfo f )
-                {
-                    var json = JsonSerializer.Serialize ( f ) ;
-                    return json ;
-                }
+                return base.ConvertTo ( context , culture , value , destinationType ) ;
             }
-            return base.ConvertTo ( context , culture , value , destinationType ) ;
+
+            if ( ! ( value is SyntaxFieldInfo f ) )
+            {
+                return base.ConvertTo ( context , culture , value , destinationType ) ;
+            }
+
+            var json = JsonSerializer.Serialize ( f ) ;
+            return json ;
         }
         #endregion
     }

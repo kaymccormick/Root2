@@ -16,7 +16,7 @@ using AnalysisAppLib.XmlDoc ;
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
+    /// Deprecated component information related to syntax.
     /// </summary>
     public class ComponentInfo
     {

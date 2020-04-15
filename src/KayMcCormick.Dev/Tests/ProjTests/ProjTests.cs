@@ -166,8 +166,8 @@ namespace ProjTests
                 //var model = lifetimescope.Resolve<TypesViewModel>();
                 var sts = lifetimescope.Resolve<ISyntaxTypesService>();
                 var cmap = sts.CollectionMap () ;
-                AppTypeInfo appTypeInfo =  sts.GetAppTypeInfo( typeof ( AssignmentExpressionSyntax ) ) ;
-                SyntaxFieldInfo field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
+                var appTypeInfo =  sts.GetAppTypeInfo( typeof ( AssignmentExpressionSyntax ) ) ;
+                var field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
                 var typeSyntax =
                     SyntaxFactory.ParseTypeName ( typeof ( ArgumentSyntax ).FullName ) ;
                 var substType =
@@ -210,7 +210,7 @@ namespace ProjTests
             var xamlSchemaContext = new XamlSchemaContext();
             XamlObjectWriter setings = new XamlObjectWriter(xamlSchemaContext);
             
-            var xamlXmlReaderSettings = new XamlXmlReaderSettings() {} ;
+            var xamlXmlReaderSettings = new XamlXmlReaderSettings {} ;
             XamlWriter1 objectWriter1 = new XamlWriter1(xamlSchemaContext);
 
             XamlXmlReader xml = new XamlXmlReader ( ProjTests.TypesViewModelXamlPath, xamlSchemaContext, xamlXmlReaderSettings ) ;
@@ -242,7 +242,7 @@ namespace ProjTests
             var stringWriter = new StringWriter ( ) ;
             using ( var x = XmlWriter.Create (
                                               stringWriter
-                                            , new XmlWriterSettings ( ) { Indent = true }
+                                            , new XmlWriterSettings { Indent = true }
                                              ) )
             {
                 XamlWriter.Save ( viewModel , x ) ;
@@ -283,7 +283,7 @@ namespace ProjTests
             var stringWriter = new StringWriter ( ) ;
             using ( var x = XmlWriter.Create (
                                               stringWriter
-                                            , new XmlWriterSettings ( ) { Indent = true }
+                                            , new XmlWriterSettings { Indent = true }
                                              ) )
             {
                 XamlWriter.Save ( viewModel , x ) ;

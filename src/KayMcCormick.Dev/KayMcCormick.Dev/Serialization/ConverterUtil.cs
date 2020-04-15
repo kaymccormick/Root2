@@ -28,7 +28,7 @@ namespace KayMcCormick.Dev.Serialization
                                "Converter"
                              , converter.GetType().AssemblyQualifiedName
                               );
-            JsonTypeConverter typeConverter = new JsonTypeConverter();
+            var typeConverter = new JsonTypeConverter();
             writer.WritePropertyName("ObjectType");
             typeConverter.Write(writer, value.GetType(), options);
             writer.WritePropertyName("ObjectInstance");

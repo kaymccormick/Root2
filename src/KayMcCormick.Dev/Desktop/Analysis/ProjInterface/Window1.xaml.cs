@@ -39,7 +39,7 @@ namespace ProjInterface
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly string              _viewTitle = "Docking window" ;
+        private const string _viewTitle = "Docking window" ;
         private          DockWindowViewModel _viewModel ;
 
         public Window1 ( ) { InitializeComponent ( ) ; }
@@ -146,7 +146,7 @@ namespace ProjInterface
                           } ;
             var dlg = new OpenFileDialog ( ) ;
             dlg.DefaultExt = ".cs" ;
-            dlg.Filter = String.Join (
+            dlg.Filter = string.Join (
                                       "|"
                                     , filters.Select (
                                                       f => $"{f.Description} (*{f.Extension})|*{f.Extension}"

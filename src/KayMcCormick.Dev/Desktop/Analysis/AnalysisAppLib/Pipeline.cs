@@ -262,7 +262,7 @@ namespace AnalysisAppLib
                 Logger.Trace ( "Constructing FindUsagesBlock" ) ;
                 var flu = new FindLogUsagesMain ( invocationFactory ) ;
 
-                Func <Document, Task<IEnumerable <ILogInvocation>> > transform = (document) => flu.FindUsagesFuncAsync(document, rejectBlock);
+                Func <Document, Task<IEnumerable <ILogInvocation>> > transform = document => flu.FindUsagesFuncAsync(document, rejectBlock);
 
                 var findLogUsagesBlock =
                     new TransformManyBlock < Document , ILogInvocation > (

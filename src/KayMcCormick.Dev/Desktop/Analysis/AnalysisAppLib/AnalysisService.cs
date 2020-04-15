@@ -20,12 +20,12 @@ using NLog ;
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
+    /// Generic analysis service.
     /// </summary>
     public static class AnalysisService
     {
         /// <summary>
-        /// 
+        /// Create a compilation.
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <param name="syntaxTree"></param>
@@ -67,7 +67,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// 
+        /// Create a context from a compilation.
         /// </summary>
         /// <param name="syntaxTree"></param>
         /// <param name="compilation"></param>
@@ -99,7 +99,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        /// 
+        /// Create a context from code to parse.
         /// </summary>
         /// <param name="code"></param>
         /// <param name="assemblyName"></param>

@@ -4,6 +4,7 @@ using System.Collections ;
 namespace AnalysisAppLib
 {
     /// <summary>
+    /// Collection of documents for XAML serialization purposes.
     /// </summary>
     public class DocumentCollection : IList , ICollection , IEnumerable
 

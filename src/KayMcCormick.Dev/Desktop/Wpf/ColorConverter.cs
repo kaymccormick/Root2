@@ -25,22 +25,23 @@ namespace KayMcCormick.Lib.Wpf
         )
         {
             SolidColorBrush brush ;
-            if ( value != null )
+            if ( value == null )
             {
-                var color = ( uint ) value ;
-                brush = new SolidColorBrush (
-                                             Color.FromArgb (
-                                                             ( byte ) ( ( color & 0xff000000 )
-                                                                        >> 24 )
-                                                           , ( byte ) ( ( color & 0xff0000 ) >> 16 )
-                                                           , ( byte ) ( ( color & 0xff00 )   >> 8 )
-                                                           , ( byte ) ( color & 0xff )
-                                                            )
-                                            ) ;
-                return brush ;
+                return new SolidColorBrush ( Colors.Transparent ) ;
             }
 
-            return new SolidColorBrush ( Colors.Transparent ) ;
+            var color = ( uint ) value ;
+            brush = new SolidColorBrush (
+                                         Color.FromArgb (
+                                                         ( byte ) ( ( color & 0xff000000 )
+                                                                    >> 24 )
+                                                       , ( byte ) ( ( color & 0xff0000 ) >> 16 )
+                                                       , ( byte ) ( ( color & 0xff00 )   >> 8 )
+                                                       , ( byte ) ( color & 0xff )
+                                                        )
+                                        ) ;
+            return brush ;
+
         }
 
         /// <summary>

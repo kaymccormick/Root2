@@ -52,27 +52,28 @@ namespace AnalysisAppLib.Dataflow
             var model = await document.GetSemanticModelAsync ( ) ;
             var tree = await document.GetSyntaxTreeAsync ( ) ;
             if ( tree == null ) { throw new InvalidOperationException();}
-            else
-            {
-                var x1 = await tree.GetRootAsync ( ) ;
-                var return1 = new List < Example1Out > ( ) ;
 
-                foreach ( var descendantNode in x1.DescendantNodes (
-                                                                    x => x.Kind ( )
-                                                                         == SyntaxKind
-                                                                            .CompilationUnit
-                                                                         || x.Kind ( )
-                                                                         == SyntaxKind
-                                                                            .NamespaceBlock
-                                                                   ) )
+            var x1 = await tree.GetRootAsync ( ) ;
+            var return1 = new List < Example1Out > ( ) ;
+
+            foreach ( var descendantNode in x1.DescendantNodes (
+                                                                x => x.Kind ( )
+                                                                     == SyntaxKind
+                                                                        .CompilationUnit
+                                                                     || x.Kind ( )
+                                                                     == SyntaxKind
+                                                                        .NamespaceBlock
+                                                               ) )
+            {
+                if ( model != null )
                 {
                     var s1 = model.GetDeclaredSymbol ( descendantNode ) ;
-                    return1.Add ( new Example1Out ( ) { Symbol = s1 } ) ;
+                    return1.Add ( new Example1Out { Symbol = s1 } ) ;
                 }
-
-
-                return return1 ;
             }
+
+
+            return return1 ;
         }
 
 

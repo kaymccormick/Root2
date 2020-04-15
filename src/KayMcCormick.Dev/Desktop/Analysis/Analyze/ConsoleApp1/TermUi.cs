@@ -189,11 +189,11 @@ namespace ConsoleApp1
         [ NotNull ]
         private Action < string > ShowCommandOutputView ( [ NotNull ] out View view )
         {
-            var outputView = new TextView ( ) { CanFocus = false } ;
+            var outputView = new TextView { CanFocus = false } ;
             // var viewFrame = new FrameView ( "Output" ) { outputView } ;
 
             view = outputView ;
-            return ( o ) => {
+            return o => {
                 factory.StartNew(() => outputView.Text += "\r\n" + o) ;
             } ;
         }

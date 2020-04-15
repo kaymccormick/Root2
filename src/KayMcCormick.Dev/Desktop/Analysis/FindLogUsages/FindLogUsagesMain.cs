@@ -124,40 +124,39 @@ namespace FindLogUsages
 
             var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
             return Enumerable.OfType < ILogInvocation > (
-                                            (
-                                                from node in root.DescendantNodes ( ) //.AsParallel ( )
-                                                let t_ = t
-                                                let t2_ = t2
-                                                let builderSymbol = logBuilderSymbol
-                                                let tree_ = tree
-                                                let model_ = model
-                                                let exType = exceptionType
-                                                where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
-                                                      || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
-                                                let @out =
-                                                    LogUsages.CheckInvocationExpression (
-                                                                                         node
-                                                                                       , model_
-                                                                                       , builderSymbol
-                                                                                       , t_
-                                                                                       , t2_
-                                                                                        )
-                                                where @out.Item1
-                                                let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                                                let result = new InvocationParams (
-                                                                                   tree_
-                                                                                 , model_
-                                                                                 , statement
-                                                                                 , @out
-                                                                                 , exType
-                                                                                  ).ProcessInvocation ( invocationFactory )
-                                                select result is ILogInvocation inv
-                                                           ? inv
-                                                           : ( object ) RejectAction (
-                                                                                      result is RejectedItem rj
-                                                                                          ? rj
-                                                                                          : new RejectedItem ( statement )
-                                                                                     ) )
+                                            from node in root.DescendantNodes ( ) //.AsParallel ( )
+                                            let t_ = t
+                                            let t2_ = t2
+                                            let builderSymbol = logBuilderSymbol
+                                            let tree_ = tree
+                                            let model_ = model
+                                            let exType = exceptionType
+                                            where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
+                                                  || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
+                                            let @out =
+                                                LogUsages.CheckInvocationExpression (
+                                                                                     node
+                                                                                   , model_
+                                                                                   , builderSymbol
+                                                                                   , t_
+                                                                                   , t2_
+                                                                                    )
+                                            where @out.Item1
+                                            let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
+                                            let result = new InvocationParams (
+                                                                               tree_
+                                                                             , model_
+                                                                             , statement
+                                                                             , @out
+                                                                             , exType
+                                                                              ).ProcessInvocation ( invocationFactory )
+                                            select result is ILogInvocation inv
+                                                       ? inv
+                                                       : ( object ) RejectAction (
+                                                                                  result is RejectedItem rj
+                                                                                      ? rj
+                                                                                      : new RejectedItem ( statement )
+                                                                                 )
                                            ) ;
         }
 

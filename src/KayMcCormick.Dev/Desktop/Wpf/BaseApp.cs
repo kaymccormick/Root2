@@ -81,9 +81,9 @@ namespace KayMcCormick.Lib.Wpf
                                                                                                                                                 }
                                                                                                                                               , ApplicationGuid
                                                                                                                                               , null
-                                                                                                                                              , disableLogging : disableLogging
-                                                                                                                                              , disableRuntimeConfiguration : disableRuntimeConfiguration
-                                                                                                                                              , disableServiceHost : disableServiceHost
+                                                                                                                                              , disableLogging
+                                                                                                                                              , disableRuntimeConfiguration
+                                                                                                                                              , disableServiceHost
                                                                                                                                                )
                                                                                      ) ;
             }

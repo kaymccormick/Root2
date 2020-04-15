@@ -3,12 +3,14 @@ using AnalysisAppLib.Project ;
 namespace AnalysisAppLib
 {
     /// <summary>
+    /// A request to the analysis service.
     /// </summary>
     public sealed class AnalysisRequest
     {
         private IProjectBrowserNode projectInfo ;
 
         /// <summary>
+        /// Relted <see cref="IProjectBrowserNode"/>
         /// </summary>
         public IProjectBrowserNode Info
         {

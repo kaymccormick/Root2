@@ -23,14 +23,14 @@ namespace ConsoleApp1
         private readonly List < ItemData < T > > _itemDatas = new List < ItemData < T > > ( 20 ) ;
         private readonly ListWrapper < T >       _source ;
 
-        protected ListView2Base ( Rect rect , [ NotNull ] List < T > list ) : base (
-                                                                                    rect
-                                                                                  , new ListWrapper
-                                                                                        < T > (
-                                                                                               list
-                                                                                                  .ToList ( )
-                                                                                              )
-                                                                                   )
+        protected ListView2Base ( Rect rect , [ NotNull ] IEnumerable < T > list ) : base (
+                                                                                           rect
+                                                                                         , new ListWrapper
+                                                                                               < T > (
+                                                                                                      list
+                                                                                                         .ToList ( )
+                                                                                                     )
+                                                                                          )
         {
             _source = ( ListWrapper < T > ) Source ;
             for ( var i = 0 ; i < _source.Count ; i ++ )

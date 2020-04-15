@@ -94,7 +94,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                                     "Converter"
                                   , typeof ( MyImageSourceConverter ).AssemblyQualifiedName
                                    ) ;
-                JsonTypeConverter typeConverter = new JsonTypeConverter();
+                var typeConverter = new JsonTypeConverter();
                 writer.WritePropertyName("ObjectType");
                 typeConverter.Write ( writer , value.GetType ( ) , options ) ;
                 writer.WritePropertyName( "ObjectInstance" ) ;
@@ -103,7 +103,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     case D3DImage d3DImage : break ;
                     case InteropBitmap interopBitmap : break ;
                     case DrawingImage drawingImage :
-                        JsonDrawingConverter c = new JsonDrawingConverter();
+                        var c = new JsonDrawingConverter();
                         c.Write(writer, drawingImage.Drawing, options);
                         break ;
                     case BitmapFrame bitmapFrame : break ;

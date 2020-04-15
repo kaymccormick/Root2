@@ -25,12 +25,14 @@ namespace TestApp
           , DispatcherUnhandledExceptionEventArgs e
         )
         {
-            if ( e.Exception is TypeLoadException )
+            if ( ! ( e.Exception is TypeLoadException ) )
             {
-                e.Handled = true ;
-                TestApp.MainWindow.Instance?.LogMethod ( "Handled:" ) ;
-                TestApp.MainWindow.Instance?.LogMethod(e.ToString());
+                return ;
             }
+
+            e.Handled = true ;
+            TestApp.MainWindow.Instance?.LogMethod ( "Handled:" ) ;
+            TestApp.MainWindow.Instance?.LogMethod(e.ToString());
         }
 
         private void CurrentDomainOnFirstChanceException (

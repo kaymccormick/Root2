@@ -113,16 +113,16 @@ namespace TestApp
         {
             var p = new PaneService ( ) ;
             var pane = p.GetPane ( ) ;
-            var b = new ExceptionUserControl ( )
+            var b = new ExceptionUserControl
                     {
-                        DataContext = new ExceptionDataInfo ( )
+                        DataContext = new ExceptionDataInfo
                                       {
                                           Exception = new InvalidOperationException ( )
                                         , ParsedExceptions = new ParsedExceptions
                                                              {
                                                                  ParsedList =
                                                                      new
-                                                                     List < ParsedStackInfo > ( )
+                                                                     List < ParsedStackInfo >
                                                                      {
                                                                          new ParsedStackInfo
                                                                          {

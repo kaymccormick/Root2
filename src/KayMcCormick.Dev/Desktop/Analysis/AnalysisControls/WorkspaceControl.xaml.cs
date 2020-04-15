@@ -103,7 +103,7 @@ namespace AnalysisControls
         /// </summary>
         public void CreateWorkspace ( )
         {
-            AdhocWorkspace workspace = new AdhocWorkspace();
+            var workspace = new AdhocWorkspace();
             var projectId = ProjectId.CreateNewId ( ) ;
             var s = workspace.AddSolution(
                               SolutionInfo.Create(

@@ -24,18 +24,19 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-            if ( value is IDictionary d )
+            if ( ! ( value is IDictionary d ) )
             {
-                if ( parameter != null
-                     && d.Contains ( parameter ) )
-                {
-                    return d[ parameter ] ;
-                }
-
                 return null ;
             }
 
+            if ( parameter != null
+                 && d.Contains ( parameter ) )
+            {
+                return d[ parameter ] ;
+            }
+
             return null ;
+
         }
 
         /// <summary>

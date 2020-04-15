@@ -420,7 +420,7 @@ namespace AnalysisAppLib
 
                 var reader = XmlReader.Create (
                                                stream ?? throw new InvalidOperationException ( )
-                                             , new XmlReaderSettings ( ) { Async = true }
+                                             , new XmlReaderSettings { Async = true }
                                               ) ;
 
                 var syntax = XDocument.Load ( reader ) ;

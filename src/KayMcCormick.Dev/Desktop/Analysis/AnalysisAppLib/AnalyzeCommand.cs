@@ -24,7 +24,7 @@ using NLog ;
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
+    /// Generic analyze command.
     /// </summary>
     public class AnalyzeCommand : IAnalyzeCommand
     {
@@ -33,14 +33,14 @@ namespace AnalysisAppLib
         private readonly Pipeline                      _pipeline ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
         /// <summary>
-        /// 
+        /// Constructor. Takes pipeline instanace.
         /// </summary>
         /// <param name="pipeline"></param>
         public AnalyzeCommand ( Pipeline pipeline ) { _pipeline = pipeline ; }
 
         #region Implementation of IAnalyzeCommand
         /// <summary>
-        /// 
+        /// Async analyze routine.
         /// </summary>
         /// <param name="projectNode"></param>
         /// <param name="rejectTarget"></param>

@@ -30,20 +30,26 @@ namespace AnalysisControls
                     var cType = container.GetType ( ) ;
                     foreach ( DictionaryEntry currentResource in Application.Current.Resources )
                     {
-                        if ( currentResource.Value is DataTemplate dt )
+                        if ( ! ( currentResource.Value is DataTemplate dt ) )
                         {
-                            if ( dt.DataType is Type t )
-                            {
-                                if ( t.IsAssignableFrom ( type ) )
-                                {
-                                    var currentClassLogger = logger ;
-                                    currentClassLogger.Info (
-                                                             $"{currentResource.Key} is candidate"
-                                                            ) ;
-                                    return dt ;
-                                }
-                            }
+                            continue ;
                         }
+
+                        if ( ! ( dt.DataType is Type t ) )
+                        {
+                            continue ;
+                        }
+
+                        if ( ! t.IsAssignableFrom ( type ) )
+                        {
+                            continue ;
+                        }
+
+                        var currentClassLogger = logger ;
+                        currentClassLogger.Info (
+                                                 $"{currentResource.Key} is candidate"
+                                                ) ;
+                        return dt ;
                     }
                 }
             }

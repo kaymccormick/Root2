@@ -40,13 +40,15 @@ namespace AnalysisAppLib.XmlDoc
         )
         {
             var r = new AppTypeInfo();
-            if ( propertyValues.Contains ( "Type" ) )
+            if ( ! propertyValues.Contains ( "Type" ) )
             {
-                var type = propertyValues[ "Type" ] ;
-                if ( type is Type t )
-                {
-                    r.Type = t ;
-                }
+                return r ;
+            }
+
+            var type = propertyValues[ "Type" ] ;
+            if ( type is Type t )
+            {
+                r.Type = t ;
             }
 
             return r ;

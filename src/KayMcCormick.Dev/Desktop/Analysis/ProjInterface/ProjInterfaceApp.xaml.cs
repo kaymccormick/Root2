@@ -50,7 +50,7 @@ namespace ProjInterface
                     };
             var conn = new SqlConnection(b.ConnectionString);
 
-            System.Uri resourceLocater = new System.Uri("/ProjInterface;component/AppResources.xaml", System.UriKind.Relative);
+            var resourceLocater = new Uri("/ProjInterface;component/AppResources.xaml", System.UriKind.Relative);
             var rs = GetResourceStream ( resourceLocater ) ;
             foreach ( var referencedAssembly in Assembly
                                                .GetExecutingAssembly ( )
@@ -97,7 +97,7 @@ namespace ProjInterface
                 }
                 
             }
-            ComponentTypesViewModel m = new ComponentTypesViewModel();
+            var m = new ComponentTypesViewModel();
             //PresentationTraceSources.Refresh();
             //PopulateJsonConverters ( disableLogging ) ;
         }
@@ -202,7 +202,7 @@ namespace ProjInterface
         /// <summary>
         /// Application Entry Point.
         /// </summary>
-        [ STAThreadAttribute ( ) ]
+        [ STAThreadAttribute ]
         public static void Main ( )
         {
             EnsureLoggingConfiguredAsync ( Console.WriteLine ) ;
