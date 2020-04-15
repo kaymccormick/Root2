@@ -19,6 +19,7 @@ using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
 using Autofac ;
+using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
@@ -44,7 +45,8 @@ namespace KayMcCormick.Dev
         /// </summary>
         private readonly ILifetimeScope _lifetimeScope ;
 
-        private bool _doPopulateAppContext = true ;
+        // ReSharper disable once RedundantDefaultMemberInitializer
+        private bool _doPopulateAppContext = false ;
 
 
         /// <summary>
@@ -98,53 +100,14 @@ namespace KayMcCormick.Dev
         /// </summary>
         private void PopulateObjects ( )
         {
-            IEnumerable < ResourceNodeInfo > ObjectsChildrenFunc (
-                ResourceNodeInfo                            node
-              , Func < object , object , ResourceNodeInfo > createNode
-            )
-            {
-                var rootNodes = _idProvider.GetRootNodes ( ).ToList ( ) ;
-                return rootNodes.Select (
-                                         rootNode => {
-                                             var componentInfo =
-                                                 _idProvider.GetComponentInfo ( rootNode ) ;
-                                             var regs = _lifetimeScope
-                                                       .ComponentRegistry.Registrations.Where (
-                                                                                               r => r.Id
-                                                                                                    == rootNode
-                                                                                              ) ;
-                                             if ( regs.Any ( ) )
-                                             {
-                                                 var reg = regs.First ( ) ;
-                                                 var myInfo = new ComponentInfo ( ) ;
-                                                 foreach ( var inst in componentInfo.Instances )
-                                                 {
-                                                     myInfo.Instances.Add ( inst ) ;
-                                                 }
-
-                                                 componentInfo.Metadata = reg.Metadata ;
-                                                 componentInfo          = myInfo ;
-                                             }
-
-                                             var resourceNodeInfo = createNode (
-                                                                                rootNode
-                                                                              , componentInfo
-                                                                               ) ;
-                                             resourceNodeInfo.GetChildrenFunc =
-                                                 ComponentChildrenFunc ;
-                                             resourceNodeInfo.IsChildrenLoaded = false ;
-                                             return resourceNodeInfo ;
-                                         }
-                                        ) ;
-            }
-
             var n1 = CreateNode ( Objects_Key , ObjectsChildrenFunc ) ;
+
             // foreach ( var rootNode in _idProvider.GetRootNodes ( ) )
             // {
             // var c = _idProvider.GetComponentInfo ( rootNode ) ;
             // var n2 = CreateNode ( n1 , rootNode , c , true ) ;
             // foreach ( var instanceInfo in c.Instances )
-            // {
+            // {Inst
             // var n3 = CreateNode ( n2 , instanceInfo , instanceInfo , true ) ;
             // var type = instanceInfo.Instance.GetType ( ) ;
             // if ( type.IsGenericType
@@ -215,6 +178,37 @@ namespace KayMcCormick.Dev
         }
 
         [ NotNull ]
+        private IEnumerable < ResourceNodeInfo > ObjectsChildrenFunc ( ResourceNodeInfo node , Func < object , object , ResourceNodeInfo > createNode )
+        {
+            var rootNodes = _idProvider.GetRootNodes ( ).ToList ( ) ;
+            return rootNodes.Select (
+                                     rootNode => {
+                                         var componentInfo = _idProvider.GetComponentInfo ( rootNode ) ;
+                                         var regs = _lifetimeScope.ComponentRegistry.Registrations.Where ( r => r.Id == rootNode ) ;
+                                         var componentRegistrations = regs as IComponentRegistration[] ?? regs.ToArray ( ) ;
+                                         if ( componentRegistrations.Any ( ) )
+                                         {
+                                             var reg = componentRegistrations.First ( ) ;
+                                             var myInfo = new ComponentInfo ( ) ;
+                                             foreach ( var inst in componentInfo.Instances )
+                                             {
+                                                 var ii = new InstanceInfo ( ) { Instance = inst.Instance , Metadata = reg.Metadata } ;
+                                                 myInfo.Instances.Add ( ii ) ;
+                                             }
+
+                                             componentInfo.Metadata = reg.Metadata ;
+                                             componentInfo          = myInfo ;
+                                         }
+
+                                         var resourceNodeInfo = createNode ( rootNode , componentInfo ) ;
+                                         resourceNodeInfo.GetChildrenFunc  = ComponentChildrenFunc ;
+                                         resourceNodeInfo.IsChildrenLoaded = false ;
+                                         return resourceNodeInfo ;
+                                     }
+                                    ) ;
+        }
+
+        [ NotNull ]
         private static IEnumerable < ResourceNodeInfo > ComponentChildrenFunc (
             [ NotNull ] ResourceNodeInfo                arg1
           , Func < object , object , ResourceNodeInfo > arg2
@@ -269,7 +263,10 @@ namespace KayMcCormick.Dev
             {
                 if ( addToChildren )
                 {
-                    parent.Children.Add ( r ) ;
+                    if ( parent.Children != null )
+                    {
+                        parent.Children.Add ( r ) ;
+                    }
                 }
 
                 r.Depth = parent.Depth + 1 ;
@@ -413,7 +410,7 @@ namespace KayMcCormick.Dev
                 }
                 catch
                 {
-
+                    // ignored
                 }
 
                 var exported = CreateNode ( anode , "Exported Types" , null , false ) ;
@@ -442,6 +439,7 @@ namespace KayMcCormick.Dev
                     {
                         foreach ( var c in typ.CustomAttributes )
                         {
+                            // ReSharper disable once UnusedVariable
                             var at1 = CreateNode ( atts , c.AttributeType.FullName , c , false ) ;
                             // for ( var i = 0 ; i < c.Constructor.GetParameters ( ).Length ; i ++ )
                             // {

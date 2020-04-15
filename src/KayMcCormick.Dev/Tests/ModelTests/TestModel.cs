@@ -1,42 +1,40 @@
-﻿using System ;
-using System.Collections.Generic ;
-using System.Collections.Immutable ;
-using System.Diagnostics ;
-using System.IO ;
-using System.Linq ;
-using System.Text.Json ;
-using System.Threading.Tasks ;
-using System.Threading.Tasks.Dataflow ;
-using System.Xaml ;
-using System.Xml ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Dataflow ;
-using AnalysisAppLib.Properties ;
-using AnalysisAppLib.Serialization ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.ViewModel ;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+using System.Xaml;
+using System.Xml;
+using AnalysisAppLib;
+using AnalysisAppLib.Dataflow;
+using AnalysisAppLib.Properties;
+using AnalysisAppLib.Serialization;
+using AnalysisAppLib.Syntax;
+using AnalysisAppLib.ViewModel;
 
 // ReSharper disable once RedundantUsingDirective
-using AnalysisAppLib.XmlDoc ;
-using Autofac ;
-using FindLogUsages ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.TestLib ;
-using KayMcCormick.Dev.TestLib.Fixtures ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.CodeAnalysis.MSBuild ;
-using Microsoft.CodeAnalysis.Text ;
-using Microsoft.Graph ;
-using NLog ;
-using Xunit ;
-using Xunit.Abstractions ;
-using Directory = System.IO.Directory ;
-using Document = Microsoft.CodeAnalysis.Document ;
-using File = System.IO.File ;
+using Autofac;
+using FindLogUsages;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.TestLib;
+using KayMcCormick.Dev.TestLib.Fixtures;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis.Text;
+using NLog;
+using Xunit;
+using Xunit.Abstractions;
+using Directory = System.IO.Directory;
+using Document = Microsoft.CodeAnalysis.Document;
+using File = System.IO.File;
 
 namespace ModelTests
 {
@@ -219,6 +217,7 @@ namespace ModelTests
             var bb = new BufferBlock < T > ( ) ;
             x.LinkTo ( bb , new DataflowLinkOptions { PropagateCompletion = true } ) ;
             //var pipeline = ls.Resolve<Pipeline>();
+            // ReSharper disable once UnusedVariable
             var continueWith = x.Completion.ContinueWith ( task => LogMethod ( x.OutputCount.ToString ( ) ) ) ;
 
             var compilation = await project.GetCompilationAsync ( ) ;
@@ -592,7 +591,7 @@ namespace ModelTests
         {
             ContainerBuilder b = new ContainerBuilder( );
             b.RegisterModule < AnalysisAppLibModule > ( ) ;
-            var c = b.Build ( Autofac.Builder.ContainerBuildOptions.None ) ;
+            var c = b.Build ( ) ;
             var model = c.Resolve < ITypesViewModel > ( ) ;
 
         }
@@ -622,6 +621,7 @@ namespace ModelTests
             
             var x = JsonSerializer.Deserialize <JsonElement>( "[1,2,3,4]" ) ;
             var expr1 = JsonElementCodeConverter.ConvertJsonElementToCode ( x ) ;
+            // ReSharper disable once RedundantAssignment
             expr1 = expr1.NormalizeWhitespace ( ) ;
             //var tree1 = CompileExpression ( expr1 ) ;
             //ConvertedExpression1.
@@ -893,7 +893,7 @@ namespace ModelTests
 
             foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
             {
-                DebugUtils.WriteLine ( diagnostic ) ;
+                DebugUtils.WriteLine ( diagnostic.ToString() ) ;
             }
 
             compilation.Emit ( @"c:\temp\expr1.dll" , @"C:\temp\expr1.pdb" ) ;

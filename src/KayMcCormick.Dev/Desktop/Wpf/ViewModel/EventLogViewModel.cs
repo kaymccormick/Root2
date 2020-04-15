@@ -13,6 +13,7 @@ using System ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Diagnostics ;
+using System.Globalization ;
 using System.IO ;
 using System.Linq ;
 using System.Runtime.Serialization ;
@@ -22,6 +23,7 @@ using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using System.Xml.Serialization ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Lib.Wpf.View ;
@@ -30,8 +32,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
     /// </summary>
-    public class EventLogViewModel : IViewModel , ISupportInitialize
+    public sealed class EventLogViewModel : IViewModel , ISupportInitialize
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly LayoutService _layoutService ;
 
         private readonly PaneService  _panelService ;
@@ -78,7 +81,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 foreach ( var routedEvent in EventManager.GetRoutedEvents ( ) )
                 {
                     DebugUtils.WriteLine ( routedEvent.OwnerType.FullName ) ;
-                    DebugUtils.WriteLine ( routedEvent.RoutingStrategy ) ;
+                    DebugUtils.WriteLine ( routedEvent.RoutingStrategy.ToString() ) ;
                     DebugUtils.WriteLine ( routedEvent.Name ) ;
                 }
             }
@@ -108,7 +111,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                                           .OrderByDescending ( entry => entry.TimeWritten ) ;
             foreach ( var eventLogEntry in eventLogEntries )
             {
-                DebugUtils.WriteLine ( eventLogEntry.TimeWritten ) ;
+                DebugUtils.WriteLine ( eventLogEntry.TimeWritten.ToString( CultureInfo.CurrentCulture ) ) ;
                 var parsedEventLogEntry = new ParsedEventLogEntry ( eventLogEntry ) ;
                 if ( parsedEventLogEntry.Exception1 != null )
                 {
@@ -142,10 +145,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        private void PreviewExecuted ( object sender , ExecutedRoutedEventArgs e )
+        private void PreviewExecuted ( object sender , [ NotNull ] ExecutedRoutedEventArgs e )
         {
             if ( e.Command == ApplicationCommands.Open )
             {
+                // ReSharper disable once UnusedVariable
                 var paneWrapper = _panelService.GetPane ( ) ;
                 var parsedEventLogEntry =
                     ( ParsedEventLogEntry ) ( ( ListView ) e.OriginalSource ).SelectedItem ;
@@ -163,10 +167,10 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 // _layoutService.AddToLayout ( paneWrapper ) ;
                 var w = new Window { Content = uc } ;
                 w.ShowDialog ( ) ;
-                DebugUtils.WriteLine ( e.OriginalSource ) ;
-                DebugUtils.WriteLine ( e.Source ) ;
-                DebugUtils.WriteLine ( sender ) ;
-                DebugUtils.WriteLine ( EventLogCollectionView.CurrentPosition ) ;
+                DebugUtils.WriteLine ( e.OriginalSource.ToString() ) ;
+                DebugUtils.WriteLine ( e.Source.ToString() ) ;
+                DebugUtils.WriteLine ( sender.ToString() ) ;
+                DebugUtils.WriteLine ( EventLogCollectionView.CurrentPosition.ToString() ) ;
             }
 
             if ( e.Command is RoutedUICommand rc )
@@ -236,6 +240,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public DateTime TimeWritten { get { return _logEntry.TimeWritten ; } }
 
         /// <summary>

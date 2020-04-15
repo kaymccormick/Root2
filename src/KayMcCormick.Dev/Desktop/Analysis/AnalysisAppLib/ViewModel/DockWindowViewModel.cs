@@ -21,6 +21,7 @@ namespace AnalysisAppLib.ViewModel
     [ UsedImplicitly ]
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
+        // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly IEnumerable < Meta < Lazy < IViewWithTitle > > > _views ;

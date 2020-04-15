@@ -84,7 +84,9 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         /// <param name="viewCurrentItem"></param>
         /// <returns></returns>
+#pragma warning disable 1998
         public async Task AnalyzeCommand ( object viewCurrentItem ) { }
+#pragma warning restore 1998
         #endregion
     }
 }

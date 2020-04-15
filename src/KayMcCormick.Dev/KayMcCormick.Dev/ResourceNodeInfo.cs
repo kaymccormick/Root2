@@ -101,8 +101,7 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ]
-        public List < ResourceNodeInfo > Children
+        [ JsonIgnore ] [ CanBeNull ] public List < ResourceNodeInfo > Children
         {
             get
             {
@@ -183,9 +182,5 @@ namespace KayMcCormick.Dev
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
-    }
-
-    internal class ResourceNodeInfo2 : ResourceNodeInfo
-    {
     }
 }

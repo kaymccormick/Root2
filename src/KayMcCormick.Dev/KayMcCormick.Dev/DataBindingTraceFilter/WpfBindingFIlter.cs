@@ -12,6 +12,7 @@
 using System.Diagnostics ;
 using System.Linq ;
 using System.Text.RegularExpressions ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace KayMcCormick.Dev.DataBindingTraceFilter
@@ -38,7 +39,7 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
           , string          source
           , TraceEventType  eventType
           , int             id
-          , string          formatOrMessage
+          , [ NotNull ] string          formatOrMessage
           , object[]        args
           , object          data1
           , object[]        data

@@ -15,7 +15,6 @@ using System.Net.Sockets ;
 using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
-using System.Runtime.InteropServices ;
 using System.Security ;
 using System.Security.Permissions ;
 using System.Text ;
@@ -603,6 +602,10 @@ namespace KayMcCormick.Dev.Logging
 
         private static void LogAddTarget ( [ NotNull ] Target target )
         {
+            if ( target == null )
+            {
+                throw new ArgumentNullException ( nameof ( target ) ) ;
+            }
 #if TRACEPROVIDER
             PROVIDER_GUID.EventWriteLOGTARGET_ATTACHED_EVENT (
                                                               target.Name
@@ -776,7 +779,24 @@ namespace KayMcCormick.Dev.Logging
           , [ CallerFilePath ] string            callerFilePath = null
         )
         {
-            var task = Task.Run ( () => EnsureLoggingConfiguredAsync ( slogMethod , config1 , null, callerFilePath ) ) ;
+            Task < ILogger > Function ( )
+            {
+                if ( callerFilePath != null )
+                {
+                    return EnsureLoggingConfiguredAsync (
+                                                         slogMethod
+                                                       , config1
+                                                       , null
+                                                       , callerFilePath
+                                                        ) ;
+                }
+
+                throw new InvalidOperationException ( ) ;
+            }
+
+
+            var task = Task.Run ( Function
+                                ) ;
             return task.Result;
         }
 
@@ -796,7 +816,7 @@ namespace KayMcCormick.Dev.Logging
         public static async Task < ILogger > EnsureLoggingConfiguredAsync (
             [ CanBeNull ] LogDelegates.LogMethod slogMethod = null
           , ILoggingConfiguration                config1    = null
-          , Subject < ILogger > observable = null
+          , [ CanBeNull ] Subject < ILogger > observable = null
           , [ CallerFilePath ] string            callerFilePath = null
         )
         {
@@ -1179,10 +1199,7 @@ namespace KayMcCormick.Dev.Logging
             LogManager.Shutdown ( ) ;
         }
 
-        [ DllImport ( "kernel32.dll" ) ]
-        private static extern void OutputDebugString ( string lpOutputString ) ;
-
-#region Target Methods
+        #region Target Methods
         /// <summary>Adds the supplied target to the current NLog configuration.</summary>
         /// <param name="target">The target.</param>
         /// <param name="minLevel"></param>

@@ -67,7 +67,7 @@ namespace ProjInterface
 #if PYTHON
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
-                                                                            , new Uri(
+                                                                        , new Uri(
                                                                                       "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
                                                                                      )
                                                                              )
@@ -79,8 +79,8 @@ namespace ProjInterface
 #endif
 
 
-            builder.RegisterType < EventLogView > ( ).AsSelf ( ) ;
-            builder.RegisterType < EventLogViewModel > ( ) ;
+            builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
+            builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;
 #if PYTHON
             builder.RegisterBuildCallback (
                                            scope => {
@@ -96,13 +96,14 @@ namespace ProjInterface
                                           ) ;
 #endif
             builder.RegisterModule < AnalysisAppLibModule > ( ) ;
-            builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
+            builder.RegisterType < Window1 > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
 #if EXPLORER
+if(RegiserExplorerTypes){
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
                                                                          (
                                                                              context
-                                                                           , parameters
-                                                                           , item
+                                                                       , parameters
+                                                                       , item
                                                                          ) => {
                                                                              var r =
                                                                                  new
@@ -112,41 +113,51 @@ namespace ProjInterface
                                                                              return r ;
                                                                          }
                                                                         ) ;
+}
 #endif
-            builder.RegisterType<AllResourcesTree>()
-                   .As<UserControl>()
-                   .AsSelf()
-                   .As<IViewWithTitle>()
-                   .As<IControlView>().WithCallerMetadata();
-            builder.RegisterType<AllResourcesView>()
-                   .As<UserControl>()
-                   .AsSelf()
-                   .As<IViewWithTitle>()
-                   .As<IControlView>().WithCallerMetadata();
+            builder.RegisterType < AllResourcesTree > ( )
+                   .As < UserControl > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .As < IControlView > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < AllResourcesView > ( )
+                   .As < UserControl > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .As < IControlView > ( )
+                   .WithCallerMetadata ( ) ;
             builder.RegisterType < WorkspaceControl > ( )
                    .As < IViewWithTitle > ( )
-                   .As < IControlView > ( ).WithCallerMetadata();
-            builder.RegisterType < WorkspaceViewModel > ( ).WithCallerMetadata();
-            builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ).WithCallerMetadata() ;
+                   .As < IControlView > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < WorkspaceViewModel > ( ).WithCallerMetadata ( ) ;
+            builder.RegisterInstance ( Application.Current )
+                   .As < IResourceResolver > ( )
+                   .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ).SingleInstance().WithCallerMetadata() ;
-            builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
+            builder.RegisterType < AllResourcesTreeViewModel > ( )
+                   .AsSelf ( )
+                   .SingleInstance ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ).WithCallerMetadata();
             //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
 
-            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
-            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
-                   //.As < IControlView > ( ) ;
+            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
+            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
+            //.As < IControlView > ( ) ;
 
-                   builder
-                      .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                           Func < LayoutDocumentPane , IDisplayableAppCommand >
-                       > ( ControlViewCommandAdapter )
-                      .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ).WithCallerMetadata();
+            builder
+               .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
+                    Func < LayoutDocumentPane , IDisplayableAppCommand >
+                > ( ControlViewCommandAdapter )
+               .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( )
+               .WithCallerMetadata ( ) ;
 
 #if PYTHON
             builder.RegisterAssemblyTypes (
                                            Assembly.GetCallingAssembly ( )
-                                         , typeof ( PythonControl ).Assembly
+                                     , typeof ( PythonControl ).Assembly
                                           )
                    .Where (
                            type => {
@@ -167,16 +178,19 @@ namespace ProjInterface
                                   => new LogViewerControl ( new LogViewerConfig ( 0 ) )
                              )
                    .As < IViewWithTitle > ( )
-                   .As < LogViewerControl > ( ).WithCallerMetadata();
+                   .As < LogViewerControl > ( )
+                   .WithCallerMetadata ( ) ;
         }
 
         [ NotNull ]
-        private static Func < LayoutDocumentPane , IDisplayableAppCommand > ControlViewCommandAdapter (
-            [ NotNull ] IComponentContext                                               c
-          , IEnumerable < Parameter >                                       p
-          , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView> >  metaFunc
-        )
-        { c.Resolve < IResourceResolver > ( ) ;
+        private static Func < LayoutDocumentPane , IDisplayableAppCommand >
+            ControlViewCommandAdapter (
+                [ NotNull ] IComponentContext                                   c
+              , IEnumerable < Parameter >                                       p
+              , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
+            )
+        {
+            c.Resolve < IResourceResolver > ( ) ;
             metaFunc.Metadata.TryGetValue ( "Title" ,       out var titleo ) ;
             metaFunc.Metadata.TryGetValue ( "ImageSource" , out var imageSource ) ;
             // object res = r.ResolveResource ( imageSource ) ;
@@ -196,14 +210,13 @@ namespace ProjInterface
                                                       {
                                                           LargeImageSourceKey = imageSource
                                                       } ;
-                
         }
 #if PYTHON
         [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext                    c
-          , IEnumerable < Parameter >            p
-          , [ NotNull ] Meta < Lazy < object > > item
+      , IEnumerable < Parameter >            p
+      , [ NotNull ] Meta < Lazy < object > > item
         )
         {
             if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )
@@ -218,7 +231,9 @@ namespace ProjInterface
             return r ;
         }
 #endif
-        private static async Task < IAppCommandResult > CommandFuncAsync ( [ NotNull ] LambdaAppCommand command )
+        private static async Task < IAppCommandResult > CommandFuncAsync (
+            [ NotNull ] LambdaAppCommand command
+        )
         {
             var (viewFunc1 , pane1) =
                 ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
@@ -226,7 +241,7 @@ namespace ProjInterface
 
             var n = DateTime.Now ;
             var view = viewFunc1 ( pane1 ) ;
-            DebugUtils.WriteLine((DateTime.Now - n).ToString ( ));
+            DebugUtils.WriteLine ( ( DateTime.Now - n ).ToString ( ) ) ;
             var doc = new LayoutDocument { Content = view } ;
             pane1.Children.Add ( doc ) ;
             pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;

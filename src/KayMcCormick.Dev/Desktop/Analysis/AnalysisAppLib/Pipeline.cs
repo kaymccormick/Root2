@@ -37,6 +37,7 @@ namespace AnalysisAppLib
         }
 
 
+        // ReSharper disable once CollectionNeverQueried.Local
         private readonly List < IDataflowBlock > _dataflowBlocks = new List < IDataflowBlock > ( ) ;
 
         private DataflowLinkOptions _linkOptions =
@@ -56,6 +57,7 @@ namespace AnalysisAppLib
         public DataflowLinkOptions LinkOptions
         {
             get { return _linkOptions ; }
+            // ReSharper disable once UnusedMember.Global
             set { _linkOptions = value ; }
         }
 
@@ -107,7 +109,8 @@ namespace AnalysisAppLib
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
         }
 
-        private T Register < T > ( T block )
+        [ NotNull ]
+        private T Register < T > ( [ NotNull ] T block )
             where T : IDataflowBlock
         {
             _dataflowBlocks.Add ( block ) ;
@@ -115,7 +118,7 @@ namespace AnalysisAppLib
             return block ;
         }
 
-        private static void Continuation ( IDataflowBlock block , string writeOnceBlockName )
+        private static void Continuation ( [ NotNull ] IDataflowBlock block , string writeOnceBlockName )
         {
             block.Completion.ContinueWith (
                                            task => ContinuationFunction (
@@ -125,7 +128,7 @@ namespace AnalysisAppLib
                                           ) ;
         }
 
-        private static void ContinuationFunction ( Task task , string logName )
+        private static void ContinuationFunction ( [ NotNull ] Task task , string logName )
         {
             if ( task.IsFaulted )
             {
@@ -147,6 +150,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         protected virtual IPropagatorBlock < AnalysisRequest , AnalysisRequest > ConfigureInput ( )
         {
             var input = new WriteOnceBlock < AnalysisRequest > ( s => s ) ;
@@ -170,9 +174,11 @@ namespace AnalysisAppLib
 
         private static class Workspaces
         {
+            // ReSharper disable once MemberHidesStaticFromOuterClass
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 
+            [ NotNull ]
             public static TransformBlock < AnalysisRequest , Workspace >
                 InitializeWorkspace2Block ( )
             {
@@ -182,7 +188,10 @@ namespace AnalysisAppLib
             }
 
 
-            public static async Task < Workspace > MakeWorkspace2Async (
+#pragma warning disable 1998
+            [ ItemNotNull ]
+            private static async Task < Workspace > MakeWorkspace2Async (
+#pragma warning restore 1998
                 [ NotNull ] AnalysisRequest req
             )
 

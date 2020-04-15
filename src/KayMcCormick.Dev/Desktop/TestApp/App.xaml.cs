@@ -38,7 +38,7 @@ namespace TestApp
 
         private void CurrentDomainOnFirstChanceException (
             object                        sender
-          , FirstChanceExceptionEventArgs e
+          , [ NotNull ] FirstChanceExceptionEventArgs e
         )
         {
             if ( e.Exception is TypeLoadException )

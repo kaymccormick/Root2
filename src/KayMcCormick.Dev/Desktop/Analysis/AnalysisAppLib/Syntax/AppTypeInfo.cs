@@ -862,7 +862,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals ( AppTypeInfoKey other )
+        public bool Equals ( [ NotNull ] AppTypeInfoKey other )
         {
             return StringValue == other.StringValue ;
         }

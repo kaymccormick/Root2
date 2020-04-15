@@ -67,7 +67,7 @@ namespace AnalysisAppLib.ViewModel
         /// 
         /// </summary>
         /// <param name="compilationUnitSyntax"></param>
-        public SyntaxPanelViewModel ( CompilationUnitSyntax compilationUnitSyntax = null )
+        public SyntaxPanelViewModel ( [ CanBeNull ] CompilationUnitSyntax compilationUnitSyntax = null )
         {
             if ( compilationUnitSyntax != null )
             {

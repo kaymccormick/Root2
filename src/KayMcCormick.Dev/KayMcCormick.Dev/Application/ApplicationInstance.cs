@@ -18,6 +18,7 @@ using Autofac.Integration.Mef ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Configuration ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.StackTrace ;
@@ -382,13 +383,13 @@ namespace KayMcCormick.Dev.Application
                    .AssignableTo < JsonConverter > ( ).PublicOnly()
                    .AsImplementedInterfaces ( )
                    .As<JsonConverter> (  )
-                   .AsSelf ( );
+                   .AsSelf ( ).WithCallerMetadata();
 
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
             JsonConverters.AddJsonConverters(jsonSerializerOptions);
             foreach ( var jsonConverter in jsonSerializerOptions.Converters )
             {
-                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ) ;
+                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ).WithCallerMetadata (  ) ;
             }
             
             //builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
@@ -404,7 +405,7 @@ namespace KayMcCormick.Dev.Application
                                   return o ;
                               }
                              )
-                   .As < JsonSerializerOptions > ( ) ;
+                   .As < JsonSerializerOptions > ( ).WithCallerMetadata() ;
 
             foreach ( var module in _modules )
             {
@@ -634,12 +635,12 @@ namespace KayMcCormick.Dev.Application
                    .AsSelf ( )
                    .AsImplementedInterfaces ( )
                    .WithAttributedMetadata ( )
-                   .WithAttributeFiltering ( ) ;
+                   .WithAttributeFiltering ( ).WithCallerMetadata() ;
             if ( AppLoggingConfigHelper.CacheTarget2 != null )
             {
                 builder.RegisterInstance ( AppLoggingConfigHelper.CacheTarget2 )
                        .WithMetadata ( "Description" , "Cache target" )
-                       .SingleInstance ( ) ;
+                       .SingleInstance ( ).WithCallerMetadata() ;
             }
         }
     }

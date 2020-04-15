@@ -25,10 +25,13 @@ namespace AnalysisAppLib.Span
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly string _displayString ;
 
 
+#pragma warning disable 169
         private Func < object , object > _getResource ;
+#pragma warning restore 169
 
         /// <summary>
         /// 

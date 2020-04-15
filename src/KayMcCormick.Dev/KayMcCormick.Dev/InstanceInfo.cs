@@ -23,6 +23,8 @@ namespace KayMcCormick.Dev
     [DefaultProperty("Instance")]
     public sealed class InstanceInfo
     {
+        private IDictionary < string , object  > _metadata ;
+
         /// <summary>Gets or sets the instance.</summary>
         /// <value>The instance.</value>
         public object Instance { get ; set ; }
@@ -30,6 +32,11 @@ namespace KayMcCormick.Dev
         /// <summary>Gets or sets the parameters.</summary>
         /// <value>The parameters.</value>
         public IEnumerable < Parameter > Parameters { get ; set ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDictionary < string , object  > Metadata { get { return _metadata ; } set { _metadata = value ; } }
 
 
         /// <inheritdoc />

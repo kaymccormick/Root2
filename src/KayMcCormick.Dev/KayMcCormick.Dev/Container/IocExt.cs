@@ -1,9 +1,13 @@
-﻿using System.Runtime.CompilerServices ;
+﻿using System.IO ;
+using System.Runtime.CompilerServices ;
 using Autofac.Builder ;
 using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Container
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public  static class IocExt
     {
         /// <summary>
@@ -26,10 +30,8 @@ namespace KayMcCormick.Dev.Container
                 [CallerMemberName] string                                                                callerMemberName = ""
             )
         {
-            builder.WithMetadata ( "CallerFilePath" , callerFilePath ) ;
-            builder.WithMetadata("CallerLineNumber",  callerLineNumber);
-            builder.WithMetadata("CallerMemberName",  callerMemberName);
-            return builder ;
+            return builder.WithMetadata("CallerFilePath", callerFilePath).WithMetadata("CallerFilename",Path.GetFileName(callerFilePath)).WithMetadata("CallerLineNumber",  callerLineNumber)
+                          .WithMetadata("CallerMemberName",  callerMemberName);
         }
     }
 }

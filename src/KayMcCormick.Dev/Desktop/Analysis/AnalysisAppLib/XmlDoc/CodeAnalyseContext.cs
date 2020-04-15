@@ -12,6 +12,7 @@
 
 using System ;
 using System.Linq ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -92,9 +93,10 @@ namespace AnalysisAppLib.XmlDoc
                 $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes ( ).Count ( )} nodes" ;
         }
 
+        [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxTree (
-            SyntaxTree               tree
-          , string                   assemblyName
+            [ NotNull ] SyntaxTree               tree
+          , [ NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
@@ -103,9 +105,10 @@ namespace AnalysisAppLib.XmlDoc
             // return new CodeAnalyseContext(comp.GetSemanticModel(tree), tree.GetCompilationUnitRoot(), null, tree.GetRoot(), new CodeSource("memory"), tree);
         }
 
+        [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxNode (
             SyntaxNode               node
-          , string                   assemblyName
+          , [ NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
@@ -119,6 +122,7 @@ namespace AnalysisAppLib.XmlDoc
 
         public CompilationUnitSyntax Lazy { get { return _lazy.Value ; } }
 
+        [ NotNull ]
         private CompilationUnitSyntax ValueFactory ( )
         {
             return SyntaxTree.GetCompilationUnitRoot ( ) ;

@@ -29,6 +29,7 @@ namespace AnalysisAppLib
     public sealed class AnalysisAppLibModule : IocModule
     {
 
+        // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _registerExplorerTypes = false ;
         /// <summary>
         /// Parameterless constructor.
@@ -248,7 +249,7 @@ namespace AnalysisAppLib
                    .WithCallerMetadata()
                    .WithMetadata ( "Purpose" , "Analysis" ) ;
             
-            builder.RegisterType < Example1TransformFuncProvider > ( ).AsSelf().AsImplementedInterfaces().WithCallerMetadata(); ;
+            builder.RegisterType < Example1TransformFuncProvider > ( ).AsSelf().AsImplementedInterfaces().WithCallerMetadata();
 
             builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider < , , > ) )
                    .As ( typeof ( IAnalysisBlockProvider < , , > ) )

@@ -41,10 +41,12 @@
                  TargetType="ContentControl">
             <Setter Property="Margin" Value="20,5,0,0" />
           </Style>
-          <wpf:ResourceDetailTemplateSelector
-            x:Key="ResourceDetailTemplateSelector" />
           <wpf:ResourcePreviewTemplateSelector
             x:Key="ResourcePreviewTemplateSelector" />
+          <wpf:ResourceKeyTemplateSelector
+            x:Key="ResourceKeyTemplateSelector" />
+          <wpf:ResourceDetailTemplateSelector
+            x:Key="ResourceDetailTemplateSelector" />
           <wpf:ControlTemplateConverter
             x:Key="ControlTemplateConverter" />
           <DataTemplate x:Key="DetailControlTemplate"
@@ -205,7 +207,7 @@
           <wpf:ResourceTreeViewItemTemplateSelector
             x:Key="ResourceTreeViewItemTemplateSelector" />
           <wpf:ResourceViewItemContainerStyleSelector
-            x:Key="ResourcereeViewItemContainerStyleSelector" />
+            x:Key="ResourceViewItemContainerStyleSelector" />
           <Style x:Key="DefaultResourceNodeInfoStyle"
                  BasedOn="{StaticResource {x:Type TreeViewItem}}"
                  TargetType="TreeViewItem">
@@ -219,6 +221,64 @@
                     Value="-5,0,0,0" />
             <Setter Property="Control.Padding" Value="0" />
           </Style>
+          <DataTemplate DataType="{x:Type dev:InstanceInfo}" x:Key="PreviewInstanceInfo">
+            <Border>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"  Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}"/>
+                <TextBlock Grid.Row="1"  Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}"/>
+                <TextBlock Grid.Row="2" Text="{Binding Path=Data}"/>
+                <TextBlock Grid.Row="3" Grid.RowSpan="2" Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFileLine}"/>
+                <TextBlock Grid.Row="4" Grid.RowSpan="2" Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerMemberName}"/>
+              </Grid>
+            </Border>
+            </DataTemplate>
+          <DataTemplate DataType="{x:Type dev:InstanceInfo}" x:Key="DetailInstanceInfo">
+            <Border>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}"/>
+                <TextBlock Grid.Row="2" Text="{Binding Path=Data}"/>
+              </Grid>
+            </Border>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type registration:ComponentRegistration}" x:Key="DetailComponentRegistration">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Text="{Binding Path=Activator}"/>
+              <TextBlock Text="|"/>
+              <TextBlock Text="{Binding Path=Sharing}"/>
+            </StackPanel>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type registration:ComponentRegistration}" x:Key="PreviewComponentRegistration">
+            <StackPanel Orientation="Horizontal">
+              <ItemsControl ItemsSource="{Binding Path=Metadata}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <WrapPanel>
+                    <TextBlock Text="{Binding Path=Key}" Padding="0,0,20,0"/>
+                    <TextBlock Text="{Binding Path=Value}"/>
+                    </WrapPanel>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </DataTemplate>
+
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
@@ -244,7 +304,7 @@
       <wpf:TreeView1 x:Name="tv"
                      x:FieldModifier="public"
                      VerticalAlignment="Stretch"
-                     ItemContainerStyleSelector="{StaticResource ResourcereeViewItemContainerStyleSelector}"
+                     ItemContainerStyleSelector="{StaticResource ResourceViewItemContainerStyleSelector}"
                      ItemTemplateSelector="{StaticResource ResourceTreeViewItemTemplateSelector}"
                      ItemsSource="{Binding Path=AllResourcesCollection}"
                      Margin="0,0,0,0.2" />
@@ -289,13 +349,13 @@
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,5,20,0" Text="Key"
                    Grid.Row="3" Grid.Column="0" />
-        <ContentControl Margin="20,0,0,0" Grid.Row="4"
+          <ContentControl Margin="20,0,0,0" Grid.Row="4"
                         Style="{StaticResource DetailValue}"
                         Grid.Column="0"
-                        Content="{Binding Key}" />
-        <TextBlock Style="{StaticResource DetailHeader}"
-                   Margin="0,0,20,0" Text="Value Type"
-                   Grid.Row="5" Grid.Column="0" />
+                        Content="{Binding Key}" ContentTemplateSelector="{StaticResource ResourceKeyTemplateSelector}"/>
+          <TextBlock Style="{StaticResource DetailHeader}"
+                                                                                                                                                     Margin="0,0,20,0" Text="Value Type"
+                                                                                                                                                     Grid.Row="5" Grid.Column="0" />
         <wpf:TypeControl
           Grid.Row="6"
           Grid.Column="0"
@@ -305,6 +365,7 @@
                      Converter="{StaticResource GetTypeConverter}" />
           </wpf:AttachedProperties.RenderedType>
         </wpf:TypeControl>
+
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value"
                    Grid.Row="7" Grid.Column="0" />

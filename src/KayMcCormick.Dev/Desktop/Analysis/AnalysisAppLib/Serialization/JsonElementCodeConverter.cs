@@ -22,9 +22,10 @@ namespace AnalysisAppLib.Serialization
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
+        [ NotNull ]
         public static ExpressionSyntax ConvertJsonElementToCode ( JsonElement element )
         {
-            ExpressionSyntax elementSyntax = null ;
+            ExpressionSyntax elementSyntax ;
             switch ( element.ValueKind )
             {
                 case JsonValueKind.Undefined :
@@ -115,9 +116,9 @@ namespace AnalysisAppLib.Serialization
             return elementSyntax ;
         }
 
+        [ NotNull ]
         private static ExpressionSyntax AnonymousObject ( JsonElement element )
         {
-            ExpressionSyntax elementSyntax ;
             var anon = new SeparatedSyntaxList < AnonymousObjectMemberDeclaratorSyntax > ( ).AddRange (
                                                                                                        element
                                                                                                           .EnumerateObject ( )
@@ -141,12 +142,12 @@ namespace AnalysisAppLib.Serialization
                                                                                                                                                            )
                                                                                                                   )
                                                                                                       ) ;
-            elementSyntax =
-                SyntaxFactory.AnonymousObjectCreationExpression (
-                                                                 new SeparatedSyntaxList <
-                                                                     AnonymousObjectMemberDeclaratorSyntax
-                                                                 > ( )
-                                                                ) ;
+            ExpressionSyntax elementSyntax = SyntaxFactory.AnonymousObjectCreationExpression (
+                                                                                              // ReSharper disable once RedundantArgumentDefaultValue
+                                                                                              new SeparatedSyntaxList <
+                                                                                                  AnonymousObjectMemberDeclaratorSyntax
+                                                                                              > ( )
+                                                                                             ) ;
             return elementSyntax ;
         }
     }

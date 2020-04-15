@@ -2,6 +2,7 @@
 using System.Collections ;
 using System.Collections.Generic ;
 using AnalysisAppLib.Syntax ;
+using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Xaml
 {
@@ -117,7 +118,7 @@ namespace AnalysisAppLib.Xaml
         /// <param name="typeKey"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public AppTypeInfo GetAppTypeInfoForType ( AppTypeInfoKey typeKey )
+        public AppTypeInfo GetAppTypeInfoForType ( [ NotNull ] AppTypeInfoKey typeKey )
         {
             if (! dict.ContainsKey ( typeKey ) )
             {

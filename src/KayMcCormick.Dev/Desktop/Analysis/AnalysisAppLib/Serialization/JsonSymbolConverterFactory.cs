@@ -21,7 +21,7 @@ namespace AnalysisAppLib.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonSymbolConverterFactory : JsonConverterFactory
+    public sealed class JsonSymbolConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <inheritdoc />
@@ -38,18 +38,11 @@ namespace AnalysisAppLib.Serialization
           , JsonSerializerOptions options
         )
         {
-            return new Converter (options ) ;
+            return new Converter ( ) ;
         }
 
         private sealed class Converter : JsonConverter<ISymbol>
         {
-            private readonly JsonSerializerOptions options;
-
-            public Converter(JsonSerializerOptions options)
-            {
-                this.options = options;
-            }
-
             #region Overrides of JsonConverter<ISymbol>
             [ CanBeNull ] public override ISymbol Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 

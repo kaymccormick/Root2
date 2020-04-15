@@ -2,6 +2,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Dataflow
 {
@@ -61,7 +62,7 @@ namespace AnalysisAppLib.Dataflow
         /// <param name="factory"></param>
         /// <param name="funcProvider"></param>
         public ConcreteAnalysisBlockProvider (
-            BlockFactory < TSource , TDest , TBlock >          factory
+            [ NotNull ] BlockFactory < TSource , TDest , TBlock >          factory
           , IDataflowTransformFuncProvider < TSource , TDest > funcProvider
         )
         {

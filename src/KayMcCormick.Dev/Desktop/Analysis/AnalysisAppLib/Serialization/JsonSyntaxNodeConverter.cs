@@ -15,6 +15,7 @@ using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using FindLogUsages ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
@@ -62,12 +63,14 @@ namespace AnalysisAppLib.Serialization
         }
         #endregion
 
-        private class InnerConverter < T > : JsonConverter < T >
+        private sealed class InnerConverter < T > : JsonConverter < T >
             where T : CSharpSyntaxNode
         {
-            public InnerConverter ( JsonSerializerOptions options ) { }
+            private readonly JsonSerializerOptions _options ;
+            public InnerConverter ( JsonSerializerOptions options ) { _options = options ; }
 
             #region Overrides of JsonConverter<T>
+            [ CanBeNull ]
             public override T Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -116,8 +119,8 @@ namespace AnalysisAppLib.Serialization
             }
 
             public override void Write (
-                Utf8JsonWriter        writer
-              , T                     value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] T                     value
               , JsonSerializerOptions options
             )
             {

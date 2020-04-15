@@ -34,6 +34,7 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <param name="invocationFactory"></param>
+        // ReSharper disable once UnusedParameter.Local
         public Example1TransformFuncProvider ( Func < Example1Out> invocationFactory )
         {
 
@@ -42,8 +43,9 @@ namespace AnalysisAppLib.Dataflow
             _transformFunc = document => Transform( document , RejectBlock ) ;
         }
 
+        [ ItemNotNull ]
         private async Task< IEnumerable < Example1Out > > Transform (
-            Document                     document
+            [ NotNull ] Document                     document
             // ReSharper disable once UnusedParameter.Local
           , BufferBlock < RejectedItem > rejectBlock
         )

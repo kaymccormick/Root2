@@ -24,6 +24,7 @@ namespace AnalysisAppLib
     {
 
         private readonly Dictionary<Type, TypeDocInfo>
+            // ReSharper disable once CollectionNeverUpdated.Local
             _docs = new Dictionary<Type, TypeDocInfo>();
 
         private DocumentCollection _documentCollection ;

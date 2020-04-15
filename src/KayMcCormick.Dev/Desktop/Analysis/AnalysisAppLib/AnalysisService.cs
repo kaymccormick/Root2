@@ -74,6 +74,7 @@ namespace AnalysisAppLib
         /// <param name="compilation"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [ NotNull ]
         public static ICodeAnalyseContext CreateFromCompilation (
             [ NotNull ] SyntaxTree        syntaxTree
           , [ NotNull ] CSharpCompilation compilation
@@ -89,6 +90,7 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( compilation ) ) ;
             }
 
+            // ReSharper disable once UnusedVariable
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
             return new CodeAnalyseContext (
                                            compilation.GetSemanticModel ( syntaxTree )
@@ -107,6 +109,7 @@ namespace AnalysisAppLib
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
+        [ NotNull ]
         public static ICodeAnalyseContext Parse (
             [ NotNull ] string code
           , [ NotNull ] string assemblyName

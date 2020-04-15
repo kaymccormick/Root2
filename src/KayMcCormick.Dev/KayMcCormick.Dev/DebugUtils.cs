@@ -65,7 +65,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="obj"></param>
         [Obsolete]
-        public static void WriteLine ( object obj )
+        public static void WriteLine ( [ NotNull ] object obj )
         {
             WriteLine ( obj.ToString ( ) ) ;
         }

@@ -2,6 +2,7 @@ using System ;
 using System.Collections ;
 using System.Globalization ;
 using System.Windows.Data ;
+using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -32,6 +33,7 @@ namespace KayMcCormick.Lib.Wpf
             if ( parameter != null
                  && d.Contains ( parameter ) )
             {
+                DebugUtils.WriteLine( d[ parameter ].ToString() ) ;
                 return d[ parameter ] ;
             }
 

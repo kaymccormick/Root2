@@ -48,6 +48,7 @@ namespace AnalysisAppLib
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        // ReSharper disable once UnusedMember.Local
         private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator ( ) ;
 
         /// <summary>
@@ -203,7 +204,8 @@ namespace AnalysisAppLib
         /// <param name="o"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string GetXmlId ( object o )
+        [ NotNull ]
+        public static string GetXmlId ( [ NotNull ] object o )
         {
             switch ( o )
             {
@@ -234,7 +236,8 @@ namespace AnalysisAppLib
         /// <param name="t"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string SubIdForGenericType ( Type t )
+        [ NotNull ]
+        public static string SubIdForGenericType ( [ NotNull ] Type t )
         {
             if ( ! t.IsGenericType )
             {
@@ -254,7 +257,7 @@ namespace AnalysisAppLib
             return string.Empty ;
         }
 
-        private static string SubIdForType ( Type arg )
+        private static string SubIdForType ( [ NotNull ] Type arg )
         {
             if ( arg.IsGenericType )
             {
@@ -264,9 +267,9 @@ namespace AnalysisAppLib
             return SubIdforNonGeneric ( arg ) ;
         }
 
-        private static string SubIdforNonGeneric ( Type type ) { return type.FullName ; }
+        [ CanBeNull ] private static string SubIdforNonGeneric ( [ NotNull ] Type type ) { return type.FullName ; }
 
-        private static void WriteDocument ( XmlNode doc , string outFile )
+        private static void WriteDocument ( [ NotNull ] XmlNode doc , [ NotNull ] string outFile )
         {
             var xmlWriterSettings = new XmlWriterSettings { Indent = true } ;
             using ( var xmlWriter = XmlWriter.Create ( outFile , xmlWriterSettings ) )
@@ -294,9 +297,10 @@ namespace AnalysisAppLib
             }
         }
 
+        [ NotNull ]
         private static XmlDocument CreateTypesDocument (
-            out NameTable           xmlNameTable
-          , out XmlNamespaceManager nsManager
+            [ CanBeNull ] out NameTable           xmlNameTable
+          , [ CanBeNull ] out XmlNamespaceManager nsManager
         )
         {
             var d1 = new XmlDocument ( ) ;

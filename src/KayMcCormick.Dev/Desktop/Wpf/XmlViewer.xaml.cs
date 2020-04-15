@@ -2,6 +2,7 @@
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Xml ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -56,7 +57,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <param name="document"></param>
-        public void BindXMLDocument ( XmlDocument document )
+        public void BindXMLDocument ( [ CanBeNull ] XmlDocument document )
         {
             if ( document == null )
             {

@@ -25,23 +25,33 @@ namespace AnalysisAppLib.Explorer
     /// </summary>
     public sealed class FileSystemAppExplorerItem : AppExplorerItem , INotifyPropertyChanged
     {
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly IEnumerable < FileSystemAppExplorerItem > _children ;
+#pragma warning disable 649
         private          IEnumerable < AppExplorerItem >           _children1 ;
+#pragma warning restore 649
         private readonly DateTime ?                                _date ;
+#pragma warning disable 169
         private          object                                    _extension ;
+#pragma warning restore 169
         private readonly object                                    _extension1 ;
         private readonly FileAttributes                            _fileAttributes ;
         private readonly string                                    _fullName ;
         private readonly bool                                      _hasChildren ;
         private          IDictionary                               _iconsResources ;
+        // ReSharper disable once NotAccessedField.Local
         private          string                                    _inputPath ;
 
 
         private readonly bool _isDirectory ;
 
 
+#pragma warning disable 169
         private          bool   _isHidden ;
+#pragma warning restore 169
+#pragma warning disable 649
         private          string _link ;
+#pragma warning restore 649
         private readonly string _name ;
         private readonly long   _size ;
 
@@ -49,6 +59,7 @@ namespace AnalysisAppLib.Explorer
         /// 
         /// </summary>
         /// <param name="inputPath"></param>
+        // ReSharper disable once AnnotateNotNullParameter
         public FileSystemAppExplorerItem ( string inputPath )
         {
             _inputPath      = inputPath ;
@@ -86,10 +97,15 @@ namespace AnalysisAppLib.Explorer
             get { return ( _fileAttributes & FileAttributes.Hidden ) == FileAttributes.Hidden ; }
         }
 
+        private readonly bool canOpen = true;
+
         /// <summary>
         /// 
         /// </summary>
-        public bool CanOpen { get ; } = true ;
+        public bool GetCanOpen()
+        {
+            return canOpen;
+        }
 
         #region Implementation of INotifyPropertyChanged
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
@@ -105,6 +121,7 @@ namespace AnalysisAppLib.Explorer
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]
+        // ReSharper disable once UnusedMember.Local
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
@@ -181,6 +198,7 @@ namespace AnalysisAppLib.Explorer
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public IDictionary IconsResources
         {
             get { return _iconsResources ; }

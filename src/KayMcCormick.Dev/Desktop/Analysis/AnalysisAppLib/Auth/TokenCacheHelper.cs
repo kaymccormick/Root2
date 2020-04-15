@@ -12,6 +12,7 @@
 using System.IO ;
 using System.Reflection ;
 using System.Security.Cryptography ;
+using JetBrains.Annotations ;
 using Microsoft.Identity.Client ;
 
 namespace AnalysisAppLib.Auth
@@ -26,14 +27,14 @@ namespace AnalysisAppLib.Auth
 
         private static readonly object FileLock = new object ( ) ;
 
-        public static void EnableSerialization ( ITokenCache tokenCache )
+        public static void EnableSerialization ( [ NotNull ] ITokenCache tokenCache )
         {
             tokenCache.SetBeforeAccess ( BeforeAccessNotification ) ;
             tokenCache.SetAfterAccess ( AfterAccessNotification ) ;
         }
 
 
-        private static void BeforeAccessNotification ( TokenCacheNotificationArgs args )
+        private static void BeforeAccessNotification ( [ NotNull ] TokenCacheNotificationArgs args )
         {
             lock ( FileLock )
             {
@@ -53,7 +54,7 @@ namespace AnalysisAppLib.Auth
             }
         }
 
-        private static void AfterAccessNotification ( TokenCacheNotificationArgs args )
+        private static void AfterAccessNotification ( [ NotNull ] TokenCacheNotificationArgs args )
         {
             // if the access operation resulted in a cache update
             if ( args.HasStateChanged )

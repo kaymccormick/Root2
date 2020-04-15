@@ -97,7 +97,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
             else
             {
-                parent.Children.Add ( r ) ;
+                if ( parent.Children != null )
+                {
+                    parent.Children.Add ( r ) ;
+                }
+
                 r.Depth = parent.Depth + 1 ;
             }
 
@@ -285,6 +289,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
             catch ( Exception )
             {
+                // ignored
             }
         }
 

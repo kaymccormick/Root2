@@ -31,7 +31,9 @@ namespace AnalysisAppLib
 
         private readonly ITargetBlock < AnalysisRequest > _acceptorBlock ;
         private readonly ISourceBlock < TOutput >         _outputBlock ;
+#pragma warning disable 649
         private          ActionBlock < TOutput >          _actionBlock ;
+#pragma warning restore 649
         private          IDataflowBlock                   _finalBlock ;
 
 

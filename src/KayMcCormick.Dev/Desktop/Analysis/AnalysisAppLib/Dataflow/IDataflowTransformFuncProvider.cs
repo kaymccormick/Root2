@@ -1,6 +1,7 @@
 using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
+using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Dataflow
 {
@@ -58,6 +59,7 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public Func < TSource , Task < IEnumerable < TDest > > > GetAsyncTransformFunction ( )
         {
             return x => _func ( x ) ;
@@ -67,6 +69,7 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <returns></returns>
+        [ CanBeNull ]
         public Func < TSource , IEnumerable < TDest > > GetTransformFunction ( ) { return null ; }
         #endregion
     }

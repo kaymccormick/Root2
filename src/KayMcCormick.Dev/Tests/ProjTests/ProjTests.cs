@@ -9,72 +9,69 @@
 //
 // ---
 #endregion
-using System ;
-using System.Collections.Generic ;
-using System.Diagnostics ;
-using System.Globalization ;
-using System.IO ;
-using System.Linq ;
-using System.Reflection ;
-using System.Resources ;
-using System.Runtime.ExceptionServices ;
-using System.Runtime.Serialization.Formatters.Binary ;
-using System.Runtime.Serialization.Formatters.Soap ;
-using System.Text ;
-using System.Text.Json ;
-using System.Text.Json.Serialization ;
-using System.Threading ;
-using System.Threading.Tasks ;
-using System.Windows ;
-using System.Windows.Automation ;
-using System.Windows.Baml2006 ;
-using System.Windows.Controls ;
-using System.Windows.Media ;
-using System.Windows.Media.Imaging ;
-using System.Xaml ;
-using System.Xml ;
-using System.Xml.Linq ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Serialization ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.XmlDoc ;
-using AnalysisControls ;
-using AnalysisControls.Properties ;
-using AnalysisControls.ViewModel ;
-using AnalysisControls.Views ;
-using Autofac ;
-using AvalonDock ;
-using AvalonDock.Layout ;
-using Castle.DynamicProxy ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Command ;
-using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.TestLib ;
-using KayMcCormick.Dev.TestLib.Fixtures ;
-using KayMcCormick.Lib.Wpf ;
-using KayMcCormick.Lib.Wpf.Command ;
-using KayMcCormick.Lib.Wpf.JSON ;
-using KayMcCormick.Lib.Wpf.View ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.Graph ;
-using Moq ;
-using NLog ;
-using Xunit ;
-using Xunit.Abstractions ;
-using ColorConverter = System.Windows.Media.ColorConverter ;
-using Condition = System.Windows.Automation.Condition ;
-using File = System.IO.File ;
-using Process = System.Diagnostics.Process ;
-using XamlReader = System.Windows.Markup.XamlReader ;
-using XamlWriter = System.Windows.Markup.XamlWriter ;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.ExceptionServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Baml2006;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Xaml;
+using System.Xml;
+using System.Xml.Linq;
+using AnalysisAppLib;
+using AnalysisAppLib.Serialization;
+using AnalysisAppLib.Syntax;
+using AnalysisAppLib.XmlDoc;
+using AnalysisControls;
+using AnalysisControls.Properties;
+using AnalysisControls.ViewModel;
+using Autofac;
+using AvalonDock;
+using AvalonDock.Layout;
+using Castle.DynamicProxy;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.Command;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Dev.TestLib;
+using KayMcCormick.Dev.TestLib.Fixtures;
+using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
+using KayMcCormick.Lib.Wpf.JSON;
+using KayMcCormick.Lib.Wpf.View;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Moq;
+using NLog;
+using Xunit;
+using Xunit.Abstractions;
+using ColorConverter = System.Windows.Media.ColorConverter;
+using Condition = System.Windows.Automation.Condition;
+using File = System.IO.File;
+using Process = System.Diagnostics.Process;
+using XamlReader = System.Windows.Markup.XamlReader;
+using XamlWriter = System.Windows.Markup.XamlWriter;
 
 namespace ProjTests
 {
-//    [ CollectionDefinition ( "GeneralPurpose" ) ]
+    //    [ CollectionDefinition ( "GeneralPurpose" ) ]
     // ReSharper disable once UnusedType.Global
     public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
 
@@ -673,6 +670,7 @@ namespace ProjTests
                            , resourceNodeInfo.Key
                            , resourceNodeInfo.Data
                             ) ;
+                // ReSharper disable once AssignNullToNotNullAttribute
                 DumpTree ( tree , resourceNodeInfo.Children , depth + 1 ) ;
             }
         }
@@ -710,6 +708,7 @@ namespace ProjTests
             Logger.Info ( json ) ;
             try
             {
+                // ReSharper disable once UnusedVariable
                 var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
             }
             catch ( JsonException x )
@@ -831,6 +830,7 @@ namespace ProjTests
         {
             try
             {
+                // ReSharper disable once UnusedVariable
                 var msg = $"{e.Exception}" ;
 #if false
                 try
@@ -874,9 +874,7 @@ namespace ProjTests
             var w = new Window { Content = codeControl } ;
 
             var t = new Task ( ( ) => { } ) ;
-            w.Closed += ( sender , args ) => {
-                t.Start ( ) ;
-            } ;
+            w.Closed += ( sender , args ) => t.Start ( ) ;
             //FormattdCode1.SetValue(ComboBox.Edit.Editable)
 
             var sourceText = Resources.Program_Parse ;
@@ -885,13 +883,12 @@ namespace ProjTests
             var context = ( ISemanticModelContext ) AnalysisService.Parse ( sourceText , "test1" ) ;
             var syntaxTree = context.CurrentModel.SyntaxTree ;
             var model = context.CurrentModel ;
+            // ReSharper disable once UnusedVariable
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
             var tcs = new TaskCompletionSource < bool > ( ) ;
             Task.Run ( ( ) => codeControl.Refresh ( ) )
                 .ContinueWith (
-                               task => {
-                                   tcs.SetResult ( true ) ;
-                               }
+                               task => tcs.SetResult ( true )
                               ) ;
 
             w.Show ( ) ;

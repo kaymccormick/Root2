@@ -456,13 +456,14 @@ namespace AnalysisAppLib
                             // }
                             // )) ;
                             AppTypeInfo ati = null ;
-                            if ( ! result.Any ( ) )
+                            var keyValuePairs = result as KeyValuePair < AppTypeInfoKey , AppTypeInfo >[] ?? result.ToArray ( ) ;
+                            if ( ! keyValuePairs.Any ( ) )
                             {
                                 DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
                             }
                             else
                             {
-                                ati = result.First ( ).Value ;
+                                ati = keyValuePairs.First ( ).Value ;
                                 DebugUtils.WriteLine ( $"{ati}" ) ;
                             }
                         }
@@ -699,8 +700,8 @@ namespace AnalysisAppLib
 
                         var ms = new MemoryStream ( ) ;
                         var result = compilation.Emit ( ms ) ;
-                        var win = ( bool ? ) result.Success
-                                  ?? throw new InvalidOperationException ( ) ;
+                        var resultSuccess = ( bool ? ) result.Success
+                                            ?? throw new InvalidOperationException ( ) ;
 
                         var syntaxTree = compilation.SyntaxTrees.First ( ) ;
                         var model = compilation.GetSemanticModel ( syntaxTree ) ;

@@ -87,7 +87,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         /// <param name="loggerName"></param>
-        public void ParseLoggerName ( string loggerName )
+        public void ParseLoggerName ( [ NotNull ] string loggerName )
         {
             //Regex x = new Regex(@"\.[^\.]*$", RegexOptions.Compiled);
             //var m = x.Match(LoggerName);
@@ -95,10 +95,10 @@ namespace AnalysisAppLib
             RegisterLogger ( loggerName ) ;
         }
 
-        private void RegisterLogger ( string loggerName )
+        private void RegisterLogger ( [ NotNull ] string loggerName )
         {
             var strings = loggerName.Split ( '.' ) ;
-            var i = 0 ;
+            int i ;
             var logger = RootLogger ;
             var loggerName1 = "" ;
             for ( i = 0 ; i < strings.Length ; i ++ )
@@ -121,7 +121,8 @@ namespace AnalysisAppLib
             }
         }
 
-        private ViewerLoggerInfo CheckForLogger ( string loggerName )
+        // ReSharper disable once UnusedMember.Local
+        private ViewerLoggerInfo CheckForLogger ( [ NotNull ] string loggerName )
         {
             if ( _dict.ContainsKey ( loggerName ) )
             {
@@ -150,6 +151,7 @@ namespace AnalysisAppLib
         }
 
         [ NotifyPropertyChangedInvocator ]
+        // ReSharper disable once UnusedMember.Local
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;

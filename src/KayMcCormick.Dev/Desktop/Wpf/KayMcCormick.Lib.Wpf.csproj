@@ -118,10 +118,12 @@
     <Compile Include="JSON\JsonSyntaxTokenConverter.cs" />
     <Compile Include="MethodInfoConverter.cs" />
     <Compile Include="PaneService.cs" />
+    <Compile Include="ResourceKeyTemplateSelector.cs" />
     <Compile Include="ViewModel\EventLogViewModel.cs" />
     <Compile Include="View\EventLogView.xaml.cs">
       <DependentUpon>EventLogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WpfInstanceInfoConverter.cs" />
     <Compile Include="Xaml\AppCommandConverter.cs" />
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />

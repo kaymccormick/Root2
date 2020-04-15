@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using AnalysisControls.ViewModel;
 using Autofac;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Lib.Wpf;
@@ -17,6 +18,7 @@ namespace AnalysisControls
       , IView1
       , IControlView
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly ILifetimeScope _scope ;
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace AnalysisControls
         public PythonViewModel ViewModel { get ; }
         #endregion
 
-        private void UIElement_OnKeyDown ( object sender , KeyEventArgs e )
+        private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
             if ( e.Key == Key.Enter )
             {
@@ -60,7 +62,7 @@ namespace AnalysisControls
             }
         }
 
-        private void UIElement_OnPreviewKeyDown ( object sender , KeyEventArgs e )
+        private void UIElement_OnPreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
             DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
             switch ( e.Key )

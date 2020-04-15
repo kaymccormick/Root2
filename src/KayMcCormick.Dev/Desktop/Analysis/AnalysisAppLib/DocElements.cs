@@ -56,7 +56,7 @@ namespace AnalysisAppLib.XmlDoc
     public sealed class Returns : BlockDocElem
     {
         /// <inheritdoc />
-        public Returns ( IEnumerable < XmlDocElement > select ) : base ( select ) { }
+        public Returns ( [ NotNull ] IEnumerable < XmlDocElement > select ) : base ( select ) { }
 
         /// <inheritdoc />
         public Returns ( ) { }
@@ -662,7 +662,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Example ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Example ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -679,10 +679,11 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="elements"></param>
-        public Param ( string name , IEnumerable < XmlDocElement > elements ) : base ( elements )
+        public Param ( [ NotNull ] string name , [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
         {
-            Name = name ;
+            Name = name ?? throw new ArgumentNullException ( nameof ( name ) ) ;
         }
 
         /// <summary>
@@ -706,7 +707,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        public InlineDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public InlineDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -724,7 +725,7 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="href"></param>
         /// <param name="elements"></param>
-        public Anchor ( string href , IEnumerable < XmlDocElement > elements ) : base ( elements )
+        public Anchor ( string href , [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
         {
             _href = href ;
         }
@@ -748,7 +749,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        public Pre ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Pre ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -763,7 +764,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Em ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Em ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -778,7 +779,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Seealso ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Seealso ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -793,13 +794,13 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Para ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Para ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        public Para ( params XmlDocElement[] elements ) : base ( elements ) { }
+        public Para ( [ NotNull ] params XmlDocElement[] elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -825,12 +826,13 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string ParamName { get { return _paramName ; } set { _paramName = value ; } }
     }
 
     /// <summary>
     /// </summary>
-    public class Code : InlineDocElem
+    public sealed class Code : InlineDocElem
     {
         /// <summary>
         /// 
@@ -840,7 +842,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Code ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Code ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
     }
 
     /// <summary>
@@ -923,7 +925,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        public Summary ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Summary ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
     }
 
     /// <summary>
@@ -935,7 +937,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        protected BlockDocElem ( IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        protected BlockDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
@@ -948,7 +950,7 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public class TypeDocInfo
     {
-        private List < MethodDocInfo > constructorDocumentation = new List < MethodDocInfo > ( ) ;
+        private List < ConstructorDocumentation > constructorDocumentation = new List < ConstructorDocumentation > ( ) ;
 
         private Dictionary < string , List < MethodDocumentation > > methodDocumentation =
             new Dictionary < string , List < MethodDocumentation > > ( ) ;
@@ -964,13 +966,14 @@ namespace AnalysisAppLib.XmlDoc
         public TypeDocumentation TypeDocumentation
         {
             get { return typeDocumentation ; }
+            // ReSharper disable once UnusedMember.Global
             set { typeDocumentation = value ; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public List < MethodDocInfo > ConstructorDocumentation
+        public List < ConstructorDocumentation> ConstructorDocumentation
         {
             get { return constructorDocumentation ; }
             set { constructorDocumentation = value ; }
@@ -991,12 +994,14 @@ namespace AnalysisAppLib.XmlDoc
         public Dictionary < string , PropertyDocumentation > PropertyDocumentation
         {
             get { return propertyDocumentation ; }
+            // ReSharper disable once UnusedMember.Global
             set { propertyDocumentation = value ; }
         }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public Dictionary < string , FieldDocumentation > FieldDocumentation { get ; set ; } =
             new Dictionary < string , FieldDocumentation > ( ) ;
     }
@@ -1021,6 +1026,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string DocIdentifier
         {
             get { return _docIdentifier ; }
@@ -1028,24 +1034,6 @@ namespace AnalysisAppLib.XmlDoc
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MemberDocInfo : DocInfo
-    {
-        private string _memberName ;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MethodDocInfo : MemberDocInfo
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Parameters { get ; set ; }
-    }
 
     internal class MethodBaseDocInfo
     {

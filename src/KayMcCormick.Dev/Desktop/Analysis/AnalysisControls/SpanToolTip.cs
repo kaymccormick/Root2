@@ -14,6 +14,7 @@ using System.Windows.Controls ;
 using System.Windows.Media ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.Interfaces ;
+using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
@@ -48,7 +49,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="o"></param>
-        public void Add ( UIElement o )
+        public void Add ( [ CanBeNull ] UIElement o )
         {
             if ( o != null )
             {

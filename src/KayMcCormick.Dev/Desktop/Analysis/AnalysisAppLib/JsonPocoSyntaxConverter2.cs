@@ -13,6 +13,7 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 using PocoSyntax ;
 
 namespace AnalysisAppLib
@@ -20,6 +21,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    [ UsedImplicitly ]
     public sealed class JsonPocoSyntaxConverter2 : JsonConverterFactory
     {
         private readonly Type _excludeType ;
@@ -48,7 +50,7 @@ namespace AnalysisAppLib
             return ( JsonConverter ) Activator.CreateInstance ( ty ) ;
         }
 
-        private class SyntaxConverter < T > : JsonConverter<T>
+        private sealed class SyntaxConverter < T > : JsonConverter<T>
         {
             #region Overrides of JsonConverter<T>
             public override T Read (
@@ -62,7 +64,7 @@ namespace AnalysisAppLib
 
             public override void Write (
                 Utf8JsonWriter        writer
-              , T                     value
+              , [ NotNull ] T                     value
               , JsonSerializerOptions options
             )
             {

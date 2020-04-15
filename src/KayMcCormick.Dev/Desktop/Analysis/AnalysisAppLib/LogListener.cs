@@ -26,7 +26,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class LogListener : IDisposable
+    public sealed class LogListener : IDisposable
 
 
     {
@@ -42,7 +42,7 @@ namespace AnalysisAppLib
             "TRACE" , "DEBUG" , "INFO" , "WARN" , "ERROR" , "FATAL"
         } ;
 
-        private JsonSerializerOptions _options ;
+        private readonly JsonSerializerOptions _options ;
         private UdpClient             _udpClient ;
 
         /// <summary>
@@ -50,11 +50,26 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="port"></param>
         /// <param name="viewModel"></param>
-        public LogListener ( int port , LogViewModel viewModel )
+        /// <param name="options"></param>
+        // ReSharper disable once UnusedMember.Global
+        public LogListener ( int port , LogViewModel viewModel , JsonSerializerOptions options )
         {
             _port      = port ;
             _viewModel = viewModel ;
+            _options = options ;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="logViewModel"></param>
+        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local
+        public LogListener ( int port , LogViewModel logViewModel ) { }
 
         #region IDisposable
         /// <summary>
@@ -84,6 +99,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once FunctionRecursiveOnAllPaths
         public async void Listen ( )
         {
             var resp = await _udpClient.ReceiveAsync ( ).ConfigureAwait ( false ) ;
@@ -143,7 +159,7 @@ namespace AnalysisAppLib
         }
 
         [ NotNull ]
-        private LogEventInstance HandleXml ( byte[] resultBuffer )
+        private LogEventInstance HandleXml ( [ NotNull ] byte[] resultBuffer )
         {
             var xmlNameTable = new NameTable ( ) ;
 

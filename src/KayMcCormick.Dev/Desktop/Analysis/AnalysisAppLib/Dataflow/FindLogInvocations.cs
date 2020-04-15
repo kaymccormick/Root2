@@ -13,8 +13,11 @@ namespace AnalysisAppLib.Dataflow
             TransformManyBlock < Document , ILogInvocation > >
       , IHaveRejectBlock
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly Func < ILogInvocation >                                      _factory ;
+#pragma warning disable 169
         private readonly Func < Document , IEnumerable < ILogInvocation > >           _func ;
+#pragma warning restore 169
         private readonly IDataflowTransformFuncProvider < Document , ILogInvocation > _provider ;
 
         public FindLogInvocations (
@@ -35,8 +38,10 @@ namespace AnalysisAppLib.Dataflow
         #endregion
 
 
+        [ NotNull ]
         public override TransformManyBlock < Document , ILogInvocation > GetDataflowBlock ( )
         {
+            // ReSharper disable once UnusedVariable
             Func < Document , IEnumerable < ILogInvocation > > func = document
                 => Enumerable.Empty < ILogInvocation > ( ) ;
             return new TransformManyBlock < Document , ILogInvocation > (
@@ -45,7 +50,7 @@ namespace AnalysisAppLib.Dataflow
                                                                         ) ;
         }
 
-        public override IDataflowBlock GetDataflowBlockObj ( ) { return GetDataflowBlock() ; }
+        [ NotNull ] public override IDataflowBlock GetDataflowBlockObj ( ) { return GetDataflowBlock() ; }
     }
 
     /// <summary>

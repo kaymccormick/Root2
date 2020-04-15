@@ -529,7 +529,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="select"></param>
-        public Quoteinline ( IEnumerable < XmlDocElement > select ) : base(select)
+        public Quoteinline ( [ NotNull ] IEnumerable < XmlDocElement > select ) : base(select)
         {
 
         }
