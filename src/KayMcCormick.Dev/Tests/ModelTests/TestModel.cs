@@ -714,7 +714,6 @@ namespace ModelTests
 
                             var t1 = f.GetProperty ( typePropertyName ) ;
                             var value = "" ;
-                            string transform ;
                             string msg = null ;
                             var typeName = f.GetProperty ( typeNamePropertyName ).GetString ( ) ;
                             if ( typeName == "bool" )
@@ -780,7 +779,7 @@ namespace ModelTests
                                                 
                                             }
                                             var m2 = dict[ t2 ] ;
-                                            transform = $".Select(Transform_{m2}).ToList()" ;
+                                            var transform = $".Select(Transform_{m2}).ToList()" ;
                         
 
                             if ( transform != "" )

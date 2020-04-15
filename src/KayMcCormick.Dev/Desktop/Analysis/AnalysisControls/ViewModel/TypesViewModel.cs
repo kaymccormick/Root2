@@ -5,6 +5,7 @@ using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
+using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Xml ;
 using AnalysisAppLib ;
@@ -201,6 +202,7 @@ namespace AnalysisControls.ViewModel
             }
 
             /* Construct appTypeInfo */
+            var version = 1 ;
             var r = new AppTypeInfo
                     {
                         Type           = rootR
@@ -208,7 +210,9 @@ namespace AnalysisControls.ViewModel
                       , ParentInfo     = parentTypeInfo
                       , HierarchyLevel = level
                       , ColorValue     = HierarchyColors[ level ]
+                        , Version = version
                     } ;
+            DebugUtils.WriteLine($"{JsonSerializer.Serialize(r, options)}");
             foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
             {
                 r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
