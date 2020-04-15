@@ -48,8 +48,11 @@ namespace ConsoleApp1
 {
     internal sealed class Program
     {
-        [ NotNull ] private static string ModelXamlFilename =>
-            Path.Combine ( _dataOutputPath , ModelXamlFilenamePart ) ;
+        [ NotNull ] private static string ModelXamlFilename
+        {
+            get { return Path.Combine ( _dataOutputPath , ModelXamlFilenamePart ) ; }
+        }
+
         private static readonly string _dataOutputPath   = @"C:\data\logs" ;
         private const string TypesJsonFilename     = "types.json";
         private const string ModelXamlFilenamePart = "model.xaml";
@@ -153,7 +156,9 @@ namespace ConsoleApp1
                                                            }
                                                          , subject
                                                           )
-                            .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ) )
+#pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
+                            .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ))
+#pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
                      ) ;
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
@@ -737,18 +742,10 @@ namespace ConsoleApp1
 
         public static void WriteThisTypesViewModel (
             [ NotNull ] TypesViewModel       model
-          , Func < TypesViewModel , string > filenameFunc = null
+          , [ CanBeNull ] Func < TypesViewModel , string > filenameFunc = null
         )
         {
-            string xamlFilename ;
-            if ( filenameFunc == null )
-            {
-                xamlFilename = ModelXamlFilename ;
-            }
-            else
-            {
-                xamlFilename = filenameFunc ( model ) ;
-            }
+            var xamlFilename = filenameFunc == null ? ModelXamlFilename : filenameFunc ( model ) ;
 
             DebugUtils.WriteLine ( $"Writing {xamlFilename}" ) ;
             var writer = XmlWriter.Create (
@@ -1125,6 +1122,7 @@ namespace ConsoleApp1
             }
 
             var model1 = context.Scope.Resolve < TypesViewModel > ( ) ;
+            // ReSharper disable once UnusedVariable
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = model1.CollectionMap ( ) ;
             outputFunc ( "Beginning" ) ;
@@ -1624,7 +1622,7 @@ namespace ConsoleApp1
                                                                              ) ;
                     var accessorListSyntax = AccessorList ( acdsl ) ;
 
-                    TypeSyntax type = null ;
+                    TypeSyntax type ;
                     if ( tField.IsCollection )
                     {
                         type = ParseTypeName ( tField.ElementTypeMetadataName ) ;
@@ -2148,7 +2146,7 @@ namespace ConsoleApp1
         }
     }
 
-    public class SyntaxWalker2 : CSharpSyntaxWalker
+    public sealed class SyntaxWalker2 : CSharpSyntaxWalker
     {
         private readonly SemanticModel model ;
 
@@ -2163,7 +2161,7 @@ namespace ConsoleApp1
 
         public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
         {
-            var nsSymbol = model.GetDeclaredSymbol ( node ) ;
+            var nsSymbol = model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( "model.GetDeclaredSymbol ( node )" ) ;
             base.VisitNamespaceDeclaration ( node ) ;
         }
 
@@ -2284,24 +2282,27 @@ namespace ConsoleApp1
         public override void VisitParameter ( ParameterSyntax node )
         {
             var symbol = model.GetDeclaredSymbol ( node ) ;
-            foreach ( var symbolDisplayPart in symbol.ToDisplayParts ( ) )
+            if ( symbol != null )
             {
-                var k = ( int ) symbolDisplayPart.Kind ;
-                var s = symbolDisplayPart.Symbol ;
-                var interfaces = "" ;
-                if ( s != null )
+                foreach ( var symbolDisplayPart in symbol.ToDisplayParts ( ) )
                 {
-                    interfaces = string.Join (
-                                              ", "
-                                            , s.GetType ( )
-                                               .GetInterfaces ( )
-                                               .Select ( i => i.FullName )
-                                             ) ;
-                }
+                    var k = ( int ) symbolDisplayPart.Kind ;
+                    var s = symbolDisplayPart.Symbol ;
+                    var interfaces = "" ;
+                    if ( s != null )
+                    {
+                        interfaces = string.Join (
+                                                  ", "
+                                                , s.GetType ( )
+                                                   .GetInterfaces ( )
+                                                   .Select ( i => i.FullName )
+                                                 ) ;
+                    }
 
-                DebugUtils.WriteLine (
-                                      $"{symbolDisplayPart} {s?.Kind} {s?.GetType ( ).FullName} {interfaces ?? ""}"
-                                     ) ;
+                    DebugUtils.WriteLine (
+                                          $"{symbolDisplayPart} {s?.Kind} {s?.GetType ( ).FullName} {interfaces}"
+                                         ) ;
+                }
             }
 
             base.VisitParameter ( node ) ;
@@ -2367,7 +2368,7 @@ namespace ConsoleApp1
         }
     }
 
-    public class ParameterInfo
+    public sealed class ParameterInfo
     {
         public string Name { get ; }
 
@@ -2380,7 +2381,7 @@ namespace ConsoleApp1
         public ParameterInfo (
             string                             name
           , ITypeSymbol                        typeSymbol
-          , IEnumerable < CustommodifierInfo > @select
+          , IEnumerable < CustommodifierInfo > select
           , string                             typeDisplayString
         )
         {
@@ -2389,7 +2390,6 @@ namespace ConsoleApp1
             TypeFullName = typeSymbol.ContainingNamespace.MetadataName
                            + '.'
                            + typeSymbol.MetadataName ;
-            ;
             custommodifiers.AddRange ( select ) ;
         }
     }
