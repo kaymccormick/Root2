@@ -17,6 +17,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
+using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
@@ -24,6 +25,7 @@ using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -72,7 +74,7 @@ namespace AnalysisControls
                                                                                                 , arg3
                                                                                                      .OnFault
                                                                                                  )
-                                                                      ) ;
+                                                                      ).WithCallerMetadata();
             builder.RegisterType < TypesView > ( )
                    .AsSelf ( )
                    .As < IControlView > ( )
@@ -80,7 +82,7 @@ namespace AnalysisControls
                                   "ImageSource"
                                 , "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
                                  )
-                   .WithMetadata ( "Ribbon" , true ) ;
+                   .WithMetadata ( "Ribbon" , true ).WithCallerMetadata();
 
 
 
@@ -133,15 +135,15 @@ namespace AnalysisControls
                               }
                              )
                    .AsSelf ( )
-                   .AsImplementedInterfaces ( ) ;
+                   .AsImplementedInterfaces ( ).WithCallerMetadata();
 
 
             builder.RegisterType < SyntaxPanel > ( )
                    .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
-                   .AsSelf ( ) ;
+                   .AsSelf ( ).WithCallerMetadata();
             builder.RegisterType < SyntaxPanelViewModel > ( )
                    .AsImplementedInterfaces ( )
-                   .AsSelf ( ) ;
+                   .AsSelf ( ).WithCallerMetadata();
 #endif
         }
 

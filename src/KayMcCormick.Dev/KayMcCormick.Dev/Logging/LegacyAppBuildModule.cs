@@ -11,6 +11,7 @@ using Autofac.Core.Resolving ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.AppBuild ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 using Module = Autofac.Module ;
@@ -45,7 +46,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// </summary>
         /// <param name="builder"></param>
-        protected override void Load ( [ NotNull ] ContainerBuilder builder )
+        protected override void Load ( ContainerBuilder builder )
         {
             AppBuild ( builder ) ;
         }
@@ -94,7 +95,7 @@ namespace KayMcCormick.Dev.Logging
             #region Logging
             builder.RegisterType < LoggerTracker > ( )
                    .As < ILoggerTracker > ( )
-                   .InstancePerLifetimeScope ( ) ;
+                   .WithCallerMetadata();
 
             builder.Register (
                               ( c , p ) => {
@@ -115,7 +116,7 @@ namespace KayMcCormick.Dev.Logging
                                   return logger ;
                               }
                              )
-                   .As < ILogger > ( ) ;
+                   .As < ILogger > ( ).WithCallerMetadata();
             #endregion
 
             #region Callbacks
@@ -426,7 +427,7 @@ namespace KayMcCormick.Dev.Logging
                 DefaultObject = new DefaultObjectIdProvider ( Generator ) ;
                 builder.RegisterInstance ( DefaultObject )
                        .As < IObjectIdProvider > ( )
-                       .SingleInstance ( ) ;
+                       .SingleInstance ( ).WithCallerMetadata();
                 // builder.RegisterType < DefaultObjectIdProvider > ( )
                 //        .As < IObjectIdProvider > ( )
                 //        .InstancePerLifetimeScope ( ) ;

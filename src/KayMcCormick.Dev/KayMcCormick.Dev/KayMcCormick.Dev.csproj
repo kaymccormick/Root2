@@ -116,6 +116,7 @@
     <Compile Include="Configuration\ContainerHelperSection.cs" />
     <Compile Include="Configuration\ContainerHelperSettings.cs" />
     <Compile Include="Configuration\LoggingSection.cs" />
+    <Compile Include="Container\IocExt.cs" />
     <Compile Include="IBaseLibCommand.cs" />
     <Compile Include="IHierarchicalNode.cs" />
     <Compile Include="IViewModel.cs" />
@@ -280,8 +281,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Container\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

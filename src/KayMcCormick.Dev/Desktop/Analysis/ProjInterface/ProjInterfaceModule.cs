@@ -26,6 +26,7 @@ using ExplorerCtrl ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
@@ -116,19 +117,19 @@ namespace ProjInterface
                    .As<UserControl>()
                    .AsSelf()
                    .As<IViewWithTitle>()
-                   .As<IControlView>();
+                   .As<IControlView>().WithCallerMetadata();
             builder.RegisterType<AllResourcesView>()
                    .As<UserControl>()
                    .AsSelf()
                    .As<IViewWithTitle>()
-                   .As<IControlView>();
+                   .As<IControlView>().WithCallerMetadata();
             builder.RegisterType < WorkspaceControl > ( )
                    .As < IViewWithTitle > ( )
-                   .As < IControlView > ( ) ;
-            builder.RegisterType < WorkspaceViewModel > ( ) ;
-            builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ) ;
+                   .As < IControlView > ( ).WithCallerMetadata();
+            builder.RegisterType < WorkspaceViewModel > ( ).WithCallerMetadata();
+            builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ).WithCallerMetadata() ;
 
-            builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
+            builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ).SingleInstance().WithCallerMetadata() ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
             //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
 
@@ -140,7 +141,7 @@ namespace ProjInterface
                       .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
                            Func < LayoutDocumentPane , IDisplayableAppCommand >
                        > ( ControlViewCommandAdapter )
-                      .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
+                      .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ).WithCallerMetadata();
 
 #if PYTHON
             builder.RegisterAssemblyTypes (
@@ -166,7 +167,7 @@ namespace ProjInterface
                                   => new LogViewerControl ( new LogViewerConfig ( 0 ) )
                              )
                    .As < IViewWithTitle > ( )
-                   .As < LogViewerControl > ( ) ;
+                   .As < LogViewerControl > ( ).WithCallerMetadata();
         }
 
         [ NotNull ]
