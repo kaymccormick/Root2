@@ -44,6 +44,7 @@ namespace AnalysisAppLib.Syntax
         private Type _type;
         private readonly List<string> _kinds= new List < string > ();
         private object _keyValue ;
+        private int _version ;
 
 
         /// <summary>
@@ -226,6 +227,8 @@ namespace AnalysisAppLib.Syntax
         /// Key for the Type that isn't the object itself.
         /// </summary>
         public object KeyValue { get { return _keyValue ; } set { _keyValue = value ; } }
+
+        public int Version { get { return _version ; } set { _version = value ; } }
 
         /// <summary>
         /// </summary>
@@ -577,7 +580,10 @@ namespace AnalysisAppLib.Syntax
         public object SyncRoot => _list.SyncRoot ;
 
         /// <inheritdoc />
-        public bool IsSynchronized => _list.IsSynchronized ;
+        public bool IsSynchronized
+        {
+            get { return _list.IsSynchronized ; }
+        }
 
         /// <inheritdoc />
         public int Add ( object value ) => _list.Add ( value ) ;
@@ -597,16 +603,22 @@ namespace AnalysisAppLib.Syntax
         /// <inheritdoc />
         public object this [ int index ]
         {
-            get => _list[ index ] ;
-            set => _list[ index ] = value ;
+            get { return _list[ index ] ; }
+            set { _list[ index ] = value ; }
         }
 
 
         /// <inheritdoc />
-        public bool IsReadOnly => false ;
+        public bool IsReadOnly
+        {
+            get { return false ; }
+        }
 
         /// <inheritdoc />
-        public bool IsFixedSize => _list.IsFixedSize ;
+        public bool IsFixedSize
+        {
+            get { return _list.IsFixedSize ; }
+        }
     }
 
     /// <summary>
@@ -644,7 +656,6 @@ namespace AnalysisAppLib.Syntax
         /// <inheritdoc />
         public void CopyTo ( Array array , int index ) { }
 
-        /// <inheritdoc />
         public int Count
         {
             get { return _listImplementation.Count ; }

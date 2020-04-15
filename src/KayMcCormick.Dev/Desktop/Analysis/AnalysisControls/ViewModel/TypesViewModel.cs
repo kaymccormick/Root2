@@ -200,6 +200,7 @@ namespace AnalysisControls.ViewModel
                 CollectDoc ( docNode ) ;
             }
 
+            /* Construct appTypeInfo */
             var r = new AppTypeInfo
                     {
                         Type           = rootR
