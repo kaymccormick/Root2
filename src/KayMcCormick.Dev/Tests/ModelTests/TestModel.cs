@@ -11,6 +11,7 @@ using System.Xaml ;
 using System.Xml ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
+using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.ViewModel ;
 
 // ReSharper disable once RedundantUsingDirective

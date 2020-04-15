@@ -81,6 +81,7 @@
     <Compile Include="IDocInterface.cs" />
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />
+    <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />
     <Compile Include="SyntaxTypesService.cs" />
     <Compile Include="ViewModel\MicrosoftUserViewModel.cs" />
     <Compile Include="XmlDoc\AppTypeInfo.cs" />
