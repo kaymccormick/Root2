@@ -568,7 +568,10 @@ namespace AnalysisAppLib.Syntax
         public void CopyTo ( Array array , int index ) => _list.CopyTo ( array , index ) ;
 
         /// <inheritdoc />
-        public int Count => _list.Count ;
+        public int Count
+        {
+            get { return _list.Count ; }
+        }
 
         /// <inheritdoc />
         public object SyncRoot => _list.SyncRoot ;
