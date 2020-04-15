@@ -70,7 +70,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="node"></param>
-        public override void Visit ( SyntaxNode node )
+        public override void Visit ( [ NotNull ] SyntaxNode node )
         {
             RecordLocation ( node.GetLocation ( ) ) ;
             var style = FindStyle ( node ) ;
@@ -225,7 +225,8 @@ namespace AnalysisControls
             _curBlock.Inlines.Add ( run ) ;
         }
 
-        private void MergeStyle ( Style curStyle , Style style )
+        // ReSharper disable once UnusedMember.Local
+        private void MergeStyle ( Style curStyle , [ NotNull ] Style style )
         {
             foreach ( var styleSetter in style.Setters )
             {

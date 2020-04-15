@@ -27,10 +27,17 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
+        private bool _registerExplorerTypes = false ;
         /// <summary>
         /// Parameterless constructor.
         /// </summary>
         public AnalysisAppLibModule ( ) { DebugUtils.WriteLine ( "here" ) ; }
+
+        public bool RegisterExplorerTypes
+        {
+            get { return _registerExplorerTypes ; }
+            set { _registerExplorerTypes = value ; }
+        }
 
         #region Overrides of Module
         /// <summary>

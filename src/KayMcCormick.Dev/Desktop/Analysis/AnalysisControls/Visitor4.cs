@@ -25,7 +25,6 @@ namespace AnalysisControls
     /// </summary>
     public sealed class Visitor4 : CSharpSyntaxWalker
     {
-        private readonly TaskScheduler          _t ;
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer          _ctl ;
 
@@ -48,7 +47,6 @@ namespace AnalysisControls
         public Visitor4 ( TaskScheduler t , SynchronizationContext ctx , ICodeRenderer ctl ) :
             base ( SyntaxWalkerDepth.Trivia )
         {
-            _t   = t ;
             _ctx = ctx ;
             _ctl = ctl ;
         }

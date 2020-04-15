@@ -228,6 +228,9 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public object KeyValue { get { return _keyValue ; } set { _keyValue = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Version { get { return _version ; } set { _version = value ; } }
 
         /// <summary>
@@ -656,6 +659,7 @@ namespace AnalysisAppLib.Syntax
         /// <inheritdoc />
         public void CopyTo ( Array array , int index ) { }
 
+        /// <inheritdoc />
         public int Count
         {
             get { return _listImplementation.Count ; }

@@ -12,6 +12,7 @@
 using System.Threading.Tasks ;
 using Autofac ;
 using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Logging ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;

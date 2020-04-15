@@ -101,31 +101,31 @@ namespace AnalysisControls
             var workspace = new AdhocWorkspace();
             var projectId = ProjectId.CreateNewId ( ) ;
             var s = workspace.AddSolution(
-                              SolutionInfo.Create(
-                                                   SolutionId.CreateNewId()
-                                                 , VersionStamp.Create()
-                                                 , null
-                                                 , new[]
-                                                   {
-                                                                ProjectInfo.Create (
-                                                                                    projectId
-                                                                                  , VersionStamp
-                                                                                       .Create ( )
-                                                                                  , "test"
-                                                                                  , "test"
-                                                                                  , LanguageNames
-                                                                                       .CSharp
-                                                                                  , null
-                                                                                  , null
-                                                                                  , new
-                                                                                        CSharpCompilationOptions (
-                                                                                                                  OutputKind
-                                                                                                                     .DynamicallyLinkedLibrary
-                                                                                                                 )
-                                                                                   )
-                                                   }
-                                                  )
-                             );
+                                          SolutionInfo.Create(
+                                                              SolutionId.CreateNewId()
+                                                            , VersionStamp.Create()
+                                                            , null
+                                                            , new[]
+                                                              {
+                                                                  ProjectInfo.Create (
+                                                                                      projectId
+                                                                                    , VersionStamp
+                                                                                         .Create ( )
+                                                                                    , "test"
+                                                                                    , "test"
+                                                                                    , LanguageNames
+                                                                                         .CSharp
+                                                                                    , null
+                                                                                    , null
+                                                                                    , new
+                                                                                          CSharpCompilationOptions (
+                                                                                                                    OutputKind
+                                                                                                                       .DynamicallyLinkedLibrary
+                                                                                                                   )
+                                                                                     )
+                                                              }
+                                                             )
+                                         ) ?? throw new ArgumentNullException ( "workspace.AddSolution(\r\n                              SolutionInfo.Create(\r\n                                                   SolutionId.CreateNewId()\r\n                                                 , VersionStamp.Create()\r\n                                                 , null\r\n                                                 , new[]\r\n                                                   {\r\n                                                                ProjectInfo.Create (\r\n                                                                                    projectId\r\n                                                                                  , VersionStamp\r\n                                                                                       .Create ( )\r\n                                                                                  , \"test\"\r\n                                                                                  , \"test\"\r\n                                                                                  , LanguageNames\r\n                                                                                       .CSharp\r\n                                                                                  , null\r\n                                                                                  , null\r\n                                                                                  , new\r\n                                                                                        CSharpCompilationOptions (\r\n                                                                                                                  OutputKind\r\n                                                                                                                     .DynamicallyLinkedLibrary\r\n                                                                                                                 )\r\n                                                                                   )\r\n                                                   }\r\n                                                  )\r\n                             )" );
 
             Workspace = workspace ;
         }
@@ -149,7 +149,7 @@ namespace AnalysisControls
             }
         }
 
-        private void WorkspaceOnWorkspaceChanged ( object sender , WorkspaceChangeEventArgs e )
+        private void WorkspaceOnWorkspaceChanged ( object sender , [ NotNull ] WorkspaceChangeEventArgs e )
         {
             DebugUtils.WriteLine ( e.Kind ) ;
             switch (e.Kind)
@@ -220,7 +220,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="fileName"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void AddDocument ( string fileName )
+        public void AddDocument ( [ NotNull ] string fileName )
         {
             var docName = System.IO.Path.GetFileNameWithoutExtension ( fileName ) ;
             var docInfo = DocumentInfo.Create (
@@ -243,7 +243,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public ProjectId CurrentProjectId
+        [ NotNull ] public ProjectId CurrentProjectId
         {
             get { return Workspace.CurrentSolution.Projects.First ( ).Id ; }
         }

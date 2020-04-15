@@ -2164,7 +2164,7 @@ namespace ConsoleApp1
 
         public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
         {
-            var nsSymbol = model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( "model.GetDeclaredSymbol ( node )" ) ;
+            var nsSymbol = model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( ) ;
             base.VisitNamespaceDeclaration ( node ) ;
         }
 
@@ -2270,6 +2270,7 @@ namespace ConsoleApp1
 
             // ReSharper disable once PossibleNullReferenceException
             var rt = symbol.ReturnType ;
+            // ReSharper disable once UnusedVariable
             var origDef = rt.OriginalDefinition ;
             var displayString = rt.ToDisplayString ( ) ;
             base.VisitMethodDeclaration ( node ) ;

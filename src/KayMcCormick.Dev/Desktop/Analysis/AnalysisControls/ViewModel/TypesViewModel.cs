@@ -59,6 +59,9 @@ namespace AnalysisControls.ViewModel
 
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypesViewModel ( ) {
         }
 
@@ -494,6 +497,9 @@ namespace AnalysisControls.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void LoadTypeInfo ( )
         {
             var CSharpRootSyntaxNodeType = typeof ( CSharpSyntaxNode ) ;
@@ -530,6 +536,10 @@ namespace AnalysisControls.ViewModel
         public event EventHandler Initialized ;
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [ NotNull ]
         public IReadOnlyDictionary < string , object > CollectionMap ( )
         {

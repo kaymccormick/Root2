@@ -1,19 +1,15 @@
 ﻿using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
-using System.Threading.Tasks ;
 using AnalysisAppLib.Dataflow ;
+using AnalysisAppLib.Explorer ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
-using Microsoft.Graph ;
-using Microsoft.Identity.Client ;
-using Newtonsoft.Json ;
 using NLog ;
 using Logger = NLog.Logger ;
 
@@ -22,55 +18,15 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
-    public sealed class LoginAuthenticationViewModel : IViewModel
-    {
-        private readonly Func < string , GraphServiceClient > _graphFunc ;
-        private readonly IPublicClientApplication             _publicClient ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="graphFunc"></param>
-        /// <param name="publicClient"></param>
-        public LoginAuthenticationViewModel (
-            Func < string , GraphServiceClient > graphFunc
-          , IPublicClientApplication             publicClient
-        )
-        {
-            _graphFunc    = graphFunc ;
-            _publicClient = publicClient ;
-        }
-
-        #region Implementation of ISerializable
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
+    [ UsedImplicitly ]
     public sealed class DockWindowViewModel : IViewModel , INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly IEnumerable < IExplorerItemProvider > _providers ;
-        private readonly ILifetimeScope _lifetime ;
-
         private readonly IEnumerable < Meta < Lazy < IViewWithTitle > > > _views ;
-        private          IAccount                                         _account ;
 
         private string _defaultInputPath =
             Environment.GetFolderPath ( Environment.SpecialFolder.MyDocuments ) ;
-
-        private GraphServiceClient _graphClient ;
-
-        private IntPtr      _hWnd ;
-        private IDictionary _iconsResources ;
 
         private readonly ObservableCollection < AppExplorerItem > _rootCollection =
             new ObservableCollection < AppExplorerItem > ( ) ;
@@ -79,37 +35,20 @@ namespace AnalysisAppLib.ViewModel
         /// 
         /// </summary>
         /// <param name="views"></param>
-        /// <param name="providers"></param>
         /// <param name="blocks"></param>
         /// <param name="lifetime"></param>
         public DockWindowViewModel (
             IEnumerable < Meta < Lazy < IViewWithTitle > > > views
-          , IEnumerable<IExplorerItemProvider> providers
           , [ NotNull ] IEnumerable<IAnalysisBlockProvider1 > blocks
             , ILifetimeScope lifetime
         )
         {
             _views     = views ;
-            _providers = providers ;
-            _lifetime = lifetime ;
             foreach ( var analysisBlockProvider1 in blocks )
             {
                 DebugUtils.WriteLine(analysisBlockProvider1.ToString());
             }
 
-            foreach ( var explorerItemProvider in _providers )
-            {
-                var items = explorerItemProvider.GetRootItems ( ) ;
-                foreach ( var item in items )
-                {
-                    if ( item.IsDirectory )
-                    {
-                        Logger.Info ( "{item} is directory" , item.FullName ) ;
-                    }
-
-                    RootCollection.Add ( item ) ;
-                }
-            }
         }
 
 
@@ -133,6 +72,7 @@ namespace AnalysisAppLib.ViewModel
         public string DefaultInputPath
         {
             get { return _defaultInputPath ; }
+            // ReSharper disable once UnusedMember.Global
             set { _defaultInputPath = value ; }
         }
 
@@ -149,33 +89,8 @@ namespace AnalysisAppLib.ViewModel
         /// <param name="context"></param>
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public async Task Request1 ( )
-
-        {
-            if ( _graphClient != null )
-            {
-                var results = await _graphClient.Me.Contacts.Request ( ).GetAsync ( ) ;
-                foreach ( var contact in results )
-                {
-                    Logger.Debug ( JsonConvert.SerializeObject ( contact ) ) ;
-                    //Logger.Info ( "{contact}" , contact.DisplayName ) ;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        public void SethWnd ( IntPtr value ) { _hWnd = value ; }
-
         [ NotifyPropertyChangedInvocator ]
+        // ReSharper disable once UnusedMember.Local
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
