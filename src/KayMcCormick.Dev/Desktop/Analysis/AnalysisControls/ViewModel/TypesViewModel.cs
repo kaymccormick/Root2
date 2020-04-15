@@ -59,6 +59,9 @@ namespace AnalysisControls.ViewModel
 
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
 
+        public TypesViewModel ( ) {
+        }
+
         /// <summary>
         /// </summary>
         // ReSharper disable once EmptyConstructor

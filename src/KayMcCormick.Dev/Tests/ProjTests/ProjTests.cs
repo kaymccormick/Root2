@@ -164,7 +164,7 @@ namespace ProjTests
                 instance.AddModule(new AnalysisAppLibModule());
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
-                //var model = lifetimescope.Resolve<TypesViewModel>();
+                var model = lifetimescope.Resolve<TypesViewModel>();
                 var sts = lifetimescope.Resolve<ISyntaxTypesService>();
                 var cmap = sts.CollectionMap () ;
                 var appTypeInfo =  sts.GetAppTypeInfo( typeof ( AssignmentExpressionSyntax ) ) ;
@@ -172,7 +172,7 @@ namespace ProjTests
                 var typeSyntax =
                     SyntaxFactory.ParseTypeName ( typeof ( ArgumentSyntax ).FullName ) ;
                 var substType =
-                    XmlDocElements.SubstituteType ( field , typeSyntax , cmap , sts) ;
+                    XmlDocElements.SubstituteType ( field , typeSyntax , cmap , model) ;
             }
         }
 

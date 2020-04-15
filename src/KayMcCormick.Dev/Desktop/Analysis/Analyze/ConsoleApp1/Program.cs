@@ -41,6 +41,7 @@ using NLog;
 using NLog.Targets;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters;
+// ReSharper disable RedundantOverriddenMember
 
 // ReSharper disable AnnotateNotNullParameter
 
@@ -2068,6 +2069,7 @@ namespace ConsoleApp1
 
         public int LineEnd { get ; }
 
+        // ReSharper disable once UnusedMember.Global
         public LocationInfo (
             string metadataModuleMetadataName
           , int    sourceSpanStart
@@ -2107,7 +2109,7 @@ namespace ConsoleApp1
         public int SourceSpanEnd { get ; set ; }
     }
 
-    public class CallerInfo
+    public sealed class CallerInfo
     {
         private List < LocationInfo > _locations = new List < LocationInfo > ( ) ;
 
@@ -2117,6 +2119,7 @@ namespace ConsoleApp1
 
         public bool IsDirect { get ; }
 
+        // ReSharper disable once UnusedMember.Global
         public CallerInfo (
             ImmutableArray < SymbolDisplayPart > toDisplayParts
           , ImmutableArray < SymbolDisplayPart > symbolDisplayParts
@@ -2181,8 +2184,6 @@ namespace ConsoleApp1
                         var m = CreateMethodInfo ( methodSymbol ) ;
                         var json = JsonSerializer.Serialize ( m ) ;
                         DebugUtils.WriteLine ( json ) ;
-                        break ;
-                    default :
                         break ;
                 }
             }
