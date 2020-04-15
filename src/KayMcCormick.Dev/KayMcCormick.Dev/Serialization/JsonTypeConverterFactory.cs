@@ -2,6 +2,7 @@ using System ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
@@ -25,6 +26,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

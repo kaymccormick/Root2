@@ -18,6 +18,7 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisControls ;
 using AnalysisControls.ViewModel ;
@@ -2083,13 +2084,13 @@ namespace ConsoleApp1
             string                       calledSymbol
           , string                       callingSymbol
           , bool                         isDirect
-          , [ NotNull ] IEnumerable < LocationInfo > @select
+          , [ NotNull ] IEnumerable < LocationInfo > select
         )
         {
             CalledSymbol  = calledSymbol ;
             CallingSymbol = callingSymbol ;
             IsDirect      = isDirect ;
-            Locations.AddRange ( @select ) ;
+            Locations.AddRange ( select ) ;
         }
 
         public List < LocationInfo > Locations
@@ -2292,10 +2293,10 @@ namespace ConsoleApp1
     {
         private string _name ;
         private List<ParameterInfo> _params = new List<ParameterInfo>();
-        public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > @select )
+        public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > select )
         {
             this.Name = methodSymbolName ;
-            Parameters.AddRange ( @select ) ;
+            Parameters.AddRange ( select ) ;
         }
 
         public string Name { get { return _name ; } set { _name = value ; } }
@@ -2329,7 +2330,7 @@ namespace ConsoleApp1
             TypeFullName = typeSymbol.ContainingNamespace.MetadataName
                            + '.'
                            + typeSymbol.MetadataName ; ;
-            custommodifiers.AddRange (@select  );
+            custommodifiers.AddRange (select  );
         }
     }
 

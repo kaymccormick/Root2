@@ -9,18 +9,17 @@
 // 
 // ---
 #endregion
-using System ;
-using System.IO ;
-using System.Linq ;
-using System.Net ;
-using System.Net.Sockets ;
-using System.Text ;
-using System.Text.Json ;
-using System.Xml ;
-using AnalysisAppLib.XmlDoc ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Logging ;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Text.Json;
+using System.Xml;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Logging;
 
 namespace AnalysisAppLib
 {
@@ -97,13 +96,14 @@ namespace AnalysisAppLib
         private LogEventInstance HandleJsonMessage ( JsonSerializerOptions options , string s )
         {
             var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
-            if ( instance != null )
+            if ( instance == null )
             {
-                instance.SerializedForm = s ;
-                return instance ;
+                throw new InvalidOperationException ( ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            instance.SerializedForm = s ;
+            return instance ;
+
         }
 
         private void PacketReceived ( UdpReceiveResult resp )

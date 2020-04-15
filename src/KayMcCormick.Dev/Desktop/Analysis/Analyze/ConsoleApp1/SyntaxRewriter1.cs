@@ -40,15 +40,17 @@ namespace ConsoleApp1
         public override SyntaxNode VisitGenericName ( [ NotNull ] GenericNameSyntax node )
         {
             DebugUtils.WriteLine ( $"{node.Identifier} {node.TypeArgumentList}" ) ;
-            if ( node.Arity                   == 1
-                 && node.IsUnboundGenericName == false
-                 && node.Identifier.ValueText == "SeparatedSyntaxList" )
+            if ( node.Arity                   != 1
+                 || node.IsUnboundGenericName != false
+                 || node.Identifier.ValueText != "SeparatedSyntaxList" )
             {
-                var typeSyntax = node.TypeArgumentList.Arguments[ 0 ] ;
-                if ( typeSyntax is SimpleNameSyntax sns )
-                {
-                    //return node.ReplaceNode ( node , node , _map[ sns.Identifier.ValueText ] ) ;
-                }
+                return base.VisitGenericName ( node ) ;
+            }
+
+            var typeSyntax = node.TypeArgumentList.Arguments[ 0 ] ;
+            if ( typeSyntax is SimpleNameSyntax sns )
+            {
+                //return node.ReplaceNode ( node , node , _map[ sns.Identifier.ValueText ] ) ;
             }
 
             return base.VisitGenericName ( node ) ;

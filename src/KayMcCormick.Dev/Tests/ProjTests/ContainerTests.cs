@@ -1,4 +1,5 @@
 ﻿using System ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using NLog ;
 using NLog.Layouts ;
@@ -10,6 +11,7 @@ namespace ProjTests
     [ Collection ( "GeneralPurpose" ) ]
     public sealed class ContainerTests : IClassFixture < LoggingFixture > , IDisposable
     {
+        // ReSharper disable once UnusedMember.Local
         private static readonly Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly        LoggingFixture    _loggingFixture ;
         private readonly        ITestOutputHelper _output ;
@@ -18,7 +20,7 @@ namespace ProjTests
         ///     Initializes a new instance of the <see cref="System.Object" />
         ///     class.
         /// </summary>
-        public ContainerTests ( ITestOutputHelper output , LoggingFixture loggingFixture )
+        public ContainerTests ( ITestOutputHelper output , [ CanBeNull ] LoggingFixture loggingFixture )
         {
             _output         = output ;
             _loggingFixture = loggingFixture ;

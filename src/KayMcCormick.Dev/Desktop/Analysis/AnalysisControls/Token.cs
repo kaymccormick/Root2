@@ -36,6 +36,7 @@ namespace AnalysisControls
         /// <param name="text"></param>
         /// <param name="solidColorBrush"></param>
         /// <param name="newLine"></param>
+        // ReSharper disable once UnusedParameter.Local
         public Token ( int rawKind , string text , SolidColorBrush solidColorBrush , bool newLine )
         {
             _text     = text ;

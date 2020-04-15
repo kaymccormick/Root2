@@ -130,10 +130,14 @@ namespace ProjInterface
         {
             if ( e.PropertyName == "Properties" )
             {
-                var dataGridTemplateColumn = new DataGridTemplateColumn ( ) ;
-                dataGridTemplateColumn.Header = "Properties" ;
-                dataGridTemplateColumn.CellTemplate =
-                    ( DataTemplate ) TryFindResource ( "PropertiesTemplate" ) ;
+                var dataGridTemplateColumn = new DataGridTemplateColumn
+                                             {
+                                                 Header = "Properties"
+                                               , CellTemplate =
+                                                     ( DataTemplate ) TryFindResource (
+                                                                                       "PropertiesTemplate"
+                                                                                      )
+                                             } ;
                 e.Column = dataGridTemplateColumn ;
             }
         }

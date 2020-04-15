@@ -52,20 +52,24 @@ namespace AnalysisAppLib
                     return ;
                 }
 
-                if ( inst is ISupportInitializeNotification xx )
+                switch ( inst )
                 {
-                    DebugUtils.WriteLine ( "calling init on instance" ) ;
-                    if ( ! xx.IsInitialized )
+                    case ISupportInitializeNotification xx :
                     {
-                        xx.BeginInit ( ) ;
-                        xx.EndInit ( ) ;
+                        DebugUtils.WriteLine ( "calling init on instance" ) ;
+                        if ( ! xx.IsInitialized )
+                        {
+                            xx.BeginInit ( ) ;
+                            xx.EndInit ( ) ;
+                        }
+
+                        break ;
                     }
-                }
-                else if ( inst is ISupportInitialize x )
-                {
-                    DebugUtils.WriteLine ( "calling init on instance" ) ;
-                    x.BeginInit ( ) ;
-                    x.EndInit ( ) ;
+                    case ISupportInitialize x :
+                        DebugUtils.WriteLine ( "calling init on instance" ) ;
+                        x.BeginInit ( ) ;
+                        x.EndInit ( ) ;
+                        break ;
                 }
             } ;
         }

@@ -92,8 +92,7 @@ namespace AnalysisAppLib.Serialization
                                                                               , options
                                                                                ) ;
 
-                    if ( d                  != null
-                         && d.ExternAliases != null )
+                    if ( d?.ExternAliases != null )
                     {
                         foreach ( var dExternAliase in d.ExternAliases )
                         {

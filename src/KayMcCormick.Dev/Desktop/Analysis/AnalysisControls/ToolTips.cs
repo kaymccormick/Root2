@@ -1,5 +1,6 @@
 using System.Windows ;
 using System.Windows.Controls ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace AnalysisControls
@@ -8,9 +9,11 @@ namespace AnalysisControls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public static UIElement MakeToolTipContent ( object resource )
+        [ NotNull ]
+        public static UIElement MakeToolTipContent ( [ CanBeNull ] object resource )
         {
             var displayString = string.Empty ;
+            // ReSharper disable once UnusedVariable
             var textBlock = new TextBlock { Text = displayString } ;
 
             var contentPresenter = new ContentControl { Content = resource } ;

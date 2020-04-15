@@ -13,6 +13,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Serialization ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.ViewModel ;
 
 // ReSharper disable once RedundantUsingDirective
@@ -655,7 +656,7 @@ namespace ModelTests
                     var typeShortName =
                         typeFullName.Substring ( typeFullName.LastIndexOf ( '.' ) + 1 ) ;
 
-                    var pocoClassName = string.Format ( "{0}{1}" , PocoTypeNamePrefix , typeShortName ) ;
+                    var pocoClassName = $"{PocoTypeNamePrefix}{typeShortName}" ;
 
                     string body 
                         ;

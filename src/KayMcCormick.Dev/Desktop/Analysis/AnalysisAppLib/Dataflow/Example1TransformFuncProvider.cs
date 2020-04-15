@@ -44,10 +44,12 @@ namespace AnalysisAppLib.Dataflow
 
         private async Task< IEnumerable < Example1Out > > Transform (
             Document                     document
+            // ReSharper disable once UnusedParameter.Local
           , BufferBlock < RejectedItem > rejectBlock
         )
         {
 
+            // ReSharper disable once UnusedVariable
             var opt = await document.GetOptionsAsync ( ) ;
             var model = await document.GetSemanticModelAsync ( ) ;
             var tree = await document.GetSyntaxTreeAsync ( ) ;

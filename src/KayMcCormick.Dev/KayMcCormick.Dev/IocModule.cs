@@ -1,5 +1,6 @@
 ﻿using System.Linq ;
 using Autofac ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace KayMcCormick.Dev
@@ -25,7 +26,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         /// <param name="p"></param>
-        protected static void LogRegistration ( params object[] p )
+        protected static void LogRegistration ( [ NotNull ] params object[] p )
         {
             var x = p.Prepend ( "Registering" ) ;
             Logger.Trace ( string.Join ( " " , x ) ) ;

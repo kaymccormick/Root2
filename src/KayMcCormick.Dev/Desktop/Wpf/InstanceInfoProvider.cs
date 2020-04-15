@@ -27,8 +27,11 @@ namespace KayMcCormick.Lib.Wpf
           , object instance
         )
         {
-            if ( typeof ( ComponentRegistration ).IsAssignableFrom ( objectType ) ) return new ComponentRegistrationTypeDescriptor();
-            
+            if ( typeof ( ComponentRegistration ).IsAssignableFrom ( objectType ) )
+            {
+                return new ComponentRegistrationTypeDescriptor();
+            }
+
             return base.GetTypeDescriptor ( objectType , instance ) ;
         }
         #endregion

@@ -12,7 +12,6 @@
 using System.Threading.Tasks ;
 using Autofac ;
 using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Logging ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
@@ -28,6 +27,7 @@ namespace ProjTests
     /// <seealso cref="LegacyAppBuildModule" />
     public class AppContainerFixture : IAsyncLifetime
     {
+        // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly ApplicationInstanceBase _applicationInstance ;

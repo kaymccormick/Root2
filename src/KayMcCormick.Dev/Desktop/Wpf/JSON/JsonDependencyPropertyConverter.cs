@@ -13,6 +13,7 @@ using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
@@ -27,6 +28,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override DependencyProperty Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

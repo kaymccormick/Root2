@@ -30,6 +30,7 @@ namespace AnalysisAppLib.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override ILogInvocation Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

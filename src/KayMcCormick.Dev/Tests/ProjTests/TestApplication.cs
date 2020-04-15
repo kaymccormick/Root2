@@ -24,8 +24,6 @@ namespace ProjTests
             base.OnExit ( e ) ;
             TCS.TrySetResult ( true ) ;
         }
-
-        protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
         #endregion
     }
 }

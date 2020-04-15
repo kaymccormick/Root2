@@ -21,7 +21,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="resourcesCollection"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public static void CollectResources (
-            Type                                  ownerType
+            [ NotNull ] Type                                  ownerType
           , [ NotNull ] FrameworkElement          haveResources
           , ObservableCollection < ResourceInfo > resourcesCollection
         )

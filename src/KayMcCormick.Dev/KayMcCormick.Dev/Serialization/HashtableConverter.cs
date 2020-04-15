@@ -13,6 +13,7 @@ using System ;
 using System.Collections ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
@@ -27,6 +28,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override Hashtable Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

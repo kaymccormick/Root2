@@ -36,6 +36,7 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisControls ;
 using AnalysisControls.Properties ;
@@ -365,8 +366,7 @@ namespace ProjTests
 
         public void TestFE ( )
         {
-            var f = new FrameworkElementFactory ( ) ;
-            f.Type = typeof ( Button ) ;
+            var f = new FrameworkElementFactory { Type = typeof ( Button ) } ;
             f.AppendChild ( new FrameworkElementFactory ( typeof ( TextBlock ) , "Hello" ) ) ;
 
             MethodInfo m1 = null ;
@@ -505,17 +505,12 @@ namespace ProjTests
                         xx.ExecuteAsync ( )
                           .ContinueWith (
                                          task => {
-                                             if ( task.IsFaulted )
-                                             {
-                                                 DebugUtils.WriteLine (
-                                                                       // ReSharper disable once PossibleNullReferenceException
-                                                                       task.Exception.ToString ( )
-                                                                      ) ;
-                                             }
-                                             else
-                                             {
-                                                 DebugUtils.WriteLine ( task.Result.ToString ( ) ) ;
-                                             }
+                                             DebugUtils.WriteLine (
+                                                                   // ReSharper disable once PossibleNullReferenceException
+                                                                   task.IsFaulted
+                                                                       ? task.Exception.ToString ( )
+                                                                       : task.Result.ToString ( )
+                                                                  ) ;
                                          }
                                         )
                           .Wait ( ) ;

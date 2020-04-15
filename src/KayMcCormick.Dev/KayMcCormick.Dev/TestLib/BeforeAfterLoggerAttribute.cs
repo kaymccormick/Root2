@@ -45,14 +45,16 @@ namespace KayMcCormick.Dev.TestLib
                 return ;
             }
 
-            if ( LogManager.LogFactory.Configuration != null )
+            if ( LogManager.LogFactory.Configuration == null )
             {
-                LogManager.LogFactory.Configuration.LoggingRules.Remove ( TestLoggingRule ) ;
-                LogManager.LogFactory.Configuration.RemoveTarget ( Name ) ;
-                LogManager.LogFactory.ReconfigExistingLoggers();
+                return ;
             }
 
-            
+            LogManager.LogFactory.Configuration.LoggingRules.Remove ( TestLoggingRule ) ;
+            LogManager.LogFactory.Configuration.RemoveTarget ( Name ) ;
+            LogManager.LogFactory.ReconfigExistingLoggers();
+
+
         }
 
         /// <summary>

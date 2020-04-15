@@ -44,6 +44,7 @@ namespace KayMcCormick.Lib.Wpf
             }
 
 
+            // ReSharper disable once UnusedVariable
             var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                      typeof ( IAmbientProvider )
                                                                     ) ;

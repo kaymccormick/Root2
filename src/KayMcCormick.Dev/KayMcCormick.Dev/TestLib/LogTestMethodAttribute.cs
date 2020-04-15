@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel ;
 using System.Reflection ;
+using JetBrains.Annotations ;
 using NLog ;
 using NLog.Fluent ;
 using Xunit.Sdk ;
@@ -30,7 +31,7 @@ namespace KayMcCormick.Dev.TestLib
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
         [ EditorBrowsable ( EditorBrowsableState.Never ) ]
-        public override void After ( MethodInfo methodUnderTest )
+        public override void After ( [ NotNull ] MethodInfo methodUnderTest )
         {
             new LogBuilder ( Logger ).Level ( LogLevel.Info )
                                      .Message (

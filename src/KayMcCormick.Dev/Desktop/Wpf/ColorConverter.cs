@@ -2,6 +2,7 @@ using System ;
 using System.Globalization ;
 using System.Windows.Data ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -17,6 +18,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
+        [ NotNull ]
         public object Convert (
             object      value
           , Type        targetType

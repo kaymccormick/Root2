@@ -14,6 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows.Markup ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
@@ -28,6 +29,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override FontFamily Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

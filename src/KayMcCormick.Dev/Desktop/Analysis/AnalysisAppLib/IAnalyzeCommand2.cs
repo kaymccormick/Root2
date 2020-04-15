@@ -18,6 +18,7 @@ namespace AnalysisAppLib
     /// 
     /// </summary>
     /// <typeparam name="TOutput"></typeparam>
+    // ReSharper disable once UnusedTypeParameter
     public interface IAnalyzeCommand2 < TOutput > : IAnalyzeCommand3
     {
     }

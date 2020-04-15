@@ -55,17 +55,18 @@ namespace AnalysisAppLib.Dataflow
             return document => {
                 var task = _transformFunc ( document ) ;
                 task.Wait ( ) ;
-                if ( task.IsFaulted )
+                if ( ! task.IsFaulted )
                 {
-                    if ( task.Exception != null )
-                    {
-                        throw task.Exception ;
-                    }
-
-                    throw new InvalidOperationException ( "Faulted transform" ) ;
+                    return task.Result ;
                 }
 
-                return task.Result ;
+                if ( task.Exception != null )
+                {
+                    throw task.Exception ;
+                }
+
+                throw new InvalidOperationException ( "Faulted transform" ) ;
+
             } ;
         }
 

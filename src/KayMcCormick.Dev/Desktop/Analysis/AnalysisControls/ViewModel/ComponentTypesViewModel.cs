@@ -16,17 +16,5 @@ namespace AnalysisControls.ViewModel
     /// </summary>
     public class ComponentTypesViewModel : TypesViewModel
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ComponentTypesViewModel ( )
-        {
-
-
-            // System.Windows.Application.LoadComponent ( this , new Uri (
-            // @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml"
-            // ) );
-
-        }
     }
 }

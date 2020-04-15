@@ -43,9 +43,8 @@ namespace AnalysisAppLib
                          } ;
             LogEntries = new LogEventInstanceObservableCollection ( ) ;
             _dict      = new Dictionary < string , ViewerLoggerInfo > ( ) ;
-            RootNodes  = new ObservableCollection < ViewerLoggerInfo > ( ) ;
+            RootNodes = new ObservableCollection < ViewerLoggerInfo > { RootLogger } ;
 
-            RootNodes.Add ( RootLogger ) ;
 
             _dict[ "" ] = RootLogger ;
         }

@@ -40,7 +40,11 @@ namespace KayMcCormick.Dev.Logging
             var enumerable =
                 LogLevel.AllLevels.Select ( level => level.Name == invocation.Method.Name ) ;
             var bools = enumerable as bool[] ?? enumerable.ToArray ( ) ;
-            if ( bools.Any ( ) )
+            if ( ! bools.Any ( ) )
+            {
+                return ;
+            }
+
             {
                 var level = bools.First ( ) ;
                 var @params = new Type[ invocation.Arguments.Length + 1 ] ;
@@ -52,7 +56,7 @@ namespace KayMcCormick.Dev.Logging
                     args[ i ]    = arg ;
                     var select = invocation.Method.GetParameters ( )
                                            .Select ( ( info , i1 ) => info.Name == "message" ) ;
-                    if ( select.Any ( ) )
+                    if ( @select.Any ( ) )
                     {
                         args[ i ] = "hello " + arg ;
                     }

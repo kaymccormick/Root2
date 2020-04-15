@@ -43,112 +43,113 @@ namespace ConsoleApp1
 
         public override bool ProcessKey ( KeyEvent kb )
         {
-            if ( kb.Key == Key.CursorRight )
+            switch ( kb.Key )
             {
-                var selectedItem = SelectedItem ;
-                var e = List[ selectedItem ] ;
-                var d = _itemDatas[ selectedItem ] ;
-                if ( d.Expanded )
+                case Key.CursorRight :
                 {
-                    return true ;
-                }
-
-                d.Expanded = true ;
-                if ( d.RemovedChildren != null )
-                {
-                    List.InsertRange ( selectedItem + 1 , d.RemovedChildren ) ;
-                    d.SubtreeCount = d.RemovedChildren.Count ;
-                }
-                else
-                {
-                    d.InsertedChildren = e.ToList ( ) ;
-                    List.InsertRange ( selectedItem + 1 , d.InsertedChildren ) ;
-                    var insertedChildrenCount = d.InsertedChildren.Count ;
-                    d.SubtreeCount = insertedChildrenCount ;
-                }
-
-                var c = d.Container ;
-                while ( c != null )
-                {
-                    ItemData < T > itemData = null ;
-                    for ( var i = selectedItem ; i >= 0 ; i -- )
+                    var selectedItem = SelectedItem ;
+                    var e = List[ selectedItem ] ;
+                    var d = _itemDatas[ selectedItem ] ;
+                    if ( d.Expanded )
                     {
-                        if ( ReferenceEquals ( List[ i ] , c ) )
-                        {
-                            itemData = _itemDatas[ i ] ;
-                            break ;
-                        }
+                        return true ;
                     }
 
-                    if ( itemData != null )
+                    d.Expanded = true ;
+                    if ( d.RemovedChildren != null )
                     {
-                        itemData.SubtreeCount += d.SubtreeCount ;
-                        c                     =  itemData.Container ;
+                        List.InsertRange ( selectedItem + 1 , d.RemovedChildren ) ;
+                        d.SubtreeCount = d.RemovedChildren.Count ;
                     }
                     else
                     {
-                        c = null ;
+                        d.InsertedChildren = e.ToList ( ) ;
+                        List.InsertRange ( selectedItem + 1 , d.InsertedChildren ) ;
+                        var insertedChildrenCount = d.InsertedChildren.Count ;
+                        d.SubtreeCount = insertedChildrenCount ;
                     }
-                }
 
-                _itemDatas.InsertRange (
-                                        selectedItem + 1
-                                      , Enumerable
-                                       .Repeat ( 1 , d.SubtreeCount )
-                                       .Select ( x => new ItemData < T > { Container = e } )
-                                       ) ;
-
-                Source       = _source ;
-                SelectedItem = selectedItem ;
-                // foreach ( var r in x.Children )
-                // {
-                return true ;
-                // }
-            }
-
-            if ( kb.Key == Key.CursorLeft )
-            {
-                var selectedItem = SelectedItem ;
-
-                var d = _itemDatas[ selectedItem ] ;
-                if ( ! d.Expanded )
-                {
-                    return true ;
-                }
-
-                var c = d.Container ;
-                while ( c != null )
-                {
-                    ItemData < T > itemData = null ;
-                    for ( var i = selectedItem ; i >= 0 ; i -- )
+                    var c = d.Container ;
+                    while ( c != null )
                     {
-                        if ( ReferenceEquals ( List[ i ] , c ) )
+                        ItemData < T > itemData = null ;
+                        for ( var i = selectedItem ; i >= 0 ; i -- )
                         {
-                            itemData = _itemDatas[ i ] ;
-                            break ;
+                            if ( ReferenceEquals ( List[ i ] , c ) )
+                            {
+                                itemData = _itemDatas[ i ] ;
+                                break ;
+                            }
+                        }
+
+                        if ( itemData != null )
+                        {
+                            itemData.SubtreeCount += d.SubtreeCount ;
+                            c                     =  itemData.Container ;
+                        }
+                        else
+                        {
+                            c = null ;
                         }
                     }
 
-                    if ( itemData != null )
-                    {
-                        itemData.SubtreeCount -= d.SubtreeCount ;
-                        c                     =  itemData.Container ;
-                    }
-                    else
-                    {
-                        c = null ;
-                    }
+                    _itemDatas.InsertRange (
+                                            selectedItem + 1
+                                          , Enumerable
+                                           .Repeat ( 1 , d.SubtreeCount )
+                                           .Select ( x => new ItemData < T > { Container = e } )
+                                           ) ;
+
+                    Source       = _source ;
+                    SelectedItem = selectedItem ;
+                    // foreach ( var r in x.Children )
+                    // {
+                    return true ;
+                    // }
                 }
+                case Key.CursorLeft :
+                {
+                    var selectedItem = SelectedItem ;
 
-                d.RemovedChildren = List.GetRange ( selectedItem + 1 , d.SubtreeCount ) ;
-                List.RemoveRange ( selectedItem + 1 , d.SubtreeCount ) ;
-                d.Expanded   = false ;
-                Source       = _source ;
-                SelectedItem = selectedItem ;
-                return true ;
+                    var d = _itemDatas[ selectedItem ] ;
+                    if ( ! d.Expanded )
+                    {
+                        return true ;
+                    }
+
+                    var c = d.Container ;
+                    while ( c != null )
+                    {
+                        ItemData < T > itemData = null ;
+                        for ( var i = selectedItem ; i >= 0 ; i -- )
+                        {
+                            if ( ReferenceEquals ( List[ i ] , c ) )
+                            {
+                                itemData = _itemDatas[ i ] ;
+                                break ;
+                            }
+                        }
+
+                        if ( itemData != null )
+                        {
+                            itemData.SubtreeCount -= d.SubtreeCount ;
+                            c                     =  itemData.Container ;
+                        }
+                        else
+                        {
+                            c = null ;
+                        }
+                    }
+
+                    d.RemovedChildren = List.GetRange ( selectedItem + 1 , d.SubtreeCount ) ;
+                    List.RemoveRange ( selectedItem + 1 , d.SubtreeCount ) ;
+                    d.Expanded   = false ;
+                    Source       = _source ;
+                    SelectedItem = selectedItem ;
+                    return true ;
+                }
+                default : return base.ProcessKey ( kb ) ;
             }
-
-            return base.ProcessKey ( kb ) ;
         }
 
         private sealed class ItemData < T2 >

@@ -1,6 +1,7 @@
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
+using JetBrains.Annotations ;
 using KayMcCormick.Lib.Wpf.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Xaml
@@ -17,6 +18,7 @@ namespace KayMcCormick.Lib.Wpf.Xaml
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
+        [ NotNull ]
         public object Convert (
             object      value
           , Type        targetType

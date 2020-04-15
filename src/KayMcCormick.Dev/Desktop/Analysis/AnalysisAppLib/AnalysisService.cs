@@ -31,6 +31,7 @@ namespace AnalysisAppLib
         /// <param name="syntaxTree"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [ NotNull ]
         public static CSharpCompilation CreateCompilation (
             [ NotNull ] string     assemblyName
           , [ NotNull ] SyntaxTree syntaxTree

@@ -62,34 +62,36 @@ namespace ProjInterface
                     var assembly = AppDomain.CurrentDomain.GetAssemblies ( ) ;
                     foreach ( var assembly1 in assembly )
                     {
-                        if ( assembly1.GetName ( ).Name == "WindowsBase" )
+                        if ( assembly1.GetName ( ).Name != "WindowsBase" )
                         {
-                            DebugUtils.WriteLine ( assembly1.FullName ) ;
-                            foreach ( var type in assembly1.GetTypes ( ) )
-                            {
-                                DebugUtils.WriteLine($"Assembly type {type.FullName}: public={type.IsPublic}");
-                                var staticFields = type.GetFields ( BindingFlags.NonPublic | BindingFlags.Static ) ;
-                                foreach ( var staticField in staticFields )
-                                {
-                                    DebugUtils.WriteLine($"{type.FullName}.{staticField.Name}: t[{staticField.FieldType.FullName}]");
-                                    object val ;
-                                    try
-                                    {
-                                        val = staticField.GetValue ( null ) ;
-                                        if ( val == null )
-                                        {
-                                            DebugUtils.WriteLine($"val is null");
-                                        }
-                                        else
-                                        {
-                                            DebugUtils.WriteLine ( $"val is {val}" ) ;
-                                            DumpTypeInstanceInfo ( val ) ;
-                                        }
-                                    }
-                                    catch ( Exception ex )
-                                    {
+                            continue ;
+                        }
 
+                        DebugUtils.WriteLine ( assembly1.FullName ) ;
+                        foreach ( var type in assembly1.GetTypes ( ) )
+                        {
+                            DebugUtils.WriteLine($"Assembly type {type.FullName}: public={type.IsPublic}");
+                            var staticFields = type.GetFields ( BindingFlags.NonPublic | BindingFlags.Static ) ;
+                            foreach ( var staticField in staticFields )
+                            {
+                                DebugUtils.WriteLine($"{type.FullName}.{staticField.Name}: t[{staticField.FieldType.FullName}]");
+                                object val ;
+                                try
+                                {
+                                    val = staticField.GetValue ( null ) ;
+                                    if ( val == null )
+                                    {
+                                        DebugUtils.WriteLine("val is null");
                                     }
+                                    else
+                                    {
+                                        DebugUtils.WriteLine ( $"val is {val}" ) ;
+                                        DumpTypeInstanceInfo ( val ) ;
+                                    }
+                                }
+                                catch ( Exception ex )
+                                {
+
                                 }
                             }
                         }

@@ -3,6 +3,7 @@ using System.Globalization ;
 using System.Windows.Data ;
 using System.Xaml ;
 using System.Xml ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf.Xaml
 {
@@ -20,6 +21,7 @@ namespace KayMcCormick.Lib.Wpf.Xaml
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
+        [ NotNull ]
         public object Convert (
             object      value
           , Type        targetType

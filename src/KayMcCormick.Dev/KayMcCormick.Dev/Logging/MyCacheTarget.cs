@@ -46,25 +46,27 @@ namespace KayMcCormick.Dev.Logging
                                                                                       t => t is
                                                                                                MyCacheTarget
                                                                                      ) ;
-            if ( target == null )
+            if ( target != null )
             {
-                target = new MyCacheTarget
-                         {
-                             MaxCount = defaultMaxCount , Name = nameof ( MyCacheTarget )
-                         } ;
-                LogManager.Configuration.AddTarget ( target.Name , target ) ;
-                LogManager.Configuration.LoggingRules.Insert (
-                                                              0
-                                                            , new LoggingRule (
-                                                                               "*"
-                                                                             , LogLevel.FromString (
-                                                                                                    "Trace"
-                                                                                                   )
-                                                                             , target
-                                                                              )
-                                                             ) ;
-                LogManager.ReconfigExistingLoggers ( ) ;
+                return target ;
             }
+
+            target = new MyCacheTarget
+                     {
+                         MaxCount = defaultMaxCount , Name = nameof ( MyCacheTarget )
+                     } ;
+            LogManager.Configuration.AddTarget ( target.Name , target ) ;
+            LogManager.Configuration.LoggingRules.Insert (
+                                                          0
+                                                        , new LoggingRule (
+                                                                           "*"
+                                                                         , LogLevel.FromString (
+                                                                                                "Trace"
+                                                                                               )
+                                                                         , target
+                                                                          )
+                                                         ) ;
+            LogManager.ReconfigExistingLoggers ( ) ;
 
             return target ;
         }

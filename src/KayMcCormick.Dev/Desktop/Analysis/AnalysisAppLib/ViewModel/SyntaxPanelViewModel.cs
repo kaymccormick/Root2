@@ -83,12 +83,14 @@ namespace AnalysisAppLib.ViewModel
             get { return compilationUnitSyntax ; }
             set
             {
-                if ( ! ReferenceEquals ( compilationUnitSyntax , value ) )
+                if ( ReferenceEquals ( compilationUnitSyntax , value ) )
                 {
-                    OnPropertyChanging ( ) ;
-                    compilationUnitSyntax = value ;
-                    OnPropertyChanged ( ) ;
+                    return ;
                 }
+
+                OnPropertyChanging ( ) ;
+                compilationUnitSyntax = value ;
+                OnPropertyChanged ( ) ;
             }
         }
 

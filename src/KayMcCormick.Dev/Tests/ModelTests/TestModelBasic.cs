@@ -25,7 +25,7 @@ namespace ModelTests
             ContainerBuilder b = new ContainerBuilder();
             b.RegisterModule<AnalysisAppLibModule>();
             var c = b.Build(Autofac.Builder.ContainerBuildOptions.None);
-            var viewModel = c.Resolve < ITypesViewModel > ( ) ;
+            
             XmlWriter.Create(File.OpenWrite(@"C:\temp\model.xaml"), new XmlWriterSettings {Async = true,Indent = true});
                     
         }

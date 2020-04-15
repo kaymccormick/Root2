@@ -15,7 +15,6 @@ using System.Collections.Generic ;
 using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev.Application
 {
@@ -25,8 +24,7 @@ namespace KayMcCormick.Dev.Application
     {
         /// <summary>
         /// </summary>
-        /// <param name="logMethod"></param>
-        protected ApplicationInstanceBase ( ApplicationInstance.LogMethodDelegate logMethod )
+        protected ApplicationInstanceBase ( )
         {
             InstanceRunGuid = Guid.NewGuid ( ) ;
         }

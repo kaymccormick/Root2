@@ -13,6 +13,7 @@ using System ;
 using System.Net ;
 using System.Net.Sockets ;
 using System.Text ;
+using JetBrains.Annotations ;
 using NLog ;
 using NLog.LayoutRenderers ;
 using NLog.Layouts ;
@@ -33,7 +34,7 @@ namespace KayMcCormick.Dev.Logging
 
         public Layout XmlEventLayout { get ; }
 
-        public static ProtoLogger Instance
+        [ NotNull ] public static ProtoLogger Instance
         {
             get
             {
@@ -62,14 +63,6 @@ namespace KayMcCormick.Dev.Logging
             _getBytes = DefaultGetBytes ;
         }
 
-
-        private ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
-        {
-            _udpClient  = udpClient ;
-            _ipEndPoint = ipEndPoint ;
-            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
-            _getBytes   = DefaultGetBytes ;
-        }
 
         private byte[] DefaultGetBytes ( LogEventInfo arg )
         {

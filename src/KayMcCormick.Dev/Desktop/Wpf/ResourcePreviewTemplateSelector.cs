@@ -1,3 +1,5 @@
+using JetBrains.Annotations ;
+
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
@@ -7,7 +9,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of ResourceTemplateSelector
         /// <summary>
         /// </summary>
-        public override string TemplatePartName { get { return "Preview" ; } }
+        [ NotNull ] public override string TemplatePartName { get { return "Preview" ; } }
         #endregion
     }
 }

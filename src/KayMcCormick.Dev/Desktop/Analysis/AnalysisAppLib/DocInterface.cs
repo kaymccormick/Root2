@@ -29,7 +29,7 @@ namespace AnalysisAppLib
         private DocumentCollection _documentCollection ;
         #region Implementation of IDocInterface
         /// <inheritdoc />
-        public TypeDocInfo GetTypeDocumentation ( Type type )
+        public TypeDocInfo GetTypeDocumentation ( [ NotNull ] Type type )
         {
             return _docs[ type ] ;
         }

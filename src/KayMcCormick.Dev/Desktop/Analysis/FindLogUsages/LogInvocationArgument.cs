@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace FindLogUsages
@@ -10,7 +11,7 @@ namespace FindLogUsages
 
         private string jSON ;
 
-        public LogInvocationArgument ( ArgumentSyntax syntax )
+        public LogInvocationArgument ( [ NotNull ] ArgumentSyntax syntax )
         {
             _syntax = syntax ;
             var jsonOut = GenTransforms.Transform_Expression( syntax.Expression ) ;

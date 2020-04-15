@@ -23,6 +23,7 @@ namespace AnalysisAppLib.XmlDoc
     {
         public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
 
+        // ReSharper disable once UnusedMember.Local
         private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly string                         _assemblyName ;

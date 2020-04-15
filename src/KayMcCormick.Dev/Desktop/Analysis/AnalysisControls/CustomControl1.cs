@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel ;
 using System.Windows ;
 using System.Windows.Controls ;
-using AnalysisAppLib.XmlDoc ;
+using AnalysisAppLib.Syntax ;
 
 namespace AnalysisControls
 {

@@ -22,10 +22,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
     [ UsedImplicitly ]
     public class JsonBrushConverter : JsonConverterFactory
     {
-        /// <inheritdoc />
-        public JsonBrushConverter ( ) {
-        }
-
         #region Overrides of JsonConverter
         /// <summary>
         /// </summary>

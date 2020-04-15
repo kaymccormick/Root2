@@ -201,7 +201,7 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public ApplicationInstance (
             [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
-        ) : base ( applicationInstanceConfiguration.LogMethod )
+        ) : base ( )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException ;
 

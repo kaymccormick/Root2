@@ -9,6 +9,7 @@ using System.Text.Json.Serialization ;
 using System.Xml ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;

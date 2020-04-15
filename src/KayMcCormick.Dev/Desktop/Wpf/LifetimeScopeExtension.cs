@@ -63,7 +63,11 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            if ( scope == null )
+            if ( scope != null )
+            {
+                return scope ;
+            }
+
             {
                 var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
                 if ( svc != null )

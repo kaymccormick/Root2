@@ -139,16 +139,18 @@ namespace ProjInterface
                                   }
                               }
                           } ;
-            var dlg = new OpenFileDialog ( ) ;
-            dlg.DefaultExt = ".cs" ;
-            dlg.Filter = string.Join (
-                                      "|"
-                                    , filters.Select (
-                                                      f => $"{f.Description} (*{f.Extension})|*{f.Extension}"
-                                                     )
-                                     ) ;
+            var dlg = new OpenFileDialog
+                      {
+                          DefaultExt = ".cs"
+                        , Filter = string.Join (
+                                                "|"
+                                              , filters.Select (
+                                                                f => $"{f.Description} (*{f.Extension})|*{f.Extension}"
+                                                               )
+                                               )
+                      } ;
 
-        var result = dlg.ShowDialog ( ) ;
+            var result = dlg.ShowDialog ( ) ;
 
             // Process open file dialog box results
             if ( result == true )

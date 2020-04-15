@@ -2,6 +2,7 @@
 using System.Runtime.ExceptionServices ;
 using System.Windows;
 using System.Windows.Threading ;
+using JetBrains.Annotations ;
 
 namespace TestApp
 {
@@ -17,9 +18,14 @@ namespace TestApp
 
         private void OnDispatcherUnhandledException (
             object                                sender
-          , DispatcherUnhandledExceptionEventArgs e
+          , [ NotNull ] DispatcherUnhandledExceptionEventArgs e
         )
         {
+            if ( e == null )
+            {
+                throw new ArgumentNullException ( nameof ( e ) ) ;
+            }
+
             if ( ! ( e.Exception is TypeLoadException ) )
             {
                 return ;

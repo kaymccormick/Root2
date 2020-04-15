@@ -18,11 +18,8 @@ using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
-using System.Runtime.Serialization.Formatters.Soap ;
-using System.Text ;
 using Autofac ;
 using Autofac.Core.Lifetime ;
-using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 

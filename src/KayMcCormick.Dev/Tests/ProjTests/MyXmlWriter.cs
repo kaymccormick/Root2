@@ -14,7 +14,7 @@ using System.Xml ;
 
 namespace ProjTests
 {
-    public class MyXmlWriter : XmlWriter
+    public sealed class MyXmlWriter : XmlWriter
     {
         private readonly Utf8JsonWriter writer ;
         public MyXmlWriter ( Utf8JsonWriter writer ) { this.writer = writer ; }

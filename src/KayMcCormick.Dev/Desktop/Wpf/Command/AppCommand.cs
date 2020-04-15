@@ -145,9 +145,13 @@ namespace KayMcCormick.Lib.Wpf.Command
         {
             PropertyDescriptorCollection props;
             if (attributes == null)
+            {
                 props = TypeDescriptor.GetProperties(component);
+            }
             else
+            {
                 props = TypeDescriptor.GetProperties(component, attributes);
+            }
 
             PropertyDescriptor[] propArray = new PropertyDescriptor[props.Count];
             for (var i = 0; i < props.Count; i++)

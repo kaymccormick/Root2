@@ -2,6 +2,7 @@ using System ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
@@ -16,6 +17,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override TypeInfo Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

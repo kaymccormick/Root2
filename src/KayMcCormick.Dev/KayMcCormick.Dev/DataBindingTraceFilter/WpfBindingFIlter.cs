@@ -46,23 +46,24 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
         {
             string[] ignores = { "UserOptions." } ;
             var match = Regex.Match ( formatOrMessage , "BindingExpression:(.*) DataItem" ) ;
-            if ( match.Success )
+            if ( ! match.Success )
             {
-                var expr = match.Groups[ 1 ].Captures[ 0 ].Value ;
-
-                var haveIgnore = ignores.Any ( s => expr.Contains ( s ) ) ;
-
-                Logger.Trace ( @"{ignore}" , haveIgnore ) ;
-
-                if ( ! haveIgnore )
-                {
-                    Logger.Debug ( @"expr is {expr}" , expr ) ;
-                }
-
-                return haveIgnore ;
+                return false ;
             }
 
-            return false ;
+            var expr = match.Groups[ 1 ].Captures[ 0 ].Value ;
+
+            var haveIgnore = ignores.Any ( s => expr.Contains ( s ) ) ;
+
+            Logger.Trace ( @"{ignore}" , haveIgnore ) ;
+
+            if ( ! haveIgnore )
+            {
+                Logger.Debug ( @"expr is {expr}" , expr ) ;
+            }
+
+            return haveIgnore ;
+
         }
     }
 }

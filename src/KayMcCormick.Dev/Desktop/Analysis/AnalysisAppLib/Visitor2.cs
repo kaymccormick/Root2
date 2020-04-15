@@ -95,18 +95,20 @@ namespace AnalysisAppLib
                     }
                     else
                     {
-                        if ( Depth >= SyntaxWalkerDepth.Token )
+                        if ( Depth < SyntaxWalkerDepth.Token )
                         {
-                            var syntaxToken = child.AsToken ( ) ;
-                            if ( _mFunc != null )
-                            {
-                                var model1 = _mFunc ( syntaxToken ) ;
-                                ActiveSpans.AddSpan ( syntaxToken , syntaxToken.Span , model1 ) ;
-                            }
-
-                            VisitToken ( syntaxToken ) ;
-                            ActiveSpans.RemoveAll ( syntaxToken ) ;
+                            continue ;
                         }
+
+                        var syntaxToken = child.AsToken ( ) ;
+                        if ( _mFunc != null )
+                        {
+                            var model1 = _mFunc ( syntaxToken ) ;
+                            ActiveSpans.AddSpan ( syntaxToken , syntaxToken.Span , model1 ) ;
+                        }
+
+                        VisitToken ( syntaxToken ) ;
+                        ActiveSpans.RemoveAll ( syntaxToken ) ;
                     }
                 }
                 while ( i < childCnt ) ;

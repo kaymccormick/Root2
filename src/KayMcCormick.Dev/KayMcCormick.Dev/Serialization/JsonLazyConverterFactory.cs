@@ -12,6 +12,7 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
@@ -26,7 +27,7 @@ namespace KayMcCormick.Dev.Serialization
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
-        public override bool CanConvert ( Type typeToConvert )
+        public override bool CanConvert ( [ NotNull ] Type typeToConvert )
         {
             if ( typeToConvert.IsGenericType
                  && typeToConvert.GetGenericTypeDefinition ( ) == typeof ( Lazy <> ) )

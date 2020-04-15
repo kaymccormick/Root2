@@ -14,6 +14,7 @@ using System.IO ;
 using System.Runtime.Serialization ;
 using System.Runtime.Serialization.Formatters.Binary ;
 using System.Windows ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -26,7 +27,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <param name="exception"></param>
-        public void HandleException ( Exception exception )
+        public void HandleException ( [ CanBeNull ] Exception exception )
         {
             if ( exception != null )
             {
@@ -62,10 +63,12 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            var w = new Window ( ) ;
-            w.MinWidth  = 300 ;
-            w.MinHeight = 100 ;
-            w.Content   = new ExceptionInfo { DataContext = exception } ;
+            var w = new Window
+                    {
+                        MinWidth  = 300
+                      , MinHeight = 100
+                      , Content   = new ExceptionInfo { DataContext = exception }
+                    } ;
             w.ShowDialog ( ) ;
         }
         #endregion

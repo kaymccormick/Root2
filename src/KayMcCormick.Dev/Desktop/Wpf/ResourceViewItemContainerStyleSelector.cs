@@ -42,16 +42,17 @@ namespace KayMcCormick.Lib.Wpf
         /// </returns>
         public override Style SelectStyle ( object item , DependencyObject container )
         {
-            if ( item is ResourceNodeInfo )
+            if ( ! ( item is ResourceNodeInfo ) )
             {
-                var tryFindResource =
-                    ( ( FrameworkElement ) container ).TryFindResource (
-                                                                        "DefaultResourceNodeInfoStyle"
-                                                                       ) ;
-                return tryFindResource as Style ;
+                return base.SelectStyle ( item , container ) ;
             }
 
-            return base.SelectStyle ( item , container ) ;
+            var tryFindResource =
+                ( ( FrameworkElement ) container ).TryFindResource (
+                                                                    "DefaultResourceNodeInfoStyle"
+                                                                   ) ;
+            return tryFindResource as Style ;
+
         }
         #endregion
     }

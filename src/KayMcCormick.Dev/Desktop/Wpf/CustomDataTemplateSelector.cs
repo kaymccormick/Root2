@@ -43,7 +43,7 @@ namespace KayMcCormick.Lib.Wpf
                 itemRepr = itemRepr.Substring ( 0 , 40 ) + "..." ;
             }
 
-            itemRepr = itemRepr + $" [{item.GetType ( ).FullName}]" ;
+            itemRepr += $" [{item.GetType ( ).FullName}]" ;
             var containerRepr = new StringBuilder ( container.ToString ( ) ) ;
             if ( container is FrameworkElement fe )
             {

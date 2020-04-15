@@ -1,6 +1,7 @@
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -24,7 +25,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns></returns>
         public object Convert (
             object      value
-          , Type        targetType
+          , [ CanBeNull ] Type        targetType
           , object      parameter
           , CultureInfo culture
         )

@@ -14,7 +14,7 @@ using KayMcCormick.Dev ;
 
 namespace ConsoleApp1
 {
-    internal class Util
+    internal static class Util
     {
         public  delegate Task AsyncCommandDelegate(IBaseLibCommand command, AppContext context);
     }

@@ -1,17 +1,16 @@
-﻿using System ;
-using System.Collections.Generic ;
-using System.Collections.Immutable ;
-using System.IO ;
-using System.Linq ;
-using System.Threading.Tasks ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.XmlDoc ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Command ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.CodeAnalysis.Text ;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using AnalysisAppLib.Syntax;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Command;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace AnalysisAppLib.Command
 {

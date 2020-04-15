@@ -118,7 +118,7 @@ namespace KayMcCormick.Dev.StackTrace
         {
             if ( selector == null )
             {
-                throw new ArgumentNullException ( "selector" ) ;
+                throw new ArgumentNullException ( nameof ( selector ) ) ;
             }
 
             return Parse (
@@ -187,17 +187,17 @@ namespace KayMcCormick.Dev.StackTrace
 
             if ( parametersSelector == null )
             {
-                throw new ArgumentNullException ( "parametersSelector" ) ;
+                throw new ArgumentNullException ( nameof ( parametersSelector ) ) ;
             }
 
             if ( sourceLocationSelector == null )
             {
-                throw new ArgumentNullException ( "sourceLocationSelector" ) ;
+                throw new ArgumentNullException ( nameof ( sourceLocationSelector ) ) ;
             }
 
             if ( selector == null )
             {
-                throw new ArgumentNullException ( "selector" ) ;
+                throw new ArgumentNullException ( nameof ( selector ) ) ;
             }
 
             return

@@ -35,7 +35,10 @@ namespace AnalysisControls
 
         #region Implementation of IView<out WorkspaceViewModel>
         /// <inheritdoc />
-        public WorkspaceViewModel ViewModel => _viewModel;
+        public WorkspaceViewModel ViewModel
+        {
+            get { return _viewModel ; }
+        }
         #endregion
 
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
@@ -50,8 +53,7 @@ namespace AnalysisControls
 
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
-            var dlg = new OpenFileDialog ( ) ;
-            dlg.Filter = "CSharp Files|*.cs" ;
+            var dlg = new OpenFileDialog { Filter = "CSharp Files|*.cs" } ;
             var result = dlg.ShowDialog ( ) ;
             if ( result == true )
             {
@@ -62,6 +64,9 @@ namespace AnalysisControls
     }
 
     
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class WorkspaceViewModel : IViewModel, INotifyPropertyChanged
     {
         /// <summary>
@@ -71,8 +76,7 @@ namespace AnalysisControls
         {
             get
             {
-                if ( Workspace                    != null
-                     && Workspace.CurrentSolution != null )
+                if ( Workspace?.CurrentSolution != null )
                 {
                     return CollectionViewSource.GetDefaultView (
                                                                 Workspace.CurrentSolution.Projects
@@ -134,7 +138,11 @@ namespace AnalysisControls
             get { return _workspace ; }
             set
             {
-                if ( Equals ( value , _workspace ) ) return ;
+                if ( Equals ( value , _workspace ) )
+                {
+                    return ;
+                }
+
                 _workspace = value ;
                 _workspace.WorkspaceChanged += WorkspaceOnWorkspaceChanged;
                 OnPropertyChanged ( ) ;
@@ -235,6 +243,9 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public ProjectId CurrentProjectId => Workspace.CurrentSolution.Projects.First ( ).Id ;
+        public ProjectId CurrentProjectId
+        {
+            get { return Workspace.CurrentSolution.Projects.First ( ).Id ; }
+        }
     }
 }

@@ -50,14 +50,16 @@ namespace ProjInterface
         {
             get
             {
-                if ( _projectDirectoryIcon == null
-                     && IconsResources.Contains ( nameof ( ProjectDirectoryIcon ) ) )
+                if ( _projectDirectoryIcon != null
+                     || ! IconsResources.Contains ( nameof ( ProjectDirectoryIcon ) ) )
                 {
-                    var resource = IconsResources[ nameof ( ProjectDirectoryIcon ) ] ;
-                    var imageSource = ( ImageSource ) resource ;
-                    ProjectDirectoryIconImageSource = imageSource ;
-                    _projectDirectoryIcon           = new Image { Source = imageSource } ;
+                    return _projectDirectoryIcon ;
                 }
+
+                var resource = IconsResources[ nameof ( ProjectDirectoryIcon ) ] ;
+                var imageSource = ( ImageSource ) resource ;
+                ProjectDirectoryIconImageSource = imageSource ;
+                _projectDirectoryIcon           = new Image { Source = imageSource } ;
 
                 return _projectDirectoryIcon ;
             }

@@ -40,6 +40,9 @@ namespace KayMcCormick.Dev
         /// </summary>
         Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > , IEnumerable < ResourceNodeInfo > > GetChildrenFunc { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         bool? IsChildrenLoaded { get ; set ; }
     }
 }

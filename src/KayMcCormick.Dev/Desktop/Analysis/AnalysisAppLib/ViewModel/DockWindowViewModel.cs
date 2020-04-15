@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Threading.Tasks ;
 using AnalysisAppLib.Dataflow ;
-using AnalysisAppLib.XmlDoc ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;

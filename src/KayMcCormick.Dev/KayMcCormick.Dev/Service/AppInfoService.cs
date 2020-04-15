@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.ServiceModel ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 using NLog ;
 
@@ -30,6 +31,7 @@ namespace KayMcCormick.Dev.Service
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [ NotNull ]
         public AppInstanceInfoResponse GetAppInstanceInfo ( AppInstanceInfoRequest request )
         {
             var appInstanceInfo = new AppInstanceInfo { StartupTime = _startupTime } ;
@@ -41,22 +43,24 @@ namespace KayMcCormick.Dev.Service
             }
 
 
-            if ( _objectId != null )
+            if ( _objectId == null )
             {
-                foreach ( var rootNode in _objectId.GetRootNodes ( ) )
+                return new AppInstanceInfoResponse { Info = appInstanceInfo } ;
+            }
+
+            foreach ( var rootNode in _objectId.GetRootNodes ( ) )
+            {
+                var info1 = new WireComponentInfo { Id = rootNode } ;
+                var info = _objectId.GetComponentInfo ( rootNode ) ;
+                foreach ( var infoInstance in info.Instances )
                 {
-                    var info1 = new WireComponentInfo { Id = rootNode } ;
-                    var info = _objectId.GetComponentInfo ( rootNode ) ;
-                    foreach ( var infoInstance in info.Instances )
-                    {
-                        info1.Instances.Add (
-                                             new WireInstanceInfo
-                                             {
-                                                 Desc = infoInstance.Instance.ToString ( )
-                                             }
-                                            ) ;
-                        appInstanceInfo.ComponentInfos.Add ( info1 ) ;
-                    }
+                    info1.Instances.Add (
+                                         new WireInstanceInfo
+                                         {
+                                             Desc = infoInstance.Instance.ToString ( )
+                                         }
+                                        ) ;
+                    appInstanceInfo.ComponentInfos.Add ( info1 ) ;
                 }
             }
 

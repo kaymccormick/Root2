@@ -63,15 +63,16 @@ namespace AnalysisControls
         private void UIElement_OnPreviewKeyDown ( object sender , KeyEventArgs e )
         {
             DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
-            if ( e.Key == Key.Up )
+            switch ( e.Key )
             {
-                ViewModel.HistoryUp ( ) ;
-                e.Handled = true ;
-            }
-            else if ( e.Key == Key.Down )
-            {
-                ViewModel.HistoryDown ( ) ;
-                e.Handled = true ;
+                case Key.Up :
+                    ViewModel.HistoryUp ( ) ;
+                    e.Handled = true ;
+                    break ;
+                case Key.Down :
+                    ViewModel.HistoryDown ( ) ;
+                    e.Handled = true ;
+                    break ;
             }
         }
     }

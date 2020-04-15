@@ -385,10 +385,8 @@ namespace FindLogUsages
                     return null ;
                 }
 
-                var msgParam = Enumerable.Select (
-                                                  MethodSymbol
-                                                     .Parameters
-                                                , ( symbol , i ) => new { symbol , i } )
+                var msgParam = MethodSymbol
+                              .Parameters.Select ( ( symbol , i ) => new { symbol , i } )
                                          .Where ( arg1 => arg1.symbol.Name == "message" ) ;
 #if TRACE && DOLOG
                 if ( ! msgParam.Any ( ) )
