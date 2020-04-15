@@ -629,6 +629,7 @@ namespace ConsoleApp1
 
         private static void SelectVsInstance ( )
         {
+            if ( ! MSBuildLocator.CanRegister ) return ;
             var vsInstances = MSBuildLocator
                              .QueryVisualStudioInstances (
                                                           new VisualStudioInstanceQueryOptions
@@ -713,6 +714,10 @@ namespace ConsoleApp1
                                            ModelXamlFilename
                                          , new XmlWriterSettings { Indent = true , Async = true }
                                           ) ;
+            foreach ( var keyValuePair in model.Map.dict )
+            {
+                model.Map2.dict[ keyValuePair.Key.StringValue ] = keyValuePair.Value ;
+            }
             XamlWriter.Save ( model , writer ) ;
             writer.Close ( ) ;
         }

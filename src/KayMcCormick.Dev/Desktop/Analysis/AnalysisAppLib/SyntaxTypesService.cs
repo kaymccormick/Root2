@@ -20,6 +20,7 @@ using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.Xaml ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -419,86 +420,101 @@ namespace AnalysisAppLib
                                                                                    ) )
             {
 
-                var reader = XmlReader.Create (
-                                               stream ?? throw new InvalidOperationException ( )
-                                             , new XmlReaderSettings { Async = true }
-                                              ) ;
-
-                var syntax = XDocument.Load ( reader ) ;
-                if ( syntax.Root != null )
+                using ( var reader = XmlReader.Create (
+                                                       stream
+                                                       ?? throw new InvalidOperationException ( )
+                                                     , new XmlReaderSettings { Async = true }
+                                                      ) )
                 {
-                    var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
-                    if ( model1.Map.Values != null )
-                    { var result = Enumerable.Where < KeyValuePair < AppTypeInfoKey , AppTypeInfo > > ( model1.Map.dict , pair => pair.Value.Type.Name == rootType ) ;
-                        // var result = (valueCollection.Where ( t => {
-                        // DebugUtils.WriteLine(t.Type.Name);
-                        // var b = t.Type.Name
-                        // == rootType ;
-                        // if ( b )
-                        // DebugUtils
-                        // .WriteLine ( "true" ) ;
-                        // return b ;
-                        // }
-                        // )) ;
-                        AppTypeInfo ati =null;
-                        if ( ! result.Any ( ) )
-                        {
-                            DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
-                        }
-                        else
-                        {
-                            ati = result.First ( ).Value ;
-                            DebugUtils.WriteLine ( $"{ati}" ) ;
-                        }
-                    }
 
-                    foreach ( var xElement in syntax.Root.Elements ( ) )
+                    var syntax = XDocument.Load ( reader ) ;
+                    if ( syntax.Root != null )
                     {
-                        Type t = null;
-                        var xElementNameElementNameLocalName = xElement.Name.LocalName ;
-                        switch ( xElementNameElementNameLocalName )
+                        var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
+                        if ( model1.Map.Values != null )
                         {
-                            case _predefinedNodeElementName :
-                                var xName_Name = XName.Get ( "Name" ) ;
-                                var typeName = xElement.Attribute ( xName_Name )?.Value ;
-                                switch ( typeName )
-                                {
-                                    case nameof(CSharpSyntaxNode):
-                                        t = typeof ( CSharpSyntaxNode ) ;
-                                        break ;
-                                    case nameof(SyntaxNode):
-                                        t = typeof ( SyntaxNode ) ;
-                                        break ;
-                                    case nameof(StructuredTriviaSyntax):
-                                        t = typeof ( StructuredTriviaSyntax ) ;
-                                        break ;
-                                }
+                            var result =
+                                Enumerable.Where < KeyValuePair < AppTypeInfoKey , AppTypeInfo > > (
+                                                                                                    model1
+                                                                                                       .Map
+                                                                                                       .dict
+                                                                                                  , pair
+                                                                                                        => pair
+                                                                                                          .Value
+                                                                                                          .Type
+                                                                                                          .Name
+                                                                                                           == rootType
+                                                                                                   ) ;
+                            // var result = (valueCollection.Where ( t => {
+                            // DebugUtils.WriteLine(t.Type.Name);
+                            // var b = t.Type.Name
+                            // == rootType ;
+                            // if ( b )
+                            // DebugUtils
+                            // .WriteLine ( "true" ) ;
+                            // return b ;
+                            // }
+                            // )) ;
+                            AppTypeInfo ati = null ;
+                            if ( ! result.Any ( ) )
+                            {
+                                DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
+                            }
+                            else
+                            {
+                                ati = result.First ( ).Value ;
+                                DebugUtils.WriteLine ( $"{ati}" ) ;
+                            }
+                        }
 
-                                if ( t == null )
-                                {
-                                    DebugUtils.WriteLine ( "No type for " + typeName ) ;
-                                }
-                                else if ( model1.Map.Contains ( t ) )
-                                {
-                                    var typ = ( AppTypeInfo ) model1.Map[ t ] ;
-                                    typ.ElementName = xElementNameElementNameLocalName ;
-                                }
+                        foreach ( var xElement in syntax.Root.Elements ( ) )
+                        {
+                            Type t = null ;
+                            var xElementNameElementNameLocalName = xElement.Name.LocalName ;
+                            switch ( xElementNameElementNameLocalName )
+                            {
+                                case _predefinedNodeElementName :
+                                    var xName_Name = XName.Get ( "Name" ) ;
+                                    var typeName = xElement.Attribute ( xName_Name )?.Value ;
+                                    switch ( typeName )
+                                    {
+                                        case nameof ( CSharpSyntaxNode ) :
+                                            t = typeof ( CSharpSyntaxNode ) ;
+                                            break ;
+                                        case nameof ( SyntaxNode ) :
+                                            t = typeof ( SyntaxNode ) ;
+                                            break ;
+                                        case nameof ( StructuredTriviaSyntax ) :
+                                            t = typeof ( StructuredTriviaSyntax ) ;
+                                            break ;
+                                        case nameof ( SyntaxToken ) :
+                                            t = typeof ( SyntaxToken ) ;
+                                            break ;
+                                    }
 
-                                break ;
-                            case _abstractNodeElementName :
-                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                                break ;
-                            case _nodeElementName :
-                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                                break ;
+                                    if ( t == null )
+                                    {
+                                        DebugUtils.WriteLine ( "No type for " + typeName ) ;
+                                    }
+                                    else if ( model1.Map.Contains ( t ) )
+                                    {
+                                        var typ = ( AppTypeInfo ) model1.Map[ t ] ;
+                                        typ.ElementName = xElementNameElementNameLocalName ;
+                                    }
 
-                            default : throw new InvalidOperationException ( ) ;
+                                    break ;
+                                case _abstractNodeElementName :
+                                    ParseNodeBasics ( model1 , xElement , collectionMap ) ;
+                                    break ;
+                                case _nodeElementName :
+                                    ParseNodeBasics ( model1 , xElement , collectionMap ) ;
+                                    break ;
+
+                                default : throw new InvalidOperationException ( ) ;
+                            }
                         }
                     }
                 }
-
-
-                var d = new TypeMapDictionary { [ typeof ( string ) ] = new AppTypeInfo ( ) } ;
             }
         }
 
@@ -523,7 +539,7 @@ namespace AnalysisAppLib
 
             else
             {
-                var typ2 = ( AppTypeInfo ) model1.Map[ t2 ] ;
+                var typ2 = model1.Map.dict[ new AppTypeInfoKey ( t2 ) ] ;
                 typ2.ElementName = xElement.Name.LocalName ;
                 var kinds1 = xElement.Elements ( XName.Get ( "Kind" ) ) ;
                 var xElements = kinds1 as XElement[] ?? kinds1.ToArray ( ) ;
@@ -584,6 +600,11 @@ namespace AnalysisAppLib
 
             var fieldName = field.Attribute ( NameAttributeName )?.Value ;
             var fieldType = field.Attribute ( typeAttributeName )?.Value ;
+            if(fieldType == "SyntaxList<SyntaxToken>")
+            {
+                fieldType = "SyntaxTokenList" ;
+            }
+            
             var @override = field.Attribute ( overrideAttributeName )?.Value == "true" ;
             var optional = field.Attribute ( optionalAttributeName )?.Value  == "true" ;
 
@@ -593,7 +614,7 @@ namespace AnalysisAppLib
             if ( kinds.Any ( ) )
             {
                 
-                DebugUtils.WriteLine(String.Join(", ", kinds));
+                DebugUtils.WriteLine(string.Join(", ", kinds));
             }
 
 
@@ -604,6 +625,8 @@ namespace AnalysisAppLib
             if ( fTypeP is GenericNameSyntax g )
             {
                 var pds = SyntaxFactory.PropertyDeclaration ( g , "type1" ) ;
+                
+
                 var openBrace = SyntaxFactory.Token ( SyntaxKind.OpenBraceToken ) ;
                 var closeBrace = SyntaxFactory.Token ( SyntaxKind.CloseBraceToken ) ;
                 var empty = new SyntaxList < StatementSyntax > ( ) ;
@@ -621,115 +644,149 @@ namespace AnalysisAppLib
                                                                                                        )
                                                                             ) ;
                 var syntaxTrees = SyntaxFactory.SyntaxTree (
-                                                            WithCollectionUsings ( SyntaxFactory.CompilationUnit ( ) )
-                                                               .WithMembers ( memberDeclarationSyntaxes ).NormalizeWhitespace ( )
+                                                            WithCollectionUsings (
+                                                                                  SyntaxFactory
+                                                                                     .CompilationUnit ( )
+                                                                                 )
+                                                               .WithMembers (
+                                                                             memberDeclarationSyntaxes
+                                                                            )
+                                                               .NormalizeWhitespace ( )
                                                            ) ;
                 var compilation = CSharpCompilation.Create (
                                                             "test"
                                                           , new[] { syntaxTrees }
-                                                          , AssemblyRefs.Concat (
-                                                                                 new[]
-                                                                                 {
-                                                                                     typeof ( SyntaxFactory )
-                                                                                   , typeof ( ValueType )
-                                                                                   , typeof ( SyntaxNode )
-                                                                                   , typeof ( TypeSyntax )
-                                                                                   , typeof ( object )
-                                                                                   , typeof (
-                                                                                         DesignerSerializationOptionsAttribute
-                                                                                     )
-                                                                                 }.Select (
-                                                                                           t => t
-                                                                                               .Assembly
-                                                                                               .Location
-                                                                                          )
-                                                                                )
-                                                                        .Select (
-                                                                                 ar => MetadataReference
-                                                                                    .CreateFromFile ( ar )
-                                                                                )
-                                                          , new CSharpCompilationOptions (
+                                                          , AssemblyRefs
+                                                           .Concat (
+                                                                    new[]
+                                                                    {
+                                                                        typeof (
+                                                                            SyntaxFactory
+                                                                        )
+                                                                      , typeof (
+                                                                            ValueType )
+                                                                      , typeof (
+                                                                            SyntaxNode
+                                                                        )
+                                                                      , typeof (
+                                                                            TypeSyntax
+                                                                        )
+                                                                      , typeof ( object
+                                                                        )
+                                                                      , typeof (
+                                                                            DesignerSerializationOptionsAttribute
+                                                                        )
+                                                                    }.Select (
+                                                                              t => t
+                                                                                  .Assembly
+                                                                                  .Location
+                                                                             )
+                                                                   )
+                                                           .Select (
+                                                                    ar
+                                                                        => MetadataReference
+                                                                           .CreateFromFile (
+                                                                                            ar
+                                                                                           )
+                                                                   )
+                                                          , new
+                                                                CSharpCompilationOptions (
                                                                                           OutputKind
                                                                                              .DynamicallyLinkedLibrary
                                                                                          )
                                                            ) ;
-                var ms = new MemoryStream ( ) ;
-                var result = compilation.Emit ( ms ) ;
-                var win = ( bool ? ) result.Success ?? throw new InvalidOperationException ( ) ;
+                    
 
-                var syntaxTree = compilation.SyntaxTrees.First ( ) ;
-                var model = compilation.GetSemanticModel ( syntaxTree ) ;
-                var source = syntaxTree.ToString ( )
-                                       .Split ( new[] { "\n" } , StringSplitOptions.None ) ;
+                        var ms = new MemoryStream ( ) ;
+                        var result = compilation.Emit ( ms ) ;
+                        var win = ( bool ? ) result.Success
+                                  ?? throw new InvalidOperationException ( ) ;
 
-                foreach ( var diagnostic1 in compilation
-                                            .GetDiagnostics ( )
-                                            .Where (
-                                                    diagnostic
-                                                        => diagnostic.Severity
-                                                           == DiagnosticSeverity.Error
-                                                   ) )
-                {
-                    var startLine =
-                        diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line - 1 ;
-                    var count = diagnostic1.Location.GetLineSpan ( ).EndLinePosition.Line
-                                - diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line
-                                + 1 ;
-                    var locationSourceSpan = diagnostic1.Location.SourceSpan ;
-                    if ( diagnostic1.Location.SourceTree != null )
-                    {
-                        var code = diagnostic1.Location.SourceTree.GetText ( ) ;
-                        var end = locationSourceSpan.End     + 10 ;
-                        var start = locationSourceSpan.Start - 10 ;
-                        if ( start < 0 )
+                        var syntaxTree = compilation.SyntaxTrees.First ( ) ;
+                        var model = compilation.GetSemanticModel ( syntaxTree ) ;
+                        var source = syntaxTree.ToString ( )
+                                               .Split (
+                                                       new[] { "\r\n" }
+                                                     , StringSplitOptions.None
+                                                      ) ;
+
+                        foreach ( var diagnostic1 in compilation
+                                                    .GetDiagnostics ( )
+                                                    .Where (
+                                                            diagnostic
+                                                                => diagnostic.Severity
+                                                                   == DiagnosticSeverity.Error
+                                                           ) )
                         {
-                            start = 0 ;
+                            if ( diagnostic1.Id == "CS0315" )
+                            {
+
+                            }
+
+                            var startLine =
+                                diagnostic1.Location.GetLineSpan ( ).StartLinePosition.Line - 1 ;
+                            var count = diagnostic1.Location.GetLineSpan ( ).EndLinePosition.Line
+                                        - diagnostic1
+                                         .Location.GetLineSpan ( )
+                                         .StartLinePosition.Line
+                                        + 1 ;
+                            var locationSourceSpan = diagnostic1.Location.SourceSpan ;
+                            if ( diagnostic1.Location.SourceTree != null )
+                            {
+                                var code = diagnostic1.Location.SourceTree.GetText ( ) ;
+                                var end = locationSourceSpan.End     + 10 ;
+                                var start = locationSourceSpan.Start - 10 ;
+                                if ( start < 0 )
+                                {
+                                    start = 0 ;
+                                }
+
+                                if ( end >= code.Length )
+                                {
+                                    end = code.Length - 1 ;
+                                }
+
+                                var sp = new TextSpan ( start , end - start ) ;
+                                // ReSharper disable once UnusedVariable
+                                var codePart = code.GetSubText ( sp ) ;
+                                var lines = String.Join (
+                                                         "\n"
+                                                       , code.Lines.Skip ( startLine )
+                                                             .Take ( count )
+                                                             .ToList ( )
+                                                        ) ;
+                                // ReSharper disable once UnusedVariable
+                                var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
+                                DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
+                            }
                         }
 
-                        if ( end >= code.Length )
+                        var declarationSyntax = syntaxTree.GetRoot ( )
+                                                          .DescendantNodes ( )
+                                                          .OfType < PropertyDeclarationSyntax > ( )
+                                                          .First ( ) ;
+                        // ReSharper disable once UnusedVariable
+                        var typeSyntax = declarationSyntax.Type ;
+                        var x1 = model.GetDeclaredSymbol ( declarationSyntax ) ;
+
+                        var symbol1 = model.GetSymbolInfo ( typeSyntax ) ;
+                        if ( symbol1.Symbol is INamedTypeSymbol namedTypeSymbol )
                         {
-                            end = code.Length - 1 ;
+
+                            enumerable = namedTypeSymbol.AllInterfaces.Any (
+                                                                            i => i.SpecialType
+                                                                                 == SpecialType
+                                                                                    .System_Collections_IEnumerable
+                                                                                 || i.SpecialType
+                                                                                 == SpecialType
+                                                                                    .System_Collections_Generic_IEnumerable_T
+                                                                           ) ;
+                            if ( namedTypeSymbol.IsGenericType )
+                            {
+                                arg = namedTypeSymbol.TypeArguments.First ( ) ;
+                                namedTypeSymbol.TypeParameters.First ( ) ;
+                            }
                         }
-
-                        var sp = new TextSpan ( start , end - start ) ;
-                        // ReSharper disable once UnusedVariable
-                        var codePart = code.GetSubText ( sp ) ;
-                        var lines = String.Join (
-                                                 "\n"
-                                               , code.Lines.Skip ( startLine ).Take ( count ).ToList ( )
-                                                ) ;
-                        // ReSharper disable once UnusedVariable
-                        var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
-                        DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
-                    }
-                }
-
-                var declarationSyntax = syntaxTree.GetRoot ( )
-                                                  .DescendantNodes ( )
-                                                  .OfType < PropertyDeclarationSyntax > ( )
-                                                  .First ( ) ;
-                // ReSharper disable once UnusedVariable
-                var typeSyntax = declarationSyntax.Type ;
-                var x1 = model.GetDeclaredSymbol ( declarationSyntax ) ;
-                
-                var symbol1 = model.GetSymbolInfo ( declarationSyntax ) ;
-                if ( symbol1.Symbol is INamedTypeSymbol namedTypeSymbol )
-                {
-
-                    enumerable = namedTypeSymbol.AllInterfaces.Any (
-                                                                    i => i.SpecialType
-                                                                         == SpecialType
-                                                                            .System_Collections_IEnumerable
-                                                                         || i.SpecialType
-                                                                         == SpecialType
-                                                                            .System_Collections_Generic_IEnumerable_T
-                                                                   ) ;
-                    if ( namedTypeSymbol.IsGenericType )
-                    {
-                        arg = namedTypeSymbol.TypeArguments.First ( ) ;
-                        namedTypeSymbol.TypeParameters.First ( ) ;
-                    }
-                }
             }
             
             var syntaxFieldInfo = new SyntaxFieldInfo ( fieldName , fieldType , kinds.ToArray ( ) )

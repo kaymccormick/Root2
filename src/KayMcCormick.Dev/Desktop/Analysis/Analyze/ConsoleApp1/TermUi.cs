@@ -32,12 +32,12 @@ namespace ConsoleApp1
         private          Action < string >                      _commandOutputAction ;
 
         public TermUi (
-            ModelResources                                     modelResources
-          , [ NotNull ] IEnumerable < IDisplayableAppCommand > commands
+            //ModelResources                                     modelResources
+          [ NotNull ] IEnumerable < IDisplayableAppCommand > commands
           , TaskFactory                                        factory = null
         )
         {
-            _modelResources = modelResources ;
+          //  _modelResources = modelResources ;
             this.factory    = factory ;
             if ( this.factory == null )
             {

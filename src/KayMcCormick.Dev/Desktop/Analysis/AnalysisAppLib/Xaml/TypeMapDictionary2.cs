@@ -1,25 +1,36 @@
-﻿using System ;
+﻿#region header
+// Kay McCormick (mccor)
+// 
+// Analysis
+// AnalysisAppLib
+// TypeMapDictionary2.cs
+// 
+// 2020-04-15-5:46 AM
+// 
+// ---
+#endregion
+using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using AnalysisAppLib.Syntax ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib.Xaml
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class TypeMapDictionary : IDictionary , ICollection , IEnumerable
+    public sealed class TypeMapDictionary2 : IDictionary , ICollection , IEnumerable
     {
         /// <summary>
         /// 
         /// </summary>
-        public readonly Dictionary < AppTypeInfoKey , AppTypeInfo > dict = new Dictionary < AppTypeInfoKey , AppTypeInfo > ( ) ;
+        public readonly Dictionary < string , AppTypeInfo > dict = new Dictionary < string, AppTypeInfo > ( ) ;
 
         private readonly IDictionary _dict ;
         /// <summary>
         /// 
         /// </summary>
-        public TypeMapDictionary ( ) { _dict = dict ; }
+        public TypeMapDictionary2 ( ) { _dict = dict ; }
         #region Implementation of IEnumerable
         /// <summary>
         /// 
@@ -119,12 +130,12 @@ namespace AnalysisAppLib.XmlDoc
         /// <exception cref="InvalidOperationException"></exception>
         public AppTypeInfo GetAppTypeInfoForType ( AppTypeInfoKey typeKey )
         {
-            if (! dict.ContainsKey ( typeKey ) )
+            if (! dict.ContainsKey ( typeKey.StringValue ) )
             {
                 throw new InvalidOperationException ( "No such type" ) ;
             }
 
-            return dict[ typeKey ] ;
+            return dict[ typeKey.StringValue ] ;
         }
     }
 }

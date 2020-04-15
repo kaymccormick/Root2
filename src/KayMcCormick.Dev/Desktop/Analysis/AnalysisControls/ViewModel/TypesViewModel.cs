@@ -10,6 +10,7 @@ using System.Xml ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.Xaml ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -39,7 +40,9 @@ namespace AnalysisControls.ViewModel
         private AppTypeInfo   root ;
         private List < Type > _nodeTypes ;
 
-        private TypeMapDictionary map = new TypeMapDictionary ( ) ;
+        private TypeMapDictionary map = new TypeMapDictionary();
+        private TypeMapDictionary2 _map2 = new TypeMapDictionary2();
+
 
 #if true
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -113,6 +116,7 @@ namespace AnalysisControls.ViewModel
 
         /// <summary>
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
 
         /// <summary>
@@ -458,6 +462,11 @@ namespace AnalysisControls.ViewModel
             [ UsedImplicitly ] get { return _initializationDateTime ; }
             set { _initializationDateTime = value ; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TypeMapDictionary2 Map2 { get { return _map2 ; } set { _map2 = value ; } }
 
         /// <inheritdoc />
         public event EventHandler Initialized ;

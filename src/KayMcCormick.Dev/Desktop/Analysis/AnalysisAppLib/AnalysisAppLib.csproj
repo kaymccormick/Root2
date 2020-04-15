@@ -86,6 +86,8 @@
     <Compile Include="SyntaxTypesService.cs" />
     <Compile Include="ViewModel\MicrosoftUserViewModel.cs" />
     <Compile Include="Syntax\AppTypeInfo.cs" />
+    <Compile Include="Xaml\TypeMapDictionary.cs" />
+    <Compile Include="Xaml\TypeMapDictionary2.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />
     <Compile Include="Command\CodeGenCommand.cs" />
@@ -133,7 +135,6 @@
     <Compile Include="Syntax\Ext.cs" />
     <Compile Include="DocElements.cs" />
     <Compile Include="XmlDoc\SyntaxFieldInfoTypeConverter.cs" />
-    <Compile Include="XmlDoc\TypeMapDictionary.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />

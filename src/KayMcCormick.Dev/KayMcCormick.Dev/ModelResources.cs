@@ -443,11 +443,11 @@ namespace KayMcCormick.Dev
                         foreach ( var c in typ.CustomAttributes )
                         {
                             var at1 = CreateNode ( atts , c.AttributeType.FullName , c , false ) ;
-                            for ( var i = 0 ; i < c.Constructor.GetParameters ( ).Length ; i ++ )
-                            {
-                                var ci = c.Constructor.GetParameters ( )[ i ] ;
-                                CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
-                            }
+                            // for ( var i = 0 ; i < c.Constructor.GetParameters ( ).Length ; i ++ )
+                            // {
+                                // var ci = c.Constructor.GetParameters ( )[ i ] ;
+                                // CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
+                            // }
                         }
                     }
                     catch

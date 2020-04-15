@@ -10,6 +10,7 @@
 // ---
 #endregion
 using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.Xaml ;
 using AnalysisAppLib.XmlDoc ;
 using KayMcCormick.Dev ;
 
