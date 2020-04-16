@@ -12,7 +12,7 @@
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.text.encodings.web\4.7.0\lib\netstandard2.0\System.Text.Encodings.Web.dll"#>
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\system.numerics.vectors\4.5.0\lib\net46\System.Numerics.Vectors.dll"#>
 <#@assembly name="C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\microsoft.bcl.asyncinterfaces\1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll"#>
-<#@ output extension=".txt"#>
+<#@ output extension=".cs"#>
 <#@import namespace="System.Windows.Markup" #>
 <#@import namespace="System.IO" #>
 <#@import namespace="System.Xml" #>
@@ -156,6 +156,7 @@ public static class GenTransforms {
                             {
                             }
 
+							string cstr = null;
                             string transform = null ;
                             if ( t2 == null )
                             {
@@ -170,13 +171,17 @@ public static class GenTransforms {
                                 {
                                     var m2 = dict[key ] ;
                                     transform = $".Select(Transform_{m2}).ToList()" ;
+									cstr = $"new Poco{key}Collection(node?.{name}{transform})";
                                 }
                             }
 
                         if (!string.IsNullOrEmpty( transform)) {
                         {
-                            value = $"node?.{name}{transform}" ;
-                       
+						if(cstr != null)
+						{
+						value = cstr;
+						}else {
+                            value = $"node?.{name}{transform}" ;}
 
                         if ( value == "" )
                         {

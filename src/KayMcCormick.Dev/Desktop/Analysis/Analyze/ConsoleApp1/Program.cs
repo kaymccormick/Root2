@@ -1,47 +1,48 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SqlTypes;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reactive.Subjects;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Markup;
-using System.Xml;
-using System.Xml.Linq;
-using AnalysisAppLib;
-using AnalysisAppLib.Project;
-using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
-using AnalysisControls;
-using AnalysisControls.ViewModel;
-using Autofac;
-using Autofac.Core;
+﻿using System ;
+using System.Collections ;
+using System.Collections.Generic ;
+using System.Collections.Immutable ;
+using System.Data ;
+using System.Data.SqlClient ;
+using System.Data.SqlTypes ;
+using System.IO ;
+using System.Linq ;
+using System.Net ;
+using System.Net.Sockets ;
+using System.Reactive.Subjects ;
+using System.Text ;
+using System.Text.Json ;
+using System.Threading.Tasks ;
+using System.Windows.Markup ;
+using System.Xml ;
+using System.Xml.Linq ;
+using AnalysisAppLib ;
+using AnalysisAppLib.Project ;
+using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.XmlDoc ;
+using AnalysisControls ;
+using AnalysisControls.ViewModel ;
+using Autofac ;
+using Autofac.Core ;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST ;
-using CommandLine;
-using JetBrains.Annotations;
-using KayMcCormick.Dev;
-using KayMcCormick.Dev.Application;
-using KayMcCormick.Dev.Attributes;
-using KayMcCormick.Dev.Logging;
-using KayMcCormick.Lib.Wpf.Command;
-using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis.Text;
-using NLog;
-using NLog.Targets;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters;
+using CommandLine ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Lib.Wpf.Command ;
+using Microsoft.Build.Locator ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Microsoft.CodeAnalysis.MSBuild ;
+using Microsoft.CodeAnalysis.Text ;
+using NLog ;
+using NLog.Targets ;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
+using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
+
 // ReSharper disable RedundantOverriddenMember
 
 // ReSharper disable AnnotateNotNullParameter
@@ -55,17 +56,17 @@ namespace ConsoleApp1
             get { return Path.Combine ( _dataOutputPath , ModelXamlFilenamePart ) ; }
         }
 
-        private static readonly string _dataOutputPath   = @"C:\data\logs" ;
-        private const string TypesJsonFilename     = "types.json";
-        private const string ModelXamlFilenamePart = "model.xaml";
+        private static readonly string _dataOutputPath       = @"C:\data\logs" ;
+        private const           string TypesJsonFilename     = "types.json" ;
+        private const           string ModelXamlFilenamePart = "model.xaml" ;
 
         private const string SolutionFilePath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
-        private const string _pocoPrefix           = "Poco" ;
-        private const string _collectionSuffix     = "Collection" ;
-        private const string _pocosyntaxnamespace  = "PocoSyntax" ;
-        private const string _icollection          = "ICollection" ;
+        private const string _pocoPrefix          = "Poco" ;
+        private const string _collectionSuffix    = "Collection" ;
+        private const string _pocosyntaxnamespace = "PocoSyntax" ;
+        private const string _icollection         = "ICollection" ;
 
         private static readonly string[] AssemblyRefs =
         {
@@ -92,6 +93,7 @@ namespace ConsoleApp1
         private static          ApplicationInstance _appinst ;
         private static readonly string              Pocosyntaxtoken = @"PocoSyntaxToken" ;
         private static readonly string              _ilist          = "IList" ;
+        private static readonly string              _list           = "List" ;
         private static readonly string              _ienumerable    = "IEnumerable" ;
 
         static Program ( ) { Logger = null ; }
@@ -159,7 +161,7 @@ namespace ConsoleApp1
                                                          , subject
                                                           )
 #pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
-                            .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ))
+                            .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ) )
 #pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
                      ) ;
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -360,10 +362,13 @@ namespace ConsoleApp1
 
             WriteThisTypesViewModel (
                                      typesViewModel
-                                   , ( model )
-                                         => Path.Combine (_dataOutputPath, "model-v1.xaml" )
+                                   , ( model ) => Path.Combine ( _dataOutputPath , "model-v1.xaml" )
                                     ) ;
-            DumpModelToJson ( context , typesViewModel , Path.Combine(_dataOutputPath, "types-v1.json" )) ;
+            DumpModelToJson (
+                             context
+                           , typesViewModel
+                           , Path.Combine ( _dataOutputPath , "types-v1.json" )
+                            ) ;
             return typesViewModel ;
         }
 
@@ -743,7 +748,7 @@ namespace ConsoleApp1
         // ReSharper disable once UnusedMember.Local
 
         public static void WriteThisTypesViewModel (
-            [ NotNull ] TypesViewModel       model
+            [ NotNull ]   TypesViewModel                   model
           , [ CanBeNull ] Func < TypesViewModel , string > filenameFunc = null
         )
         {
@@ -1158,9 +1163,22 @@ namespace ConsoleApp1
                 var IEnumerable1 = SimpleBaseType ( ParseTypeName ( _ienumerable ) ) ;
                 var ICollectionType = SimpleBaseType ( ParseTypeName ( _icollection ) ) ;
                 var classContainerDecl = ClassDeclaration ( colTypeClassName )
-                   .WithBaseList (
-                                  BaseList ( ).AddTypes ( Ilist1 , IEnumerable1 , ICollectionType )
-                                 ).WithModifiers(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)));
+                                        .WithBaseList (
+                                                       BaseList ( )
+                                                          .AddTypes (
+                                                                     Ilist1
+                                                                   , IEnumerable1
+                                                                   , ICollectionType
+                                                                    )
+                                                      )
+                                        .WithModifiers (
+                                                        SyntaxTokenList.Create (
+                                                                                Token (
+                                                                                       SyntaxKind
+                                                                                          .PublicKeyword
+                                                                                      )
+                                                                               )
+                                                       ) ;
 
                 var typeSyntax2 = ParseTypeName ( t.Type.FullName ) ;
                 var typeSyntax = ParseTypeName (
@@ -1177,6 +1195,15 @@ namespace ConsoleApp1
                                                                                 .Add ( typeSyntax )
                                                                             )
                                                           ) ;
+                var genericinternalListType2 = GenericName (
+                                                            Identifier ( _list )
+                                                          , TypeArgumentList (
+                                                                              SeparatedList <
+                                                                                      TypeSyntax
+                                                                                  > ( )
+                                                                                 .Add ( typeSyntax )
+                                                                             )
+                                                           ) ;
                 var IListRuntimeType = typeof ( IList ) ;
                 var ICollectionRuntimeType = typeof ( ICollection ) ;
                 var IEnumerableRuntimeType = typeof ( IEnumerable ) ;
@@ -1502,8 +1529,6 @@ namespace ConsoleApp1
                                                  }
                                                 ) ;
 
-                    ExpressionSyntax xxxx ;
-                    var invocationExpressionSyntax = InvocationExpression(MemberAccessExpression ( SyntaxKind.SimpleMemberAccessExpression, _listField, Token(SyntaxKind.DotToken), (SimpleNameSyntax)ParseName("AddRange"))).WithArgumentList(ArgumentList(Token(SyntaxKind.OpenParenToken), new SeparatedSyntaxList < ArgumentSyntax > (), Token(SyntaxKind.CloseParenToken)));
                     classContainerDecl = classContainerDecl.WithMembers (
                                                                          List (
                                                                                classContainerDecl
@@ -1512,15 +1537,10 @@ namespace ConsoleApp1
                                                                                   .Concat ( props1 )
                                                                                   .Concat (
                                                                                            indexers
-                                                                                          ).Concat(new[]{ConstructorDeclaration(classContainerDecl.Identifier.ValueText).WithParameterList(ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(Parameter(Identifier("initList")).WithType(GenericName(Identifier("IList")).WithTypeArgumentList(TypeArgumentList( (
-                                                                                                                                                                                                                                                                                                                                                                               SingletonSeparatedList (
-                                                                                                                                                                                                                                                                                                                                                                                                       typeSyntax
-                                                                                                                                                                                                                                                                                                                                                                                                      )
-                                                                                                                                                                                                                                                                                                                                                                           ))))))).WithBody(Block(new[]
-                                                                                                                                                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                                                                                                                                                      ExpressionStatement(invocationExpressionSyntax)
-                                                                                                                                                                                                                                                                                                                                                                                                  }))})));
-                        
+                                                                                          )
+                                                                              )
+                                                                        ) ;
+
                     classDecl1 = ( ClassDeclarationSyntax ) rewriter1.Visit ( classDecl1 ) ;
                     DebugUtils.WriteLine (
                                           "\n***\n"
@@ -1531,6 +1551,96 @@ namespace ConsoleApp1
                                          ) ;
                 }
 
+                var invocationExpressionSyntax =
+                    InvocationExpression (
+                                          MemberAccessExpression (
+                                                                  SyntaxKind
+                                                                     .SimpleMemberAccessExpression
+                                                                , ParenthesizedExpression (
+                                                                                           CastExpression (
+                                                                                                           genericinternalListType2
+                                                                                                         , IdentifierName("_list")
+                                                                                                          )
+                                                                                          )
+                                                                , Token ( SyntaxKind.DotToken )
+                                                                , ( SimpleNameSyntax ) ParseName (
+                                                                                                  "AddRange"
+                                                                                                 )
+                                                                 )
+                                         )
+                       .WithArgumentList (
+                                          ArgumentList (
+                                                        Token ( SyntaxKind.OpenParenToken )
+                                                      , new SeparatedSyntaxList < ArgumentSyntax
+                                                            > ( )
+                                                           .Add (
+                                                                 Argument (
+                                                                           IdentifierName (
+                                                                                           "initList"
+                                                                                          )
+                                                                          )
+                                                                )
+                                                      , Token ( SyntaxKind.CloseParenToken )
+                                                       )
+                                         ) ;
+                var typeArgument = genericinternalListType.TypeArgumentList.Arguments[ 0 ] ;
+
+                var constructor = ConstructorDeclaration ( classContainerDecl.Identifier.ValueText )
+                                 .WithParameterList (
+                                                     ParameterList (
+                                                                    new SeparatedSyntaxList <
+                                                                        ParameterSyntax > ( ).Add (
+                                                                                                   Parameter (
+                                                                                                              Identifier (
+                                                                                                                          "initList"
+                                                                                                                         )
+                                                                                                             )
+                                                                                                      .WithType (
+                                                                                                                 GenericName (
+                                                                                                                              Identifier (
+                                                                                                                                          "IList"
+                                                                                                                                         )
+                                                                                                                             )
+                                                                                                                    .WithTypeArgumentList (
+                                                                                                                                           TypeArgumentList (
+                                                                                                                                                             SingletonSeparatedList (
+                                                                                                                                                                                     typeArgument
+                                                                                                                                                                                    )
+                                                                                                                                                            )
+                                                                                                                                          )
+                                                                                                                )
+                                                                                                  )
+                                                                   )
+                                                    )
+                                 .WithBody (
+                                            Block (
+                                                   ExpressionStatement (
+                                                                        invocationExpressionSyntax
+                                                                       )
+                                                  )
+                                           ).WithModifiers(
+                                                           SyntaxTokenList.Create(
+                                                                                  Token(
+                                                                                        SyntaxKind
+                                                                                           .PublicKeyword
+                                                                                       )
+                                                                                 )
+                                                          );
+                ;
+
+                classContainerDecl = classContainerDecl.WithMembers (
+                                                                     List (
+                                                                           classContainerDecl
+                                                                              .Members.Concat (
+                                                                                               new
+                                                                                               MemberDeclarationSyntax
+                                                                                               []
+                                                                                               {
+                                                                                                   constructor
+                                                                                               }
+                                                                                              )
+                                                                          )
+                                                                    ) ;
 
                 var argumentListSyntax = ArgumentList (
                                                        Token ( SyntaxKind.OpenParenToken )
@@ -1723,12 +1833,24 @@ namespace ConsoleApp1
                     members = members.Add ( propertyDeclarationSyntax ) ;
                 }
 
-                var documentationCommentTriviaSyntax = DocumentationCommentTrivia(SyntaxKind.SingleLineDocumentationCommentTrivia, SyntaxFactory.List<XmlNodeSyntax>().Add(SyntaxFactory.XmlSummaryElement())) ;
-                var tokens1 = documentationCommentTriviaSyntax.DescendantTokens ( x111 => true , true ).ToList ( ) ;
+                var documentationCommentTriviaSyntax = DocumentationCommentTrivia (
+                                                                                   SyntaxKind
+                                                                                      .SingleLineDocumentationCommentTrivia
+                                                                                 , List <
+                                                                                           XmlNodeSyntax
+                                                                                       > ( )
+                                                                                      .Add (
+                                                                                            XmlSummaryElement ( )
+                                                                                           )
+                                                                                  ) ;
+                var tokens1 = documentationCommentTriviaSyntax
+                             .DescendantTokens ( x111 => true , true )
+                             .ToList ( ) ;
                 classDecl1 = classDecl1.WithMembers ( members ) ;
-                
-                types      = types.Add ( classDecl1 ) ;
+
+                types = types.Add ( classDecl1 ) ;
             }
+
 
             DebugOut ( "About to build compilation unit" ) ;
 
@@ -1747,10 +1869,6 @@ namespace ConsoleApp1
                                                                                   )
                                       )
                          .NormalizeWhitespace ( ) ;
-
-            foreach ( var token in compl.DescendantTokens ( ) )
-            {
-            }
 
             DebugOut ( "built" ) ;
             var tree = SyntaxTree ( compl ) ;
@@ -1820,9 +1938,8 @@ namespace ConsoleApp1
                                                                     )
                                                    ) ;
 
-            var sourceText = SourceText
-               .From (
-                      $@"     using System;
+            var sourceText = SourceText.From (
+                                              $@"     using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -1871,8 +1988,10 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public string ValueText {{ get; set; }}
     }}
 "
-                     ) ;
+                                             ) ;
+
             File.WriteAllText ( "misc.cs" , sourceText.ToString ( ) ) ;
+
             var document2 = DocumentInfo.Create (
                                                  DocumentId.CreateNewId ( projectId )
                                                , "misc"
@@ -1984,6 +2103,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             {
                 DebugOut ( "Success" ) ;
             }
+
             else
             {
                 DebugUtils.WriteLine ( "Failure" ) ;
@@ -2018,7 +2138,6 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         {
             var classDecl1 = ClassDeclaration ( $"{_pocoPrefix}{mapKey.StringValue}" )
                .WithModifiers ( SyntaxTokenList.Create ( Token ( SyntaxKind.PublicKeyword ) ) ) ;
-
             if ( t.ParentInfo != null )
             {
                 var identifierNameSyntax = IdentifierName ( _pocoPrefix + t.ParentInfo.Type.Name ) ;
@@ -2368,7 +2487,6 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             }
 
             base.VisitParameter ( node ) ;
-            
         }
 
         public override void VisitOperatorDeclaration ( OperatorDeclarationSyntax node )

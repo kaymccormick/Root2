@@ -36,6 +36,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAccessorDeclarationSyntaxCollection(IList<PocoAccessorDeclarationSyntax> initList)
+        {
+            ((List<PocoAccessorDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAccessorDeclarationSyntax>();
     }
 
@@ -101,6 +106,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAccessorListSyntaxCollection(IList<PocoAccessorListSyntax> initList)
+        {
+            ((List<PocoAccessorListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAccessorListSyntax>();
     }
 
@@ -159,6 +169,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAliasQualifiedNameSyntaxCollection(IList<PocoAliasQualifiedNameSyntax> initList)
+        {
+            ((List<PocoAliasQualifiedNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAliasQualifiedNameSyntax>();
     }
 
@@ -217,6 +232,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAnonymousFunctionExpressionSyntaxCollection(IList<PocoAnonymousFunctionExpressionSyntax> initList)
+        {
+            ((List<PocoAnonymousFunctionExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAnonymousFunctionExpressionSyntax>();
     }
 
@@ -275,6 +295,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAnonymousMethodExpressionSyntaxCollection(IList<PocoAnonymousMethodExpressionSyntax> initList)
+        {
+            ((List<PocoAnonymousMethodExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAnonymousMethodExpressionSyntax>();
     }
 
@@ -347,6 +372,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAnonymousObjectCreationExpressionSyntaxCollection(IList<PocoAnonymousObjectCreationExpressionSyntax> initList)
+        {
+            ((List<PocoAnonymousObjectCreationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAnonymousObjectCreationExpressionSyntax>();
     }
 
@@ -412,6 +442,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAnonymousObjectMemberDeclaratorSyntaxCollection(IList<PocoAnonymousObjectMemberDeclaratorSyntax> initList)
+        {
+            ((List<PocoAnonymousObjectMemberDeclaratorSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAnonymousObjectMemberDeclaratorSyntax>();
     }
 
@@ -463,6 +498,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoArgumentListSyntaxCollection(IList<PocoArgumentListSyntax> initList)
+        {
+            ((List<PocoArgumentListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoArgumentListSyntax>();
     }
 
@@ -521,6 +561,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoArgumentSyntaxCollection(IList<PocoArgumentSyntax> initList)
+        {
+            ((List<PocoArgumentSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoArgumentSyntax>();
     }
 
@@ -579,6 +624,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoArrayCreationExpressionSyntaxCollection(IList<PocoArrayCreationExpressionSyntax> initList)
+        {
+            ((List<PocoArrayCreationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoArrayCreationExpressionSyntax>();
     }
 
@@ -637,6 +687,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoArrayRankSpecifierSyntaxCollection(IList<PocoArrayRankSpecifierSyntax> initList)
+        {
+            ((List<PocoArrayRankSpecifierSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoArrayRankSpecifierSyntax>();
     }
 
@@ -695,6 +750,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoArrayTypeSyntaxCollection(IList<PocoArrayTypeSyntax> initList)
+        {
+            ((List<PocoArrayTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoArrayTypeSyntax>();
     }
 
@@ -746,6 +806,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoArrowExpressionClauseSyntaxCollection(IList<PocoArrowExpressionClauseSyntax> initList)
+        {
+            ((List<PocoArrowExpressionClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoArrowExpressionClauseSyntax>();
     }
 
@@ -797,6 +862,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAssignmentExpressionSyntaxCollection(IList<PocoAssignmentExpressionSyntax> initList)
+        {
+            ((List<PocoAssignmentExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAssignmentExpressionSyntax>();
     }
 
@@ -855,6 +925,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAttributeArgumentListSyntaxCollection(IList<PocoAttributeArgumentListSyntax> initList)
+        {
+            ((List<PocoAttributeArgumentListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAttributeArgumentListSyntax>();
     }
 
@@ -913,6 +988,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAttributeArgumentSyntaxCollection(IList<PocoAttributeArgumentSyntax> initList)
+        {
+            ((List<PocoAttributeArgumentSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAttributeArgumentSyntax>();
     }
 
@@ -971,6 +1051,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAttributeListSyntaxCollection(IList<PocoAttributeListSyntax> initList)
+        {
+            ((List<PocoAttributeListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAttributeListSyntax>();
     }
 
@@ -1036,6 +1121,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAttributeSyntaxCollection(IList<PocoAttributeSyntax> initList)
+        {
+            ((List<PocoAttributeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAttributeSyntax>();
     }
 
@@ -1087,6 +1177,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAttributeTargetSpecifierSyntaxCollection(IList<PocoAttributeTargetSpecifierSyntax> initList)
+        {
+            ((List<PocoAttributeTargetSpecifierSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAttributeTargetSpecifierSyntax>();
     }
 
@@ -1138,6 +1233,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoAwaitExpressionSyntaxCollection(IList<PocoAwaitExpressionSyntax> initList)
+        {
+            ((List<PocoAwaitExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoAwaitExpressionSyntax>();
     }
 
@@ -1189,6 +1289,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBadDirectiveTriviaSyntaxCollection(IList<PocoBadDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoBadDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBadDirectiveTriviaSyntax>();
     }
 
@@ -1254,6 +1359,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseArgumentListSyntaxCollection(IList<PocoBaseArgumentListSyntax> initList)
+        {
+            ((List<PocoBaseArgumentListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseArgumentListSyntax>();
     }
 
@@ -1298,6 +1408,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseCrefParameterListSyntaxCollection(IList<PocoBaseCrefParameterListSyntax> initList)
+        {
+            ((List<PocoBaseCrefParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseCrefParameterListSyntax>();
     }
 
@@ -1342,6 +1457,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseExpressionSyntaxCollection(IList<PocoBaseExpressionSyntax> initList)
+        {
+            ((List<PocoBaseExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseExpressionSyntax>();
     }
 
@@ -1386,6 +1506,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseFieldDeclarationSyntaxCollection(IList<PocoBaseFieldDeclarationSyntax> initList)
+        {
+            ((List<PocoBaseFieldDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseFieldDeclarationSyntax>();
     }
 
@@ -1437,6 +1562,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseListSyntaxCollection(IList<PocoBaseListSyntax> initList)
+        {
+            ((List<PocoBaseListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseListSyntax>();
     }
 
@@ -1488,6 +1618,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseMethodDeclarationSyntaxCollection(IList<PocoBaseMethodDeclarationSyntax> initList)
+        {
+            ((List<PocoBaseMethodDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseMethodDeclarationSyntax>();
     }
 
@@ -1539,6 +1674,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseParameterListSyntaxCollection(IList<PocoBaseParameterListSyntax> initList)
+        {
+            ((List<PocoBaseParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseParameterListSyntax>();
     }
 
@@ -1583,6 +1723,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBasePropertyDeclarationSyntaxCollection(IList<PocoBasePropertyDeclarationSyntax> initList)
+        {
+            ((List<PocoBasePropertyDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBasePropertyDeclarationSyntax>();
     }
 
@@ -1641,6 +1786,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseTypeDeclarationSyntaxCollection(IList<PocoBaseTypeDeclarationSyntax> initList)
+        {
+            ((List<PocoBaseTypeDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseTypeDeclarationSyntax>();
     }
 
@@ -1713,6 +1863,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBaseTypeSyntaxCollection(IList<PocoBaseTypeSyntax> initList)
+        {
+            ((List<PocoBaseTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBaseTypeSyntax>();
     }
 
@@ -1757,6 +1912,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBinaryExpressionSyntaxCollection(IList<PocoBinaryExpressionSyntax> initList)
+        {
+            ((List<PocoBinaryExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBinaryExpressionSyntax>();
     }
 
@@ -1815,6 +1975,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBlockSyntaxCollection(IList<PocoBlockSyntax> initList)
+        {
+            ((List<PocoBlockSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBlockSyntax>();
     }
 
@@ -1880,6 +2045,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBracketedArgumentListSyntaxCollection(IList<PocoBracketedArgumentListSyntax> initList)
+        {
+            ((List<PocoBracketedArgumentListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBracketedArgumentListSyntax>();
     }
 
@@ -1938,6 +2108,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBracketedParameterListSyntaxCollection(IList<PocoBracketedParameterListSyntax> initList)
+        {
+            ((List<PocoBracketedParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBracketedParameterListSyntax>();
     }
 
@@ -1996,6 +2171,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBranchingDirectiveTriviaSyntaxCollection(IList<PocoBranchingDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoBranchingDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBranchingDirectiveTriviaSyntax>();
     }
 
@@ -2040,6 +2220,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoBreakStatementSyntaxCollection(IList<PocoBreakStatementSyntax> initList)
+        {
+            ((List<PocoBreakStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoBreakStatementSyntax>();
     }
 
@@ -2098,6 +2283,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCasePatternSwitchLabelSyntaxCollection(IList<PocoCasePatternSwitchLabelSyntax> initList)
+        {
+            ((List<PocoCasePatternSwitchLabelSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCasePatternSwitchLabelSyntax>();
     }
 
@@ -2163,6 +2353,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCaseSwitchLabelSyntaxCollection(IList<PocoCaseSwitchLabelSyntax> initList)
+        {
+            ((List<PocoCaseSwitchLabelSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCaseSwitchLabelSyntax>();
     }
 
@@ -2221,6 +2416,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCastExpressionSyntaxCollection(IList<PocoCastExpressionSyntax> initList)
+        {
+            ((List<PocoCastExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCastExpressionSyntax>();
     }
 
@@ -2286,6 +2486,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCatchClauseSyntaxCollection(IList<PocoCatchClauseSyntax> initList)
+        {
+            ((List<PocoCatchClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCatchClauseSyntax>();
     }
 
@@ -2351,6 +2556,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCatchDeclarationSyntaxCollection(IList<PocoCatchDeclarationSyntax> initList)
+        {
+            ((List<PocoCatchDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCatchDeclarationSyntax>();
     }
 
@@ -2416,6 +2626,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCatchFilterClauseSyntaxCollection(IList<PocoCatchFilterClauseSyntax> initList)
+        {
+            ((List<PocoCatchFilterClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCatchFilterClauseSyntax>();
     }
 
@@ -2481,6 +2696,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCheckedExpressionSyntaxCollection(IList<PocoCheckedExpressionSyntax> initList)
+        {
+            ((List<PocoCheckedExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCheckedExpressionSyntax>();
     }
 
@@ -2546,6 +2766,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCheckedStatementSyntaxCollection(IList<PocoCheckedStatementSyntax> initList)
+        {
+            ((List<PocoCheckedStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCheckedStatementSyntax>();
     }
 
@@ -2604,6 +2829,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoClassDeclarationSyntaxCollection(IList<PocoClassDeclarationSyntax> initList)
+        {
+            ((List<PocoClassDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoClassDeclarationSyntax>();
     }
 
@@ -2718,6 +2948,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoClassOrStructConstraintSyntaxCollection(IList<PocoClassOrStructConstraintSyntax> initList)
+        {
+            ((List<PocoClassOrStructConstraintSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoClassOrStructConstraintSyntax>();
     }
 
@@ -2769,6 +3004,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCommonForEachStatementSyntaxCollection(IList<PocoCommonForEachStatementSyntax> initList)
+        {
+            ((List<PocoCommonForEachStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCommonForEachStatementSyntax>();
     }
 
@@ -2855,6 +3095,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCompilationUnitSyntaxCollection(IList<PocoCompilationUnitSyntax> initList)
+        {
+            ((List<PocoCompilationUnitSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCompilationUnitSyntax>();
     }
 
@@ -2927,6 +3172,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConditionalAccessExpressionSyntaxCollection(IList<PocoConditionalAccessExpressionSyntax> initList)
+        {
+            ((List<PocoConditionalAccessExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConditionalAccessExpressionSyntax>();
     }
 
@@ -2985,6 +3235,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConditionalDirectiveTriviaSyntaxCollection(IList<PocoConditionalDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoConditionalDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConditionalDirectiveTriviaSyntax>();
     }
 
@@ -3036,6 +3291,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConditionalExpressionSyntaxCollection(IList<PocoConditionalExpressionSyntax> initList)
+        {
+            ((List<PocoConditionalExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConditionalExpressionSyntax>();
     }
 
@@ -3108,6 +3368,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConstantPatternSyntaxCollection(IList<PocoConstantPatternSyntax> initList)
+        {
+            ((List<PocoConstantPatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConstantPatternSyntax>();
     }
 
@@ -3152,6 +3417,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConstructorConstraintSyntaxCollection(IList<PocoConstructorConstraintSyntax> initList)
+        {
+            ((List<PocoConstructorConstraintSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConstructorConstraintSyntax>();
     }
 
@@ -3210,6 +3480,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConstructorDeclarationSyntaxCollection(IList<PocoConstructorDeclarationSyntax> initList)
+        {
+            ((List<PocoConstructorDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConstructorDeclarationSyntax>();
     }
 
@@ -3289,6 +3564,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConstructorInitializerSyntaxCollection(IList<PocoConstructorInitializerSyntax> initList)
+        {
+            ((List<PocoConstructorInitializerSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConstructorInitializerSyntax>();
     }
 
@@ -3347,6 +3627,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoContinueStatementSyntaxCollection(IList<PocoContinueStatementSyntax> initList)
+        {
+            ((List<PocoContinueStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoContinueStatementSyntax>();
     }
 
@@ -3405,6 +3690,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConversionOperatorDeclarationSyntaxCollection(IList<PocoConversionOperatorDeclarationSyntax> initList)
+        {
+            ((List<PocoConversionOperatorDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConversionOperatorDeclarationSyntax>();
     }
 
@@ -3491,6 +3781,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoConversionOperatorMemberCrefSyntaxCollection(IList<PocoConversionOperatorMemberCrefSyntax> initList)
+        {
+            ((List<PocoConversionOperatorMemberCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoConversionOperatorMemberCrefSyntax>();
     }
 
@@ -3556,6 +3851,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCrefBracketedParameterListSyntaxCollection(IList<PocoCrefBracketedParameterListSyntax> initList)
+        {
+            ((List<PocoCrefBracketedParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCrefBracketedParameterListSyntax>();
     }
 
@@ -3614,6 +3914,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCrefParameterListSyntaxCollection(IList<PocoCrefParameterListSyntax> initList)
+        {
+            ((List<PocoCrefParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCrefParameterListSyntax>();
     }
 
@@ -3672,6 +3977,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCrefParameterSyntaxCollection(IList<PocoCrefParameterSyntax> initList)
+        {
+            ((List<PocoCrefParameterSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCrefParameterSyntax>();
     }
 
@@ -3723,6 +4033,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCrefSyntaxCollection(IList<PocoCrefSyntax> initList)
+        {
+            ((List<PocoCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCrefSyntax>();
     }
 
@@ -3761,6 +4076,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoCSharpSyntaxNodeCollection(IList<PocoCSharpSyntaxNode> initList)
+        {
+            ((List<PocoCSharpSyntaxNode>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoCSharpSyntaxNode>();
     }
 
@@ -3799,6 +4119,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDeclarationExpressionSyntaxCollection(IList<PocoDeclarationExpressionSyntax> initList)
+        {
+            ((List<PocoDeclarationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDeclarationExpressionSyntax>();
     }
 
@@ -3850,6 +4175,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDeclarationPatternSyntaxCollection(IList<PocoDeclarationPatternSyntax> initList)
+        {
+            ((List<PocoDeclarationPatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDeclarationPatternSyntax>();
     }
 
@@ -3901,6 +4231,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDefaultExpressionSyntaxCollection(IList<PocoDefaultExpressionSyntax> initList)
+        {
+            ((List<PocoDefaultExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDefaultExpressionSyntax>();
     }
 
@@ -3966,6 +4301,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDefaultSwitchLabelSyntaxCollection(IList<PocoDefaultSwitchLabelSyntax> initList)
+        {
+            ((List<PocoDefaultSwitchLabelSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDefaultSwitchLabelSyntax>();
     }
 
@@ -4017,6 +4357,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDefineDirectiveTriviaSyntaxCollection(IList<PocoDefineDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoDefineDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDefineDirectiveTriviaSyntax>();
     }
 
@@ -4089,6 +4434,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDelegateDeclarationSyntaxCollection(IList<PocoDelegateDeclarationSyntax> initList)
+        {
+            ((List<PocoDelegateDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDelegateDeclarationSyntax>();
     }
 
@@ -4189,6 +4539,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDestructorDeclarationSyntaxCollection(IList<PocoDestructorDeclarationSyntax> initList)
+        {
+            ((List<PocoDestructorDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDestructorDeclarationSyntax>();
     }
 
@@ -4268,6 +4623,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDirectiveTriviaSyntaxCollection(IList<PocoDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDirectiveTriviaSyntax>();
     }
 
@@ -4326,6 +4686,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDiscardDesignationSyntaxCollection(IList<PocoDiscardDesignationSyntax> initList)
+        {
+            ((List<PocoDiscardDesignationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDiscardDesignationSyntax>();
     }
 
@@ -4370,6 +4735,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDiscardPatternSyntaxCollection(IList<PocoDiscardPatternSyntax> initList)
+        {
+            ((List<PocoDiscardPatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDiscardPatternSyntax>();
     }
 
@@ -4414,6 +4784,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDocumentationCommentTriviaSyntaxCollection(IList<PocoDocumentationCommentTriviaSyntax> initList)
+        {
+            ((List<PocoDocumentationCommentTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDocumentationCommentTriviaSyntax>();
     }
 
@@ -4465,6 +4840,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoDoStatementSyntaxCollection(IList<PocoDoStatementSyntax> initList)
+        {
+            ((List<PocoDoStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoDoStatementSyntax>();
     }
 
@@ -4558,6 +4938,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoElementAccessExpressionSyntaxCollection(IList<PocoElementAccessExpressionSyntax> initList)
+        {
+            ((List<PocoElementAccessExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoElementAccessExpressionSyntax>();
     }
 
@@ -4609,6 +4994,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoElementBindingExpressionSyntaxCollection(IList<PocoElementBindingExpressionSyntax> initList)
+        {
+            ((List<PocoElementBindingExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoElementBindingExpressionSyntax>();
     }
 
@@ -4653,6 +5043,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoElifDirectiveTriviaSyntaxCollection(IList<PocoElifDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoElifDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoElifDirectiveTriviaSyntax>();
     }
 
@@ -4739,6 +5134,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoElseClauseSyntaxCollection(IList<PocoElseClauseSyntax> initList)
+        {
+            ((List<PocoElseClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoElseClauseSyntax>();
     }
 
@@ -4790,6 +5190,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoElseDirectiveTriviaSyntaxCollection(IList<PocoElseDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoElseDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoElseDirectiveTriviaSyntax>();
     }
 
@@ -4862,6 +5267,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEmptyStatementSyntaxCollection(IList<PocoEmptyStatementSyntax> initList)
+        {
+            ((List<PocoEmptyStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEmptyStatementSyntax>();
     }
 
@@ -4913,6 +5323,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEndIfDirectiveTriviaSyntaxCollection(IList<PocoEndIfDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoEndIfDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEndIfDirectiveTriviaSyntax>();
     }
 
@@ -4978,6 +5393,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEndRegionDirectiveTriviaSyntaxCollection(IList<PocoEndRegionDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoEndRegionDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEndRegionDirectiveTriviaSyntax>();
     }
 
@@ -5043,6 +5463,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEnumDeclarationSyntaxCollection(IList<PocoEnumDeclarationSyntax> initList)
+        {
+            ((List<PocoEnumDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEnumDeclarationSyntax>();
     }
 
@@ -5143,6 +5568,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEnumMemberDeclarationSyntaxCollection(IList<PocoEnumMemberDeclarationSyntax> initList)
+        {
+            ((List<PocoEnumMemberDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEnumMemberDeclarationSyntax>();
     }
 
@@ -5208,6 +5638,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEqualsValueClauseSyntaxCollection(IList<PocoEqualsValueClauseSyntax> initList)
+        {
+            ((List<PocoEqualsValueClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEqualsValueClauseSyntax>();
     }
 
@@ -5259,6 +5694,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoErrorDirectiveTriviaSyntaxCollection(IList<PocoErrorDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoErrorDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoErrorDirectiveTriviaSyntax>();
     }
 
@@ -5324,6 +5764,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEventDeclarationSyntaxCollection(IList<PocoEventDeclarationSyntax> initList)
+        {
+            ((List<PocoEventDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEventDeclarationSyntax>();
     }
 
@@ -5417,6 +5862,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoEventFieldDeclarationSyntaxCollection(IList<PocoEventFieldDeclarationSyntax> initList)
+        {
+            ((List<PocoEventFieldDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoEventFieldDeclarationSyntax>();
     }
 
@@ -5489,6 +5939,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoExplicitInterfaceSpecifierSyntaxCollection(IList<PocoExplicitInterfaceSpecifierSyntax> initList)
+        {
+            ((List<PocoExplicitInterfaceSpecifierSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoExplicitInterfaceSpecifierSyntax>();
     }
 
@@ -5540,6 +5995,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoExpressionStatementSyntaxCollection(IList<PocoExpressionStatementSyntax> initList)
+        {
+            ((List<PocoExpressionStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoExpressionStatementSyntax>();
     }
 
@@ -5598,6 +6058,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoExpressionSyntaxCollection(IList<PocoExpressionSyntax> initList)
+        {
+            ((List<PocoExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoExpressionSyntax>();
     }
 
@@ -5636,6 +6101,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoExternAliasDirectiveSyntaxCollection(IList<PocoExternAliasDirectiveSyntax> initList)
+        {
+            ((List<PocoExternAliasDirectiveSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoExternAliasDirectiveSyntax>();
     }
 
@@ -5701,6 +6171,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoFieldDeclarationSyntaxCollection(IList<PocoFieldDeclarationSyntax> initList)
+        {
+            ((List<PocoFieldDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoFieldDeclarationSyntax>();
     }
 
@@ -5766,6 +6241,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoFinallyClauseSyntaxCollection(IList<PocoFinallyClauseSyntax> initList)
+        {
+            ((List<PocoFinallyClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoFinallyClauseSyntax>();
     }
 
@@ -5817,6 +6297,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoFixedStatementSyntaxCollection(IList<PocoFixedStatementSyntax> initList)
+        {
+            ((List<PocoFixedStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoFixedStatementSyntax>();
     }
 
@@ -5896,6 +6381,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoForEachStatementSyntaxCollection(IList<PocoForEachStatementSyntax> initList)
+        {
+            ((List<PocoForEachStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoForEachStatementSyntax>();
     }
 
@@ -6003,6 +6493,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoForEachVariableStatementSyntaxCollection(IList<PocoForEachVariableStatementSyntax> initList)
+        {
+            ((List<PocoForEachVariableStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoForEachVariableStatementSyntax>();
     }
 
@@ -6103,6 +6598,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoForStatementSyntaxCollection(IList<PocoForStatementSyntax> initList)
+        {
+            ((List<PocoForStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoForStatementSyntax>();
     }
 
@@ -6217,6 +6717,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoFromClauseSyntaxCollection(IList<PocoFromClauseSyntax> initList)
+        {
+            ((List<PocoFromClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoFromClauseSyntax>();
     }
 
@@ -6289,6 +6794,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoGenericNameSyntaxCollection(IList<PocoGenericNameSyntax> initList)
+        {
+            ((List<PocoGenericNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoGenericNameSyntax>();
     }
 
@@ -6340,6 +6850,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoGlobalStatementSyntaxCollection(IList<PocoGlobalStatementSyntax> initList)
+        {
+            ((List<PocoGlobalStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoGlobalStatementSyntax>();
     }
 
@@ -6398,6 +6913,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoGotoStatementSyntaxCollection(IList<PocoGotoStatementSyntax> initList)
+        {
+            ((List<PocoGotoStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoGotoStatementSyntax>();
     }
 
@@ -6470,6 +6990,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoGroupClauseSyntaxCollection(IList<PocoGroupClauseSyntax> initList)
+        {
+            ((List<PocoGroupClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoGroupClauseSyntax>();
     }
 
@@ -6535,6 +7060,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIdentifierNameSyntaxCollection(IList<PocoIdentifierNameSyntax> initList)
+        {
+            ((List<PocoIdentifierNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIdentifierNameSyntax>();
     }
 
@@ -6579,6 +7109,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIfDirectiveTriviaSyntaxCollection(IList<PocoIfDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoIfDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIfDirectiveTriviaSyntax>();
     }
 
@@ -6665,6 +7200,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIfStatementSyntaxCollection(IList<PocoIfStatementSyntax> initList)
+        {
+            ((List<PocoIfStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIfStatementSyntax>();
     }
 
@@ -6751,6 +7291,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoImplicitArrayCreationExpressionSyntaxCollection(IList<PocoImplicitArrayCreationExpressionSyntax> initList)
+        {
+            ((List<PocoImplicitArrayCreationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoImplicitArrayCreationExpressionSyntax>();
     }
 
@@ -6823,6 +7368,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoImplicitElementAccessSyntaxCollection(IList<PocoImplicitElementAccessSyntax> initList)
+        {
+            ((List<PocoImplicitElementAccessSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoImplicitElementAccessSyntax>();
     }
 
@@ -6867,6 +7417,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoImplicitStackAllocArrayCreationExpressionSyntaxCollection(IList<PocoImplicitStackAllocArrayCreationExpressionSyntax> initList)
+        {
+            ((List<PocoImplicitStackAllocArrayCreationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoImplicitStackAllocArrayCreationExpressionSyntax>();
     }
 
@@ -6932,6 +7487,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIncompleteMemberSyntaxCollection(IList<PocoIncompleteMemberSyntax> initList)
+        {
+            ((List<PocoIncompleteMemberSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIncompleteMemberSyntax>();
     }
 
@@ -6990,6 +7550,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIndexerDeclarationSyntaxCollection(IList<PocoIndexerDeclarationSyntax> initList)
+        {
+            ((List<PocoIndexerDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIndexerDeclarationSyntax>();
     }
 
@@ -7076,6 +7641,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIndexerMemberCrefSyntaxCollection(IList<PocoIndexerMemberCrefSyntax> initList)
+        {
+            ((List<PocoIndexerMemberCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIndexerMemberCrefSyntax>();
     }
 
@@ -7127,6 +7697,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInitializerExpressionSyntaxCollection(IList<PocoInitializerExpressionSyntax> initList)
+        {
+            ((List<PocoInitializerExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInitializerExpressionSyntax>();
     }
 
@@ -7185,6 +7760,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInstanceExpressionSyntaxCollection(IList<PocoInstanceExpressionSyntax> initList)
+        {
+            ((List<PocoInstanceExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInstanceExpressionSyntax>();
     }
 
@@ -7223,6 +7803,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterfaceDeclarationSyntaxCollection(IList<PocoInterfaceDeclarationSyntax> initList)
+        {
+            ((List<PocoInterfaceDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterfaceDeclarationSyntax>();
     }
 
@@ -7337,6 +7922,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterpolatedStringContentSyntaxCollection(IList<PocoInterpolatedStringContentSyntax> initList)
+        {
+            ((List<PocoInterpolatedStringContentSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterpolatedStringContentSyntax>();
     }
 
@@ -7375,6 +7965,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterpolatedStringExpressionSyntaxCollection(IList<PocoInterpolatedStringExpressionSyntax> initList)
+        {
+            ((List<PocoInterpolatedStringExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterpolatedStringExpressionSyntax>();
     }
 
@@ -7433,6 +8028,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterpolatedStringTextSyntaxCollection(IList<PocoInterpolatedStringTextSyntax> initList)
+        {
+            ((List<PocoInterpolatedStringTextSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterpolatedStringTextSyntax>();
     }
 
@@ -7477,6 +8077,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterpolationAlignmentClauseSyntaxCollection(IList<PocoInterpolationAlignmentClauseSyntax> initList)
+        {
+            ((List<PocoInterpolationAlignmentClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterpolationAlignmentClauseSyntax>();
     }
 
@@ -7528,6 +8133,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterpolationFormatClauseSyntaxCollection(IList<PocoInterpolationFormatClauseSyntax> initList)
+        {
+            ((List<PocoInterpolationFormatClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterpolationFormatClauseSyntax>();
     }
 
@@ -7579,6 +8189,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInterpolationSyntaxCollection(IList<PocoInterpolationSyntax> initList)
+        {
+            ((List<PocoInterpolationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInterpolationSyntax>();
     }
 
@@ -7651,6 +8266,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoInvocationExpressionSyntaxCollection(IList<PocoInvocationExpressionSyntax> initList)
+        {
+            ((List<PocoInvocationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoInvocationExpressionSyntax>();
     }
 
@@ -7702,6 +8322,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoIsPatternExpressionSyntaxCollection(IList<PocoIsPatternExpressionSyntax> initList)
+        {
+            ((List<PocoIsPatternExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoIsPatternExpressionSyntax>();
     }
 
@@ -7760,6 +8385,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoJoinClauseSyntaxCollection(IList<PocoJoinClauseSyntax> initList)
+        {
+            ((List<PocoJoinClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoJoinClauseSyntax>();
     }
 
@@ -7867,6 +8497,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoJoinIntoClauseSyntaxCollection(IList<PocoJoinIntoClauseSyntax> initList)
+        {
+            ((List<PocoJoinIntoClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoJoinIntoClauseSyntax>();
     }
 
@@ -7918,6 +8553,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLabeledStatementSyntaxCollection(IList<PocoLabeledStatementSyntax> initList)
+        {
+            ((List<PocoLabeledStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLabeledStatementSyntax>();
     }
 
@@ -7983,6 +8623,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLambdaExpressionSyntaxCollection(IList<PocoLambdaExpressionSyntax> initList)
+        {
+            ((List<PocoLambdaExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLambdaExpressionSyntax>();
     }
 
@@ -8027,6 +8672,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLetClauseSyntaxCollection(IList<PocoLetClauseSyntax> initList)
+        {
+            ((List<PocoLetClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLetClauseSyntax>();
     }
 
@@ -8092,6 +8742,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLineDirectiveTriviaSyntaxCollection(IList<PocoLineDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoLineDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLineDirectiveTriviaSyntax>();
     }
 
@@ -8171,6 +8826,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLiteralExpressionSyntaxCollection(IList<PocoLiteralExpressionSyntax> initList)
+        {
+            ((List<PocoLiteralExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLiteralExpressionSyntax>();
     }
 
@@ -8215,6 +8875,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLoadDirectiveTriviaSyntaxCollection(IList<PocoLoadDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoLoadDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLoadDirectiveTriviaSyntax>();
     }
 
@@ -8287,6 +8952,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLocalDeclarationStatementSyntaxCollection(IList<PocoLocalDeclarationStatementSyntax> initList)
+        {
+            ((List<PocoLocalDeclarationStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLocalDeclarationStatementSyntax>();
     }
 
@@ -8366,6 +9036,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLocalFunctionStatementSyntaxCollection(IList<PocoLocalFunctionStatementSyntax> initList)
+        {
+            ((List<PocoLocalFunctionStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLocalFunctionStatementSyntax>();
     }
 
@@ -8459,6 +9134,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoLockStatementSyntaxCollection(IList<PocoLockStatementSyntax> initList)
+        {
+            ((List<PocoLockStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoLockStatementSyntax>();
     }
 
@@ -8538,6 +9218,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoMakeRefExpressionSyntaxCollection(IList<PocoMakeRefExpressionSyntax> initList)
+        {
+            ((List<PocoMakeRefExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoMakeRefExpressionSyntax>();
     }
 
@@ -8603,6 +9288,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoMemberAccessExpressionSyntaxCollection(IList<PocoMemberAccessExpressionSyntax> initList)
+        {
+            ((List<PocoMemberAccessExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoMemberAccessExpressionSyntax>();
     }
 
@@ -8661,6 +9351,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoMemberBindingExpressionSyntaxCollection(IList<PocoMemberBindingExpressionSyntax> initList)
+        {
+            ((List<PocoMemberBindingExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoMemberBindingExpressionSyntax>();
     }
 
@@ -8712,6 +9407,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoMemberCrefSyntaxCollection(IList<PocoMemberCrefSyntax> initList)
+        {
+            ((List<PocoMemberCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoMemberCrefSyntax>();
     }
 
@@ -8750,6 +9450,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoMemberDeclarationSyntaxCollection(IList<PocoMemberDeclarationSyntax> initList)
+        {
+            ((List<PocoMemberDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoMemberDeclarationSyntax>();
     }
 
@@ -8801,6 +9506,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoMethodDeclarationSyntaxCollection(IList<PocoMethodDeclarationSyntax> initList)
+        {
+            ((List<PocoMethodDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoMethodDeclarationSyntax>();
     }
 
@@ -8901,6 +9611,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNameColonSyntaxCollection(IList<PocoNameColonSyntax> initList)
+        {
+            ((List<PocoNameColonSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNameColonSyntax>();
     }
 
@@ -8952,6 +9667,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNameEqualsSyntaxCollection(IList<PocoNameEqualsSyntax> initList)
+        {
+            ((List<PocoNameEqualsSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNameEqualsSyntax>();
     }
 
@@ -9003,6 +9723,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNameMemberCrefSyntaxCollection(IList<PocoNameMemberCrefSyntax> initList)
+        {
+            ((List<PocoNameMemberCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNameMemberCrefSyntax>();
     }
 
@@ -9054,6 +9779,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNamespaceDeclarationSyntaxCollection(IList<PocoNamespaceDeclarationSyntax> initList)
+        {
+            ((List<PocoNamespaceDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNamespaceDeclarationSyntax>();
     }
 
@@ -9161,6 +9891,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNameSyntaxCollection(IList<PocoNameSyntax> initList)
+        {
+            ((List<PocoNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNameSyntax>();
     }
 
@@ -9199,6 +9934,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNullableDirectiveTriviaSyntaxCollection(IList<PocoNullableDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoNullableDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNullableDirectiveTriviaSyntax>();
     }
 
@@ -9278,6 +10018,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoNullableTypeSyntaxCollection(IList<PocoNullableTypeSyntax> initList)
+        {
+            ((List<PocoNullableTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoNullableTypeSyntax>();
     }
 
@@ -9329,6 +10074,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoObjectCreationExpressionSyntaxCollection(IList<PocoObjectCreationExpressionSyntax> initList)
+        {
+            ((List<PocoObjectCreationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoObjectCreationExpressionSyntax>();
     }
 
@@ -9394,6 +10144,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoOmittedArraySizeExpressionSyntaxCollection(IList<PocoOmittedArraySizeExpressionSyntax> initList)
+        {
+            ((List<PocoOmittedArraySizeExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoOmittedArraySizeExpressionSyntax>();
     }
 
@@ -9438,6 +10193,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoOmittedTypeArgumentSyntaxCollection(IList<PocoOmittedTypeArgumentSyntax> initList)
+        {
+            ((List<PocoOmittedTypeArgumentSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoOmittedTypeArgumentSyntax>();
     }
 
@@ -9482,6 +10242,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoOperatorDeclarationSyntaxCollection(IList<PocoOperatorDeclarationSyntax> initList)
+        {
+            ((List<PocoOperatorDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoOperatorDeclarationSyntax>();
     }
 
@@ -9568,6 +10333,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoOperatorMemberCrefSyntaxCollection(IList<PocoOperatorMemberCrefSyntax> initList)
+        {
+            ((List<PocoOperatorMemberCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoOperatorMemberCrefSyntax>();
     }
 
@@ -9626,6 +10396,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoOrderByClauseSyntaxCollection(IList<PocoOrderByClauseSyntax> initList)
+        {
+            ((List<PocoOrderByClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoOrderByClauseSyntax>();
     }
 
@@ -9677,6 +10452,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoOrderingSyntaxCollection(IList<PocoOrderingSyntax> initList)
+        {
+            ((List<PocoOrderingSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoOrderingSyntax>();
     }
 
@@ -9728,6 +10508,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoParameterListSyntaxCollection(IList<PocoParameterListSyntax> initList)
+        {
+            ((List<PocoParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoParameterListSyntax>();
     }
 
@@ -9786,6 +10571,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoParameterSyntaxCollection(IList<PocoParameterSyntax> initList)
+        {
+            ((List<PocoParameterSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoParameterSyntax>();
     }
 
@@ -9858,6 +10648,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoParenthesizedExpressionSyntaxCollection(IList<PocoParenthesizedExpressionSyntax> initList)
+        {
+            ((List<PocoParenthesizedExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoParenthesizedExpressionSyntax>();
     }
 
@@ -9916,6 +10711,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoParenthesizedLambdaExpressionSyntaxCollection(IList<PocoParenthesizedLambdaExpressionSyntax> initList)
+        {
+            ((List<PocoParenthesizedLambdaExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoParenthesizedLambdaExpressionSyntax>();
     }
 
@@ -9988,6 +10788,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoParenthesizedVariableDesignationSyntaxCollection(IList<PocoParenthesizedVariableDesignationSyntax> initList)
+        {
+            ((List<PocoParenthesizedVariableDesignationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoParenthesizedVariableDesignationSyntax>();
     }
 
@@ -10046,6 +10851,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPatternSyntaxCollection(IList<PocoPatternSyntax> initList)
+        {
+            ((List<PocoPatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPatternSyntax>();
     }
 
@@ -10084,6 +10894,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPointerTypeSyntaxCollection(IList<PocoPointerTypeSyntax> initList)
+        {
+            ((List<PocoPointerTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPointerTypeSyntax>();
     }
 
@@ -10135,6 +10950,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPositionalPatternClauseSyntaxCollection(IList<PocoPositionalPatternClauseSyntax> initList)
+        {
+            ((List<PocoPositionalPatternClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPositionalPatternClauseSyntax>();
     }
 
@@ -10193,6 +11013,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPostfixUnaryExpressionSyntaxCollection(IList<PocoPostfixUnaryExpressionSyntax> initList)
+        {
+            ((List<PocoPostfixUnaryExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPostfixUnaryExpressionSyntax>();
     }
 
@@ -10244,6 +11069,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPragmaChecksumDirectiveTriviaSyntaxCollection(IList<PocoPragmaChecksumDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoPragmaChecksumDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPragmaChecksumDirectiveTriviaSyntax>();
     }
 
@@ -10337,6 +11167,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPragmaWarningDirectiveTriviaSyntaxCollection(IList<PocoPragmaWarningDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoPragmaWarningDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPragmaWarningDirectiveTriviaSyntax>();
     }
 
@@ -10423,6 +11258,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPredefinedTypeSyntaxCollection(IList<PocoPredefinedTypeSyntax> initList)
+        {
+            ((List<PocoPredefinedTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPredefinedTypeSyntax>();
     }
 
@@ -10467,6 +11307,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPrefixUnaryExpressionSyntaxCollection(IList<PocoPrefixUnaryExpressionSyntax> initList)
+        {
+            ((List<PocoPrefixUnaryExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPrefixUnaryExpressionSyntax>();
     }
 
@@ -10518,6 +11363,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPropertyDeclarationSyntaxCollection(IList<PocoPropertyDeclarationSyntax> initList)
+        {
+            ((List<PocoPropertyDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPropertyDeclarationSyntax>();
     }
 
@@ -10597,6 +11447,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoPropertyPatternClauseSyntaxCollection(IList<PocoPropertyPatternClauseSyntax> initList)
+        {
+            ((List<PocoPropertyPatternClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoPropertyPatternClauseSyntax>();
     }
 
@@ -10655,6 +11510,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoQualifiedCrefSyntaxCollection(IList<PocoQualifiedCrefSyntax> initList)
+        {
+            ((List<PocoQualifiedCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoQualifiedCrefSyntax>();
     }
 
@@ -10713,6 +11573,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoQualifiedNameSyntaxCollection(IList<PocoQualifiedNameSyntax> initList)
+        {
+            ((List<PocoQualifiedNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoQualifiedNameSyntax>();
     }
 
@@ -10771,6 +11636,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoQueryBodySyntaxCollection(IList<PocoQueryBodySyntax> initList)
+        {
+            ((List<PocoQueryBodySyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoQueryBodySyntax>();
     }
 
@@ -10829,6 +11699,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoQueryClauseSyntaxCollection(IList<PocoQueryClauseSyntax> initList)
+        {
+            ((List<PocoQueryClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoQueryClauseSyntax>();
     }
 
@@ -10867,6 +11742,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoQueryContinuationSyntaxCollection(IList<PocoQueryContinuationSyntax> initList)
+        {
+            ((List<PocoQueryContinuationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoQueryContinuationSyntax>();
     }
 
@@ -10925,6 +11805,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoQueryExpressionSyntaxCollection(IList<PocoQueryExpressionSyntax> initList)
+        {
+            ((List<PocoQueryExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoQueryExpressionSyntax>();
     }
 
@@ -10976,6 +11861,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRangeExpressionSyntaxCollection(IList<PocoRangeExpressionSyntax> initList)
+        {
+            ((List<PocoRangeExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRangeExpressionSyntax>();
     }
 
@@ -11034,6 +11924,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRecursivePatternSyntaxCollection(IList<PocoRecursivePatternSyntax> initList)
+        {
+            ((List<PocoRecursivePatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRecursivePatternSyntax>();
     }
 
@@ -11099,6 +11994,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoReferenceDirectiveTriviaSyntaxCollection(IList<PocoReferenceDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoReferenceDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoReferenceDirectiveTriviaSyntax>();
     }
 
@@ -11171,6 +12071,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRefExpressionSyntaxCollection(IList<PocoRefExpressionSyntax> initList)
+        {
+            ((List<PocoRefExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRefExpressionSyntax>();
     }
 
@@ -11222,6 +12127,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRefTypeExpressionSyntaxCollection(IList<PocoRefTypeExpressionSyntax> initList)
+        {
+            ((List<PocoRefTypeExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRefTypeExpressionSyntax>();
     }
 
@@ -11287,6 +12197,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRefTypeSyntaxCollection(IList<PocoRefTypeSyntax> initList)
+        {
+            ((List<PocoRefTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRefTypeSyntax>();
     }
 
@@ -11345,6 +12260,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRefValueExpressionSyntaxCollection(IList<PocoRefValueExpressionSyntax> initList)
+        {
+            ((List<PocoRefValueExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRefValueExpressionSyntax>();
     }
 
@@ -11424,6 +12344,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoRegionDirectiveTriviaSyntaxCollection(IList<PocoRegionDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoRegionDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoRegionDirectiveTriviaSyntax>();
     }
 
@@ -11489,6 +12414,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoReturnStatementSyntaxCollection(IList<PocoReturnStatementSyntax> initList)
+        {
+            ((List<PocoReturnStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoReturnStatementSyntax>();
     }
 
@@ -11554,6 +12484,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSelectClauseSyntaxCollection(IList<PocoSelectClauseSyntax> initList)
+        {
+            ((List<PocoSelectClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSelectClauseSyntax>();
     }
 
@@ -11605,6 +12540,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSelectOrGroupClauseSyntaxCollection(IList<PocoSelectOrGroupClauseSyntax> initList)
+        {
+            ((List<PocoSelectOrGroupClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSelectOrGroupClauseSyntax>();
     }
 
@@ -11643,6 +12583,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoShebangDirectiveTriviaSyntaxCollection(IList<PocoShebangDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoShebangDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoShebangDirectiveTriviaSyntax>();
     }
 
@@ -11708,6 +12653,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSimpleBaseTypeSyntaxCollection(IList<PocoSimpleBaseTypeSyntax> initList)
+        {
+            ((List<PocoSimpleBaseTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSimpleBaseTypeSyntax>();
     }
 
@@ -11752,6 +12702,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSimpleLambdaExpressionSyntaxCollection(IList<PocoSimpleLambdaExpressionSyntax> initList)
+        {
+            ((List<PocoSimpleLambdaExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSimpleLambdaExpressionSyntax>();
     }
 
@@ -11824,6 +12779,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSimpleNameSyntaxCollection(IList<PocoSimpleNameSyntax> initList)
+        {
+            ((List<PocoSimpleNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSimpleNameSyntax>();
     }
 
@@ -11868,6 +12828,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSingleVariableDesignationSyntaxCollection(IList<PocoSingleVariableDesignationSyntax> initList)
+        {
+            ((List<PocoSingleVariableDesignationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSingleVariableDesignationSyntax>();
     }
 
@@ -11912,6 +12877,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSizeOfExpressionSyntaxCollection(IList<PocoSizeOfExpressionSyntax> initList)
+        {
+            ((List<PocoSizeOfExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSizeOfExpressionSyntax>();
     }
 
@@ -11977,6 +12947,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSkippedTokensTriviaSyntaxCollection(IList<PocoSkippedTokensTriviaSyntax> initList)
+        {
+            ((List<PocoSkippedTokensTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSkippedTokensTriviaSyntax>();
     }
 
@@ -12021,6 +12996,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoStackAllocArrayCreationExpressionSyntaxCollection(IList<PocoStackAllocArrayCreationExpressionSyntax> initList)
+        {
+            ((List<PocoStackAllocArrayCreationExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoStackAllocArrayCreationExpressionSyntax>();
     }
 
@@ -12079,6 +13059,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoStatementSyntaxCollection(IList<PocoStatementSyntax> initList)
+        {
+            ((List<PocoStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoStatementSyntax>();
     }
 
@@ -12123,6 +13108,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoStructDeclarationSyntaxCollection(IList<PocoStructDeclarationSyntax> initList)
+        {
+            ((List<PocoStructDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoStructDeclarationSyntax>();
     }
 
@@ -12237,6 +13227,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoStructuredTriviaSyntaxCollection(IList<PocoStructuredTriviaSyntax> initList)
+        {
+            ((List<PocoStructuredTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoStructuredTriviaSyntax>();
     }
 
@@ -12275,6 +13270,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSubpatternSyntaxCollection(IList<PocoSubpatternSyntax> initList)
+        {
+            ((List<PocoSubpatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSubpatternSyntax>();
     }
 
@@ -12326,6 +13326,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSwitchExpressionArmSyntaxCollection(IList<PocoSwitchExpressionArmSyntax> initList)
+        {
+            ((List<PocoSwitchExpressionArmSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSwitchExpressionArmSyntax>();
     }
 
@@ -12391,6 +13396,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSwitchExpressionSyntaxCollection(IList<PocoSwitchExpressionSyntax> initList)
+        {
+            ((List<PocoSwitchExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSwitchExpressionSyntax>();
     }
 
@@ -12463,6 +13473,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSwitchLabelSyntaxCollection(IList<PocoSwitchLabelSyntax> initList)
+        {
+            ((List<PocoSwitchLabelSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSwitchLabelSyntax>();
     }
 
@@ -12514,6 +13529,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSwitchSectionSyntaxCollection(IList<PocoSwitchSectionSyntax> initList)
+        {
+            ((List<PocoSwitchSectionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSwitchSectionSyntax>();
     }
 
@@ -12565,6 +13585,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoSwitchStatementSyntaxCollection(IList<PocoSwitchStatementSyntax> initList)
+        {
+            ((List<PocoSwitchStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoSwitchStatementSyntax>();
     }
 
@@ -12658,6 +13683,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoThisExpressionSyntaxCollection(IList<PocoThisExpressionSyntax> initList)
+        {
+            ((List<PocoThisExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoThisExpressionSyntax>();
     }
 
@@ -12702,6 +13732,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoThrowExpressionSyntaxCollection(IList<PocoThrowExpressionSyntax> initList)
+        {
+            ((List<PocoThrowExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoThrowExpressionSyntax>();
     }
 
@@ -12753,6 +13788,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoThrowStatementSyntaxCollection(IList<PocoThrowStatementSyntax> initList)
+        {
+            ((List<PocoThrowStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoThrowStatementSyntax>();
     }
 
@@ -12818,6 +13858,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTryStatementSyntaxCollection(IList<PocoTryStatementSyntax> initList)
+        {
+            ((List<PocoTryStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTryStatementSyntax>();
     }
 
@@ -12890,6 +13935,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTupleElementSyntaxCollection(IList<PocoTupleElementSyntax> initList)
+        {
+            ((List<PocoTupleElementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTupleElementSyntax>();
     }
 
@@ -12941,6 +13991,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTupleExpressionSyntaxCollection(IList<PocoTupleExpressionSyntax> initList)
+        {
+            ((List<PocoTupleExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTupleExpressionSyntax>();
     }
 
@@ -12999,6 +14054,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTupleTypeSyntaxCollection(IList<PocoTupleTypeSyntax> initList)
+        {
+            ((List<PocoTupleTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTupleTypeSyntax>();
     }
 
@@ -13057,6 +14117,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeArgumentListSyntaxCollection(IList<PocoTypeArgumentListSyntax> initList)
+        {
+            ((List<PocoTypeArgumentListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeArgumentListSyntax>();
     }
 
@@ -13115,6 +14180,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeConstraintSyntaxCollection(IList<PocoTypeConstraintSyntax> initList)
+        {
+            ((List<PocoTypeConstraintSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeConstraintSyntax>();
     }
 
@@ -13159,6 +14229,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeCrefSyntaxCollection(IList<PocoTypeCrefSyntax> initList)
+        {
+            ((List<PocoTypeCrefSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeCrefSyntax>();
     }
 
@@ -13203,6 +14278,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeDeclarationSyntaxCollection(IList<PocoTypeDeclarationSyntax> initList)
+        {
+            ((List<PocoTypeDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeDeclarationSyntax>();
     }
 
@@ -13268,6 +14348,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeOfExpressionSyntaxCollection(IList<PocoTypeOfExpressionSyntax> initList)
+        {
+            ((List<PocoTypeOfExpressionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeOfExpressionSyntax>();
     }
 
@@ -13333,6 +14418,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeParameterConstraintClauseSyntaxCollection(IList<PocoTypeParameterConstraintClauseSyntax> initList)
+        {
+            ((List<PocoTypeParameterConstraintClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeParameterConstraintClauseSyntax>();
     }
 
@@ -13398,6 +14488,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeParameterConstraintSyntaxCollection(IList<PocoTypeParameterConstraintSyntax> initList)
+        {
+            ((List<PocoTypeParameterConstraintSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeParameterConstraintSyntax>();
     }
 
@@ -13436,6 +14531,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeParameterListSyntaxCollection(IList<PocoTypeParameterListSyntax> initList)
+        {
+            ((List<PocoTypeParameterListSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeParameterListSyntax>();
     }
 
@@ -13494,6 +14594,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeParameterSyntaxCollection(IList<PocoTypeParameterSyntax> initList)
+        {
+            ((List<PocoTypeParameterSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeParameterSyntax>();
     }
 
@@ -13552,8 +14657,12 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoTypeSyntaxCollection(IList<PocoTypeSyntax> initList)
+        {
+            ((List<PocoTypeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoTypeSyntax>();
-        public PocoTypeSyntaxCollection ( List < PocoTypeSyntax > toList ) { }
     }
 
     public class PocoTypeSyntax : PocoExpressionSyntax
@@ -13591,6 +14700,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoUndefDirectiveTriviaSyntaxCollection(IList<PocoUndefDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoUndefDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoUndefDirectiveTriviaSyntax>();
     }
 
@@ -13663,6 +14777,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoUnsafeStatementSyntaxCollection(IList<PocoUnsafeStatementSyntax> initList)
+        {
+            ((List<PocoUnsafeStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoUnsafeStatementSyntax>();
     }
 
@@ -13721,6 +14840,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoUsingDirectiveSyntaxCollection(IList<PocoUsingDirectiveSyntax> initList)
+        {
+            ((List<PocoUsingDirectiveSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoUsingDirectiveSyntax>();
     }
 
@@ -13793,6 +14917,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoUsingStatementSyntaxCollection(IList<PocoUsingStatementSyntax> initList)
+        {
+            ((List<PocoUsingStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoUsingStatementSyntax>();
     }
 
@@ -13886,6 +15015,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoVariableDeclarationSyntaxCollection(IList<PocoVariableDeclarationSyntax> initList)
+        {
+            ((List<PocoVariableDeclarationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoVariableDeclarationSyntax>();
     }
 
@@ -13937,6 +15071,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoVariableDeclaratorSyntaxCollection(IList<PocoVariableDeclaratorSyntax> initList)
+        {
+            ((List<PocoVariableDeclaratorSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoVariableDeclaratorSyntax>();
     }
 
@@ -13995,6 +15134,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoVariableDesignationSyntaxCollection(IList<PocoVariableDesignationSyntax> initList)
+        {
+            ((List<PocoVariableDesignationSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoVariableDesignationSyntax>();
     }
 
@@ -14033,6 +15177,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoVarPatternSyntaxCollection(IList<PocoVarPatternSyntax> initList)
+        {
+            ((List<PocoVarPatternSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoVarPatternSyntax>();
     }
 
@@ -14084,6 +15233,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoWarningDirectiveTriviaSyntaxCollection(IList<PocoWarningDirectiveTriviaSyntax> initList)
+        {
+            ((List<PocoWarningDirectiveTriviaSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoWarningDirectiveTriviaSyntax>();
     }
 
@@ -14149,6 +15303,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoWhenClauseSyntaxCollection(IList<PocoWhenClauseSyntax> initList)
+        {
+            ((List<PocoWhenClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoWhenClauseSyntax>();
     }
 
@@ -14200,6 +15359,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoWhereClauseSyntaxCollection(IList<PocoWhereClauseSyntax> initList)
+        {
+            ((List<PocoWhereClauseSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoWhereClauseSyntax>();
     }
 
@@ -14251,6 +15415,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoWhileStatementSyntaxCollection(IList<PocoWhileStatementSyntax> initList)
+        {
+            ((List<PocoWhileStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoWhileStatementSyntax>();
     }
 
@@ -14330,6 +15499,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlAttributeSyntaxCollection(IList<PocoXmlAttributeSyntax> initList)
+        {
+            ((List<PocoXmlAttributeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlAttributeSyntax>();
     }
 
@@ -14395,6 +15569,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlCDataSectionSyntaxCollection(IList<PocoXmlCDataSectionSyntax> initList)
+        {
+            ((List<PocoXmlCDataSectionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlCDataSectionSyntax>();
     }
 
@@ -14453,6 +15632,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlCommentSyntaxCollection(IList<PocoXmlCommentSyntax> initList)
+        {
+            ((List<PocoXmlCommentSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlCommentSyntax>();
     }
 
@@ -14511,6 +15695,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlCrefAttributeSyntaxCollection(IList<PocoXmlCrefAttributeSyntax> initList)
+        {
+            ((List<PocoXmlCrefAttributeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlCrefAttributeSyntax>();
     }
 
@@ -14583,6 +15772,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlElementEndTagSyntaxCollection(IList<PocoXmlElementEndTagSyntax> initList)
+        {
+            ((List<PocoXmlElementEndTagSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlElementEndTagSyntax>();
     }
 
@@ -14641,6 +15835,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlElementStartTagSyntaxCollection(IList<PocoXmlElementStartTagSyntax> initList)
+        {
+            ((List<PocoXmlElementStartTagSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlElementStartTagSyntax>();
     }
 
@@ -14706,6 +15905,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlElementSyntaxCollection(IList<PocoXmlElementSyntax> initList)
+        {
+            ((List<PocoXmlElementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlElementSyntax>();
     }
 
@@ -14764,6 +15968,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlEmptyElementSyntaxCollection(IList<PocoXmlEmptyElementSyntax> initList)
+        {
+            ((List<PocoXmlEmptyElementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlEmptyElementSyntax>();
     }
 
@@ -14829,6 +16038,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlNameAttributeSyntaxCollection(IList<PocoXmlNameAttributeSyntax> initList)
+        {
+            ((List<PocoXmlNameAttributeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlNameAttributeSyntax>();
     }
 
@@ -14901,6 +16115,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlNameSyntaxCollection(IList<PocoXmlNameSyntax> initList)
+        {
+            ((List<PocoXmlNameSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlNameSyntax>();
     }
 
@@ -14952,6 +16171,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlNodeSyntaxCollection(IList<PocoXmlNodeSyntax> initList)
+        {
+            ((List<PocoXmlNodeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlNodeSyntax>();
     }
 
@@ -14990,6 +16214,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlPrefixSyntaxCollection(IList<PocoXmlPrefixSyntax> initList)
+        {
+            ((List<PocoXmlPrefixSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlPrefixSyntax>();
     }
 
@@ -15041,6 +16270,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlProcessingInstructionSyntaxCollection(IList<PocoXmlProcessingInstructionSyntax> initList)
+        {
+            ((List<PocoXmlProcessingInstructionSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlProcessingInstructionSyntax>();
     }
 
@@ -15106,6 +16340,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlTextAttributeSyntaxCollection(IList<PocoXmlTextAttributeSyntax> initList)
+        {
+            ((List<PocoXmlTextAttributeSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlTextAttributeSyntax>();
     }
 
@@ -15178,6 +16417,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoXmlTextSyntaxCollection(IList<PocoXmlTextSyntax> initList)
+        {
+            ((List<PocoXmlTextSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoXmlTextSyntax>();
     }
 
@@ -15222,6 +16466,11 @@ namespace PocoSyntax
         public Boolean IsSynchronized => _list.IsSynchronized;
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        public PocoYieldStatementSyntaxCollection(IList<PocoYieldStatementSyntax> initList)
+        {
+            ((List<PocoYieldStatementSyntax>)_list).AddRange(initList);
+        }
+
         IList _list = new List<PocoYieldStatementSyntax>();
     }
 
