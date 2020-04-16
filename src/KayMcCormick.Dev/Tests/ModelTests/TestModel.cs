@@ -756,36 +756,32 @@ namespace ModelTests
                             }
                             else
                             {
-                                var typeSyntax = SyntaxFactory.ParseTypeName ( t2 ) ;
-                                string key = null;
-                                if ( typeSyntax is QualifiedNameSyntax q )
-                                {
-                                    key = q.Right.Identifier.ValueText ;
-                                } else if ( typeSyntax is SimpleNameSyntax sns )
-                                {
-                                     key = sns.Identifier.ValueText ;
-                                }
-
+                                var lastPeriod = t2.LastIndexOf ( '.' ) ;
+                                var part = lastPeriod >= 0 ? t2.Substring ( lastPeriod + 1 ) : t2 ;
+                                var key = part ;
                                 if ( key != null )
                                 {
-                                    var m2 = dict[key ] ;
+                                    var m2 = dict[ key ] ;
                                     transform = $".Select(Transform_{m2}).ToList()" ;
                                 }
                             }
 
                             if ( ! string.IsNullOrEmpty ( transform ) )
                             {
-
-                                    value = $"node.{name}{transform}" ;
-
-                                if ( value == "" )
                                 {
-                                    value = msg ;
-                                }
+                                    value = $"node?.{name}{transform}" ;
 
-                                var code = $"    {name} = {value}, " ;
-                                props = props + "\n" + code ;
+
+                                    if ( value == "" )
+                                    {
+                                        value = msg ;
+                                    }
+
+                                    var code = $"    {name} = {value}, " ;
+                                    props = props + "\n" + code ;
+                                }
                             }
+
                         }
 
                         body = $"{fields}\nreturn new {pocoClassName}() {{ {props} }};" ;

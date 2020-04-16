@@ -13553,6 +13553,7 @@ namespace PocoSyntax
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
         IList _list = new List<PocoTypeSyntax>();
+        public PocoTypeSyntaxCollection ( List < PocoTypeSyntax > toList ) { }
     }
 
     public class PocoTypeSyntax : PocoExpressionSyntax

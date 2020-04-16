@@ -24,6 +24,7 @@ using AnalysisControls;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST ;
 using CommandLine;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
@@ -1501,6 +1502,8 @@ namespace ConsoleApp1
                                                  }
                                                 ) ;
 
+                    ExpressionSyntax xxxx ;
+                    var invocationExpressionSyntax = InvocationExpression(MemberAccessExpression ( SyntaxKind.SimpleMemberAccessExpression, _listField, Token(SyntaxKind.DotToken), (SimpleNameSyntax)ParseName("AddRange"))).WithArgumentList(ArgumentList(Token(SyntaxKind.OpenParenToken), new SeparatedSyntaxList < ArgumentSyntax > (), Token(SyntaxKind.CloseParenToken)));
                     classContainerDecl = classContainerDecl.WithMembers (
                                                                          List (
                                                                                classContainerDecl
@@ -1509,10 +1512,15 @@ namespace ConsoleApp1
                                                                                   .Concat ( props1 )
                                                                                   .Concat (
                                                                                            indexers
-                                                                                          )
-                                                                              )
-                                                                        ) ;
-
+                                                                                          ).Concat(new[]{ConstructorDeclaration(classContainerDecl.Identifier.ValueText).WithParameterList(ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(Parameter(Identifier("initList")).WithType(GenericName(Identifier("IList")).WithTypeArgumentList(TypeArgumentList( (
+                                                                                                                                                                                                                                                                                                                                                                               SingletonSeparatedList (
+                                                                                                                                                                                                                                                                                                                                                                                                       typeSyntax
+                                                                                                                                                                                                                                                                                                                                                                                                      )
+                                                                                                                                                                                                                                                                                                                                                                           ))))))).WithBody(Block(new[]
+                                                                                                                                                                                                                                                                                                                                                                                                  {
+                                                                                                                                                                                                                                                                                                                                                                                                      ExpressionStatement(invocationExpressionSyntax)
+                                                                                                                                                                                                                                                                                                                                                                                                  }))})));
+                        
                     classDecl1 = ( ClassDeclarationSyntax ) rewriter1.Visit ( classDecl1 ) ;
                     DebugUtils.WriteLine (
                                           "\n***\n"
