@@ -18,10 +18,12 @@ using AnalysisAppLib.ViewModel ;
 
 // ReSharper disable once RedundantUsingDirective
 using Autofac ;
+using Autofac.Core ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis ;
@@ -960,6 +962,25 @@ namespace ModelTests
             {
                 var outjson = JsonSerializer.Serialize ( comp.ObjectType , options ) ;
                 DebugUtils.WriteLine ( outjson ) ;
+            }
+        }
+
+        [Fact]
+        public void TestModelObjects ( )
+        {
+            using (var app = SetupApplicationInstance ( ) )
+            {
+                var lifetimeScope = app.GetLifetimeScope ( ) ;
+                var model = lifetimeScope.Resolve < ModelResources > (new TypedParameter(typeof(bool), false) ) ;
+                var x1 = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
+                var invo = lifetimeScope.Resolve<ILogInvocation>();
+                var invo2 = lifetimeScope.Resolve<ILogInvocation>();
+                var node = model.ObjectsNode ;
+                var nodeChildren = node.Children ;
+                foreach ( var child in nodeChildren )
+                {
+                    DebugUtils.WriteLine(child.ToString());
+                }
             }
         }
     }

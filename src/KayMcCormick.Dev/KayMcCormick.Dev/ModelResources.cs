@@ -47,20 +47,29 @@ namespace KayMcCormick.Dev
 
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _doPopulateAppContext = false ;
+        private ResourceNodeInfo _objects_node ;
+        private bool _flatten_objects_node ;
 
 
         /// <summary>
         /// </summary>
-        public ModelResources ( ) { }
+        public ModelResources ( bool test )
+        {
+            if ( test )
+            {
+                DebugUtils.WriteLine ( "eek" ) ;
+            }
+        }
 
         /// <summary>
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
-        public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider )
+        public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider, bool test=false )
         {
             _lifetimeScope = lifetimeScope ;
             _idProvider    = idProvider ;
+            _flatten_objects_node = test ;
         }
 
         /// <summary>
@@ -100,8 +109,11 @@ namespace KayMcCormick.Dev
         /// </summary>
         private void PopulateObjects ( )
         {
-            var n1 = CreateNode ( Objects_Key , ObjectsChildrenFunc ) ;
 
+            ObjectsNode = _flatten_objects_node
+                              ? CreateNode ( Objects_Key , FlatObjectsChildrenFunc )
+                              : CreateNode ( Objects_Key , ObjectsChildrenFunc ) ;
+            
             // foreach ( var rootNode in _idProvider.GetRootNodes ( ) )
             // {
             // var c = _idProvider.GetComponentInfo ( rootNode ) ;
@@ -177,22 +189,77 @@ namespace KayMcCormick.Dev
             // }
         }
 
+
         [ NotNull ]
-        private IEnumerable < ResourceNodeInfo > ObjectsChildrenFunc ( ResourceNodeInfo node , Func < object , object , ResourceNodeInfo > createNode )
+        public IEnumerable < ResourceNodeInfo > FlatObjectsChildrenFunc (
+            ResourceNodeInfo                            node
+          , Func < object , object , ResourceNodeInfo > createNode
+        )
+        {
+            var rootNodes = _idProvider.GetRootNodes ( ).ToList ( ) ;
+            return rootNodes.SelectMany (
+                                         rootNode => _lifetimeScope
+                                                    .ComponentRegistry.Registrations
+                                                    .Where ( reg1 => reg1.Id == rootNode )
+                                                    .Select (
+                                                             reg1 => new ComponentInfo
+                                                                     {
+                                                                         Id = rootNode,
+                                                                         Metadata = reg1.Metadata
+                                                                       , InstanceEnumeration =
+                                                                             _idProvider
+                                                                                .GetComponentInfo (
+                                                                                                   reg1
+                                                                                                      .Id
+                                                                                                  )
+                                                                                .Instances
+                                                                                .Select (
+                                                                                         i1
+                                                                                             => new
+                                                                                                InstanceInfo
+                                                                                                {
+                                                                                                    Instance
+                                                                                                        = i1
+                                                                                                           .Instance
+                                                                                                  , Metadata
+                                                                                                        = reg1
+                                                                                                           .Metadata
+                                                                                                }
+                                                                                        )
+                                                                     }
+                                                            )
+                                        ).Select (xx => createNode(xx.Id, xx)  ) ;
+        }
+
+        [ NotNull ]
+        private IEnumerable < ResourceNodeInfo > ObjectsChildrenFunc (
+            ResourceNodeInfo                            node
+          , Func < object , object , ResourceNodeInfo > createNode
+        )
         {
             var rootNodes = _idProvider.GetRootNodes ( ).ToList ( ) ;
             return rootNodes.Select (
                                      rootNode => {
-                                         var componentInfo = _idProvider.GetComponentInfo ( rootNode ) ;
-                                         var regs = _lifetimeScope.ComponentRegistry.Registrations.Where ( r => r.Id == rootNode ) ;
-                                         var componentRegistrations = regs as IComponentRegistration[] ?? regs.ToArray ( ) ;
+                                         var componentInfo =
+                                             _idProvider.GetComponentInfo ( rootNode ) ;
+                                         var regs =
+                                             _lifetimeScope.ComponentRegistry.Registrations.Where (
+                                                                                                   r => r.Id
+                                                                                                        == rootNode
+                                                                                                  ) ;
+                                         var componentRegistrations =
+                                             regs as IComponentRegistration[] ?? regs.ToArray ( ) ;
                                          if ( componentRegistrations.Any ( ) )
                                          {
                                              var reg = componentRegistrations.First ( ) ;
                                              var myInfo = new ComponentInfo ( ) ;
                                              foreach ( var inst in componentInfo.Instances )
                                              {
-                                                 var ii = new InstanceInfo ( ) { Instance = inst.Instance , Metadata = reg.Metadata } ;
+                                                 var ii = new InstanceInfo ( )
+                                                          {
+                                                              Instance = inst.Instance
+                                                            , Metadata = reg.Metadata
+                                                          } ;
                                                  myInfo.Instances.Add ( ii ) ;
                                              }
 
@@ -200,10 +267,12 @@ namespace KayMcCormick.Dev
                                              componentInfo          = myInfo ;
                                          }
 
-                                         var resourceNodeInfo = createNode ( rootNode , componentInfo ) ;
-                                         resourceNodeInfo.GetChildrenFunc  = ComponentChildrenFunc ;
-                                         resourceNodeInfo.IsChildrenLoaded = false ;
-                                         return resourceNodeInfo ;
+                                         var componentInfoNode =
+                                             createNode ( rootNode , componentInfo ) ;
+                                         componentInfoNode.GetChildrenFunc =
+                                             ComponentChildrenFunc ;
+                                         componentInfoNode.IsChildrenLoaded = false ;
+                                         return componentInfoNode ;
                                      }
                                     ) ;
         }
@@ -395,8 +464,8 @@ namespace KayMcCormick.Dev
                                 foreach ( var dictionaryEntry in reader.Cast < DictionaryEntry > ( )
                                 )
                                 {
-                                    UnmanagedMemoryStream s = ( UnmanagedMemoryStream ) dictionaryEntry.Value ;
-                                    
+                                    var s = ( UnmanagedMemoryStream ) dictionaryEntry.Value ;
+
                                     CreateNode (
                                                 res1
                                               , dictionaryEntry.Key
@@ -443,8 +512,8 @@ namespace KayMcCormick.Dev
                             var at1 = CreateNode ( atts , c.AttributeType.FullName , c , false ) ;
                             // for ( var i = 0 ; i < c.Constructor.GetParameters ( ).Length ; i ++ )
                             // {
-                                // var ci = c.Constructor.GetParameters ( )[ i ] ;
-                                // CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
+                            // var ci = c.Constructor.GetParameters ( )[ i ] ;
+                            // CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
                             // }
                         }
                     }
@@ -518,6 +587,12 @@ namespace KayMcCormick.Dev
         #region Implementation of ISupportInitializeNotification
         /// <inheritdoc />
         public bool IsInitialized { get ; set ; }
+
+        public ResourceNodeInfo ObjectsNode
+        {
+            get { return _objects_node ; }
+            set { _objects_node = value ; }
+        }
 
         /// <inheritdoc />
         public event EventHandler Initialized ;

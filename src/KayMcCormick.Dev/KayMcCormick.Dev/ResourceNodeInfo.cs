@@ -101,7 +101,7 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ] [ CanBeNull ] public List < ResourceNodeInfo > Children
+        [ JsonIgnore ] [ NotNull ] public List < ResourceNodeInfo > Children
         {
             get
             {

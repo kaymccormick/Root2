@@ -15,7 +15,7 @@
   DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
   FontSize="16"
   x:Class="KayMcCormick.Lib.Wpf.AllResourcesTree"
-  mc:Ignorable="d" 
+  mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -61,40 +61,51 @@
           <DataTemplate DataType="{x:Type Application}">
             <TextBlock Text="Application" />
           </DataTemplate>
+          <DataTemplate DataType="{x:Type system:Guid}" x:Key="KeyGuid">
+            <TextBlock FontFamily="Lucida Console" Text="{Binding}" />
+          </DataTemplate>
           <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded"
                     Value="{Binding IsExpanded, Mode=TwoWay}" />
           </Style>
-          <DataTemplate DataType="{x:Type system:Type}" x:Key="PreviewRuntimeType">
+          <DataTemplate DataType="{x:Type system:Type}"
+                        x:Key="PreviewRuntimeType">
             <StackPanel Orientation="Horizontal">
               <StackPanel Orientation="Vertical">
-                <TextBlock Text="Assembly"></TextBlock>
-                <TextBlock Text="AssemblyQualifiedName"></TextBlock>
-                <TextBlock Text="Attributes"></TextBlock>
-                <TextBlock Text="BaseType"></TextBlock>
-                <TextBlock Text="Is Class"></TextBlock>
+                <TextBlock Text="Assembly" />
+                <TextBlock Text="AssemblyQualifiedName" />
+                <TextBlock Text="Attributes" />
+                <TextBlock Text="BaseType" />
+                <TextBlock Text="Is Class" />
               </StackPanel>
               <StackPanel Orientation="Vertical">
-                <TextBlock Text="{Binding Assembly}"></TextBlock>
-                <TextBlock Text="{Binding AssemblyQualifiedName}"></TextBlock>
-                <TextBlock Text="Attributes"></TextBlock>
-                <TextBlock Text="{Binding BaseType}"></TextBlock>
-                <TextBlock Text="{Binding IsClass}"></TextBlock>
+                <TextBlock Text="{Binding Assembly}" />
+                <TextBlock
+                  Text="{Binding AssemblyQualifiedName}" />
+                <TextBlock Text="Attributes" />
+                <TextBlock Text="{Binding BaseType}" />
+                <TextBlock Text="{Binding IsClass}" />
               </StackPanel>
 
             </StackPanel>
           </DataTemplate>
-          <DataTemplate DataType="{x:Type reflection:MethodInfo}" x:Key="PreviewRuntimeMethodInfo">
+          <DataTemplate
+            DataType="{x:Type reflection:MethodInfo}"
+            x:Key="PreviewRuntimeMethodInfo">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="{Binding ReturnType}"/>
-              <ListView ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
-<ListView.View>
+              <TextBlock Text="{Binding ReturnType}" />
+              <ListView
+                ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
+                <ListView.View>
                   <GridView>
-                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=ParameterType}"/>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
-                    <GridViewColumn Header="Default" DisplayMemberBinding="{Binding Path=HasDefaultValue}"/>
+                    <GridViewColumn Header="Type"
+                                    DisplayMemberBinding="{Binding Path=ParameterType}" />
+                    <GridViewColumn Header="Name"
+                                    DisplayMemberBinding="{Binding Path=Name}" />
+                    <GridViewColumn Header="Default"
+                                    DisplayMemberBinding="{Binding Path=HasDefaultValue}" />
                   </GridView>
-</ListView.View>
+                </ListView.View>
 
               </ListView>
             </StackPanel>
@@ -143,7 +154,8 @@
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </WrapPanel>
           </HierarchicalDataTemplate>
-          <HierarchicalDataTemplate ItemsSource="{Binding Children}"
+          <HierarchicalDataTemplate
+            ItemsSource="{Binding Children}"
             DataType="{x:Type xaml:XamlType}">
             <WrapPanel>
               <TextBlock VerticalAlignment="Center"
@@ -169,12 +181,14 @@
             DataType="{x:Type dev:ComponentInfo}"
             ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="{Binding Key}"/>
+              <TextBlock Text="{Binding Key}" />
             </StackPanel>
           </HierarchicalDataTemplate>
-          <HierarchicalDataTemplate DataType="xaml:XamlType" ItemsSource="{Binding Children}">
+          <HierarchicalDataTemplate
+            DataType="xaml:XamlType"
+            ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="{Binding Name}"/>
+              <TextBlock Text="{Binding Name}" />
             </StackPanel>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
@@ -219,64 +233,94 @@
                     Value="Beige" />
             <Setter Property="Control.Margin"
                     Value="-5,0,0,0" />
-            <Setter Property="Control.Padding" Value="0" />
+            <Setter Property="Control.Padding" Value="3" />
           </Style>
-          <DataTemplate DataType="{x:Type dev:InstanceInfo}" x:Key="PreviewInstanceInfo">
+          <DataTemplate
+            DataType="{x:Type dev:InstanceInfo}"
+            x:Key="PreviewInstanceInfo">
             <Border>
               <Grid>
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0"  Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}"/>
-                <TextBlock Grid.Row="1"  Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}"/>
-                <TextBlock Grid.Row="2" Text="{Binding Path=Data}"/>
-                <TextBlock Grid.Row="3" Grid.RowSpan="2" Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFileLine}"/>
-                <TextBlock Grid.Row="4" Grid.RowSpan="2" Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerMemberName}"/>
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}" />
+                <TextBlock Grid.Row="1"
+                           Text="{Binding Path=Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}" />
+                <TextBlock Grid.Row="2"
+                           Text="{Binding Path=Data}" />
+                <TextBlock Grid.Row="3" Grid.RowSpan="2"
+                           Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFileLine}" />
+                <TextBlock Grid.Row="4" Grid.RowSpan="2"
+                           Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerMemberName}" />
               </Grid>
             </Border>
-            </DataTemplate>
-          <DataTemplate DataType="{x:Type dev:InstanceInfo}" x:Key="DetailInstanceInfo">
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type dev:InstanceInfo}"
+            x:Key="DetailInstanceInfo">
             <Border>
               <Grid>
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}"/>
-                <TextBlock Grid.Row="2" Text="{Binding Path=Data}"/>
+                <TextBlock Grid.Row="0" Grid.RowSpan="2"
+                           Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}" />
+                <TextBlock Grid.Row="2"
+                           Text="{Binding Path=Data}" />
               </Grid>
             </Border>
           </DataTemplate>
-          <DataTemplate DataType="{x:Type registration:ComponentRegistration}" x:Key="DetailComponentRegistration">
+          <DataTemplate
+            DataType="{x:Type registration:ComponentRegistration}"
+            x:Key="DetailComponentRegistration">
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="{Binding Path=Activator}"/>
-              <TextBlock Text="|"/>
-              <TextBlock Text="{Binding Path=Sharing}"/>
+              <TextBlock Text="{Binding Path=Activator}" />
+              <TextBlock Text="|" />
+              <TextBlock Text="{Binding Path=Sharing}" />
             </StackPanel>
           </DataTemplate>
-          <DataTemplate DataType="{x:Type registration:ComponentRegistration}" x:Key="PreviewComponentRegistration">
-            <StackPanel Orientation="Horizontal">
-              <ItemsControl ItemsSource="{Binding Path=Metadata}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <WrapPanel>
-                    <TextBlock Text="{Binding Path=Key}" Padding="0,0,20,0"/>
-                    <TextBlock Text="{Binding Path=Value}"/>
-                    </WrapPanel>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </StackPanel>
+          <DataTemplate
+            DataType="{x:Type registration:ComponentRegistration}"
+            x:Key="KeyComponentRegistration">
+            <WrapPanel>
+              <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding Path=Services[0].Description}"/></WrapPanel>
+          </DataTemplate>
+          <DataTemplate
+            DataType="{x:Type registration:ComponentRegistration}"
+            x:Key="PreviewComponentRegistration">
+            <Border BorderBrush="BlueViolet"
+                    BorderThickness="2" Padding="5">
+              <StackPanel Orientation="Horizontal">
+                <ItemsControl
+                  ItemsSource="{Binding Path=Metadata}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <WrapPanel>
+                        <TextBlock
+                          Text="{Binding Path=Key}"
+                          Padding="0,0,20,0" />
+                        <TextBlock
+                          Text="{Binding Path=Value}" />
+                      </WrapPanel>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
           </DataTemplate>
 
         </ResourceDictionary>
@@ -320,68 +364,75 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <ScrollViewer>
-      <Grid Margin="10" Grid.Column="0" Grid.Row="1">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <ToolBarTray><ToolBar Grid.Row="0" Band="1" BandIndex="1"><Button Content="JSON Converter" Click="ButtonBase_OnClick"/></ToolBar></ToolBarTray>
-        <TextBlock Style="{StaticResource DetailHeader}"
-                   Margin="0,0,20,0" Text="Key Type"
-                   Grid.Row="1" Grid.Column="0" />
-        <ContentControl
-          Style="{StaticResource DetailValue}"
-          Margin="20,0,0,0" Grid.Row="2" Grid.Column="0"
-          Content="{Binding Key,Converter={StaticResource GetTypeConverter}}" />
-        <TextBlock Style="{StaticResource DetailHeader}"
-                   Margin="0,5,20,0" Text="Key"
-                   Grid.Row="3" Grid.Column="0" />
-          <ContentControl Margin="20,0,0,0" Grid.Row="4"
-                        Style="{StaticResource DetailValue}"
-                        Grid.Column="0"
-                        Content="{Binding Key}" ContentTemplateSelector="{StaticResource ResourceKeyTemplateSelector}"/>
+        <Grid Margin="10" Grid.Column="0" Grid.Row="1">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <ToolBarTray>
+            <ToolBar Grid.Row="0" Band="1" BandIndex="1">
+              <Button Content="JSON Converter"
+                      Click="ButtonBase_OnClick" />
+            </ToolBar>
+          </ToolBarTray>
           <TextBlock Style="{StaticResource DetailHeader}"
-                                                                                                                                                     Margin="0,0,20,0" Text="Value Type"
-                                                                                                                                                     Grid.Row="5" Grid.Column="0" />
-        <wpf:TypeControl
-          Grid.Row="6"
-          Grid.Column="0"
-          Style="{StaticResource DetailValue}">
-          <wpf:AttachedProperties.RenderedType>
-            <Binding Path="Data"
-                     Converter="{StaticResource GetTypeConverter}" />
-          </wpf:AttachedProperties.RenderedType>
-        </wpf:TypeControl>
+                     Margin="0,0,20,0" Text="Key Type"
+                     Grid.Row="1" Grid.Column="0" />
+          <ContentControl
+            Style="{StaticResource DetailValue}"
+            Margin="20,0,0,0" Grid.Row="2" Grid.Column="0"
+            Content="{Binding Key,Converter={StaticResource GetTypeConverter}}" />
+          <TextBlock Style="{StaticResource DetailHeader}"
+                     Margin="0,5,20,0" Text="Key"
+                     Grid.Row="3" Grid.Column="0" />
+          <ContentControl Margin="20,0,0,0" Grid.Row="4"
+                          Style="{StaticResource DetailValue}"
+                          Grid.Column="0"
+                          Content="{Binding Key}"
+                          ContentTemplateSelector="{StaticResource ResourceKeyTemplateSelector}" />
+          <TextBlock Style="{StaticResource DetailHeader}"
+                     Margin="0,0,20,0" Text="Value Type"
+                     Grid.Row="5" Grid.Column="0" />
+          <wpf:TypeControl
+            Grid.Row="6"
+            Grid.Column="0"
+            Style="{StaticResource DetailValue}">
+            <wpf:AttachedProperties.RenderedType>
+              <Binding Path="Data"
+                       Converter="{StaticResource GetTypeConverter}" />
+            </wpf:AttachedProperties.RenderedType>
+          </wpf:TypeControl>
 
-        <TextBlock Style="{StaticResource DetailHeader}"
-                   Margin="0,0,20,0" Text="Value"
-                   Grid.Row="7" Grid.Column="0" />
-        <ContentControl
-          Style="{StaticResource DetailValue}"
-          x:FieldModifier="public"
-          x:Name="details"
-          ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
-          Grid.Row="8" Grid.Column="0"
-          Content="{Binding Data}" />
-        <ContentControl Margin="0,40,0,0" Grid.Row="9"
-                        Grid.Column="0"
-                        ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
-                        Content="{Binding Data}" />
-        <TextBlock Grid.Row="10" x:Name="textBlock" x:FieldModifier="public"></TextBlock>
-      </Grid>
+          <TextBlock Style="{StaticResource DetailHeader}"
+                     Margin="0,0,20,0" Text="Value"
+                     Grid.Row="7" Grid.Column="0" />
+          <ContentControl
+            Style="{StaticResource DetailValue}"
+            x:FieldModifier="public"
+            x:Name="details"
+            ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
+            Grid.Row="8" Grid.Column="0"
+            Content="{Binding Data}" />
+          <ContentControl Margin="0,40,0,0" Grid.Row="9"
+                          Grid.Column="0"
+                          ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
+                          Content="{Binding Data}" />
+          <TextBlock Grid.Row="10" x:Name="textBlock"
+                     x:FieldModifier="public" />
+        </Grid>
       </ScrollViewer>
     </Grid>
   </Grid>
