@@ -648,7 +648,7 @@ namespace AnalysisAppLib
                                                             WithCollectionUsings (
                                                                                   SyntaxFactory
                                                                                      .CompilationUnit ( )
-                                                                                 )
+                                                                                 ).WithUsings (CodeAnalysisUsings()  )
                                                                .WithMembers (
                                                                              memberDeclarationSyntaxes
                                                                             )
@@ -750,8 +750,8 @@ namespace AnalysisAppLib
                                 var sp = new TextSpan ( start , end - start ) ;
                                 // ReSharper disable once UnusedVariable
                                 var codePart = code.GetSubText ( sp ) ;
-                                var lines = String.Join (
-                                                         "\n"
+                                var lines = string.Join (
+                                                         "\r\n"
                                                        , code.Lines.Skip ( startLine )
                                                              .Take ( count )
                                                              .ToList ( )
@@ -760,6 +760,12 @@ namespace AnalysisAppLib
                                 var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
                                 DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
                             }
+                        }
+
+                        var emitResult = compilation.Emit ( @"C:\temp\emit1.dll" ) ;
+                        if ( emitResult.Success == false )
+                        {
+                            DebugUtils.WriteLine (string.Join("\r\n", source)  );
                         }
 
                         var declarationSyntax = syntaxTree.GetRoot ( )
@@ -807,6 +813,32 @@ namespace AnalysisAppLib
             typ2.Fields.Add ( syntaxFieldInfo ) ;
         }
 
+        private static SyntaxList < UsingDirectiveSyntax > CodeAnalysisUsings ( )
+        {
+            return SyntaxFactory.List < UsingDirectiveSyntax > ( )
+                                .Add (
+                                      SyntaxFactory.UsingDirective (
+                                                                    SyntaxFactory.ParseName (
+                                                                                             "Microsoft.CodeAnalysis"
+                                                                                            )
+                                                                   )
+                                     )
+                                .Add (
+                                      SyntaxFactory.UsingDirective (
+                                                                    SyntaxFactory.ParseName (
+                                                                                             "Microsoft.CodeAnalysis.CSharp"
+                                                                                            )
+                                                                   )
+                                     )
+                                .Add (
+                                      SyntaxFactory.UsingDirective (
+                                                                    SyntaxFactory.ParseName (
+                                                                                             "Microsoft.CodeAnalysis.CSharp.Syntax"
+                                                                                            )
+                                                                   )
+                                     ) ;
+        }
+
         private static Type MapTypeNameToSyntaxNode([NotNull] ITypesViewModel model1, string typeName2)
         {
             return model1.Map.dict.First(k => k.Value.Type.Name == typeName2).Value.Type;
@@ -845,21 +877,7 @@ namespace AnalysisAppLib
                                                                                                                                          "System.ComponentModel"
                                                                                                                                         )
                                                                                                                )
-                                                                                , SyntaxFactory.UsingDirective (
-                                                                                                                SyntaxFactory.ParseName (
-                                                                                                                                         "Microsoft.CodeAnalysis"
-                                                                                                                                        )
-                                                                                                               )
-                                                                                , SyntaxFactory.UsingDirective (
-                                                                                                                SyntaxFactory.ParseName (
-                                                                                                                                         "Microsoft.CodeAnalysis.CSharp"
-                                                                                                                                        )
-                                                                                                               )
-                                                                                , SyntaxFactory.UsingDirective (
-                                                                                                                SyntaxFactory.ParseName (
-                                                                                                                                         "Microsoft.CodeAnalysis.CSharp.Syntax"
-                                                                                                                                        )
-                                                                                                               )
+                                                                                
                                                                               }
                                                                              )
                                     ) ;

@@ -86,7 +86,6 @@ namespace AnalysisControls
         public void addToken ( ushort rawKind , string text , bool newLine )
         {
             //Token token = new Token ( rawKind , text ) ;
-            var tmpSi = curSi ;
             SolidColorBrush x = null ;
             if ( ss.TryGetValue ( rawKind , out var si ) )
             {
@@ -102,7 +101,7 @@ namespace AnalysisControls
                                             ) ;
                 }
 
-                tmpSi = curSi.With ( si ) ;
+                curSi.With ( si ) ;
             }
 
             _container.AddChild ( new Token ( rawKind , text , x , newLine ) ) ;

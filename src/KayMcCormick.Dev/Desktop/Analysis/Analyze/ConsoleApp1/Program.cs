@@ -1159,7 +1159,7 @@ namespace ConsoleApp1
                 var classContainerDecl = ClassDeclaration ( colTypeClassName )
                    .WithBaseList (
                                   BaseList ( ).AddTypes ( Ilist1 , IEnumerable1 , ICollectionType )
-                                 ) ;
+                                 ).WithModifiers(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)));
 
                 var typeSyntax2 = ParseTypeName ( t.Type.FullName ) ;
                 var typeSyntax = ParseTypeName (
@@ -1715,7 +1715,10 @@ namespace ConsoleApp1
                     members = members.Add ( propertyDeclarationSyntax ) ;
                 }
 
+                var documentationCommentTriviaSyntax = DocumentationCommentTrivia(SyntaxKind.SingleLineDocumentationCommentTrivia, SyntaxFactory.List<XmlNodeSyntax>().Add(SyntaxFactory.XmlSummaryElement())) ;
+                var tokens1 = documentationCommentTriviaSyntax.DescendantTokens ( x111 => true , true ).ToList ( ) ;
                 classDecl1 = classDecl1.WithMembers ( members ) ;
+                
                 types      = types.Add ( classDecl1 ) ;
             }
 
@@ -1809,6 +1812,59 @@ namespace ConsoleApp1
                                                                     )
                                                    ) ;
 
+            var sourceText = SourceText
+               .From (
+                      $@"     using System;
+using System.Collections;
+using System.Collections.Generic;
+
+public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
+    {{
+        // System.Collections.IList
+        public Int32 Add(Object value) => _list.Add((PocoSyntaxToken)value);
+        // System.Collections.IList
+        public Boolean Contains(Object value) => _list.Contains((PocoSyntaxToken)value);
+        // System.Collections.IList
+        public void Clear() => _list.Clear();
+        // System.Collections.IList
+        public Int32 IndexOf(Object value) => _list.IndexOf((PocoSyntaxToken)value);
+        // System.Collections.IList
+        public void Insert(Int32 index, Object value) => _list.Insert((Int32)index, (PocoSyntaxToken)value);
+        // System.Collections.IList
+        public void Remove(Object value) => _list.Remove((PocoSyntaxToken)value);
+        // System.Collections.IList
+        public void    RemoveAt(Int32 index) => _list.RemoveAt((Int32)index);
+        public Boolean IsReadOnly            => _list.IsReadOnly;
+        public Boolean IsFixedSize           => _list.IsFixedSize;
+        public Object this[Int32 index]
+        {{
+            get => _list[index];
+            set => _list[index] = value;
+        }}
+
+        // System.Collections.ICollection
+        public void    CopyTo(Array array, Int32 index) => _list.CopyTo((Array)array, (Int32)index);
+        public Int32   Count          => _list.Count;
+        public Object  SyncRoot       => _list.SyncRoot;
+        public Boolean IsSynchronized => _list.IsSynchronized;
+        // System.Collections.IEnumerable
+        public IEnumerator GetEnumerator() => _list.GetEnumerator();
+        IList              _list = new List<PocoSyntaxToken>();
+    }}
+
+    public class PocoSyntaxToken
+    {{
+        public int RawKind {{ get; set; }}
+
+        public string Kind {{ get; set; }}
+
+        public object Value {{ get; set; }}
+
+        public string ValueText {{ get; set; }}
+    }}
+"
+                     ) ;
+            File.WriteAllText ( "misc.cs" , sourceText.ToString ( ) ) ;
             var document2 = DocumentInfo.Create (
                                                  DocumentId.CreateNewId ( projectId )
                                                , "misc"
@@ -1816,10 +1872,7 @@ namespace ConsoleApp1
                                                , SourceCodeKind.Regular
                                                , TextLoader.From (
                                                                   TextAndVersion.Create (
-                                                                                         SourceText
-                                                                                            .From (
-                                                                                                   $@"public class {Pocosyntaxtoken} {{ public int RawKind {{ get; set; }} public string Kind {{ get; set; }} public object Value {{get; set;}} public string ValueText {{ get; set; }} }}"
-                                                                                                  )
+                                                                                         sourceText
                                                                                        , VersionStamp
                                                                                             .Create ( )
                                                                                         )
@@ -1834,7 +1887,6 @@ namespace ConsoleApp1
                                         .Add ( document2 )
                                     ) ;
 
-            //var d = project.AddDocument ( "test.cs" , src ) ;
             var rb1 = adhoc.TryApplyChanges ( s2 ) ;
             if ( ! rb1 )
             {

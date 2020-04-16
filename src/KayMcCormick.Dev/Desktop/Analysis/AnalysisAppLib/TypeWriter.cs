@@ -16,6 +16,7 @@ namespace AnalysisAppLib
     ///     Class to write type information to XML file.
     /// </summary>
     [ SuppressMessage ( "ReSharper" , "UnusedMember.Global" ) ]
+    // ReSharper disable once UnusedType.Global
     public static class TypeWriter
     {
         private const string TypesElementName = "types" ;
@@ -199,7 +200,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
-        ///     Get the document ID for an code elmement.
+        ///     Get the document ID for an code element.
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>
@@ -257,6 +258,7 @@ namespace AnalysisAppLib
             return string.Empty ;
         }
 
+        [ CanBeNull ]
         private static string SubIdForType ( [ NotNull ] Type arg )
         {
             if ( arg.IsGenericType )

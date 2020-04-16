@@ -97,10 +97,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
             else
             {
-                if ( parent.Children != null )
-                {
-                    parent.Children.Add ( r ) ;
-                }
+                parent.Children?.Add ( r ) ;
 
                 r.Depth = parent.Depth + 1 ;
             }
@@ -124,6 +121,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                     var t1 = CreateNode ( ns1 , allXamlType , allXamlType , false ) ;
                     foreach ( var xamlMember in allXamlType.GetAllMembers ( ) )
                     {
+                        // ReSharper disable once UnusedVariable
                         var member1 = CreateNode ( t1 , xamlMember , xamlMember , false ) ;
                     }
                 }
@@ -165,19 +163,22 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
             catch
             {
+                // ignored
             }
         }
 
-        private void AddLogicalChildren ( DependencyObject w , ResourceNodeInfo log )
+        private void AddLogicalChildren ( [ NotNull ] DependencyObject w , ResourceNodeInfo log )
         {
             DebugUtils.WriteLine ( w.ToString ( ) ) ;
             var children = LogicalTreeHelper.GetChildren ( w ) ;
             foreach ( var child in children )
             {
                 var logchild = CreateNode ( log , child.ToString() , null , false ) ;
+                // ReSharper disable once UnusedVariable
                 if ( child is DependencyObject @do )
                 {
-                     //AddLogicalChildren ( ( DependencyObject ) @do , logchild ) ;
+                    // ReSharper disable once CommentTypo
+                    //AddLogicalChildren ( ( DependencyObject ) @do , logchild ) ;
                 }
             }
         }
@@ -223,13 +224,17 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                     {
                         switch ( rkey )
                         {
+                            // ReSharper disable once UnusedVariable
                             case ComponentResourceKey componentResourceKey : break ;
 
 
+                            // ReSharper disable once UnusedVariable
                             case ItemContainerTemplateKey itemContainerTemplateKey : break ;
 
+                            // ReSharper disable once UnusedVariable
                             case DataTemplateKey dataTemplateKey : break ;
 
+                            // ReSharper disable once UnusedVariable
                             case TemplateKey templateKey : break ;
                             default :
                                 key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;

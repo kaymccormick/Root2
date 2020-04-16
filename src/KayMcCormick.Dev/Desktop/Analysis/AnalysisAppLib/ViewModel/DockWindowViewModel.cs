@@ -7,7 +7,6 @@ using System.Runtime.Serialization ;
 using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.Explorer ;
 using Autofac ;
-using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using NLog ;
@@ -24,7 +23,6 @@ namespace AnalysisAppLib.ViewModel
         // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly IEnumerable < Meta < Lazy < IViewWithTitle > > > _views ;
 
         private string _defaultInputPath =
             Environment.GetFolderPath ( Environment.SpecialFolder.MyDocuments ) ;
@@ -39,12 +37,12 @@ namespace AnalysisAppLib.ViewModel
         /// <param name="blocks"></param>
         /// <param name="lifetime"></param>
         public DockWindowViewModel (
-            IEnumerable < Meta < Lazy < IViewWithTitle > > > views
-          , [ NotNull ] IEnumerable<IAnalysisBlockProvider1 > blocks
+            
+           [ NotNull ] IEnumerable<IAnalysisBlockProvider1 > blocks
             , ILifetimeScope lifetime
         )
         {
-            _views     = views ;
+          
             foreach ( var analysisBlockProvider1 in blocks )
             {
                 DebugUtils.WriteLine(analysisBlockProvider1.ToString());
@@ -53,11 +51,7 @@ namespace AnalysisAppLib.ViewModel
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable < Meta < Lazy < IViewWithTitle > > > Views { get { return _views ; } }
-
+        
         /// <summary>
         /// 
         /// </summary>

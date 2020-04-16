@@ -19,6 +19,7 @@ using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf ;
 
 using Microsoft.Win32 ;
@@ -59,17 +60,17 @@ namespace ProjInterface
                                                                                                         leftAnchorablePane
                                                                                                        )
                                                                                     )
-                                                                  .SingleInstance ( ) ;
+                                                                  .SingleInstance ( ).WithCallerMetadata() ;
                                                            builder.RegisterInstance (
                                                                                      new
                                                                                          PaneService ( )
                                                                                     )
-                                                                  .SingleInstance ( ) ;
+                                                                  .SingleInstance ( ).WithCallerMetadata() ;
                                                            builder
                                                               .RegisterType < HandleExceptionImpl
                                                                > ( )
                                                               .As < IHandleException > ( )
-                                                              .InstancePerLifetimeScope ( ) ;
+                                                              .InstancePerLifetimeScope ( ).WithCallerMetadata() ;
                                                        }
                                                       ) ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;

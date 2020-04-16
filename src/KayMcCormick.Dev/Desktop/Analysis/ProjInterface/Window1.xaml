@@ -1055,18 +1055,6 @@
           </RibbonApplicationMenu>
         </Ribbon.ApplicationMenu>
         <RibbonTab Header="Views">
-            <RibbonGroup
-              ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
-            <RibbonGroup.ItemTemplate>
-                <DataTemplate
-                  DataType="command:IDisplayableAppCommand">
-                  <RibbonButton
-                    Label="{Binding DisplayName}"
-                    LargeImageSource="{Binding LargeImageSourceKey}"
-                    Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
-                </DataTemplate>
-              </RibbonGroup.ItemTemplate>
-            </RibbonGroup>
 </RibbonTab>
 
       </Ribbon>

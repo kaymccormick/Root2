@@ -29,6 +29,7 @@ using PocoSyntax ;
 /// <summary/>
 public static class GenTransforms {
 <#
+            const string ElementTypeMetadataNamePropertyName = "ElementTypeMetadataName" ;
             const string typePropertyName = "Type" ;
             const string fullNamePropertyName = "FullName" ;
             const string titlePropertyName = "Title" ;
@@ -120,7 +121,7 @@ public static class GenTransforms {
 
                         var t1 = f.GetProperty ( typePropertyName ) ;
                         var value = "" ;
-                        var transform = "" ;
+                        
                         string msg = null ;
                         var typeName = f.GetProperty ( "TypeName" ).GetString ( ) ;
                         if ( typeName == "bool" )
@@ -145,39 +146,37 @@ public static class GenTransforms {
                                     value =
                                         $"node == null ? null : new PocoSyntaxToken {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
                                 }
-                                else if ( typeName.StartsWith ( "SyntaxList<" ) )
-                                {
-                                    var t2 = typeName.Substring ( 11 , typeName.Length - 12 ) ;
-                                    if ( dict.TryGetValue ( t2 , out var m2 ) )
-                                    {
-                                    }
+                              }
+                        }
 
-                                    transform = $".Select(Transform_{m2}).ToList()" ;
-                                }
-                                else if ( typeName.StartsWith ( "SeparatedSyntaxList<" ) )
-                                {
-                                    var t2 = typeName.Substring ( 20 , typeName.Length - 21 ) ;
-                                    if ( dict.TryGetValue ( t2 , out var m2 ) )
-                                    {
-                                    }
-                                    else
-                                    {
-                                    }
+						                            var t2 = f.GetProperty ( ElementTypeMetadataNamePropertyName )
+                                      .GetString ( ) ;
+                            //DebugUtils.WriteLine ( $"{t2}" ) ;
+                            if ( t2 == "PocoSyntax.PocoSyntaxTokenCollection" )
+                            {
+                            }
 
-                                    transform = $".Select(Transform_{m2}).ToList()" ;
-                                }
-                                else if ( k == "SyntaxTokenList" )
+                            string transform = null ;
+                            if ( t2 == null )
+                            {
+
+                            }
+                            else
+                            {
+							   var lastPeriod = t2.LastIndexOf('.');
+							   var part =lastPeriod >= 0 ?  t2.Substring(lastPeriod + 1) : t2;
+							   var key = part;
+                                if ( key != null )
                                 {
-                                    transform =
-                                        ".Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList()" ;
+                                    var m2 = dict[key ] ;
+                                    transform = $".Select(Transform_{m2}).ToList()" ;
                                 }
                             }
-                        }
 
-                        if ( transform != "" )
+                        if (!string.IsNullOrEmpty( transform)) {
                         {
                             value = $"node?.{name}{transform}" ;
-                        }
+                       
 
                         if ( value == "" )
                         {
@@ -187,6 +186,7 @@ public static class GenTransforms {
                         var code = $"    {name} = {value}, " ;
                         props = props + "\n" + code ;
                     }
+					}
 
                     body = $"return new {pocoClassName}() {{ {props} }};" ;
 					}

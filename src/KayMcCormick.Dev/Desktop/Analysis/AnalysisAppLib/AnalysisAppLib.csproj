@@ -82,6 +82,7 @@
     <Compile Include="Explorer\FileSystemAppExplorerItem.cs" />
     <Compile Include="Explorer\FileSystemExplorerItemProvider.cs" />
     <Compile Include="Explorer\IExplorerItemProvider.cs" />
+    <Compile Include="Gen2.cs" />
     <Compile Include="IDocInterface.cs" />
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />

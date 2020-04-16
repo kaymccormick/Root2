@@ -87,17 +87,7 @@ namespace AnalysisControls
             base.OnVisualChildrenChanged ( visualAdded , visualRemoved ) ;
         }
         #endregion
-        #region Overrides of UIElement
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="drawingContext"></param>
-        protected override void OnRender ( DrawingContext drawingContext )
-        {
-            base.OnRender ( drawingContext ) ;
-        }
-        #endregion
-
+        
         /// <summary>
         /// 
         /// </summary>

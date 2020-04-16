@@ -69,6 +69,7 @@ namespace AnalysisAppLib
         // ReSharper disable once UnusedParameter.Local
         // ReSharper disable once UnusedParameter.Local
         // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local
         public LogListener ( int port , LogViewModel logViewModel ) { }
 
         #region IDisposable

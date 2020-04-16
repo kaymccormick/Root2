@@ -1,4 +1,5 @@
 using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Reflection ;
@@ -151,8 +152,11 @@ namespace KayMcCormick.Dev.Logging
 
             var reg = args.ComponentRegistration ;
             reg.Metadata[ "RegisteredDatetime" ] = DateTime.Now ;
-            if ( reg.Metadata.ContainsKey ( "CallerFilePath" ) == false )
-            {
+            var hasMetadata = reg.Metadata.ContainsKey ( "CallerFilePath" ) ;
+            var withoutMetadata = typeof(MulticastDelegate).IsAssignableFrom(reg.Activator.LimitType.BaseType) ||
+            typeof(IEnumerable).IsAssignableFrom(reg.Activator.LimitType) || reg.Activator.LimitType==typeof(ILifetimeScope)||
+                                         reg.Activator.LimitType == typeof(LifetimeScope);
+                if(!withoutMetadata && !hasMetadata) {
                 throw new InvalidOperationException ( "Need metadata" ) ;
             }
             var activatorLimitType = reg.Activator.LimitType ;
@@ -195,8 +199,8 @@ namespace KayMcCormick.Dev.Logging
                 Logger.Trace (
                               "Activated {desc} (sender={sender}, instance={instance})"
                             , DescribeComponent ( eventArgs.Component )
-                            , o
-                            , instanceDesc
+                            , o.ToString()
+                            , instanceDesc.ToString()
                              ) ;
             } ;
         }

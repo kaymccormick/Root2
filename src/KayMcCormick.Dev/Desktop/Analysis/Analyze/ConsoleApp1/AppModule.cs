@@ -15,6 +15,7 @@ using Autofac ;
 using FindLogUsages ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Command ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Module = Autofac.Module ;
 
@@ -30,8 +31,8 @@ namespace ConsoleApp1
             var actionBlock = new ActionBlock < ILogInvocation > ( Action ) ;
             builder.RegisterInstance ( actionBlock )
                    .As < ActionBlock < ILogInvocation > > ( )
-                   .SingleInstance ( ) ;
-            builder.RegisterType < AppContext > ( ).AsSelf ( ) ;
+                   .SingleInstance ( ).WithCallerMetadata() ;
+            builder.RegisterType < AppContext > ( ).AsSelf ( ).WithCallerMetadata() ;
             foreach ( var methodInfo in typeof ( Program ).GetMethods (
                                                                        BindingFlags.Instance
                                                                        | BindingFlags.Public
@@ -43,7 +44,7 @@ namespace ConsoleApp1
                                                                                   TitleMetadataAttribute
                                                                               )
                                                                              ) ;
-                builder.RegisterType < Program > ( ) ;
+                builder.RegisterType < Program > ( ).WithCallerMetadata (  ) ;
                 if ( title != null )
                 {
                     builder.Register (
@@ -76,11 +77,11 @@ namespace ConsoleApp1
                                       }
                                      )
                            .AsImplementedInterfaces ( )
-                           .AsSelf ( ) ;
+                           .AsSelf ( ).WithCallerMetadata (  ) ;
                 }
             }
 #if TERMUI
-            builder.RegisterType < TermUi > ( ).AsSelf ( ) ;
+            builder.RegisterType < TermUi > ( ).AsSelf ( ).WithCallerMetadata() ;
 #endif
         }
 

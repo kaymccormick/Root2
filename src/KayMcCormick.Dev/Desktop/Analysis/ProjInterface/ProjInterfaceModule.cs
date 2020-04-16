@@ -57,13 +57,13 @@ namespace ProjInterface
     public sealed class ProjInterfaceModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private bool _registerControlViewCommandAdapters ;
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
             Logger.Trace (
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
-            //builder.RegisterType < PaneService > ( ) ;
 #if PYTHON
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
@@ -141,12 +141,11 @@ if(RegiserExplorerTypes){
                    .SingleInstance ( )
                    .WithCallerMetadata ( ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ).WithCallerMetadata();
-            //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
 
             builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
             builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
-            //.As < IControlView > ( ) ;
 
+            if(RegisterControlViewCommandAdapters)
             builder
                .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
                     Func < LayoutDocumentPane , IDisplayableAppCommand >
@@ -181,6 +180,8 @@ if(RegiserExplorerTypes){
                    .As < LogViewerControl > ( )
                    .WithCallerMetadata ( ) ;
         }
+
+        public bool RegisterControlViewCommandAdapters { get { return _registerControlViewCommandAdapters ; } set { _registerControlViewCommandAdapters = value ; } }
 
         [ NotNull ]
         private static Func < LayoutDocumentPane , IDisplayableAppCommand >
