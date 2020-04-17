@@ -24,6 +24,6 @@ namespace AnalysisAppLib.Span
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        object getInstance ( ) ;
+        object GetInstance ( ) ;
     }
 }

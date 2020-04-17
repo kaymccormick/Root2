@@ -74,7 +74,7 @@ namespace KayMcCormick.Lib.Wpf
                 var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
                 if ( svc == null )
                 {
-                    return scope ;
+                    return ( ILifetimeScope ) null ;
                 }
 
                 var rootP = ( IRootObjectProvider ) svc ;

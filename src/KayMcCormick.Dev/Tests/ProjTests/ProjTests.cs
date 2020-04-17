@@ -9,65 +9,66 @@
 //
 // ---
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.ExceptionServices;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters.Soap;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Baml2006;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Xaml;
-using System.Xml;
-using System.Xml.Linq;
-using AnalysisAppLib;
-using AnalysisAppLib.Serialization;
-using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
-using AnalysisControls;
-using AnalysisControls.Properties;
-using AnalysisControls.ViewModel;
-using Autofac;
-using AvalonDock;
-using AvalonDock.Layout;
-using Castle.DynamicProxy;
-using JetBrains.Annotations;
-using KayMcCormick.Dev;
-using KayMcCormick.Dev.Application;
-using KayMcCormick.Dev.Command;
-using KayMcCormick.Dev.Logging;
-using KayMcCormick.Dev.TestLib;
-using KayMcCormick.Dev.TestLib.Fixtures;
-using KayMcCormick.Lib.Wpf;
-using KayMcCormick.Lib.Wpf.Command;
-using KayMcCormick.Lib.Wpf.JSON;
-using KayMcCormick.Lib.Wpf.View;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Moq;
-using NLog;
-using Xunit;
-using Xunit.Abstractions;
-using ColorConverter = System.Windows.Media.ColorConverter;
-using Condition = System.Windows.Automation.Condition;
-using File = System.IO.File;
-using Process = System.Diagnostics.Process;
-using XamlReader = System.Windows.Markup.XamlReader;
-using XamlWriter = System.Windows.Markup.XamlWriter;
+using System ;
+using System.Collections.Generic ;
+using System.Diagnostics ;
+using System.Globalization ;
+using System.IO ;
+using System.Linq ;
+using System.Reflection ;
+using System.Resources ;
+using System.Runtime.ExceptionServices ;
+using System.Runtime.Serialization.Formatters.Binary ;
+using System.Runtime.Serialization.Formatters.Soap ;
+using System.Text ;
+using System.Text.Json ;
+using System.Text.Json.Serialization ;
+using System.Threading ;
+using System.Threading.Tasks ;
+using System.Windows ;
+using System.Windows.Automation ;
+using System.Windows.Baml2006 ;
+using System.Windows.Controls ;
+using System.Windows.Media ;
+using System.Windows.Media.Imaging ;
+using System.Xaml ;
+using System.Xml ;
+using System.Xml.Linq ;
+using AnalysisAppLib ;
+using AnalysisAppLib.Serialization ;
+using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.XmlDoc ;
+using AnalysisControls ;
+using AnalysisControls.Properties ;
+using AnalysisControls.ViewModel ;
+using Autofac ;
+using AvalonDock ;
+using AvalonDock.Layout ;
+using Castle.DynamicProxy ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Command ;
+using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.TestLib ;
+using KayMcCormick.Dev.TestLib.Fixtures ;
+using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.Command ;
+using KayMcCormick.Lib.Wpf.JSON ;
+using KayMcCormick.Lib.Wpf.View ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Moq ;
+using NLog ;
+using Xunit ;
+using Xunit.Abstractions ;
+using ColorConverter = System.Windows.Media.ColorConverter ;
+using Condition = System.Windows.Automation.Condition ;
+using File = System.IO.File ;
+using Process = System.Diagnostics.Process ;
+using XamlReader = System.Windows.Markup.XamlReader ;
+using XamlWriter = System.Windows.Markup.XamlWriter ;
+
 // ReSharper disable UnusedVariable
 // ReSharper disable RedundantOverriddenMember
 
@@ -94,13 +95,14 @@ namespace ProjTests
         // , IClassFixture < ProjectFixture >
         : IDisposable
     {
-        private const string TypesViewModelXamlPath =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml";
-        private const string InputTypesViewModelXamlPath =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml";
+        private const string TYPES_VIEW_MODEL_XAML_PATH =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml" ;
+
+        private const string INPUT_TYPES_VIEW_MODEL_XAML_PATH =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml" ;
 
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
-        private const bool _disableLogging = true ;
+        private const           bool   _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
@@ -141,10 +143,9 @@ namespace ProjTests
         [ WpfFact ]
         public void TestRead ( )
         {
-            var fileStream = new FileStream ( TypesViewModelXamlPath , FileMode.Open ) ;
+            var fileStream = new FileStream ( TYPES_VIEW_MODEL_XAML_PATH , FileMode.Open ) ;
             // ReSharper disable once UnusedVariable
             var x = XamlReader.Load ( fileStream ) ;
-
         }
 
         [ Fact ]
@@ -159,42 +160,43 @@ namespace ProjTests
                                                                                                  )
                                                            ) )
             {
-                instance.AddModule(new AnalysisControlsModule());
-                instance.AddModule(new AnalysisAppLibModule());
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
-                var model = lifetimescope.Resolve<TypesViewModel>();
-                var sts = lifetimescope.Resolve<ISyntaxTypesService>();
-                var cmap = sts.CollectionMap () ;
-                var appTypeInfo =  sts.GetAppTypeInfo( typeof ( AssignmentExpressionSyntax ) ) ;
+                var model = lifetimescope.Resolve < TypesViewModel > ( ) ;
+                var sts = lifetimescope.Resolve < ISyntaxTypesService > ( ) ;
+                var cmap = sts.CollectionMap ( ) ;
+                var appTypeInfo = sts.GetAppTypeInfo ( typeof ( AssignmentExpressionSyntax ) ) ;
                 var field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
                 var typeSyntax =
                     SyntaxFactory.ParseTypeName ( typeof ( ArgumentSyntax ).FullName ) ;
                 var substType =
-                    XmlDocElements.SubstituteType ( field , typeSyntax , cmap , model) ;
+                    XmlDocElements.SubstituteType ( field , typeSyntax , cmap , model ) ;
             }
         }
 
-        [WpfFact]
+        [ WpfFact ]
         public void TestXaml2 ( )
         {
-            var model = new TypesViewModel (new JsonSerializerOptions() ) ;
-            var output = new StringWriter();
+            var model = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
+            var output = new StringWriter ( ) ;
             Action < string > writeOut = output.WriteLine ;
-            var pu = new ProxyUtils (writeOut, ProxyUtilsBase.CreateInterceptor(writeOut) ) ;
+            var pu = new ProxyUtils ( writeOut , ProxyUtilsBase.CreateInterceptor ( writeOut ) ) ;
             pu.TransformXaml ( model ) ;
-            File.WriteAllText(@"C:\data\logs\xaml.txt", output.ToString());
+            File.WriteAllText ( @"C:\data\logs\xaml.txt" , output.ToString ( ) ) ;
         }
-        [WpfFact]
-        public void TestXaml3()
+
+        [ WpfFact ]
+        public void TestXaml3 ( )
         {
             // ReSharper disable once UnusedVariable
-            var model = new TypesViewModel(new JsonSerializerOptions());
-            var output = new StringWriter();
-            Action<string> writeOut = output.WriteLine;
-            var pu = new ProxyUtils(writeOut, ProxyUtilsBase.CreateInterceptor(writeOut));
-            var inst = pu.TransformXaml2(InputTypesViewModelXamlPath);
-            File.WriteAllText(@"C:\data\logs\xaml2.txt", output.ToString());
+            var model = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
+            var output = new StringWriter ( ) ;
+            Action < string > writeOut = output.WriteLine ;
+            var pu = new ProxyUtils ( writeOut , ProxyUtilsBase.CreateInterceptor ( writeOut ) ) ;
+            var inst = pu.TransformXaml2 ( INPUT_TYPES_VIEW_MODEL_XAML_PATH ) ;
+            File.WriteAllText ( @"C:\data\logs\xaml2.txt" , output.ToString ( ) ) ;
         }
 
         // private static ITypesViewModel GetComponentTypesViewModel()
@@ -221,15 +223,15 @@ namespace ProjTests
         // [WpfFact ]
         // public void TEstTypesview1 ( )
         // {
-            // var app1 = new TestApp1();
-            // var model = GetComponentTypesViewModel( ) ;
-            
+        // var app1 = new TestApp1();
+        // var model = GetComponentTypesViewModel( ) ;
+
         // }
 
-        [WpfFact ]
+        [ WpfFact ]
         public void TEstTypesview ( )
         {
-            var viewModel = new TypesViewModel (new JsonSerializerOptions() ) ;
+            var viewModel = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
             viewModel.BeginInit ( ) ;
             viewModel.EndInit ( ) ;
             var stringWriter = new StringWriter ( ) ;
@@ -243,7 +245,7 @@ namespace ProjTests
             }
 
 
-            XamlWriter.Save ( viewModel , File.CreateText ( TypesViewModelXamlPath ) ) ;
+            XamlWriter.Save ( viewModel , File.CreateText ( TYPES_VIEW_MODEL_XAML_PATH ) ) ;
 
 
 
@@ -270,7 +272,7 @@ namespace ProjTests
         [ WpfFact ]
         public void TEstTypesview2 ( )
         {
-            var viewModel = new TypesViewModel (new JsonSerializerOptions()) ;
+            var viewModel = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
             viewModel.BeginInit ( ) ;
             viewModel.EndInit ( ) ;
             var stringWriter = new StringWriter ( ) ;
@@ -344,7 +346,8 @@ namespace ProjTests
         [ WpfFact ]
         public void TestProxyUtils ( )
         {
-            void Action ( string message ) => DebugUtils.WriteLine ( message ) ;
+            void Action ( string message ) { DebugUtils.WriteLine ( message ) ; }
+
             var proxy = ProxyUtilsBase.CreateProxy (
                                                     Action
                                                   , new BaseInterceptorImpl (
@@ -372,9 +375,11 @@ namespace ProjTests
             {
                 switch ( methodInfo.Name )
                 {
-                    case "InstantiateUnoptimizedTree" :                         m1 = methodInfo ;
+                    case "InstantiateUnoptimizedTree" :
+                        m1 = methodInfo ;
                         break ;
-                    case "Seal" when methodInfo.GetParameters ( ).Length == 1 : m2 = methodInfo ;
+                    case "Seal" when methodInfo.GetParameters ( ).Length == 1 :
+                        m2 = methodInfo ;
                         break ;
                 }
             }
@@ -425,7 +430,7 @@ namespace ProjTests
                 Logger.Warn ( "in callback" ) ;
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
-                                                     , lifetimescope
+                                                 , lifetimescope
                                                               .Resolve < IObjectIdProvider > ( )
                                                           ) ;
                 var tree = new AllResourcesTree ( model ) ;
@@ -500,8 +505,10 @@ namespace ProjTests
                                          task => DebugUtils.WriteLine (
                                                                        // ReSharper disable once PossibleNullReferenceException
                                                                        task.IsFaulted
-                                                                           ? task.Exception.ToString ( )
-                                                                           : task.Result.ToString ( )
+                                                                           ? task
+                                                                            .Exception.ToString ( )
+                                                                           : task
+                                                                            .Result.ToString ( )
                                                                       )
                                         )
                           .Wait ( ) ;
@@ -580,7 +587,7 @@ namespace ProjTests
 
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
-                                                     , lifetimescope
+                                                 , lifetimescope
                                                               .Resolve < IObjectIdProvider > ( )
                                                           ) ;
                 var tree = new AllResourcesTree ( model ) ;
@@ -898,9 +905,7 @@ namespace ProjTests
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
             var tcs = new TaskCompletionSource < bool > ( ) ;
             Task.Run ( ( ) => codeControl.Refresh ( ) )
-                .ContinueWith (
-                               task => tcs.SetResult ( true )
-                              ) ;
+                .ContinueWith ( task => tcs.SetResult ( true ) ) ;
 
             w.Show ( ) ;
 
@@ -978,7 +983,7 @@ namespace ProjTests
                                                                 ApplicationInstanceConfiguration (
                                                                                                   _output
                                                                                                      .WriteLine
-                                                                                                , ApplicationGuid
+                                                                                            , ApplicationGuid
                                                                                                  )
                                                            ) )
             {
@@ -992,7 +997,7 @@ namespace ProjTests
                 DebugUtils.WriteLine ( json ) ;
                 var vs = DependencyPropertyHelper.GetValueSource (
                                                                   p
-                                                                , PythonViewModel.InputLineProperty
+                                                            , PythonViewModel.InputLineProperty
                                                                  ) ;
                 Logger.Debug ( "Value source is {vs}" ,             vs ) ;
                 Logger.Debug ( "Current inputline is {inputLine}" , p.InputLine ) ;
@@ -1134,14 +1139,15 @@ namespace ProjTests
                                                           , Condition.TrueCondition
                                                            ) )
                 {
-                    DebugUtils.WriteLine ( o.ToString() ) ;
+                    DebugUtils.WriteLine ( o.ToString ( ) ) ;
                     try
                     {
                         DebugUtils.WriteLine (
                                               o.GetCachedPropertyValue (
                                                                         AutomationElement
                                                                            .ClassNameProperty
-                                                                       ).ToString()
+                                                                       )
+                                               .ToString ( )
                                              ) ;
                     }
                     catch
@@ -1168,7 +1174,7 @@ namespace ProjTests
         private static void HandleChild ( AutomationElement child )
         {
             try
-            { 
+            {
                 var cacheRequest = new CacheRequest ( ) ;
                 cacheRequest.Add ( AutomationElement.ClassNameProperty ) ;
                 foreach ( var automationProperty in child.GetSupportedProperties ( ) )
@@ -1178,7 +1184,7 @@ namespace ProjTests
                         var propValue = child.GetCurrentPropertyValue ( automationProperty ) ;
                         DebugUtils.WriteLine ( automationProperty.ProgrammaticName ) ;
 #pragma warning disable CS0612 // Type or member is obsolete
-                        DebugUtils.WriteLine ( propValue );
+                        DebugUtils.WriteLine ( propValue ) ;
 #pragma warning restore CS0612 // Type or member is obsolete
                     }
                     catch ( Exception )
@@ -1312,51 +1318,74 @@ namespace ProjTests
             DebugUtils.WriteLine ( @out ) ;
             Logger.Info ( @out ) ;
         }
-
     }
 
     public class TestApp1 : System.Windows.Application
     {
-#region Overrides of Application
+        #region Overrides of Application
         protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
-#endregion
+        #endregion
     }
 
     public class XamlWriter1 : XamlObjectWriter
     {
-#region Overrides of XamlObjectWriter
-        protected override void OnAfterBeginInit ( object value ) { base.OnAfterBeginInit ( value ) ; }
+        #region Overrides of XamlObjectWriter
+        protected override void OnAfterBeginInit ( object value )
+        {
+            base.OnAfterBeginInit ( value ) ;
+        }
 
-        protected override void OnBeforeProperties ( object value ) { base.OnBeforeProperties ( value ) ; }
+        protected override void OnBeforeProperties ( object value )
+        {
+            base.OnBeforeProperties ( value ) ;
+        }
 
-        protected override void OnAfterProperties ( object value ) { base.OnAfterProperties ( value ) ; }
+        protected override void OnAfterProperties ( object value )
+        {
+            base.OnAfterProperties ( value ) ;
+        }
 
         protected override void OnAfterEndInit ( object value ) { base.OnAfterEndInit ( value ) ; }
 
-        protected override bool OnSetValue ( object eventSender , XamlMember member , object value ) { return base.OnSetValue ( eventSender , member , value ) ; }
+        protected override bool OnSetValue ( object eventSender , XamlMember member , object value )
+        {
+            return base.OnSetValue ( eventSender , member , value ) ;
+        }
 
         public override void WriteGetObject ( ) { base.WriteGetObject ( ) ; }
 
-        public override void WriteStartObject ( XamlType xamlType ) { base.WriteStartObject ( xamlType ) ; }
+        public override void WriteStartObject ( XamlType xamlType )
+        {
+            base.WriteStartObject ( xamlType ) ;
+        }
 
         public override void WriteEndObject ( ) { base.WriteEndObject ( ) ; }
 
-        public override void WriteStartMember ( XamlMember property ) { base.WriteStartMember ( property ) ; }
+        public override void WriteStartMember ( XamlMember property )
+        {
+            base.WriteStartMember ( property ) ;
+        }
 
         public override void WriteEndMember ( ) { base.WriteEndMember ( ) ; }
 
         public override void WriteValue ( object value ) { base.WriteValue ( value ) ; }
 
-        public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration ) { base.WriteNamespace ( namespaceDeclaration ) ; }
+        public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration )
+        {
+            base.WriteNamespace ( namespaceDeclaration ) ;
+        }
 
         protected override void Dispose ( bool disposing ) { base.Dispose ( disposing ) ; }
-#endregion
+        #endregion
 
         public XamlWriter1 ( [ NotNull ] XamlSchemaContext schemaContext ) : base ( schemaContext )
         {
         }
 
-        public XamlWriter1 ( [ NotNull ] XamlSchemaContext schemaContext , XamlObjectWriterSettings settings ) : base ( schemaContext , settings )
+        public XamlWriter1 (
+            [ NotNull ] XamlSchemaContext schemaContext
+          , XamlObjectWriterSettings      settings
+        ) : base ( schemaContext , settings )
         {
         }
     }

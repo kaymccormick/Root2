@@ -25,13 +25,13 @@ namespace AnalysisAppLib.Xaml
         /// <summary>
         /// 
         /// </summary>
-        public readonly Dictionary < string , AppTypeInfo > dict = new Dictionary < string, AppTypeInfo > ( ) ;
+        public readonly Dictionary < string , AppTypeInfo > Dict = new Dictionary < string, AppTypeInfo > ( ) ;
 
         private readonly IDictionary _dict ;
         /// <summary>
         /// 
         /// </summary>
-        public TypeMapDictionary2 ( ) { _dict = dict ; }
+        public TypeMapDictionary2 ( ) { _dict = Dict ; }
         #region Implementation of IEnumerable
         /// <summary>
         /// 
@@ -131,12 +131,12 @@ namespace AnalysisAppLib.Xaml
         /// <exception cref="InvalidOperationException"></exception>
         public AppTypeInfo GetAppTypeInfoForType ( [ NotNull ] AppTypeInfoKey typeKey )
         {
-            if (! dict.ContainsKey ( typeKey.StringValue ) )
+            if (! Dict.ContainsKey ( typeKey.StringValue ) )
             {
                 throw new InvalidOperationException ( "No such type" ) ;
             }
 
-            return dict[ typeKey.StringValue ] ;
+            return Dict[ typeKey.StringValue ] ;
         }
     }
 }

@@ -16,8 +16,8 @@ namespace ConsoleApp1
 {
     internal sealed class TermUi
     {
-        private readonly TaskFactory                            factory ;
-        private const    string                                 FrameTitle = "Details" ;
+        private readonly TaskFactory                            _factory ;
+        private const    string                                 FRAME_TITLE = "Details" ;
         private readonly IEnumerable < IDisplayableAppCommand > _commands ;
 #pragma warning disable 649
         private readonly ModelResources                         _modelResources ;
@@ -29,7 +29,7 @@ namespace ConsoleApp1
         private          MenuBar                                _menuBar ;
         private          int                                    _rows ;
         private          TextView                               _textView ;
-        private          Toplevel                               _toplevel ;
+        private          Toplevel                               _topLevel ;
         // ReSharper disable once NotAccessedField.Local
         private          Task                                   _commandTask ;
         private          Action < string >                      _commandOutputAction ;
@@ -41,10 +41,10 @@ namespace ConsoleApp1
         )
         {
           //  _modelResources = modelResources ;
-            this.factory    = factory ;
-            if ( this.factory == null )
+            this._factory    = factory ;
+            if ( this._factory == null )
             {
-                this.factory = new TaskFactory (
+                this._factory = new TaskFactory (
                                                 CancellationToken.None
                                               , TaskCreationOptions.AttachedToParent
                                               , TaskContinuationOptions.None
@@ -52,15 +52,15 @@ namespace ConsoleApp1
                                                ) ;
             }
 
-            var commandsary = commands as IDisplayableAppCommand[] ?? commands.ToArray ( ) ;
-            _commands = commandsary ;
-            if ( ! commandsary.Any ( ) )
+            var cmdsAry = commands as IDisplayableAppCommand[] ?? commands.ToArray ( ) ;
+            _commands = cmdsAry ;
+            if ( ! cmdsAry.Any ( ) )
             {
                 throw new InvalidOperationException ( "No commands" ) ;
             }
         }
 
-        public Toplevel Toplevel1 { get { return _toplevel ; } set { _toplevel = value ; } }
+        public Toplevel Toplevel { get { return _topLevel ; } set { _topLevel = value ; } }
 
         public IEnumerable < IDisplayableAppCommand > Commands { get { return _commands ; } }
 
@@ -122,7 +122,7 @@ namespace ConsoleApp1
                                       ) ;
 
 
-            _frame = new FrameView ( textViewRect , FrameTitle ) ;
+            _frame = new FrameView ( textViewRect , FRAME_TITLE ) ;
 
             _textView = new TextView
                         {
@@ -144,9 +144,9 @@ namespace ConsoleApp1
 
         private void InitTopLevel ( View w )
         {
-            Toplevel1 = Application.Top ;
-            Toplevel1.Add ( _menuBar ) ;
-            Toplevel1.Add ( w ) ;
+            Toplevel = Application.Top ;
+            Toplevel.Add ( _menuBar ) ;
+            Toplevel.Add ( w ) ;
             // Toplevel1.Add ( _listView ) ;
             // Toplevel1.Add ( _frame ) ;
         }
@@ -196,7 +196,7 @@ namespace ConsoleApp1
             // var viewFrame = new FrameView ( "Output" ) { outputView } ;
 
             view = outputView ;
-            return o => factory.StartNew(() => outputView.Text += "\r\n" + o) ;
+            return o => _factory.StartNew(() => outputView.Text += "\r\n" + o) ;
         }
 
         private static void HandleResult ( [ NotNull ] Task < IAppCommandResult > obj )

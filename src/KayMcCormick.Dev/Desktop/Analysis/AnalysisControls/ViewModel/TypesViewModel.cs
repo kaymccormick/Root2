@@ -31,8 +31,8 @@ namespace AnalysisControls.ViewModel
       , ISupportInitializeNotification
     {
         private readonly        JsonSerializerOptions _options ;
-        private const string _pocoPrefix = "Poco" ;
-        private const string _collectionSuffix = "Collection" ;
+        private const string POCO_PREFIX = "Poco" ;
+        private const string COLLECTION_SUFFIX = "Collection" ;
 
         private DateTime _initializationDateTime ;
         private bool     _showBordersIsChecked ;
@@ -267,7 +267,7 @@ namespace AnalysisControls.ViewModel
         public void EndInit ( )
         {
             Logger.Info ( nameof ( EndInit ) ) ;
-            foreach ( var keyValuePair in Map2.dict )
+            foreach ( var keyValuePair in Map2.Dict )
             {
                 Map.dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
             }
@@ -542,7 +542,7 @@ namespace AnalysisControls.ViewModel
             {
                 var mapKey = kvp.Key ;
                 var t = ( AppTypeInfo ) Map[ mapKey ] ;
-                var colType = $"{_pocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
+                var colType = $"{POCO_PREFIX}{t.Type.Name}{COLLECTION_SUFFIX}" ;
                 collectionMap[ t.Type.Name ] = colType ;
             }
 

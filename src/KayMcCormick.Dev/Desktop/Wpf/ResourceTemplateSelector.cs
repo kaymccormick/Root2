@@ -61,14 +61,12 @@ namespace KayMcCormick.Lib.Wpf
                 resourceKeys.Add ( "WindowTemplate" ) ;
             }
 
-            if ( item != null
-                 && item.GetType ( ).IsGenericType
-                 && item.GetType ( ).GetGenericTypeDefinition ( ) == typeof ( ControlWrap <> ) )
+            if ( item?.GetType ( ).IsGenericType == true && item.GetType ( ).GetGenericTypeDefinition ( ) == typeof ( ControlWrap <> ) )
             {
                 if ( item is IWrap1 w1 )
                 {
-                    var unwrappped = w1.ControlObject ;
-                    resourceKeys.Add ( $"{TemplatePartName}{unwrappped.GetType ( ).Name}" ) ;
+                    var unwrapped = w1.ControlObject ;
+                    resourceKeys.Add ( $"{TemplatePartName}{unwrapped.GetType ( ).Name}" ) ;
                 }
             }
 

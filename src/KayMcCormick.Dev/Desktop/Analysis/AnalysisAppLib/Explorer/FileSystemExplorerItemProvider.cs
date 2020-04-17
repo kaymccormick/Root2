@@ -18,18 +18,18 @@ namespace AnalysisAppLib.Explorer
     /// <summary>
     /// 
     /// </summary>
-    public sealed class 
+    public sealed class
         // ReSharper disable once UnusedType.Global
         FileSystemExplorerItemProvider : IExplorerItemProvider
     {
-        private readonly AppExplorerItem root ;
+        private readonly AppExplorerItem _root ;
 
         /// <summary>
         /// 
         /// </summary>
         public FileSystemExplorerItemProvider ( )
         {
-            root = new FileSystemAppExplorerItem ( DefaultInputPath ) ;
+            _root = new FileSystemAppExplorerItem ( DefaultInputPath ) ;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace AnalysisAppLib.Explorer
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable < AppExplorerItem > GetRootItems ( ) { yield return root ; }
+        public IEnumerable < AppExplorerItem > GetRootItems ( ) { yield return _root ; }
         #endregion
     }
 }

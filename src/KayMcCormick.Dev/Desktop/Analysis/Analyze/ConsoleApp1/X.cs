@@ -13,6 +13,6 @@ namespace ConsoleApp1
 {
     internal sealed class X
     {
-        public int len ;
+        public int Len ;
     }
 }

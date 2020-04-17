@@ -7,15 +7,15 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class AnalysisRequest
     {
-        private IProjectBrowserNode projectInfo ;
+        private IProjectBrowserNode _projectInfo ;
 
         /// <summary>
-        /// Relted <see cref="IProjectBrowserNode"/>
+        /// Related <see cref="IProjectBrowserNode"/>
         /// </summary>
         public IProjectBrowserNode Info
         {
-            get { return projectInfo ; }
-            set { projectInfo = value ; }
+            get { return _projectInfo ; }
+            set { _projectInfo = value ; }
         }
     }
 

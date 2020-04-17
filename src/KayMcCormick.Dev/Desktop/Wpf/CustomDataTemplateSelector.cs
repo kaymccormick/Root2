@@ -33,7 +33,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( item == null )
             {
-                return base.SelectTemplate ( item , container ) ;
+                return base.SelectTemplate ( null , container ) ;
             }
 
             Func < object , DependencyObject , DataTemplate > baseFunc = base.SelectTemplate ;

@@ -24,14 +24,14 @@ namespace AnalysisAppLib
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
         /// <param name="newLine"></param>
-        void addToken ( ushort rawKind , string text , bool newLine ) ;
+        void AddToken ( ushort rawKind , string text , bool newLine ) ;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
         /// <param name="newLine"></param>
-        void addTrivia ( int   rawKind , string text , bool newLine ) ;
+        void AddTrivia ( int   rawKind , string text , bool newLine ) ;
         /// <summary>
         /// 
         /// </summary>

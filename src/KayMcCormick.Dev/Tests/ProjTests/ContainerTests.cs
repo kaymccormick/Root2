@@ -14,6 +14,7 @@ namespace ProjTests
         // ReSharper disable once UnusedMember.Local
         private static readonly Logger            Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly        LoggingFixture    _loggingFixture ;
+        // ReSharper disable once NotAccessedField.Local
         private readonly        ITestOutputHelper _output ;
 
         /// <summary>

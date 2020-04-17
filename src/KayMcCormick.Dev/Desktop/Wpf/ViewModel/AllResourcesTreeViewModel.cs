@@ -13,6 +13,7 @@ using System ;
 using System.Collections ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.Linq ;
 using System.Runtime.Serialization ;
 using System.Threading ;
 using System.Windows ;
@@ -173,7 +174,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             var children = LogicalTreeHelper.GetChildren ( w ) ;
             foreach ( var child in children )
             {
-                var logchild = CreateNode ( log , child.ToString() , null , false ) ;
+                var logChild = CreateNode ( log , child.ToString() , null , false ) ;
                 // ReSharper disable once UnusedVariable
                 if ( child is DependencyObject @do )
                 {
@@ -188,6 +189,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// <param name="resNode"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
+        // ReSharper disable once FunctionComplexityOverflow
         private void AddResourceNodeInfos ( [ NotNull ] ResourceNodeInfo resNode )
         {
             if ( resNode == null )
@@ -203,9 +205,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 return ;
             }
 
-            foreach ( var md in res.MergedDictionaries )
+            foreach ( var mdr in res.MergedDictionaries.Select ( md => CreateNode ( resNode , md.Source , md , true ) ) )
             {
-                var mdr = CreateNode ( resNode , md.Source , md , true ) ;
                 AddResourceNodeInfos ( mdr ) ;
             }
 

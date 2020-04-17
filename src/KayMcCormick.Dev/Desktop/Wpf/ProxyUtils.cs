@@ -362,10 +362,7 @@ namespace KayMcCormick.Lib.Wpf
             try
             {
                 DumpReturnValue ( invocation , _callDepth , ! myX.Written ) ;
-                if ( ProxyGenerator            != null
-                     && invocation.ReturnValue != null
-                     && ! invocation.ReturnValue.GetType ( ).IsSealed
-                     && ! ( invocation.ReturnValue is IProxyTargetAccessor ) )
+                if ( ProxyGenerator != null && invocation.ReturnValue?.GetType ( ).IsSealed == false && ! ( invocation.ReturnValue is IProxyTargetAccessor ) )
                 {
                     var r = invocation.ReturnValue ;
                     if ( r is XamlType typ )

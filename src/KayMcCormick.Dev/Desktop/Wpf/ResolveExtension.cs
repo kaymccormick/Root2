@@ -144,7 +144,7 @@ namespace KayMcCormick.Lib.Wpf
 
             return new InstanceDescriptor (
                                            typeof ( ResolveExtension ).GetConstructor (
-                                                                                       new Type[]
+                                                                                       new[]
                                                                                        {
                                                                                            typeof (
                                                                                                object

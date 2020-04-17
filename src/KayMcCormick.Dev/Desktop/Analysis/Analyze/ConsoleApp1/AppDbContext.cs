@@ -26,6 +26,7 @@ namespace ConsoleApp1
             optionsBuilder.UseSqlServer(@"Server=.\sql2017;Database=projinterface;Integrated security=true");
         }
 
+        // ReSharper disable once AnnotateNotNullParameter
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())

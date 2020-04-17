@@ -54,10 +54,10 @@ namespace ProjInterface
 
         private void ButtonBase_OnClick2 ( object sender , RoutedEventArgs e )
         {
-            var port = int.Parse ( this.port.Text ) ;
+            var port_ = int.Parse ( this.port.Text ) ;
             var logViewModel = new LogViewModel ( ) ;
-            var x = new LogListener ( port , logViewModel ) ;
-            logViewModel.DisplayName = port.ToString ( ) ;
+            var x = new LogListener ( port_ , logViewModel ) ;
+            logViewModel.DisplayName = port_.ToString ( ) ;
             ViewModel.LogViewModels.Add ( logViewModel ) ;
             mainTabControl.SetCurrentValue ( Selector.SelectedItemProperty , logViewModel ) ;
             x.Start ( ) ;

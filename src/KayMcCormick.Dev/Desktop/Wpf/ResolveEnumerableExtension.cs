@@ -93,12 +93,6 @@ namespace KayMcCormick.Lib.Wpf
             {
                 try
                 {
-                    if ( serviceProvider == null )
-                    {
-                        throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
-                    }
-
-
                     // ReSharper disable once UnusedVariable
                     var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                              typeof (

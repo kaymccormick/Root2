@@ -71,13 +71,9 @@ namespace ProjInterface
         {
             get
             {
-                if ( _directoryIconImageSource == null )
-                {
-                    _directoryIconImageSource =
-                        ( ImageSource ) IconsResources[ typeof ( Directory ) ] ;
-                }
-
-                return _directoryIconImageSource ;
+                return _directoryIconImageSource
+                       ?? ( _directoryIconImageSource =
+                                ( ImageSource ) IconsResources[ typeof ( Directory ) ] ) ;
             }
             set { _directoryIconImageSource = value ; }
         }
@@ -90,8 +86,7 @@ namespace ProjInterface
 
         public ImageSource GetIconForFileExtension ( object extension )
         {
-            if ( IconsResources != null
-                 && IconsResources.Contains ( extension ) )
+            if ( IconsResources?.Contains ( extension ) == true )
             {
                 return ( ImageSource ) IconsResources[ extension ] ;
             }

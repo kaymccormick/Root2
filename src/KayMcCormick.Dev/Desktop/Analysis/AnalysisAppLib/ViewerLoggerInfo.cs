@@ -26,10 +26,10 @@ namespace AnalysisAppLib
         private string _loggerName ;
         private string _partName ;
 
-        private ObservableCollection < ViewerLoggerInfo > children =
+        private ObservableCollection < ViewerLoggerInfo > _children =
             new ObservableCollection < ViewerLoggerInfo > ( ) ;
 
-        private bool isExpanded = true ;
+        private bool _isExpanded = true ;
 
         /// <summary>
         /// 
@@ -49,8 +49,8 @@ namespace AnalysisAppLib
         /// </summary>
         public ObservableCollection < ViewerLoggerInfo > Children
         {
-            get { return children ; }
-            set { children = value ; }
+            get { return _children ; }
+            set { _children = value ; }
         }
 
         /// <summary>
@@ -68,6 +68,6 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public bool IsExpanded { get { return isExpanded ; } set { isExpanded = value ; } }
+        public bool IsExpanded { get { return _isExpanded ; } set { _isExpanded = value ; } }
     }
 }

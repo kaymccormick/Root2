@@ -33,6 +33,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public abstract class BaseApp : Application , IDisposable
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly bool _disableLogging ;
 
         private readonly ApplicationInstanceBase _applicationInstance ;

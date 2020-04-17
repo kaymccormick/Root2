@@ -16,52 +16,43 @@ namespace ProjTests
 {
     public sealed class MyXmlWriter : XmlWriter
     {
-        private readonly Utf8JsonWriter writer ;
-        public MyXmlWriter ( Utf8JsonWriter writer ) { this.writer = writer ; }
+        private readonly Utf8JsonWriter _writer ;
+        public MyXmlWriter ( Utf8JsonWriter writer ) { _writer = writer ; }
         #region Overrides of XmlWriter
-        public override void WriteStartDocument ( )
-        {
-            writer.WriteStartObject();
-        }
+        public override void WriteStartDocument ( ) { _writer.WriteStartObject ( ) ; }
 
         public override void WriteStartDocument ( bool standalone )
         {
-            writer.WriteStartObject();
+            _writer.WriteStartObject ( ) ;
         }
 
-        public override void WriteEndDocument ( )
+        public override void WriteEndDocument ( ) { _writer.WriteEndObject ( ) ; }
+
+        public override void WriteDocType (
+            string name
+          , string pubid
+          , string sysid
+          , string subset
+        )
         {
-            writer.WriteEndObject();
         }
-
-        public override void WriteDocType ( string name , string pubid , string sysid , string subset ) { }
 
         public override void WriteStartElement ( string prefix , string localName , string ns )
         {
-            writer.WriteStartObject();
+            _writer.WriteStartObject ( ) ;
             //writer.WriteStartObject ( localName ) ;
         }
 
-        public override void WriteEndElement ( )
-        {
-            writer.WriteEndObject();
-        }
+        public override void WriteEndElement ( ) { _writer.WriteEndObject ( ) ; }
 
-        public override void WriteFullEndElement ( )
-        {
-            writer.WriteEndObject();
-        }
+        public override void WriteFullEndElement ( ) { _writer.WriteEndObject ( ) ; }
 
         public override void WriteStartAttribute ( string prefix , string localName , string ns )
         {
-            
-            writer.WriteStartObject ( localName ) ;
+            _writer.WriteStartObject ( localName ) ;
         }
 
-        public override void WriteEndAttribute ( )
-        {
-
-        }
+        public override void WriteEndAttribute ( ) { }
 
         public override void WriteCData ( string text ) { }
 
@@ -75,10 +66,7 @@ namespace ProjTests
 
         public override void WriteWhitespace ( string ws ) { }
 
-        public override void WriteString ( string text )
-        {
-            writer.WriteStringValue ( text ) ;
-        }
+        public override void WriteString ( string text ) { _writer.WriteStringValue ( text ) ; }
 
         public override void WriteSurrogateCharEntity ( char lowChar , char highChar ) { }
 

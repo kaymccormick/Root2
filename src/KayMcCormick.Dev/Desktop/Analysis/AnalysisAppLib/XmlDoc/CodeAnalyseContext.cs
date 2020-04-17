@@ -32,6 +32,7 @@ namespace AnalysisAppLib.XmlDoc
 
         private SemanticModel _currentModel ;
 
+        // ReSharper disable once NotAccessedField.Local
         private StatementSyntax _statement ;
 
         private SyntaxNode _node ;

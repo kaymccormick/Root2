@@ -21,13 +21,13 @@ namespace ConsoleApp1
 {
     public sealed class ListWrapper < T > : IListDataSource
     {
-        private readonly int      count ;
-        private readonly BitArray marks ;
+        private readonly int      _count ;
+        private readonly BitArray _marks ;
 
         public ListWrapper ( [ NotNull ] List < T > source )
         {
-            count = source.Count ;
-            marks = new BitArray ( count ) ;
+            _count = source.Count ;
+            _marks = new BitArray ( _count ) ;
             List  = source ;
         }
 
@@ -60,9 +60,9 @@ namespace ConsoleApp1
         public bool IsMarked ( int item )
         {
             if ( item    >= 0
-                 && item < count )
+                 && item < _count )
             {
-                return marks[ item ] ;
+                return _marks[ item ] ;
             }
 
             return false ;
@@ -71,9 +71,9 @@ namespace ConsoleApp1
         public void SetMark ( int item , bool value )
         {
             if ( item    >= 0
-                 && item < count )
+                 && item < _count )
             {
-                marks[ item ] = value ;
+                _marks[ item ] = value ;
             }
         }
 

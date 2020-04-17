@@ -14,8 +14,11 @@ using System.Diagnostics ;
 using System.Runtime.InteropServices ;
 using System.Threading.Tasks ;
 using System.Windows.Interop ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
 
 namespace ProjInterface.Explorer
 {
@@ -44,7 +47,7 @@ namespace ProjInterface.Explorer
         private IntPtr hwndHost ;
 
         #region Implementation of IView1
-        public string ViewTitle { get { return _viewTitle ; } }
+        [ NotNull ] public string ViewTitle { get { return _viewTitle ; } }
         #endregion
 
         [ DllImport ( "user32.dll" , EntryPoint = "CreateWindowEx" , CharSet = CharSet.Unicode ) ]

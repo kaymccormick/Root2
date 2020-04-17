@@ -42,7 +42,7 @@ namespace AnalysisAppLib.Span
         /// 
         /// </summary>
         /// <returns></returns>
-        public object getInstance ( ) { return Instance ; }
+        public object GetInstance ( ) { return Instance ; }
 
         /// <summary>
         /// 

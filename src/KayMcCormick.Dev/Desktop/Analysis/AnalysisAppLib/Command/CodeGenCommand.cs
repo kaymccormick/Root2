@@ -119,11 +119,11 @@ namespace AnalysisAppLib.Command
                     {
                         tFieldTypeName = "List<SyntaxToken>";
                     }
-                    else if (tFieldTypeName.StartsWith("SyntaxList<"))
+                    else if (tFieldTypeName.StartsWith("SyntaxList<" , StringComparison.Ordinal ))
                     {
                         tFieldTypeName = tFieldTypeName.Replace("SyntaxList<", "List<");
                     }
-                    else if (tFieldTypeName.StartsWith("SeparatedSyntaxList<"))
+                    else if (tFieldTypeName.StartsWith("SeparatedSyntaxList<" , StringComparison.Ordinal ))
                     {
                         tFieldTypeName =
                             tFieldTypeName.Replace("SeparatedSyntaxList<", "List<");

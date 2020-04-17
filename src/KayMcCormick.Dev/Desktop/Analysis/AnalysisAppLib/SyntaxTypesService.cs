@@ -146,9 +146,8 @@ namespace AnalysisAppLib
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             //r.ColorValue     = HierarchyColors[level];
-            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+            foreach ( var theTypeInfo in _nodeTypes.Where ( type => type.BaseType == rootR ).Select ( type1 => CollectTypeInfos2 ( r , type1 , level + 1 ) ) )
             {
-                var theTypeInfo = CollectTypeInfos2 ( r , type1 , level + 1 ) ;
                 r.SubTypeInfos.Add ( theTypeInfo ) ;
             }
 
@@ -329,9 +328,9 @@ namespace AnalysisAppLib
                                                        , out typeInfo
                                                         ) )
                             {
-                                if ( ! otherTyps.TryGetValue ( t , out otherTypeInfo ) )
+                                if ( ! _otherTyps.TryGetValue ( t , out otherTypeInfo ) )
                                 {
-                                    otherTypeInfo = otherTyps[ t ] = new AppTypeInfo { Type = t } ;
+                                    otherTypeInfo = _otherTyps[ t ] = new AppTypeInfo { Type = t } ;
                                 }
                             }
                         }
@@ -384,7 +383,7 @@ namespace AnalysisAppLib
         /// </summary>
         public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
 
-        private readonly Dictionary < Type , AppTypeInfo > otherTyps =
+        private readonly Dictionary < Type , AppTypeInfo > _otherTyps =
             new Dictionary < Type , AppTypeInfo > ( ) ;
 
         /// <summary>

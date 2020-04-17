@@ -510,7 +510,7 @@ namespace ConsoleApp1
                             xxx1[ syntaxToken.ValueText ] = x2 ;
                         }
 
-                        x2.len ++ ;
+                        x2.Len ++ ;
                         continue ;
                     }
 
@@ -528,7 +528,7 @@ namespace ConsoleApp1
 
                     if ( x1 != null )
                     {
-                        x1.len ++ ;
+                        x1.Len ++ ;
                     }
 
 
@@ -569,7 +569,7 @@ namespace ConsoleApp1
                         syntaxdict[ o.GetType ( ) ] = l ;
                     }
 
-                    l.Item1.len += o.ToString ( ).Length ;
+                    l.Item1.Len += o.ToString ( ).Length ;
                     l.Item2.Add ( Tuple.Create ( o , o.ToString ( ) ) ) ;
                     var example1 = o.NormalizeWhitespace ( ).ToString ( ) ;
 
@@ -607,19 +607,19 @@ namespace ConsoleApp1
 
             foreach ( var k in xxx1 )
             {
-                Console.WriteLine ( $"{k.Key} = {k.Value.len}" ) ;
+                Console.WriteLine ( $"{k.Key} = {k.Value.Len}" ) ;
             }
 
             foreach ( var k in xxx )
             {
-                Console.WriteLine ( $"{k.Key} = {k.Value.len}" ) ;
+                Console.WriteLine ( $"{k.Key} = {k.Value.Len}" ) ;
             }
 
             foreach ( var keyValuePair in syntaxdict )
             {
                 Console.WriteLine ( $"{keyValuePair.Key.Name}" ) ;
                 Console.WriteLine (
-                                   ( double ) keyValuePair.Value.Item1.len
+                                   ( double ) keyValuePair.Value.Item1.Len
                                    / keyValuePair.Value.Item2.Count
                                   ) ;
             }
@@ -831,7 +831,7 @@ namespace ConsoleApp1
                                           ) ;
             foreach ( var keyValuePair in model.Map.dict )
             {
-                model.Map2.dict[ keyValuePair.Key.StringValue ] = keyValuePair.Value ;
+                model.Map2.Dict[ keyValuePair.Key.StringValue ] = keyValuePair.Value ;
             }
 
             XamlWriter.Save ( model , writer ) ;

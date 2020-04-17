@@ -24,6 +24,7 @@ namespace ProjInterface
       , IViewWithTitle
       , IControlView
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly LogViewerConfig _config ;
         private          ICollectionView _defView ;
         private          string          _viewTitle ;
@@ -80,7 +81,7 @@ namespace ProjInterface
 
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
-        private void CVR ( object sender , [ NotNull ] CollectionViewRegisteringEventArgs e )
+        private void Cvr ( object sender , [ NotNull ] CollectionViewRegisteringEventArgs e )
         {
             var groupDescription = new PropertyGroupDescription ( ) ;
             if ( ! e.CollectionView.CanGroup )
@@ -110,7 +111,7 @@ namespace ProjInterface
                     continue ;
                 }
 
-                DebugUtils.WriteLine ( r.ComponentType ) ;
+                DebugUtils.WriteLine ( r.ComponentType.ToString() ) ;
                 if ( r.ComponentType != typeof ( LogEventInstance ) )
                 {
                     return ;

@@ -9,17 +9,18 @@
 // 
 // ---
 #endregion
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.Json;
-using System.Xml;
-using JetBrains.Annotations;
-using KayMcCormick.Dev;
-using KayMcCormick.Dev.Logging;
+using System ;
+using System.IO ;
+using System.Linq ;
+using System.Net ;
+using System.Net.Sockets ;
+using System.Text ;
+using System.Text.Json ;
+using System.Xml ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Logging ;
+
 // ReSharper disable UnusedParameter.Local
 
 namespace AnalysisAppLib
@@ -31,20 +32,20 @@ namespace AnalysisAppLib
 
 
     {
-        private const string log4jNsPrefix       = "log4j" ;
-        private const string nlogNsPrefix        = "nlog" ;
-        private const string loggerAttributeName = "logger" ;
+        private const string LOG4_J_NS_PREFIX      = "log4j" ;
+        private const string NLOG_NS_PREFIX        = "nlog" ;
+        private const string LOGGER_ATTRIBUTE_NAME = "logger" ;
 
         private readonly int          _port ;
         private readonly LogViewModel _viewModel ;
 
-        private readonly string[] levels =
+        private static readonly string[] Levels =
         {
             "TRACE" , "DEBUG" , "INFO" , "WARN" , "ERROR" , "FATAL"
         } ;
 
         private readonly JsonSerializerOptions _options ;
-        private UdpClient             _udpClient ;
+        private          UdpClient             _udpClient ;
 
         /// <summary>
         /// 
@@ -57,7 +58,7 @@ namespace AnalysisAppLib
         {
             _port      = port ;
             _viewModel = viewModel ;
-            _options = options ;
+            _options   = options ;
         }
 
         /// <summary>
@@ -65,7 +66,6 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="port"></param>
         /// <param name="logViewModel"></param>
-       
         public LogListener ( int port , LogViewModel logViewModel ) { }
 
         #region IDisposable
@@ -116,7 +116,6 @@ namespace AnalysisAppLib
 
             instance.SerializedForm = s ;
             return instance ;
-
         }
 
         private void PacketReceived ( UdpReceiveResult resp )
@@ -164,17 +163,17 @@ namespace AnalysisAppLib
         {
             var xmlNameTable = new NameTable ( ) ;
 
-            xmlNameTable.Add ( log4jNsPrefix ) ;
+            xmlNameTable.Add ( LOG4_J_NS_PREFIX ) ;
             var nameTable = new NameTable ( ) ;
-            nameTable.Add ( log4jNsPrefix ) ;
+            nameTable.Add ( LOG4_J_NS_PREFIX ) ;
             var xmlNamespaceManager = new XmlNamespaceManager ( xmlNameTable ) ;
             xmlNamespaceManager.AddNamespace (
-                                              log4jNsPrefix
+                                              LOG4_J_NS_PREFIX
                                             , "http://kaymccormick.com/xmlns/log4j"
                                              ) ;
 
             xmlNamespaceManager.AddNamespace (
-                                              nlogNsPrefix
+                                              NLOG_NS_PREFIX
                                             , "http://kaymccormick.com/xmlns/nlog"
                                              ) ;
             var xmlParserContext = new XmlParserContext (
@@ -202,9 +201,9 @@ namespace AnalysisAppLib
                 var elem = document.DocumentElement ;
                 if ( elem != null )
                 {
-                    var logger = elem.GetAttribute ( loggerAttributeName ) ;
+                    var logger = elem.GetAttribute ( LOGGER_ATTRIBUTE_NAME ) ;
                     var level = elem.GetAttribute ( "level" ) ;
-                    var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
+                    var levelOrdinal = Levels.ToList ( ).IndexOf ( level ) ;
                     var timestamp = elem.GetAttribute ( "timestamp" ) ;
                     var dt = JavaTimeStampToDateTime ( long.Parse ( timestamp ) ) ;
                     instance.LoggerName = logger ;

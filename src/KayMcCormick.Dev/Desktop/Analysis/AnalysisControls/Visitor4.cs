@@ -166,7 +166,7 @@ namespace AnalysisControls
                                _ctl.NewLine ( ) ;
                            }
 
-                           _ctl.addToken ( ( ushort ) token.RawKind , text , newLine ) ;
+                           _ctl.AddToken ( ( ushort ) token.RawKind , text , newLine ) ;
                        }
                      , null
                       ) ;
@@ -206,7 +206,7 @@ namespace AnalysisControls
                                _ctl.NewLine ( ) ;
                            }
 
-                           _ctl.addTrivia ( syntaxTrivia.RawKind , text , newLine ) ;
+                           _ctl.AddTrivia ( syntaxTrivia.RawKind , text , newLine ) ;
                        }
                      , null
                       ) ;

@@ -5,6 +5,7 @@ using System.ComponentModel ;
 using System.Linq ;
 using System.Windows.Markup ;
 using JetBrains.Annotations ;
+
 #if POCO
 using PocoSyntax ;
 #endif
@@ -28,7 +29,7 @@ namespace AnalysisAppLib.XmlDoc
         public MethodDocumentation (
             string                        elementId
           , [ NotNull ] Type              type
-          , [ NotNull ] string                        member
+          , [ NotNull ] string            member
           , string                        parameters
           , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , type , member , xmlDoc )
@@ -110,7 +111,11 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
-        public string MemberName { [ UsedImplicitly ] get { return _memberName ; } set { _memberName = value ; } }
+        public string MemberName
+        {
+            [ UsedImplicitly ] get { return _memberName ; }
+            set { _memberName = value ; }
+        }
     }
 
     /// <summary>
@@ -216,7 +221,9 @@ namespace AnalysisAppLib.XmlDoc
           , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         )
         {
-            _xmlDoc = xmlDoc != null ? new XmlDocumentElementCollection ( xmlDoc.ToList ( ) ) : new XmlDocumentElementCollection ( ) ;
+            _xmlDoc = xmlDoc != null
+                          ? new XmlDocumentElementCollection ( xmlDoc.ToList ( ) )
+                          : new XmlDocumentElementCollection ( ) ;
 
             ElementId = elementId ;
         }
@@ -227,7 +234,7 @@ namespace AnalysisAppLib.XmlDoc
         // ReSharper disable once MemberCanBeProtected.Global
         public CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
 
-        
+
         /// <summary>
         /// </summary>
         public string ElementId { get { return _elementId ; } set { _elementId = value ; } }
@@ -250,13 +257,18 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// Flag indicating that this documentation element needs attention.
         /// </summary>
-        public bool NeedsAttention { get { return _needsAttention ; } set { _needsAttention = value ; } }
+        public bool NeedsAttention
+        {
+            get { return _needsAttention ; }
+            set { _needsAttention = value ; }
+        }
 
 #if POCO
         /// <summary>
         /// 
         /// </summary>
-        public PocoMemberDeclarationSyntax PocoMemberDelaration { get { return _poco ; } set { _poco = value ; } }
+        public PocoMemberDeclarationSyntax PocoMemberDelaration { get { return _poco ; } set { _poco
+ = value ; } }
 #endif
         /// <summary>
         /// </summary>
@@ -279,15 +291,17 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="xmlDoc"></param>
-        public IndexerDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        public IndexerDocumentation (
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , xmlDoc )
         {
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public IndexerDocumentation ( ) {
-        }
+        public IndexerDocumentation ( ) { }
     }
 
     /// <summary>
@@ -300,15 +314,17 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="xmlDoc"></param>
-        public EventDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        public EventDocumentation (
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , xmlDoc )
         {
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public EventDocumentation ( ) {
-        }
+        public EventDocumentation ( ) { }
     }
 
     /// <summary>
@@ -321,15 +337,17 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="xmlDoc"></param>
-        public EnumMemberDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        public EnumMemberDocumentation (
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , xmlDoc )
         {
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public EnumMemberDocumentation ( ) {
-        }
+        public EnumMemberDocumentation ( ) { }
     }
 
     /// <summary>
@@ -342,15 +360,17 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="xmlDoc"></param>
-        public DelegateDocumentation ( string elementId , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null ) : base ( elementId , xmlDoc )
+        public DelegateDocumentation (
+            string                                      elementId
+          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+        ) : base ( elementId , xmlDoc )
         {
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public DelegateDocumentation ( ) {
-        }
+        public DelegateDocumentation ( ) { }
     }
 
     /// <summary>
@@ -404,7 +424,7 @@ namespace AnalysisAppLib.XmlDoc
         }
 
         private readonly List < XmlDocElement > _listImplementation ;
-#region Implementation of IEnumerable
+        #region Implementation of IEnumerable
         /// <summary>
         /// 
         /// </summary>
@@ -418,8 +438,8 @@ namespace AnalysisAppLib.XmlDoc
         {
             return ( ( IEnumerable ) _listImplementation ).GetEnumerator ( ) ;
         }
-#endregion
-#region Implementation of ICollection
+        #endregion
+        #region Implementation of ICollection
         /// <summary>
         /// 
         /// </summary>
@@ -455,8 +475,8 @@ namespace AnalysisAppLib.XmlDoc
         {
             get { return ( ( ICollection ) _listImplementation ).IsSynchronized ; }
         }
-#endregion
-#region Implementation of IList
+        #endregion
+        #region Implementation of IList
         /// <summary>
         /// 
         /// </summary>
@@ -475,7 +495,6 @@ namespace AnalysisAppLib.XmlDoc
             }
 
             return 0 ;
-
         }
 
         /// <summary>
@@ -590,7 +609,7 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         public bool IsFixedSize { get { return ( ( IList ) _listImplementation ).IsFixedSize ; } }
-#endregion
+        #endregion
     }
 
     /// <summary>
@@ -622,14 +641,14 @@ namespace AnalysisAppLib.XmlDoc
         /// <returns></returns>
         public override string ToString ( ) { return $"{Text}" ; }
 
-#region Overrides of XmlDocElement
+        #region Overrides of XmlDocElement
         /// <summary>
         /// 
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         public override XmlDocumentElementCollection DocumentElementCollection { get ; }
-#endregion
+        #endregion
     }
 
     /// <summary>
@@ -667,7 +686,9 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Example ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Example ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
+        {
+        }
 
         /// <summary>
         /// 
@@ -686,7 +707,10 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="name"></param>
         /// <param name="elements"></param>
-        public Param ( [ NotNull ] string name , [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
+        public Param (
+            [ NotNull ] string                        name
+          , [ NotNull ] IEnumerable < XmlDocElement > elements
+        ) : base ( elements )
         {
             Name = name ?? throw new ArgumentNullException ( nameof ( name ) ) ;
         }
@@ -712,7 +736,10 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        protected InlineDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        protected InlineDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) :
+            base ( elements )
+        {
+        }
 
         /// <summary>
         /// 
@@ -730,7 +757,8 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="href"></param>
         /// <param name="elements"></param>
-        public Anchor ( string href , [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
+        public Anchor ( string href , [ NotNull ] IEnumerable < XmlDocElement > elements ) :
+            base ( elements )
         {
             _href = href ;
         }
@@ -784,7 +812,9 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// </summary>
         /// <param name="elements"></param>
-        public Seealso ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Seealso ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
+        {
+        }
 
         /// <summary>
         /// 
@@ -930,7 +960,9 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        public Summary ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        public Summary ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements )
+        {
+        }
     }
 
     /// <summary>
@@ -942,7 +974,10 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        protected BlockDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        protected BlockDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) :
+            base ( elements )
+        {
+        }
 
         /// <summary>
         /// 
@@ -956,7 +991,8 @@ namespace AnalysisAppLib.XmlDoc
     // ReSharper disable once ClassNeverInstantiated.Global
     public class TypeDocInfo
     {
-        private List < ConstructorDocumentation > constructorDocumentation = new List < ConstructorDocumentation > ( ) ;
+        private List < ConstructorDocumentation > constructorDocumentation =
+            new List < ConstructorDocumentation > ( ) ;
 
         private Dictionary < string , List < MethodDocumentation > > methodDocumentation =
             new Dictionary < string , List < MethodDocumentation > > ( ) ;
@@ -979,7 +1015,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
-        public List < ConstructorDocumentation> ConstructorDocumentation
+        public List < ConstructorDocumentation > ConstructorDocumentation
         {
             get { return constructorDocumentation ; }
             set { constructorDocumentation = value ; }

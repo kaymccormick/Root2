@@ -20,7 +20,6 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf ;
-
 using Microsoft.Win32 ;
 using NLog ;
 using Application = System.Windows.Application ;
@@ -34,8 +33,8 @@ namespace ProjInterface
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private const string _viewTitle = "Docking window" ;
-        private          DockWindowViewModel _viewModel ;
+        private const string              VIEW_TITLE = "Docking window" ;
+        private       DockWindowViewModel _viewModel ;
 
         public Window1 ( )
         {
@@ -63,17 +62,20 @@ namespace ProjInterface
                                                                                                         leftAnchorablePane
                                                                                                        )
                                                                                     )
-                                                                  .SingleInstance ( ).WithCallerMetadata() ;
+                                                                  .SingleInstance ( )
+                                                                  .WithCallerMetadata ( ) ;
                                                            builder.RegisterInstance (
                                                                                      new
                                                                                          PaneService ( )
                                                                                     )
-                                                                  .SingleInstance ( ).WithCallerMetadata() ;
+                                                                  .SingleInstance ( )
+                                                                  .WithCallerMetadata ( ) ;
                                                            builder
                                                               .RegisterType < HandleExceptionImpl
                                                                > ( )
                                                               .As < IHandleException > ( )
-                                                              .InstancePerLifetimeScope ( ).WithCallerMetadata() ;
+                                                              .InstancePerLifetimeScope ( )
+                                                              .WithCallerMetadata ( ) ;
                                                        }
                                                       ) ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
@@ -96,7 +98,7 @@ namespace ProjInterface
         }
 
 
-        [ NotNull ] public string ViewTitle { get { return _viewTitle ; } }
+        [ NotNull ] public string ViewTitle { get { return VIEW_TITLE ; } }
 
 
         private async void CommandBinding_OnExecuted (
@@ -117,7 +119,8 @@ namespace ProjInterface
                     var val = meta.Value.Value ;
                     switch ( val )
                     {
-                        case Window w : w.Show ( ) ;
+                        case Window w :
+                            w.Show ( ) ;
                             break ;
                         case Control c :
                         {
@@ -139,12 +142,13 @@ namespace ProjInterface
                             , new Filter { Extension = ".xml" , Description = "XML files" }
                             , new Filter
                               {
-                                  Extension = ".cs" , Description = "CSharp source files",
+                                  Extension   = ".cs"
+                                , Description = "CSharp source files"
+                                 ,
                                   // ReSharper disable once UnusedAnonymousMethodSignature
 #pragma warning disable 1998
                                   Handler = async delegate ( string filename ) {
 #pragma warning restore 1998
-                                      return ;
                                   }
                               }
                           } ;
@@ -185,7 +189,8 @@ namespace ProjInterface
                                                             , new ActionBlock < RejectedItem > (
                                                                                                 x => Debug
                                                                                                    .WriteLine (
-                                                                                                               x.Statement.ToString()
+                                                                                                               x.Statement
+                                                                                                                .ToString ( )
                                                                                                               )
                                                                                                )
                                                              ) ;
@@ -292,12 +297,12 @@ namespace ProjInterface
             DebugUtils.WriteLine ( e.ActivatedType.FullName ) ;
         }
 
-#region Implementation of IResourceResolver
+        #region Implementation of IResourceResolver
         public object ResolveResource ( [ NotNull ] object resourceKey )
         {
             return TryFindResource ( resourceKey ) ;
         }
-#endregion
+        #endregion
     }
 
     public sealed class Filter
@@ -309,6 +314,6 @@ namespace ProjInterface
 
         public string Description { get { return _description ; } set { _description = value ; } }
 
-        public Action<string> Handler { get ; set ; }
+        public Action < string > Handler { get ; set ; }
     }
 }

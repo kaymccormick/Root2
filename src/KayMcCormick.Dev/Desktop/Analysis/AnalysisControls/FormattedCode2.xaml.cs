@@ -29,7 +29,7 @@ namespace AnalysisControls
 
         private readonly StyleInfo _curSi = new StyleInfo ( ) ;
 
-        private readonly Dictionary < ushort , StyleInfo > ss =
+        private readonly Dictionary < ushort , StyleInfo > _ss =
             new Dictionary < ushort , StyleInfo > ( ) ;
 
         private CompilationUnitSyntax _compilationUnitSyntax ;
@@ -47,9 +47,9 @@ namespace AnalysisControls
         public FormattedCode2 ( )
         {
             InitializeComponent ( ) ;
-            ss[ ( ushort ) SyntaxKind.PrivateKeyword ] =
-                new StyleInfo { fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
-            ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
+            _ss[ ( ushort ) SyntaxKind.PrivateKeyword ] =
+                new StyleInfo { Fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
+            _ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
                 new StyleInfo { Bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
             //_container = rootPanel ;
             var wrapPanel = new WrapPanel ( ) ;
@@ -83,20 +83,20 @@ namespace AnalysisControls
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
         /// <param name="newLine"></param>
-        public void addToken ( ushort rawKind , string text , bool newLine )
+        public void AddToken ( ushort rawKind , string text , bool newLine )
         {
             //Token token = new Token ( rawKind , text ) ;
             SolidColorBrush x = null ;
-            if ( ss.TryGetValue ( rawKind , out var si ) )
+            if ( _ss.TryGetValue ( rawKind , out var si ) )
             {
-                if ( si.fg.HasValue )
+                if ( si.Fg.HasValue )
                 {
                     x = new SolidColorBrush (
                                              Color.FromArgb (
-                                                             si.fg.Value.A
-                                                           , si.fg.Value.R
-                                                           , si.fg.Value.G
-                                                           , si.fg.Value.B
+                                                             si.Fg.Value.A
+                                                           , si.Fg.Value.R
+                                                           , si.Fg.Value.G
+                                                           , si.Fg.Value.B
                                                             )
                                             ) ;
                 }
@@ -112,7 +112,7 @@ namespace AnalysisControls
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
         /// <param name="newLine"></param>
-        public void addTrivia ( int rawKind , string text , bool newLine )
+        public void AddTrivia ( int rawKind , string text , bool newLine )
         {
             _container.AddChild ( new Token ( rawKind , text , null , newLine ) ) ;
         }
@@ -148,7 +148,7 @@ namespace AnalysisControls
             _stack.Push ( bdr ) ;
             _container = c ;
 
-            if ( ss.TryGetValue ( ( ushort ) node.RawKind , out var si ) )
+            if ( _ss.TryGetValue ( ( ushort ) node.RawKind , out var si ) )
             {
                 if ( si.Bg.HasValue )
                 {
@@ -209,7 +209,7 @@ namespace AnalysisControls
 
 
         public bool     Bold ;
-        public SColor ? fg ;
+        public SColor ? Fg ;
 
         public bool Italics ;
 
@@ -220,7 +220,7 @@ namespace AnalysisControls
         [ NotNull ]
         public StyleInfo With ( [ NotNull ] StyleInfo value )
         {
-            return new StyleInfo { Bg = value.Bg ?? Bg , fg = value.Bg ?? fg } ;
+            return new StyleInfo { Bg = value.Bg ?? Bg , Fg = value.Bg ?? Fg } ;
         }
     }
 

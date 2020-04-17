@@ -29,8 +29,6 @@ using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
-using Document = Microsoft.CodeAnalysis.Document ;
-using File = System.IO.File ;
 
 namespace ModelTests
 {
@@ -58,11 +56,11 @@ namespace ModelTests
             _app?.Dispose ( ) ;
         }
 
-        private const string LogTestSolution =
+        private const string LOG_TEST_SOLUTION =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln" ;
 
         private const           string              PocoTypeNamePrefix       = "Poco" ;
-        private const string _pocoSyntaxNamespaceName = "PocoSyntax" ;
+        private const           string              _pocoSyntaxNamespaceName = "PocoSyntax" ;
         private readonly        string              _pocoBlockSyntaxClassName ;
         private readonly        string              _pocoSyntaxTokenTypeName ;
         private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -265,7 +263,7 @@ namespace ModelTests
         private static async Task < Project > SetupMsBuildProject < T > ( )
         {
             var workspace = MSBuildWorkspace.Create ( ) ;
-            var solution = await workspace.OpenSolutionAsync ( LogTestSolution ) ;
+            var solution = await workspace.OpenSolutionAsync ( LOG_TEST_SOLUTION ) ;
             var project = solution.Projects.First ( ) ;
             return project ;
         }
@@ -383,6 +381,109 @@ namespace ModelTests
             return project ;
         }
 
+        public string PocoSyntaxTokenTypeName { get { return _pocoSyntaxTokenTypeName ; } }
+
+        public string PocoBlockSyntaxClassName { get { return _pocoBlockSyntaxClassName ; } }
+
+        private static SyntaxTree CompileExpression ( [ NotNull ] ExpressionSyntax expression )
+        {
+            var comp = SyntaxFactory.CompilationUnit ( )
+                                    .WithMembers (
+                                                  new SyntaxList < MemberDeclarationSyntax > ( )
+                                                     .Add (
+                                                           SyntaxFactory
+                                                              .ClassDeclaration (
+                                                                                 "ConvertedExpression1"
+                                                                                )
+                                                              .WithModifiers (
+                                                                              SyntaxFactory
+                                                                                 .TokenList (
+                                                                                             SyntaxFactory
+                                                                                                .Token (
+                                                                                                        SyntaxKind
+                                                                                                           .PublicKeyword
+                                                                                                       )
+                                                                                            )
+                                                                             )
+                                                              .WithMembers (
+                                                                            new SyntaxList <
+                                                                                MemberDeclarationSyntax
+                                                                            > ( ).Add (
+                                                                                       SyntaxFactory
+                                                                                          .FieldDeclaration (
+                                                                                                             SyntaxFactory
+                                                                                                                .VariableDeclaration (
+                                                                                                                                      SyntaxFactory
+                                                                                                                                         .PredefinedType (
+                                                                                                                                                          SyntaxFactory
+                                                                                                                                                             .Token (
+                                                                                                                                                                     SyntaxKind
+                                                                                                                                                                        .ObjectKeyword
+                                                                                                                                                                    )
+                                                                                                                                                         )
+                                                                                                                                    , new
+                                                                                                                                              SeparatedSyntaxList
+                                                                                                                                              < VariableDeclaratorSyntax
+                                                                                                                                              > ( )
+                                                                                                                                         .Add (
+                                                                                                                                               SyntaxFactory
+                                                                                                                                                  .VariableDeclarator (
+                                                                                                                                                                       "ConvertedExpression"
+                                                                                                                                                                      )
+                                                                                                                                                  .WithInitializer (
+                                                                                                                                                                    SyntaxFactory
+                                                                                                                                                                       .EqualsValueClause (
+                                                                                                                                                                                           expression
+                                                                                                                                                                                          )
+                                                                                                                                                                   )
+                                                                                                                                              )
+                                                                                                                                     )
+                                                                                                            )
+                                                                                          .WithModifiers (
+                                                                                                          SyntaxFactory
+                                                                                                             .TokenList (
+                                                                                                                         SyntaxFactory
+                                                                                                                            .Token (
+                                                                                                                                    SyntaxKind
+                                                                                                                                       .PublicKeyword
+                                                                                                                                   )
+                                                                                                                        )
+                                                                                                         )
+                                                                                      )
+                                                                           )
+                                                          )
+                                                 )
+                                    .NormalizeWhitespace ( ) ;
+//            expression = expression.NormalizeWhitespace ( ) ;
+            var tree = SyntaxFactory.SyntaxTree ( comp ) ;
+
+            IEnumerable < MetadataReference > refs = new[]
+                                                     {
+                                                         MetadataReference.CreateFromFile (
+                                                                                           typeof (
+                                                                                                   object
+                                                                                               ).Assembly
+                                                                                                .Location
+                                                                                          )
+                                                     } ;
+            var compilation = CSharpCompilation.Create (
+                                                        "expr1"
+                                                      , new[] { tree }
+                                                      , refs
+                                                      , new CSharpCompilationOptions (
+                                                                                      OutputKind
+                                                                                         .DynamicallyLinkedLibrary
+                                                                                     )
+                                                       ) ;
+
+            foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+            {
+                DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
+            }
+
+            compilation.Emit ( @"c:\temp\expr1.dll" , @"C:\temp\expr1.pdb" ) ;
+            return tree ;
+        }
 
 
         [ Fact ]
@@ -518,17 +619,6 @@ namespace ModelTests
         }
 
         [ Fact ]
-        public void TestTransform1 ( )
-        {
-            var result =
-                GenTransforms.Transform_Expression ( SyntaxFactory.ParseExpression ( "x + y" ) ) ;
-            var opts = new JsonSerializerOptions ( ) ;
-            opts.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
-            var serialize = JsonSerializer.Serialize ( result , opts ) ;
-            DebugUtils.WriteLine ( serialize ) ;
-        }
-
-        [ Fact ]
         public void TestLog ( )
         {
             LogManager.ThrowExceptions = false ;
@@ -564,6 +654,34 @@ namespace ModelTests
         }
 
         [ Fact ]
+        public void TestModelObjects ( )
+        {
+            using ( var app = SetupApplicationInstance ( ) )
+            {
+                var lifetimeScope = app.GetLifetimeScope ( ) ;
+                var model =
+                    lifetimeScope.Resolve < ModelResources > (
+                                                              new TypedParameter (
+                                                                                  typeof ( bool )
+                                                                                , false
+                                                                                 )
+                                                             ) ;
+                // ReSharper disable once UnusedVariable
+                var x1 = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
+                // ReSharper disable once UnusedVariable
+                var invo = lifetimeScope.Resolve < ILogInvocation > ( ) ;
+                // ReSharper disable once UnusedVariable
+                var invo2 = lifetimeScope.Resolve < ILogInvocation > ( ) ;
+                var node = model.ObjectsNode ;
+                var nodeChildren = node.Children ;
+                foreach ( var child in nodeChildren )
+                {
+                    DebugUtils.WriteLine ( child.ToString ( ) ) ;
+                }
+            }
+        }
+
+        [ Fact ]
         public void TestModule1 ( )
         {
             var b = new ContainerBuilder ( ) ;
@@ -571,6 +689,39 @@ namespace ModelTests
             var c = b.Build ( ) ;
             // ReSharper disable once UnusedVariable
             var model = c.Resolve < ITypesViewModel > ( ) ;
+        }
+
+        [ Fact ]
+        public void TestSerializeISymbl ( )
+        {
+            var conv = new JsonSymbolConverterFactory ( ) ;
+            var options = new JsonSerializerOptions ( ) ;
+            options.Converters.Add ( conv ) ;
+            var comp = CSharpCompilation.Create (
+                                                 "test"
+                                               , new[]
+                                                 {
+                                                     SyntaxFactory.ParseSyntaxTree (
+                                                                                    Resources
+                                                                                       .Program_Parse
+                                                                                   )
+                                                 }
+                                                ) ;
+            foreach ( var diagnostic in comp.GetDiagnostics ( ) )
+            {
+                if ( diagnostic.Severity >= DiagnosticSeverity.Info )
+                {
+                    DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
+                }
+            }
+
+            if ( comp.ObjectType == null )
+            {
+                return ;
+            }
+
+            var outjson = JsonSerializer.Serialize ( comp.ObjectType , options ) ;
+            DebugUtils.WriteLine ( outjson ) ;
         }
 
         [ Fact ]
@@ -727,7 +878,6 @@ namespace ModelTests
                             string transform = null ;
                             if ( t2 == null )
                             {
-
                             }
                             else
                             {
@@ -758,7 +908,6 @@ namespace ModelTests
                                 var code = $"    {name} = {value}, " ;
                                 props = props + "\n" + code ;
                             }
-
                         }
 
                         body = $"{fields}\nreturn new {pocoClassName}() {{ {props} }};" ;
@@ -773,108 +922,24 @@ namespace ModelTests
             }
         }
 
-        public string PocoSyntaxTokenTypeName { get { return _pocoSyntaxTokenTypeName ; } }
-
-        public string PocoBlockSyntaxClassName { get { return _pocoBlockSyntaxClassName ; } }
-
-        private static SyntaxTree CompileExpression ( [ NotNull ] ExpressionSyntax expression )
+        [ Fact ]
+        public void TestTransform1 ( )
         {
-            var comp = SyntaxFactory.CompilationUnit ( )
-                                    .WithMembers (
-                                                  new SyntaxList < MemberDeclarationSyntax > ( )
-                                                     .Add (
-                                                           SyntaxFactory
-                                                              .ClassDeclaration (
-                                                                                 "ConvertedExpression1"
-                                                                                )
-                                                              .WithModifiers (
-                                                                              SyntaxFactory
-                                                                                 .TokenList (
-                                                                                             SyntaxFactory
-                                                                                                .Token (
-                                                                                                        SyntaxKind
-                                                                                                           .PublicKeyword
-                                                                                                       )
-                                                                                            )
-                                                                             )
-                                                              .WithMembers (
-                                                                            new SyntaxList <
-                                                                                MemberDeclarationSyntax
-                                                                            > ( ).Add (
-                                                                                       SyntaxFactory
-                                                                                          .FieldDeclaration (
-                                                                                                             SyntaxFactory
-                                                                                                                .VariableDeclaration (
-                                                                                                                                      SyntaxFactory
-                                                                                                                                         .PredefinedType (
-                                                                                                                                                          SyntaxFactory
-                                                                                                                                                             .Token (
-                                                                                                                                                                     SyntaxKind
-                                                                                                                                                                        .ObjectKeyword
-                                                                                                                                                                    )
-                                                                                                                                                         )
-                                                                                                                                    , new
-                                                                                                                                              SeparatedSyntaxList
-                                                                                                                                              < VariableDeclaratorSyntax
-                                                                                                                                              > ( )
-                                                                                                                                         .Add (
-                                                                                                                                               SyntaxFactory
-                                                                                                                                                  .VariableDeclarator (
-                                                                                                                                                                       "ConvertedExpression"
-                                                                                                                                                                      )
-                                                                                                                                                  .WithInitializer (
-                                                                                                                                                                    SyntaxFactory
-                                                                                                                                                                       .EqualsValueClause (
-                                                                                                                                                                                           expression
-                                                                                                                                                                                          )
-                                                                                                                                                                   )
-                                                                                                                                              )
-                                                                                                                                     )
-                                                                                                            )
-                                                                                          .WithModifiers (
-                                                                                                          SyntaxFactory
-                                                                                                             .TokenList (
-                                                                                                                         SyntaxFactory
-                                                                                                                            .Token (
-                                                                                                                                    SyntaxKind
-                                                                                                                                       .PublicKeyword
-                                                                                                                                   )
-                                                                                                                        )
-                                                                                                         )
-                                                                                      )
-                                                                           )
-                                                          )
-                                                 )
-                                    .NormalizeWhitespace ( ) ;
-//            expression = expression.NormalizeWhitespace ( ) ;
-            var tree = SyntaxFactory.SyntaxTree ( comp ) ;
+            var result =
+                GenTransforms.Transform_Expression ( SyntaxFactory.ParseExpression ( "x + y" ) ) ;
+            var opts = new JsonSerializerOptions ( ) ;
+            opts.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
+            var serialize = JsonSerializer.Serialize ( result , opts ) ;
+            DebugUtils.WriteLine ( serialize ) ;
+        }
 
-            IEnumerable < MetadataReference > refs = new[]
-                                                     {
-                                                         MetadataReference.CreateFromFile (
-                                                                                           typeof (
-                                                                                                   object
-                                                                                               ).Assembly
-                                                                                                .Location
-                                                                                          )
-                                                     } ;
-            var compilation = CSharpCompilation.Create (
-                                                        "expr1"
-                                                      , new[] { tree }
-                                                      , refs
-                                                      , new CSharpCompilationOptions (
-                                                                                      OutputKind
-                                                                                         .DynamicallyLinkedLibrary
-                                                                                     )
-                                                       ) ;
 
-            foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
-            {
-                DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
-            }
-
-            compilation.Emit ( @"c:\temp\expr1.dll" , @"C:\temp\expr1.pdb" ) ;
-            return tree ;
+        [ Fact ]
+        public void TestTypesService ( )
+        {
+            var sns = new SyntaxTypesService ( ) ;
+            sns.BeginInit ( ) ;
+            sns.EndInit ( ) ;
         }
 
         [ Fact ]
@@ -899,70 +964,6 @@ namespace ModelTests
                                           }
                                          ) ;
             Logger.Info ( @out ) ;
-        }
-
-
-        [ Fact ]
-        public void TestTypesService ( )
-        {
-            var sns = new SyntaxTypesService ( ) ;
-            sns.BeginInit ( ) ;
-            sns.EndInit ( ) ;
-        }
-
-        [ Fact ]
-        public void TestSerializeISymbl ( )
-        {
-            var conv = new JsonSymbolConverterFactory ( ) ;
-            var options = new JsonSerializerOptions ( ) ;
-            options.Converters.Add ( conv ) ;
-            var comp = CSharpCompilation.Create (
-                                                 "test"
-                                               , new[]
-                                                 {
-                                                     SyntaxFactory.ParseSyntaxTree (
-                                                                                    Resources
-                                                                                       .Program_Parse
-                                                                                   )
-                                                 }
-                                                ) ;
-            foreach ( var diagnostic in comp.GetDiagnostics ( ) )
-            {
-                if ( diagnostic.Severity >= DiagnosticSeverity.Info )
-                {
-                    DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
-                }
-            }
-
-            if ( comp.ObjectType == null )
-            {
-                return ;
-            }
-
-            var outjson = JsonSerializer.Serialize ( comp.ObjectType , options ) ;
-            DebugUtils.WriteLine ( outjson ) ;
-        }
-
-        [Fact]
-        public void TestModelObjects ( )
-        {
-            using (var app = SetupApplicationInstance ( ) )
-            {
-                var lifetimeScope = app.GetLifetimeScope ( ) ;
-                var model = lifetimeScope.Resolve < ModelResources > (new TypedParameter(typeof(bool), false) ) ;
-                // ReSharper disable once UnusedVariable
-                var x1 = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
-                // ReSharper disable once UnusedVariable
-                var invo = lifetimeScope.Resolve<ILogInvocation>();
-                // ReSharper disable once UnusedVariable
-                var invo2 = lifetimeScope.Resolve<ILogInvocation>();
-                var node = model.ObjectsNode ;
-                var nodeChildren = node.Children ;
-                foreach ( var child in nodeChildren )
-                {
-                    DebugUtils.WriteLine(child.ToString());
-                }
-            }
         }
     }
 
