@@ -4,14 +4,16 @@ using ConsoleApp1;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ConsoleApp1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200417194244_SyntaxFields")]
+    partial class SyntaxFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,44 +162,6 @@ namespace ConsoleApp1.Migrations
                     b.ToTable("AppTypeInfos");
                 });
 
-            modelBuilder.Entity("AnalysisAppLib.Syntax.SyntaxFieldInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AppTypeInfoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ClrTypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ElementTypeMetadataName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCollection")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Optional")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Override")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppTypeInfoId");
-
-                    b.ToTable("SyntaxFieldInfo");
-                });
-
             modelBuilder.Entity("AnalysisAppLib.Syntax.AppClrType", b =>
                 {
                     b.HasOne("AnalysisAppLib.Syntax.AppAssembly", "Assembly")
@@ -232,13 +196,6 @@ namespace ConsoleApp1.Migrations
                     b.HasOne("AnalysisAppLib.Syntax.AppTypeInfo", "ParentInfo")
                         .WithMany("SubTypeInfos")
                         .HasForeignKey("ParentInfoId");
-                });
-
-            modelBuilder.Entity("AnalysisAppLib.Syntax.SyntaxFieldInfo", b =>
-                {
-                    b.HasOne("AnalysisAppLib.Syntax.AppTypeInfo", null)
-                        .WithMany("Fields")
-                        .HasForeignKey("AppTypeInfoId");
                 });
 #pragma warning restore 612, 618
         }

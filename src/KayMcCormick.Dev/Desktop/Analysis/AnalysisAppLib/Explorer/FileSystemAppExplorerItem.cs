@@ -69,7 +69,7 @@ namespace AnalysisAppLib.Explorer
             {
                 _isDirectory = true ;
                 _children = Directory.EnumerateFileSystemEntries ( inputPath )
-                                     .Where ( s => ! s.StartsWith ( "." ) )
+                                     .Where ( s => ! s.StartsWith ( "." , StringComparison.Ordinal ) )
                                      .Select ( s => new FileSystemAppExplorerItem ( s ) )
                                      .Where ( item => ! item.IsHidden ) ;
                 _hasChildren = _children.Any ( ) ;

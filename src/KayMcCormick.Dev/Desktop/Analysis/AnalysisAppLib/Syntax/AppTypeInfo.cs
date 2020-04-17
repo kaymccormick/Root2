@@ -30,7 +30,7 @@ namespace AnalysisAppLib.Syntax
         private DateTime _createdDateTime= DateTime.Now;
         private DateTime _updatedDateTime;
         private string _elementName;
-        private readonly SyntaxFieldCollection _fields = new SyntaxFieldCollection();
+        private SyntaxFieldCollection _fields = new SyntaxFieldCollection();
         private AppTypeInfoCollection _subTypeInfos;
         private uint? _colorValue;
 
@@ -191,6 +191,7 @@ namespace AnalysisAppLib.Syntax
         public SyntaxFieldCollection Fields
         {
             get { return _fields; }
+            set { _fields = value ; }
         }
 
         /// <summary>
@@ -310,10 +311,22 @@ namespace AnalysisAppLib.Syntax
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SyntaxFieldCollection : IList , ICollection, IEnumerable
+    public sealed class SyntaxFieldCollection : IList , ICollection, IEnumerable, IList<SyntaxFieldInfo>, ICollection<SyntaxFieldInfo>, IEnumerable<SyntaxFieldInfo>
     {
-        private readonly IList _listImplementation = new List < SyntaxFieldInfo > ( ) ;
+        private readonly IList _listImplementation ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public SyntaxFieldCollection ( )
+        {
+            _listImplementation = ( IList ) _generic ;
+        }
+
+        private readonly IList<SyntaxFieldInfo> _generic = new List<SyntaxFieldInfo>();
         #region Implementation of IEnumerable
+        IEnumerator < SyntaxFieldInfo > IEnumerable < SyntaxFieldInfo >.GetEnumerator ( ) { yield break ; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -327,6 +340,9 @@ namespace AnalysisAppLib.Syntax
         /// <param name="array"></param>
         /// <param name="index"></param>
         void ICollection.CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+
+        /// <inheritdoc />
+        public bool Remove ( SyntaxFieldInfo item ) { return _generic.Remove ( item ) ; }
 
         /// <summary>
         /// 
@@ -367,10 +383,20 @@ namespace AnalysisAppLib.Syntax
         /// <returns></returns>
         public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
 
+        /// <inheritdoc />
+        public void Add ( SyntaxFieldInfo item ) { _generic.Add ( item ) ; }
+
         /// <summary>
         /// 
         /// </summary>
         public void Clear ( ) { _listImplementation.Clear ( ) ; }
+
+        /// <inheritdoc />
+        public bool Contains ( SyntaxFieldInfo item ) { return _generic.Contains ( item ) ; }
+
+        public void CopyTo ( SyntaxFieldInfo[] array , int arrayIndex )
+        {
+            _generic.CopyTo ( array , arrayIndex ) ; }
 
         /// <summary>
         /// 
@@ -392,11 +418,21 @@ namespace AnalysisAppLib.Syntax
         /// <param name="value"></param>
         public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
 
+        public int IndexOf ( SyntaxFieldInfo item ) { return _generic.IndexOf (item  ); }
+
+        public void Insert ( int index , SyntaxFieldInfo item ) { _generic.Insert ( index , item ) ; }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="index"></param>
         public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
+
+        SyntaxFieldInfo IList < SyntaxFieldInfo >.this [ int index ]
+        {
+            get { return _generic[ index ] ; }
+            set { _generic[ index ] = value ; }
+        }
 
         /// <summary>
         /// 
@@ -434,6 +470,7 @@ namespace AnalysisAppLib.Syntax
     [TypeConverter(typeof(SyntaxFieldInfoTypeConverter))]
     public sealed class SyntaxFieldInfo
     {
+        private int _id ;
         private string _clrTypeName;
         private bool _override;
         /// <summary>
@@ -550,6 +587,11 @@ namespace AnalysisAppLib.Syntax
         /// 
         /// </summary>
         public bool IsCollection { get { return _isCollection ; } set { _isCollection = value ; } }
+
+        /// <summary>
+        /// Primary key
+        /// </summary>
+        public int Id { get { return _id ; } set { _id = value ; } }
 
         /// <inheritdoc />
         public override string ToString()

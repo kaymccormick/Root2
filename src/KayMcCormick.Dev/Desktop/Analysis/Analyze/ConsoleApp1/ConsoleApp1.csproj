@@ -90,6 +90,14 @@
     <Compile Include="Migrations\20200417175409_AddClrTypes.designer.cs">
       <DependentUpon>20200417175409_AddClrTypes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20200417194244_SyntaxFields.cs" />
+    <Compile Include="Migrations\20200417194244_SyntaxFields.designer.cs">
+      <DependentUpon>20200417194244_SyntaxFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20200417202110_SyntaxFields2.cs" />
+    <Compile Include="Migrations\20200417202110_SyntaxFields2.designer.cs">
+      <DependentUpon>20200417202110_SyntaxFields2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

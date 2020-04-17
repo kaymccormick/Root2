@@ -29,9 +29,10 @@ namespace ConsoleApp1
         // ReSharper disable once AnnotateNotNullParameter
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity < AppTypeInfo > ( ).HasMany ( t => t.Fields ) ;
             foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())
             {
-                DebugUtils.WriteLine(mutableEntityType.Name);
+                DebugUtils.WriteLine ( $"Entity name: {mutableEntityType.Name}" ) ;
             }
         }
         #endregion

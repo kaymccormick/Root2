@@ -548,5 +548,15 @@ namespace AnalysisControls.ViewModel
 
             return collectionMap ;
         }
+
+        /// <summary>
+        /// Get all app type infos
+        /// </summary>
+        /// <returns></returns>
+        [ NotNull ]
+        public IEnumerable < AppTypeInfo > GetAppTypeInfos ( )
+        {
+            return Map.dict.Values ;
+        }
     }
 }

@@ -73,6 +73,7 @@ namespace AnalysisAppLib.XmlDoc
     {
         /// <summary>
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         protected string _memberName ;
 
         /// <summary>
@@ -199,11 +200,13 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         protected Type _type ;
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         protected readonly XmlDocumentElementCollection _xmlDoc ;
 
         private bool _needsAttention ;
@@ -617,14 +620,14 @@ namespace AnalysisAppLib.XmlDoc
     [ ContentProperty ( "Text" ) ]
     public sealed class XmlDocText : InlineDocElem
     {
-        private string text ;
+        private string _text ;
 
         /// <summary>
         /// </summary>
         /// <param name="text"></param>
         public XmlDocText ( string text ) : base ( Enumerable.Empty < XmlDocElement > ( ) )
         {
-            this.text = text ;
+            this._text = text ;
         }
 
         /// <summary>
@@ -634,7 +637,7 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
-        public string Text { get { return text ; } set { text = value ; } }
+        public string Text { get { return _text ; } set { _text = value ; } }
 
         /// <summary>
         /// </summary>
@@ -913,6 +916,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         protected readonly XmlDocumentElementCollection _xmlDocumentElementCollection ;
 
 
@@ -991,25 +995,25 @@ namespace AnalysisAppLib.XmlDoc
     // ReSharper disable once ClassNeverInstantiated.Global
     public class TypeDocInfo
     {
-        private List < ConstructorDocumentation > constructorDocumentation =
+        private List < ConstructorDocumentation > _constructorDocumentation =
             new List < ConstructorDocumentation > ( ) ;
 
-        private Dictionary < string , List < MethodDocumentation > > methodDocumentation =
+        private Dictionary < string , List < MethodDocumentation > > _methodDocumentation =
             new Dictionary < string , List < MethodDocumentation > > ( ) ;
 
-        private Dictionary < string , PropertyDocumentation > propertyDocumentation =
+        private Dictionary < string , PropertyDocumentation > _propertyDocumentation =
             new Dictionary < string , PropertyDocumentation > ( ) ;
 
-        private TypeDocumentation typeDocumentation ;
+        private TypeDocumentation _typeDocumentation ;
 
         /// <summary>
         /// 
         /// </summary>
         public TypeDocumentation TypeDocumentation
         {
-            get { return typeDocumentation ; }
+            get { return _typeDocumentation ; }
             // ReSharper disable once UnusedMember.Global
-            set { typeDocumentation = value ; }
+            set { _typeDocumentation = value ; }
         }
 
         /// <summary>
@@ -1017,8 +1021,8 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         public List < ConstructorDocumentation > ConstructorDocumentation
         {
-            get { return constructorDocumentation ; }
-            set { constructorDocumentation = value ; }
+            get { return _constructorDocumentation ; }
+            set { _constructorDocumentation = value ; }
         }
 
         /// <summary>
@@ -1026,8 +1030,8 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         public Dictionary < string , List < MethodDocumentation > > MethodDocumentation
         {
-            get { return methodDocumentation ; }
-            set { methodDocumentation = value ; }
+            get { return _methodDocumentation ; }
+            set { _methodDocumentation = value ; }
         }
 
         /// <summary>
@@ -1035,9 +1039,9 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         public Dictionary < string , PropertyDocumentation > PropertyDocumentation
         {
-            get { return propertyDocumentation ; }
+            get { return _propertyDocumentation ; }
             // ReSharper disable once UnusedMember.Global
-            set { propertyDocumentation = value ; }
+            set { _propertyDocumentation = value ; }
         }
 
         /// <summary>

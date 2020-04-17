@@ -334,7 +334,20 @@ namespace ConsoleApp1
 
             DebugUtils.WriteLine ( "Begin initialize TypeViewModel" ) ;
 
-            var typesViewModel = TypesViewModel_Stage1 ( context ) ;
+            using (var db = new AppDbContext())
+            {
+                db.AppClrType.RemoveRange(db.AppClrType);
+                db.AppTypeInfos.RemoveRange(db.AppTypeInfos);
+                await db.SaveChangesAsync();
+            }
+            using (var db = new AppDbContext())
+            {
+                if ( db.AppTypeInfos.Any ( ) || db.AppClrType.Any() )
+                {
+                    throw new InvalidOperationException ( ) ;
+                }
+            }
+            var typesViewModel = TypesViewModel_Stage1(context);
 
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = sts.CollectionMap ( ) ;
@@ -346,6 +359,8 @@ namespace ConsoleApp1
             // }
 
             typesViewModel.DetailFields ( ) ;
+
+            WriteModelToDatabase(typesViewModel);
             WriteThisTypesViewModel ( typesViewModel ) ;
             DumpModelToJson (
                              context
@@ -382,20 +397,27 @@ namespace ConsoleApp1
             return typesViewModel ;
         }
 
-        private static void WriteModelToDatabase ( TypesViewModel typesViewModel )
+        private static void WriteModelToDatabase ( [ NotNull ] TypesViewModel typesViewModel )
         {
+            if ( typesViewModel == null )
+            {
+                throw new ArgumentNullException ( nameof ( typesViewModel ) ) ;
+            }
+
             using ( var db = new AppDbContext ( ) )
             {
-                db.AppClrType.RemoveRange(db.AppClrType);
-                db.AppTypeInfos.RemoveRange ( db.AppTypeInfos ) ;
-                var appTypeInfos = typesViewModel.Map.dict.Values ;
-                foreach ( var appTypeInfo in appTypeInfos )
+                var appTypeInfos = typesViewModel.GetAppTypeInfos ( ) ;
+                var typeInfos = appTypeInfos as AppTypeInfo[] ?? appTypeInfos.ToArray ( ) ;
+                foreach ( var appTypeInfo in typeInfos )
                 {
-                    var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
-
-                    appTypeInfo.AppClrType = clr ;
+                    appTypeInfo.Version ++ ;
+                    if ( appTypeInfo.AppClrType == null )
+                    {
+                        var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
+                        appTypeInfo.AppClrType = clr ;
+                    }
                 }
-                db.AppTypeInfos.AddRange(appTypeInfos);
+                db.AppTypeInfos.AddRange(typeInfos);
                 db.SaveChanges ( ) ;
             }
         }
@@ -419,6 +441,7 @@ namespace ConsoleApp1
         [ NotNull ]
         private static AppClrType AddClrType ( AppDbContext db , Type type )
         {
+            DebugUtils.WriteLine ($"Adding CLR type {type.FullName}"  );
             AppClrType appClrType = new AppClrType
                                     {
                                         AssemblyQualifiedName    = type.AssemblyQualifiedName
@@ -453,7 +476,7 @@ namespace ConsoleApp1
             var set = new HashSet < Type > ( ) ;
             var model = context.Scope.Resolve < TypesViewModel > ( ) ;
             PopulateSet ( model.Root.SubTypeInfos , set ) ;
-            var syntaxdict =
+            var syntaxDict =
                 new Dictionary < Type , Tuple < X , List < Tuple < SyntaxNode , string > > > > ( ) ;
             var xxx1 = new Dictionary < string , X > ( ) ;
             var xxx = new Dictionary < SyntaxKind , X > ( ) ;
@@ -478,9 +501,8 @@ namespace ConsoleApp1
 
                 var comp = st.GetCompilationUnitRoot ( ) ;
                 var triviaDict = new Dictionary < SyntaxKind , SyntaxInfo > ( ) ;
-                foreach ( var syntaxTrivia in comp.DescendantTrivia ( x => true , true ) )
+                foreach ( var kind in comp.DescendantTrivia ( x => true , true ).Select ( syntaxTrivia => syntaxTrivia.Kind ( ) ) )
                 {
-                    var kind = syntaxTrivia.Kind ( ) ;
                     if ( ! triviaDict.TryGetValue ( kind , out var info ) )
                     {
                         info               = new SyntaxInfo { Kind = kind } ;
@@ -560,13 +582,13 @@ namespace ConsoleApp1
                                                                     )
                                                           )
                                             ) ;
-                    if ( ! syntaxdict.TryGetValue ( o.GetType ( ) , out var l ) )
+                    if ( ! syntaxDict.TryGetValue ( o.GetType ( ) , out var l ) )
                     {
                         l = Tuple.Create (
                                           new X ( )
                                         , new List < Tuple < SyntaxNode , string > > ( )
                                          ) ;
-                        syntaxdict[ o.GetType ( ) ] = l ;
+                        syntaxDict[ o.GetType ( ) ] = l ;
                     }
 
                     l.Item1.Len += o.ToString ( ).Length ;
@@ -615,7 +637,7 @@ namespace ConsoleApp1
                 Console.WriteLine ( $"{k.Key} = {k.Value.Len}" ) ;
             }
 
-            foreach ( var keyValuePair in syntaxdict )
+            foreach ( var keyValuePair in syntaxDict )
             {
                 Console.WriteLine ( $"{keyValuePair.Key.Name}" ) ;
                 Console.WriteLine (
@@ -817,7 +839,7 @@ namespace ConsoleApp1
 
         // ReSharper disable once UnusedMember.Local
 
-        public static void WriteThisTypesViewModel (
+        private static void WriteThisTypesViewModel (
             [ NotNull ]   TypesViewModel                   model
           , [ CanBeNull ] Func < TypesViewModel , string > filenameFunc = null
         )
@@ -1042,12 +1064,12 @@ namespace ConsoleApp1
                         }
                         else
                         {
-                            var docid = declared.GetDocumentationCommentId ( ) ;
+                            var docId = declared.GetDocumentationCommentId ( ) ;
 
                             // ReSharper disable once UnusedVariable
                             var o = new
                                     {
-                                        docId    = docid
+                                        docId    = docId
                                       , xml      = xml1
                                       , declared = declared.ToDisplayString ( )
                                     } ;
@@ -1065,7 +1087,7 @@ namespace ConsoleApp1
                                 {
                                     o1 = XmlDocElements.HandleDocElementNode (
                                                                               doc1
-                                                                            , docid
+                                                                            , docId
                                                                             , node
                                                                             , declared
                                                                              )
@@ -1077,7 +1099,7 @@ namespace ConsoleApp1
                                 {
                                     o1 = XmlDocElements.CreateCodeDocumentationElementType (
                                                                                             node
-                                                                                          , docid
+                                                                                          , docId
                                                                                            )
                                          ?? throw new InvalidOperationException (
                                                                                  "Null from CreateCodeDocumentationElementType"
@@ -1122,14 +1144,14 @@ namespace ConsoleApp1
                     // DebugUtils.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
                 }
 
-                var jsonout = JsonSerializer.Serialize (
+                var jsonOut = JsonSerializer.Serialize (
                                                         callers
                                                       , new JsonSerializerOptions
                                                         {
                                                             WriteIndented = true
                                                         }
                                                        ) ;
-                File.WriteAllText ( @"C:\temp\" + project.Name + ".json" , jsonout ) ;
+                File.WriteAllText ( @"C:\temp\" + project.Name + ".json" , jsonOut ) ;
             }
 
             var li = new ArrayList ( ) ;
@@ -1184,7 +1206,7 @@ namespace ConsoleApp1
         }
 
 #pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
-        public async Task CodeGen (
+        private async Task CodeGen (
 #pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
             [ NotNull ] IBaseLibCommand command
           , [ NotNull ] AppContext      context
@@ -1301,7 +1323,7 @@ namespace ConsoleApp1
                     // var i = model.GetSymbolInfo ( SyntaxFactory.ParseTypeName ( s1 ) ) ;
 
 
-                    var _listField = IdentifierName ( "_list" ) ;
+                    var listField = IdentifierName ( "_list" ) ;
 
                     var publicKeyword = TokenList ( Token ( SyntaxKind.PublicKeyword ) ) ;
 
@@ -1316,20 +1338,20 @@ namespace ConsoleApp1
                                                                                            , collectionMap
                                                                                            , t
                                                                                             ) ;
-                        var propDescl = PropertyDeclaration ( propertyTypeParsed , prop.Name ) ;
-                        propDescl = propDescl.WithModifiers ( publicKeyword ) ;
+                        var propDecl = PropertyDeclaration ( propertyTypeParsed , prop.Name ) ;
+                        propDecl = propDecl.WithModifiers ( publicKeyword ) ;
                         var propertyIdentifierNameSyntax = IdentifierName ( prop.Name ) ;
                         var propertyAccess = MemberAccessExpression (
                                                                      SyntaxKind
                                                                         .SimpleMemberAccessExpression
-                                                                   , _listField
+                                                                   , listField
                                                                    , propertyIdentifierNameSyntax
                                                                     ) ;
                         var arrowExpressionClauseSyntax = ArrowExpressionClause ( propertyAccess ) ;
-                        propDescl = propDescl
+                        propDecl = propDecl
                                    .WithExpressionBody ( arrowExpressionClauseSyntax )
                                    .WithSemicolonToken ( Token ( SyntaxKind.SemicolonToken ) ) ;
-                        return propDescl ;
+                        return propDecl ;
                     }
 
                     var props1 = generic1.GetMembers ( )
@@ -1347,7 +1369,7 @@ namespace ConsoleApp1
                                                   )
                                            .Select (
                                                     prop => {
-                                                        var brackArgList =
+                                                        var bArgList =
                                                             BracketedArgumentList (
                                                                                    SeparatedList <
                                                                                            ArgumentSyntax
@@ -1368,8 +1390,8 @@ namespace ConsoleApp1
                                                                                   ) ;
                                                         var elementAccess =
                                                             ElementAccessExpression (
-                                                                                     _listField
-                                                                                   , brackArgList
+                                                                                     listField
+                                                                                   , bArgList
                                                                                     ) ;
                                                         var setArrowExpression =
                                                             ArrowExpressionClause (
@@ -1382,7 +1404,7 @@ namespace ConsoleApp1
                                                                                                                         )
                                                                                                         )
                                                                                   ) ;
-                                                        var setAcessor =
+                                                        var setAccessor =
                                                             AccessorDeclaration (
                                                                                  SyntaxKind
                                                                                     .SetAccessorDeclaration
@@ -1399,8 +1421,8 @@ namespace ConsoleApp1
                                                         var getArrow =
                                                             ArrowExpressionClause (
                                                                                    ElementAccessExpression (
-                                                                                                            _listField
-                                                                                                          , brackArgList
+                                                                                                            listField
+                                                                                                          , bArgList
                                                                                                            )
                                                                                   ) ;
 
@@ -1461,7 +1483,7 @@ namespace ConsoleApp1
                                                                                                                                                    .SemicolonToken
                                                                                                                                                )
                                                                                                                                         )
-                                                                                                               , setAcessor
+                                                                                                               , setAccessor
                                                                                                              }
                                                                                                             )
                                                                                               )
@@ -1545,7 +1567,7 @@ namespace ConsoleApp1
                                                                                                                              MemberAccessExpression (
                                                                                                                                                      SyntaxKind
                                                                                                                                                         .SimpleMemberAccessExpression
-                                                                                                                                                   , _listField
+                                                                                                                                                   , listField
                                                                                                                                                    , IdentifierName (
                                                                                                                                                                      m.Name
                                                                                                                                                                     )
@@ -1716,16 +1738,16 @@ namespace ConsoleApp1
                                                      , SeparatedList < ArgumentSyntax > ( )
                                                      , Token ( SyntaxKind.CloseParenToken )
                                                       ) ;
-                var ListIdentifier = Identifier ( "List" ) ;
+                var listIdentifier = Identifier ( "List" ) ;
                 var constructedListGeneric = GenericName (
-                                                          ListIdentifier
+                                                          listIdentifier
                                                         , TypeArgumentList (
                                                                             SingletonSeparatedList (
                                                                                                     typeSyntax
                                                                                                    )
                                                                            )
                                                          ) ;
-                var ocex = ObjectCreationExpression (
+                var ocEx = ObjectCreationExpression (
                                                      constructedListGeneric
                                                    , argumentListSyntax
                                                    , default
@@ -1742,7 +1764,7 @@ namespace ConsoleApp1
                                                                                            )
                                                                            .WithInitializer (
                                                                                              EqualsValueClause (
-                                                                                                                ocex
+                                                                                                                ocEx
                                                                                                                )
                                                                                             )
                                                                        )
@@ -1924,9 +1946,9 @@ namespace ConsoleApp1
 
             DebugOut ( "About to build compilation unit" ) ;
 
-            var compl = CompilationUnit ( ) ;
-            compl = SyntaxTypesService.WithCollectionUsings ( compl ) ;
-            compl = compl.WithMembers (
+            var compilation = CompilationUnit ( ) ;
+            compilation = SyntaxTypesService.WithCollectionUsings ( compilation ) ;
+            compilation = compilation.WithMembers (
                                        new SyntaxList < MemberDeclarationSyntax > (
                                                                                    NamespaceDeclaration (
                                                                                                          ParseName (
@@ -1941,19 +1963,19 @@ namespace ConsoleApp1
                          .NormalizeWhitespace ( ) ;
 
             DebugOut ( "built" ) ;
-            var tree = SyntaxTree ( compl ) ;
+            var tree = SyntaxTree ( compilation ) ;
             var src = tree.ToString ( ) ;
 
             DebugOut ( "Reparsing text ??" ) ;
 
             var tree2 = CSharpSyntaxTree.Create (
-                                                 compl
+                                                 compilation
                                                , new CSharpParseOptions (
                                                                          LanguageVersion.CSharp7_3
                                                                         )
                                                 ) ;
 
-            File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
+            File.WriteAllText ( @"C:\data\logs\gen.cs" , compilation.ToString ( ) ) ;
 
             //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
             var source = tree2.ToString ( ).Split ( new[] { "\r\n" } , StringSplitOptions.None ) ;
@@ -2154,15 +2176,12 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                 }
             }
 
-            if ( compilation != null )
+            var errors = compilation?.GetDiagnostics ( )
+                                     .Where ( d => d.Severity == DiagnosticSeverity.Error )
+                                     .ToList ( ) ;
+            if ( errors?.Any ( ) == true )
             {
-                var errors = compilation.GetDiagnostics ( )
-                                        .Where ( d => d.Severity == DiagnosticSeverity.Error )
-                                        .ToList ( ) ;
-                if ( errors.Any ( ) )
-                {
-                    DebugUtils.WriteLine ( string.Join ( "\n" , errors ) ) ;
-                }
+                DebugUtils.WriteLine ( string.Join ( "\n" , errors ) ) ;
             }
 
             DebugOut ( "attempting emit" ) ;

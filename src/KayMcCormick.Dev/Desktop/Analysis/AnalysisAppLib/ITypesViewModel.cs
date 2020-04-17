@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using System.Collections.Generic ;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.Xaml ;
 using KayMcCormick.Dev ;
@@ -47,5 +48,11 @@ namespace AnalysisAppLib
         /// <param name="identifier"></param>
         /// <returns></returns>
         AppTypeInfo GetAppTypeInfo ( object identifier ) ;
+
+        /// <summary>
+        /// Get all app type infos
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable < AppTypeInfo > GetAppTypeInfos ( ) ;
     }
 }
