@@ -23,7 +23,6 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 #if POCO
-
 #endif
 
 namespace AnalysisAppLib.XmlDoc
@@ -33,45 +32,31 @@ namespace AnalysisAppLib.XmlDoc
     /// </summary>
     public static class XmlDocElements
     {
-        private static readonly string _pocoPrefix = "Poco";
+        private static readonly string _pocoPrefix = "Poco" ;
 #pragma warning disable 414
         private static readonly string _collectionSuffix = "Collection" ;
 #pragma warning restore 414
 
-        private static readonly Dictionary < SyntaxKind , Type > _kindType = new Dictionary < SyntaxKind , Type >
-                                                                             {
-                                                                                 [ SyntaxKind.ClassDeclaration ] =
-                                                                                     typeof ( TypeDocumentation ),
-                                                                                 [SyntaxKind.InterfaceDeclaration] = typeof(TypeDocumentation),
-                                                                                 [SyntaxKind.StructDeclaration]    = typeof(TypeDocumentation),
-                                                                                 [SyntaxKind.DelegateDeclaration]  = typeof(DelegateDocumentation),
-                                                            
-                                                                                 [SyntaxKind.EnumDeclaration] =  typeof(TypeDocumentation),
-                                                            
-                                                                                 [SyntaxKind.EnumMemberDeclaration] = typeof(EnumMemberDocumentation),
-                                                            
-                                                                                 [SyntaxKind.FieldDeclaration] = typeof(FieldDocumentation),
-                                                            
-                                                                                 [SyntaxKind.MethodDeclaration] = typeof(MethodDocumentation),
-
-                                                                                 [SyntaxKind.ConstructorDeclaration] = typeof(ConstructorDocumentation),
-                                                            
-                                                                                 [SyntaxKind.DestructorDeclaration] = typeof(CodeElementDocumentation),
-                                                            
-                                                                                 [SyntaxKind.PropertyDeclaration] = typeof(PropertyDocumentation),
-
-                                                                                 [SyntaxKind.IndexerDeclaration] = typeof(CodeElementDocumentation),
-
-                                                                                 [SyntaxKind.EventDeclaration] = typeof(CodeElementDocumentation),
-
-                                                                                 [SyntaxKind.EventFieldDeclaration] = typeof(CodeElementDocumentation),
-
-                                                                                 [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
-
-                                                                                 [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation)
-
-
-                                                                             } ;
+        private static readonly Dictionary < SyntaxKind , Type > KindType =
+            new Dictionary < SyntaxKind , Type >
+            {
+                [ SyntaxKind.ClassDeclaration ]              = typeof ( TypeDocumentation )
+              , [ SyntaxKind.InterfaceDeclaration ]          = typeof ( TypeDocumentation )
+              , [ SyntaxKind.StructDeclaration ]             = typeof ( TypeDocumentation )
+              , [ SyntaxKind.DelegateDeclaration ]           = typeof ( DelegateDocumentation )
+              , [ SyntaxKind.EnumDeclaration ]               = typeof ( TypeDocumentation )
+              , [ SyntaxKind.EnumMemberDeclaration ]         = typeof ( EnumMemberDocumentation )
+              , [ SyntaxKind.FieldDeclaration ]              = typeof ( FieldDocumentation )
+              , [ SyntaxKind.MethodDeclaration ]             = typeof ( MethodDocumentation )
+              , [ SyntaxKind.ConstructorDeclaration ]        = typeof ( ConstructorDocumentation )
+              , [ SyntaxKind.DestructorDeclaration ]         = typeof ( CodeElementDocumentation )
+              , [ SyntaxKind.PropertyDeclaration ]           = typeof ( PropertyDocumentation )
+              , [ SyntaxKind.IndexerDeclaration ]            = typeof ( CodeElementDocumentation )
+              , [ SyntaxKind.EventDeclaration ]              = typeof ( CodeElementDocumentation )
+              , [ SyntaxKind.EventFieldDeclaration ]         = typeof ( CodeElementDocumentation )
+              , [ SyntaxKind.OperatorDeclaration ]           = typeof ( CodeElementDocumentation )
+              , [ SyntaxKind.ConversionOperatorDeclaration ] = typeof ( CodeElementDocumentation )
+            } ;
 
         /// <summary>
         /// 
@@ -80,55 +65,55 @@ namespace AnalysisAppLib.XmlDoc
         /// <returns></returns>
         [ CanBeNull ]
         // ReSharper disable once UnusedMember.Global
-        public static XmlDocElement HandleName(string name) {
-            
+        public static XmlDocElement HandleName ( string name )
+        {
             XmlDocElement r = null ;
-            switch (name)
+            switch ( name )
             {
-                case "summary":
+                case "summary" :
                     r = new Summary ( ) ;
-                    break;
-                case "see":
+                    break ;
+                case "see" :
                     r = new Crossref ( ) ;
-                    break;
-                case "paramref":
+                    break ;
+                case "paramref" :
                     r = new Paramref ( ) ;
-                    break;
-                case "c":
+                    break ;
+                case "c" :
                     r = new Code ( ) ;
-                    break;
-                case "para":
+                    break ;
+                case "para" :
                     r = new Para ( ) ;
 
-                    break;
-                case "seealso":
+                    break ;
+                case "seealso" :
                     r = new Seealso ( ) ;
-                    break;
-                case "em":
+                    break ;
+                case "em" :
                     r = new Em ( ) ;
-                    break;
-                case "pre":
+                    break ;
+                case "pre" :
                     r = new Pre ( ) ;
-                    break;
-                case "a":
+                    break ;
+                case "a" :
                     r = new Anchor ( ) ;
-                    break;
-                case "typeparamref":
+                    break ;
+                case "typeparamref" :
                     r = new Typeparamref ( ) ;
-                    break;
-                case "param":
+                    break ;
+                case "param" :
                     r = new Param ( ) ;
-                    break;
-                case "returns":
+                    break ;
+                case "returns" :
                     r = new Returns ( ) ;
-                    break;
+                    break ;
 
-                case "example":
+                case "example" :
                     r = new Example ( ) ;
-                    break;
+                    break ;
             }
 
-            return r;
+            return r ;
         }
 
         /// <summary>
@@ -138,7 +123,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="name"></param>
         /// <returns></returns>
         [ CanBeNull ]
-        public static XmlDocElement HandleName ( XElement element ,  string name )
+        public static XmlDocElement HandleName ( XElement element , string name )
         {
             XmlDocElement r ;
             switch ( name )
@@ -147,10 +132,14 @@ namespace AnalysisAppLib.XmlDoc
                     r = new Summary ( element.Nodes ( ).Select ( Selector ) ) ;
                     break ;
                 case "see" :
-                    r = new Crossref ( element.Attribute ( XName.Get ( "cref" , "" ) )?.Value ?? "" ) ;
+                    r = new Crossref (
+                                      element.Attribute ( XName.Get ( "cref" , "" ) )?.Value ?? ""
+                                     ) ;
                     break ;
                 case "paramref" :
-                    r = new Paramref ( element.Attribute ( XName.Get ( "name" , "" ) )?.Value ?? "" ) ;
+                    r = new Paramref (
+                                      element.Attribute ( XName.Get ( "name" , "" ) )?.Value ?? ""
+                                     ) ;
                     break ;
                 case "c" :
                     r = new Code ( element.Nodes ( ).Select ( Selector ) ) ;
@@ -175,7 +164,10 @@ namespace AnalysisAppLib.XmlDoc
                                    ) ;
                     break ;
                 case "typeparamref" :
-                    r = new Typeparamref ( element.Attribute ( XName.Get ( "name" , "" ) )?.Value ?? "" ) ;
+                    r = new Typeparamref (
+                                          element.Attribute ( XName.Get ( "name" , "" ) )?.Value
+                                          ?? ""
+                                         ) ;
                     break ;
                 case "param" :
                     r = new Param (
@@ -187,14 +179,13 @@ namespace AnalysisAppLib.XmlDoc
                     r = new Returns ( element.Nodes ( ).Select ( Selector ) ) ;
                     break ;
 
-                case "example":
-                    r = new Example(element.Nodes().Select(Selector));
-                    break;
-                case "quoteInline":
-                    r = new Quoteinline(element.Nodes().Select(Selector));
-                    break;
-                default:
-                    return null ;
+                case "example" :
+                    r = new Example ( element.Nodes ( ).Select ( Selector ) ) ;
+                    break ;
+                case "quoteInline" :
+                    r = new Quoteinline ( element.Nodes ( ).Select ( Selector ) ) ;
+                    break ;
+                default : return null ;
             }
 
             return r ;
@@ -217,8 +208,7 @@ namespace AnalysisAppLib.XmlDoc
 
                     return r ;
                 }
-                case XText xText :
-                    return new XmlDocText ( xText.Value ) ;
+                case XText xText : return new XmlDocText ( xText.Value ) ;
             }
 
             throw new UnrecognizedElementException ( node.GetType ( ).FullName ) ;
@@ -292,12 +282,12 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="declared"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        [CanBeNull]
+        [ CanBeNull ]
         public static CodeElementDocumentation HandleDocElementNode (
-            [ NotNull ] XDocument   xDocument
+            [ NotNull ]   XDocument               xDocument
           , [ CanBeNull ] string                  elementId
-          , [ NotNull ] MemberDeclarationSyntax member
-          , [ NotNull ] ISymbol                declared
+          , [ NotNull ]   MemberDeclarationSyntax member
+          , [ NotNull ]   ISymbol                 declared
         )
         {
             if ( declared == null )
@@ -305,31 +295,33 @@ namespace AnalysisAppLib.XmlDoc
                 throw new ArgumentNullException ( nameof ( declared ) ) ;
             }
 
-            if ( xDocument.Root == null)
+            if ( xDocument.Root == null )
             {
                 throw new ArgumentNullException ( nameof ( xDocument ) ) ;
             }
 
             var xmlElement = xDocument.Root ;
-            var embeddedEleementId = xmlElement.Attribute(XName.Get("name"))?.Value;
-            
-            if (elementId != null)
+            var embeddedEleementId = xmlElement.Attribute ( XName.Get ( "name" ) )?.Value ;
+
+            if ( elementId != null )
             {
-                if ( elementId.Equals ( embeddedEleementId) )
+                if ( elementId.Equals ( embeddedEleementId ) )
                 {
-                    DebugUtils.WriteLine ($"Element id match {elementId}");
+                    DebugUtils.WriteLine ( $"Element id match {elementId}" ) ;
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Mismatched element Id ({elementId} != {embeddedEleementId}");
+                    throw new InvalidOperationException (
+                                                         $"Mismatched element Id ({elementId} != {embeddedEleementId}"
+                                                        ) ;
                 }
             }
 
             var xNodes = xmlElement.Nodes ( ) ;
 
-            var xmlDoc = xNodes.Select(Selector);
+            var xmlDoc = xNodes.Select ( Selector ) ;
 
-            var docElem = CreateCodeDocumentationElementType ( member, elementId ) ;
+            var docElem = CreateCodeDocumentationElementType ( member , elementId ) ;
 
 
 #if false
@@ -395,7 +387,6 @@ namespace AnalysisAppLib.XmlDoc
             }
 
             return docElem ;
-
         }
 
         /// <summary>
@@ -407,21 +398,24 @@ namespace AnalysisAppLib.XmlDoc
         [ CanBeNull ]
         public static CodeElementDocumentation CreateCodeDocumentationElementType (
             [ NotNull ] MemberDeclarationSyntax member
-          , string                  elementId
+          , string                              elementId
         )
         {
             CodeElementDocumentation docElem ;
-            if (_kindType.TryGetValue(member.Kind(), out var kind1))
+            if ( KindType.TryGetValue ( member.Kind ( ) , out var kind1 ) )
             {
                 docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
-            } else
+            }
+            else
             {
-                throw new InvalidOperationException($"Unrecognized member kind {member.Kind (  )}");
+                throw new InvalidOperationException (
+                                                     $"Unrecognized member kind {member.Kind ( )}"
+                                                    ) ;
             }
 
             if ( docElem != null )
             {
-                docElem.ElementId = elementId;
+                docElem.ElementId = elementId ;
             }
 
             return docElem ;
@@ -436,9 +430,12 @@ namespace AnalysisAppLib.XmlDoc
         {
             if ( type is PredefinedTypeSyntax )
             {
-                DebugUtils.WriteLine($"Predefined type {type} does not apply for poco transform.");
-                return type;
+                DebugUtils.WriteLine (
+                                      $"Predefined type {type} does not apply for poco transform."
+                                     ) ;
+                return type ;
             }
+
             SimpleNameSyntax sns1 = null ;
             switch ( type )
             {
@@ -451,15 +448,17 @@ namespace AnalysisAppLib.XmlDoc
 
                     break ;
                 }
-                case SimpleNameSyntax sns : sns1 = sns ;
+                case SimpleNameSyntax sns :
+                    sns1 = sns ;
                     break ;
-                default :                   throw new InvalidOperationException();
+                default : throw new InvalidOperationException ( ) ;
             }
 
-            if ( sns1.Identifier.Text.StartsWith ( _pocoPrefix ) )
+            if ( sns1.Identifier.Text.StartsWith ( _pocoPrefix , StringComparison.Ordinal ) )
             {
                 throw new InvalidOperationException ( "Type already has poco prefix" ) ;
             }
+
             var pocoType = SyntaxFactory.ParseTypeName ( _pocoPrefix + sns1.Identifier.Text ) ;
             return pocoType ;
         }
@@ -475,10 +474,10 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="model"></param>
         /// <returns></returns>
         public static TypeSyntax SubstituteType (
-            [ NotNull ]   SyntaxFieldInfo                tField
-          , [ CanBeNull ] TypeSyntax                     candidateTypeSyntax
+            [ NotNull ]   SyntaxFieldInfo           tField
+          , [ CanBeNull ] TypeSyntax                candidateTypeSyntax
           , IReadOnlyDictionary < string , object > collectionMap
-          , ITypesViewModel model
+          , ITypesViewModel                         model
         )
         {
             if ( tField == null )
@@ -486,12 +485,15 @@ namespace AnalysisAppLib.XmlDoc
                 throw new ArgumentNullException ( nameof ( tField ) ) ;
             }
 
-            if ( candidateTypeSyntax != null && tField.IsCollection == false)
+            if ( candidateTypeSyntax    != null
+                 && tField.IsCollection == false )
             {
                 return TransformParsePocoType ( candidateTypeSyntax ) ;
             }
 
-            var typeSyntax = candidateTypeSyntax is QualifiedNameSyntax q ? q.Right : ( SimpleNameSyntax ) candidateTypeSyntax ;
+            var typeSyntax = candidateTypeSyntax is QualifiedNameSyntax q
+                                 ? q.Right
+                                 : ( SimpleNameSyntax ) candidateTypeSyntax ;
 
             // ReSharper disable once PossibleNullReferenceException
             var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
@@ -499,16 +501,21 @@ namespace AnalysisAppLib.XmlDoc
             {
                 throw new InvalidOperationException ( "Invalid type info" ) ;
             }
+
             // ReSharper disable once UnusedVariable
-            if(collectionMap.TryGetValue(typeSyntax.Identifier.ValueText, out var info2)) {
+            if ( collectionMap.TryGetValue ( typeSyntax.Identifier.ValueText , out var info2 ) )
+            {
                 // ReSharper disable once RedundantAssignment
-                return SyntaxFactory.ParseTypeName((string)info2);
+                return SyntaxFactory.ParseTypeName ( ( string ) info2 ) ;
             }
 
             throw new InvalidOperationException ( "No collection type in the map." ) ;
             // ReSharper disable once AssignNullToNotNullAttribute
-            return SyntaxTypesService.FieldPocoCollectionType( candidateTypeSyntax , collectionMap ,appTypeInfo
-                                                             ) ;
+            return SyntaxTypesService.FieldPocoCollectionType (
+                                                               candidateTypeSyntax
+                                                             , collectionMap
+                                                             , appTypeInfo
+                                                              ) ;
         }
     }
 
@@ -521,16 +528,14 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public Quoteinline ( ) {
-        }
+        public Quoteinline ( ) { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="select"></param>
-        public Quoteinline ( [ NotNull ] IEnumerable < XmlDocElement > select ) : base(select)
+        public Quoteinline ( [ NotNull ] IEnumerable < XmlDocElement > select ) : base ( select )
         {
-
         }
     }
 }

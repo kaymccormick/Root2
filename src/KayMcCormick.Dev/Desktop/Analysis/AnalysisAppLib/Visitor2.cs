@@ -26,7 +26,7 @@ namespace AnalysisAppLib
     // ReSharper disable once UnusedType.Global
     public class Visitor2 : CSharpSyntaxWalker
     {
-        private static readonly Logger logger =
+        private static readonly Logger Logger =
             LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly Func < string , object , LogBuilder > _message ;
@@ -120,7 +120,7 @@ namespace AnalysisAppLib
             }
             catch ( Exception ex )
             {
-                logger.Error ( ex , ex.ToString ) ;
+                Logger.Error ( ex , ex.ToString ) ;
             }
             finally
             {

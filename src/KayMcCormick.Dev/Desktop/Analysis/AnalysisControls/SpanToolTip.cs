@@ -19,6 +19,7 @@ using JetBrains.Annotations ;
 namespace AnalysisControls
 {
     // ReSharper disable once ClassNeverInstantiated.Global
+    // ReSharper disable once InconsistentNaming
     internal class SpanTT : ToolTip
     {
         public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }

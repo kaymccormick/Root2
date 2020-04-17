@@ -65,6 +65,9 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public AppTypeInfo( ) : this(null) { }
 
+        /// <summary>
+        /// CLR Type
+        /// </summary>
         public AppClrType AppClrType { get ; set ; }
 
         /// <summary>
@@ -245,26 +248,62 @@ namespace AnalysisAppLib.Syntax
     {
         private int _id ;
 
+        /// <summary>
+        /// Primary key
+        /// </summary>
         public int Id { get { return _id ; } set { _id = value ; } }
 
+        /// <summary>
+        /// Type full name
+        /// </summary>
         public string FullName { get ; set ; }
+        /// <summary>
+        /// Assembly qualified name
+        /// </summary>
         public string AssemblyQualifiedName { get ; set ; }
 
+        /// <summary>
+        /// Assembly
+        /// </summary>
         public AppAssembly Assembly { get ; set ; }
+        /// <summary>
+        /// Base type
+        /// </summary>
         public AppClrType BaseType { get ; set ; }
 
+        /// <summary>
+        /// Is Abstract
+        /// </summary>
         public bool IsAbstract { get ; set ; }
+        /// <summary>
+        /// Is Class
+        /// </summary>
         public bool IsClass { get ; set ; }
+        /// <summary>
+        /// Is constructed generic type
+        /// </summary>
         public bool IsConstructedGenericType { get; set; }
+        /// <summary>
+        /// Is generic type definition
+        /// </summary>
         public bool IsGenericTypeDefinition { get; set; }
+        /// <summary>
+        /// Is generic type
+        /// </summary>
         public bool IsGenericType { get; set; }
     }
 
+    /// <summary>
+    /// Assembly
+    /// </summary>
     public class AppAssembly
     {
         private int _id ;
 
 
+        /// <summary>
+        /// Primary key
+        /// </summary>
         public int Id { get { return _id ; } set { _id = value ; } }
     }
 
@@ -415,9 +454,8 @@ namespace AnalysisAppLib.Syntax
             _name = name;
             _typeName = typeName;
 
-            foreach (var kind in kinds)
+            foreach ( var k in kinds.Select ( kind => (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind) ) )
             {
-                var k = (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind);
                 _kinds.Add(k);
             }
 
@@ -633,7 +671,7 @@ namespace AnalysisAppLib.Syntax
         public void Remove ( object value ) => _list.Remove ( value ) ;
         /// <inheritdoc />
         public void RemoveAt ( int index ) => _list.RemoveAt ( index ) ;
-        
+
         /// <inheritdoc />
         public object this [ int index ]
         {

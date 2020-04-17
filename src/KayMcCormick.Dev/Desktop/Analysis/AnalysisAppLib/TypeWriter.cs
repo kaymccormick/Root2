@@ -166,10 +166,9 @@ namespace AnalysisAppLib
                     typElement.AppendChild ( propElem ) ;
                 }
 
-                foreach ( var m in type.GetMethods ( )
-                                       .Where ( ( info , i ) => ! info.IsSpecialName ) )
+                foreach ( var elem in type.GetMethods ( )
+                                          .Where ( ( info , i ) => ! info.IsSpecialName ).Select ( m => MethodXmlElement ( c , c2 , m , style ) ) )
                 {
-                    var elem = MethodXmlElement ( c , c2 , m , style ) ;
                     typElement.AppendChild ( elem ) ;
                 }
             }

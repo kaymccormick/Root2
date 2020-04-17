@@ -22,12 +22,12 @@ namespace AnalysisControls
         private readonly        Stack < IAddChild > _stack = new Stack < IAddChild > ( ) ;
         private readonly        Visitor4            _visitor3 ;
 
-        private readonly Color[] colors =
+        private readonly Color[] _colors =
         {
             Colors.Red , Colors.Green , Colors.Aqua , Colors.BlueViolet , Colors.Chocolate
         } ;
 
-        private readonly StyleInfo curSi = new StyleInfo ( ) ;
+        private readonly StyleInfo _curSi = new StyleInfo ( ) ;
 
         private readonly Dictionary < ushort , StyleInfo > ss =
             new Dictionary < ushort , StyleInfo > ( ) ;
@@ -40,7 +40,7 @@ namespace AnalysisControls
         private string     _sourceCode ;
         private SyntaxTree _syntaxTree ;
 
-        private int colorI ;
+        private int _colorI ;
 
         /// <summary>
         /// </summary>
@@ -50,7 +50,7 @@ namespace AnalysisControls
             ss[ ( ushort ) SyntaxKind.PrivateKeyword ] =
                 new StyleInfo { fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
             ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
-                new StyleInfo { bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
+                new StyleInfo { Bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
             //_container = rootPanel ;
             var wrapPanel = new WrapPanel ( ) ;
             Content    = wrapPanel ;
@@ -101,7 +101,7 @@ namespace AnalysisControls
                                             ) ;
                 }
 
-                curSi.With ( si ) ;
+                _curSi.With ( si ) ;
             }
 
             _container.AddChild ( new Token ( rawKind , text , x , newLine ) ) ;
@@ -136,8 +136,8 @@ namespace AnalysisControls
 
             var c = new WrapPanel { Tag = node , Margin = new Thickness ( 2 ) } ;
             bdr.Child           =  c ;
-            bdr.BorderBrush     =  new SolidColorBrush ( colors[ colorI % colors.Length ] ) ;
-            colorI              += 1 ;
+            bdr.BorderBrush     =  new SolidColorBrush ( _colors[ _colorI % _colors.Length ] ) ;
+            _colorI              += 1 ;
             bdr.BorderThickness =  new Thickness ( 1 ) ;
             bdr.Margin          =  new Thickness ( 2 ) ;
             bdr.ToolTip         =  new ToolTip { Content = node.Kind ( ) } ;
@@ -150,14 +150,14 @@ namespace AnalysisControls
 
             if ( ss.TryGetValue ( ( ushort ) node.RawKind , out var si ) )
             {
-                if ( si.bg.HasValue )
+                if ( si.Bg.HasValue )
                 {
                     x = new SolidColorBrush (
                                              Color.FromArgb (
-                                                             si.bg.Value.A
-                                                           , si.bg.Value.R
-                                                           , si.bg.Value.G
-                                                           , si.bg.Value.B
+                                                             si.Bg.Value.A
+                                                           , si.Bg.Value.R
+                                                           , si.Bg.Value.G
+                                                           , si.Bg.Value.B
                                                             )
                                             ) ;
                 }
@@ -205,22 +205,22 @@ namespace AnalysisControls
 
     internal sealed class StyleInfo
     {
-        public SColor ? bg ;
+        public SColor ? Bg ;
 
 
-        public bool     bold ;
+        public bool     Bold ;
         public SColor ? fg ;
 
-        public bool italics ;
+        public bool Italics ;
 
 
-        public bool underline ;
+        public bool Underline ;
 
 
         [ NotNull ]
         public StyleInfo With ( [ NotNull ] StyleInfo value )
         {
-            return new StyleInfo { bg = value.bg ?? bg , fg = value.bg ?? fg } ;
+            return new StyleInfo { Bg = value.Bg ?? Bg , fg = value.Bg ?? fg } ;
         }
     }
 

@@ -11,7 +11,7 @@ namespace AnalysisControls
     /// </summary>
     public class StatusBarItemContentTemplateSelector : DataTemplateSelector
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of DataTemplateSelector
         /// <summary>
         /// 
@@ -46,7 +46,7 @@ namespace AnalysisControls
                             continue ;
                         }
 
-                        var currentClassLogger = logger ;
+                        var currentClassLogger = Logger ;
                         currentClassLogger.Info (
                                                  $"{currentResource.Key} is candidate"
                                                 ) ;
@@ -56,7 +56,7 @@ namespace AnalysisControls
             }
             catch ( Exception ex )
             {
-                logger.Warn ( ex , ex.ToString ( ) ) ;
+                Logger.Warn ( ex , ex.ToString ( ) ) ;
             }
 
             return base.SelectTemplate ( item , container ) ;

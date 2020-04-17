@@ -25,7 +25,7 @@ namespace AnalysisAppLib.XmlDoc
         public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
 
         // ReSharper disable once UnusedMember.Local
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static Logger _logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly string                         _assemblyName ;
         private readonly Lazy < CompilationUnitSyntax > _lazy ;
@@ -34,7 +34,7 @@ namespace AnalysisAppLib.XmlDoc
 
         private StatementSyntax _statement ;
 
-        private SyntaxNode node ;
+        private SyntaxNode _node ;
 
 
         public CodeAnalyseContext (
@@ -59,7 +59,7 @@ namespace AnalysisAppLib.XmlDoc
             _lazy         = new Lazy < CompilationUnitSyntax > ( ValueFactory ) ;
         }
 
-        public SyntaxNode Node { get { return node ; } set { node = value ; } }
+        public SyntaxNode Node { get { return _node ; } set { _node = value ; } }
 
 
         public SemanticModel CurrentModel

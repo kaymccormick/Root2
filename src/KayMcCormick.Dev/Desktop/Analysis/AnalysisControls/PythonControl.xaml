@@ -34,7 +34,7 @@
                KeyDown="UIElement_OnKeyDown" Height="60" />
     </Border>
     <ListBox Grid.Row="0" Grid.Column="1" MinWidth="200"
-             ItemsSource="{Binding Path=linesCollectionView}" />
+             ItemsSource="{Binding Path=LinesCollectionView}" />
     <ListBox Grid.Row="1" Grid.Column="1" MinWidth="200"
              ItemsSource="{Binding Path=Results}" />
   </Grid>

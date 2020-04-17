@@ -4,6 +4,7 @@ using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
 using System.IO ;
+using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
@@ -96,7 +97,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ JsonIgnore ]
-        public ICollectionView linesCollectionView
+        public ICollectionView LinesCollectionView
         {
             get { return CollectionViewSource.GetDefaultView ( Lines ) ; }
         }
@@ -184,8 +185,8 @@ namespace AnalysisControls.ViewModel
             // ) ;
             var il = GetValue ( InputLineProperty ) ;
             DebugUtils.WriteLine ( $"value of input line is {il}" ) ;
-            linesCollectionView.MoveCurrentToLast ( ) ;
-            DebugUtils.WriteLine ( linesCollectionView.CurrentItem.ToString() ) ;
+            LinesCollectionView.MoveCurrentToLast ( ) ;
+            DebugUtils.WriteLine ( LinesCollectionView.CurrentItem.ToString() ) ;
 
             //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
         }
@@ -207,14 +208,8 @@ namespace AnalysisControls.ViewModel
             _pyScope.SetVariable ( "viewModel" , this ) ;
             _pyScope.SetVariable ( "scope" ,     scope ) ;
 
-            foreach ( var pythonVariable in vars )
+            foreach ( var pythonVariable in vars.Where ( pythonVariable => ! string.IsNullOrEmpty ( pythonVariable.VariableName ) && ! _pyScope.TryGetVariable ( pythonVariable.VariableName , out _ ) ) )
             {
-                if ( string.IsNullOrEmpty ( pythonVariable.VariableName )
-                     || _pyScope.TryGetVariable ( pythonVariable.VariableName , out _ ) )
-                {
-                    continue ;
-                }
-
                 DebugUtils.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
                 _pyScope.SetVariable (
                                       pythonVariable.VariableName
@@ -274,7 +269,7 @@ namespace AnalysisControls.ViewModel
 
             var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
             DebugUtils.WriteLine ( $"Moving current to ${new1}" ) ;
-            linesCollectionView.MoveCurrentTo ( new1 ) ;
+            LinesCollectionView.MoveCurrentTo ( new1 ) ;
         }
 
 
@@ -295,7 +290,7 @@ namespace AnalysisControls.ViewModel
         public void TakeLine ( string text )
         {
             Lines.Add ( "" ) ;
-            linesCollectionView.MoveCurrentToLast ( ) ;
+            LinesCollectionView.MoveCurrentToLast ( ) ;
             FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
             string strRep = null ;
             dynamic result = null ;
@@ -340,7 +335,7 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public void HistoryUp ( )
         {
-            linesCollectionView.MoveCurrentToPrevious ( ) ;
+            LinesCollectionView.MoveCurrentToPrevious ( ) ;
             //TextInput = history[ historyPos.Value ] ;
         }
 
@@ -354,7 +349,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public void HistoryDown ( ) { linesCollectionView.MoveCurrentToNext ( ) ; }
+        public void HistoryDown ( ) { LinesCollectionView.MoveCurrentToNext ( ) ; }
 
 
         /// <summary>

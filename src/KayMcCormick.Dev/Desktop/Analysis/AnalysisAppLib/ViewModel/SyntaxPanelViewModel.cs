@@ -22,8 +22,8 @@ namespace AnalysisAppLib.ViewModel
     /// </summary>
     public sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel , INotifyPropertyChanged
     {
-        private CompilationUnitSyntax compilationUnitSyntax ;
-        private object                selectedItem ;
+        private CompilationUnitSyntax _compilationUnitSyntax ;
+        private object                _selectedItem ;
 
         /// <summary>
         /// 
@@ -71,7 +71,7 @@ namespace AnalysisAppLib.ViewModel
         {
             if ( compilationUnitSyntax != null )
             {
-                this.compilationUnitSyntax = compilationUnitSyntax ;
+                this._compilationUnitSyntax = compilationUnitSyntax ;
             }
         }
 
@@ -80,16 +80,16 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         public CompilationUnitSyntax CompilationUnitSyntax
         {
-            get { return compilationUnitSyntax ; }
+            get { return _compilationUnitSyntax ; }
             set
             {
-                if ( ReferenceEquals ( compilationUnitSyntax , value ) )
+                if ( ReferenceEquals ( _compilationUnitSyntax , value ) )
                 {
                     return ;
                 }
 
                 OnPropertyChanging ( ) ;
-                compilationUnitSyntax = value ;
+                _compilationUnitSyntax = value ;
                 OnPropertyChanged ( ) ;
             }
         }
@@ -99,16 +99,16 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         public object SelectedItem
         {
-            get { return selectedItem ; }
+            get { return _selectedItem ; }
             set
             {
-                if ( ReferenceEquals ( selectedItem , value ) )
+                if ( ReferenceEquals ( _selectedItem , value ) )
                 {
                     return ;
                 }
 
                 OnPropertyChanging ( ) ;
-                selectedItem = value ;
+                _selectedItem = value ;
                 OnPropertyChanged ( ) ;
             }
         }

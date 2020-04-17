@@ -149,7 +149,7 @@ namespace AnalysisAppLib.ViewModel
 
             var scopes = new[] { "user.read.all" , "group.read.all" } ;
 
-            // if the app manages is at most one account  
+            // if the app manages is at most one account
             AuthenticationResult result ;
             try
             {

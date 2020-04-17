@@ -66,7 +66,7 @@ namespace AnalysisControls
             DependencyObject                   dp
           , DependencyPropertyChangedEventArgs e
         )
-        {   
+        {
             if ( ! ( dp is UIElement element ) )
             {
                 return ;

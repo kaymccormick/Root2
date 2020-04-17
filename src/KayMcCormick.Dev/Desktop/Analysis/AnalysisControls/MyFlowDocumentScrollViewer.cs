@@ -28,12 +28,12 @@ namespace AnalysisControls
         /// <summary>
         ///     Backing store for the <see cref="ScrollViewer" /> property.
         /// </summary>
-        private ScrollViewer scrollViewer ;
+        private ScrollViewer _scrollViewer ;
 
         /// <summary>
         /// 
         /// </summary>
-        public bool doOverrideMeasure { get ; set ; }
+        public bool DoOverrideMeasure { get ; set ; }
 
         /// <summary>
         ///     Gets the scroll viewer contained within the FlowDocumentScrollViewer
@@ -43,9 +43,9 @@ namespace AnalysisControls
         {
             get
             {
-                if ( scrollViewer != null )
+                if ( _scrollViewer != null )
                 {
-                    return scrollViewer ;
+                    return _scrollViewer ;
                 }
 
                 DependencyObject obj = this ;
@@ -64,9 +64,9 @@ namespace AnalysisControls
                 }
                 while ( ! ( obj is ScrollViewer ) ) ;
 
-                scrollViewer = obj as ScrollViewer ;
+                _scrollViewer = obj as ScrollViewer ;
 
-                return scrollViewer ;
+                return _scrollViewer ;
             }
         }
 
@@ -91,7 +91,7 @@ namespace AnalysisControls
             base.OnVisualChildrenChanged ( visualAdded , visualRemoved ) ;
         }
         #endregion
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -99,7 +99,7 @@ namespace AnalysisControls
         /// <returns></returns>
         protected override Size MeasureOverride ( Size availableSize )
         {
-            if ( ! doOverrideMeasure )
+            if ( ! DoOverrideMeasure )
             {
                 return base.MeasureOverride ( availableSize ) ;
             }

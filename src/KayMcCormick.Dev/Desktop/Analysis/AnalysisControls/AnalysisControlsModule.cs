@@ -188,6 +188,5 @@ namespace AnalysisControls
             listView.SetBinding ( ItemsControl.ItemsSourceProperty , binding ) ;
             return listView ;
         }
-        
     }
 }

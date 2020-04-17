@@ -42,10 +42,10 @@ namespace AnalysisControls.ViewModel
             0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c , 0xff3c6e7d , 0xff533ca3
         } ;
 
-        private AppTypeInfo   root ;
+        private AppTypeInfo   _root ;
         private List < Type > _nodeTypes ;
 
-        private TypeMapDictionary  map   = new TypeMapDictionary ( ) ;
+        private TypeMapDictionary  _map   = new TypeMapDictionary ( ) ;
         private TypeMapDictionary2 _map2 = new TypeMapDictionary2 ( ) ;
 
 
@@ -94,10 +94,10 @@ namespace AnalysisControls.ViewModel
         [ JsonIgnore ]
         public AppTypeInfo Root
         {
-            get { return root ; }
+            get { return _root ; }
             set
             {
-                root = value ;
+                _root = value ;
                 OnPropertyChanged ( ) ;
             }
         }
@@ -130,7 +130,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
-        public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
+        public TypeMapDictionary Map { get { return _map ; } set { _map = value ; } }
 
         /// <summary>
         /// </summary>
@@ -380,9 +380,8 @@ namespace AnalysisControls.ViewModel
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             r.ColorValue     = HierarchyColors[ level ] ;
-            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+            foreach ( var theTypeInfo in _nodeTypes.Where ( type => type.BaseType == rootR ).Select ( type1 => CollectTypeInfos2 ( r , type1 , level + 1 ) ) )
             {
-                var theTypeInfo = CollectTypeInfos2 ( r , type1 , level + 1 ) ;
                 r.SubTypeInfos.Add ( theTypeInfo ) ;
             }
 
@@ -496,14 +495,14 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public void LoadTypeInfo ( )
         {
-            var CSharpRootSyntaxNodeType = typeof ( CSharpSyntaxNode ) ;
-            _nodeTypes = CSharpRootSyntaxNodeType.Assembly.GetExportedTypes ( )
+            var cSharpRootSyntaxNodeType = typeof ( CSharpSyntaxNode ) ;
+            _nodeTypes = cSharpRootSyntaxNodeType.Assembly.GetExportedTypes ( )
                                                  .Where (
                                                          t => typeof ( CSharpSyntaxNode )
                                                             .IsAssignableFrom ( t )
                                                         )
                                                  .ToList ( ) ;
-            Root = CollectTypeInfos ( CSharpRootSyntaxNodeType ) ;
+            Root = CollectTypeInfos ( cSharpRootSyntaxNodeType ) ;
         }
         #endregion
 

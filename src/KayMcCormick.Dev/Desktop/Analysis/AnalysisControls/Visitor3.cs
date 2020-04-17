@@ -36,7 +36,7 @@ namespace AnalysisControls
         private          Style           _curStyle ;
         private          bool            _isAtStartOfLine = true ;
         private readonly Stack < Style > _styles          = new Stack < Style > ( ) ;
-        private          bool            attached ;
+        private          bool            _attached ;
 
         /// <summary>
         /// 
@@ -173,10 +173,10 @@ namespace AnalysisControls
             Logger.Warn ( "add to blocks" ) ;
             _document.Blocks.Add ( _curBlock ) ;
             if ( FlowViewer.ScrollViewer != null
-                 && ! attached )
+                 && ! _attached )
             {
                 FlowViewer.ScrollViewer.ScrollChanged += ScrollViewerOnScrollChanged ;
-                attached                              =  true ;
+                _attached                              =  true ;
             }
 
             var offset = FlowViewer.ScrollViewer?.HorizontalOffset ;

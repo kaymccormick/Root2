@@ -8,7 +8,7 @@ namespace AnalysisControls
     // ReSharper disable once UnusedType.Global
     internal static class ToolTips
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         [ NotNull ]
         // ReSharper disable once UnusedMember.Global
@@ -19,13 +19,13 @@ namespace AnalysisControls
             var textBlock = new TextBlock { Text = displayString } ;
 
             var contentPresenter = new ContentControl { Content = resource } ;
-            logger.Info (
+            Logger.Info (
                          "Resource is {Resource}{t}"
                        , resource                       ?? "null"
                        , resource?.GetType ( ).FullName ?? "null"
                         ) ;
             contentPresenter.ContentTemplate = resource as DataTemplate ;
-            logger.Info (
+            Logger.Info (
                          "{t}"
                        , contentPresenter.ContentTemplate?.DataType?.ToString ( ) ?? "null"
                         ) ;
