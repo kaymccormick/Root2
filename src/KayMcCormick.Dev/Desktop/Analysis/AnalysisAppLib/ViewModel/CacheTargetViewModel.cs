@@ -23,6 +23,7 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public sealed class CacheTargetViewModel
     {
         private readonly MyCacheTarget2 _cacheTarget ;
@@ -44,6 +45,7 @@ namespace AnalysisAppLib.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public void Attach ( )
         {
             _cacheTarget?.Cache.SubscribeOn ( Scheduler.Default )

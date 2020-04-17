@@ -9,10 +9,3 @@
 // 
 // ---
 #endregion
-using Microsoft.CodeAnalysis.CSharp ;
-
-namespace ConsoleApp1
-{
-    public class SyntaxWalker: CSharpSyntaxWalker
-    { }
-}

@@ -24,7 +24,7 @@ namespace TestApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : AppWindow , IDisposable
+    public sealed partial class MainWindow : AppWindow , IDisposable
     {
         private static   MainWindow _instance ;
         private readonly TestAppApp _testAppApp ;
@@ -70,7 +70,7 @@ namespace TestApp
             InitializeComponent ( ) ;
         }
 
-        public Guid ApplicationGuid { get ; set ; } = new Guid ("50793c70-3902-4ba3-ad15-c28e2c9ca6a6");
+        public Guid ApplicationGuid { get ; } = new Guid ("50793c70-3902-4ba3-ad15-c28e2c9ca6a6");
 
         public static MainWindow Instance { get { return _instance ; } set { _instance = value ; } }
 
@@ -150,8 +150,7 @@ namespace TestApp
         {
             if ( e.Key == Key.Enter )
             {
-                var box = sender as TextBox ;
-                if ( box != null )
+                if ( sender is TextBox box )
                 {
                     LogMethod ( box.Text ) ;
                 }

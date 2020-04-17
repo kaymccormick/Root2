@@ -19,7 +19,7 @@ namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// </summary>
-    public class HashtableConverter : JsonConverter < Hashtable >
+    public sealed class HashtableConverter : JsonConverter < Hashtable >
     {
         #region Overrides of JsonConverter<Hashtable>
         /// <summary>
@@ -44,8 +44,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , Hashtable             value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] Hashtable             value
           , JsonSerializerOptions options
         )
         {

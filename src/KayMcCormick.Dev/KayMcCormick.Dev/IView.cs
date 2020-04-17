@@ -7,6 +7,7 @@
     {
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMemberInSuper.Global
         T ViewModel { get ; }
     }
 }

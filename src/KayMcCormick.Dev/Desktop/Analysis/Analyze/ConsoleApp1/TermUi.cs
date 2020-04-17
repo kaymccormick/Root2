@@ -19,7 +19,9 @@ namespace ConsoleApp1
         private readonly TaskFactory                            factory ;
         private const    string                                 FrameTitle = "Details" ;
         private readonly IEnumerable < IDisplayableAppCommand > _commands ;
+#pragma warning disable 649
         private readonly ModelResources                         _modelResources ;
+#pragma warning restore 649
         private          int                                    _cols ;
         private          ConsoleDriver                          _consoleDriver ;
         private          FrameView                              _frame ;
@@ -28,6 +30,7 @@ namespace ConsoleApp1
         private          int                                    _rows ;
         private          TextView                               _textView ;
         private          Toplevel                               _toplevel ;
+        // ReSharper disable once NotAccessedField.Local
         private          Task                                   _commandTask ;
         private          Action < string >                      _commandOutputAction ;
 

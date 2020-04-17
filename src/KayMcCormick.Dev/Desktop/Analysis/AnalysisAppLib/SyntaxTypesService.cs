@@ -34,7 +34,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// Syntax types service.
     /// </summary>
-    public class SyntaxTypesService : ISyntaxTypesService , ISupportInitializeNotification
+    public sealed class SyntaxTypesService : ISyntaxTypesService , ISupportInitializeNotification
     {
         private static readonly string[] AssemblyRefs =
 {
@@ -93,8 +93,7 @@ namespace AnalysisAppLib
                 throw new InvalidOperationException ( "Bad key" ) ;
             }
 
-            if ( unqualifiedTypeName != null
-                 && key              == null )
+            if ( unqualifiedTypeName != null )
             {
                 key = new AppTypeInfoKey ( unqualifiedTypeName ) ;
             }
@@ -434,17 +433,16 @@ namespace AnalysisAppLib
                         if ( model1.Map.Values != null )
                         {
                             var result =
-                                Enumerable.Where < KeyValuePair < AppTypeInfoKey , AppTypeInfo > > (
-                                                                                                    model1
-                                                                                                       .Map
-                                                                                                       .dict
-                                                                                                  , pair
-                                                                                                        => pair
-                                                                                                          .Value
-                                                                                                          .Type
-                                                                                                          .Name
-                                                                                                           == rootType
-                                                                                                   ) ;
+                                model1
+                                   .Map
+                                   .dict.Where (
+                                                pair
+                                                    => pair
+                                                      .Value
+                                                      .Type
+                                                      .Name
+                                                       == rootType
+                                               ) ;
                             // var result = (valueCollection.Where ( t => {
                             // DebugUtils.WriteLine(t.Type.Name);
                             // var b = t.Type.Name
@@ -455,7 +453,6 @@ namespace AnalysisAppLib
                             // return b ;
                             // }
                             // )) ;
-                            AppTypeInfo ati = null ;
                             var keyValuePairs = result as KeyValuePair < AppTypeInfoKey , AppTypeInfo >[] ?? result.ToArray ( ) ;
                             if ( ! keyValuePairs.Any ( ) )
                             {
@@ -463,7 +460,7 @@ namespace AnalysisAppLib
                             }
                             else
                             {
-                                ati = keyValuePairs.First ( ).Value ;
+                                var ati = keyValuePairs.First ( ).Value ;
                                 DebugUtils.WriteLine ( $"{ati}" ) ;
                             }
                         }
@@ -774,6 +771,7 @@ namespace AnalysisAppLib
                                                           .First ( ) ;
                         // ReSharper disable once UnusedVariable
                         var typeSyntax = declarationSyntax.Type ;
+                        // ReSharper disable once UnusedVariable
                         var x1 = model.GetDeclaredSymbol ( declarationSyntax ) ;
 
                         var symbol1 = model.GetSymbolInfo ( typeSyntax ) ;

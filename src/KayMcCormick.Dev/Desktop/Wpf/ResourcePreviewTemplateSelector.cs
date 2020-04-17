@@ -9,7 +9,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of ResourceTemplateSelector
         /// <summary>
         /// </summary>
-        [ NotNull ] public override string TemplatePartName { get { return "Preview" ; } }
+        [ NotNull ] protected override string TemplatePartName { get { return "Preview" ; } }
         #endregion
     }
 }

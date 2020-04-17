@@ -5,7 +5,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     ///     Interaction logic for TypeControl2.xaml
     /// </summary>
-    public partial class TypeControl2 : UserControl
+    public sealed partial class TypeControl2 : UserControl
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TypeControl2" />

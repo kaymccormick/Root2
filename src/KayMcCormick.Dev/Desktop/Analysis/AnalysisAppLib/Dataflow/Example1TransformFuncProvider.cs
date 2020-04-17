@@ -133,7 +133,7 @@ namespace AnalysisAppLib.Dataflow
     /// <summary>
     /// 
     /// </summary>
-    public class Example1Out
+    public sealed class Example1Out
     {
         private ISymbol _symbol ;
         /// <summary>

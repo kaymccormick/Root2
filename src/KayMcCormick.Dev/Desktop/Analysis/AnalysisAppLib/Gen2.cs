@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// ReSharper disable once CheckNamespace
 namespace PocoSyntax
 {
     /// <summary>
@@ -28,7 +29,7 @@ namespace PocoSyntax
         // System.Collections.IList
         /// <inheritdoc />
         public void Insert ( Int32 index , Object value )
-            => _list.Insert ( ( Int32 ) index , ( PocoSyntaxToken ) value ) ;
+            => _list.Insert ( index , ( PocoSyntaxToken ) value ) ;
 
         // System.Collections.IList
         /// <inheritdoc />
@@ -36,7 +37,7 @@ namespace PocoSyntax
 
         // System.Collections.IList
         /// <inheritdoc />
-        public void RemoveAt ( Int32 index ) => _list.RemoveAt ( ( Int32 ) index ) ;
+        public void RemoveAt ( Int32 index ) => _list.RemoveAt ( index ) ;
 
         /// <inheritdoc />
         public Boolean IsReadOnly => _list.IsReadOnly ;
@@ -54,7 +55,7 @@ namespace PocoSyntax
         // System.Collections.ICollection
         /// <inheritdoc />
         public void CopyTo ( Array array , Int32 index )
-            => _list.CopyTo ( ( Array ) array , ( Int32 ) index ) ;
+            => _list.CopyTo ( array , index ) ;
 
         /// <inheritdoc />
         public Int32 Count => _list.Count ;
@@ -69,8 +70,7 @@ namespace PocoSyntax
         /// <inheritdoc />
         public IEnumerator GetEnumerator ( ) => _list.GetEnumerator ( ) ;
 
-        /// <inheritdoc />
-        IList _list = new List < PocoSyntaxToken > ( ) ;
+        readonly IList _list = new List < PocoSyntaxToken > ( ) ;
     }
 
     /// <summary>

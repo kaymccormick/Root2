@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KayMcCormick.Dev
+﻿namespace KayMcCormick.Dev
 {
     /// <summary>
     /// 
@@ -14,7 +8,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        string Title { get; set; }
+        string Title { get; }
         /// <summary>
         /// 
         /// </summary>

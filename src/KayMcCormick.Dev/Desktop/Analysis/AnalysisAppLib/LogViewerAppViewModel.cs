@@ -11,6 +11,7 @@
 #endregion
 using System.Collections.ObjectModel ;
 using System.Runtime.Serialization ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
@@ -18,6 +19,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    [ UsedImplicitly ]
     public class LogViewerAppViewModel : IViewModel
 
 

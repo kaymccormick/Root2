@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Diagnostics ;
 using System.IO ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib.Logging ;
 using NLog ;
@@ -20,6 +21,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
     ///     <seealso cref="ITestOutputHelper" /> instance supplied by Xunit through
     ///     the class constructor.
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class LoggingFixture : IDisposable
     {
         private readonly bool _disableLogging ;
@@ -53,7 +55,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         /// </remarks>
         /// <docgen category="Layout Options" order="1" />
 
-        public Layout Layout
+        [ CanBeNull ] public Layout Layout
         {
             get { return _xunitTarget?.Layout ; }
             set

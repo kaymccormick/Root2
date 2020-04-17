@@ -18,6 +18,7 @@ namespace AnalysisAppLib.Span
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class TokenSpanObject : SpanObject < SyntaxToken >
     {
         // ReSharper disable once NotAccessedField.Local

@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
 {
-    internal class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
+    internal sealed class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
             TransformManyBlock < Document , ILogInvocation > >
       , IHaveRejectBlock
     {

@@ -36,7 +36,7 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public delegate TBlock BlockFactory < TSource , TDest , out TBlock > (
+    public delegate TBlock BlockFactory < out TSource , TDest , out TBlock > (
         Func < TSource , Task < IEnumerable < TDest > > > transform
     )
         where TBlock : IPropagatorBlock < TSource , TDest > ;
@@ -47,7 +47,7 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public class
+    public sealed class
         ConcreteAnalysisBlockProvider < TSource , TDest , TBlock > : AnalysisBlockProvider < TSource
           , TDest , TBlock >
         where TBlock : IPropagatorBlock < TSource , TDest >

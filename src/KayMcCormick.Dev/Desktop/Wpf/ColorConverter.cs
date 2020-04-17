@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class ColorConverter : IValueConverter
+    public sealed class ColorConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>
@@ -26,22 +26,21 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-            SolidColorBrush brush ;
             if ( value == null )
             {
                 return new SolidColorBrush ( Colors.Transparent ) ;
             }
 
             var color = ( uint ) value ;
-            brush = new SolidColorBrush (
-                                         Color.FromArgb (
-                                                         ( byte ) ( ( color & 0xff000000 )
-                                                                    >> 24 )
-                                                       , ( byte ) ( ( color & 0xff0000 ) >> 16 )
-                                                       , ( byte ) ( ( color & 0xff00 )   >> 8 )
-                                                       , ( byte ) ( color & 0xff )
-                                                        )
-                                        ) ;
+            var brush = new SolidColorBrush (
+                                             Color.FromArgb (
+                                                             ( byte ) ( ( color & 0xff000000 )
+                                                                        >> 24 )
+                                                           , ( byte ) ( ( color & 0xff0000 ) >> 16 )
+                                                           , ( byte ) ( ( color & 0xff00 )   >> 8 )
+                                                           , ( byte ) ( color & 0xff )
+                                                            )
+                                            ) ;
             return brush ;
 
         }

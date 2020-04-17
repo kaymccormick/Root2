@@ -86,7 +86,7 @@ namespace KayMcCormick.Lib.Wpf
             RenderedTypeChanged += OnRenderedTypeChanged ;
             InitializeComponent ( ) ;
             var t = GetValue ( RenderedTypeProperty ) ;
-            DebugUtils.WriteLine ( "t: " + t ?? "null" ) ;
+            DebugUtils.WriteLine ( "t: " + t ) ;
             PopulateControl ( ( Type ) t ) ;
         }
 
@@ -150,13 +150,13 @@ namespace KayMcCormick.Lib.Wpf
 
         private void OnRenderedTypeChanged (
             object                                  sender
-          , RoutedPropertyChangedEventArgs < Type > e
+          , [ NotNull ] RoutedPropertyChangedEventArgs < Type > e
         )
         {
             PopulateControl ( e.NewValue ) ;
         }
 
-        private void PopulateControl ( Type myType )
+        private void PopulateControl ( [ CanBeNull ] Type myType )
         {
             IAddChild addChild ;
             DebugUtils.WriteLine ( myType?.FullName ?? "null" ) ;
@@ -275,7 +275,8 @@ namespace KayMcCormick.Lib.Wpf
             //old.AddChild ( tb ) ;
         }
 
-        private static object ToolTipContent ( Type myType , StackPanel pp = null )
+        [ NotNull ]
+        private static object ToolTipContent ( [ NotNull ] Type myType , StackPanel pp = null )
         {
             var provider = new CSharpCodeProvider ( ) ;
             var codeTypeReference = new CodeTypeReference ( myType ) ;
@@ -301,6 +302,7 @@ namespace KayMcCormick.Lib.Wpf
         }
 
 
+        // ReSharper disable once UnusedMember.Local
         private string NameForType ( Type myType )
         {
             // todo move to a better place
@@ -320,7 +322,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
-        private void HyperLinkOnRequestNavigate ( object sender , RequestNavigateEventArgs e )
+        private void HyperLinkOnRequestNavigate ( object sender , [ NotNull ] RequestNavigateEventArgs e )
         {
             //
             // if(findName == null)
@@ -375,6 +377,7 @@ namespace KayMcCormick.Lib.Wpf
             }
         }
 
+        [ CanBeNull ]
         private NavigationService NavigationService ( )
         {
             var navigationService = Target != null
@@ -393,7 +396,7 @@ namespace KayMcCormick.Lib.Wpf
 
     /// <summary>
     /// </summary>
-    public class TypeActivatedEventArgs : RoutedEventArgs
+    public sealed class TypeActivatedEventArgs : RoutedEventArgs
     {
         private Type _activatedType ;
         private Type _sourceType ;

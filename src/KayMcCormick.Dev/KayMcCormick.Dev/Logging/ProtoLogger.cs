@@ -29,8 +29,6 @@ namespace KayMcCormick.Dev.Logging
 
         private static ProtoLogger _instance ;
 
-        private readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer ;
-        
 
         public Layout XmlEventLayout { get ; }
 
@@ -49,9 +47,8 @@ namespace KayMcCormick.Dev.Logging
 
         public ProtoLogger ( )
         {
-            _xmlEventLayoutRenderer =
-                new MyLog4JXmlEventLayoutRenderer();
-            XmlEventLayout = new MyLayout(_xmlEventLayoutRenderer);
+            Log4JXmlEventLayoutRenderer xmlEventLayoutRenderer = new MyLog4JXmlEventLayoutRenderer() ;
+            XmlEventLayout = new MyLayout(xmlEventLayoutRenderer);
             _udpClient  = AppLoggingConfigHelper.UdpClient ;
             _ipEndPoint = AppLoggingConfigHelper.IpEndPoint ;
             _layout     = XmlEventLayout ;
@@ -64,6 +61,7 @@ namespace KayMcCormick.Dev.Logging
         }
 
 
+        [ NotNull ]
         private byte[] DefaultGetBytes ( LogEventInfo arg )
         {
             var encoding = Encoding.UTF8 ;

@@ -24,6 +24,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="member"></param>
         /// <param name="parameters"></param>
         /// <param name="xmlDoc"></param>
+        // ReSharper disable once UnusedMember.Global
         public MethodDocumentation (
             string                        elementId
           , [ NotNull ] Type              type
@@ -38,6 +39,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public MethodDocumentation ( ) { }
 
         /// <summary>
@@ -222,6 +224,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once MemberCanBeProtected.Global
         public CodeElementDocumentation ( ) { _xmlDoc = new XmlDocumentElementCollection ( ) ; }
 
         
@@ -231,6 +234,7 @@ namespace AnalysisAppLib.XmlDoc
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once MemberCanBeProtected.Global
         public Type Type { get { return _type ; } set { _type = value ; } }
 
         /// <summary>
@@ -310,7 +314,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
-    public class EnumMemberDocumentation : CodeElementDocumentation
+    public sealed class EnumMemberDocumentation : CodeElementDocumentation
     {
         /// <summary>
         /// 
@@ -331,7 +335,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
-    public class DelegateDocumentation : CodeElementDocumentation
+    public sealed class DelegateDocumentation : CodeElementDocumentation
     {
         /// <summary>
         /// 
@@ -352,7 +356,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
-    public class ConstructorDocumentation : MemberBaseDocumentation
+    public sealed class ConstructorDocumentation : MemberBaseDocumentation
     {
         /// <summary>
         /// 
@@ -591,7 +595,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// </summary>
     [ ContentProperty ( "Text" ) ]
-    public class XmlDocText : InlineDocElem
+    public sealed class XmlDocText : InlineDocElem
     {
         private string text ;
 
@@ -673,7 +677,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
-    public class Param : BlockDocElem
+    public sealed class Param : BlockDocElem
     {
         private string _name ;
 
@@ -707,17 +711,17 @@ namespace AnalysisAppLib.XmlDoc
         /// 
         /// </summary>
         /// <param name="elements"></param>
-        public InlineDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
+        protected InlineDocElem ( [ NotNull ] IEnumerable < XmlDocElement > elements ) : base ( elements ) { }
 
         /// <summary>
         /// 
         /// </summary>
-        public InlineDocElem ( ) { }
+        protected InlineDocElem ( ) { }
     }
 
     /// <summary>
     /// </summary>
-    public class Anchor : InlineDocElem
+    public sealed class Anchor : InlineDocElem
     {
         private string _href ;
 
@@ -789,7 +793,7 @@ namespace AnalysisAppLib.XmlDoc
 
     /// <summary>
     /// </summary>
-    public class Para : BlockDocElem
+    public sealed class Para : BlockDocElem
     {
         /// <summary>
         /// </summary>
@@ -948,6 +952,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class TypeDocInfo
     {
         private List < ConstructorDocumentation > constructorDocumentation = new List < ConstructorDocumentation > ( ) ;

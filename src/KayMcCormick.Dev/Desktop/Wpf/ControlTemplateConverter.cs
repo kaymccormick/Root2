@@ -10,7 +10,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class ControlTemplateConverter : IValueConverter
+    public sealed class ControlTemplateConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

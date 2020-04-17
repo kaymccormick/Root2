@@ -17,7 +17,7 @@ namespace AnalysisAppLib.Command
     /// <summary>
     /// 
     /// </summary>
-    public class CodeGenCommand : IBaseLibCommand
+    public sealed class CodeGenCommand : IBaseLibCommand
     {
         private static readonly string[] AssemblyRefs = new[]
                                                 {

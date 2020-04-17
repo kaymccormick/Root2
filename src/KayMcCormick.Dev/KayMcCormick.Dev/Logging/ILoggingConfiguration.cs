@@ -59,6 +59,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         ///     Enable XML File target
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         bool IsEnabledXmlFileTarget { get ; set ; }
     }
 }

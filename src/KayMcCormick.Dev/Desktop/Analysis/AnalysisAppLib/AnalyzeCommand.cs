@@ -26,7 +26,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// Generic analyze command.
     /// </summary>
-    public class AnalyzeCommand : IAnalyzeCommand
+    public sealed class AnalyzeCommand : IAnalyzeCommand
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 

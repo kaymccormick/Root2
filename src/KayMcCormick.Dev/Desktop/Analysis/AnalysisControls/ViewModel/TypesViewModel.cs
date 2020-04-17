@@ -26,7 +26,7 @@ namespace AnalysisControls.ViewModel
     /// <summary>
     /// </summary>
     [ NoJsonConverter ]
-    public class TypesViewModel : ITypesViewModel
+    public sealed class TypesViewModel : ITypesViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
@@ -54,6 +54,7 @@ namespace AnalysisControls.ViewModel
 #else
 #endif
 
+        // ReSharper disable once CollectionNeverUpdated.Local
         private readonly Dictionary < Type , TypeDocInfo > _docs =
             new Dictionary < Type , TypeDocInfo > ( ) ;
 
@@ -141,7 +142,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="identifier"></param>
         /// <returns></returns>
         [ CanBeNull ]
-        public AppTypeInfo GetAppTypeInfo ( object identifier )
+        public AppTypeInfo GetAppTypeInfo ( [ NotNull ] object identifier )
         {
             AppTypeInfoKey key = null ;
             string unqualifiedTypeName = null ;
@@ -162,8 +163,7 @@ namespace AnalysisControls.ViewModel
                 throw new InvalidOperationException ( "Bad key" ) ;
             }
 
-            if ( unqualifiedTypeName != null
-                 && key              == null )
+            if ( unqualifiedTypeName != null )
             {
                 key = new AppTypeInfoKey ( unqualifiedTypeName ) ;
             }
@@ -509,7 +509,7 @@ namespace AnalysisControls.ViewModel
                                                             .IsAssignableFrom ( t )
                                                         )
                                                  .ToList ( ) ;
-            Root = CollectTypeInfos ( CSharpRootSyntaxNodeType , null ) ;
+            Root = CollectTypeInfos ( CSharpRootSyntaxNodeType ) ;
         }
         #endregion
 
@@ -550,7 +550,7 @@ namespace AnalysisControls.ViewModel
                 var mapKey = kvp.Key ;
                 var t = ( AppTypeInfo ) Map[ mapKey ] ;
                 var colType = $"{_pocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
-                collectionMap[ ( string ) t.Type.Name ] = colType ;
+                collectionMap[ t.Type.Name ] = colType ;
             }
 
             return collectionMap ;

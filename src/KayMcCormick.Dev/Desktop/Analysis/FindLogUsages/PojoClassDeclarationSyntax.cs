@@ -9,23 +9,3 @@
 // 
 // ---
 #endregion
-using System.Collections.Generic ;
-
-namespace FindLogUsages
-{
-    public class PojoClassDeclarationSyntax
-    {
-        public PojoClassDeclarationSyntax (
-            PocoSyntaxToken identifier
-          , List < object >    members
-        )
-        {
-            Identifier = identifier ;
-            Members    = members ;
-        }
-
-        public PocoSyntaxToken Identifier { get ; }
-
-        public List < object > Members { get ; }
-    }
-}

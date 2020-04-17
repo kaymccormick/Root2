@@ -14,7 +14,7 @@ namespace KayMcCormick.Lib.Wpf
     ///     <para></para>
     /// </summary>
     /// <seealso cref="System.Windows.Controls.StyleSelector" />
-    public class ResourceViewItemContainerStyleSelector : StyleSelector
+    public sealed class ResourceViewItemContainerStyleSelector : StyleSelector
     {
         #region Overrides of StyleSelector
         /// <summary>

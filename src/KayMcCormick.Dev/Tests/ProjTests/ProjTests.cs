@@ -68,6 +68,8 @@ using File = System.IO.File;
 using Process = System.Diagnostics.Process;
 using XamlReader = System.Windows.Markup.XamlReader;
 using XamlWriter = System.Windows.Markup.XamlWriter;
+// ReSharper disable UnusedVariable
+// ReSharper disable RedundantOverriddenMember
 
 namespace ProjTests
 {
@@ -141,6 +143,7 @@ namespace ProjTests
         public void TestRead ( )
         {
             var fileStream = new FileStream ( TypesViewModelXamlPath , FileMode.Open ) ;
+            // ReSharper disable once UnusedVariable
             var x = XamlReader.Load ( fileStream ) ;
 
         }
@@ -186,6 +189,7 @@ namespace ProjTests
         [WpfFact]
         public void TestXaml3()
         {
+            // ReSharper disable once UnusedVariable
             var model = new TypesViewModel(new JsonSerializerOptions());
             var output = new StringWriter();
             Action<string> writeOut = output.WriteLine;
@@ -301,6 +305,7 @@ namespace ProjTests
             var xxMyXmlWriter = new MyXmlWriter ( writer ) ;
             XamlWriter.Save ( w , xxMyXmlWriter ) ;
             var xdoc = new XDocument ( ) ;
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             XDocument.Parse ( xaml ) ;
 
 
@@ -349,6 +354,7 @@ namespace ProjTests
                                                                             )
                                                    ) ;
             Assert.NotNull ( proxy ) ;
+            // ReSharper disable once UnusedVariable
             var r = proxy.TransformXaml ( new Button { Content = "Hello" } ) ;
         }
 
@@ -442,7 +448,7 @@ namespace ProjTests
         }
 
 #endif
-        public Guid ApplicationGuid { get ; set ; } =
+        public Guid ApplicationGuid { get ; } =
             new Guid ( "d4870a23-f1ad-4618-b955-6b342c6afab6" ) ;
 
         [ WpfFact ]
@@ -535,6 +541,7 @@ namespace ProjTests
         }
 
 
+        // ReSharper disable once UnusedMember.Local
         private int CountChildren ( [ NotNull ] DependencyObject tv )
         {
             var count = 1 ;
@@ -625,10 +632,12 @@ namespace ProjTests
             memoryStream.Flush ( ) ;
             var bytes = new byte[ memoryStream.Length ] ;
             memoryStream.Seek ( 0 , SeekOrigin.Begin ) ;
-            var read = memoryStream.Read ( bytes , 0 , ( int ) memoryStream.Length ) ;
+            memoryStream.Read ( bytes , 0 , ( int ) memoryStream.Length ) ;
+            // ReSharper disable once UnusedVariable
             var json = Encoding.UTF8.GetString ( bytes ) ;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void DumpTree (
             AllResourcesTree                             tree
           , [ NotNull ] IEnumerable < ResourceNodeInfo > modelAllResourcesCollection
@@ -936,8 +945,11 @@ namespace ProjTests
         public void TestRewrite ( )
         {
             var ctx = AnalysisService.Parse ( Resources.Program_Parse , "test" ) ;
+            // ReSharper disable once UnusedVariable
             var comp = ctx.CompilationUnit ;
+            // ReSharper disable once UnusedVariable
             var tree = ctx.CurrentModel.SyntaxTree ;
+            // ReSharper disable once UnusedVariable
             var codeAnalyseContext = AnalysisService.Parse ( Resources.Program_Parse , "test" ) ;
             // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
             // var s = new StringWriter ( ) ;
@@ -951,6 +963,7 @@ namespace ProjTests
         [ Fact ]
         public void TestColorConverter ( )
         {
+            // ReSharper disable once UnusedVariable
             var c = new ColorConverter ( ) ;
         }
 
@@ -1047,6 +1060,7 @@ namespace ProjTests
                 s.Seek ( 0 , SeekOrigin.Begin ) ;
                 var bytes = new byte[ s.Length ] ;
                 var sLength = ( int ) s.Length ;
+                // ReSharper disable once UnusedVariable
                 var read = s.Read ( bytes , 0 , sLength ) ;
 
                 var view = lifetimescope.Resolve < EventLogView > ( ) ;
@@ -1221,6 +1235,7 @@ namespace ProjTests
             // ReSharper disable once AssignNullToNotNullAttribute
             var b = new Baml2006Reader ( y , new XamlReaderSettings ( ) ) ;
             var c = b.SchemaContext ;
+            // ReSharper disable once UnusedVariable
             var t = c.GetXamlType ( typeof ( TypesViewModel ) ) ;
         }
 
@@ -1229,7 +1244,9 @@ namespace ProjTests
         {
             AppLoggingConfigHelper.EnsureLoggingConfigured ( SlogMethod ) ;
 
+#pragma warning disable 1998
             async Task < IAppCommandResult > CommandFunc ( LambdaAppCommand command )
+#pragma warning restore 1998
             {
                 Logger.Info ( $"{command}" ) ;
                 Logger.Info ( $"{command.Argument}" ) ;
@@ -1269,10 +1286,12 @@ namespace ProjTests
             var context = XamlReader.GetWpfSchemaContext ( ) ;
             var xamlType = context.GetXamlType ( typeof ( Type ) ) ;
             var xamlType2 = context.GetXamlType ( typeof ( SyntaxFieldInfo ) ) ;
+            // ReSharper disable once UnusedVariable
             var typeMember = xamlType2.GetMember ( "Type" ) ;
 
             var valueSerializer = xamlType.ValueSerializer ;
             var typeConverter = xamlType.TypeConverter ;
+            // ReSharper disable once UnusedVariable
             var str1 =
                 typeConverter.ConverterInstance.ConvertToString ( typeof ( List < string > ) ) ;
             // var str = valueSerializer.ConverterInstance.ConvertToString (

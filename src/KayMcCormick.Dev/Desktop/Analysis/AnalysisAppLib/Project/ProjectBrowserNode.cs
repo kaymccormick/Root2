@@ -16,7 +16,7 @@ namespace AnalysisAppLib.Project
     /// <summary>
     /// 
     /// </summary>
-    public class ProjectBrowserNode : BrowserNode , IProjectBrowserNode , IBrowserNode
+    public sealed class ProjectBrowserNode : BrowserNode , IProjectBrowserNode , IBrowserNode
     {
         private string _platform ;
         private string _solutionPath ;

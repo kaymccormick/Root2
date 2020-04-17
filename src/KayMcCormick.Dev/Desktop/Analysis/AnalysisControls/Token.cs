@@ -12,19 +12,17 @@
 using System.Globalization ;
 using System.Windows ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Token : UIElement
+    public sealed class Token : UIElement
     {
         private readonly bool _newLine ;
 
-        private readonly string _text ;
-
-        private readonly Typeface      _typeface ;
         private readonly Size          _desiredSize ;
         private readonly FormattedText _formattedText ;
 
@@ -37,16 +35,15 @@ namespace AnalysisControls
         /// <param name="solidColorBrush"></param>
         /// <param name="newLine"></param>
         // ReSharper disable once UnusedParameter.Local
-        public Token ( int rawKind , string text , SolidColorBrush solidColorBrush , bool newLine )
+        public Token ( int rawKind , string text , [ CanBeNull ] SolidColorBrush solidColorBrush , bool newLine )
         {
-            _text     = text ;
             _newLine  = newLine ;
-            _typeface = new Typeface ( "Courier New" ) ;
+            var typeface = new Typeface ( "Courier New" ) ;
             _formattedText = new FormattedText (
-                                                _text
+                                                text
                                               , CultureInfo.CurrentCulture
                                               , FlowDirection.LeftToRight
-                                              , _typeface
+                                              , typeface
                                               , 20
                                               , solidColorBrush ?? Brushes.Black
                                               , new NumberSubstitution (

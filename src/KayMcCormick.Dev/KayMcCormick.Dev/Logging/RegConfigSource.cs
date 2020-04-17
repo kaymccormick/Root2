@@ -2,10 +2,6 @@
 {
     // TODO implement
 
-    internal class RegConfigSource
-    {
-    }
-
 
     // internal class ExecutionContextImpl : ExecutionContext
     //

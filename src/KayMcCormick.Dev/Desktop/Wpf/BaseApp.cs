@@ -5,6 +5,7 @@ using System.Diagnostics ;
 using System.Windows ;
 using Autofac ;
 using Autofac.Core ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
@@ -50,11 +51,12 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="modules"></param>
         /// <param name="initAction"></param>
         protected BaseApp (
-            ApplicationInstanceBase applicationInstance         = null
+            [ CanBeNull ] ApplicationInstanceBase applicationInstance         = null
           , bool                    disableLogging              = false
           , bool                    disableRuntimeConfiguration = false
           , bool                    disableServiceHost          = false
-          , IModule[]               modules                     = null
+          , [ CanBeNull ] IModule[]               modules                     = null
+            // ReSharper disable once UnusedParameter.Local
           , Action                  initAction                  = null
         )
         {
@@ -121,13 +123,14 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// 
         /// </summary>
-        public abstract Guid ApplicationGuid { get ; }
+        protected abstract Guid ApplicationGuid { get ; }
 
         /// <summary>
         /// </summary>
         /// <param name="tag"></param>
         /// <returns></returns>
-        public virtual ILifetimeScope BeginLifetimeScope ( object tag )
+        [ NotNull ]
+        public virtual ILifetimeScope BeginLifetimeScope ( [ NotNull ] object tag )
         {
             return Scope.BeginLifetimeScope ( tag ) ;
         }
@@ -135,6 +138,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public virtual ILifetimeScope BeginLifetimeScope ( )
         {
             return Scope.BeginLifetimeScope ( ) ;
@@ -215,6 +219,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         protected virtual IEnumerable < IModule > GetModules ( )
         {
             return Array.Empty < IModule > ( ) ;

@@ -44,8 +44,8 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , DataTemplateKey       value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] DataTemplateKey       value
           , JsonSerializerOptions options
         )
         {

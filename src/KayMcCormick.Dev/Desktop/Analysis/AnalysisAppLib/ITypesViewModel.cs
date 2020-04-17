@@ -29,12 +29,12 @@ namespace AnalysisAppLib
 
         /// <summary>
         /// </summary>
-        uint[] HierarchyColors { get ; set ; }
+        uint[] HierarchyColors { get ; }
 
         /// <summary>
         /// Home of all the <see cref="AppTypeInfo"/> instances.
         /// </summary>
-        TypeMapDictionary Map { get ; set ; }
+        TypeMapDictionary Map { get ; }
 
         /// <summary>
         /// <see cref="AppTypeInfo"/> ordered by structure and natural containment.

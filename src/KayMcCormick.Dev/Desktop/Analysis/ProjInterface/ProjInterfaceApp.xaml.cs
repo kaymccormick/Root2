@@ -7,6 +7,7 @@ using System.Windows ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
@@ -91,7 +92,7 @@ namespace ProjInterface
                                 }
                                 catch ( Exception ex )
                                 {
-
+                                    // ignored
                                 }
                             }
                         }
@@ -104,7 +105,7 @@ namespace ProjInterface
             //PopulateJsonConverters ( disableLogging ) ;
         }
 
-        private void DumpTypeInstanceInfo ( object val )
+        private void DumpTypeInstanceInfo ( [ NotNull ] object val )
         {
             if ( val.GetType ( ).IsPrimitive )
             {
@@ -120,7 +121,7 @@ namespace ProjInterface
                 {
                     v = nonPublicField.GetValue ( val ) ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
                 {
                     DebugUtils.WriteLine ( "Unable to get field value" ) ;
                 }
@@ -161,7 +162,7 @@ namespace ProjInterface
             }
         }
 
-        public override Guid ApplicationGuid { get ; } =
+        protected override Guid ApplicationGuid { get ; } =
             new Guid ( "9919c0fb-916c-4804-81de-f272a1b585f7" ) ;
 
         protected override void OnStartup ( StartupEventArgs e )
@@ -195,7 +196,7 @@ namespace ProjInterface
         }
 
         #region Implementation of IResourceResolver
-        public object ResolveResource ( object resourceKey ) { return TryFindResource(resourceKey) ; }
+        public object ResolveResource ( [ NotNull ] object resourceKey ) { return TryFindResource(resourceKey) ; }
         #endregion
     }
 

@@ -39,6 +39,7 @@ namespace KayMcCormick.Dev.Application
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once EventNeverSubscribedTo.Global
         public virtual event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// todo call from wpf
-        public virtual void Shutdown ( ) { }
+        protected virtual void Shutdown ( ) { }
 
         /// <summary>
         /// </summary>

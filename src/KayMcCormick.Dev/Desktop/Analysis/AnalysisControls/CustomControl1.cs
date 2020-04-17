@@ -30,7 +30,7 @@ namespace AnalysisControls
     ///     Go ahead and use your control in the XAML file.
     ///     <MyNamespace:CustomControl1 />
     /// </summary>
-    public class CustomControl1 : Control
+    public sealed class CustomControl1 : Control
     {
         /// <summary>
         /// 

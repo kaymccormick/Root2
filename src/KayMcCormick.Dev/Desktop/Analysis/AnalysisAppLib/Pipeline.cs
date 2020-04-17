@@ -43,7 +43,9 @@ namespace AnalysisAppLib
         private DataflowLinkOptions _linkOptions =
             new DataflowLinkOptions { PropagateCompletion = true } ;
 
+#pragma warning disable 649
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
+#pragma warning restore 649
         private BufferBlock < RejectedItem >                           _rejectBlock ;
 
         /// <summary>
@@ -67,7 +69,6 @@ namespace AnalysisAppLib
         public IPropagatorBlock < AnalysisRequest , AnalysisRequest > CurrentBlock
         {
             get { return _currentBlock ; }
-            set { _currentBlock = value ; }
         }
 
         /// <summary>
@@ -325,6 +326,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class MyTest
     {
     }

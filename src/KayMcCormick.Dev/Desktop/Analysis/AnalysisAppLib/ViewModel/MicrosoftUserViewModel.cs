@@ -25,6 +25,7 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public sealed class MicrosoftUserViewModel : IViewModel , INotifyPropertyChanged
     {
         private          IAccount                             _account ;
@@ -56,6 +57,7 @@ namespace AnalysisAppLib.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool CanLogin { get { return Account == null ; } }
 
         /// <summary>

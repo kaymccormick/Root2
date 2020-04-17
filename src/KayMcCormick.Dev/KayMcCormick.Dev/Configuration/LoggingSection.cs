@@ -1,4 +1,5 @@
 ﻿using System.Configuration ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
@@ -8,6 +9,7 @@ namespace KayMcCormick.Dev.Configuration
     /// <summary>Configuration section handler for container helper settings.</summary>
     /// <seealso cref="System.Configuration.ConfigurationSection" />
     [ ConfigTarget ( typeof ( LoggerSettings ) ) ]
+    [ UsedImplicitly ]
     public class LoggingSection : ConfigurationSection
 
     {
@@ -19,6 +21,7 @@ namespace KayMcCormick.Dev.Configuration
                                   , IsRequired   = false
                                   , IsKey        = false
                                 ) ]
+        // ReSharper disable once UnusedMember.Global
         public bool ? IsEnabledConsoleTarget
         {
             get { return ( bool ? ) this[ nameof ( IsEnabledConsoleTarget ) ] ; }
@@ -33,6 +36,7 @@ namespace KayMcCormick.Dev.Configuration
                                   , IsRequired   = false
                                   , IsKey        = false
                                 ) ]
+        [ UsedImplicitly ]
         public bool ? IsEnabledCacheTarget
         {
             get { return ( bool ? ) this[ nameof ( IsEnabledCacheTarget ) ] ; }
@@ -47,6 +51,7 @@ namespace KayMcCormick.Dev.Configuration
                                   , IsRequired   = false
                                   , IsKey        = false
                                 ) ]
+        // ReSharper disable once UnusedMember.Global
         public bool ? LogThrowExceptions
         {
             get { return ( bool ? ) this[ nameof ( LogThrowExceptions ) ] ; }

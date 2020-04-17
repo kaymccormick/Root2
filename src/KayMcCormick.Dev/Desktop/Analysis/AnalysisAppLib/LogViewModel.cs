@@ -52,7 +52,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        public ViewerLoggerInfo RootLogger { get ; set ; }
+        public ViewerLoggerInfo RootLogger { get ; }
 
         /// <summary>
         /// 
@@ -62,6 +62,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once CollectionNeverQueried.Global
         public LogEventInstanceObservableCollection LogEntries { get ; }
 
         /// <summary>

@@ -60,6 +60,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         public async Task DefaultVisitAsync ( SyntaxNode node )
         {
             await Task.Run ( ( ) => DefaultVisit ( node ) ) ;
@@ -92,6 +93,7 @@ namespace AnalysisControls
             var b = VisualTreeHelper.GetDescendantBounds ( FlowViewer ) ;
             Logger.Info ( "bounds is {b}" , b ) ;
             var fileLinePositionSpan = node.GetLocation ( ).GetMappedLineSpan ( ) ;
+            // ReSharper disable once UnusedVariable
             var x = fileLinePositionSpan.StartLinePosition ;
             DependencyObject elem = FlowViewer.ScrollViewer ;
             if ( elem != null )
@@ -218,7 +220,7 @@ namespace AnalysisControls
 
 
             var resource = _document.TryFindResource ( token.Kind ( ) ) ;
-            if ( resource is Style style )
+            if ( resource is Style )
             {
             }
 

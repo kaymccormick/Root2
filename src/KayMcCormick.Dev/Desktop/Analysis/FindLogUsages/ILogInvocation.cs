@@ -47,7 +47,7 @@ namespace FindLogUsages
         /// <summary>
         /// 
         /// </summary>
-        string MethodName { get ; set ; }
+        string MethodName { get ; }
 
         /// <summary>
         /// 
@@ -67,6 +67,7 @@ namespace FindLogUsages
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         Location Location { get ; set ; }
     }
 }

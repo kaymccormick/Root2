@@ -118,6 +118,7 @@ namespace AnalysisAppLib.Explorer
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once EventNeverSubscribedTo.Global
         public event PropertyChangedEventHandler PropertyChanged ;
 
         [ NotifyPropertyChangedInvocator ]

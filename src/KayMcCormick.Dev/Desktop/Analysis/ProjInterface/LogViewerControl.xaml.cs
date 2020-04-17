@@ -54,7 +54,7 @@ namespace ProjInterface
 
         private void DefViewOnCollectionChanged (
             object                           sender
-          , NotifyCollectionChangedEventArgs e
+          , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
             DebugUtils.WriteLine ( e.Action ) ;
@@ -78,7 +78,9 @@ namespace ProjInterface
         }
         #endregion
 
-        private void CVR ( object sender , CollectionViewRegisteringEventArgs e )
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        private void CVR ( object sender , [ NotNull ] CollectionViewRegisteringEventArgs e )
         {
             var groupDescription = new PropertyGroupDescription ( ) ;
             if ( ! e.CollectionView.CanGroup )
@@ -123,9 +125,11 @@ namespace ProjInterface
             e.CollectionView.GroupDescriptions.Add ( groupDescription ) ;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void Dg_OnAutoGeneratingColumn (
+            // ReSharper disable once UnusedParameter.Local
             object                                sender
-          , DataGridAutoGeneratingColumnEventArgs e
+          , [ NotNull ] DataGridAutoGeneratingColumnEventArgs e
         )
         {
             if ( e.PropertyName == "Properties" )
@@ -142,7 +146,9 @@ namespace ProjInterface
             }
         }
 
-        private void Dg_OnSorting ( object sender , DataGridSortingEventArgs e )
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        private void Dg_OnSorting ( object sender , [ NotNull ] DataGridSortingEventArgs e )
         {
             e.Handled = true ;
         }

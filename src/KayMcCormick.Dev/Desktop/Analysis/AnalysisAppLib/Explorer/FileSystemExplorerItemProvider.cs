@@ -19,6 +19,7 @@ namespace AnalysisAppLib.Explorer
     /// 
     /// </summary>
     public sealed class 
+        // ReSharper disable once UnusedType.Global
         FileSystemExplorerItemProvider : IExplorerItemProvider
     {
         private readonly AppExplorerItem root ;

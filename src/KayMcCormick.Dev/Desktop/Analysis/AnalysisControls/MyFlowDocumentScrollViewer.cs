@@ -12,6 +12,7 @@
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace AnalysisControls
@@ -19,6 +20,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class MyFlowDocumentScrollViewer : FlowDocumentScrollViewer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -37,7 +39,7 @@ namespace AnalysisControls
         ///     Gets the scroll viewer contained within the FlowDocumentScrollViewer
         ///     control
         /// </summary>
-        public ScrollViewer ScrollViewer
+        [ CanBeNull ] public ScrollViewer ScrollViewer
         {
             get
             {

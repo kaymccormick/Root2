@@ -11,7 +11,6 @@ using System.Windows.Input ;
 using System.Windows.Navigation ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
-using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
@@ -97,7 +96,7 @@ namespace ProjInterface
         }
 
 
-        public string ViewTitle { get { return _viewTitle ; } }
+        [ NotNull ] public string ViewTitle { get { return _viewTitle ; } }
 
 
         private async void CommandBinding_OnExecuted (
@@ -139,7 +138,10 @@ namespace ProjInterface
                             , new Filter
                               {
                                   Extension = ".cs" , Description = "CSharp source files",
+                                  // ReSharper disable once UnusedAnonymousMethodSignature
+#pragma warning disable 1998
                                   Handler = async delegate ( string filename ) {
+#pragma warning restore 1998
                                       return ;
                                   }
                               }
@@ -184,6 +186,7 @@ namespace ProjInterface
                     return ;
                 }
 
+                // ReSharper disable once UnusedVariable
                 var view = scope.ResolveKeyed < IControlView > (
                                                                 ApplicationEntityIds.File
                                                               , new NamedParameter (
@@ -192,8 +195,6 @@ namespace ProjInterface
                                                                                    )
                                                                ) ;
             }
-
-            return ;
         }
 
         private void QuitCommandOnExecuted ( object sender , ExecutedRoutedEventArgs e )
@@ -237,6 +238,9 @@ namespace ProjInterface
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable once UnusedParameter.Local
         private void ExecutePythonCode ( object sender , ExecutedRoutedEventArgs e )
         {
 #if PYTHON
@@ -251,6 +255,8 @@ namespace ProjInterface
         //           , new TypeControl.TypeActivatedEventHandler ( Target )
         //            ) ;
 
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private void Target ( object sender , [ NotNull ] TypeActivatedEventArgs e )
         {
             if ( e == null )
@@ -278,19 +284,17 @@ namespace ProjInterface
         }
 
 #region Implementation of IResourceResolver
-        public object ResolveResource ( object resourceKey )
+        public object ResolveResource ( [ NotNull ] object resourceKey )
         {
             return TryFindResource ( resourceKey ) ;
         }
 #endregion
     }
 
-    public class Filter
+    public sealed class Filter
     {
         private string _extension ;
         private string _description ;
-
-        public Filter ( ) { }
 
         public string Extension { get { return _extension ; } set { _extension = value ; } }
 

@@ -11,7 +11,7 @@
 #endregion
 namespace ConsoleApp1
 {
-    public class SToken
+    public sealed class SToken
     {
         public SToken ( ) { }
 
@@ -21,8 +21,8 @@ namespace ConsoleApp1
             TokenValue = tokenValue ;
         }
 
-        public string TokenKind { get ; set ; }
+        public string TokenKind { get ; }
 
-        public string TokenValue { get ; set ; }
+        public string TokenValue { get ; }
     }
 }

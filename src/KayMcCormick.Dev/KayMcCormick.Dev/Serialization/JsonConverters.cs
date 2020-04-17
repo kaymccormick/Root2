@@ -205,9 +205,6 @@ namespace KayMcCormick.Dev.Serialization
         #endregion
     }
 
-    /// <summary>
-    /// 
-    /// </summary
     [PurposeMetadata("JSON Converter")]
     [ConvertsTypeMetadata(typeof(LifetimeScope))]
     public sealed class JsonLifetimeScopeConverter : JsonConverter < LifetimeScope >

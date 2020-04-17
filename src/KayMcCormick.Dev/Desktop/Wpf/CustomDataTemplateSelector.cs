@@ -56,7 +56,6 @@ namespace KayMcCormick.Lib.Wpf
                         break ;
                     }
 
-                    var orig = fe ;
                     var visualParent = ( FrameworkElement ) VisualTreeHelper.GetParent ( fe ) ;
                     //fe = ( FrameworkElement ) LogicalTreeHelper.GetParent ( fe ) ;
                     fe = visualParent ;

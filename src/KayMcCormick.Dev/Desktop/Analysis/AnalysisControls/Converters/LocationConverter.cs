@@ -8,7 +8,7 @@ namespace AnalysisControls.Converters
     /// <summary>
     /// 
     /// </summary>
-    public class LocationConverter : IValueConverter
+    public sealed class LocationConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

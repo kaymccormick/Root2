@@ -56,6 +56,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string PartName { get { return _partName ; } set { _partName = value ; } }
 
         /// <summary>
@@ -66,6 +67,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool IsExpanded { get { return isExpanded ; } set { isExpanded = value ; } }
     }
 }

@@ -6,7 +6,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class PaneWrapper : IAddChild
+    public sealed class PaneWrapper : IAddChild
     {
         private LayoutAnchorable _anchorable ;
 
@@ -38,11 +38,12 @@ namespace KayMcCormick.Lib.Wpf
 
     /// <summary>
     /// </summary>
-    public class PaneService
+    public sealed class PaneService
     {
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public PaneWrapper GetPane ( )
         {
 //            LayoutAnchorablePane model = new LayoutAnchorablePane();
@@ -53,7 +54,7 @@ namespace KayMcCormick.Lib.Wpf
 
     /// <summary>
     /// </summary>
-    public class LayoutService
+    public sealed class LayoutService
     {
         private readonly LayoutAnchorablePane _anchorablePane ;
 
@@ -69,7 +70,8 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         /// <param name="wrapper"></param>
         /// <param name="makeActive"></param>
-        public void AddToLayout ( PaneWrapper wrapper , bool makeActive = true )
+        // ReSharper disable once UnusedMember.Global
+        public void AddToLayout ( [ NotNull ] PaneWrapper wrapper , bool makeActive = true )
         {
             _anchorablePane.Children.Add ( wrapper.Anchorable ) ;
             if ( makeActive )

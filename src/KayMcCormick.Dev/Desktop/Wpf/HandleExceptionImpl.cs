@@ -21,7 +21,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class HandleExceptionImpl : IHandleException
+    public sealed class HandleExceptionImpl : IHandleException
     {
         #region Implementation of IHandleException
         /// <summary>

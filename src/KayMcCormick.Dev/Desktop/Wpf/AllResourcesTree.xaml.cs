@@ -8,6 +8,7 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using NLog ;
+// ReSharper disable RedundantOverriddenMember
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -439,7 +440,7 @@ namespace KayMcCormick.Lib.Wpf
 #else
     /// <summary>
     /// </summary>
-    public class TreeView1 : TreeView
+    public sealed class TreeView1 : TreeView
     {
     }
 #endif
@@ -462,7 +463,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <seealso cref="KayMcCormick.Lib.Wpf.IControlView" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     [ TitleMetadata ( "Resources Explorer" ) ]
-    public partial class AllResourcesTree : UserControl
+    public sealed partial class AllResourcesTree : UserControl
       , IViewWithTitle
       , IView < AllResourcesTreeViewModel >
       , IControlView

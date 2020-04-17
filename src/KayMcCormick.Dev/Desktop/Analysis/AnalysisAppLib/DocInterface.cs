@@ -20,7 +20,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// Implementation of <see cref="IDocInterface"/>
     /// </summary>
-    public class DocInterface : IDocInterface
+    public sealed class DocInterface : IDocInterface
     {
 
         private readonly Dictionary<Type, TypeDocInfo>
@@ -50,6 +50,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public DocumentCollection DocumentCollection { get { return _documentCollection ; } set { _documentCollection = value ; } }
         #endregion
     }

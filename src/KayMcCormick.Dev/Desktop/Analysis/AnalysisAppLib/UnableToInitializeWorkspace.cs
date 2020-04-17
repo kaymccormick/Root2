@@ -11,6 +11,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class UnableToInitializeWorkspace : Exception
     {
         /// <summary>

@@ -22,7 +22,7 @@ namespace KayMcCormick.Dev.Attributes
     /// 
     [ MetadataAttribute ]
     // ReSharper disable once UnusedType.Global
-    public class TitleMetadataAttribute : Attribute
+    public sealed class TitleMetadataAttribute : Attribute
     {
         /// <summary>
         ///     Constructor
@@ -40,12 +40,11 @@ namespace KayMcCormick.Dev.Attributes
     /// 
     /// </summary>
     [MetadataAttribute]
-    public class PurposeMetadataAttribute : Attribute
+    public sealed class PurposeMetadataAttribute : Attribute
     {
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="title"></param>
         public PurposeMetadataAttribute(string purpose) { Purpose = purpose; }
 
         /// <summary>

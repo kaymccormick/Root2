@@ -97,7 +97,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
             else
             {
-                parent.Children?.Add ( r ) ;
+                parent.Children.Add ( r ) ;
 
                 r.Depth = parent.Depth + 1 ;
             }

@@ -16,7 +16,6 @@ using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
 using Autofac ;
-using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using NLog ;
 
@@ -25,9 +24,9 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// </summary>
     [ MarkupExtensionReturnType ( typeof ( IEnumerable ) ) ]
-    public class ResolveEnumerableExtension : MarkupExtension
+    public sealed class ResolveEnumerableExtension : MarkupExtension
     {
-        private Type _componentType ;
+        private readonly Type _componentType ;
 
         // public static readonly DependencyProperty ParameterProperty =
         //     DependencyProperty.Register (
@@ -41,6 +40,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public ResolveEnumerableExtension ( ) { }
 
         /// <summary>
@@ -56,7 +56,6 @@ namespace KayMcCormick.Lib.Wpf
         public Type ComponentType
         {
             get { return _componentType ; }
-            set { _componentType = value ; }
         }
 
         /// <summary>
@@ -82,7 +81,8 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
+        // ReSharper disable once AnnotateNotNullTypeMember
+        public override object ProvideValue ( IServiceProvider serviceProvider )
         {
             var resolveEnumerableExtensionName = "ResolveEnumerableExtension" ;
             GlobalDiagnosticsContext.Set ( "CurrentOperation" , resolveEnumerableExtensionName ) ;
@@ -99,6 +99,7 @@ namespace KayMcCormick.Lib.Wpf
                     }
 
 
+                    // ReSharper disable once UnusedVariable
                     var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                              typeof (
                                                                                  IAmbientProvider )

@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev
 {
@@ -9,7 +10,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public string Key => "Error" ;
+        [ NotNull ] public string Key => "Error" ;
         private IDictionary < string , object > _metadata ;
         private IEnumerable < InstanceInfo > _instanceEnumeration ;
         private Guid _id ;
@@ -26,6 +27,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public IDictionary < string , object > Metadata { get { return _metadata ; } set { _metadata = value ; } }
 
         /// <summary>

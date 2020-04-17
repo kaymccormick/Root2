@@ -441,7 +441,7 @@
                           ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
                           Content="{Binding Data}" />
           <TextBlock Grid.Row="10" x:Name="textBlock"
-                     x:FieldModifier="public" />
+                     x:FieldModifier="private" />
         </Grid>
       </ScrollViewer>
     </Grid>

@@ -20,6 +20,7 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public sealed class LoginAuthenticationViewModel : IViewModel
     {
         // ReSharper disable once NotAccessedField.Local

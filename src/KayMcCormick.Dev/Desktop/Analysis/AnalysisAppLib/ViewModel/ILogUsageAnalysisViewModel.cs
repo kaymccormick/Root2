@@ -13,16 +13,19 @@ namespace AnalysisAppLib.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         LogInvocationCollection LogInvocations { get ; }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         PipelineResult PipelineResult { get ; set ; }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         ObservableCollection < LogEventInstance > Events { get ; }
 
         /// <summary>

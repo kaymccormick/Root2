@@ -37,7 +37,6 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
-using Microsoft.VisualStudio.Threading ;
 using NLog ;
 
 #if MIGRADOC
@@ -168,12 +167,14 @@ if(RegiserExplorerTypes){
             builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
 
             if(RegisterControlViewCommandAdapters)
-            builder
-               .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                    Func < LayoutDocumentPane , IDisplayableAppCommand >
-                > ( ControlViewCommandAdapter )
-               .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( )
-               .WithCallerMetadata ( ) ;
+            {
+                builder
+                   .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
+                        Func < LayoutDocumentPane , IDisplayableAppCommand >
+                    > ( ControlViewCommandAdapter )
+                   .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( )
+                   .WithCallerMetadata ( ) ;
+            }
 
 #if PYTHON
             builder.RegisterAssemblyTypes (
@@ -254,7 +255,9 @@ if(RegiserExplorerTypes){
             return r ;
         }
 #endif
+#pragma warning disable 1998
         private static async Task < IAppCommandResult > CommandFuncAsync (
+#pragma warning restore 1998
             [ NotNull ] LambdaAppCommand command
         )
         {
@@ -289,7 +292,9 @@ if(RegiserExplorerTypes){
 
             return new LambdaAppCommand (
                                          title.ToString ( )
+#pragma warning disable 1998
                                        , async command => {
+#pragma warning restore 1998
                                              try
                                              {
                                                  if ( view.Value.Value is Window w )
@@ -321,7 +326,7 @@ if(RegiserExplorerTypes){
         object ResolveResource ( object resourceKey ) ;
     }
 
-    public class MySource : IRegistrationSource
+    public sealed class MySource : IRegistrationSource
     {
         public MySource ( )
         {
@@ -339,17 +344,19 @@ if(RegiserExplorerTypes){
             }
         }
 
+#pragma warning disable 649
         private bool _isAdapterForIndividualComponents ;
-        private List < CommandInfo > commands ;
+#pragma warning restore 649
+        private readonly List < CommandInfo > commands ;
         #region Implementation of IRegistrationSource
+        // ReSharper disable once AnnotateNotNullTypeMember
         public IEnumerable < IComponentRegistration > RegistrationsFor (
             Service                                                   service
           , Func < Service , IEnumerable < IComponentRegistration > > registrationAccessor
         )
         {
             DebugUtils.WriteLine($"{service}");
-            var swt = service as IServiceWithType ;
-            if ( swt != null && swt.ServiceType == typeof ( RoutedUICommand ) )
+            if ( service is IServiceWithType swt && swt.ServiceType == typeof ( RoutedUICommand ) )
             {
                 var reg = new ComponentRegistration (
                                                      Guid.NewGuid ( )
@@ -377,7 +384,7 @@ if(RegiserExplorerTypes){
         #endregion
     }
 
-    public class CommandInfo
+    public sealed class CommandInfo
     {
         private RoutedUICommand _command ;
         public RoutedUICommand Command { get { return _command ; } set { _command = value ; } }

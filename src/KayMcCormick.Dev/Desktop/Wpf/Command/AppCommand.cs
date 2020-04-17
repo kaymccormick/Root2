@@ -117,42 +117,27 @@ namespace KayMcCormick.Lib.Wpf.Command
 
     /// <inheritdoc />
     [PropertyTabAttribute( typeof(TypeCategoryTab), PropertyTabScope.Document)]
-    public class TypeCategoryTabComponent : System.ComponentModel.Component
+    public class TypeCategoryTabComponent : Component
     {
-        /// <inheritdoc />
-        public TypeCategoryTabComponent()
-        {
-        }
     }
     // A TypeCategoryTab property tab lists properties by the 
     // category of the type of each property.
     /// <inheritdoc />
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
-    public class TypeCategoryTab : PropertyTab
+    public sealed class TypeCategoryTab : PropertyTab
     {
         [Browsable(true)]
         // This string contains a Base-64 encoded and serialized example property tab image.
         private readonly string img = "AAEAAAD/////AQAAAAAAAAAMAgAAAFRTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj0xLjAuMzMwMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABVTeXN0ZW0uRHJhd2luZy5CaXRtYXABAAAABERhdGEHAgIAAAAJAwAAAA8DAAAA9gAAAAJCTfYAAAAAAAAANgAAACgAAAAIAAAACAAAAAEAGAAAAAAAAAAAAMQOAADEDgAAAAAAAAAAAAD///////////////////////////////////9ZgABZgADzPz/zPz/zPz9AgP//////////gAD/gAD/AAD/AAD/AACKyub///////+AAACAAAAAAP8AAP8AAP9AgP////////9ZgABZgABz13hz13hz13hAgP//////////gAD/gACA/wCA/wCA/wAA//////////+AAACAAAAAAP8AAP8AAP9AgP////////////////////////////////////8L";
 
-        /// <inheritdoc />
-        public TypeCategoryTab()
-        {
-        }
-
         // Returns the properties of the specified component extended with 
         // a CategoryAttribute reflecting the name of the type of the property.
         /// <inheritdoc />
-        public override System.ComponentModel.PropertyDescriptorCollection GetProperties(object component, System.Attribute[] attributes)
+        [ NotNull ]
+        public override PropertyDescriptorCollection GetProperties(object component, Attribute[] attributes)
         {
             PropertyDescriptorCollection props;
-            if (attributes == null)
-            {
-                props = TypeDescriptor.GetProperties(component);
-            }
-            else
-            {
-                props = TypeDescriptor.GetProperties(component, attributes);
-            }
+            props = attributes == null ? TypeDescriptor.GetProperties(component) : TypeDescriptor.GetProperties(component, attributes) ;
 
             PropertyDescriptor[] propArray = new PropertyDescriptor[props.Count];
             for (var i = 0; i < props.Count; i++)
@@ -165,7 +150,8 @@ namespace KayMcCormick.Lib.Wpf.Command
         }
 
         /// <inheritdoc />
-        public override System.ComponentModel.PropertyDescriptorCollection GetProperties(object component)
+        [ NotNull ]
+        public override PropertyDescriptorCollection GetProperties(object component)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             return GetProperties(component, null);
@@ -173,7 +159,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         // Provides the name for the property tab.
         /// <inheritdoc />
-        public override string TabName
+        [ NotNull ] public override string TabName
         {
             get
             {
@@ -183,7 +169,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         // Provides an image for the property tab.
         /// <inheritdoc />
-        public override System.Drawing.Bitmap Bitmap
+        [ NotNull ] public override Bitmap Bitmap
         {
             get
             {
@@ -193,15 +179,15 @@ namespace KayMcCormick.Lib.Wpf.Command
         }
 
         // This method can be used to retrieve an Image from a block of Base64-encoded text.
-        private Image DeserializeFromBase64Text(string text)
+        private Image DeserializeFromBase64Text([ NotNull ] string text)
         {
-            Image img = null;
+            Image deserializeFromBase64Text = null;
             var memBytes = Convert.FromBase64String(text);
             IFormatter formatter = new BinaryFormatter();
             var stream = new MemoryStream(memBytes);
-            img = (Image)formatter.Deserialize(stream);
+            deserializeFromBase64Text = (Image)formatter.Deserialize(stream);
             stream.Close();
-            return img;
+            return deserializeFromBase64Text;
         }
     }
 }

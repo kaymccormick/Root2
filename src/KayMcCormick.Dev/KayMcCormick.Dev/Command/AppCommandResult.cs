@@ -42,6 +42,7 @@ namespace KayMcCormick.Dev.Command
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static IAppCommandResult Cancelled { get ; } =
             new AppCommandResult { IsSuccess = false } ;
         #endregion

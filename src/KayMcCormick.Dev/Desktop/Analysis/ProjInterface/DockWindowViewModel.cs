@@ -18,7 +18,7 @@ namespace ProjInterface
         // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public DockWindowViewModel (ILifetimeScope scope )
+        public DockWindowViewModel ([ NotNull ] ILifetimeScope scope )
         {
              var views = scope.Resolve < IEnumerable < IControlView > > ( ) ;
             foreach ( var controlView in views )

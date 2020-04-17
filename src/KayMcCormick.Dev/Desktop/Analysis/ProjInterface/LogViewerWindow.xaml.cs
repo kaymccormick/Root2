@@ -12,7 +12,7 @@ using KayMcCormick.Lib.Wpf;
 namespace ProjInterface
 {
     [ TitleMetadata ( "Log Viewer Window" ) ]
-    public partial class LogViewerWindow : AppWindow
+    public sealed partial class LogViewerWindow : AppWindow
       , INotifyPropertyChanged
       , IViewWithTitle
       , IView < LogViewerAppViewModel >
@@ -41,7 +41,8 @@ namespace ProjInterface
         #endregion
 
         [ NotifyPropertyChangedInvocator ]
-        protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        // ReSharper disable once UnusedMember.Local
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }

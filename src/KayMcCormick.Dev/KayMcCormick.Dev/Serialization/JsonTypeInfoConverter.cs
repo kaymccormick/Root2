@@ -8,7 +8,7 @@ namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// </summary>
-    public class JsonTypeInfoConverter : JsonConverter < TypeInfo >
+    public sealed class JsonTypeInfoConverter : JsonConverter < TypeInfo >
     {
         #region Overrides of JsonConverter<TypeInfo>
         /// <summary>
@@ -33,8 +33,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , TypeInfo              value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] TypeInfo              value
           , JsonSerializerOptions options
         )
         {

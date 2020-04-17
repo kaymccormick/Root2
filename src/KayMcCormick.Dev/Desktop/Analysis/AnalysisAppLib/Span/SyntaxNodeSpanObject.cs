@@ -19,6 +19,7 @@ namespace AnalysisAppLib.Span
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class SyntaxNodeSpanObject : SpanObject < SyntaxNode >
     {
         private SyntaxKind _kind ;
@@ -41,6 +42,7 @@ namespace AnalysisAppLib.Span
         ///
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public SyntaxKind Kind { get { return _kind ; } set { _kind = value ; } }
     }
 }

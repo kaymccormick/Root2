@@ -14,6 +14,7 @@ using System.Linq ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Markup ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using NLog ;
 
@@ -101,14 +102,11 @@ namespace KayMcCormick.Lib.Wpf
             {
                 Logger.Info ( "Calling base method for template" ) ;
                 returnVal = base.SelectTemplate ( item , container ) ;
-                if ( returnVal != null )
-                {
-                    Logger.Info ( "Got template from base method" ) ;
-                }
-                else
-                {
-                    Logger.Info ( "no template from base method" ) ;
-                }
+                Logger.Info (
+                             returnVal != null
+                                 ? "Got template from base method"
+                                 : "no template from base method"
+                            ) ;
             }
 
             return returnVal ;
@@ -116,10 +114,11 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public virtual string TemplatePartName { get ; set ; }
+        protected virtual string TemplatePartName { get ; set ; }
 
 
-        private DataTemplate TryFindDataTemplate ( FrameworkElement fe , object resourceKey )
+        [ CanBeNull ]
+        private DataTemplate TryFindDataTemplate ( [ NotNull ] FrameworkElement fe , [ NotNull ] object resourceKey )
         {
             Logger.Debug (
                           "Trying to find data template with resource key {resourceKey}"

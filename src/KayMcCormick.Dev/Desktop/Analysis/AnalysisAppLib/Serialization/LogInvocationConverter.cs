@@ -20,6 +20,7 @@ namespace AnalysisAppLib.Serialization
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class LogInvocationConverter : JsonConverter < ILogInvocation >
     {
         #region Overrides of JsonConverter<ILogInvocation>

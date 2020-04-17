@@ -5,7 +5,7 @@ namespace KayMcCormick.Dev.Service
 {
     /// <summary>
     /// </summary>
-    public class WireComponentInfo
+    public sealed class WireComponentInfo
     {
         private readonly List < WireInstanceInfo > _instances = new List < WireInstanceInfo > ( ) ;
 

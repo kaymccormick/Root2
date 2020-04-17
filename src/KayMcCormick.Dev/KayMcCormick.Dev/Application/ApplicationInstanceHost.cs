@@ -70,6 +70,7 @@ namespace KayMcCormick.Dev.Application
             catch ( Exception )
 
             {
+                // ignored
             }
 #endif
         }

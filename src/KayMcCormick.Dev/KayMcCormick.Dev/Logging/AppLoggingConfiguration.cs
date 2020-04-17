@@ -15,7 +15,7 @@ namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// </summary>
-    public class AppLoggingConfiguration : ILoggingConfiguration
+    public sealed class AppLoggingConfiguration : ILoggingConfiguration
     {
         private static readonly ILoggingConfiguration _default =
             new AppLoggingConfiguration
@@ -26,9 +26,13 @@ namespace KayMcCormick.Dev.Logging
             } ;
 
         private int ?  _chainsawPort ;
+#pragma warning disable 649
         private string _debuggerTargetName ;
+#pragma warning restore 649
 
+#pragma warning disable 649
         private bool ? _isEnabledCacheTarget ;
+#pragma warning restore 649
         private bool ? _isEnabledDebuggerTarget ;
 
         private bool ? _isEnabledEventLogTarget = false ;

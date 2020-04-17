@@ -70,14 +70,14 @@ namespace KayMcCormick.Lib.Wpf
                                            typeof ( ResolveUiComponentExtension ).GetConstructor (
                                                                                                   new
                                                                                                   Type
-                                                                                                  [ 1 ]
+                                                                                                  []
                                                                                                   {
                                                                                                       typeof
                                                                                                       ( object
                                                                                                       )
                                                                                                   }
                                                                                                  )
-                                         , new object[ 1 ] { extension.ComponentType }
+                                         , new object[] { extension.ComponentType }
                                           ) ;
         }
         #endregion

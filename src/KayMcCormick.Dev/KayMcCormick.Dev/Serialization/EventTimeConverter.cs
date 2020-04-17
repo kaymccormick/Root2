@@ -12,12 +12,14 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     ///     Basic DAteTime converter that supports broken time parsing.
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class EventTimeConverter : JsonConverter < DateTime >
 
     {
@@ -46,7 +48,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
+            [ NotNull ] Utf8JsonWriter        writer
           , DateTime              value
           , JsonSerializerOptions options
         )

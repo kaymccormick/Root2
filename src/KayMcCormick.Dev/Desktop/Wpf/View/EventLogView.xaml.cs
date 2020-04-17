@@ -7,7 +7,7 @@ namespace KayMcCormick.Lib.Wpf.View
     /// <summary>
     ///     Interaction logic for EventLogView.xaml
     /// </summary>
-    public partial class EventLogView : UserControl
+    public sealed partial class EventLogView : UserControl
       , IView1
       , IView < EventLogViewModel >
       , IControlView

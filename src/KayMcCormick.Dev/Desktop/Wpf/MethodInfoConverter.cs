@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class MethodInfoConverter : IValueConverter
+    public sealed class MethodInfoConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

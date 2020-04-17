@@ -6,7 +6,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// Collection of documents for XAML serialization purposes.
     /// </summary>
-    public class DocumentCollection : IList , ICollection , IEnumerable
+    public sealed class DocumentCollection : IList , ICollection , IEnumerable
 
     {
         private readonly IList _list ;
@@ -14,6 +14,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// </summary>
         /// <param name="list"></param>
+        // ReSharper disable once UnusedMember.Global
         public DocumentCollection ( IList list ) { _list = list ; }
 
         /// <summary>

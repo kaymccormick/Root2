@@ -23,7 +23,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     [ TypeConverter ( typeof ( ResolveUiComponentTypeConverter ) ) ]
     [ MarkupExtensionReturnType ( typeof ( UIElement ) ) ]
-    public class ResolveUiComponentExtension : MarkupExtension
+    public sealed class ResolveUiComponentExtension : MarkupExtension
     {
         // public T FromResolveUiComponentExtension < T > () where T : DependencyObject
         // {
@@ -33,8 +33,9 @@ namespace KayMcCormick.Lib.Wpf
         // {
         // return (DependencyObject)ext._lifetimeScope.Resolve(ext._componentType);
         // }
-        private ILifetimeScope _lifetimeScope ;
+#pragma warning disable 649
         private string         _name ;
+#pragma warning restore 649
 
         /// <summary>
         /// </summary>
@@ -43,6 +44,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <summary>
         /// </summary>
         /// <param name="componentType"></param>
+        // ReSharper disable once UnusedMember.Global
         public ResolveUiComponentExtension ( Type componentType )
         {
             ComponentType = componentType ;
@@ -50,23 +52,16 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public Type ComponentType { get ; set ; }
+        public Type ComponentType { get ; }
 
         /// <summary>
         /// </summary>
-        public ILifetimeScope LifetimeScope
-        {
-            get { return _lifetimeScope ; }
-            set { _lifetimeScope = value ; }
-        }
-
-        /// <summary>
-        /// </summary>
-        public string Name { get { return _name ; } set { _name = value ; } }
+        public string Name { get { return _name ; } }
 
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public static ResolveUiComponentExtension CreateInstance ( )
         {
             return new ResolveUiComponentExtension ( ) ;
@@ -79,7 +74,8 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
+        // ReSharper disable once AnnotateNotNullTypeMember
+        public override object ProvideValue ( IServiceProvider serviceProvider )
         {
             if ( serviceProvider == null )
             {
@@ -87,6 +83,7 @@ namespace KayMcCormick.Lib.Wpf
             }
 
 
+            // ReSharper disable once UnusedVariable
             var p = ( IAmbientProvider ) serviceProvider.GetService (
                                                                      typeof ( IAmbientProvider )
                                                                     ) ;
@@ -109,7 +106,6 @@ namespace KayMcCormick.Lib.Wpf
 
 
 
-            object rootObject = null ;
             if ( scope        == null
                  || nameScope == null )
             {
@@ -118,7 +114,7 @@ namespace KayMcCormick.Lib.Wpf
                 if ( svc != null )
                 {
                     var rootObjectProvider = ( IRootObjectProvider ) svc ;
-                    rootObject = rootObjectProvider.RootObject ;
+                    var rootObject = rootObjectProvider.RootObject ;
                     if ( rootObject is DependencyObject dependencyObject )
                     {
                         if ( scope == null )

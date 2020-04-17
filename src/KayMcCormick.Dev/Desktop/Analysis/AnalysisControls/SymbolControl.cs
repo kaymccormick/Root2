@@ -28,7 +28,7 @@ namespace AnalysisControls
     ///     Go ahead and use your control in the XAML file.
     ///     <MyNamespace:SymbolControl />
     /// </summary>
-    public class SymbolControl : Control
+    public sealed class SymbolControl : Control
     {
         static SymbolControl ( )
         {

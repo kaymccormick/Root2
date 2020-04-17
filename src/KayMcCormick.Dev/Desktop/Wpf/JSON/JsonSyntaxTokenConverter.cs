@@ -12,12 +12,14 @@
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
     /// </summary>
+    [ UsedImplicitly ]
     public class JsonSyntaxTokenConverter : JsonConverter < SyntaxToken >
     {
         #region Overrides of JsonConverter<SyntaxToken>

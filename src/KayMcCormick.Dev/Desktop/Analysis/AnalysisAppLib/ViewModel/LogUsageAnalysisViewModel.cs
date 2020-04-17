@@ -21,11 +21,14 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public sealed class LogUsageAnalysisViewModel : ILogUsageAnalysisViewModel
       , INotifyPropertyChanged
     {
         private ObservableCollection < LogEventInstance > _events ;
+#pragma warning disable 649
         private LogInvocationCollection                   _logInvocations ;
+#pragma warning restore 649
         private PipelineResult                            _pipelineResult ;
 
         /// <summary>
@@ -46,11 +49,6 @@ namespace AnalysisAppLib.ViewModel
         public LogInvocationCollection LogInvocations
         {
             get { return _logInvocations ; }
-            set
-            {
-                _logInvocations = value ;
-                OnPropertyChanged ( ) ;
-            }
         }
 
         /// <summary>

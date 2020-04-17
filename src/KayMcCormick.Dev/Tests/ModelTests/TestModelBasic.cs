@@ -17,14 +17,15 @@ using Xunit ;
 
 namespace ModelTests
 {
-    public class TestModelBasic
+    public sealed class TestModelBasic
     {
         [ Fact ]
         public void TestContainer()
         {
             ContainerBuilder b = new ContainerBuilder();
             b.RegisterModule<AnalysisAppLibModule>();
-            var c = b.Build(Autofac.Builder.ContainerBuildOptions.None);
+            // ReSharper disable once UnusedVariable
+            var c = b.Build( );
             
             XmlWriter.Create(File.OpenWrite(@"C:\temp\model.xaml"), new XmlWriterSettings {Async = true,Indent = true});
                     

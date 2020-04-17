@@ -11,7 +11,6 @@
 #endregion
 using System.Collections.Generic ;
 using AnalysisControls.ViewModel ;
-using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -37,18 +36,20 @@ namespace ConsoleApp1
 
         public SyntaxRewriter1 ( TypesViewModel model1 ) { _model1 = model1 ; }
 
-        public override SyntaxNode VisitGenericName ( [ NotNull ] GenericNameSyntax node )
+        // ReSharper disable once AnnotateCanBeNullTypeMember
+        // ReSharper disable once AnnotateNotNullParameter
+        public override SyntaxNode VisitGenericName ( GenericNameSyntax node )
         {
             DebugUtils.WriteLine ( $"{node.Identifier} {node.TypeArgumentList}" ) ;
             if ( node.Arity                   != 1
-                 || node.IsUnboundGenericName != false
+                 || node.IsUnboundGenericName
                  || node.Identifier.ValueText != "SeparatedSyntaxList" )
             {
                 return base.VisitGenericName ( node ) ;
             }
 
             var typeSyntax = node.TypeArgumentList.Arguments[ 0 ] ;
-            if ( typeSyntax is SimpleNameSyntax sns )
+            if ( typeSyntax is SimpleNameSyntax )
             {
                 //return node.ReplaceNode ( node , node , _map[ sns.Identifier.ValueText ] ) ;
             }
@@ -56,7 +57,8 @@ namespace ConsoleApp1
             return base.VisitGenericName ( node ) ;
         }
 
-        [ CanBeNull ]
+        // ReSharper disable once AnnotateCanBeNullTypeMember
+        // ReSharper disable once AnnotateNotNullParameter
         public override SyntaxNode VisitPredefinedType ( PredefinedTypeSyntax node )
         {
             return base.VisitPredefinedType ( node ) ;

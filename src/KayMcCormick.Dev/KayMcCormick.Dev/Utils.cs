@@ -36,10 +36,11 @@ namespace KayMcCormick.Dev
                             , "CA1031:Do not catch general exception types"
                             , Justification = "<Pending>"
                           ) ]
+        // ReSharper disable once UnusedMember.Global
         public static void HandleInnerExceptions (
-            Exception e
-          , LogLevel  level  = null
-          , ILogger   logger = null
+            [ CanBeNull ] Exception e
+          , [ CanBeNull ] LogLevel  level  = null
+          , [ CanBeNull ] ILogger   logger = null
         )
         {
             using ( var stringWriter = new StringWriter ( ) )
@@ -93,7 +94,8 @@ namespace KayMcCormick.Dev
 
         private static void DoDump (
             IndentedTextWriter dumpConfig
-          , IDictionary        doDumpConfig
+          , [ NotNull ] IDictionary        doDumpConfig
+            // ReSharper disable once UnusedParameter.Local
           , int                depth = 0
         )
         {
@@ -134,7 +136,8 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static IEnumerable < StackTraceEntry > ParseStackTrace ( string text )
+        [ NotNull ]
+        public static IEnumerable < StackTraceEntry > ParseStackTrace ( [ NotNull ] string text )
         {
             return StackTraceParser.Parse (
                                            text
@@ -185,7 +188,7 @@ namespace KayMcCormick.Dev
             DebugUtils.WriteLine ( eException.GetType ( ).FullName ) ;
             DebugUtils.WriteLine ( eException.Message ) ;
             DebugUtils.WriteLine ( eException.StackTrace ) ;
-            if ( eException is FileNotFoundException fnf )
+            if ( eException is FileNotFoundException )
             {
                     return ;
 
@@ -232,8 +235,9 @@ namespace KayMcCormick.Dev
 #endif
                 DebugUtils.WriteLine ( eException.ToString ( ) ) ;
             }
-            catch ( Exception ex )
+            catch ( Exception )
             {
+                // ignored
             }
         }
 
@@ -241,6 +245,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="eException"></param>
         /// <returns></returns>
+        [ NotNull ]
         public static ParsedExceptions GenerateParsedException ( Exception eException )
         {
             var parsed = new ParsedExceptions ( ) ;

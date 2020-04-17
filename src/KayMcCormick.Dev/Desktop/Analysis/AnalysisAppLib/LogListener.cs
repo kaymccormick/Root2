@@ -20,6 +20,7 @@ using System.Xml;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
+// ReSharper disable UnusedParameter.Local
 
 namespace AnalysisAppLib
 {
@@ -64,12 +65,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="port"></param>
         /// <param name="logViewModel"></param>
-        // ReSharper disable once UnusedParameter.Local
-        // ReSharper disable once UnusedParameter.Local
-        // ReSharper disable once UnusedParameter.Local
-        // ReSharper disable once UnusedParameter.Local
-        // ReSharper disable once UnusedParameter.Local
-        // ReSharper disable once UnusedParameter.Local
+       
         public LogListener ( int port , LogViewModel logViewModel ) { }
 
         #region IDisposable

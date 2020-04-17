@@ -12,6 +12,7 @@ namespace KayMcCormick.Lib.Wpf
         ///     <see cref="RoutedUICommand" /> to launch the settings dialog /
         ///     window.
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static readonly RoutedUICommand AppSettings =
             new RoutedUICommand (
                                  "Settings"

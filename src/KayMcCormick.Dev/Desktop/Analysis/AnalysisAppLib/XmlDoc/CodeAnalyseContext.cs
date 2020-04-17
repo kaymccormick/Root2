@@ -20,7 +20,7 @@ using NLog ;
 
 namespace AnalysisAppLib.XmlDoc
 {
-    internal class CodeAnalyseContext : ICodeAnalyseContext
+    internal sealed class CodeAnalyseContext : ICodeAnalyseContext
     {
         public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
 
@@ -30,11 +30,11 @@ namespace AnalysisAppLib.XmlDoc
         private readonly string                         _assemblyName ;
         private readonly Lazy < CompilationUnitSyntax > _lazy ;
 
-        protected SemanticModel _currentModel ;
+        private SemanticModel _currentModel ;
 
-        protected StatementSyntax _statement ;
+        private StatementSyntax _statement ;
 
-        protected SyntaxNode node ;
+        private SyntaxNode node ;
 
 
         public CodeAnalyseContext (
@@ -57,12 +57,6 @@ namespace AnalysisAppLib.XmlDoc
         {
             _assemblyName = assemblyName ;
             _lazy         = new Lazy < CompilationUnitSyntax > ( ValueFactory ) ;
-        }
-
-        public StatementSyntax Statement
-        {
-            get { return _statement ; }
-            set { _statement = value ; }
         }
 
         public SyntaxNode Node { get { return node ; } set { node = value ; } }

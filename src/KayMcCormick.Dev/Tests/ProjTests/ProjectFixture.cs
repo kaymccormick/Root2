@@ -16,6 +16,7 @@ using Microsoft.Build.Locator ;
 
 namespace ProjTests
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class ProjectFixture
     {
 #if MSBUILDLOCATOR

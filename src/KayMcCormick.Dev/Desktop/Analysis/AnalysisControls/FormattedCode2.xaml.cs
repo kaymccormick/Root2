@@ -16,7 +16,7 @@ namespace AnalysisControls
     /// <summary>
     ///     Interaction logic for FormattedCode.xaml
     /// </summary>
-    public partial class FormattedCode2 : UserControl , ICodeRenderer
+    public sealed partial class FormattedCode2 : UserControl , ICodeRenderer
     {
         private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly        Stack < IAddChild > _stack = new Stack < IAddChild > ( ) ;
@@ -203,7 +203,7 @@ namespace AnalysisControls
         }
     }
 
-    internal class StyleInfo
+    internal sealed class StyleInfo
     {
         public SColor ? bg ;
 
@@ -224,12 +224,12 @@ namespace AnalysisControls
         }
     }
 
-    internal struct SColor
+    internal readonly struct SColor
     {
-        public byte R ;
-        public byte G ;
-        public byte B ;
-        public byte A ;
+        public readonly byte R ;
+        public readonly byte G ;
+        public readonly byte B ;
+        public readonly byte A ;
 
         public SColor ( byte i , byte i1 , byte i2 , byte i3 )
         {

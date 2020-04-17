@@ -22,6 +22,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static readonly RoutedUICommand AnalyzeControlFlow =
             new RoutedUICommand (
                                  "Analyze Control Flow"
@@ -32,6 +33,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static readonly RoutedUICommand GetDeclaredSymbol =
             new RoutedUICommand (
                                  "Get Declared Symbol"

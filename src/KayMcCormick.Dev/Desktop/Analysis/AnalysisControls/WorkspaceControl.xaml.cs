@@ -22,7 +22,7 @@ namespace AnalysisControls
 
     /// </summary>
     [TitleMetadata("Workspaces")]
-    public partial class WorkspaceControl : UserControl, IView1, IView<WorkspaceViewModel>, IControlView, IViewWithTitle
+    public sealed partial class WorkspaceControl : UserControl, IView1, IView<WorkspaceViewModel>, IControlView, IViewWithTitle
     {
         private readonly WorkspaceViewModel _viewModel;
 
@@ -100,6 +100,7 @@ namespace AnalysisControls
         {
             var workspace = new AdhocWorkspace();
             var projectId = ProjectId.CreateNewId ( ) ;
+            // ReSharper disable once UnusedVariable
             var s = workspace.AddSolution(
                                           SolutionInfo.Create(
                                                               SolutionId.CreateNewId()
@@ -204,6 +205,7 @@ namespace AnalysisControls
             }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void DocumentAdded ( WorkspaceChangeEventArgs workspaceChangeEventArgs ) { }
 
         /// <inheritdoc />

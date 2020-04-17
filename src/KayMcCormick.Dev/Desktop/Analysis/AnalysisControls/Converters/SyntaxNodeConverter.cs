@@ -21,7 +21,7 @@ namespace AnalysisControls.Converters
     /// <summary>
     /// 
     /// </summary>
-    public class SyntaxNodeConverter : IValueConverter
+    public sealed class SyntaxNodeConverter : IValueConverter
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter

@@ -27,6 +27,7 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         IDataflowBlock GetDataflowBlockObj ( ) ;
     }
 }

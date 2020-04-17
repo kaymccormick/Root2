@@ -40,9 +40,15 @@ namespace KayMcCormick.Lib.Wpf
     /// <inheritdoc />
     public class CustomPropertyDescriptor : PropertyDescriptor
     {
+#pragma warning disable 649
         private Type _componentType ;
+#pragma warning restore 649
+#pragma warning disable 649
         private bool _isReadOnly ;
+#pragma warning restore 649
+#pragma warning disable 649
         private Type _propertyType ;
+#pragma warning restore 649
 
         /// <summary>
         /// 
@@ -91,7 +97,7 @@ namespace KayMcCormick.Lib.Wpf
     }
 
     /// <inheritdoc />
-    public class ComponentRegistrationTypeDescriptor : CustomTypeDescriptor
+    public sealed class ComponentRegistrationTypeDescriptor : CustomTypeDescriptor
     {
     }
 

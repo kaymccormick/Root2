@@ -20,7 +20,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
     /// </summary>
-    public class JsonFontFamilyConverter : JsonConverter < FontFamily >
+    public sealed class JsonFontFamilyConverter : JsonConverter < FontFamily >
     {
         #region Overrides of JsonConverter<FontFamily>
         /// <summary>
@@ -45,8 +45,8 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , FontFamily            value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] FontFamily            value
           , JsonSerializerOptions options
         )
         {

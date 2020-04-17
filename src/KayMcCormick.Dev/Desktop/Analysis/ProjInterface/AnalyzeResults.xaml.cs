@@ -16,6 +16,7 @@ namespace ProjInterface
         #endregion
     }
 
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class AnalyzeResultsViewModel : IViewModel
     {
         #region Implementation of ISerializable

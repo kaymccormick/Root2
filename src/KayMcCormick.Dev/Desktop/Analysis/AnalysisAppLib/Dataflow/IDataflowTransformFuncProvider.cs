@@ -21,6 +21,7 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         Func < TSource , IEnumerable < TDest > >          GetTransformFunction ( ) ;
     }
 
@@ -37,7 +38,7 @@ namespace AnalysisAppLib.Dataflow
     /// </summary>
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
-    public class
+    public sealed class
         ConcreteDataflowTransformFuncProvider < TSource , TDest > : IDataflowTransformFuncProvider <
             TSource , TDest >
     {

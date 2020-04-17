@@ -4,6 +4,7 @@ using System.Threading ;
 
 namespace ProjInterface
 {
+    // ReSharper disable once StructCanBeMadeReadOnly
     public struct SynchronizationContextAwaiter : INotifyCompletion
     {
         private static readonly SendOrPostCallback
@@ -16,6 +17,7 @@ namespace ProjInterface
             _context = context ;
         }
 
+        // ReSharper disable once UnusedMember.Global
         public bool IsCompleted { get { return _context == SynchronizationContext.Current ; } }
 
         public void OnCompleted ( Action continuation )

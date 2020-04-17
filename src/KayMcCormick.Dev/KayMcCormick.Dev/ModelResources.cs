@@ -14,7 +14,6 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
-using System.IO ;
 using System.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
@@ -48,7 +47,7 @@ namespace KayMcCormick.Dev
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _doPopulateAppContext = false ;
         private ResourceNodeInfo _objects_node ;
-        private bool _flatten_objects_node ;
+        private readonly bool _flatten_objects_node ;
 
 
         /// <summary>
@@ -65,6 +64,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
+        /// <param name="test"></param>
         public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider, bool test=true )
         {
             _lifetimeScope = lifetimeScope ;
@@ -272,6 +272,7 @@ namespace KayMcCormick.Dev
                                              var myInfo = new ComponentInfo ( ) ;
                                              foreach ( var inst in componentInfo.Instances )
                                              {
+                                                 // ReSharper disable once UnusedVariable
                                                  var ii = new InstanceInfo ( )
                                                           {
                                                               Instance = inst.Instance
@@ -323,6 +324,7 @@ namespace KayMcCormick.Dev
         /// <param name="key"></param>
         /// <param name="data"></param>
         /// <param name="isValueChildren"></param>
+        /// <param name="addToChildren"></param>
         /// <returns></returns>
         [ NotNull ]
         public ResourceNodeInfo CreateNode (
@@ -349,10 +351,8 @@ namespace KayMcCormick.Dev
             {
                 if ( addToChildren )
                 {
-                    if ( parent.Children != null )
-                    {
-                        parent.Children.Add ( r ) ;
-                    }
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    parent.Children?.Add ( r ) ;
                 }
 
                 r.Depth = parent.Depth + 1 ;
@@ -466,7 +466,7 @@ namespace KayMcCormick.Dev
                 {
                     var info = assembly.GetManifestResourceInfo ( manifestResourceName ) ;
                     var man1 = CreateNode ( res1 , manifestResourceName , info , true ) ;
-                    var sub1 = CreateNode ( man1 , "Filename" ,           info.FileName ) ;
+                    CreateNode ( man1 , "Filename" , info.FileName ) ;
                 }
 
                 try
@@ -481,8 +481,6 @@ namespace KayMcCormick.Dev
                                 foreach ( var dictionaryEntry in reader.Cast < DictionaryEntry > ( )
                                 )
                                 {
-                                    var s = ( UnmanagedMemoryStream ) dictionaryEntry.Value ;
-
                                     CreateNode (
                                                 res1
                                               , dictionaryEntry.Key
@@ -637,13 +635,12 @@ namespace KayMcCormick.Dev
     public sealed class Flattened < T , T1 > : IProvidesKey
     {
         private readonly T _arg1 ;
+        // ReSharper disable once NotAccessedField.Local
         private readonly T1 _arg2 ;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="x11"></param>
-        /// <param name="i11"></param>
         public Flattened ( T arg1 , T1 arg2 )
         {
             _arg1 = arg1 ;

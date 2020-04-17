@@ -11,7 +11,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class ResourceTreeViewItemTemplateSelector : DataTemplateSelector
+    public sealed class ResourceTreeViewItemTemplateSelector : DataTemplateSelector
 
     {
 #if TRACE_TEMPLATES
@@ -93,7 +93,7 @@ namespace KayMcCormick.Lib.Wpf
         }
 
 
-        private bool Predicate3 ( Tuple < Type , FrameworkElement , object > arg , int i )
+        private bool Predicate3 ( [ NotNull ] Tuple < Type , FrameworkElement , object > arg , int i )
         {
             if ( arg.Item3 != null )
             {
@@ -109,7 +109,7 @@ namespace KayMcCormick.Lib.Wpf
             return r ;
         }
 
-        private static bool Predicate2 ( Tuple < Type , FrameworkElement , object > arg )
+        private static bool Predicate2 ( [ NotNull ] Tuple < Type , FrameworkElement , object > arg )
         {
             var (item1 , item2 , item3) = arg ;
             if ( item1         == typeof ( ISupportInitialize )
@@ -128,7 +128,8 @@ namespace KayMcCormick.Lib.Wpf
             return true ;
         }
 
-        private bool Predicate ( DataTemplate arg )
+        // ReSharper disable once UnusedMember.Local
+        private bool Predicate ( [ NotNull ] DataTemplate arg )
         {
             Logger.Debug ( arg.ToString ) ;
 

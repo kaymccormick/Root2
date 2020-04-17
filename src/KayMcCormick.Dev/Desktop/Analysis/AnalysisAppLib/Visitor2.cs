@@ -23,6 +23,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class Visitor2 : CSharpSyntaxWalker
     {
         private static readonly Logger logger =
@@ -30,7 +31,9 @@ namespace AnalysisAppLib
 
         private readonly Func < string , object , LogBuilder > _message ;
 
+#pragma warning disable 649
         private readonly Func < object , ISpanViewModel > _mFunc ;
+#pragma warning restore 649
 
         /// <summary>
         /// 

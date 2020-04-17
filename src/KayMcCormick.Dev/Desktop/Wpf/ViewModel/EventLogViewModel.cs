@@ -66,6 +66,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// </summary>
         public EventLogView View
         {
+            // ReSharper disable once UnusedMember.Global
             get { return _view ; }
             set
             {
@@ -245,10 +246,10 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         /// <summary>
         /// </summary>
-        public Exception Exception1 { get ; set ; }
+        public Exception Exception1 { get ; }
 
         /// <summary>
         /// </summary>
-        public ParsedExceptions Parsed { get ; set ; }
+        public ParsedExceptions Parsed { get ; }
     }
 }

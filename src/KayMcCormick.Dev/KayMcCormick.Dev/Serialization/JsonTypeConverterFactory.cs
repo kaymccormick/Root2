@@ -8,7 +8,7 @@ namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// </summary>
-    public class JsonTypeConverterFactory : JsonConverterFactory
+    public sealed class JsonTypeConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>

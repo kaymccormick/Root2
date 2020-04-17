@@ -20,6 +20,7 @@ namespace AnalysisAppLib.Span
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class LogInvocationSpan : SpanObject < ILogInvocation > , ISpanObject < ILogInvocation >
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

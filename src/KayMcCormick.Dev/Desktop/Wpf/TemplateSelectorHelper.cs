@@ -14,6 +14,7 @@ using System.Collections.Generic ;
 using System.Linq ;
 using System.Windows ;
 using System.Windows.Markup ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -33,21 +34,19 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="baseMethod"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public static DataTemplate HelpSelectDataTemplate (
-            object                                            item
+            [ CanBeNull ] object                                            item
           , DependencyObject                                  container
-          , Func < object , DependencyObject , DataTemplate > baseMethod
+          , [ CanBeNull ] Func < object , DependencyObject , DataTemplate > baseMethod
           , Predicate < DataTemplate >                        predicate = null
         )
         {
-            if ( item == null )
-            {
-                DebugUtils.WriteLine ( "Selecting template for NuLL item" ) ;
-            }
-            else
-            {
-                DebugUtils.WriteLine ( $"Selecting template for {item} {item.GetType ( )}" ) ;
-            }
+            DebugUtils.WriteLine (
+                                  item == null
+                                      ? "Selecting template for NuLL item"
+                                      : $"Selecting template for {item} {item.GetType ( )}"
+                                 ) ;
 
             var fe = ( FrameworkElement ) container ;
             DataTemplate returnVal = null ;
@@ -105,20 +104,17 @@ namespace KayMcCormick.Lib.Wpf
                 DebugUtils.WriteLine ( "Calling base method for template" ) ;
 
                 returnVal = baseMethod?.Invoke ( item , container ) ;
-                if ( returnVal != null )
-                {
-                    DebugUtils.WriteLine ( "Got template from base method" ) ;
-                }
-                else
-                {
-                    DebugUtils.WriteLine ( "no template from base method" ) ;
-                }
+                DebugUtils.WriteLine (
+                                      returnVal != null
+                                          ? "Got template from base method"
+                                          : "no template from base method"
+                                     ) ;
             }
 
             return returnVal ;
         }
 
-        private static bool Predicate2 ( Tuple < object , FrameworkElement , DataTemplate > arg )
+        private static bool Predicate2 ( [ NotNull ] Tuple < object , FrameworkElement , DataTemplate > arg )
         {
             var (item1 , item2 , item3) = arg ;
             DebugUtils.WriteLine ( item1.ToString() ) ;
@@ -127,9 +123,10 @@ namespace KayMcCormick.Lib.Wpf
         }
 
 
+        [ CanBeNull ]
         private static DataTemplate TryFindDataTemplate (
-            FrameworkElement           fe
-          , object                     resourceKey
+            [ NotNull ] FrameworkElement           fe
+          , [ NotNull ] object                     resourceKey
           , Predicate < DataTemplate > predicate
         )
         {

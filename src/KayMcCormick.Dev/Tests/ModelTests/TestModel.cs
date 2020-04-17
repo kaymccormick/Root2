@@ -14,16 +14,11 @@ using AnalysisAppLib.Dataflow ;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Serialization ;
 using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.ViewModel ;
-
-// ReSharper disable once RedundantUsingDirective
 using Autofac ;
-using Autofac.Core ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
 using Microsoft.CodeAnalysis ;
@@ -34,7 +29,6 @@ using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
-using Directory = System.IO.Directory ;
 using Document = Microsoft.CodeAnalysis.Document ;
 using File = System.IO.File ;
 
@@ -582,6 +576,7 @@ namespace ModelTests
         public void TestTemplate ( )
         {
             var expr = SyntaxFactory.ParseExpression ( "new object[] {}" ) ;
+            // ReSharper disable once UnusedVariable
             var @expressionout = GenTransforms.Transform_Expression ( expr ) ;
             const string typePropertyName = "Type" ;
             const string fullNamePropertyName = "FullName" ;
@@ -884,6 +879,7 @@ namespace ModelTests
         [ Fact ]
         public void TestXaml1 ( )
         {
+            // ReSharper disable once UnusedVariable
             using ( var outwriter = new XamlXmlWriter (
                                                        XmlWriter.Create (
                                                                          @"c:\temp\out.xml"
@@ -951,8 +947,11 @@ namespace ModelTests
             {
                 var lifetimeScope = app.GetLifetimeScope ( ) ;
                 var model = lifetimeScope.Resolve < ModelResources > (new TypedParameter(typeof(bool), false) ) ;
+                // ReSharper disable once UnusedVariable
                 var x1 = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
+                // ReSharper disable once UnusedVariable
                 var invo = lifetimeScope.Resolve<ILogInvocation>();
+                // ReSharper disable once UnusedVariable
                 var invo2 = lifetimeScope.Resolve<ILogInvocation>();
                 var node = model.ObjectsNode ;
                 var nodeChildren = node.Children ;

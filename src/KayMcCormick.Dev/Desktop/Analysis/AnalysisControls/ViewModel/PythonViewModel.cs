@@ -199,7 +199,7 @@ namespace AnalysisControls.ViewModel
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
-        private void PythonInit ( ILifetimeScope scope , IEnumerable < IPythonVariable > vars )
+        private void PythonInit ( ILifetimeScope scope , [ NotNull ] IEnumerable < IPythonVariable > vars )
         {
             _py = Python.CreateEngine ( ) ;
 
@@ -311,7 +311,7 @@ namespace AnalysisControls.ViewModel
             {
                 try
                 {
-                    strRep = result?.__repr__ ( result ) ?? "None" ;
+                    strRep = result.__repr__ ( result ) ?? "None" ;
                 }
                 catch ( Exception )
 

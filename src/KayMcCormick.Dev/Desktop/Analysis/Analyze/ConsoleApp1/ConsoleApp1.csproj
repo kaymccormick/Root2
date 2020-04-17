@@ -80,6 +80,7 @@
     <Compile Include="ListView2Base.cs" />
     <Compile Include="ListWrapper.cs" />
     <Compile Include="MenuWrapper.cs" />
+    <Compile Include="MethodInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SToken.cs" />

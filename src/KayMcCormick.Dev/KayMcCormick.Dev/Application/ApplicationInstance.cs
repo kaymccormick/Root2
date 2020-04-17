@@ -49,12 +49,14 @@ namespace KayMcCormick.Dev.Application
         /// Application GUID for a basic command-line configuration test application.
         /// </summary>
         // ReSharper disable once UnusedMember.Global"
+        // ReSharper disable once UnusedMember.Global
         public static Guid ConfigTest { get ; set ; } =
             new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static Guid ClassLibTests { get ; set ; } =
             new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
 
@@ -68,7 +70,9 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
+#pragma warning disable 169
         private readonly bool                            _disableLogging ;
+#pragma warning restore 169
         private readonly bool                            _disableServiceHost ;
         private readonly List < IModule >                _modules = new List < IModule > ( ) ;
         private          IContainer                      _container ;
@@ -123,7 +127,6 @@ namespace KayMcCormick.Dev.Application
             /// <summary>
             /// 
             /// </summary>
-            /// <param name="message"></param>
             private readonly LogMethodDelegate _logMethod ;
 
             /// <summary>
@@ -202,7 +205,7 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public ApplicationInstance (
             [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
-        ) : base ( )
+        )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException ;
 
@@ -220,6 +223,7 @@ namespace KayMcCormick.Dev.Application
 
             var serviceCollection = new ServiceCollection ( ) ;
 
+            // ReSharper disable once UnusedVariable
             var protoLogger = ProtoLogger.Instance ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
@@ -234,6 +238,7 @@ namespace KayMcCormick.Dev.Application
             if ( ! applicationInstanceConfiguration.DisableLogging )
             {
                 serviceCollection.AddLogging ( ) ;
+                // ReSharper disable once UnusedVariable
                 var config = applicationInstanceConfiguration.Configs != null
                                  ? applicationInstanceConfiguration
                                   .Configs.OfType < ILoggingConfiguration > ( )
@@ -446,7 +451,7 @@ namespace KayMcCormick.Dev.Application
 
         /// <summary>
         /// </summary>
-        public override void Shutdown ( )
+        protected override void Shutdown ( )
         {
             base.Shutdown ( ) ;
 #if NETSTANDARD || NETFRAMEWORK

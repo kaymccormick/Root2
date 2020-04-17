@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.ServiceModel ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 
 namespace KayMcCormick.Dev.Service
@@ -27,6 +28,7 @@ namespace KayMcCormick.Dev.Service
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public RegisterApplicationInstanceResponse RegisterApplicationInstance (
             RegisterApplicationInstanceRequest request
         )

@@ -16,7 +16,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class PipelineResult
+    public sealed class PipelineResult
     {
         /// <summary>
         /// 

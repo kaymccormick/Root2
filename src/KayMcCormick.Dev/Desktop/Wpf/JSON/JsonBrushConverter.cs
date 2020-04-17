@@ -14,6 +14,7 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows.Media ;
 using JetBrains.Annotations ;
+// ReSharper disable UnusedVariable
 
 namespace KayMcCormick.Lib.Wpf.JSON
 {
@@ -43,23 +44,25 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public override System.Text.Json.Serialization.JsonConverter CreateConverter (
+        [ NotNull ]
+        public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
-            return new JsonBrushConverter1 ( typeToConvert , options ) ;
+            return new JsonBrushConverter1 ( typeToConvert ) ;
         }
 
         /// <summary>
         /// </summary>
-        private class JsonBrushConverter1 : JsonConverter < Brush >
+        private sealed class JsonBrushConverter1 : JsonConverter < Brush >
         {
             /// <summary>
             /// </summary>
             /// <param name="typeToConvert"></param>
-            /// <param name="options"></param>
-            public JsonBrushConverter1 ( Type typeToConvert , JsonSerializerOptions options ) { }
+            // ReSharper disable once UnusedParameter.Local
+            // ReSharper disable once UnusedParameter.Local
+            public JsonBrushConverter1 ( Type typeToConvert ) { }
 
             #region Overrides of JsonConverter<Brush>
             /// <summary>
@@ -68,6 +71,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             /// <returns></returns>
+            [ CanBeNull ]
             public override Brush Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -83,8 +87,8 @@ namespace KayMcCormick.Lib.Wpf.JSON
             /// <param name="value"></param>
             /// <param name="options"></param>
             public override void Write (
-                Utf8JsonWriter        writer
-              , Brush                 value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] Brush                 value
               , JsonSerializerOptions options
             )
             {
@@ -93,7 +97,9 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 writer.WriteString ( "BrushType" , value.GetType ( ).FullName ) ;
                 switch ( value )
                 {
+                    // ReSharper disable once UnusedVariable
                     case BitmapCacheBrush bitmapCacheBrush : break ;
+                    // ReSharper disable once UnusedVariable
                     case DrawingBrush drawingBrush : break ;
                     case LinearGradientBrush linearGradientBrush :
                         WriteBaseGradient(writer, linearGradientBrush);
@@ -113,7 +119,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 writer.WriteEndObject ( ) ;
             }
 
-            private static void WriteBaseGradient ( Utf8JsonWriter writer , GradientBrush gradientBrush )
+            private static void WriteBaseGradient ( [ NotNull ] Utf8JsonWriter writer , [ NotNull ] GradientBrush gradientBrush )
             {
                 writer.WriteNumber ( "ColorInterpolationMode" , ( int ) gradientBrush.ColorInterpolationMode ) ;
                 writer.WriteStartArray ( "GradientStops" ) ;
@@ -129,7 +135,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 writer.WriteEndArray ( ) ;
             }
 
-            private static void WriteColor ( Utf8JsonWriter writer , Color color )
+            private static void WriteColor ( [ NotNull ] Utf8JsonWriter writer , Color color )
             {
                 writer.WriteStartArray ( ) ;
                 writer.WriteNumberValue ( color.ScA ) ;

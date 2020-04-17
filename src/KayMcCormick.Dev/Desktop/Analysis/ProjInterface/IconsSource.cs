@@ -14,6 +14,7 @@ using System.Collections ;
 using System.IO ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace ProjInterface
 {
@@ -46,7 +47,7 @@ namespace ProjInterface
             }
         }
 
-        public Image ProjectDirectoryIcon
+        [ CanBeNull ] public Image ProjectDirectoryIcon
         {
             get
             {

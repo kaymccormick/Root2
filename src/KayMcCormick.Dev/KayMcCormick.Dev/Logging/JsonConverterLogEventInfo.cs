@@ -16,13 +16,14 @@ using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Threading ;
 using System.Threading.Tasks ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// </summary>
-    public class JsonConverterLogEventInfo : JsonConverter < LogEventInfo >
+    public sealed class JsonConverterLogEventInfo : JsonConverter < LogEventInfo >
     {
         #region Overrides of JsonConverter<LogEventInfo>
         /// <summary>
@@ -380,7 +381,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
+            [ CanBeNull ] Utf8JsonWriter        writer
           , LogEventInfo          value
           , JsonSerializerOptions options
         )

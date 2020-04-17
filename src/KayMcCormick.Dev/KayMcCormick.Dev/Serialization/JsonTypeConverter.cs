@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// </summary>
-    public class JsonTypeConverter : JsonConverter < Type >
+    public sealed class JsonTypeConverter : JsonConverter < Type >
     {
         #region Overrides of JsonConverter<Type>
         /// <summary>

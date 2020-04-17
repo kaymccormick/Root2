@@ -19,7 +19,7 @@ namespace KayMcCormick.Dev.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonLazyConverterFactory : JsonConverterFactory
+    public sealed class JsonLazyConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
@@ -46,7 +46,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="options"></param>
         /// <returns></returns>
         public override JsonConverter CreateConverter (
-            Type                  typeToConvert
+            [ NotNull ] Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
@@ -55,13 +55,13 @@ namespace KayMcCormick.Dev.Serialization
             return ( JsonConverter ) Activator.CreateInstance ( ctype ) ;
         }
 
-        private class InnerConverter<T, X> : JsonConverter <T> where T : Lazy<X>
+        private sealed class InnerConverter<T, X> : JsonConverter <T> where T : Lazy<X>
         {
                 #region Overrides of JsonConverter<T>
-                public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null; }
+                [ CanBeNull ] public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null; }
 
             public override void Write (
-                Utf8JsonWriter        writer
+                [ NotNull ] Utf8JsonWriter        writer
               , T                     value
               , JsonSerializerOptions options
             )

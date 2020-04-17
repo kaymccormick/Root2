@@ -23,6 +23,7 @@ namespace KayMcCormick.Dev
         private readonly ConcurrentDictionary < object , long > _registry ;
 
 
+        // ReSharper disable once CollectionNeverUpdated.Local
         private readonly ConcurrentDictionary < long , object > _registryById ;
 
         /// <summary>

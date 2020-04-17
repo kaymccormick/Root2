@@ -18,7 +18,7 @@ using AnalysisAppLib.Syntax ;
 namespace AnalysisAppLib.XmlDoc
 {
     /// <inheritdoc />
-    public class SyntaxFieldInfoTypeConverter : TypeConverter
+    public sealed class SyntaxFieldInfoTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
         /// <inheritdoc />

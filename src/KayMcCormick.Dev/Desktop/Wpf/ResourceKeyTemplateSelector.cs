@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
         private string _templatePartName = "Key" ;
         #region Overrides of ResourceTemplateSelector
         /// <inheritdoc />
-        public override string TemplatePartName { get { return _templatePartName ; } set { _templatePartName = value ; } }
+        protected override string TemplatePartName { get { return _templatePartName ; } set { _templatePartName = value ; } }
         #endregion
     }
 }

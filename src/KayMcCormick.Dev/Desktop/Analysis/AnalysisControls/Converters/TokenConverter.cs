@@ -9,7 +9,7 @@ namespace AnalysisControls.Converters
     /// <summary>
     /// 
     /// </summary>
-    public class TokenConverter : IValueConverter
+    public sealed class TokenConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

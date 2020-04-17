@@ -13,6 +13,7 @@ namespace KayMcCormick.Dev.Interfaces
 {
     /// <summary>
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class RegisterApplicationInstanceResponse
     {
     }

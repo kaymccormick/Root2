@@ -14,19 +14,23 @@ using System.Text.Json.Serialization ;
 using System.Windows ;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ControlWrap < T > : IWrap < T > , IWrap1
+    public sealed class ControlWrap < T > : IWrap < T > , IWrap1
         where T : UIElement
     {
+#pragma warning disable 169
         private object _controlObject ;
+#pragma warning restore 169
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public ControlWrap ( ) { }
 
         /// <summary>
@@ -41,8 +45,8 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ]
-        public ImageSource Image
+        // ReSharper disable once UnusedMember.Global
+        [ JsonIgnore ] [ NotNull ] public ImageSource Image
         {
             get
             {

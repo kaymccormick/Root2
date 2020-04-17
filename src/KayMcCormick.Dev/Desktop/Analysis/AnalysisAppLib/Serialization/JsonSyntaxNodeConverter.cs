@@ -25,7 +25,7 @@ namespace AnalysisAppLib.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonSyntaxNodeConverter : JsonConverterFactory
+    public sealed class JsonSyntaxNodeConverter : JsonConverterFactory
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of JsonConverter
@@ -66,6 +66,7 @@ namespace AnalysisAppLib.Serialization
         private sealed class InnerConverter < T > : JsonConverter < T >
             where T : CSharpSyntaxNode
         {
+            // ReSharper disable once NotAccessedField.Local
             private readonly JsonSerializerOptions _options ;
             public InnerConverter ( JsonSerializerOptions options ) { _options = options ; }
 
@@ -79,6 +80,7 @@ namespace AnalysisAppLib.Serialization
             {
                 if ( typeToConvert == typeof ( ThisExpressionSyntax ) )
                 {
+                    // ReSharper disable once UnusedVariable
                     var d =
                         JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (
                                                                                             ref
@@ -103,8 +105,7 @@ namespace AnalysisAppLib.Serialization
                         }
                     }
 
-                    if ( d            != null
-                         && d.Members != null )
+                    if ( d?.Members != null )
                     {
                         foreach ( var xx in d.Members )
                         {

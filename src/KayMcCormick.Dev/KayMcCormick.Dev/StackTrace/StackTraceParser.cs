@@ -19,6 +19,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Text.RegularExpressions ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.StackTrace
 {
@@ -28,6 +29,7 @@ namespace KayMcCormick.Dev.StackTrace
 
     /// <summary>
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class StackTraceParser
     {
         private const string Space    = @"[\x20\t]" ;
@@ -110,9 +112,10 @@ namespace KayMcCormick.Dev.StackTrace
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [ NotNull ]
         public static IEnumerable < T > Parse < T > (
-            string text
-          , Func < string , string , string , string ,
+            [ NotNull ] string text
+          , [ NotNull ] Func < string , string , string , string ,
                 IEnumerable < KeyValuePair < string , string > > , string , string , T > selector
         )
         {
@@ -157,17 +160,18 @@ namespace KayMcCormick.Dev.StackTrace
         /// <typeparam name="TFrame"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [ NotNull ]
         public static IEnumerable < TFrame >
             Parse < TToken , TMethod , TParameters , TParameter , TSourceLocation , TFrame > (
-                string                                text
-              , Func < int , int , string , TToken >  tokenSelector
-              , Func < TToken , TToken , TMethod >    methodSelector
-              , Func < TToken , TToken , TParameter > parameterSelector
-              , Func < TToken , IEnumerable < TParameter > , TParameters >
+                [ NotNull ] string                                text
+              , [ NotNull ] Func < int , int , string , TToken >  tokenSelector
+              , [ NotNull ] Func < TToken , TToken , TMethod >    methodSelector
+              , [ NotNull ] Func < TToken , TToken , TParameter > parameterSelector
+              , [ NotNull ] Func < TToken , IEnumerable < TParameter > , TParameters >
                     parametersSelector
-              , Func < TToken , TToken , TSourceLocation >
+              , [ NotNull ] Func < TToken , TToken , TSourceLocation >
                     sourceLocationSelector
-              , Func < TToken , TMethod , TParameters , TSourceLocation , TFrame > selector
+              , [ NotNull ] Func < TToken , TMethod , TParameters , TSourceLocation , TFrame > selector
             )
         {
             if ( tokenSelector == null )
@@ -235,8 +239,8 @@ namespace KayMcCormick.Dev.StackTrace
         }
 
         private static T Token < T > (
-            Capture                         capture
-          , Func < int , int , string , T > tokenSelector
+            [ NotNull ] Capture                         capture
+          , [ NotNull ] Func < int , int , string , T > tokenSelector
         )
         {
             return tokenSelector ( capture.Index , capture.Length , capture.Value ) ;

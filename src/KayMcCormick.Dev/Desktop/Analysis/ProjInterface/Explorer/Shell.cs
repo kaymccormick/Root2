@@ -22,6 +22,7 @@ namespace ProjInterface.Explorer
     /// <summary>
     ///     Interaction logic for Window1.xaml
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class Shell : HwndHost , IViewWithTitle , IControlView
     {
         internal const int LBN_SELCHANGE   = 0x00000001 , WM_COMMAND    = 0x00000111
@@ -33,11 +34,12 @@ namespace ProjInterface.Explorer
         private int    hostHeight , hostWidth ;
 
 
+        // ReSharper disable once NotAccessedField.Local
         private IntPtr hwndControl ;
         private IntPtr hwndHost ;
 
         #region Implementation of IView1
-        public string ViewTitle { get { return _viewTitle ; } set { _viewTitle = value ; } }
+        public string ViewTitle { get { return _viewTitle ; } }
         #endregion
 
         [ DllImport ( "user32.dll" , EntryPoint = "CreateWindowEx" , CharSet = CharSet.Unicode ) ]

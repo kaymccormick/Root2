@@ -6,7 +6,7 @@ namespace KayMcCormick.Dev.Configuration
     /// <summary>Configuration section handler for container helper settings.</summary>
     /// <seealso cref="System.Configuration.ConfigurationSection" />
     [ ConfigTarget ( typeof ( ContainerHelperSettings ) ) ]
-    public class ContainerHelperSection : ConfigurationSection
+    public sealed class ContainerHelperSection : ConfigurationSection
     {
         private const string DoTrace = "DoTraceConditionalRegistration" ;
 

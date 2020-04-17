@@ -14,7 +14,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class LogViewerConfig
+    public sealed class LogViewerConfig
 
     {
         private int _port ;
@@ -28,6 +28,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public int Port { get { return _port ; } set { _port = value ; } }
     }
 }

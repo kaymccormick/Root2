@@ -7,11 +7,12 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class UnrecognizedElementException : Exception
+    public sealed class UnrecognizedElementException : Exception
     {
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public UnrecognizedElementException ( ) { }
 
         /// <summary>
@@ -25,6 +26,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
+        // ReSharper disable once UnusedMember.Global
         public UnrecognizedElementException ( string message , Exception innerException ) :
             base ( message , innerException )
         {
@@ -35,7 +37,8 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected UnrecognizedElementException (
+        // ReSharper disable once UnusedMember.Local
+        private UnrecognizedElementException (
             [ NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )

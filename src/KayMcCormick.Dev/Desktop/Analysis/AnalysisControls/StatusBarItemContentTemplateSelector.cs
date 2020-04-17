@@ -27,6 +27,7 @@ namespace AnalysisControls
                 {
                     var type = item.GetType ( ) ;
 
+                    // ReSharper disable once UnusedVariable
                     var cType = container.GetType ( ) ;
                     foreach ( DictionaryEntry currentResource in Application.Current.Resources )
                     {

@@ -33,6 +33,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="projectNode"></param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         Task AnalyzeCommandAsync ( IProjectBrowserNode projectNode ) ;
     }
 }

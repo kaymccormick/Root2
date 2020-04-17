@@ -15,7 +15,7 @@ namespace KayMcCormick.Dev.Application
 {
     /// <summary>
     /// </summary>
-    public class AppStartupEventArgs : EventArgs
+    public sealed class AppStartupEventArgs : EventArgs
     {
     }
 }

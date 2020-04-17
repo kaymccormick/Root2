@@ -1,47 +1,46 @@
-﻿using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Collections.Immutable ;
-using System.Data ;
-using System.Data.SqlClient ;
-using System.Data.SqlTypes ;
-using System.IO ;
-using System.Linq ;
-using System.Net ;
-using System.Net.Sockets ;
-using System.Reactive.Subjects ;
-using System.Text ;
-using System.Text.Json ;
-using System.Threading.Tasks ;
-using System.Windows.Markup ;
-using System.Xml ;
-using System.Xml.Linq ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Project ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.XmlDoc ;
-using AnalysisControls ;
-using AnalysisControls.ViewModel ;
-using Autofac ;
-using Autofac.Core ;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST ;
-using CommandLine ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Lib.Wpf.Command ;
-using Microsoft.Build.Locator ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.CodeAnalysis.MSBuild ;
-using Microsoft.CodeAnalysis.Text ;
-using NLog ;
-using NLog.Targets ;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
-using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reactive.Subjects;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows.Markup;
+using System.Xml;
+using System.Xml.Linq;
+using AnalysisAppLib;
+using AnalysisAppLib.Project;
+using AnalysisAppLib.Syntax;
+using AnalysisAppLib.XmlDoc;
+using AnalysisControls;
+using AnalysisControls.ViewModel;
+using Autofac;
+using Autofac.Core;
+using CommandLine;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.Attributes;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Lib.Wpf.Command;
+using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis.Text;
+using NLog;
+using NLog.Targets;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters;
 
 // ReSharper disable RedundantOverriddenMember
 
@@ -88,6 +87,7 @@ namespace ConsoleApp1
           , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\netstandard.dll"
         } ;
 
+        // ReSharper disable once NotAccessedField.Local
         private static ILogger Logger ;
 
         private static          ApplicationInstance _appinst ;
@@ -1626,7 +1626,6 @@ namespace ConsoleApp1
                                                                                        )
                                                                                  )
                                                           );
-                ;
 
                 classContainerDecl = classContainerDecl.WithMembers (
                                                                      List (
@@ -1843,6 +1842,7 @@ namespace ConsoleApp1
                                                                                             XmlSummaryElement ( )
                                                                                            )
                                                                                   ) ;
+                // ReSharper disable once UnusedVariable
                 var tokens1 = documentationCommentTriviaSyntax
                              .DescendantTokens ( x111 => true , true )
                              .ToList ( ) ;
@@ -2281,11 +2281,11 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             SourceSpanEnd              = sourceSpanEnd ;
         }
 
-        public string MetadataModuleMetadataName { get ; set ; }
+        public string MetadataModuleMetadataName { get ; }
 
-        public int SourceSpanStart { get ; set ; }
+        public int SourceSpanStart { get ; }
 
-        public int SourceSpanEnd { get ; set ; }
+        public int SourceSpanEnd { get ; }
     }
 
     public sealed class CallerInfo
@@ -2297,16 +2297,6 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public string CallingSymbol { get ; }
 
         public bool IsDirect { get ; }
-
-        // ReSharper disable once UnusedMember.Global
-        public CallerInfo (
-            ImmutableArray < SymbolDisplayPart > toDisplayParts
-          , ImmutableArray < SymbolDisplayPart > symbolDisplayParts
-          , bool                                 useIsDirect
-          , IEnumerable < LocationInfo >         @select
-        )
-        {
-        }
 
         public CallerInfo (
             string                                   calledSymbol
@@ -2343,6 +2333,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
         {
+            // ReSharper disable once UnusedVariable
             var nsSymbol = model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( ) ;
             base.VisitNamespaceDeclaration ( node ) ;
         }
@@ -2451,6 +2442,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             var rt = symbol.ReturnType ;
             // ReSharper disable once UnusedVariable
             var origDef = rt.OriginalDefinition ;
+            // ReSharper disable once UnusedVariable
             var displayString = rt.ToDisplayString ( ) ;
             base.VisitMethodDeclaration ( node ) ;
         }
@@ -2467,6 +2459,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             {
                 foreach ( var symbolDisplayPart in symbol.ToDisplayParts ( ) )
                 {
+                    // ReSharper disable once UnusedVariable
                     var k = ( int ) symbolDisplayPart.Kind ;
                     var s = symbolDisplayPart.Symbol ;
                     var interfaces = "" ;
@@ -2528,23 +2521,23 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         #endregion
     }
 
-    public class MethodInfo
+    public sealed class MethodInfo
     {
-        private string                 _name ;
-        private List < ParameterInfo > _params = new List < ParameterInfo > ( ) ;
+        private string              _name;
+        private List<ParameterInfo> _params = new List<ParameterInfo>();
 
-        public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > select )
+        public MethodInfo(string methodSymbolName, IEnumerable<ParameterInfo> select)
         {
-            Name = methodSymbolName ;
-            Parameters.AddRange ( select ) ;
+            Name = methodSymbolName;
+            Parameters.AddRange(select);
         }
 
-        public string Name { get { return _name ; } set { _name = value ; } }
+        public string Name { get { return _name; } set { _name = value; } }
 
-        public List < ParameterInfo > Parameters
+        public List<ParameterInfo> Parameters
         {
-            get { return _params ; }
-            set { _params = value ; }
+            get { return _params; }
+            set { _params = value; }
         }
     }
 
@@ -2556,7 +2549,8 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         public string TypeFullName { get ; }
 
-        public List < CustommodifierInfo > custommodifiers = new List < CustommodifierInfo > ( ) ;
+        // ReSharper disable once CollectionNeverQueried.Global
+        public readonly List < CustommodifierInfo > custommodifiers = new List < CustommodifierInfo > ( ) ;
 
         public ParameterInfo (
             string                             name
@@ -2574,7 +2568,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         }
     }
 
-    public class CustommodifierInfo
+    public sealed class CustommodifierInfo
     {
         public bool IsOptional { get ; }
 

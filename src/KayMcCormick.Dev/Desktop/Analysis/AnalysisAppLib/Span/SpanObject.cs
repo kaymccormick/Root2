@@ -26,7 +26,7 @@ namespace AnalysisAppLib.Span
         /// </summary>
         /// <param name="span"></param>
         /// <param name="instance"></param>
-        public SpanObject ( TextSpan span , T instance )
+        protected SpanObject ( TextSpan span , T instance )
         {
             Span      = span ;
             _instance = instance ;
@@ -47,6 +47,6 @@ namespace AnalysisAppLib.Span
         /// <summary>
         /// 
         /// </summary>
-        public TextSpan Span { get ; set ; }
+        public TextSpan Span { get ; }
     }
 }

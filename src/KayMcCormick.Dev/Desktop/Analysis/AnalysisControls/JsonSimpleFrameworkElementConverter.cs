@@ -20,7 +20,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class JsonSimpleFrameworkElementConverterFactory : JsonConverterFactory
+    public sealed class JsonSimpleFrameworkElementConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>

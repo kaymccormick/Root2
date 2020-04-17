@@ -17,7 +17,6 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
-using AnalysisAppLib ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
@@ -41,6 +40,7 @@ namespace AnalysisControls
         /// <summary>
         /// </summary>
         /// <param name="builder"></param>
+        // ReSharper disable once AnnotateNotNullParameter
         protected override void Load ( ContainerBuilder builder )
         {
 #if false
@@ -152,6 +152,7 @@ namespace AnalysisControls
         // ReSharper disable once UnusedParameter.Local
         private FrameworkElement Func (
             [ NotNull ] IComponentContext c1
+            // ReSharper disable once UnusedParameter.Local
           , IEnumerable < Parameter >     p1
         )
         {

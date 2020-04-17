@@ -5,7 +5,7 @@ namespace TestApp
     /// <summary>
     /// Interaction logic for Home.xaml
     /// </summary>
-    public partial class Home : Page
+    public sealed partial class Home : Page
     {
         public Home()
         {

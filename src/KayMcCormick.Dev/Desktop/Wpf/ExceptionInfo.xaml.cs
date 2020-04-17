@@ -80,9 +80,12 @@ namespace KayMcCormick.Lib.Wpf
                     }
                 }
 
-                foreach ( var stackTraceEntry in Utils.ParseStackTrace ( stackTrace ) )
+                if ( stackTrace != null )
                 {
-                    Entries.Add ( stackTraceEntry ) ;
+                    foreach ( var stackTraceEntry in Utils.ParseStackTrace ( stackTrace ) )
+                    {
+                        Entries.Add ( stackTraceEntry ) ;
+                    }
                 }
             }
         }

@@ -14,10 +14,11 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     [ TypeConverter ( typeof ( ResolveTypeConverter ) ) ]
     [ MarkupExtensionReturnType ( typeof ( object ) ) ]
-    public class ResolveExtension : MarkupExtension
+    public sealed class ResolveExtension : MarkupExtension
     {
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public ResolveExtension ( ) { }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public Type ComponentType { get ; set ; }
+        public Type ComponentType { get ; }
 
         #region Overrides of MarkupExtension
         /// <summary>
@@ -36,7 +37,8 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public override object ProvideValue ( [ NotNull ] IServiceProvider serviceProvider )
+        [ NotNull ]
+        public override object ProvideValue ( IServiceProvider serviceProvider )
         {
             if ( serviceProvider == null )
             {
@@ -91,7 +93,7 @@ namespace KayMcCormick.Lib.Wpf
 
     /// <summary>
     /// </summary>
-    public class ResolveTypeConverter : TypeConverter
+    public sealed class ResolveTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
         /// <summary>
@@ -142,14 +144,14 @@ namespace KayMcCormick.Lib.Wpf
 
             return new InstanceDescriptor (
                                            typeof ( ResolveExtension ).GetConstructor (
-                                                                                       new Type[ 1 ]
+                                                                                       new Type[]
                                                                                        {
                                                                                            typeof (
                                                                                                object
                                                                                            )
                                                                                        }
                                                                                       )
-                                         , new object[ 1 ] { resolveExtension.ComponentType }
+                                         , new object[] { resolveExtension.ComponentType }
                                           ) ;
         }
         #endregion

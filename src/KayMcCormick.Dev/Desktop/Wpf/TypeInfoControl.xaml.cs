@@ -1,12 +1,13 @@
 ﻿using System ;
 using System.Windows.Controls ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     ///     Interaction logic for TypeInfoControl.xaml
     /// </summary>
-    public partial class TypeInfoControl : UserControl
+    public sealed partial class TypeInfoControl : UserControl
     {
         /// <summary>
         /// </summary>
@@ -14,6 +15,6 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public Type DesignContext { get { return typeof ( TypeInfoControl ) ; } }
+        [ NotNull ] public Type DesignContext { get { return typeof ( TypeInfoControl ) ; } }
     }
 }

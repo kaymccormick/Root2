@@ -5,11 +5,13 @@ using NLog ;
 
 namespace AnalysisControls
 {
+    // ReSharper disable once UnusedType.Global
     internal static class ToolTips
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Global
         public static UIElement MakeToolTipContent ( [ CanBeNull ] object resource )
         {
             var displayString = string.Empty ;

@@ -3,12 +3,7 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:local="clr-namespace:TestApp"
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-                 xmlns:views="clr-namespace:AnalysisControls.Views;assembly=AnalysisControls"
-                 xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
-                 xmlns:viewModel="clr-namespace:KayMcCormick.Lib.Wpf.ViewModel;assembly=KayMcCormick.Lib.Wpf"
-                 xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
                  mc:Ignorable="d"
                  Title="MainWindow" Height="450"
                  Width="800">

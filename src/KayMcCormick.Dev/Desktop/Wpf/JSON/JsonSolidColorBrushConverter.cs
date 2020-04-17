@@ -19,7 +19,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
     /// </summary>
-    public class JsonSolidColorBrushConverter : JsonConverter < SolidColorBrush >
+    public sealed class JsonSolidColorBrushConverter : JsonConverter < SolidColorBrush >
     {
         #region Overrides of JsonConverter<SolidColorBrush>
         /// <summary>
@@ -44,8 +44,8 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , SolidColorBrush       value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] SolidColorBrush       value
           , JsonSerializerOptions options
         )
         {

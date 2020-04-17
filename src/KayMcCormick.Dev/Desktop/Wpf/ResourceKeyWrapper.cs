@@ -27,7 +27,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ResourceKeyWrapper < T > : IResourceKeyWrapper < T > , IResourceKeyWrapper1
+    public sealed class ResourceKeyWrapper < T > : IResourceKeyWrapper < T > , IResourceKeyWrapper1
         where T : ResourceKey
     {
         private T _resourceKey ;

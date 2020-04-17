@@ -19,7 +19,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
 {
     /// <summary>
     /// </summary>
-    public class JsonDependencyPropertyConverter : JsonConverter < DependencyProperty >
+    public sealed class JsonDependencyPropertyConverter : JsonConverter < DependencyProperty >
     {
         #region Overrides of JsonConverter<DependencyProperty>
         /// <summary>
@@ -44,8 +44,8 @@ namespace KayMcCormick.Lib.Wpf.JSON
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , DependencyProperty    value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] DependencyProperty    value
           , JsonSerializerOptions options
         )
         {

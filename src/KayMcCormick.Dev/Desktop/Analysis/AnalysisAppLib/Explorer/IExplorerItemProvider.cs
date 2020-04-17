@@ -22,6 +22,7 @@ namespace AnalysisAppLib.Explorer
         /// 
         /// </summary>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         IEnumerable < AppExplorerItem > GetRootItems ( ) ;
     }
 }

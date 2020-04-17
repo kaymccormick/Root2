@@ -16,7 +16,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class StringObservableCollection : ObservableCollection < string >
+    public sealed class StringObservableCollection : ObservableCollection < string >
     {
     }
 }

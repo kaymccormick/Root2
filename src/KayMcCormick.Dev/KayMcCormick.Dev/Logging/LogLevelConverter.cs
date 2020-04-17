@@ -10,9 +10,10 @@ namespace KayMcCormick.Dev.Logging
     ///     NLog.LogLevel converter for  System.Text.JSON.
     ///     Converts the log level to a string and for writing and vicee versa for
     ///     reading.
-    ///     Current format used orginal log levels output.
+    ///     Current format used original log levels output.
     /// </summary>
     //KM2020-3-26 ReSharper disable once UnusedType.Global
+    // ReSharper disable once UnusedType.Global
     public class LogLevelConverter : JsonConverter < LogLevel >
 
     {

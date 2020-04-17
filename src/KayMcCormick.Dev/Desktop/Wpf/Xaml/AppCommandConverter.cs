@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf.Xaml
 {
     /// <summary>
     /// </summary>
-    public class AppCommandConverter : IValueConverter
+    public sealed class AppCommandConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

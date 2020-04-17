@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using JetBrains.Annotations ;
 using NLog.Internal.Fakeables ;
 using NLog.LayoutRenderers ;
 
@@ -23,7 +24,7 @@ namespace KayMcCormick.Dev.Logging
             SetupXmlEventLayoutRenderer ( this ) ;
         }
 
-        public static void SetupXmlEventLayoutRenderer ( Log4JXmlEventLayoutRenderer x )
+        public static void SetupXmlEventLayoutRenderer ( [ NotNull ] Log4JXmlEventLayoutRenderer x )
         {
             x.IncludeAllProperties = true ;
             x.IncludeCallSite      = true ;

@@ -24,10 +24,7 @@ namespace ProjTests
         {
             _output         = output ;
             _loggingFixture = loggingFixture ;
-            if ( loggingFixture != null )
-            {
-                loggingFixture.SetOutputHelper ( output ) ;
-            }
+            loggingFixture?.SetOutputHelper ( output ) ;
 
             if ( _loggingFixture != null )
             {

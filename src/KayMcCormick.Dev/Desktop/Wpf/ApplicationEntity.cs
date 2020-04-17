@@ -5,6 +5,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class ApplicationEntity
     {
     }

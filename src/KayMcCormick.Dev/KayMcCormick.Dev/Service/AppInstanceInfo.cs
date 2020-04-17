@@ -16,6 +16,7 @@ namespace KayMcCormick.Dev.Service
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once CollectionNeverQueried.Global
         public IList < LoggerInfo > LoggerInfos { get ; } = new List < LoggerInfo > ( ) ;
 
         /// <summary>

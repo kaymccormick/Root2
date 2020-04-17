@@ -14,7 +14,7 @@ namespace AnalysisControls
     ///     Interaction logic for PythonControl.xaml
     /// </summary>
     [ TitleMetadata ( "Python" ) ]
-    public partial class PythonControl : UserControl
+    public sealed partial class PythonControl : UserControl
       , IView < PythonViewModel >
       , IView1
       , IControlView
@@ -48,7 +48,8 @@ namespace AnalysisControls
         public PythonViewModel ViewModel { get ; }
     #endregion
 
-        private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
+    // ReSharper disable once UnusedMember.Local
+    private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
             if ( e.Key == Key.Enter )
             {
@@ -63,7 +64,9 @@ namespace AnalysisControls
             }
         }
 
-        private void UIElement_OnPreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
+    // ReSharper disable once UnusedMember.Local
+    // ReSharper disable once UnusedParameter.Local
+    private void UIElement_OnPreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
             DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
             switch ( e.Key )

@@ -40,6 +40,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool RegisterExplorerTypes
         {
             get { return _registerExplorerTypes ; }

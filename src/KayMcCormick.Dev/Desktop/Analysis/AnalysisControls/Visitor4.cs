@@ -44,6 +44,7 @@ namespace AnalysisControls
         /// <param name="t"></param>
         /// <param name="ctx"></param>
         /// <param name="ctl"></param>
+        // ReSharper disable once UnusedParameter.Local
         public Visitor4 ( TaskScheduler t , SynchronizationContext ctx , ICodeRenderer ctl ) :
             base ( SyntaxWalkerDepth.Trivia )
         {

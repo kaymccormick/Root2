@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Span
 {
+    // ReSharper disable once UnusedType.Global
     internal class SpanToolTipViewModel : ISpanToolTipViewModel
     {
         public List < object > Spans { get ; set ; } = new List < object > ( ) ;

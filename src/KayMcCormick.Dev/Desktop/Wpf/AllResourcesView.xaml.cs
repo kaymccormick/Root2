@@ -7,6 +7,7 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using NLog ;
+// ReSharper disable RedundantOverriddenMember
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -456,7 +457,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <seealso cref="KayMcCormick.Lib.Wpf.IControlView" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     [ TitleMetadata ( "Resources Explorer" ) ]
-    public partial class AllResourcesView : UserControl
+    public sealed partial class AllResourcesView : UserControl
       , IViewWithTitle
       , IView < AllResourcesTreeViewModel >
       , IControlView

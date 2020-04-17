@@ -9,12 +9,3 @@
 // 
 // ---
 #endregion
-using System ;
-
-namespace ProjInterface
-{
-    public interface ITakesHwnd
-    {
-        void SetHwnd ( IntPtr hWnd ) ;
-    }
-}

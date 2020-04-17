@@ -2,7 +2,6 @@ using System ;
 using System.Globalization ;
 using System.Text.Json ;
 using System.Windows.Data ;
-using FindLogUsages ;
 using Microsoft.CodeAnalysis.CSharp ;
 
 namespace AnalysisControls.Converters
@@ -15,7 +14,7 @@ namespace AnalysisControls.Converters
     ///     <para></para>
     /// </summary>
     /// <seealso cref="System.Windows.Data.IValueConverter" />
-    public class TransformConverter : IValueConverter
+    public sealed class TransformConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

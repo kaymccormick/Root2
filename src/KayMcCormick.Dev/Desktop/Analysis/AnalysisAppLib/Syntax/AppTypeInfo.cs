@@ -57,8 +57,6 @@ namespace AnalysisAppLib.Syntax
                 subTypeInfos = new AppTypeInfoCollection();
             }
 
-            _components.CollectionChanged += (sender, args)
-                => OnPropertyChanged(nameof(Components));
             _factoryMethods.CollectionChanged += (sender, args)
                 => OnPropertyChanged(nameof(FactoryMethods));
             _subTypeInfos = subTypeInfos;
@@ -517,6 +515,7 @@ namespace AnalysisAppLib.Syntax
           , Type                   destinationType
         )
         {
+            // ReSharper disable once UnusedVariable
             if ( value is Type t )
             {
                 return "boo" ;
@@ -632,8 +631,12 @@ namespace AnalysisAppLib.Syntax
       , IEnumerable < AppTypeInfo >, ICollection
     {
         private readonly IList < AppTypeInfo > _listImplementation = new List < AppTypeInfo > ();
+#pragma warning disable 649
         private object _syncRoot ;
+#pragma warning restore 649
+#pragma warning disable 649
         private bool _isSynchronized ;
+#pragma warning restore 649
         #region Implementation of IEnumerable
         /// <inheritdoc />
         public IEnumerator < AppTypeInfo > GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
@@ -659,7 +662,9 @@ namespace AnalysisAppLib.Syntax
         /// <inheritdoc />
         public void CopyTo ( Array array , int index ) { }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return _listImplementation.Count ; }
@@ -802,7 +807,7 @@ namespace AnalysisAppLib.Syntax
     /// <summary>
     /// 
     /// </summary>
-    public class AppTypeInfoKey : IComparable < AppTypeInfoKey >
+    public sealed class AppTypeInfoKey : IComparable < AppTypeInfoKey >
     {
         private string _unqualifiedTypeName ;
 
@@ -850,7 +855,7 @@ namespace AnalysisAppLib.Syntax
         /// 
         /// </summary>
         /// <param name="type"></param>
-        public AppTypeInfoKey ( Type type )
+        public AppTypeInfoKey ( [ NotNull ] Type type )
         {
             StringValue = type.Name ;
 

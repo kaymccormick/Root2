@@ -131,7 +131,6 @@
     <Compile Include="Application\AppStartupEventArgs.cs" />
     <Compile Include="Attributes\ClearLoggingRulesAttribute.cs" />
     <Compile Include="Attributes\ConfigTargetAttribute.cs" />
-    <Compile Include="Attributes\InfoContextFactoryAttribute.cs" />
     <Compile Include="IViewWithTitle.cs" />
     <Compile Include="Logging\LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />

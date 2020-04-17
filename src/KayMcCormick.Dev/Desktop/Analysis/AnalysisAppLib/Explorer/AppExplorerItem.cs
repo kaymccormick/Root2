@@ -23,16 +23,19 @@ namespace AnalysisAppLib.Explorer
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public abstract string Name { get ; }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public abstract string FullName { get ; }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public abstract string Link { get ; }
 
         /// <summary>
@@ -48,6 +51,7 @@ namespace AnalysisAppLib.Explorer
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public abstract bool IsDirectory { get ; }
 
         /// <summary>
@@ -58,11 +62,13 @@ namespace AnalysisAppLib.Explorer
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public abstract IEnumerable < AppExplorerItem > Children { get ; }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public abstract object Extension { get ; }
 
         /// <summary>
@@ -70,17 +76,20 @@ namespace AnalysisAppLib.Explorer
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="path"></param>
+        // ReSharper disable once UnusedMember.Global
         public abstract void Push ( Stream         stream , string path ) ;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="path"></param>
         /// <param name="stream"></param>
+        // ReSharper disable once UnusedMember.Global
         public abstract void Pull ( string         path ,   Stream stream ) ;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="path"></param>
+        // ReSharper disable once UnusedMember.Global
         public abstract void CreateFolder ( string path ) ;
     }
 }

@@ -18,18 +18,19 @@ using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class SpanTT : ToolTip
     {
         public SpanTT ( SpanToolTip content ) { Content = CustomToolTip = content ; }
 
-        public SpanToolTip CustomToolTip { get ; set ; }
+        public SpanToolTip CustomToolTip { get ; }
 
         public ISpanToolTipViewModel ViewModel { get ; set ; }
     }
 
     /// <summary>
     /// </summary>
-    public partial class SpanToolTip : UserControl , ISpanToolTip
+    public sealed partial class SpanToolTip : UserControl , ISpanToolTip
     {
         /// <summary>
         /// </summary>
@@ -43,12 +44,13 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public StackPanel Panel { get ; set ; }
+        public StackPanel Panel { get ; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="o"></param>
+        // ReSharper disable once UnusedMember.Global
         public void Add ( [ CanBeNull ] UIElement o )
         {
             if ( o != null )

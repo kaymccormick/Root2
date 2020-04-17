@@ -1,6 +1,4 @@
-﻿using System.Linq ;
-using Autofac ;
-using JetBrains.Annotations ;
+﻿using Autofac ;
 using NLog ;
 
 namespace KayMcCormick.Dev
@@ -9,6 +7,7 @@ namespace KayMcCormick.Dev
     /// </summary>
     public abstract class IocModule : Module
     {
+        // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         /// <summary>
@@ -22,15 +21,6 @@ namespace KayMcCormick.Dev
         /// <param name="builder"></param>
         protected override void Load ( ContainerBuilder builder ) { DoLoad ( builder ) ; }
         #endregion
-
-        /// <summary>
-        /// </summary>
-        /// <param name="p"></param>
-        protected static void LogRegistration ( [ NotNull ] params object[] p )
-        {
-            var x = p.Prepend ( "Registering" ) ;
-            Logger.Trace ( string.Join ( " " , x ) ) ;
-        }
 
         #region Overrides of Module
         #endregion
