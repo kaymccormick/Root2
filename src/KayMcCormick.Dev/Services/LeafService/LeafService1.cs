@@ -402,7 +402,7 @@ namespace LeafService
         }
     }
 
-    public class AddInException : Exception
+    public sealed class AddInException : Exception
     {
         public AddInException ( ) { }
 
@@ -415,7 +415,7 @@ namespace LeafService
         {
         }
 
-        protected AddInException ( [ NotNull ] SerializationInfo info , StreamingContext context ) :
+        private AddInException ( [ NotNull ] SerializationInfo info , StreamingContext context ) :
             base ( info , context )
         {
         }

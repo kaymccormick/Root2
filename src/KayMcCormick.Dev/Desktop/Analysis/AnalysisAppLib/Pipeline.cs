@@ -133,16 +133,18 @@ namespace AnalysisAppLib
         {
             if ( task.IsFaulted )
             {
-                if ( task.Exception != null )
+                if ( task.Exception == null )
                 {
-                    var faultReaon = task.Exception.Message ;
-                    new LogBuilder ( Logger )
-                       .LoggerName ( $"{Logger.Name}.{logName}" )
-                       .Level ( LogLevel.Trace )
-                       .Exception ( task.Exception )
-                       .Message ( "fault is {ex}" , faultReaon )
-                       .Write ( ) ;
+                    return ;
                 }
+
+                var faultReaon = task.Exception.Message ;
+                new LogBuilder ( Logger )
+                   .LoggerName ( $"{Logger.Name}.{logName}" )
+                   .Level ( LogLevel.Trace )
+                   .Exception ( task.Exception )
+                   .Message ( "fault is {ex}" , faultReaon )
+                   .Write ( ) ;
             }
             else { Logger.Trace ( $"{logName} complete - not faulted" ) ; }
         }
@@ -272,11 +274,11 @@ namespace AnalysisAppLib
                 Logger.Trace ( "Constructing FindUsagesBlock" ) ;
                 var flu = new FindLogUsagesMain ( invocationFactory ) ;
 
-                Func <Document, Task<IEnumerable <ILogInvocation>> > transform = document => flu.FindUsagesFuncAsync(document, rejectBlock);
+                Task < IEnumerable < ILogInvocation > > Transform ( Document document ) => flu.FindUsagesFuncAsync ( document , rejectBlock ) ;
 
                 var findLogUsagesBlock =
                     new TransformManyBlock < Document , ILogInvocation > (
-                                                                          transform
+                                                                          Transform
                                                                         , new
                                                                           ExecutionDataflowBlockOptions
                                                                           {

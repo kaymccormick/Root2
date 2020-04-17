@@ -19,6 +19,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// Deprecated component information related to syntax.
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class ComponentInfo
     {
         private bool _isList ;

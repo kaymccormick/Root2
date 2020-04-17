@@ -99,17 +99,19 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            if ( returnVal == null )
+            if ( returnVal != null )
             {
-                DebugUtils.WriteLine ( "Calling base method for template" ) ;
-
-                returnVal = baseMethod?.Invoke ( item , container ) ;
-                DebugUtils.WriteLine (
-                                      returnVal != null
-                                          ? "Got template from base method"
-                                          : "no template from base method"
-                                     ) ;
+                return returnVal ;
             }
+
+            DebugUtils.WriteLine ( "Calling base method for template" ) ;
+
+            returnVal = baseMethod?.Invoke ( item , container ) ;
+            DebugUtils.WriteLine (
+                                  returnVal != null
+                                      ? "Got template from base method"
+                                      : "no template from base method"
+                                 ) ;
 
             return returnVal ;
         }
@@ -133,21 +135,22 @@ namespace KayMcCormick.Lib.Wpf
             DebugUtils.WriteLine ( $"Trying to find data template with resource key {resourceKey}" ) ;
 
             var resource = fe.TryFindResource ( resourceKey ) ;
-            if ( resource != null )
+            if ( resource == null )
             {
-                DebugUtils.WriteLine ( $"Found resource of type {resource.GetType ( )}" ) ;
-                var dt = ( DataTemplate ) resource ;
-                if ( predicate != null
-                     && ! predicate ( dt ) )
-                {
-                    DebugUtils.WriteLine ( "rejecting data template based on predicate" ) ;
-                    return null ;
-                }
+                return null ;
+            }
 
+            DebugUtils.WriteLine ( $"Found resource of type {resource.GetType ( )}" ) ;
+            var dt = ( DataTemplate ) resource ;
+            if ( predicate == null
+                 || predicate ( dt ) )
+            {
                 return resource as DataTemplate ;
             }
 
+            DebugUtils.WriteLine ( "rejecting data template based on predicate" ) ;
             return null ;
+
         }
     }
 }

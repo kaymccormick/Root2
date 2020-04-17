@@ -66,10 +66,8 @@ namespace AnalysisControls
             DependencyObject                   dp
           , DependencyPropertyChangedEventArgs e
         )
-        {
-            var element = dp as UIElement ;
-
-            if ( element == null )
+        {   
+            if ( ! ( dp is UIElement element ) )
             {
                 return ;
             }
@@ -105,8 +103,7 @@ namespace AnalysisControls
                 return ;
             }
 
-            var elt = source as UIElement ;
-            if ( elt == null )
+            if ( ! ( source is UIElement elt ) )
             {
                 return ;
             }

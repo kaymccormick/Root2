@@ -50,7 +50,7 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         // ReSharper disable once UnusedMember.Global"
         // ReSharper disable once UnusedMember.Global
-        public static Guid ConfigTest { get ; set ; } =
+        public static Guid ConfigTest { get ; } =
             new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// Basic win forms app
         /// </summary>
-        public static Guid BasicWinForms { get ; set ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
+        public static Guid BasicWinForms { get ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
     }
 
     /// <summary>
@@ -250,12 +250,14 @@ namespace KayMcCormick.Dev.Application
                     DebugUtils.WriteLine ( "logging enableD" ) ;
                 }
 
-                if ( LogManager.Configuration != null )
+                if ( LogManager.Configuration == null )
                 {
-                    foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
-                    {
-                        DebugUtils.WriteLine ( configurationAllTarget.ToString()) ;
-                    }
+                    return ;
+                }
+
+                foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+                {
+                    DebugUtils.WriteLine ( configurationAllTarget.ToString()) ;
                 }
 
                 // Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
@@ -485,51 +487,55 @@ namespace KayMcCormick.Dev.Application
                     {
                         var type = configSection.SectionInformation.Type ;
                         var sectionType = Type.GetType ( type ) ;
-                        if ( sectionType             != null
-                             && sectionType.Assembly == type1.Assembly )
+                        if ( sectionType             == null
+                             || sectionType.Assembly != type1.Assembly )
                         {
-                            logMethod2 ( "Found section " + sectionType.Name ) ;
-                            var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
-                            var configTarget = Activator.CreateInstance ( at.TargetType ) ;
-                            var infos = sectionType
-                                       .GetMembers ( )
-                                       .Select (
-                                                info => Tuple.Create (
-                                                                      info
-                                                                    , info
-                                                                         .GetCustomAttribute <
-                                                                              ConfigurationPropertyAttribute
-                                                                          > ( )
-                                                                     )
-                                               )
-                                       .Where ( tuple => tuple.Item2 != null )
-                                       .ToArray ( ) ;
-                            foreach ( var (item1 , _) in infos )
+                            continue ;
+                        }
+
+                        logMethod2 ( "Found section " + sectionType.Name ) ;
+                        var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
+                        var configTarget = Activator.CreateInstance ( at.TargetType ) ;
+                        var infos = sectionType
+                                   .GetMembers ( )
+                                   .Select (
+                                            info => Tuple.Create (
+                                                                  info
+                                                                , info
+                                                                     .GetCustomAttribute <
+                                                                          ConfigurationPropertyAttribute
+                                                                      > ( )
+                                                                 )
+                                           )
+                                   .Where ( tuple => tuple.Item2 != null )
+                                   .ToArray ( ) ;
+                        foreach ( var (item1 , _) in infos )
+                        {
+                            if ( item1.MemberType != MemberTypes.Property )
                             {
-                                if ( item1.MemberType == MemberTypes.Property )
-                                {
-                                    var attr = at.TargetType.GetProperty ( item1.Name ) ;
-                                    try
-                                    {
-                                        var configVal =
-                                            ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
-                                        if ( attr != null )
-                                        {
-                                            attr.SetValue ( configTarget , configVal ) ;
-                                        }
-                                    }
-                                    catch ( Exception ex )
-                                    {
-                                        logMethod2 (
-                                                    $"Unable to set property {item1.Name}: {ex.Message}"
-                                                   ) ;
-                                    }
-                                }
+                                continue ;
                             }
 
-
-                            ConfigSettings.Add ( configTarget ) ;
+                            var attr = at.TargetType.GetProperty ( item1.Name ) ;
+                            try
+                            {
+                                var configVal =
+                                    ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
+                                if ( attr != null )
+                                {
+                                    attr.SetValue ( configTarget , configVal ) ;
+                                }
+                            }
+                            catch ( Exception ex )
+                            {
+                                logMethod2 (
+                                            $"Unable to set property {item1.Name}: {ex.Message}"
+                                           ) ;
+                            }
                         }
+
+
+                        ConfigSettings.Add ( configTarget ) ;
                     }
                     catch ( Exception ex1 )
                     {

@@ -6,6 +6,7 @@ namespace KayMcCormick.Dev.Logging
     /// <summary>
     /// </summary>
     // ReSharper disable once UnusedType.Global
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class MyLogger : Logger
 
     {

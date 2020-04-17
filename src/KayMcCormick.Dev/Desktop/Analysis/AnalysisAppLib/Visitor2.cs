@@ -88,13 +88,15 @@ namespace AnalysisAppLib
                     var asNode = child.AsNode ( ) ;
                     if ( asNode != null )
                     {
-                        if ( Depth >= SyntaxWalkerDepth.Node )
+                        if ( Depth < SyntaxWalkerDepth.Node )
                         {
-                            var model2 = _mFunc?.Invoke ( asNode ) ;
-                            ActiveSpans.AddSpan ( asNode , asNode.Span , model2 ) ;
-                            Visit ( asNode ) ;
-                            ActiveSpans.Remove ( asNode ) ;
+                            continue ;
                         }
+
+                        var model2 = _mFunc?.Invoke ( asNode ) ;
+                        ActiveSpans.AddSpan ( asNode , asNode.Span , model2 ) ;
+                        Visit ( asNode ) ;
+                        ActiveSpans.Remove ( asNode ) ;
                     }
                     else
                     {

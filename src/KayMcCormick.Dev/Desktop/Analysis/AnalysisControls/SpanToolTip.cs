@@ -53,20 +53,22 @@ namespace AnalysisControls
         // ReSharper disable once UnusedMember.Global
         public void Add ( [ CanBeNull ] UIElement o )
         {
-            if ( o != null )
+            if ( o == null )
             {
-                o.SetCurrentValue ( BorderBrushProperty , Brushes.Black ) ;
-
-                o.SetCurrentValue ( BorderThicknessProperty , new Thickness ( 0 , 0 , 0 , 3 ) ) ;
-                Panel.Children.Add ( o ) ;
-                // var element = new Line ( ) ;
-                // element.VerticalAlignment   = VerticalAlignment.Stretch ;
-                // element.HorizontalAlignment = HorizontalAlignment.Center ;
-                // element.Stroke              = Brushes.Black ;
-                // element.Height              = 5 ;
-                // element.SetBinding ( WidthProperty , new Binding ( "Width" ) { Source = Panel } ) ;
-                // Panel.Children.Add ( element ) ;
+                return ;
             }
+
+            o.SetCurrentValue ( BorderBrushProperty , Brushes.Black ) ;
+
+            o.SetCurrentValue ( BorderThicknessProperty , new Thickness ( 0 , 0 , 0 , 3 ) ) ;
+            Panel.Children.Add ( o ) ;
+            // var element = new Line ( ) ;
+            // element.VerticalAlignment   = VerticalAlignment.Stretch ;
+            // element.HorizontalAlignment = HorizontalAlignment.Center ;
+            // element.Stroke              = Brushes.Black ;
+            // element.Height              = 5 ;
+            // element.SetBinding ( WidthProperty , new Binding ( "Width" ) { Source = Panel } ) ;
+            // Panel.Children.Add ( element ) ;
         }
     }
 }

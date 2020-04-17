@@ -96,15 +96,17 @@ namespace AnalysisControls
             // ReSharper disable once UnusedVariable
             var x = fileLinePositionSpan.StartLinePosition ;
             DependencyObject elem = FlowViewer.ScrollViewer ;
-            if ( elem != null )
+            if ( elem == null )
             {
-                var count = VisualTreeHelper.GetChildrenCount ( elem ) ;
-                for ( var i = 0 ; i < count ; i ++ )
-                {
-                    elem = FlowViewer ;
-                    var child = VisualTreeHelper.GetChild ( elem , 0 ) ;
-                    Logger.Info ( "{}" , child.GetType ( ) ) ;
-                }
+                return ;
+            }
+
+            var count = VisualTreeHelper.GetChildrenCount ( elem ) ;
+            for ( var i = 0 ; i < count ; i ++ )
+            {
+                elem = FlowViewer ;
+                var child = VisualTreeHelper.GetChild ( elem , 0 ) ;
+                Logger.Info ( "{}" , child.GetType ( ) ) ;
             }
         }
 
@@ -132,11 +134,13 @@ namespace AnalysisControls
             {
                 for ( ; _curLine < line - 1 ; _curLine += 1 )
                 {
-                    if ( _curLine >= 0 )
+                    if ( _curLine < 0 )
                     {
-                        Logger.Warn ( "Insert New line {line}" , _curLine ) ;
-                        _document.Blocks.Add ( new Paragraph { Margin = new Thickness ( 0 ) } ) ;
+                        continue ;
                     }
+
+                    Logger.Warn ( "Insert New line {line}" , _curLine ) ;
+                    _document.Blocks.Add ( new Paragraph { Margin = new Thickness ( 0 ) } ) ;
                 }
 
                 Logger.Trace ( "New line {line}" , line ) ;
@@ -232,13 +236,15 @@ namespace AnalysisControls
         {
             foreach ( var styleSetter in style.Setters )
             {
-                if ( styleSetter is Setter s )
+                if ( ! ( styleSetter is Setter s ) )
                 {
-                    var s2 = new Setter ( s.Property , s.Value , s.TargetName ) ;
-//                    Logger.Info ( "adding setter {s2}" , s2 ) ;
-                    curStyle.Setters.Add ( s2 ) ;
-                    //toRemove.Add(s2);
+                    continue ;
                 }
+
+                var s2 = new Setter ( s.Property , s.Value , s.TargetName ) ;
+//                    Logger.Info ( "adding setter {s2}" , s2 ) ;
+                curStyle.Setters.Add ( s2 ) ;
+                //toRemove.Add(s2);
             }
         }
 

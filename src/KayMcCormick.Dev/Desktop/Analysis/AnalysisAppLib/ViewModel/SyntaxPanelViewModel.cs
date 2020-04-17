@@ -102,12 +102,14 @@ namespace AnalysisAppLib.ViewModel
             get { return selectedItem ; }
             set
             {
-                if ( ! ReferenceEquals ( selectedItem , value ) )
+                if ( ReferenceEquals ( selectedItem , value ) )
                 {
-                    OnPropertyChanging ( ) ;
-                    selectedItem = value ;
-                    OnPropertyChanged ( ) ;
+                    return ;
                 }
+
+                OnPropertyChanging ( ) ;
+                selectedItem = value ;
+                OnPropertyChanged ( ) ;
             }
         }
         #endregion

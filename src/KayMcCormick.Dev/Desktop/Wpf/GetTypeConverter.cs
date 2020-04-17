@@ -40,15 +40,16 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
-            if ( value != null )
+            if ( value == null )
             {
-                var convert = value.GetType ( ) ;
-                // LogManager.GetCurrentClassLogger ( )
-                // .Debug( "{type}" , convert.GetType ( ).FullName ) ;
-                return convert ;
+                return typeof ( DBNull ) ;
             }
 
-            return typeof ( DBNull ) ;
+            var convert = value.GetType ( ) ;
+            // LogManager.GetCurrentClassLogger ( )
+            // .Debug( "{type}" , convert.GetType ( ).FullName ) ;
+            return convert ;
+
         }
 
         /// <summary>Converts a value. </summary>

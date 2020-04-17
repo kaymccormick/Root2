@@ -5,7 +5,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
-  xmlns:local="clr-namespace:KayMcCormick.Lib.Wpf.View"
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
@@ -18,8 +17,10 @@
       </ListView.InputBindings>
       <ListView.View>
         <GridView>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <GridViewColumn Header="Time Written"
                           DisplayMemberBinding="{Binding TimeWritten}" />
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <GridViewColumn Header="Message"
                           DisplayMemberBinding="{Binding Path=Exception1}" />
         </GridView>

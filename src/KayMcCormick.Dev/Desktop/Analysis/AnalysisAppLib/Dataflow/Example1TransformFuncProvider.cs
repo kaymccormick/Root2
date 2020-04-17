@@ -69,11 +69,13 @@ namespace AnalysisAppLib.Dataflow
                                                                         .NamespaceBlock
                                                                ) )
             {
-                if ( model != null )
+                if ( model == null )
                 {
-                    var s1 = model.GetDeclaredSymbol ( descendantNode ) ;
-                    return1.Add ( new Example1Out { Symbol = s1 } ) ;
+                    continue ;
                 }
+
+                var s1 = model.GetDeclaredSymbol ( descendantNode ) ;
+                return1.Add ( new Example1Out { Symbol = s1 } ) ;
             }
 
 
@@ -106,16 +108,17 @@ namespace AnalysisAppLib.Dataflow
             return document => {
                 var task = _transformFunc ( document ) ;
                 task.Wait ( ) ;
-                if ( task.IsFaulted )
+                if ( ! task.IsFaulted )
                 {
-                    if ( task.Exception != null )
-                    {
-                        throw task.Exception ;
-                    }
-
-                    throw new InvalidOperationException ( "Faulted transform" ) ;
+                    return task.Result ;
                 }
-                return task.Result ;
+
+                if ( task.Exception != null )
+                {
+                    throw task.Exception ;
+                }
+
+                throw new InvalidOperationException ( "Faulted transform" ) ;
             } ;
         }
 

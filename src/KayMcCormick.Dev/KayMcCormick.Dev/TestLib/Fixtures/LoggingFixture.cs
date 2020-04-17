@@ -143,28 +143,32 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
                                                           ) ;
                 foreach ( var rule in rules )
                 {
-                    if ( rule is LoggingRuleAttribute la )
+                    if ( ! ( rule is LoggingRuleAttribute la ) )
                     {
-                        var rule2 = new LoggingRule (
-                                                     la.LoggerNamePattern
-                                                   , la.Level
-                                                   , _xunitTarget
-                                                    ) ;
-                        AppLoggingConfigHelper.AddRule ( rule2 ) ;
-                        fUpdated = true ;
+                        continue ;
                     }
+
+                    var rule2 = new LoggingRule (
+                                                 la.LoggerNamePattern
+                                               , la.Level
+                                               , _xunitTarget
+                                                ) ;
+                    AppLoggingConfigHelper.AddRule ( rule2 ) ;
+                    fUpdated = true ;
                 }
             }
 
             LogManager.ReconfigExistingLoggers ( ) ;
-            if ( fUpdated )
+            if ( ! fUpdated )
             {
-                LogManager.ReconfigExistingLoggers ( ) ;
-                var sw = new StringWriter ( ) ;
-                Utils.PerformLogConfigDump ( sw ) ;
-                Debug.Write ( sw ) ;
-                // value.WriteLine(sw.ToString());
+                return ;
             }
+
+            LogManager.ReconfigExistingLoggers ( ) ;
+            var sw = new StringWriter ( ) ;
+            Utils.PerformLogConfigDump ( sw ) ;
+            Debug.Write ( sw ) ;
+            // value.WriteLine(sw.ToString());
         }
     }
 }

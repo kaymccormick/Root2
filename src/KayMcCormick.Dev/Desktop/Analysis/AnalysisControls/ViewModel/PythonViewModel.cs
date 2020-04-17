@@ -185,7 +185,7 @@ namespace AnalysisControls.ViewModel
             var il = GetValue ( InputLineProperty ) ;
             DebugUtils.WriteLine ( $"value of input line is {il}" ) ;
             linesCollectionView.MoveCurrentToLast ( ) ;
-            DebugUtils.WriteLine ( linesCollectionView.CurrentItem ) ;
+            DebugUtils.WriteLine ( linesCollectionView.CurrentItem.ToString() ) ;
 
             //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
         }
@@ -267,12 +267,14 @@ namespace AnalysisControls.ViewModel
         )
         {
             DebugUtils.WriteLine ( $"In {nameof ( OnLinesCOllectionChanged )}" ) ;
-            if ( e.Action == NotifyCollectionChangedAction.Add )
+            if ( e.Action != NotifyCollectionChangedAction.Add )
             {
-                var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
-                DebugUtils.WriteLine ( $"Moving current to ${new1}" ) ;
-                linesCollectionView.MoveCurrentTo ( new1 ) ;
+                return ;
             }
+
+            var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
+            DebugUtils.WriteLine ( $"Moving current to ${new1}" ) ;
+            linesCollectionView.MoveCurrentTo ( new1 ) ;
         }
 
 
@@ -361,6 +363,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="textEditorText"></param>
         public void ExecutePythonScript ( string textEditorText )
         {
+            // ReSharper disable once UnusedVariable
             var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
         }
     }

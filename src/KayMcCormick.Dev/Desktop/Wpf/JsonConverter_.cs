@@ -7,7 +7,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public class JsonConverter_ : IValueConverter
+    public sealed class JsonConverter_ : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

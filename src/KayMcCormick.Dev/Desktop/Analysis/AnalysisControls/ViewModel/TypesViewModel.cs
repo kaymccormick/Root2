@@ -31,8 +31,8 @@ namespace AnalysisControls.ViewModel
       , ISupportInitializeNotification
     {
         private readonly        JsonSerializerOptions _options ;
-        private static readonly string                _pocoPrefix       = "Poco" ;
-        private static readonly string                _collectionSuffix = "Collection" ;
+        private const string _pocoPrefix = "Poco" ;
+        private const string _collectionSuffix = "Collection" ;
 
         private DateTime _initializationDateTime ;
         private bool     _showBordersIsChecked ;
@@ -146,21 +146,15 @@ namespace AnalysisControls.ViewModel
         {
             AppTypeInfoKey key = null ;
             string unqualifiedTypeName = null ;
-            if ( identifier is Type type )
+            switch ( identifier )
             {
-                unqualifiedTypeName = type.Name ;
-            }
-            else if ( identifier is string s1 )
-            {
-                unqualifiedTypeName = s1 ;
-            }
-            else if ( identifier is AppTypeInfoKey k1 )
-            {
-                key = k1 ;
-            }
-            else
-            {
-                throw new InvalidOperationException ( "Bad key" ) ;
+                case Type type :         unqualifiedTypeName = type.Name ;
+                    break ;
+                case string s1 :         unqualifiedTypeName = s1 ;
+                    break ;
+                case AppTypeInfoKey k1 : key                 = k1 ;
+                    break ;
+                default :                throw new InvalidOperationException ( "Bad key" ) ;
             }
 
             if ( unqualifiedTypeName != null )
@@ -212,7 +206,7 @@ namespace AnalysisControls.ViewModel
 
             /* Construct appTypeInfo */
             var appTypeInfoKey = new AppTypeInfoKey ( clrSyntaxNodeType ) ;
-            var version = 1 ;
+            const int version = 1 ;
             var appTypeInfo = new AppTypeInfo
                     {
                         Type           = clrSyntaxNodeType

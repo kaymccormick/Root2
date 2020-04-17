@@ -13,7 +13,6 @@ using System ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
@@ -48,28 +47,30 @@ namespace KayMcCormick.Lib.Wpf.Command
         public  Task < IAppCommandResult > ExecuteAsync ( )
         {
             return _wrappedCommand.ExecuteAsync ( ) ;
+#if false
             DebugUtils.WriteLine ( "Executing command" ) ;
             // IAppCommandResult r = null ;
             // try
             // {
-                // r = await _wrappedCommand.ExecuteAsync ( )
-                                         // .ContinueWith (
-                                                        // ( task , o ) => AppCommandResult.Cancelled
-                                                      // , this
-                                                      // , CancellationToken.None
-                                                      // , TaskContinuationOptions.None
-                                                      // , TaskScheduler
-                                                           // .FromCurrentSynchronizationContext ( )
-                                                       // ) ;
+            // r = await _wrappedCommand.ExecuteAsync ( )
+            // .ContinueWith (
+            // ( task , o ) => AppCommandResult.Cancelled
+            // , this
+            // , CancellationToken.None
+            // , TaskContinuationOptions.None
+            // , TaskScheduler
+            // .FromCurrentSynchronizationContext ( )
+            // ) ;
 
             // }
             // catch ( Exception ex )
             // {
-                // DebugUtils.WriteLine (ex.ToString()  );
+            // DebugUtils.WriteLine (ex.ToString()  );
             // }
 
             // DebugUtils.WriteLine ( "Complete" ) ;
             // return r ;
+#endif
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace KayMcCormick.Lib.Wpf.Command
             _handleException?.HandleException ( exception ) ;
         }
 
-        #region Implementation of ICommand
+#region Implementation of ICommand
         /// <summary>
         /// </summary>
         /// <param name="parameter"></param>
@@ -102,6 +103,6 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <summary>
         /// </summary>
         public event EventHandler CanExecuteChanged ;
-        #endregion
+#endregion
     }
 }

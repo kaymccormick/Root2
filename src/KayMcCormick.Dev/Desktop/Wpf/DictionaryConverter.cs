@@ -30,14 +30,14 @@ namespace KayMcCormick.Lib.Wpf
                 return null ;
             }
 
-            if ( parameter != null
-                 && d.Contains ( parameter ) )
+            if ( parameter == null
+                 || ! d.Contains ( parameter ) )
             {
-                DebugUtils.WriteLine( d[ parameter ].ToString() ) ;
-                return d[ parameter ] ;
+                return null ;
             }
 
-            return null ;
+            DebugUtils.WriteLine( d[ parameter ].ToString() ) ;
+            return d[ parameter ] ;
 
         }
 

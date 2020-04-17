@@ -323,7 +323,7 @@ namespace AddInService1V1
 
 /// <summary>
 /// </summary>
-public class LogEventInfoConverter : JsonConverter < LogEventInstance >
+public sealed class LogEventInfoConverter : JsonConverter < LogEventInstance >
 {
     #region Overrides of JsonConverter<LogEventInfo>
     /// <summary>
@@ -678,7 +678,7 @@ public class LogEventInfoConverter : JsonConverter < LogEventInstance >
     #endregion
 }
 
-public class LogEventInstance
+public sealed class LogEventInstance
 {
     private object _level ;
     private string _loggerName ;

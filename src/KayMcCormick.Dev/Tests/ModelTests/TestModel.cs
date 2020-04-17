@@ -62,7 +62,7 @@ namespace ModelTests
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln" ;
 
         private const           string              PocoTypeNamePrefix       = "Poco" ;
-        private readonly        string              _pocoSyntaxNamespaceName = "PocoSyntax" ;
+        private const string _pocoSyntaxNamespaceName = "PocoSyntax" ;
         private readonly        string              _pocoBlockSyntaxClassName ;
         private readonly        string              _pocoSyntaxTokenTypeName ;
         private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -107,7 +107,7 @@ namespace ModelTests
             _outputHelper.WriteLine ( message ) ;
         }
 
-        private void DoFlow < T > ( [ NotNull ] ILifetimeScope ls )
+        private void DoFlow < T > ( [ NotNull ] IComponentContext ls )
         {
             var mainTask = PerformTest < T > ( ls ) ;
             var tasks = new List < Task > { mainTask } ;
@@ -445,7 +445,7 @@ namespace ModelTests
                                                                   Task < IEnumerable < NodeInfo > >
                                                               >
                                                           > (
-                                                             ( c ) => doc
+                                                             c => doc
                                                                  => Task.FromResult (
                                                                                      Enumerable
                                                                                         .Empty <
@@ -569,6 +569,7 @@ namespace ModelTests
             var b = new ContainerBuilder ( ) ;
             b.RegisterModule < AnalysisAppLibModule > ( ) ;
             var c = b.Build ( ) ;
+            // ReSharper disable once UnusedVariable
             var model = c.Resolve < ITypesViewModel > ( ) ;
         }
 
@@ -577,7 +578,7 @@ namespace ModelTests
         {
             var expr = SyntaxFactory.ParseExpression ( "new object[] {}" ) ;
             // ReSharper disable once UnusedVariable
-            var @expressionout = GenTransforms.Transform_Expression ( expr ) ;
+            var expressionout = GenTransforms.Transform_Expression ( expr ) ;
             const string typePropertyName = "Type" ;
             const string fullNamePropertyName = "FullName" ;
             const string titlePropertyName = "Title" ;
@@ -657,10 +658,8 @@ namespace ModelTests
                                       .EnumerateArray ( )
                                       .SelectMany ( xx => nodes ( xx.GetString ( ) ) ) ;
                             }
-                            else
-                            {
-                                return new[] { cname } ;
-                            }
+
+                            return new[] { cname } ;
                         }
 
                         var cases = string.Join (
@@ -676,7 +675,7 @@ namespace ModelTests
                     else
                     {
                         var props = "" ;
-                        var fields = "" ;
+                        const string fields = "" ;
                         foreach ( var f in typ.GetProperty ( "Fields" ).EnumerateArray ( ) )
                         {
                             var name = f.GetProperty ( "Name" ).GetString ( ) ;
@@ -742,20 +741,22 @@ namespace ModelTests
                                 }
                             }
 
-                            if ( ! string.IsNullOrEmpty ( transform ) )
+                            if ( string.IsNullOrEmpty ( transform ) )
                             {
+                                continue ;
+                            }
+
+                            {
+                                value = $"node?.{name}{transform}" ;
+
+
+                                if ( value == "" )
                                 {
-                                    value = $"node?.{name}{transform}" ;
-
-
-                                    if ( value == "" )
-                                    {
-                                        value = msg ;
-                                    }
-
-                                    var code = $"    {name} = {value}, " ;
-                                    props = props + "\n" + code ;
+                                    value = msg ;
                                 }
+
+                                var code = $"    {name} = {value}, " ;
+                                props = props + "\n" + code ;
                             }
 
                         }
@@ -883,7 +884,7 @@ namespace ModelTests
             using ( var outwriter = new XamlXmlWriter (
                                                        XmlWriter.Create (
                                                                          @"c:\temp\out.xml"
-                                                                       , new XmlWriterSettings ( )
+                                                                       , new XmlWriterSettings
                                                                          {
                                                                              Indent = true
                                                                          }
@@ -933,11 +934,13 @@ namespace ModelTests
                 }
             }
 
-            if ( comp.ObjectType != null )
+            if ( comp.ObjectType == null )
             {
-                var outjson = JsonSerializer.Serialize ( comp.ObjectType , options ) ;
-                DebugUtils.WriteLine ( outjson ) ;
+                return ;
             }
+
+            var outjson = JsonSerializer.Serialize ( comp.ObjectType , options ) ;
+            DebugUtils.WriteLine ( outjson ) ;
         }
 
         [Fact]

@@ -10,7 +10,11 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        [ NotNull ] public string Key => "Error" ;
+        [ NotNull ] public string Key
+        {
+            get { return "Error" ; }
+        }
+
         private IDictionary < string , object > _metadata ;
         private IEnumerable < InstanceInfo > _instanceEnumeration ;
         private Guid _id ;
@@ -22,7 +26,10 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable < InstanceInfo> Instances => _instanceEnumeration ?? InstancesList ;
+        public IEnumerable < InstanceInfo> Instances
+        {
+            get { return _instanceEnumeration ?? InstancesList ; }
+        }
 
         /// <summary>
         /// 

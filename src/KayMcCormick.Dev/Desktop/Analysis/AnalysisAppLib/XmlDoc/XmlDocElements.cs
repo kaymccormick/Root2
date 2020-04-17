@@ -68,7 +68,7 @@ namespace AnalysisAppLib.XmlDoc
 
                                                                                  [SyntaxKind.OperatorDeclaration] = typeof(CodeElementDocumentation),
 
-                                                                                 [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation),
+                                                                                 [SyntaxKind.ConversionOperatorDeclaration] = typeof(CodeElementDocumentation)
 
 
                                                                              } ;
@@ -213,7 +213,7 @@ namespace AnalysisAppLib.XmlDoc
                 case XCData xcData : return new XmlDocText ( xcData.Value ) ;
                 case XElement element :
                 {
-                    var r = XmlDocElements.HandleName ( element , element.Name.LocalName ) ;
+                    var r = HandleName ( element , element.Name.LocalName ) ;
 
                     return r ;
                 }
@@ -327,7 +327,7 @@ namespace AnalysisAppLib.XmlDoc
 
             var xNodes = xmlElement.Nodes ( ) ;
 
-            var xmlDoc = (xNodes).Select(XmlDocElements.Selector);
+            var xmlDoc = xNodes.Select(Selector);
 
             var docElem = CreateCodeDocumentationElementType ( member, elementId ) ;
 
@@ -440,19 +440,20 @@ namespace AnalysisAppLib.XmlDoc
                 return type;
             }
             SimpleNameSyntax sns1 = null ;
-            if ( type is QualifiedNameSyntax qual )
+            switch ( type )
             {
-                if ( qual.Right is SimpleNameSyntax sns )
+                case QualifiedNameSyntax qual :
                 {
-                    sns1 = sns ;
+                    if ( qual.Right is SimpleNameSyntax sns )
+                    {
+                        sns1 = sns ;
+                    }
+
+                    break ;
                 }
-            } else if ( type is SimpleNameSyntax sns )
-            {
-                sns1 = sns ;
-            }
-            else
-            {
-                throw new InvalidOperationException();
+                case SimpleNameSyntax sns : sns1 = sns ;
+                    break ;
+                default :                   throw new InvalidOperationException();
             }
 
             if ( sns1.Identifier.Text.StartsWith ( _pocoPrefix ) )
@@ -503,10 +504,8 @@ namespace AnalysisAppLib.XmlDoc
                 // ReSharper disable once RedundantAssignment
                 return SyntaxFactory.ParseTypeName((string)info2);
             }
-            else
-            {
-                throw new InvalidOperationException ( "No collection type in the map." ) ;
-            }
+
+            throw new InvalidOperationException ( "No collection type in the map." ) ;
             // ReSharper disable once AssignNullToNotNullAttribute
             return SyntaxTypesService.FieldPocoCollectionType( candidateTypeSyntax , collectionMap ,appTypeInfo
                                                              ) ;

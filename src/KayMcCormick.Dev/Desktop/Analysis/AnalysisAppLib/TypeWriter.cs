@@ -185,18 +185,20 @@ namespace AnalysisAppLib
                 return ;
             }
 
-            if ( typElement.OwnerDocument != null )
+            if ( typElement.OwnerDocument == null )
             {
-                var elem = typElement.OwnerDocument.CreateElement ( "Member" ) ;
-                elem.SetAttribute ( "Name" ,       member.Name ) ;
-                elem.SetAttribute ( "MemberType" , member.MemberType.ToString ( ) ) ;
-                if ( member.DeclaringType != null )
-                {
-                    elem.SetAttribute ( "DeclaringType" , member.DeclaringType.FullName ) ;
-                }
-
-                typElement.AppendChild ( elem ) ;
+                return ;
             }
+
+            var elem = typElement.OwnerDocument.CreateElement ( "Member" ) ;
+            elem.SetAttribute ( "Name" ,       member.Name ) ;
+            elem.SetAttribute ( "MemberType" , member.MemberType.ToString ( ) ) ;
+            if ( member.DeclaringType != null )
+            {
+                elem.SetAttribute ( "DeclaringType" , member.DeclaringType.FullName ) ;
+            }
+
+            typElement.AppendChild ( elem ) ;
         }
 
         /// <summary>
@@ -246,16 +248,17 @@ namespace AnalysisAppLib
             }
 
             var g = t.GetGenericTypeDefinition ( ) ;
-            if ( g.FullName != null )
+            if ( g.FullName == null )
             {
-                var s = g.FullName.Substring ( 0 , g.FullName.LastIndexOf ( '`' ) ) ;
-                return s
-                       + "{"
-                       + string.Join ( "," , t.GenericTypeArguments.Select ( SubIdForType ) )
-                       + "}" ;
+                return string.Empty ;
             }
 
-            return string.Empty ;
+            var s = g.FullName.Substring ( 0 , g.FullName.LastIndexOf ( '`' ) ) ;
+            return s
+                   + "{"
+                   + string.Join ( "," , t.GenericTypeArguments.Select ( SubIdForType ) )
+                   + "}" ;
+
         }
 
         [ CanBeNull ]

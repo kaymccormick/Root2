@@ -162,25 +162,27 @@ namespace KayMcCormick.Lib.Wpf
         protected virtual void SetupTracing ( )
         {
             PresentationTraceSources.Refresh ( ) ;
-            if ( DoTracing )
+            if ( ! DoTracing )
             {
-                var nLogTraceListener = new NLogTraceListener ( ) ;
-                var routedEventSource = PresentationTraceSources.RoutedEventSource ;
-                nLogTraceListener.DefaultLogLevel = LogLevel.Debug ;
-                nLogTraceListener.ForceLogLevel   = LogLevel.Warn ;
-                //nLogTraceListener.LogFactory      = AppContainer.Resolve < LogFactory > ( ) ;
-                nLogTraceListener.AutoLoggerName = false ;
-                //nLogTraceListener.
-                routedEventSource.Switch.Level = SourceLevels.All ;
-                var foo = Scope.Resolve < IEnumerable < TraceListener > > ( ) ;
-                foreach ( var tl in foo )
-                {
-                    routedEventSource.Listeners.Add ( tl ) ;
-                }
-
-                //routedEventSource.Listeners.Add ( new AppTraceListener ( ) ) ;
-                routedEventSource.Listeners.Add ( nLogTraceListener ) ;
+                return ;
             }
+
+            var nLogTraceListener = new NLogTraceListener ( ) ;
+            var routedEventSource = PresentationTraceSources.RoutedEventSource ;
+            nLogTraceListener.DefaultLogLevel = LogLevel.Debug ;
+            nLogTraceListener.ForceLogLevel   = LogLevel.Warn ;
+            //nLogTraceListener.LogFactory      = AppContainer.Resolve < LogFactory > ( ) ;
+            nLogTraceListener.AutoLoggerName = false ;
+            //nLogTraceListener.
+            routedEventSource.Switch.Level = SourceLevels.All ;
+            var foo = Scope.Resolve < IEnumerable < TraceListener > > ( ) ;
+            foreach ( var tl in foo )
+            {
+                routedEventSource.Listeners.Add ( tl ) ;
+            }
+
+            //routedEventSource.Listeners.Add ( new AppTraceListener ( ) ) ;
+            routedEventSource.Listeners.Add ( nLogTraceListener ) ;
         }
 
         /// <summary>
@@ -201,18 +203,20 @@ namespace KayMcCormick.Lib.Wpf
         protected virtual void ErrorExit ( ExitCode exitCode = ExitCode.GeneralError )
         {
             var code = Convert.ChangeType ( exitCode , exitCode.GetTypeCode ( ) ) ;
-            if ( code != null )
+            if ( code == null )
             {
-                var intCode = ( int ) code ;
+                return ;
+            }
 
-                if ( Current == null )
-                {
-                    Process.GetCurrentProcess ( ).Kill ( ) ;
-                }
-                else
-                {
-                    Current.Shutdown ( intCode ) ;
-                }
+            var intCode = ( int ) code ;
+
+            if ( Current == null )
+            {
+                Process.GetCurrentProcess ( ).Kill ( ) ;
+            }
+            else
+            {
+                Current.Shutdown ( intCode ) ;
             }
         }
 

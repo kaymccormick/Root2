@@ -103,7 +103,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override void OnApplyTemplate ( )
         {
-            TreeView treeView = GetTemplateChild ( "treeView" ) as TreeView ;
+            var treeView = GetTemplateChild ( "treeView" ) as TreeView ;
         }
 
         /// <summary>

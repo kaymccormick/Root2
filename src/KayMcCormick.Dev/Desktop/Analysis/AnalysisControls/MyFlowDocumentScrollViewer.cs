@@ -43,26 +43,28 @@ namespace AnalysisControls
         {
             get
             {
-                if ( scrollViewer == null )
+                if ( scrollViewer != null )
                 {
-                    DependencyObject obj = this ;
-
-                    do
-                    {
-                        if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
-                        {
-                            // ReSharper disable once AssignNullToNotNullAttribute
-                            obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
-                        }
-                        else
-                        {
-                            return null ;
-                        }
-                    }
-                    while ( ! ( obj is ScrollViewer ) ) ;
-
-                    scrollViewer = obj as ScrollViewer ;
+                    return scrollViewer ;
                 }
+
+                DependencyObject obj = this ;
+
+                do
+                {
+                    if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
+                    {
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
+                    }
+                    else
+                    {
+                        return null ;
+                    }
+                }
+                while ( ! ( obj is ScrollViewer ) ) ;
+
+                scrollViewer = obj as ScrollViewer ;
 
                 return scrollViewer ;
             }

@@ -126,22 +126,26 @@ namespace AnalysisAppLib
             var s = Encoding.UTF8.GetString ( resultBuffer ) ;
             try
             {
-                if ( s[ 0 ] == '{' )
+                switch ( s[ 0 ] )
                 {
-                    var instance = HandleJsonMessage ( _options , s ) ;
-                    HandleLogInstance ( instance ) ;
-                }
-                else if ( s[ 0 ] == '<' )
-                {
-                    try
+                    case '{' :
                     {
-                        var instance = HandleXml ( resultBuffer ) ;
+                        var instance = HandleJsonMessage ( _options , s ) ;
                         HandleLogInstance ( instance ) ;
+                        break ;
                     }
-                    catch ( XmlException xmlException )
-                    {
-                        DebugUtils.WriteLine ( xmlException.ToString ( ) ) ;
-                    }
+                    case '<' :
+                        try
+                        {
+                            var instance = HandleXml ( resultBuffer ) ;
+                            HandleLogInstance ( instance ) ;
+                        }
+                        catch ( XmlException xmlException )
+                        {
+                            DebugUtils.WriteLine ( xmlException.ToString ( ) ) ;
+                        }
+
+                        break ;
                 }
             }
             catch ( Exception ex )

@@ -60,8 +60,8 @@ namespace AnalysisAppLib
         private const string _abstractNodeElementName   = "AbstractNode";
         private const string _nodeElementName           = "Node";
 
-        private static readonly string _pocoPrefix       = "Poco";
-        private static readonly string _collectionSuffix = "Collection";
+        private const string _pocoPrefix = "Poco" ;
+        private const string _collectionSuffix = "Collection" ;
 
         private Type          _cSharpSyntaxNodeClrType ;
         private List < Type > _nodeTypes ;
@@ -76,21 +76,15 @@ namespace AnalysisAppLib
         {
             AppTypeInfoKey key = null ;
             string unqualifiedTypeName = null ;
-            if ( identifier is Type type )
+            switch ( identifier )
             {
-                unqualifiedTypeName = type.Name ;
-            }
-            else if ( identifier is string s1 )
-            {
-                unqualifiedTypeName = s1 ;
-            }
-            else if ( identifier is AppTypeInfoKey k1 )
-            {
-                key = k1 ;
-            }
-            else
-            {
-                throw new InvalidOperationException ( "Bad key" ) ;
+                case Type type :         unqualifiedTypeName = type.Name ;
+                    break ;
+                case string s1 :         unqualifiedTypeName = s1 ;
+                    break ;
+                case AppTypeInfoKey k1 : key                 = k1 ;
+                    break ;
+                default :                throw new InvalidOperationException ( "Bad key" ) ;
             }
 
             if ( unqualifiedTypeName != null )
@@ -253,13 +247,13 @@ namespace AnalysisAppLib
                                                               .IsAssignableFrom ( info.ReturnType )
                                                           ) )
             {
-                AppTypeInfoKey key = new AppTypeInfoKey(methodInfo.ReturnType);
+                var key = new AppTypeInfoKey(methodInfo.ReturnType);
                 var info = sts.GetAppTypeInfo ( key ) ;
                 var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
                 if ( si != null
                      && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var mdoc ) )
                 {
-                    var p = String.Join (
+                    var p = string.Join (
                                          ","
                                        , methodInfo
                                         .GetParameters ( )
@@ -272,12 +266,14 @@ namespace AnalysisAppLib
                     foreach ( var methodDocumentation in mdoc )
                     {
                         //  DebugUtils.WriteLine ( methodDocumentation.Parameters ) ;
-                        if ( methodDocumentation.Parameters == p )
+                        if ( methodDocumentation.Parameters != p )
                         {
-                            //    DebugUtils.WriteLine ( $"Docs for {methodInfo}" ) ;
-                            appMethodInfo.XmlDoc = methodDocumentation ;
-                            docface.CollectDoc ( methodDocumentation ) ;
+                            continue ;
                         }
+
+                        //    DebugUtils.WriteLine ( $"Docs for {methodInfo}" ) ;
+                        appMethodInfo.XmlDoc = methodDocumentation ;
+                        docface.CollectDoc ( methodDocumentation ) ;
                     }
                 }
 
@@ -427,89 +423,91 @@ namespace AnalysisAppLib
                 {
 
                     var syntax = XDocument.Load ( reader ) ;
-                    if ( syntax.Root != null )
+                    if ( syntax.Root == null )
                     {
-                        var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
-                        if ( model1.Map.Values != null )
+                        return ;
+                    }
+
+                    var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
+                    if ( model1.Map.Values != null )
+                    {
+                        var result =
+                            model1
+                               .Map
+                               .dict.Where (
+                                            pair
+                                                => pair
+                                                  .Value
+                                                  .Type
+                                                  .Name
+                                                   == rootType
+                                           ) ;
+                        // var result = (valueCollection.Where ( t => {
+                        // DebugUtils.WriteLine(t.Type.Name);
+                        // var b = t.Type.Name
+                        // == rootType ;
+                        // if ( b )
+                        // DebugUtils
+                        // .WriteLine ( "true" ) ;
+                        // return b ;
+                        // }
+                        // )) ;
+                        var keyValuePairs = result as KeyValuePair < AppTypeInfoKey , AppTypeInfo >[] ?? result.ToArray ( ) ;
+                        if ( ! keyValuePairs.Any ( ) )
                         {
-                            var result =
-                                model1
-                                   .Map
-                                   .dict.Where (
-                                                pair
-                                                    => pair
-                                                      .Value
-                                                      .Type
-                                                      .Name
-                                                       == rootType
-                                               ) ;
-                            // var result = (valueCollection.Where ( t => {
-                            // DebugUtils.WriteLine(t.Type.Name);
-                            // var b = t.Type.Name
-                            // == rootType ;
-                            // if ( b )
-                            // DebugUtils
-                            // .WriteLine ( "true" ) ;
-                            // return b ;
-                            // }
-                            // )) ;
-                            var keyValuePairs = result as KeyValuePair < AppTypeInfoKey , AppTypeInfo >[] ?? result.ToArray ( ) ;
-                            if ( ! keyValuePairs.Any ( ) )
-                            {
-                                DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
-                            }
-                            else
-                            {
-                                var ati = keyValuePairs.First ( ).Value ;
-                                DebugUtils.WriteLine ( $"{ati}" ) ;
-                            }
+                            DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
                         }
-
-                        foreach ( var xElement in syntax.Root.Elements ( ) )
+                        else
                         {
-                            Type t = null ;
-                            var xElementNameElementNameLocalName = xElement.Name.LocalName ;
-                            switch ( xElementNameElementNameLocalName )
-                            {
-                                case _predefinedNodeElementName :
-                                    var xName_Name = XName.Get ( "Name" ) ;
-                                    var typeName = xElement.Attribute ( xName_Name )?.Value ;
-                                    switch ( typeName )
-                                    {
-                                        case nameof ( CSharpSyntaxNode ) :
-                                            t = typeof ( CSharpSyntaxNode ) ;
-                                            break ;
-                                        case nameof ( SyntaxNode ) :
-                                            t = typeof ( SyntaxNode ) ;
-                                            break ;
-                                        case nameof ( StructuredTriviaSyntax ) :
-                                            t = typeof ( StructuredTriviaSyntax ) ;
-                                            break ;
-                                        case nameof ( SyntaxToken ) :
-                                            t = typeof ( SyntaxToken ) ;
-                                            break ;
-                                    }
+                            var ati = keyValuePairs.First ( ).Value ;
+                            DebugUtils.WriteLine ( $"{ati}" ) ;
+                        }
+                    }
 
-                                    if ( t == null )
-                                    {
-                                        DebugUtils.WriteLine ( "No type for " + typeName ) ;
-                                    }
-                                    else if ( model1.Map.Contains ( t ) )
-                                    {
-                                        var typ = ( AppTypeInfo ) model1.Map[ t ] ;
-                                        typ.ElementName = xElementNameElementNameLocalName ;
-                                    }
+                    foreach ( var xElement in syntax.Root.Elements ( ) )
+                    {
+                        Type t = null ;
+                        var xElementNameElementNameLocalName = xElement.Name.LocalName ;
+                        switch ( xElementNameElementNameLocalName )
+                        {
+                            case _predefinedNodeElementName :
+                                var xName_Name = XName.Get ( "Name" ) ;
+                                var typeName = xElement.Attribute ( xName_Name )?.Value ;
+                                switch ( typeName )
+                                {
+                                    case nameof ( CSharpSyntaxNode ) :
+                                        t = typeof ( CSharpSyntaxNode ) ;
+                                        break ;
+                                    case nameof ( SyntaxNode ) :
+                                        t = typeof ( SyntaxNode ) ;
+                                        break ;
+                                    case nameof ( StructuredTriviaSyntax ) :
+                                        t = typeof ( StructuredTriviaSyntax ) ;
+                                        break ;
+                                    case nameof ( SyntaxToken ) :
+                                        t = typeof ( SyntaxToken ) ;
+                                        break ;
+                                }
 
-                                    break ;
-                                case _abstractNodeElementName :
-                                    ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                                    break ;
-                                case _nodeElementName :
-                                    ParseNodeBasics ( model1 , xElement , collectionMap ) ;
-                                    break ;
+                                if ( t == null )
+                                {
+                                    DebugUtils.WriteLine ( "No type for " + typeName ) ;
+                                }
+                                else if ( model1.Map.Contains ( t ) )
+                                {
+                                    var typ = ( AppTypeInfo ) model1.Map[ t ] ;
+                                    typ.ElementName = xElementNameElementNameLocalName ;
+                                }
 
-                                default : throw new InvalidOperationException ( ) ;
-                            }
+                                break ;
+                            case _abstractNodeElementName :
+                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
+                                break ;
+                            case _nodeElementName :
+                                ParseNodeBasics ( model1 , xElement , collectionMap ) ;
+                                break ;
+
+                            default : throw new InvalidOperationException ( ) ;
                         }
                     }
                 }
@@ -697,6 +695,7 @@ namespace AnalysisAppLib
 
                         var ms = new MemoryStream ( ) ;
                         var result = compilation.Emit ( ms ) ;
+                        // ReSharper disable once UnusedVariable
                         var resultSuccess = ( bool ? ) result.Success
                                             ?? throw new InvalidOperationException ( ) ;
 
@@ -729,34 +728,36 @@ namespace AnalysisAppLib
                                          .StartLinePosition.Line
                                         + 1 ;
                             var locationSourceSpan = diagnostic1.Location.SourceSpan ;
-                            if ( diagnostic1.Location.SourceTree != null )
+                            if ( diagnostic1.Location.SourceTree == null )
                             {
-                                var code = diagnostic1.Location.SourceTree.GetText ( ) ;
-                                var end = locationSourceSpan.End     + 10 ;
-                                var start = locationSourceSpan.Start - 10 ;
-                                if ( start < 0 )
-                                {
-                                    start = 0 ;
-                                }
-
-                                if ( end >= code.Length )
-                                {
-                                    end = code.Length - 1 ;
-                                }
-
-                                var sp = new TextSpan ( start , end - start ) ;
-                                // ReSharper disable once UnusedVariable
-                                var codePart = code.GetSubText ( sp ) ;
-                                var lines = string.Join (
-                                                         "\r\n"
-                                                       , code.Lines.Skip ( startLine )
-                                                             .Take ( count )
-                                                             .ToList ( )
-                                                        ) ;
-                                // ReSharper disable once UnusedVariable
-                                var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
-                                DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
+                                continue ;
                             }
+
+                            var code = diagnostic1.Location.SourceTree.GetText ( ) ;
+                            var end = locationSourceSpan.End     + 10 ;
+                            var start = locationSourceSpan.Start - 10 ;
+                            if ( start < 0 )
+                            {
+                                start = 0 ;
+                            }
+
+                            if ( end >= code.Length )
+                            {
+                                end = code.Length - 1 ;
+                            }
+
+                            var sp = new TextSpan ( start , end - start ) ;
+                            // ReSharper disable once UnusedVariable
+                            var codePart = code.GetSubText ( sp ) ;
+                            var lines = string.Join (
+                                                     "\r\n"
+                                                   , code.Lines.Skip ( startLine )
+                                                         .Take ( count )
+                                                         .ToList ( )
+                                                    ) ;
+                            // ReSharper disable once UnusedVariable
+                            var line = source.Skip ( startLine ).Take ( count ).ToList ( ) ;
+                            DebugUtils.WriteLine ( $"{lines}: {diagnostic1}" ) ;
                         }
 
                         var emitResult = compilation.Emit ( @"C:\temp\emit1.dll" ) ;

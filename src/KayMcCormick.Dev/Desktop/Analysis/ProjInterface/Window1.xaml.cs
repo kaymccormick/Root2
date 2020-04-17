@@ -115,14 +115,16 @@ namespace ProjInterface
                 try
                 {
                     var val = meta.Value.Value ;
-                    if ( val is Window w )
+                    switch ( val )
                     {
-                        w.Show ( ) ;
-                    }
-                    else if ( val is Control c )
-                    {
-                        var doc = new LayoutDocument { Content = c , Title = val.ViewTitle } ;
-                        docpane.Children.Add ( doc ) ;
+                        case Window w : w.Show ( ) ;
+                            break ;
+                        case Control c :
+                        {
+                            var doc = new LayoutDocument { Content = c , Title = val.ViewTitle } ;
+                            docpane.Children.Add ( doc ) ;
+                            break ;
+                        }
                     }
                 }
                 catch ( Exception ex )
@@ -160,7 +162,11 @@ namespace ProjInterface
             var result = dlg.ShowDialog ( ) ;
 
             // Process open file dialog box results
-            if ( result == true )
+            if ( result != true )
+            {
+                return ;
+            }
+
             {
                 var scope =
                     ( ILifetimeScope ) GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
@@ -170,7 +176,7 @@ namespace ProjInterface
                 if ( Path.GetExtension ( filename ).ToLowerInvariant ( ) == ".sln" )
                 {
                     var analyzeCommand = scope.Resolve < IAnalyzeCommand > ( ) ;
-                    var node = new ProjectBrowserNode ( )
+                    var node = new ProjectBrowserNode
                                {
                                    Name = "Loaded solution" , SolutionPath = filename
                                } ;
@@ -227,20 +233,21 @@ namespace ProjInterface
                 t = Type.GetType ( unescapeDataString ) ;
             }
 
-            if ( t != null )
+            if ( t == null )
             {
-                if ( BrowserFrame.Content is TypeInfoControl tic )
-                {
-                    tic.DataContext              = t ;
-                    docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
-                    e.Cancel                     = true ;
-                }
+                return ;
+            }
+
+            if ( BrowserFrame.Content is TypeInfoControl tic )
+            {
+                tic.DataContext              = t ;
+                docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+                e.Cancel                     = true ;
             }
         }
 
         // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        // ReSharper disable once UnusedParameter.Local
+        // ReSharper disable twice UnusedParameter.Local
         private void ExecutePythonCode ( object sender , ExecutedRoutedEventArgs e )
         {
 #if PYTHON

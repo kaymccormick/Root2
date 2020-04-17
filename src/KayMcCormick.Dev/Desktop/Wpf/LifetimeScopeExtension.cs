@@ -72,16 +72,18 @@ namespace KayMcCormick.Lib.Wpf
 
             {
                 var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
-                if ( svc != null )
+                if ( svc == null )
                 {
-                    var rootP = ( IRootObjectProvider ) svc ;
-                    if ( rootP.RootObject is DependencyObject d )
-                    {
-                        scope = ( ILifetimeScope ) d.GetValue (
-                                                               AttachedProperties
-                                                                  .LifetimeScopeProperty
-                                                              ) ;
-                    }
+                    return scope ;
+                }
+
+                var rootP = ( IRootObjectProvider ) svc ;
+                if ( rootP.RootObject is DependencyObject d )
+                {
+                    scope = ( ILifetimeScope ) d.GetValue (
+                                                           AttachedProperties
+                                                              .LifetimeScopeProperty
+                                                          ) ;
                 }
             }
 

@@ -57,15 +57,15 @@ namespace ProjInterface
           , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
-            DebugUtils.WriteLine ( e.Action ) ;
+            DebugUtils.WriteLine ( e.Action.ToString() ) ;
         }
 
         #region Overrides of FrameworkElement
         public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
-            DebugUtils.WriteLine ( DataContext ) ;
-            DebugUtils.WriteLine ( _defView ) ;
+            DebugUtils.WriteLine ( DataContext.ToString() ) ;
+            DebugUtils.WriteLine ( _defView.ToString() ) ;
             var groupDescription = new PropertyGroupDescription { PropertyName = "LoggerName" } ;
             DefView = CollectionViewSource.GetDefaultView ( lv.ItemsSource ) ;
             if ( DefView == null )
@@ -88,8 +88,8 @@ namespace ProjInterface
                 return ;
             }
 
-            DebugUtils.WriteLine ( e.CollectionView.GetType ( ) ) ;
-            DebugUtils.WriteLine ( e.CollectionView.Count ) ;
+            DebugUtils.WriteLine ( e.CollectionView.GetType ( ).ToString() ) ;
+            DebugUtils.WriteLine ( e.CollectionView.Count.ToString() ) ;
             if ( ! ( e.CollectionView is ListCollectionView l )
                  || l.ItemProperties == null )
             {
@@ -105,13 +105,15 @@ namespace ProjInterface
                                  + "\t"
                                  + itemPropertyInfo.Descriptor
                                 ) ;
-                if ( itemPropertyInfo.Descriptor is PropertyDescriptor r )
+                if ( ! ( itemPropertyInfo.Descriptor is PropertyDescriptor r ) )
                 {
-                    DebugUtils.WriteLine ( r.ComponentType ) ;
-                    if ( r.ComponentType != typeof ( LogEventInstance ) )
-                    {
-                        return ;
-                    }
+                    continue ;
+                }
+
+                DebugUtils.WriteLine ( r.ComponentType ) ;
+                if ( r.ComponentType != typeof ( LogEventInstance ) )
+                {
+                    return ;
                 }
             }
 
@@ -132,18 +134,20 @@ namespace ProjInterface
           , [ NotNull ] DataGridAutoGeneratingColumnEventArgs e
         )
         {
-            if ( e.PropertyName == "Properties" )
+            if ( e.PropertyName != "Properties" )
             {
-                var dataGridTemplateColumn = new DataGridTemplateColumn
-                                             {
-                                                 Header = "Properties"
-                                               , CellTemplate =
-                                                     ( DataTemplate ) TryFindResource (
-                                                                                       "PropertiesTemplate"
-                                                                                      )
-                                             } ;
-                e.Column = dataGridTemplateColumn ;
+                return ;
             }
+
+            var dataGridTemplateColumn = new DataGridTemplateColumn
+                                         {
+                                             Header = "Properties"
+                                           , CellTemplate =
+                                                 ( DataTemplate ) TryFindResource (
+                                                                                   "PropertiesTemplate"
+                                                                                  )
+                                         } ;
+            e.Column = dataGridTemplateColumn ;
         }
 
         // ReSharper disable once UnusedMember.Local

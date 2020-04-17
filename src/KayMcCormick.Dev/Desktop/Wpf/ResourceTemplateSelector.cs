@@ -98,16 +98,18 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            if ( returnVal == null )
+            if ( returnVal != null )
             {
-                Logger.Info ( "Calling base method for template" ) ;
-                returnVal = base.SelectTemplate ( item , container ) ;
-                Logger.Info (
-                             returnVal != null
-                                 ? "Got template from base method"
-                                 : "no template from base method"
-                            ) ;
+                return returnVal ;
             }
+
+            Logger.Info ( "Calling base method for template" ) ;
+            returnVal = base.SelectTemplate ( item , container ) ;
+            Logger.Info (
+                         returnVal != null
+                             ? "Got template from base method"
+                             : "no template from base method"
+                        ) ;
 
             return returnVal ;
         }
@@ -118,26 +120,27 @@ namespace KayMcCormick.Lib.Wpf
 
 
         [ CanBeNull ]
-        private DataTemplate TryFindDataTemplate ( [ NotNull ] FrameworkElement fe , [ NotNull ] object resourceKey )
+        private static DataTemplate TryFindDataTemplate ( [ NotNull ] FrameworkElement fe , [ NotNull ] object resourceKey )
         {
             Logger.Debug (
                           "Trying to find data template with resource key {resourceKey}"
                         , resourceKey
                          ) ;
             var resource = fe.TryFindResource ( resourceKey ) ;
-            if ( resource != null )
+            if ( resource == null )
             {
-                Logger.Debug ( "Found resource of type {resourceType}" , resource.GetType ( ) ) ;
-                if ( resource is HierarchicalDataTemplate )
-                {
-                    Logger.Debug ( "suppressing heirarchicala data template" ) ;
-                    return null ;
-                }
-
-                return resource as DataTemplate ;
+                return null ;
             }
 
-            return null ;
+            Logger.Debug ( "Found resource of type {resourceType}" , resource.GetType ( ) ) ;
+            if ( resource is HierarchicalDataTemplate )
+            {
+                Logger.Debug ( "suppressing heirarchicala data template" ) ;
+                return null ;
+            }
+
+            return resource as DataTemplate ;
+
         }
     }
 }

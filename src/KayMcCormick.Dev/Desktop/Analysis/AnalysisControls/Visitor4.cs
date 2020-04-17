@@ -95,33 +95,35 @@ namespace AnalysisControls
                         , getLocation.GetMappedLineSpan ( ).StartLinePosition
                          ) ;
             Logger.Trace ( "{line} > ? {_curLine}" , line , _curLine ) ;
-            if ( line > _curLine )
+            if ( line <= _curLine )
             {
-                for ( ; _curLine < line - 1 ; _curLine += 1 )
-                {
-                    if ( _curLine >= 0 )
-                    {
-                        Logger.Trace ( "Insert New line {line}" , _curLine ) ;
-                    }
-                }
-#if DEBUG
-
-                Logger.Trace ( "New line {line}" , line ) ;
-
-#endif
-#if DEBUG
-                Logger.Trace ( "create new paragraph" ) ;
-#endif
-                newLine = true ;
-                // AdornerDecorator d = new AdornerDecorator();
-                _curLine += 1 ;
-                // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
-                //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
-                //_document.Blocks.Add ( _curBlock ) ;
-                Logger.Trace ( "add to blocks" ) ;
-
-                _isAtStartOfLine = true ;
+                return ;
             }
+
+            for ( ; _curLine < line - 1 ; _curLine += 1 )
+            {
+                if ( _curLine >= 0 )
+                {
+                    Logger.Trace ( "Insert New line {line}" , _curLine ) ;
+                }
+            }
+#if DEBUG
+
+            Logger.Trace ( "New line {line}" , line ) ;
+
+#endif
+#if DEBUG
+            Logger.Trace ( "create new paragraph" ) ;
+#endif
+            newLine = true ;
+            // AdornerDecorator d = new AdornerDecorator();
+            _curLine += 1 ;
+            // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
+            //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
+            //_document.Blocks.Add ( _curBlock ) ;
+            Logger.Trace ( "add to blocks" ) ;
+
+            _isAtStartOfLine = true ;
         }
 
         /// <summary>

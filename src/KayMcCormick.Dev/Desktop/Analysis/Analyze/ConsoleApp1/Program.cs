@@ -1,46 +1,47 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SqlTypes;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reactive.Subjects;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Markup;
-using System.Xml;
-using System.Xml.Linq;
-using AnalysisAppLib;
-using AnalysisAppLib.Project;
-using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
-using AnalysisControls;
-using AnalysisControls.ViewModel;
-using Autofac;
-using Autofac.Core;
-using CommandLine;
-using JetBrains.Annotations;
-using KayMcCormick.Dev;
-using KayMcCormick.Dev.Application;
-using KayMcCormick.Dev.Attributes;
-using KayMcCormick.Dev.Logging;
-using KayMcCormick.Lib.Wpf.Command;
-using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis.Text;
-using NLog;
-using NLog.Targets;
+﻿using System ;
+using System.Collections ;
+using System.Collections.Generic ;
+using System.Collections.Immutable ;
+using System.Data ;
+using System.Data.SqlClient ;
+using System.Data.SqlTypes ;
+using System.IO ;
+using System.Linq ;
+using System.Net ;
+using System.Net.Sockets ;
+using System.Reactive.Subjects ;
+using System.Text ;
+using System.Text.Json ;
+using System.Threading.Tasks ;
+using System.Windows.Markup ;
+using System.Xml ;
+using System.Xml.Linq ;
+using AnalysisAppLib ;
+using AnalysisAppLib.Project ;
+using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.XmlDoc ;
+using AnalysisControls ;
+using AnalysisControls.ViewModel ;
+using Autofac ;
+using Autofac.Core ;
+using CommandLine ;
+using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Lib.Wpf.Command ;
+using Microsoft.Build.Locator ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Microsoft.CodeAnalysis.FindSymbols ;
+using Microsoft.CodeAnalysis.MSBuild ;
+using Microsoft.CodeAnalysis.Text ;
+using NLog ;
+using NLog.Targets ;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters;
+using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 
 // ReSharper disable RedundantOverriddenMember
 
@@ -55,7 +56,7 @@ namespace ConsoleApp1
             get { return Path.Combine ( _dataOutputPath , ModelXamlFilenamePart ) ; }
         }
 
-        private static readonly string _dataOutputPath       = @"C:\data\logs" ;
+        private const string _dataOutputPath = @"C:\data\logs" ;
         private const           string TypesJsonFilename     = "types.json" ;
         private const           string ModelXamlFilenamePart = "model.xaml" ;
 
@@ -91,10 +92,9 @@ namespace ConsoleApp1
         private static ILogger Logger ;
 
         private static          ApplicationInstance _appinst ;
-        private static readonly string              Pocosyntaxtoken = @"PocoSyntaxToken" ;
-        private static readonly string              _ilist          = "IList" ;
-        private static readonly string              _list           = "List" ;
-        private static readonly string              _ienumerable    = "IEnumerable" ;
+        private const string _ilist = "IList" ;
+        private const string _list = "List" ;
+        private const string _ienumerable = "IEnumerable" ;
 
         static Program ( ) { Logger = null ; }
 
@@ -104,23 +104,25 @@ namespace ConsoleApp1
         {
             if ( ! disableLogging )
             {
-                if ( LogManager.Configuration != null )
+                if ( LogManager.Configuration == null )
                 {
-                    foreach ( var myJsonLayout in LogManager
-                                                 .Configuration.AllTargets
-                                                 .OfType < TargetWithLayout > ( )
-                                                 .Select ( t => t.Layout )
-                                                 .OfType < MyJsonLayout > ( ) )
-                    {
-                        var options = new JsonSerializerOptions ( ) ;
-                        foreach ( var optionsConverter in myJsonLayout.Options.Converters )
-                        {
-                            options.Converters.Add ( optionsConverter ) ;
-                        }
+                    return ;
+                }
 
-                        JsonConverters.AddJsonConverters ( options ) ;
-                        myJsonLayout.Options = options ;
+                foreach ( var myJsonLayout in LogManager
+                                             .Configuration.AllTargets
+                                             .OfType < TargetWithLayout > ( )
+                                             .Select ( t => t.Layout )
+                                             .OfType < MyJsonLayout > ( ) )
+                {
+                    var options = new JsonSerializerOptions ( ) ;
+                    foreach ( var optionsConverter in myJsonLayout.Options.Converters )
+                    {
+                        options.Converters.Add ( optionsConverter ) ;
                     }
+
+                    JsonConverters.AddJsonConverters ( options ) ;
+                    myJsonLayout.Options = options ;
                 }
             }
             else
@@ -168,12 +170,11 @@ namespace ConsoleApp1
 
 
             _appinst = new ApplicationInstance (
-                                                new ApplicationInstance.
-                                                    ApplicationInstanceConfiguration (
-                                                                                      message => {
-                                                                                      }
-                                                                                    , ConsoleAnalysisProgramGuid
-                                                                                     )
+                                                new ApplicationInstance.ApplicationInstanceConfiguration (
+                                                                                                          message => {
+                                                                                                          }
+                                                                                                        , ConsoleAnalysisProgramGuid
+                                                                                                         )
                                                ) ;
             using ( _appinst )
 
@@ -265,14 +266,16 @@ namespace ConsoleApp1
 
                 Console.WriteLine ( $"{i}: {browserNode.Name}" ) ;
                 nodes.Add ( browserNode ) ;
-                if ( browserNode is IProjectBrowserNode project )
+                if ( ! ( browserNode is IProjectBrowserNode project ) )
                 {
-                    Console.WriteLine ( $"\tSolutionPath is {project.SolutionPath}" ) ;
-                    Console.WriteLine (
-                                       $"\tConfiguration property Platform is {project.Platform ?? "Null"}"
-                                      ) ;
-                    Console.WriteLine ( $"\tRepositoryUrl is {project.RepositoryUrl}" ) ;
+                    continue ;
                 }
+
+                Console.WriteLine ( $"\tSolutionPath is {project.SolutionPath}" ) ;
+                Console.WriteLine (
+                                   $"\tConfiguration property Platform is {project.Platform ?? "Null"}"
+                                  ) ;
+                Console.WriteLine ( $"\tRepositoryUrl is {project.RepositoryUrl}" ) ;
             }
 
             Console.Write ( typeof ( ContainerBuilder ).Assembly.FullName ) ;
@@ -362,7 +365,7 @@ namespace ConsoleApp1
 
             WriteThisTypesViewModel (
                                      typesViewModel
-                                   , ( model ) => Path.Combine ( _dataOutputPath , "model-v1.xaml" )
+                                   , model => Path.Combine ( _dataOutputPath , "model-v1.xaml" )
                                     ) ;
             DumpModelToJson (
                              context
@@ -631,7 +634,7 @@ namespace ConsoleApp1
 
         private static void DumpModelToJson (
             [ NotNull ] AppContext     context
-          , [ NotNull ] TypesViewModel typesViewModel
+          , [ NotNull ] ITypesViewModel typesViewModel
           , string                     jsonFilename = null
         )
         {
@@ -822,7 +825,7 @@ namespace ConsoleApp1
                     DebugUtils.WriteLine ( tn ) ;
                 }
 
-                foreach ( var symbol in compilation.GetSymbolsWithName ( ( s ) => true ) )
+                foreach ( var symbol in compilation.GetSymbolsWithName ( s => true ) )
                 {
                     if ( ! symbol.ContainingAssembly.Equals ( compilationAssembly ) )
                     {
@@ -844,10 +847,10 @@ namespace ConsoleApp1
                                          ) ;
 
                     var res =
-                        await Microsoft.CodeAnalysis.FindSymbols.SymbolFinder.FindCallersAsync (
-                                                                                                symbol
-                                                                                              , solution
-                                                                                               ) ;
+                        await SymbolFinder.FindCallersAsync (
+                                                             symbol
+                                                           , solution
+                                                            ) ;
                     var uses = 0 ;
                     foreach ( var use in res )
                     {
@@ -1054,7 +1057,7 @@ namespace ConsoleApp1
 
                 var jsonout = JsonSerializer.Serialize (
                                                         callers
-                                                      , new JsonSerializerOptions ( )
+                                                      , new JsonSerializerOptions
                                                         {
                                                             WriteIndented = true
                                                         }
@@ -1939,12 +1942,12 @@ namespace ConsoleApp1
                                                    ) ;
 
             var sourceText = SourceText.From (
-                                              $@"     using System;
+                                              @"     using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
-    {{
+    {
         // System.Collections.IList
         public Int32 Add(Object value) => _list.Add((PocoSyntaxToken)value);
         // System.Collections.IList
@@ -1962,10 +1965,10 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public Boolean IsReadOnly            => _list.IsReadOnly;
         public Boolean IsFixedSize           => _list.IsFixedSize;
         public Object this[Int32 index]
-        {{
+        {
             get => _list[index];
             set => _list[index] = value;
-        }}
+        }
 
         // System.Collections.ICollection
         public void    CopyTo(Array array, Int32 index) => _list.CopyTo((Array)array, (Int32)index);
@@ -1975,18 +1978,18 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         // System.Collections.IEnumerable
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
         IList              _list = new List<PocoSyntaxToken>();
-    }}
+    }
 
     public class PocoSyntaxToken
-    {{
-        public int RawKind {{ get; set; }}
+    {
+        public int RawKind { get; set; }
 
-        public string Kind {{ get; set; }}
+        public string Kind { get; set; }
 
-        public object Value {{ get; set; }}
+        public object Value { get; set; }
 
-        public string ValueText {{ get; set; }}
-    }}
+        public string ValueText { get; set; }
+    }
 "
                                              ) ;
 
@@ -2138,20 +2141,22 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         {
             var classDecl1 = ClassDeclaration ( $"{_pocoPrefix}{mapKey.StringValue}" )
                .WithModifiers ( SyntaxTokenList.Create ( Token ( SyntaxKind.PublicKeyword ) ) ) ;
-            if ( t.ParentInfo != null )
+            if ( t.ParentInfo == null )
             {
-                var identifierNameSyntax = IdentifierName ( _pocoPrefix + t.ParentInfo.Type.Name ) ;
-                classDecl1 = classDecl1.WithBaseList (
-                                                      BaseList (
-                                                                new SeparatedSyntaxList <
-                                                                    BaseTypeSyntax > ( ).Add (
-                                                                                              SimpleBaseType (
-                                                                                                              identifierNameSyntax
-                                                                                                             )
-                                                                                             )
-                                                               )
-                                                     ) ;
+                return classDecl1 ;
             }
+
+            var identifierNameSyntax = IdentifierName ( _pocoPrefix + t.ParentInfo.Type.Name ) ;
+            classDecl1 = classDecl1.WithBaseList (
+                                                  BaseList (
+                                                            new SeparatedSyntaxList <
+                                                                BaseTypeSyntax > ( ).Add (
+                                                                                          SimpleBaseType (
+                                                                                                          identifierNameSyntax
+                                                                                                         )
+                                                                                         )
+                                                           )
+                                                 ) ;
 
             return classDecl1 ;
         }
@@ -2178,7 +2183,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         private static void PopulateSet (
             [ NotNull ] AppTypeInfoCollection subTypeInfos
-          , HashSet < Type >                  set
+          , ISet < Type > set
         )
         {
             foreach ( var rootSubTypeInfo in subTypeInfos )
@@ -2554,6 +2559,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         public ParameterInfo (
             string                             name
+            // ReSharper disable once SuggestBaseTypeForParameter
           , ITypeSymbol                        typeSymbol
           , IEnumerable < CustommodifierInfo > select
           , string                             typeDisplayString

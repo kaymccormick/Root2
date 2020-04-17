@@ -50,19 +50,21 @@ namespace AnalysisControls
 
     // ReSharper disable once UnusedMember.Local
     private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
+    {
+        switch ( e.Key )
         {
-            if ( e.Key == Key.Enter )
+            case Key.Enter :
             {
                 DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
                 var textBox = ( TextBox ) sender ;
                 ViewModel.TakeLine ( textBox.Text ) ;
                 textBox.Text = "" ;
+                break ;
             }
-            else if ( e.Key == Key.Up )
-            {
-                ViewModel.HistoryUp ( ) ;
-            }
+            case Key.Up : ViewModel.HistoryUp ( ) ;
+                break ;
         }
+    }
 
     // ReSharper disable once UnusedMember.Local
     // ReSharper disable once UnusedParameter.Local

@@ -19,8 +19,7 @@ namespace AnalysisAppLib.Command
     /// </summary>
     public sealed class CodeGenCommand : IBaseLibCommand
     {
-        private static readonly string[] AssemblyRefs = new[]
-                                                {
+        private static readonly string[] AssemblyRefs = {
                                                             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
                                                           , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll"
                                                           , @"C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\nlog\4.6.8\lib\net45\NLog.dll"
@@ -389,15 +388,17 @@ namespace AnalysisAppLib.Command
                 {
                     foreach (var diagnostic in compilation.GetDiagnostics())
                     {
-                        if (!diagnostic.IsSuppressed)
+                        if ( diagnostic.IsSuppressed )
                         {
-                            // ReSharper disable once UnusedVariable
-                            var line =
-                                source[diagnostic
-                                       .Location.GetLineSpan()
-                                       .StartLinePosition.Line];
-                            await f.WriteLineAsync(diagnostic.ToString());
+                            continue ;
                         }
+
+                        // ReSharper disable once UnusedVariable
+                        var line =
+                            source[diagnostic
+                                  .Location.GetLineSpan()
+                                  .StartLinePosition.Line];
+                        await f.WriteLineAsync(diagnostic.ToString());
                     }
                 }
             }

@@ -75,11 +75,13 @@ namespace ConsoleApp1
                         ItemData < T > itemData = null ;
                         for ( var i = selectedItem ; i >= 0 ; i -- )
                         {
-                            if ( ReferenceEquals ( List[ i ] , c ) )
+                            if ( ! ReferenceEquals ( List[ i ] , c ) )
                             {
-                                itemData = _itemDatas[ i ] ;
-                                break ;
+                                continue ;
                             }
+
+                            itemData = _itemDatas[ i ] ;
+                            break ;
                         }
 
                         if ( itemData != null )
@@ -123,11 +125,13 @@ namespace ConsoleApp1
                         ItemData < T > itemData = null ;
                         for ( var i = selectedItem ; i >= 0 ; i -- )
                         {
-                            if ( ReferenceEquals ( List[ i ] , c ) )
+                            if ( ! ReferenceEquals ( List[ i ] , c ) )
                             {
-                                itemData = _itemDatas[ i ] ;
-                                break ;
+                                continue ;
                             }
+
+                            itemData = _itemDatas[ i ] ;
+                            break ;
                         }
 
                         if ( itemData != null )

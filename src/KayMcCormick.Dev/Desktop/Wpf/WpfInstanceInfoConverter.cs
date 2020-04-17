@@ -82,30 +82,34 @@ namespace KayMcCormick.Lib.Wpf
             textBlock.SetValue(Grid.RowProperty, 1);
             textBlock.Background = Brushes.Azure;
             grid.Children.Add(textBlock);
-            if ( v.Metadata != null )
+            if ( v.Metadata == null )
             {
-                const string callerfilepath = "CallerFilePath" ;
-                if ( v.Metadata.ContainsKey ( callerfilepath ) )
-                {
-                    var s = ( string ) v.Metadata[ callerfilepath ] ;
-                    var o = v.Metadata[ "CallerLineNumber" ] ;
-                    var fileName = Path.GetFileName ( s ) + ";" + o ;
-                    var textBlock2 = new TextBlock
-                                     {
-                                         Text                = fileName
-                                       , FontSize            = 12
-                                       , HorizontalAlignment = HorizontalAlignment.Right
-                                       , VerticalAlignment   = VerticalAlignment.Bottom
-                                     } ;
-                    textBlock2.SetValue(Grid.RowSpanProperty, 2);
-                    textBlock2.SetValue(Grid.RowProperty, 1);
-                    textBlock2.SetValue(Grid.ColumnProperty, 1);
-                    textBlock2.SetValue ( Panel.ZIndexProperty , 100 ) ;
-                    textBlock2.Background = Brushes.Azure ;
-
-                    grid.Children.Add ( textBlock2 ) ;
-                }
+                return uie ;
             }
+
+            const string callerfilepath = "CallerFilePath" ;
+            if ( ! v.Metadata.ContainsKey ( callerfilepath ) )
+            {
+                return uie ;
+            }
+
+            var s = ( string ) v.Metadata[ callerfilepath ] ;
+            var o = v.Metadata[ "CallerLineNumber" ] ;
+            var fileName = Path.GetFileName ( s ) + ";" + o ;
+            var textBlock2 = new TextBlock
+                             {
+                                 Text                = fileName
+                               , FontSize            = 12
+                               , HorizontalAlignment = HorizontalAlignment.Right
+                               , VerticalAlignment   = VerticalAlignment.Bottom
+                             } ;
+            textBlock2.SetValue(Grid.RowSpanProperty,    2);
+            textBlock2.SetValue(Grid.RowProperty,        1);
+            textBlock2.SetValue(Grid.ColumnProperty,     1);
+            textBlock2.SetValue ( Panel.ZIndexProperty , 100 ) ;
+            textBlock2.Background = Brushes.Azure ;
+
+            grid.Children.Add ( textBlock2 ) ;
 
             return uie ;
         }

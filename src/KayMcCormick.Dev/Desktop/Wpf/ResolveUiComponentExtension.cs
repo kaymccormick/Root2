@@ -137,18 +137,19 @@ namespace KayMcCormick.Lib.Wpf
                 }
             }
 
-            if ( scope != null )
+            if ( scope == null )
             {
-                var result = scope.Resolve ( ComponentType ) ;
-                if ( Name != null )
-                {
-                    nameScope?.RegisterName ( Name , result ) ;
-                }
-
-                return result ;
+                throw new Exception ( "No lifetime scope" ) ;
             }
 
-            throw new Exception ( "No lifetime scope" ) ;
+            var result = scope.Resolve ( ComponentType ) ;
+            if ( Name != null )
+            {
+                nameScope?.RegisterName ( Name , result ) ;
+            }
+
+            return result ;
+
         }
         #endregion
     }

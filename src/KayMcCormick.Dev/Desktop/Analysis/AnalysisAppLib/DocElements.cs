@@ -464,17 +464,18 @@ namespace AnalysisAppLib.XmlDoc
         /// <returns></returns>
         public int Add ( object value )
         {
-            if ( value is XmlDocumentElementCollection e )
+            if ( ! ( value is XmlDocumentElementCollection e ) )
             {
-                foreach ( var xmlDocElement in e )
-                {
-                    _listImplementation.Add ( xmlDocElement ) ;
-                }
-
-                return 0 ;
+                return ( ( IList ) _listImplementation ).Add ( value ) ;
             }
 
-            return ( ( IList ) _listImplementation ).Add ( value ) ;
+            foreach ( var xmlDocElement in e )
+            {
+                _listImplementation.Add ( xmlDocElement ) ;
+            }
+
+            return 0 ;
+
         }
 
         /// <summary>

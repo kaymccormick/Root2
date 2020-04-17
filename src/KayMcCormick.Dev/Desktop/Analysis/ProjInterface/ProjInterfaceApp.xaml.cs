@@ -112,7 +112,9 @@ namespace ProjInterface
                 return ;
             }
             var nonPublicFields = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+            // ReSharper disable once UnusedVariable
             var publicProperties = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+            // ReSharper disable once UnusedVariable
             var nonPublicProperties = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
             foreach ( var nonPublicField in nonPublicFields )
             {

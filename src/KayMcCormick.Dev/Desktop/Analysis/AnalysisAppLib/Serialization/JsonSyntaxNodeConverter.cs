@@ -90,7 +90,11 @@ namespace AnalysisAppLib.Serialization
                     return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.ThisExpression ( ) ;
                 }
 
-                if ( typeToConvert == typeof ( CompilationUnitSyntax ) )
+                if ( typeToConvert != typeof ( CompilationUnitSyntax ) )
+                {
+                    return null ;
+                }
+
                 {
                     var d = JsonSerializer.Deserialize < PojoCompilationUnit > (
                                                                                 ref reader
@@ -105,18 +109,19 @@ namespace AnalysisAppLib.Serialization
                         }
                     }
 
-                    if ( d?.Members != null )
+                    if ( d?.Members == null )
                     {
-                        foreach ( var xx in d.Members )
-                        {
-                            Logger.Info ( "{x}" , xx ) ;
-                        }
+                        return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.CompilationUnit ( ) ;
+                    }
+
+                    foreach ( var xx in d.Members )
+                    {
+                        Logger.Info ( "{x}" , xx ) ;
                     }
 
                     return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.CompilationUnit ( ) ;
                 }
 
-                return null ;
             }
 
             public override void Write (

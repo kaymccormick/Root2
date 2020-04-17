@@ -142,7 +142,7 @@ namespace ConsoleApp1
             Application.Driver.SetTerminalResized ( TerminalResized ) ;
         }
 
-        private void InitTopLevel ( Window w )
+        private void InitTopLevel ( View w )
         {
             Toplevel1 = Application.Top ;
             Toplevel1.Add ( _menuBar ) ;
@@ -196,9 +196,7 @@ namespace ConsoleApp1
             // var viewFrame = new FrameView ( "Output" ) { outputView } ;
 
             view = outputView ;
-            return o => {
-                factory.StartNew(() => outputView.Text += "\r\n" + o) ;
-            } ;
+            return o => factory.StartNew(() => outputView.Text += "\r\n" + o) ;
         }
 
         private static void HandleResult ( [ NotNull ] Task < IAppCommandResult > obj )

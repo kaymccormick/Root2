@@ -84,7 +84,7 @@ namespace KayMcCormick.Lib.Wpf
         // ReSharper disable once AnnotateNotNullTypeMember
         public override object ProvideValue ( IServiceProvider serviceProvider )
         {
-            var resolveEnumerableExtensionName = "ResolveEnumerableExtension" ;
+            const string resolveEnumerableExtensionName = "ResolveEnumerableExtension" ;
             GlobalDiagnosticsContext.Set ( "CurrentOperation" , resolveEnumerableExtensionName ) ;
             using ( MappedDiagnosticsLogicalContext.SetScoped (
                                                                "CurrentOperation"

@@ -69,24 +69,28 @@ namespace KayMcCormick.Lib.Wpf
         )
         {
             Entries.Clear ( ) ;
-            if ( e.NewValue is Exception x )
+            if ( ! ( e.NewValue is Exception x ) )
             {
-                var stackTrace = x.StackTrace ;
-                if ( string.IsNullOrEmpty ( stackTrace ) )
-                {
-                    if ( x.InnerException != null )
-                    {
-                        stackTrace = x.InnerException.StackTrace ;
-                    }
-                }
+                return ;
+            }
 
-                if ( stackTrace != null )
+            var stackTrace = x.StackTrace ;
+            if ( string.IsNullOrEmpty ( stackTrace ) )
+            {
+                if ( x.InnerException != null )
                 {
-                    foreach ( var stackTraceEntry in Utils.ParseStackTrace ( stackTrace ) )
-                    {
-                        Entries.Add ( stackTraceEntry ) ;
-                    }
+                    stackTrace = x.InnerException.StackTrace ;
                 }
+            }
+
+            if ( stackTrace == null )
+            {
+                return ;
+            }
+
+            foreach ( var stackTraceEntry in Utils.ParseStackTrace ( stackTrace ) )
+            {
+                Entries.Add ( stackTraceEntry ) ;
             }
         }
     }

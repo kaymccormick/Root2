@@ -80,7 +80,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 #endif
         [ NotNull ]
         private ResourceNodeInfo CreateNode (
-            [ CanBeNull ] ResourceNodeInfo parent
+            [ CanBeNull ] IHierarchicalNode parent
           , object                         key
           , object                         data
           , bool ?                         isValueChildren = null
@@ -167,7 +167,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             }
         }
 
-        private void AddLogicalChildren ( [ NotNull ] DependencyObject w , ResourceNodeInfo log )
+        private void AddLogicalChildren ( [ NotNull ] DependencyObject w , IHierarchicalNode log )
         {
             DebugUtils.WriteLine ( w.ToString ( ) ) ;
             var children = LogicalTreeHelper.GetChildren ( w ) ;
@@ -245,28 +245,33 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
 
                     var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
-                    if ( haveResourcesResource.Value is FrameworkTemplate ft )
+                    switch ( haveResourcesResource.Value )
                     {
-                        var resourcesNode =
-                            CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
-                        AddResourceNodeInfos ( resourcesNode ) ;
-                    }
-
-                    if ( haveResourcesResource.Value is Style sty )
-                    {
-                        var settersNode = CreateNode ( resourceInfo , "Setters" , null ) ;
-                        settersNode.IsExpanded = true ;
-                        foreach ( var setter in sty.Setters )
+                        case FrameworkTemplate ft :
                         {
-                            switch ( setter )
+                            var resourcesNode =
+                                CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
+                            AddResourceNodeInfos ( resourcesNode ) ;
+                            break ;
+                        }
+                        case Style sty :
+                        {
+                            var settersNode = CreateNode ( resourceInfo , "Setters" , null ) ;
+                            settersNode.IsExpanded = true ;
+                            foreach ( var setter in sty.Setters )
                             {
-                                case EventSetter _ : break ;
-                                case Setter setter1 :
-                                    CreateNode ( settersNode , setter1.Property , setter1.Value ) ;
+                                switch ( setter )
+                                {
+                                    case EventSetter _ : break ;
+                                    case Setter setter1 :
+                                        CreateNode ( settersNode , setter1.Property , setter1.Value ) ;
 
-                                    break ;
-                                default : throw new InvalidOperationException ( ) ;
+                                        break ;
+                                    default : throw new InvalidOperationException ( ) ;
+                                }
                             }
+
+                            break ;
                         }
                     }
 
@@ -303,7 +308,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private object WrapValue ( object data )
+        private static object WrapValue ( object data )
         {
             if ( data is UIElement uie )
             {

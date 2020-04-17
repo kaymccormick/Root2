@@ -97,7 +97,7 @@ namespace AnalysisAppLib.Explorer
             get { return ( _fileAttributes & FileAttributes.Hidden ) == FileAttributes.Hidden ; }
         }
 
-        private readonly bool canOpen = true;
+        private const bool canOpen = true ;
 
         /// <summary>
         /// 

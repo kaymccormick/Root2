@@ -15,6 +15,7 @@ using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+// ReSharper disable RedundantOverriddenMember
 
 namespace ConsoleApp1
 {

@@ -256,21 +256,23 @@ namespace KayMcCormick.Lib.Wpf
 
             hyperLink.RequestNavigate += HyperLinkOnRequestNavigate ;
             addChild.AddChild ( hyperLink ) ;
-            if ( myType.IsGenericType )
+            if ( ! myType.IsGenericType )
             {
-                addChild.AddText ( "<" ) ;
-                const int i = 0 ;
-                foreach ( var arg in myType.GenericTypeArguments )
-                {
-                    GenerateControlsForType ( arg , addChild , true ) ;
-                    if ( i < myType.GenericTypeArguments.Length )
-                    {
-                        addChild.AddText ( ", " ) ;
-                    }
-                }
-
-                addChild.AddText ( ">" ) ;
+                return ;
             }
+
+            addChild.AddText ( "<" ) ;
+            const int i = 0 ;
+            foreach ( var arg in myType.GenericTypeArguments )
+            {
+                GenerateControlsForType ( arg , addChild , true ) ;
+                if ( i < myType.GenericTypeArguments.Length )
+                {
+                    addChild.AddText ( ", " ) ;
+                }
+            }
+
+            addChild.AddText ( ">" ) ;
 
             //old.AddChild ( tb ) ;
         }

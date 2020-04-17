@@ -79,25 +79,29 @@ namespace KayMcCormick.Lib.Wpf
             // Logger.Info ( "Resources source is {res.Source}, parent is {parent}", res.Source.ToString(), parent.ToString() ) ;
             foreach ( DictionaryEntry haveResourcesResource in res )
             {
-                if ( haveResourcesResource.Key != null )
+                if ( haveResourcesResource.Key == null )
                 {
-                    if ( haveResourcesResource.Value != null )
-                    {
-                        var resourceInfo = new ResourceInfo (
-                                                             resourcesSource
-                                                           , haveResourcesResource.Key
-                                                           , haveResourcesResource.Value
-                                                           , type
-                                                           , parent
-                                                            ) ;
-                        // Logger.Info (
-                        // "resource has {key} and {value}"
-                        // , haveResourcesResource.Key
-                        // , haveResourcesResource.Value
-                        // ) ;
-                        resourcesCollection.Add ( resourceInfo ) ;
-                    }
+                    continue ;
                 }
+
+                if ( haveResourcesResource.Value == null )
+                {
+                    continue ;
+                }
+
+                var resourceInfo = new ResourceInfo (
+                                                     resourcesSource
+                                                   , haveResourcesResource.Key
+                                                   , haveResourcesResource.Value
+                                                   , type
+                                                   , parent
+                                                    ) ;
+                // Logger.Info (
+                // "resource has {key} and {value}"
+                // , haveResourcesResource.Key
+                // , haveResourcesResource.Value
+                // ) ;
+                resourcesCollection.Add ( resourceInfo ) ;
             }
 
             Logger.Info ( "processing meregd dictionaries" ) ;

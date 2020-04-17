@@ -95,15 +95,16 @@ namespace KayMcCormick.Lib.Wpf
 
         private bool Predicate3 ( [ NotNull ] Tuple < Type , FrameworkElement , object > arg , int i )
         {
-            if ( arg.Item3 != null )
+            var (item1 , _ , item3) = arg ;
+            if ( item3 != null )
             {
-                DebugUtils.WriteLine ( $"{nameof ( Predicate3 )}: {arg.Item3.GetType ( ).FullName}" ) ;
+                DebugUtils.WriteLine ( $"{nameof ( Predicate3 )}: {item3.GetType ( ).FullName}" ) ;
             }
 
-            var r = arg.Item3 is DataTemplate ;
+            var r = item3 is DataTemplate ;
             if ( r )
             {
-                Logger.Info ( "[{i}] Found Key {key}" , i , arg.Item1.FullName ) ;
+                Logger.Info ( "[{i}] Found Key {key}" , i , item1.FullName ) ;
             }
 
             return r ;

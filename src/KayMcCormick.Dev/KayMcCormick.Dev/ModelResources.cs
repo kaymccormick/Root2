@@ -273,7 +273,7 @@ namespace KayMcCormick.Dev
                                              foreach ( var inst in componentInfo.Instances )
                                              {
                                                  // ReSharper disable once UnusedVariable
-                                                 var ii = new InstanceInfo ( )
+                                                 var ii = new InstanceInfo
                                                           {
                                                               Instance = inst.Instance
                                                             , Metadata = reg.Metadata
@@ -352,7 +352,7 @@ namespace KayMcCormick.Dev
                 if ( addToChildren )
                 {
                     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                    parent.Children?.Add ( r ) ;
+                    parent.Children.Add ( r ) ;
                 }
 
                 r.Depth = parent.Depth + 1 ;
@@ -367,7 +367,7 @@ namespace KayMcCormick.Dev
         /// <param name="lifetimeScope"></param>
         /// <param name="node"></param>
         private void PopulateLifetimeScope (
-            [ NotNull ] ILifetimeScope lifetimeScope
+            [ NotNull ] IComponentContext lifetimeScope
           , ResourceNodeInfo           node
         )
         {
@@ -390,15 +390,19 @@ namespace KayMcCormick.Dev
                 // PopulateInstances ( n2 , reg ) ;
             }
 
-            if ( lifetimeScope is LifetimeScope ls )
+            if ( ! ( lifetimeScope is LifetimeScope ls ) )
             {
-                var parentScope = ls.ParentLifetimeScope ;
-                if ( parentScope != null )
-                {
-                    var parent = CreateNode ( node , "ParentLifetimeScope" , ls , true ) ;
-                    PopulateLifetimeScope ( parentScope , parent ) ;
-                }
+                return ;
             }
+
+            var parentScope = ls.ParentLifetimeScope ;
+            if ( parentScope == null )
+            {
+                return ;
+            }
+
+            var parent = CreateNode ( node , "ParentLifetimeScope" , ls , true ) ;
+            PopulateLifetimeScope ( parentScope , parent ) ;
         }
 
         /// <summary>

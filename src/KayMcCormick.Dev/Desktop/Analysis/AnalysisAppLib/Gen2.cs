@@ -40,16 +40,22 @@ namespace PocoSyntax
         public void RemoveAt ( Int32 index ) => _list.RemoveAt ( index ) ;
 
         /// <inheritdoc />
-        public Boolean IsReadOnly => _list.IsReadOnly ;
+        public Boolean IsReadOnly
+        {
+            get { return _list.IsReadOnly ; }
+        }
 
         /// <inheritdoc />
-        public Boolean IsFixedSize => _list.IsFixedSize ;
+        public Boolean IsFixedSize
+        {
+            get { return _list.IsFixedSize ; }
+        }
 
         /// <inheritdoc />
         public Object this [ Int32 index ]
         {
-            get => _list[ index ] ;
-            set => _list[ index ] = value ;
+            get { return _list[ index ] ; }
+            set { _list[ index ] = value ; }
         }
 
         // System.Collections.ICollection
@@ -58,24 +64,34 @@ namespace PocoSyntax
             => _list.CopyTo ( array , index ) ;
 
         /// <inheritdoc />
-        public Int32 Count => _list.Count ;
+        public Int32 Count
+        {
+            get { return _list.Count ; }
+        }
 
         /// <inheritdoc />
-        public Object SyncRoot => _list.SyncRoot ;
+        public Object SyncRoot
+        {
+            get { return _list.SyncRoot ; }
+        }
 
         /// <inheritdoc />
-        public Boolean IsSynchronized => _list.IsSynchronized ;
+        public Boolean IsSynchronized
+        {
+            get { return _list.IsSynchronized ; }
+        }
 
         // System.Collections.IEnumerable
         /// <inheritdoc />
         public IEnumerator GetEnumerator ( ) => _list.GetEnumerator ( ) ;
 
-        readonly IList _list = new List < PocoSyntaxToken > ( ) ;
+        private readonly IList _list = new List < PocoSyntaxToken > ( ) ;
     }
 
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class PocoSyntaxToken
     {
         /// <summary>

@@ -105,11 +105,13 @@ namespace AnalysisControls.Views
         {
             base.EndInit ( ) ;
             var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
-            if ( view.View != null )
+            if ( view.View == null )
             {
-                Logger.Debug ( "Adding ViewOnCurrentChanged handler to view.View" ) ;
-                view.View.CurrentChanged += ViewOnCurrentChanged ;
+                return ;
             }
+
+            Logger.Debug ( "Adding ViewOnCurrentChanged handler to view.View" ) ;
+            view.View.CurrentChanged += ViewOnCurrentChanged ;
         }
         #endregion
 
@@ -180,14 +182,16 @@ namespace AnalysisControls.Views
             var view = ( CollectionViewSource ) TryFindResource ( "AllNodes" ) ;
             if ( view.View != null )
             {
-                if ( ViewModel != null )
+                if ( ViewModel == null )
                 {
-                    Logger.Debug (
-                                  "Setting viewmodel.SelectedItem to {item}"
-                                , DebugRepr ( view.View.CurrentItem )
-                                 ) ;
-                    ViewModel.SelectedItem = view.View.CurrentItem ;
+                    return ;
                 }
+
+                Logger.Debug (
+                              "Setting viewmodel.SelectedItem to {item}"
+                            , DebugRepr ( view.View.CurrentItem )
+                             ) ;
+                ViewModel.SelectedItem = view.View.CurrentItem ;
             }
             else
             {

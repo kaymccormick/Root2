@@ -356,28 +356,27 @@ if(RegiserExplorerTypes){
         )
         {
             DebugUtils.WriteLine($"{service}");
-            if ( service is IServiceWithType swt && swt.ServiceType == typeof ( RoutedUICommand ) )
+            if ( ! ( service is IServiceWithType swt )
+                 || swt.ServiceType != typeof ( RoutedUICommand ) )
             {
-                var reg = new ComponentRegistration (
-                                                     Guid.NewGuid ( )
-                                                   , new DelegateActivator (
-                                                                            swt.ServiceType
-                                                                          , ( c , p ) => {
-                                                                                return commands
-                                                                                    [ 0 ] ;
-                                                                            }
-                                                                           )
-                                                   , new CurrentScopeLifetime ( )
-                                                   , InstanceSharing.None
-                                                   , InstanceOwnership.OwnedByLifetimeScope
-                                                   , new[] { service }
-                                                   , new Dictionary < string , object > ( )
-                                                    ) ;
-                return new IComponentRegistration[] { reg } ;
-
+                return Enumerable.Empty < IComponentRegistration > ( ) ;
             }
 
-            return Enumerable.Empty<IComponentRegistration>();
+            var reg = new ComponentRegistration (
+                                                 Guid.NewGuid ( )
+                                               , new DelegateActivator (
+                                                                        swt.ServiceType
+                                                                      , ( c , p ) => commands
+                                                                            [ 0 ]
+                                                                       )
+                                               , new CurrentScopeLifetime ( )
+                                               , InstanceSharing.None
+                                               , InstanceOwnership.OwnedByLifetimeScope
+                                               , new[] { service }
+                                               , new Dictionary < string , object > ( )
+                                                ) ;
+            return new IComponentRegistration[] { reg } ;
+
         }
 
         public bool IsAdapterForIndividualComponents { get { return _isAdapterForIndividualComponents ; } }

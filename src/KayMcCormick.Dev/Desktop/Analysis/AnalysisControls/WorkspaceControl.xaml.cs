@@ -152,7 +152,7 @@ namespace AnalysisControls
 
         private void WorkspaceOnWorkspaceChanged ( object sender , [ NotNull ] WorkspaceChangeEventArgs e )
         {
-            DebugUtils.WriteLine ( e.Kind ) ;
+            DebugUtils.WriteLine ( e.Kind.ToString() ) ;
             switch (e.Kind)
             {
                 case WorkspaceChangeKind.SolutionChanged:

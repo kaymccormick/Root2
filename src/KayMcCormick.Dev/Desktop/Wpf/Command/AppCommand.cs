@@ -117,7 +117,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
     /// <inheritdoc />
     [PropertyTabAttribute( typeof(TypeCategoryTab), PropertyTabScope.Document)]
-    public class TypeCategoryTabComponent : Component
+    public sealed class TypeCategoryTabComponent : Component
     {
     }
     // A TypeCategoryTab property tab lists properties by the 
@@ -126,20 +126,19 @@ namespace KayMcCormick.Lib.Wpf.Command
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
     public sealed class TypeCategoryTab : PropertyTab
     {
-        [Browsable(true)]
-        // This string contains a Base-64 encoded and serialized example property tab image.
-        private readonly string img = "AAEAAAD/////AQAAAAAAAAAMAgAAAFRTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj0xLjAuMzMwMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABVTeXN0ZW0uRHJhd2luZy5CaXRtYXABAAAABERhdGEHAgIAAAAJAwAAAA8DAAAA9gAAAAJCTfYAAAAAAAAANgAAACgAAAAIAAAACAAAAAEAGAAAAAAAAAAAAMQOAADEDgAAAAAAAAAAAAD///////////////////////////////////9ZgABZgADzPz/zPz/zPz9AgP//////////gAD/gAD/AAD/AAD/AACKyub///////+AAACAAAAAAP8AAP8AAP9AgP////////9ZgABZgABz13hz13hz13hAgP//////////gAD/gACA/wCA/wCA/wAA//////////+AAACAAAAAAP8AAP8AAP9AgP////////////////////////////////////8L";
+        [ Browsable ( true ) ]
+// This string contains a Base-64 encoded and serialized example property tab image.
+        private const string img = "AAEAAAD/////AQAAAAAAAAAMAgAAAFRTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj0xLjAuMzMwMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABVTeXN0ZW0uRHJhd2luZy5CaXRtYXABAAAABERhdGEHAgIAAAAJAwAAAA8DAAAA9gAAAAJCTfYAAAAAAAAANgAAACgAAAAIAAAACAAAAAEAGAAAAAAAAAAAAMQOAADEDgAAAAAAAAAAAAD///////////////////////////////////9ZgABZgADzPz/zPz/zPz9AgP//////////gAD/gAD/AAD/AAD/AACKyub///////+AAACAAAAAAP8AAP8AAP9AgP////////9ZgABZgABz13hz13hz13hAgP//////////gAD/gACA/wCA/wCA/wAA//////////+AAACAAAAAAP8AAP8AAP9AgP////////////////////////////////////8L" ;
 
-        // Returns the properties of the specified component extended with 
+// Returns the properties of the specified component extended with 
         // a CategoryAttribute reflecting the name of the type of the property.
         /// <inheritdoc />
         [ NotNull ]
         public override PropertyDescriptorCollection GetProperties(object component, Attribute[] attributes)
         {
-            PropertyDescriptorCollection props;
-            props = attributes == null ? TypeDescriptor.GetProperties(component) : TypeDescriptor.GetProperties(component, attributes) ;
+            var props = attributes == null ? TypeDescriptor.GetProperties(component) : TypeDescriptor.GetProperties(component, attributes) ;
 
-            PropertyDescriptor[] propArray = new PropertyDescriptor[props.Count];
+            var propArray = new PropertyDescriptor[props.Count];
             for (var i = 0; i < props.Count; i++)
             {
                 // Create a new PropertyDescriptor from the old one, with 

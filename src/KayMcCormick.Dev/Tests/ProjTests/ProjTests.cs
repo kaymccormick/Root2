@@ -100,7 +100,7 @@ namespace ProjTests
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml";
 
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
-        private static readonly bool   _disableLogging = true ;
+        private const bool _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
@@ -113,7 +113,6 @@ namespace ProjTests
 #pragma warning restore 169
 
         private JsonSerializerOptions _testJsonSerializerOptions ;
-        private object _xamlWriter ;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests (
@@ -182,7 +181,7 @@ namespace ProjTests
             var model = new TypesViewModel (new JsonSerializerOptions() ) ;
             var output = new StringWriter();
             Action < string > writeOut = output.WriteLine ;
-            var pu = new ProxyUtils (writeOut, ProxyUtils.CreateInterceptor(writeOut) ) ;
+            var pu = new ProxyUtils (writeOut, ProxyUtilsBase.CreateInterceptor(writeOut) ) ;
             pu.TransformXaml ( model ) ;
             File.WriteAllText(@"C:\data\logs\xaml.txt", output.ToString());
         }
@@ -193,7 +192,7 @@ namespace ProjTests
             var model = new TypesViewModel(new JsonSerializerOptions());
             var output = new StringWriter();
             Action<string> writeOut = output.WriteLine;
-            var pu = new ProxyUtils(writeOut, ProxyUtils.CreateInterceptor(writeOut));
+            var pu = new ProxyUtils(writeOut, ProxyUtilsBase.CreateInterceptor(writeOut));
             var inst = pu.TransformXaml2(InputTypesViewModelXamlPath);
             File.WriteAllText(@"C:\data\logs\xaml2.txt", output.ToString());
         }
@@ -345,11 +344,11 @@ namespace ProjTests
         [ WpfFact ]
         public void TestProxyUtils ( )
         {
-            Action < string > x = message => DebugUtils.WriteLine ( message ) ;
+            void Action ( string message ) => DebugUtils.WriteLine ( message ) ;
             var proxy = ProxyUtilsBase.CreateProxy (
-                                                    x
+                                                    Action
                                                   , new BaseInterceptorImpl (
-                                                                             x
+                                                                             Action
                                                                            , new ProxyGenerator ( )
                                                                             )
                                                    ) ;
@@ -371,15 +370,12 @@ namespace ProjTests
                                                       BindingFlags.Instance | BindingFlags.NonPublic
                                                      ) )
             {
-                if ( methodInfo.Name == "InstantiateUnoptimizedTree" )
+                switch ( methodInfo.Name )
                 {
-                    m1 = methodInfo ;
-                }
-
-                if ( methodInfo.Name                        == "Seal"
-                     && methodInfo.GetParameters ( ).Length == 1 )
-                {
-                    m2 = methodInfo ;
+                    case "InstantiateUnoptimizedTree" :                         m1 = methodInfo ;
+                        break ;
+                    case "Seal" when methodInfo.GetParameters ( ).Length == 1 : m2 = methodInfo ;
+                        break ;
                 }
             }
 
@@ -388,28 +384,30 @@ namespace ProjTests
                 m2.Invoke ( f , new object[] { new ControlTemplate ( ) } ) ; //
             }
 
-            if ( m1 != null )
+            if ( m1 == null )
             {
-                var r = m1.Invoke (
-                                   f
-                                 , BindingFlags.NonPublic | BindingFlags.Instance
-                                 , null
-                                 , Array.Empty < object > ( )
-                                 , CultureInfo.CurrentCulture
-                                  ) ;
-
-
-                var p = r.GetType ( )
-                         .GetProperty ( "FE" , BindingFlags.Instance | BindingFlags.NonPublic ) ;
-                if ( p != null )
-                {
-                    var fe = p.GetValue ( r ) ;
-                    var w = new Window { Content = fe } ;
-                    w.ShowDialog ( ) ;
-                }
-
-                Logger.Info ( r.GetType ( ) ) ;
+                return ;
             }
+
+            var r = m1.Invoke (
+                               f
+                             , BindingFlags.NonPublic | BindingFlags.Instance
+                             , null
+                             , Array.Empty < object > ( )
+                             , CultureInfo.CurrentCulture
+                              ) ;
+
+
+            var p = r.GetType ( )
+                     .GetProperty ( "FE" , BindingFlags.Instance | BindingFlags.NonPublic ) ;
+            if ( p != null )
+            {
+                var fe = p.GetValue ( r ) ;
+                var w = new Window { Content = fe } ;
+                w.ShowDialog ( ) ;
+            }
+
+            Logger.Info ( r.GetType ( ) ) ;
         }
 #if false
         [ WpfFact ]
@@ -499,14 +497,12 @@ namespace ProjTests
                                              ) ;
                         xx.ExecuteAsync ( )
                           .ContinueWith (
-                                         task => {
-                                             DebugUtils.WriteLine (
-                                                                   // ReSharper disable once PossibleNullReferenceException
-                                                                   task.IsFaulted
-                                                                       ? task.Exception.ToString ( )
-                                                                       : task.Result.ToString ( )
-                                                                  ) ;
-                                         }
+                                         task => DebugUtils.WriteLine (
+                                                                       // ReSharper disable once PossibleNullReferenceException
+                                                                       task.IsFaulted
+                                                                           ? task.Exception.ToString ( )
+                                                                           : task.Result.ToString ( )
+                                                                      )
                                         )
                           .Wait ( ) ;
                     }
@@ -723,33 +719,35 @@ namespace ProjTests
             catch ( JsonException x )
             {
                 var substring = "" ;
-                if ( x.BytePositionInLine.HasValue )
+                if ( ! x.BytePositionInLine.HasValue )
                 {
-                    try
-                    {
-                        var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
-                        if ( eBytePositionInLine < 0 )
-                        {
-                            eBytePositionInLine = 0 ;
-                        }
-
-                        var length = 32 ;
-                        var endIndex = eBytePositionInLine + length ;
-                        if ( endIndex >= json.Length )
-                        {
-                            endIndex = json.Length ;
-                        }
-
-                        length    = endIndex - eBytePositionInLine ;
-                        substring = json.Substring ( eBytePositionInLine , length ) ;
-                    }
-                    catch ( ArgumentOutOfRangeException )
-                    {
-                        substring = json ;
-                    }
-
-                    Logger.Warn ( "Start of problem is {problem}" , substring ) ;
+                    throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
                 }
+
+                try
+                {
+                    var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
+                    if ( eBytePositionInLine < 0 )
+                    {
+                        eBytePositionInLine = 0 ;
+                    }
+
+                    var length = 32 ;
+                    var endIndex = eBytePositionInLine + length ;
+                    if ( endIndex >= json.Length )
+                    {
+                        endIndex = json.Length ;
+                    }
+
+                    length    = endIndex - eBytePositionInLine ;
+                    substring = json.Substring ( eBytePositionInLine , length ) ;
+                }
+                catch ( ArgumentOutOfRangeException )
+                {
+                    substring = json ;
+                }
+
+                Logger.Warn ( "Start of problem is {problem}" , substring ) ;
 
                 throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
             }
@@ -776,53 +774,57 @@ namespace ProjTests
                 catch ( JsonException x )
                 {
                     var substring = "" ;
-                    if ( x.BytePositionInLine.HasValue )
+                    if ( ! x.BytePositionInLine.HasValue )
                     {
-                        try
-                        {
-                            var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
-                            if ( eBytePositionInLine < 0 )
-                            {
-                                eBytePositionInLine = 0 ;
-                            }
-
-                            var length = 32 ;
-                            var endIndex = eBytePositionInLine + length ;
-                            if ( line        != null
-                                 && endIndex >= line.Length )
-                            {
-                                endIndex = line.Length ;
-                            }
-
-                            length = endIndex - eBytePositionInLine ;
-                            if ( line != null )
-                            {
-                                substring = line.Substring ( eBytePositionInLine , length ) ;
-                            }
-                        }
-                        catch ( ArgumentOutOfRangeException )
-                        {
-                            substring = line ;
-                        }
-
-                        Logger.Warn (
-                                     "Start of problem is line {lineno} {problem}"
-                                   , lineno
-                                   , substring
-                                    ) ;
+                        throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
                     }
+
+                    try
+                    {
+                        var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
+                        if ( eBytePositionInLine < 0 )
+                        {
+                            eBytePositionInLine = 0 ;
+                        }
+
+                        var length = 32 ;
+                        var endIndex = eBytePositionInLine + length ;
+                        if ( line        != null
+                             && endIndex >= line.Length )
+                        {
+                            endIndex = line.Length ;
+                        }
+
+                        length = endIndex - eBytePositionInLine ;
+                        if ( line != null )
+                        {
+                            substring = line.Substring ( eBytePositionInLine , length ) ;
+                        }
+                    }
+                    catch ( ArgumentOutOfRangeException )
+                    {
+                        substring = line ;
+                    }
+
+                    Logger.Warn (
+                                 "Start of problem is line {lineno} {problem}"
+                               , lineno
+                               , substring
+                                ) ;
 
                     throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
                 }
 
-                if ( info != null )
+                if ( info == null )
                 {
-                    Logger.Debug ( info.FormattedMessage ) ;
-                    foreach ( var keyValuePair in info.Properties )
-                    {
-                        Logger.Debug ( keyValuePair.Key ) ;
-                        Logger.Debug ( keyValuePair.Value.ToString ( ) ) ;
-                    }
+                    continue ;
+                }
+
+                Logger.Debug ( info.FormattedMessage ) ;
+                foreach ( var keyValuePair in info.Properties )
+                {
+                    Logger.Debug ( keyValuePair.Key ) ;
+                    Logger.Debug ( keyValuePair.Value.ToString ( ) ) ;
                 }
             }
         }
@@ -1021,6 +1023,7 @@ namespace ProjTests
             Exception ex = new AggregateException (
                                                    new ArgumentException (
                                                                           "Boo"
+                                                                          // ReSharper disable once NotResolvedInText
                                                                         , "param"
                                                                         , new
                                                                               InvalidOperationException ( )
@@ -1268,11 +1271,13 @@ namespace ProjTests
                                     DebugUtils.WriteLine ( "Faulted" ) ;
                                 }
 
-                                if ( task.IsCompleted )
+                                if ( ! task.IsCompleted )
                                 {
-                                    DebugUtils.WriteLine ( "completed" ) ;
-                                    DebugUtils.WriteLine ( task.Result.ToString ( ) ) ;
+                                    return ;
                                 }
+
+                                DebugUtils.WriteLine ( "completed" ) ;
+                                DebugUtils.WriteLine ( task.Result.ToString ( ) ) ;
                             }
                            )
              .Wait ( 10000 ) ;

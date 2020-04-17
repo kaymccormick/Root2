@@ -176,20 +176,22 @@ namespace KayMcCormick.Lib.Wpf
             }
 
             var c = Depth ( callDepth ) ;
-            if ( invocation.ReturnValue != null )
+            if ( invocation.ReturnValue == null )
             {
-                var f = ( continuation
-                              ? ""
-                              : c
-                                + "\t"
-                                + MethodSpec ( invocation )
-                                + "\t"
-                                + //invocation.TargetType + "."+ invocation.Method.Name +
-                                "\t\t" )
-                        + " ➦ "
-                        + FormatReturnValue ( invocation , invocation.ReturnValue ) ;
-                WriteLine ( f ) ;
+                return ;
             }
+
+            var f = ( continuation
+                          ? ""
+                          : c
+                            + "\t"
+                            + MethodSpec ( invocation )
+                            + "\t"
+                            + //invocation.TargetType + "."+ invocation.Method.Name +
+                            "\t\t" )
+                    + " ➦ "
+                    + FormatReturnValue ( invocation , invocation.ReturnValue ) ;
+            WriteLine ( f ) ;
         }
 
 
@@ -285,28 +287,29 @@ namespace KayMcCormick.Lib.Wpf
         private static string MethodSpec ( [ NotNull ] IInvocation invocation )
         {
             var declType = invocation.Method.DeclaringType ;
-            if ( declType != null )
+            if ( declType == null )
             {
-                var formatTyp = FormatTyp ( declType ) ;
-                var type = invocation.TargetType ;
-                var typ = FormatTyp ( type ) ;
-
-                var m = " " + invocation.Method.Name ;
-                if ( invocation.Method.IsSpecialName
-                     && invocation.Method.Name.StartsWith (
-                                                           "get_"
-                                                         , StringComparison.InvariantCulture
-                                                          ) )
-                {
-                    m = $"𝜙 {invocation.Method.Name.Substring ( 4 )}" ;
-                }
-
-                return ( declType == type ? $"{formatTyp,33}" : $"{formatTyp,16} {typ,16}" )
-                       + " "
-                       + m ;
+                return null ;
             }
 
-            return null ;
+            var formatTyp = FormatTyp ( declType ) ;
+            var type = invocation.TargetType ;
+            var typ = FormatTyp ( type ) ;
+
+            var m = " " + invocation.Method.Name ;
+            if ( invocation.Method.IsSpecialName
+                 && invocation.Method.Name.StartsWith (
+                                                       "get_"
+                                                     , StringComparison.InvariantCulture
+                                                      ) )
+            {
+                m = $"𝜙 {invocation.Method.Name.Substring ( 4 )}" ;
+            }
+
+            return ( declType == type ? $"{formatTyp,33}" : $"{formatTyp,16} {typ,16}" )
+                   + " "
+                   + m ;
+
         }
     }
 
@@ -428,17 +431,19 @@ namespace KayMcCormick.Lib.Wpf
                                                    "list"
                                                  , BindingFlags.NonPublic | BindingFlags.Instance
                                                   ) ;
-                        if ( propInfo != null )
+                        if ( propInfo == null )
                         {
-                            var args = new[] { propInfo.GetValue ( r ) } ;
-                            invocation.ReturnValue =
-                                ProxyGenerator.CreateClassProxyWithTarget (
-                                                                           r.GetType ( )
-                                                                         , r
-                                                                         , args
-                                                                         , this
-                                                                          ) ;
+                            return ;
                         }
+
+                        var args = new[] { propInfo.GetValue ( r ) } ;
+                        invocation.ReturnValue =
+                            ProxyGenerator.CreateClassProxyWithTarget (
+                                                                       r.GetType ( )
+                                                                     , r
+                                                                     , args
+                                                                     , this
+                                                                      ) ;
                     }
                     else
                     {

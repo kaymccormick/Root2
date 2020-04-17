@@ -542,20 +542,21 @@ namespace AnalysisAppLib.Syntax
         /// <inheritdoc />
         public override string ConvertToString ( object value , IValueSerializerContext context )
         {
-            if ( value is Type t )
+            if ( ! ( value is Type t ) )
             {
-                if ( t.IsGenericType )
-                {
-                    var t2 = t.GetGenericTypeDefinition ( ) ;
-                    // ReSharper disable once PossibleNullReferenceException
-                    var nt = t2.FullName.Replace ( "`1" , "" ) ;
-                    var x = t.GetGenericArguments ( )[ 0 ].FullName ;
-                    return $"{nt}<{x}>" ;
-                }
-
-                return t.FullName ;
+                return base.ConvertToString ( value , context ) ;
             }
-            return base.ConvertToString ( value , context ) ;
+
+            if ( t.IsGenericType )
+            {
+                var t2 = t.GetGenericTypeDefinition ( ) ;
+                // ReSharper disable once PossibleNullReferenceException
+                var nt = t2.FullName.Replace ( "`1" , "" ) ;
+                var x = t.GetGenericArguments ( )[ 0 ].FullName ;
+                return $"{nt}<{x}>" ;
+            }
+
+            return t.FullName ;
         }
         #endregion
     }
@@ -888,7 +889,7 @@ namespace AnalysisAppLib.Syntax
         /// <returns></returns>
         public override int GetHashCode ( )
         {
-            return ( StringValue != null ? StringValue.GetHashCode ( ) : 0 ) ;
+            return StringValue != null ? StringValue.GetHashCode ( ) : 0 ;
         }
         #endregion
     }

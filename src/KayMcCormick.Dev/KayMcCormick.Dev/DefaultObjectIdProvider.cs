@@ -159,16 +159,18 @@ namespace KayMcCormick.Dev
             }
 
             var id = Generator.GetId ( instance , out var newFlag ) ;
-            if ( newFlag )
+            if ( ! newFlag )
             {
-                new LogBuilder ( Logger )
-                   .Level ( LogLevel.Debug )
-                   .Message ( $"Provisioned ID {id} for instance of type {instance.GetType ( )}." )
-                   .Property ( "objectId" ,     id )
-                   .Property ( "instanceType" , instance.GetType ( ).FullName )
-                   .Write ( ) ;
-                RegisterObject ( instance , eComponent , eParameters , id ) ;
+                return id ;
             }
+
+            new LogBuilder ( Logger )
+               .Level ( LogLevel.Debug )
+               .Message ( $"Provisioned ID {id} for instance of type {instance.GetType ( )}." )
+               .Property ( "objectId" ,     id )
+               .Property ( "instanceType" , instance.GetType ( ).FullName )
+               .Write ( ) ;
+            RegisterObject ( instance , eComponent , eParameters , id ) ;
 
             return id ;
         }

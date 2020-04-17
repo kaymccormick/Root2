@@ -174,17 +174,14 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 DebugUtils.WriteLine ( EventLogCollectionView.CurrentPosition.ToString() ) ;
             }
 
-            if ( e.Command is RoutedUICommand rc )
+            switch ( e.Command )
             {
-                DebugUtils.WriteLine ( $"PreviewExecuted - {rc.Text} - {rc.Name}" ) ;
-            }
-            else if ( e.Command is RoutedCommand rc2 )
-            {
-                DebugUtils.WriteLine ( $"PreviewExecuted- {rc2.Name}" ) ;
-            }
-            else
-            {
-                DebugUtils.WriteLine ( $"PreviewExecuted- {e.Command}" ) ;
+                case RoutedUICommand rc : DebugUtils.WriteLine ( $"PreviewExecuted - {rc.Text} - {rc.Name}" ) ;
+                    break ;
+                case RoutedCommand rc2 :  DebugUtils.WriteLine ( $"PreviewExecuted- {rc2.Name}" ) ;
+                    break ;
+                default :                 DebugUtils.WriteLine ( $"PreviewExecuted- {e.Command}" ) ;
+                    break ;
             }
         }
     }
@@ -201,41 +198,45 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         public ParsedEventLogEntry ( EventLogEntry logEntry )
         {
             _logEntry = logEntry ;
-            if ( _logEntry.InstanceId == 8 )
+            if ( _logEntry.InstanceId != 8 )
             {
-                if ( _logEntry.ReplacementStrings.Length >= 6 )
+                return ;
+            }
+
+            if ( _logEntry.ReplacementStrings.Length < 6 )
+            {
+                return ;
+            }
+
+            var item5 = _logEntry.ReplacementStrings[ 5 ] ;
+            var deSerializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
+            var sr = new StringReader ( item5 ) ;
+            Parsed = ( ParsedExceptions ) deSerializer.Deserialize ( sr ) ;
+            var item4 = _logEntry.ReplacementStrings[ 4 ] ;
+
+            try
+            {
+                if ( int.TryParse ( _logEntry.ReplacementStrings[ 3 ] , out var nbytes ) )
                 {
-                    var item5 = _logEntry.ReplacementStrings[ 5 ] ;
-                    var deSerializer = new XmlSerializer ( typeof ( ParsedExceptions ) ) ;
-                    var sr = new StringReader ( item5 ) ;
-                    Parsed = ( ParsedExceptions ) deSerializer.Deserialize ( sr ) ;
-                    var item4 = _logEntry.ReplacementStrings[ 4 ] ;
-
-                    try
+                    if ( item4.Length == nbytes * 2 )
                     {
-                        if ( int.TryParse ( _logEntry.ReplacementStrings[ 3 ] , out var nbytes ) )
+                        var bytes = new byte[ item4.Length / 2 ] ;
+                        for ( var i = 0 ; i < item4.Length ; i += 2 )
                         {
-                            if ( item4.Length == nbytes * 2 )
-                            {
-                                var bytes = new byte[ item4.Length / 2 ] ;
-                                for ( var i = 0 ; i < item4.Length ; i += 2 )
-                                {
-                                    bytes[ i / 2 ] =
-                                        Convert.ToByte ( item4.Substring ( i , 2 ) , 16 ) ;
-                                }
-
-                                var ms = new MemoryStream ( bytes ) ;
-                                IFormatter f = new BinaryFormatter ( ) ;
-                                var exception = f.Deserialize ( ms ) ;
-                                Exception1 = ( Exception ) exception ;
-                            }
+                            bytes[ i / 2 ] =
+                                Convert.ToByte ( item4.Substring ( i , 2 ) , 16 ) ;
                         }
-                    }
-                    catch ( Exception ex )
-                    {
-                        DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+
+                        var ms = new MemoryStream ( bytes ) ;
+                        IFormatter f = new BinaryFormatter ( ) ;
+                        var exception = f.Deserialize ( ms ) ;
+                        Exception1 = ( Exception ) exception ;
                     }
                 }
+            }
+            catch ( Exception ex )
+            {
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
         }
 

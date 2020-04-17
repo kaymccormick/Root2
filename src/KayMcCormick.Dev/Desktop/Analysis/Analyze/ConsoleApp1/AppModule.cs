@@ -85,6 +85,6 @@ namespace ConsoleApp1
 #endif
         }
 
-        private void Action ( ILogInvocation obj ) { }
+        private static void Action ( ILogInvocation obj ) { }
     }
 }

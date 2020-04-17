@@ -57,20 +57,22 @@ namespace AnalysisAppLib.Auth
         private static void AfterAccessNotification ( [ NotNull ] TokenCacheNotificationArgs args )
         {
             // if the access operation resulted in a cache update
-            if ( args.HasStateChanged )
+            if ( ! args.HasStateChanged )
             {
-                lock ( FileLock )
-                {
-                    // reflect changesgs in the persistent store
-                    File.WriteAllBytes (
-                                        CacheFilePath
-                                      , ProtectedData.Protect (
-                                                               args.TokenCache.SerializeMsalV3 ( )
-                                                             , null
-                                                             , DataProtectionScope.CurrentUser
-                                                              )
-                                       ) ;
-                }
+                return ;
+            }
+
+            lock ( FileLock )
+            {
+                // reflect changesgs in the persistent store
+                File.WriteAllBytes (
+                                    CacheFilePath
+                                  , ProtectedData.Protect (
+                                                           args.TokenCache.SerializeMsalV3 ( )
+                                                         , null
+                                                         , DataProtectionScope.CurrentUser
+                                                          )
+                                   ) ;
             }
         }
     }

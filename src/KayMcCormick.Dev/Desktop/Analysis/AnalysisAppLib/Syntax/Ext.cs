@@ -69,19 +69,20 @@ namespace AnalysisAppLib.Syntax
                 throw new ArgumentNullException ( nameof ( doc ) ) ;
             }
 
-            if ( doc.FilePath != null )
+            if ( doc.FilePath == null )
             {
-                var strings = doc.FilePath.Split ( Path.DirectorySeparatorChar ) ;
-                var numElems = 4 ;
-                var p = strings.ToList ( )
-                               .GetRange (
-                                          strings.Length < numElems ? 0 : strings.Length - numElems
-                                        , strings.Length >= numElems ? 3 : strings.Length
-                                         ) ;
-                return string.Join ( Path.DirectorySeparatorChar.ToString ( ) , p ) ;
+                throw new InvalidOperationException ( ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            var strings = doc.FilePath.Split ( Path.DirectorySeparatorChar ) ;
+            const int numElems = 4 ;
+            var p = strings.ToList ( )
+                           .GetRange (
+                                      strings.Length < numElems ? 0 : strings.Length - numElems
+                                    , strings.Length >= numElems ? 3 : strings.Length
+                                     ) ;
+            return string.Join ( Path.DirectorySeparatorChar.ToString ( ) , p ) ;
+
         }
 
         /// <summary>

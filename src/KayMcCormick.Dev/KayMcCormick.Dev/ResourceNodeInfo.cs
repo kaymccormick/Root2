@@ -113,28 +113,30 @@ namespace KayMcCormick.Dev
         {
             get
             {
-                if ( _isChildrenLoaded.HasValue
-                     && _isChildrenLoaded.Value == false )
+                if ( ! _isChildrenLoaded.HasValue
+                     || _isChildrenLoaded.Value != false )
                 {
-                    DebugUtils.WriteLine ( "Expanding children" ) ;
-                    _children = _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
-                                                              DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
-                                                  var r = CreateNodeFunc (
-                                                                                         this
-                                                                                       , o
-                                                                                       , o1
-                                                                                       , false
-                                                                                ,        false
-                                                                                        ) ;
+                    return _children ;
+                }
+
+                DebugUtils.WriteLine ( "Expanding children" ) ;
+                _children = _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
+                                                          DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
+                                                          var r = CreateNodeFunc (
+                                                                                  this
+                                                                                , o
+                                                                                , o1
+                                                                                , false
+                                                                         ,        false
+                                                                                 ) ;
                                                   
-                                                  return r ;
-                                              }
-                                             ).ToList() ;
-                    // ReSharper disable once PossibleNullReferenceException
-                    foreach ( var resourceNodeInfo in _children )
-                    {
-                        DebugUtils.WriteLine($"{resourceNodeInfo}");
-                    }
+                                                          return r ;
+                                                      }
+                                                     ).ToList() ;
+                // ReSharper disable once PossibleNullReferenceException
+                foreach ( var resourceNodeInfo in _children )
+                {
+                    DebugUtils.WriteLine($"{resourceNodeInfo}");
                 }
 
                 // ReSharper disable once AssignNullToNotNullAttribute

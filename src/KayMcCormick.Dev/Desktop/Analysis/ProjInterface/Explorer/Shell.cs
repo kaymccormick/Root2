@@ -30,8 +30,13 @@ namespace ProjInterface.Explorer
                          , LB_ADDSTRING    = 0x00000180 , LB_GETTEXT    = 0x00000189
                          , LB_DELETESTRING = 0x00000182 , LB_GETCOUNT   = 0x0000018B ;
 
-        private string _viewTitle = "ConEmu shell" ;
-        private int    hostHeight , hostWidth ;
+        private const string _viewTitle = "ConEmu shell" ;
+#pragma warning disable 169
+        private int    hostHeight ;
+#pragma warning restore 169
+#pragma warning disable 169
+        private int hostWidth ;
+#pragma warning restore 169
 
 
         // ReSharper disable once NotAccessedField.Local

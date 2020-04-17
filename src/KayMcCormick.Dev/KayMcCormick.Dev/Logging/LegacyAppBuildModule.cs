@@ -140,7 +140,7 @@ namespace KayMcCormick.Dev.Logging
             registry.Registered += OnRegistryOnRegistered ;
         }
 
-        private void OnRegistryOnRegistered (
+        private static void OnRegistryOnRegistered (
             object                                   sender
           , [ NotNull ] ComponentRegisteredEventArgs args
         )
@@ -447,11 +447,13 @@ namespace KayMcCormick.Dev.Logging
               , [ CanBeNull ] IComponentRegistration registration
             )
             {
-                if ( registration != null )
+                if ( registration == null )
                 {
-                    registration.Preparing  += RegistrationOnPreparing ;
-                    registration.Activating += RegistrationOnActivating ;
+                    return ;
                 }
+
+                registration.Preparing  += RegistrationOnPreparing ;
+                registration.Activating += RegistrationOnActivating ;
             }
 
             private void RegistrationOnActivating (

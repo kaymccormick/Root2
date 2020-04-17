@@ -1587,9 +1587,6 @@ namespace AnalysisControls.Converters
                 Logger.Debug ( "returning null for {s} {t}" , cs , targetType.FullName ) ;
                 return null ;
             }
-
-            Logger.Debug ( "returning null for {s} {t}" , value , targetType.FullName ) ;
-            return null ;
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ using LogManager = Common.Logging.LogManager ;
 
 namespace LeafService
 {
-    internal class Program : IDisposable
+    internal sealed class Program : IDisposable
     {
         private const    string              serviceName = "LeafService" ;
         private const    string              displayName = "LeafService Service" ;
@@ -139,7 +139,7 @@ namespace LeafService
         }
     }
 
-    internal class LeafServiceModule : Module
+    internal sealed class LeafServiceModule : Module
     {
         #region Overrides of Module
         protected override void Load ( ContainerBuilder builder )

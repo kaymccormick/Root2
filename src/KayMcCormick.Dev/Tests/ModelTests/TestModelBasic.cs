@@ -22,7 +22,7 @@ namespace ModelTests
         [ Fact ]
         public void TestContainer()
         {
-            ContainerBuilder b = new ContainerBuilder();
+            var b = new ContainerBuilder();
             b.RegisterModule<AnalysisAppLibModule>();
             // ReSharper disable once UnusedVariable
             var c = b.Build( );

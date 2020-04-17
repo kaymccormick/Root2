@@ -125,108 +125,111 @@ namespace KayMcCormick.Dev.Logging
                             var curKey = reader.GetString ( ) ;
                             reader.Read ( ) ;
                             object value = null ;
-                            if ( reader.TokenType == JsonTokenType.String )
+                            switch ( reader.TokenType )
                             {
-                                value = reader.GetString ( ) ;
-                            }
-                            else if ( reader.TokenType == JsonTokenType.StartObject )
-                            {
-                                reader.Read ( ) ;
-                                if ( reader.TokenType != JsonTokenType.PropertyName )
+                                case JsonTokenType.String : value = reader.GetString ( ) ;
+                                    break ;
+                                case JsonTokenType.StartObject :
                                 {
-                                    throw new JsonException ( ) ;
-                                }
-
-                                var key = reader.GetString ( ) ;
-                                if ( key != "JsonConverter" )
-                                {
-                                    var dict = new Dictionary < string , JsonElement > ( ) ;
-                                    var myVal =
-                                        JsonSerializer.Deserialize < JsonElement > (
-                                                                                    ref reader
-                                                                                  , options
-                                                                                   ) ;
-                                    dict[ key ] = myVal ;
-                                    while ( reader.Read ( ) )
+                                    reader.Read ( ) ;
+                                    if ( reader.TokenType != JsonTokenType.PropertyName )
                                     {
-                                        if ( reader.TokenType == JsonTokenType.EndObject )
+                                        throw new JsonException ( ) ;
+                                    }
+
+                                    var key = reader.GetString ( ) ;
+                                    if ( key != "JsonConverter" )
+                                    {
+                                        var dict = new Dictionary < string , JsonElement > ( ) ;
+                                        var myVal =
+                                            JsonSerializer.Deserialize < JsonElement > (
+                                                                                        ref reader
+                                                                                      , options
+                                                                                       ) ;
+                                        dict[ key ] = myVal ;
+                                        while ( reader.Read ( ) )
                                         {
-                                            break ;
+                                            if ( reader.TokenType == JsonTokenType.EndObject )
+                                            {
+                                                break ;
+                                            }
+
+                                            if ( reader.TokenType != JsonTokenType.PropertyName )
+                                            {
+                                                throw new JsonException ( ) ;
+                                            }
+
+                                            var key1 = reader.GetString ( ) ;
+                                            var myVal2 =
+                                                JsonSerializer.Deserialize < JsonElement > (
+                                                                                            ref reader
+                                                                                          , options
+                                                                                           ) ;
+                                            dict[ key1 ] = myVal2 ;
                                         }
 
+                                        info.Properties[ curKey ] = dict ;
+                                    }
+                                    else
+                                    {
+                                        reader.Read ( ) ;
+                                        if ( reader.TokenType != JsonTokenType.True )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        reader.Read ( ) ;
                                         if ( reader.TokenType != JsonTokenType.PropertyName )
                                         {
                                             throw new JsonException ( ) ;
                                         }
 
-                                        var key1 = reader.GetString ( ) ;
-                                        var myVal2 =
-                                            JsonSerializer.Deserialize < JsonElement > (
-                                                                                        ref reader
-                                                                                      , options
-                                                                                       ) ;
-                                        dict[ key1 ] = myVal2 ;
+                                        var key2 = reader.GetString ( ) ;
+                                        if ( key2 != "Type" )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        reader.Read ( ) ;
+                                        if ( reader.TokenType != JsonTokenType.String )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        var typeName = reader.GetString ( ) ;
+                                        var type = Type.GetType ( typeName ) ;
+
+                                        reader.Read ( ) ;
+                                        if ( reader.TokenType != JsonTokenType.PropertyName )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        var key3 = reader.GetString ( ) ;
+                                        if ( key3 != "Value" )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        var o1 = JsonSerializer.Deserialize (
+                                                                             ref reader
+                                                                           , type
+                                                                           , options
+                                                                            ) ;
+
+                                        reader.Read ( ) ;
+                                        if ( reader.TokenType != JsonTokenType.EndObject )
+                                        {
+                                            throw new JsonException ( ) ;
+                                        }
+
+                                        value = o1 ;
+                                        // reader.Read ( ) ;
+                                        // if(reader.TokenType != JsonTokenType.EndObject)
+                                        // throw new JsonException();
                                     }
 
-                                    info.Properties[ curKey ] = dict ;
-                                }
-                                else
-                                {
-                                    reader.Read ( ) ;
-                                    if ( reader.TokenType != JsonTokenType.True )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    reader.Read ( ) ;
-                                    if ( reader.TokenType != JsonTokenType.PropertyName )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    var key2 = reader.GetString ( ) ;
-                                    if ( key2 != "Type" )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    reader.Read ( ) ;
-                                    if ( reader.TokenType != JsonTokenType.String )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    var typeName = reader.GetString ( ) ;
-                                    var type = Type.GetType ( typeName ) ;
-
-                                    reader.Read ( ) ;
-                                    if ( reader.TokenType != JsonTokenType.PropertyName )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    var key3 = reader.GetString ( ) ;
-                                    if ( key3 != "Value" )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    var o1 = JsonSerializer.Deserialize (
-                                                                         ref reader
-                                                                       , type
-                                                                       , options
-                                                                        ) ;
-
-                                    reader.Read ( ) ;
-                                    if ( reader.TokenType != JsonTokenType.EndObject )
-                                    {
-                                        throw new JsonException ( ) ;
-                                    }
-
-                                    value = o1 ;
-                                    // reader.Read ( ) ;
-                                    // if(reader.TokenType != JsonTokenType.EndObject)
-                                    // throw new JsonException();
+                                    break ;
                                 }
                             }
 
