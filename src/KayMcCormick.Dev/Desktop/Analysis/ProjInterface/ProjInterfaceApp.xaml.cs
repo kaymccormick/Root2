@@ -1,5 +1,4 @@
 ﻿using System ;
-using System.Data.SqlClient ;
 using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
@@ -19,7 +18,7 @@ using static NLog.LogManager ;
 
 namespace ProjInterface
 {
-    public sealed partial class ProjInterfaceApp : BaseApp, IResourceResolver
+    internal sealed partial class ProjInterfaceApp : BaseApp, IResourceResolver
     {
         private new static readonly Logger Logger = GetCurrentClassLogger ( ) ;
 
@@ -40,69 +39,58 @@ namespace ProjInterface
                  )
 
         {
-            return ;
-            var b = new SqlConnectionStringBuilder
-                    {
-                        IntegratedSecurity = true
-                       ,
-                        DataSource = @".\sql2017"
-                       ,
-                        InitialCatalog = "syntaxdb"
-                    };
-            var conn = new SqlConnection(b.ConnectionString);
+            //ExploreAssemblies ( ) ;
+        }
 
-            var resourceLocater = new Uri("/ProjInterface;component/AppResources.xaml", System.UriKind.Relative);
-            var rs = GetResourceStream ( resourceLocater ) ;
+        private void ExploreAssemblies ( )
+        {
+            var resourceLocator = new Uri (
+                                           "/ProjInterface;component/AppResources.xaml"
+                                         , System.UriKind.Relative
+                                          ) ;
+            var rs = GetResourceStream ( resourceLocator ) ;
             foreach ( var referencedAssembly in Assembly
                                                .GetExecutingAssembly ( )
-                                               .GetReferencedAssemblies ( ) )
+                                               .GetReferencedAssemblies ( ).Where ( referencedAssembly => referencedAssembly.Name == "WindowsBase" ) )
             {
-                if ( referencedAssembly.Name == "WindowsBase" )
+                DebugUtils.WriteLine ( referencedAssembly.ToString ( ) ) ;
+                var assembly = AppDomain.CurrentDomain.GetAssemblies ( ) ;
+                foreach ( var assembly1 in assembly.Where ( assembly1 => assembly1.GetName ( ).Name == "WindowsBase" ) )
                 {
-                    DebugUtils.WriteLine(referencedAssembly.ToString());
-                    var assembly = AppDomain.CurrentDomain.GetAssemblies ( ) ;
-                    foreach ( var assembly1 in assembly )
+                    DebugUtils.WriteLine ( assembly1.FullName ) ;
+                    foreach ( var type in assembly1.GetTypes ( ) )
                     {
-                        if ( assembly1.GetName ( ).Name != "WindowsBase" )
+                        DebugUtils.WriteLine (
+                                              $"Assembly type {type.FullName}: public={type.IsPublic}"
+                                             ) ;
+                        var staticFields =
+                            type.GetFields ( BindingFlags.NonPublic | BindingFlags.Static ) ;
+                        foreach ( var staticField in staticFields )
                         {
-                            continue ;
-                        }
-
-                        DebugUtils.WriteLine ( assembly1.FullName ) ;
-                        foreach ( var type in assembly1.GetTypes ( ) )
-                        {
-                            DebugUtils.WriteLine($"Assembly type {type.FullName}: public={type.IsPublic}");
-                            var staticFields = type.GetFields ( BindingFlags.NonPublic | BindingFlags.Static ) ;
-                            foreach ( var staticField in staticFields )
+                            DebugUtils.WriteLine (
+                                                  $"{type.FullName}.{staticField.Name}: t[{staticField.FieldType.FullName}]"
+                                                 ) ;
+                            try
                             {
-                                DebugUtils.WriteLine($"{type.FullName}.{staticField.Name}: t[{staticField.FieldType.FullName}]");
-                                object val ;
-                                try
+                                var val = staticField.GetValue ( null ) ;
+                                if ( val == null )
                                 {
-                                    val = staticField.GetValue ( null ) ;
-                                    if ( val == null )
-                                    {
-                                        DebugUtils.WriteLine("val is null");
-                                    }
-                                    else
-                                    {
-                                        DebugUtils.WriteLine ( $"val is {val}" ) ;
-                                        DumpTypeInstanceInfo ( val ) ;
-                                    }
+                                    DebugUtils.WriteLine ( "val is null" ) ;
                                 }
-                                catch ( Exception ex )
+                                else
                                 {
-                                    // ignored
+                                    DebugUtils.WriteLine ( $"val is {val}" ) ;
+                                    DumpTypeInstanceInfo ( val ) ;
                                 }
+                            }
+                            catch ( Exception )
+                            {
+                                // ignored
                             }
                         }
                     }
                 }
-                
             }
-            //var m = new ComponentTypesViewModel();
-            //PresentationTraceSources.Refresh();
-            //PopulateJsonConverters ( disableLogging ) ;
         }
 
         private void DumpTypeInstanceInfo ( [ NotNull ] object val )

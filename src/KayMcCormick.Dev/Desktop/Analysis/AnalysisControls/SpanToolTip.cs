@@ -31,7 +31,7 @@ namespace AnalysisControls
 
     /// <summary>
     /// </summary>
-    public sealed partial class SpanToolTip : UserControl , ISpanToolTip
+    internal sealed partial class SpanToolTip : UserControl , ISpanToolTip
     {
         /// <summary>
         /// </summary>

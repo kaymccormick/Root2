@@ -102,6 +102,7 @@ namespace ProjTests
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml" ;
 
         private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
+        // ReSharper disable once InconsistentNaming
         private const           bool   _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
@@ -129,7 +130,9 @@ namespace ProjTests
             // _projectFixture                              =  projectFixture ;
 
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if ( ! _disableLogging )
+#pragma warning disable 162
             {
                 // loggingFixture?.SetOutputHelper ( output , this ) ;
 
@@ -138,6 +141,7 @@ namespace ProjTests
                 // _loggingFixture.Layout = Layout.FromString ( "${message}" ) ;
                 // }
             }
+#pragma warning restore 162
         }
 
         [ WpfFact ]
@@ -149,7 +153,7 @@ namespace ProjTests
         }
 
         [ Fact ]
-        public void TestSubstitteType ( )
+        public void TestSubstituteType ( )
         {
             using ( var instance = new ApplicationInstance (
                                                             new ApplicationInstance.
@@ -163,16 +167,16 @@ namespace ProjTests
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
-                var lifetimescope = instance.GetLifetimeScope ( ) ;
-                var model = lifetimescope.Resolve < TypesViewModel > ( ) ;
-                var sts = lifetimescope.Resolve < ISyntaxTypesService > ( ) ;
-                var cmap = sts.CollectionMap ( ) ;
+                var lifetimeScope = instance.GetLifetimeScope ( ) ;
+                var model = lifetimeScope.Resolve < TypesViewModel > ( ) ;
+                var sts = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
+                var cMap = sts.CollectionMap ( ) ;
                 var appTypeInfo = sts.GetAppTypeInfo ( typeof ( AssignmentExpressionSyntax ) ) ;
                 var field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
                 var typeSyntax =
                     SyntaxFactory.ParseTypeName ( typeof ( ArgumentSyntax ).FullName ) ;
                 var substType =
-                    XmlDocElements.SubstituteType ( field , typeSyntax , cmap , model ) ;
+                    XmlDocElements.SubstituteType ( field , typeSyntax , cMap , model ) ;
             }
         }
 
@@ -203,7 +207,7 @@ namespace ProjTests
         // {
         //
         //     var xamlSchemaContext = new XamlSchemaContext();
-        //     var setings = new XamlObjectWriter(xamlSchemaContext);
+        //     var settings = new XamlObjectWriter(xamlSchemaContext);
         //     
         //     var xamlXmlReaderSettings = new XamlXmlReaderSettings {} ;
         //     var objectWriter1 = new XamlWriter1(xamlSchemaContext);
@@ -221,7 +225,7 @@ namespace ProjTests
         // }
 
         // [WpfFact ]
-        // public void TEstTypesview1 ( )
+        // public void TestTypes-view1 ( )
         // {
         // var app1 = new TestApp1();
         // var model = GetComponentTypesViewModel( ) ;
@@ -229,7 +233,7 @@ namespace ProjTests
         // }
 
         [ WpfFact ]
-        public void TEstTypesview ( )
+        public void TestTypesView ( )
         {
             var viewModel = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
             viewModel.BeginInit ( ) ;
@@ -270,7 +274,7 @@ namespace ProjTests
         }
 
         [ WpfFact ]
-        public void TEstTypesview2 ( )
+        public void TestTypesView2 ( )
         {
             var viewModel = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
             viewModel.BeginInit ( ) ;
@@ -295,6 +299,7 @@ namespace ProjTests
         }
 
         //[WpfFact ]
+        // ReSharper disable once UnusedMember.Global
         public void TestJsonSerialization ( )
         {
             var w = new Window ( ) ;
@@ -305,13 +310,13 @@ namespace ProjTests
             var writer = new Utf8JsonWriter ( new MemoryStream ( ) ) ;
             var xxMyXmlWriter = new MyXmlWriter ( writer ) ;
             XamlWriter.Save ( w , xxMyXmlWriter ) ;
-            var xdoc = new XDocument ( ) ;
+            var xDoc = new XDocument ( ) ;
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             XDocument.Parse ( xaml ) ;
 
 
 
-            foreach ( var xNode in xdoc.Nodes ( ) )
+            foreach ( var xNode in xDoc.Nodes ( ) )
             {
                 switch ( xNode )
                 {
@@ -361,6 +366,7 @@ namespace ProjTests
         }
 
 
+        // ReSharper disable once UnusedMember.Global
         public void TestFE ( )
         {
             var f = new FrameworkElementFactory { Type = typeof ( Button ) } ;
@@ -471,9 +477,9 @@ namespace ProjTests
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 instance.Initialize ( ) ;
-                var lifetimescope = instance.GetLifetimeScope ( ) ;
+                var lifetimeScope = instance.GetLifetimeScope ( ) ;
                 LogManager.ThrowExceptions = true ;
-                var funcs = lifetimescope
+                var funcAry = lifetimeScope
                    .Resolve < IEnumerable < Func < LayoutDocumentPane , IDisplayableAppCommand > >
                     > ( ) ;
 
@@ -487,10 +493,10 @@ namespace ProjTests
                 var mLayoutRootPanel = new LayoutPanel ( group ) ;
                 var layout = new LayoutRoot { RootPanel = mLayoutRootPanel } ;
                 m.Layout = layout ;
-                Window w = new AppWindow ( lifetimescope ) ;
+                Window w = new AppWindow ( lifetimeScope ) ;
                 w.Content = m ;
 
-                foreach ( var func in funcs )
+                foreach ( var func in funcAry )
                 {
                     try
                     {
@@ -627,9 +633,9 @@ namespace ProjTests
                                                                                JsonSerializerOptions ( )
                                                                           ) ;
             var memoryStream = new MemoryStream ( ) ;
-            var jsonwriterxx = new JsonWriterOptions ( ) ;
+            var writer = new JsonWriterOptions ( ) ;
             var jsonWriterOptions = new JsonSerializerOptions ( ) ;
-            var utf8JsonWriter = new Utf8JsonWriter ( memoryStream , jsonwriterxx ) ;
+            var utf8JsonWriter = new Utf8JsonWriter ( memoryStream , writer ) ;
             jsonConverter.Write ( utf8JsonWriter , xx , jsonWriterOptions ) ;
             utf8JsonWriter.Flush ( ) ;
             memoryStream.Flush ( ) ;
@@ -762,10 +768,10 @@ namespace ProjTests
             //Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
 
             var t = File.OpenText ( @"C:\data\logs\ProjInterface.json.test" ) ;
-            var lineno = 0 ;
+            var lineNo = 0 ;
             while ( ! t.EndOfStream )
             {
-                lineno += 1 ;
+                lineNo += 1 ;
                 var line = t.ReadLine ( ) ;
 
                 LogEventInfo info ;
@@ -815,7 +821,7 @@ namespace ProjTests
 
                     Logger.Warn (
                                  "Start of problem is line {lineno} {problem}"
-                               , lineno
+                               , lineNo
                                , substring
                                 ) ;
 
@@ -1027,6 +1033,7 @@ namespace ProjTests
             var w = new Window ( ) ;
             Exception ex = new AggregateException (
                                                    new ArgumentException (
+                                                                          // ReSharper disable once LocalizableElement
                                                                           "Boo"
                                                                           // ReSharper disable once NotResolvedInText
                                                                         , "param"
@@ -1058,7 +1065,7 @@ namespace ProjTests
             {
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
-                var lifetimescope = instance.GetLifetimeScope ( ) ;
+                var scope = instance.GetLifetimeScope ( ) ;
 
                 var xx = new BinaryFormatter ( ) ;
                 var ee = new Exception ( ) ;
@@ -1071,7 +1078,7 @@ namespace ProjTests
                 // ReSharper disable once UnusedVariable
                 var read = s.Read ( bytes , 0 , sLength ) ;
 
-                var view = lifetimescope.Resolve < EventLogView > ( ) ;
+                var view = scope.Resolve < EventLogView > ( ) ;
                 Assert.NotNull ( view.ViewModel ) ;
                 var w = new Window { Content = view } ;
                 w.ShowDialog ( ) ;
@@ -1079,7 +1086,7 @@ namespace ProjTests
         }
 
         [ WpfFact ]
-        public void TEstWriteBrush ( )
+        public void TestWriteBrush ( )
         {
             var brushConverter = new JsonBrushConverter ( ) ;
             var opt = new JsonSerializerOptions ( ) ;

@@ -3,7 +3,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
-    public sealed class HierarchicalTemplateSelector : ResourceTemplateSelector
+    internal sealed class HierarchicalTemplateSelector : ResourceTemplateSelector
     {
         private string _templatePartName ="treeViewNode";
         #region Overrides of ResourceTemplateSelector

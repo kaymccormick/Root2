@@ -114,19 +114,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
             var schemaContext = XamlReader.GetWpfSchemaContext ( ) ;
             var scmNode = CreateNode ( _appNode , schemaContext , schemaContext , false ) ;
-            foreach ( var ns in schemaContext.GetAllXamlNamespaces ( ) )
-            {
-                var ns1 = CreateNode ( scmNode , ns , ns , false ) ;
-                foreach ( var allXamlType in schemaContext.GetAllXamlTypes ( ns) )
-                {
-                    var t1 = CreateNode ( ns1 , allXamlType , allXamlType , false ) ;
-                    foreach ( var xamlMember in allXamlType.GetAllMembers ( ) )
-                    {
-                        // ReSharper disable once UnusedVariable
-                        var member1 = CreateNode ( t1 , xamlMember , xamlMember , false ) ;
-                    }
-                }
-            }
+            foreach ( var member1 in from ns in schemaContext.GetAllXamlNamespaces ( ) let ns1 = CreateNode ( scmNode , ns , ns , false ) from allXamlType in schemaContext.GetAllXamlTypes ( ns) let t1 = CreateNode ( ns1 , allXamlType , allXamlType , false ) from xamlMember in allXamlType.GetAllMembers ( ) select CreateNode ( t1 , xamlMember , xamlMember , false ) ) { }
 
             if ( current == null )
             {
@@ -172,9 +160,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             DebugUtils.WriteLine ( w.ToString ( ) ) ;
             var children = LogicalTreeHelper.GetChildren ( w ) ;
-            foreach ( var child in children )
+            foreach ( var child in from object child in children let logChild = CreateNode ( log , child.ToString() , null , false ) select child )
             {
-                var logChild = CreateNode ( log , child.ToString() , null , false ) ;
                 // ReSharper disable once UnusedVariable
                 if ( child is DependencyObject @do )
                 {
@@ -356,7 +343,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         #region Implementation of ISupportInitializeNotification
         /// <inheritdoc />
-        public bool IsInitialized { get ; set ; }
+        public bool IsInitialized { get ; private set ; }
 
         /// <inheritdoc />
         public event EventHandler Initialized ;

@@ -137,7 +137,7 @@ namespace AnalysisControls
             var c = new WrapPanel { Tag = node , Margin = new Thickness ( 2 ) } ;
             bdr.Child           =  c ;
             bdr.BorderBrush     =  new SolidColorBrush ( _colors[ _colorI % _colors.Length ] ) ;
-            _colorI              += 1 ;
+            _colorI             += 1 ;
             bdr.BorderThickness =  new Thickness ( 1 ) ;
             bdr.Margin          =  new Thickness ( 2 ) ;
             bdr.ToolTip         =  new ToolTip { Content = node.Kind ( ) } ;
@@ -216,11 +216,19 @@ namespace AnalysisControls
 
         public bool Underline ;
 
+        public StyleInfo ( bool bold = false , bool italics = false , bool underline = false )
+        {
+            Bold      = bold ;
+            Italics   = italics ;
+            Underline = underline ;
+        }
+
 
         [ NotNull ]
         public StyleInfo With ( [ NotNull ] StyleInfo value )
         {
-            return new StyleInfo { Bg = value.Bg ?? Bg , Fg = value.Bg ?? Fg } ;
+            var with = new StyleInfo { Bg = value.Bg ?? Bg , Fg = value.Bg ?? Fg } ;
+            return with ;
         }
     }
 

@@ -39,6 +39,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         private readonly PaneService  _panelService ;
         private          EventLogView _view ;
+        private bool _debugCommandEvents ;
 
         /// <summary>
         /// </summary>
@@ -131,20 +132,27 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
         private void Target ( object sender , CanExecuteRoutedEventArgs e )
         {
-            return ;
-            if ( e.Command is RoutedUICommand rc )
+            if ( DebugCommandEvents )
             {
-                DebugUtils.WriteLine ( $"PreviewCanExecute - {rc.Text} - {rc.Name}" ) ;
-            }
-            else if ( e.Command is RoutedCommand rc2 )
-            {
-                DebugUtils.WriteLine ( $"PreviewCanExecute - {rc2.Name}" ) ;
-            }
-            else
-            {
-                DebugUtils.WriteLine ( $"PreviewCanExecute - {e.Command}" ) ;
+                if ( e.Command is RoutedUICommand rc )
+                {
+                    DebugUtils.WriteLine ( $"PreviewCanExecute - {rc.Text} - {rc.Name}" ) ;
+                }
+                else if ( e.Command is RoutedCommand rc2 )
+                {
+                    DebugUtils.WriteLine ( $"PreviewCanExecute - {rc2.Name}" ) ;
+                }
+                else
+                {
+                    DebugUtils.WriteLine ( $"PreviewCanExecute - {e.Command}" ) ;
+                }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool DebugCommandEvents { get { return _debugCommandEvents ; } set { _debugCommandEvents = value ; } }
 
         private void PreviewExecuted ( object sender , [ NotNull ] ExecutedRoutedEventArgs e )
         {

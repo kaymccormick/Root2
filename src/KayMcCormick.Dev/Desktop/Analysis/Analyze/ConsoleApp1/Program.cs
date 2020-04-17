@@ -40,7 +40,7 @@ using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using NLog.Targets ;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 
 // ReSharper disable RedundantOverriddenMember
@@ -56,9 +56,9 @@ namespace ConsoleApp1
             get { return Path.Combine ( DATA_OUTPUT_PATH , ModelXamlFilenamePart ) ; }
         }
 
-        private const string DATA_OUTPUT_PATH = @"C:\data\logs" ;
-        private const           string TypesJsonFilename     = "types.json" ;
-        private const           string ModelXamlFilenamePart = "model.xaml" ;
+        private const string DATA_OUTPUT_PATH      = @"C:\data\logs" ;
+        private const string TypesJsonFilename     = "types.json" ;
+        private const string ModelXamlFilenamePart = "model.xaml" ;
 
         private const string SolutionFilePath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
@@ -91,10 +91,10 @@ namespace ConsoleApp1
         // ReSharper disable once NotAccessedField.Local
         private static ILogger Logger ;
 
-        private static          ApplicationInstance _appinst ;
-        private const string _ilist = "IList" ;
-        private const string _list = "List" ;
-        private const string _ienumerable = "IEnumerable" ;
+        private static ApplicationInstance _appinst ;
+        private const  string              _ilist       = "IList" ;
+        private const  string              _list        = "List" ;
+        private const  string              _ienumerable = "IEnumerable" ;
 
         static Program ( ) { Logger = null ; }
 
@@ -170,11 +170,12 @@ namespace ConsoleApp1
 
 
             _appinst = new ApplicationInstance (
-                                                new ApplicationInstance.ApplicationInstanceConfiguration (
-                                                                                                          message => {
-                                                                                                          }
-                                                                                                        , ConsoleAnalysisProgramGuid
-                                                                                                         )
+                                                new ApplicationInstance.
+                                                    ApplicationInstanceConfiguration (
+                                                                                      message => {
+                                                                                      }
+                                                                                    , ConsoleAnalysisProgramGuid
+                                                                                     )
                                                ) ;
             using ( _appinst )
 
@@ -243,7 +244,7 @@ namespace ConsoleApp1
             //     db.AppTypeInfos.Add ( x ) ;
             //     await db.SaveChangesAsync ( ) ;
             // }
-            var cmds = context.Scope.Resolve<IEnumerable<IDisplayableAppCommand>>();
+            var cmds = context.Scope.Resolve < IEnumerable < IDisplayableAppCommand > > ( ) ;
             if ( ! string.IsNullOrEmpty ( options.Action )
                  && cmds.All ( a => a.DisplayName != options.Action ) )
             {
@@ -334,20 +335,23 @@ namespace ConsoleApp1
 
             DebugUtils.WriteLine ( "Begin initialize TypeViewModel" ) ;
 
-            using (var db = new AppDbContext())
+            using ( var db = new AppDbContext ( ) )
             {
-                db.AppClrType.RemoveRange(db.AppClrType);
-                db.AppTypeInfos.RemoveRange(db.AppTypeInfos);
-                await db.SaveChangesAsync();
+                db.AppClrType.RemoveRange ( db.AppClrType ) ;
+                db.AppTypeInfos.RemoveRange ( db.AppTypeInfos ) ;
+                await db.SaveChangesAsync ( ) ;
             }
-            using (var db = new AppDbContext())
+
+            using ( var db = new AppDbContext ( ) )
             {
-                if ( db.AppTypeInfos.Any ( ) || db.AppClrType.Any() )
+                if ( db.AppTypeInfos.Any ( )
+                     || db.AppClrType.Any ( ) )
                 {
                     throw new InvalidOperationException ( ) ;
                 }
             }
-            var typesViewModel = TypesViewModel_Stage1(context);
+
+            var typesViewModel = TypesViewModel_Stage1 ( context ) ;
 
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = sts.CollectionMap ( ) ;
@@ -360,7 +364,7 @@ namespace ConsoleApp1
 
             typesViewModel.DetailFields ( ) ;
 
-            WriteModelToDatabase(typesViewModel);
+            WriteModelToDatabase ( typesViewModel ) ;
             WriteThisTypesViewModel ( typesViewModel ) ;
             DumpModelToJson (
                              context
@@ -410,14 +414,27 @@ namespace ConsoleApp1
                 var typeInfos = appTypeInfos as AppTypeInfo[] ?? appTypeInfos.ToArray ( ) ;
                 foreach ( var appTypeInfo in typeInfos )
                 {
+                    DebugUtils.WriteLine(
+                                         $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
+                                        );
                     appTypeInfo.Version ++ ;
-                    if ( appTypeInfo.AppClrType == null )
+                    if ( appTypeInfo.AppClrType != null )
                     {
-                        var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
-                        appTypeInfo.AppClrType = clr ;
+                        continue ;
+                    }
+
+                    var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
+                    appTypeInfo.AppClrType = clr ;
+                    if ( appTypeInfo.Id != 0 )
+                    {
+                        db.AppTypeInfos.Update ( appTypeInfo ) ;
+                    }
+                    else
+                    {
+                        db.AppTypeInfos.Add ( appTypeInfo ) ;
                     }
                 }
-                db.AppTypeInfos.AddRange(typeInfos);
+
                 db.SaveChanges ( ) ;
             }
         }
@@ -425,7 +442,7 @@ namespace ConsoleApp1
         [ NotNull ]
         private static AppClrType FindOrAddClrType ( AppDbContext db , Type type )
         {
-            DebugUtils.WriteLine($"Finding or adding clr type {type.AssemblyQualifiedName}");
+            DebugUtils.WriteLine ( $"Finding or adding clr type {type.AssemblyQualifiedName}" ) ;
             var clr = db.AppClrType.SingleOrDefault (
                                                      c => c.AssemblyQualifiedName
                                                           == type.AssemblyQualifiedName
@@ -441,20 +458,20 @@ namespace ConsoleApp1
         [ NotNull ]
         private static AppClrType AddClrType ( AppDbContext db , Type type )
         {
-            DebugUtils.WriteLine ($"Adding CLR type {type.FullName}"  );
-            AppClrType appClrType = new AppClrType
-                                    {
-                                        AssemblyQualifiedName    = type.AssemblyQualifiedName
-                                      , FullName                 = type.FullName
-                                      , IsAbstract               = type.IsAbstract
-                                      , IsClass                  = type.IsClass
-                                      , IsConstructedGenericType = type.IsConstructedGenericType
-                                      , IsGenericType            = type.IsGenericType
-                                      , IsGenericTypeDefinition  = type.IsGenericTypeDefinition
-                                    } ;
+            DebugUtils.WriteLine ( $"Adding CLR type {type.FullName}" ) ;
+            var appClrType = new AppClrType
+                             {
+                                 AssemblyQualifiedName    = type.AssemblyQualifiedName
+                               , FullName                 = type.FullName
+                               , IsAbstract               = type.IsAbstract
+                               , IsClass                  = type.IsClass
+                               , IsConstructedGenericType = type.IsConstructedGenericType
+                               , IsGenericType            = type.IsGenericType
+                               , IsGenericTypeDefinition  = type.IsGenericTypeDefinition
+                             } ;
             if ( type.BaseType != null )
             {
-                appClrType.BaseType = FindOrAddClrType( db , type.BaseType ) ;
+                appClrType.BaseType = FindOrAddClrType ( db , type.BaseType ) ;
             }
 
             db.AppClrType.Add ( appClrType ) ;
@@ -501,7 +518,8 @@ namespace ConsoleApp1
 
                 var comp = st.GetCompilationUnitRoot ( ) ;
                 var triviaDict = new Dictionary < SyntaxKind , SyntaxInfo > ( ) ;
-                foreach ( var kind in comp.DescendantTrivia ( x => true , true ).Select ( syntaxTrivia => syntaxTrivia.Kind ( ) ) )
+                foreach ( var kind in comp.DescendantTrivia ( x => true , true )
+                                          .Select ( syntaxTrivia => syntaxTrivia.Kind ( ) ) )
                 {
                     if ( ! triviaDict.TryGetValue ( kind , out var info ) )
                     {
@@ -722,9 +740,9 @@ namespace ConsoleApp1
         }
 
         private static void DumpModelToJson (
-            [ NotNull ] AppContext     context
+            [ NotNull ] AppContext      context
           , [ NotNull ] ITypesViewModel typesViewModel
-          , string                     jsonFilename = null
+          , string                      jsonFilename = null
         )
         {
             using ( var utf8Json = File.Open ( jsonFilename , FileMode.Create ) )
@@ -935,11 +953,7 @@ namespace ConsoleApp1
                                           $"{symbol.ToDisplayString ( )} {symbol.DeclaredAccessibility}"
                                          ) ;
 
-                    var res =
-                        await SymbolFinder.FindCallersAsync (
-                                                             symbol
-                                                           , solution
-                                                            ) ;
+                    var res = await SymbolFinder.FindCallersAsync ( symbol , solution ) ;
                     var uses = 0 ;
                     foreach ( var use in res )
                     {
@@ -1348,9 +1362,10 @@ namespace ConsoleApp1
                                                                    , propertyIdentifierNameSyntax
                                                                     ) ;
                         var arrowExpressionClauseSyntax = ArrowExpressionClause ( propertyAccess ) ;
-                        propDecl = propDecl
-                                   .WithExpressionBody ( arrowExpressionClauseSyntax )
-                                   .WithSemicolonToken ( Token ( SyntaxKind.SemicolonToken ) ) ;
+                        propDecl = propDecl.WithExpressionBody ( arrowExpressionClauseSyntax )
+                                           .WithSemicolonToken (
+                                                                Token ( SyntaxKind.SemicolonToken )
+                                                               ) ;
                         return propDecl ;
                     }
 
@@ -1651,7 +1666,9 @@ namespace ConsoleApp1
                                                                 , ParenthesizedExpression (
                                                                                            CastExpression (
                                                                                                            genericinternalListType2
-                                                                                                         , IdentifierName("_list")
+                                                                                                         , IdentifierName (
+                                                                                                                           "_list"
+                                                                                                                          )
                                                                                                           )
                                                                                           )
                                                                 , Token ( SyntaxKind.DotToken )
@@ -1710,14 +1727,15 @@ namespace ConsoleApp1
                                                                         invocationExpressionSyntax
                                                                        )
                                                   )
-                                           ).WithModifiers(
-                                                           SyntaxTokenList.Create(
-                                                                                  Token(
-                                                                                        SyntaxKind
-                                                                                           .PublicKeyword
-                                                                                       )
-                                                                                 )
-                                                          );
+                                           )
+                                 .WithModifiers (
+                                                 SyntaxTokenList.Create (
+                                                                         Token (
+                                                                                SyntaxKind
+                                                                                   .PublicKeyword
+                                                                               )
+                                                                        )
+                                                ) ;
 
                 classContainerDecl = classContainerDecl.WithMembers (
                                                                      List (
@@ -1949,18 +1967,18 @@ namespace ConsoleApp1
             var compilation = CompilationUnit ( ) ;
             compilation = SyntaxTypesService.WithCollectionUsings ( compilation ) ;
             compilation = compilation.WithMembers (
-                                       new SyntaxList < MemberDeclarationSyntax > (
-                                                                                   NamespaceDeclaration (
-                                                                                                         ParseName (
-                                                                                                                    _pocosyntaxnamespace
-                                                                                                                   )
-                                                                                                        )
-                                                                                      .WithMembers (
-                                                                                                    types
-                                                                                                   )
-                                                                                  )
-                                      )
-                         .NormalizeWhitespace ( ) ;
+                                                   new SyntaxList < MemberDeclarationSyntax > (
+                                                                                               NamespaceDeclaration (
+                                                                                                                     ParseName (
+                                                                                                                                _pocosyntaxnamespace
+                                                                                                                               )
+                                                                                                                    )
+                                                                                                  .WithMembers (
+                                                                                                                types
+                                                                                                               )
+                                                                                              )
+                                                  )
+                                     .NormalizeWhitespace ( ) ;
 
             DebugOut ( "built" ) ;
             var tree = SyntaxTree ( compilation ) ;
@@ -1986,31 +2004,31 @@ namespace ConsoleApp1
             DebugOut ( "Add solution" ) ;
 
             var s = workspace.AddSolution (
-                                       SolutionInfo.Create (
-                                                            SolutionId.CreateNewId ( )
-                                                          , VersionStamp.Create ( )
-                                                          , null
-                                                          , new[]
-                                                            {
-                                                                ProjectInfo.Create (
-                                                                                    projectId
-                                                                                  , VersionStamp
-                                                                                       .Create ( )
-                                                                                  , "test"
-                                                                                  , "test"
-                                                                                  , LanguageNames
-                                                                                       .CSharp
-                                                                                  , null
-                                                                                  , null
-                                                                                  , new
-                                                                                        CSharpCompilationOptions (
-                                                                                                                  OutputKind
-                                                                                                                     .DynamicallyLinkedLibrary
-                                                                                                                 )
-                                                                                   )
-                                                            }
-                                                           )
-                                      ) ;
+                                           SolutionInfo.Create (
+                                                                SolutionId.CreateNewId ( )
+                                                              , VersionStamp.Create ( )
+                                                              , null
+                                                              , new[]
+                                                                {
+                                                                    ProjectInfo.Create (
+                                                                                        projectId
+                                                                                      , VersionStamp
+                                                                                           .Create ( )
+                                                                                      , "test"
+                                                                                      , "test"
+                                                                                      , LanguageNames
+                                                                                           .CSharp
+                                                                                      , null
+                                                                                      , null
+                                                                                      , new
+                                                                                            CSharpCompilationOptions (
+                                                                                                                      OutputKind
+                                                                                                                         .DynamicallyLinkedLibrary
+                                                                                                                     )
+                                                                                       )
+                                                                }
+                                                               )
+                                          ) ;
 
 
             var documentInfo = DocumentInfo.Create (
@@ -2123,10 +2141,10 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
             {
                 var s3 = workspace.CurrentSolution.AddMetadataReference (
-                                                                     projectId
-                                                                   , MetadataReference
-                                                                        .CreateFromFile ( ref1 )
-                                                                    ) ;
+                                                                         projectId
+                                                                       , MetadataReference
+                                                                            .CreateFromFile ( ref1 )
+                                                                        ) ;
                 var rb = workspace.TryApplyChanges ( s3 ) ;
                 if ( ! rb )
                 {
@@ -2140,7 +2158,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             var comp1 = await project.GetCompilationAsync ( ) ;
             using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )
             {
-                if ( comp1!= null )
+                if ( comp1 != null )
                 {
                     foreach ( var diagnostic in comp1.GetDiagnostics ( ) )
                     {
@@ -2152,15 +2170,11 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                         // ReSharper disable once UnusedVariable
                         var line = source
                                   .Skip (
-                                         diagnostic
-                                            .Location.GetLineSpan ( )
-                                            .StartLinePosition.Line
+                                         diagnostic.Location.GetLineSpan ( ).StartLinePosition.Line
                                          - 1
                                         )
                                   .Take (
-                                         diagnostic
-                                            .Location.GetLineSpan ( )
-                                            .EndLinePosition.Line
+                                         diagnostic.Location.GetLineSpan ( ).EndLinePosition.Line
                                          - diagnostic
                                           .Location.GetLineSpan ( )
                                           .StartLinePosition.Line
@@ -2177,8 +2191,8 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             }
 
             var errors = comp1?.GetDiagnostics ( )
-                                     .Where ( d => d.Severity == DiagnosticSeverity.Error )
-                                     .ToList ( ) ;
+                               .Where ( d => d.Severity == DiagnosticSeverity.Error )
+                               .ToList ( ) ;
             if ( errors?.Any ( ) == true )
             {
                 DebugUtils.WriteLine ( string.Join ( "\n" , errors ) ) ;
@@ -2187,9 +2201,9 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             DebugOut ( "attempting emit" ) ;
 
             var result =
-                ( comp1?? throw new InvalidOperationException ( ) ).Emit (
-                                                                                 @"C:\data\logs\output.dll"
-                                                                                ) ;
+                ( comp1 ?? throw new InvalidOperationException ( ) ).Emit (
+                                                                           @"C:\data\logs\output.dll"
+                                                                          ) ;
             if ( result.Success )
             {
                 DebugOut ( "Success" ) ;
@@ -2237,12 +2251,12 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             var identifierNameSyntax = IdentifierName ( _pocoPrefix + t.ParentInfo.Type.Name ) ;
             classDecl1 = classDecl1.WithBaseList (
                                                   BaseList (
-                                                            new SeparatedSyntaxList <
-                                                                BaseTypeSyntax > ( ).Add (
-                                                                                          SimpleBaseType (
-                                                                                                          identifierNameSyntax
-                                                                                                         )
-                                                                                         )
+                                                            new SeparatedSyntaxList < BaseTypeSyntax
+                                                            > ( ).Add (
+                                                                       SimpleBaseType (
+                                                                                       identifierNameSyntax
+                                                                                      )
+                                                                      )
                                                            )
                                                  ) ;
 
@@ -2271,7 +2285,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         private static void PopulateSet (
             [ NotNull ] AppTypeInfoCollection subTypeInfos
-          , ISet < Type > set
+          , ISet < Type >                     set
         )
         {
             foreach ( var rootSubTypeInfo in subTypeInfos )
@@ -2616,21 +2630,21 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
     public sealed class MethodInfo
     {
-        private string              _name;
-        private List<ParameterInfo> _params = new List<ParameterInfo>();
+        private string                 _name ;
+        private List < ParameterInfo > _params = new List < ParameterInfo > ( ) ;
 
-        public MethodInfo(string methodSymbolName, IEnumerable<ParameterInfo> select)
+        public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > select )
         {
-            Name = methodSymbolName;
-            Parameters.AddRange(select);
+            Name = methodSymbolName ;
+            Parameters.AddRange ( select ) ;
         }
 
-        public string Name { get { return _name; } set { _name = value; } }
+        public string Name { get { return _name ; } set { _name = value ; } }
 
-        public List<ParameterInfo> Parameters
+        public List < ParameterInfo > Parameters
         {
-            get { return _params; }
-            set { _params = value; }
+            get { return _params ; }
+            set { _params = value ; }
         }
     }
 
@@ -2643,10 +2657,11 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public string TypeFullName { get ; }
 
         // ReSharper disable once CollectionNeverQueried.Global
-        public readonly List < CustommodifierInfo > custommodifiers = new List < CustommodifierInfo > ( ) ;
+        public readonly List < CustommodifierInfo > custommodifiers =
+            new List < CustommodifierInfo > ( ) ;
 
         public ParameterInfo (
-            string                             name
+            string name
             // ReSharper disable once SuggestBaseTypeForParameter
           , ITypeSymbol                        typeSymbol
           , IEnumerable < CustommodifierInfo > select

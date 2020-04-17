@@ -70,7 +70,6 @@ namespace AnalysisAppLib.ViewModel
                                              catch ( Exception ex )
                                              {
                                                  throw ;
-                                                 DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                                              }
                                          }
                                      }

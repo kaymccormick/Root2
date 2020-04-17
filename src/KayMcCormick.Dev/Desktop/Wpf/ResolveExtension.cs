@@ -105,7 +105,6 @@ namespace KayMcCormick.Lib.Wpf
         {
             return destinationType == typeof ( InstanceDescriptor )
                    || base.CanConvertTo ( context , destinationType ) ;
-            return base.CanConvertTo ( context , destinationType ) ;
         }
 
         /// <summary>

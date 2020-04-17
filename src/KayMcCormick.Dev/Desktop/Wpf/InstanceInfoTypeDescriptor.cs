@@ -8,16 +8,18 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public sealed class InstanceInfoTypeDescriptor : CustomTypeDescriptor
     {
+        private bool _enableConverter = false ;
         #region Overrides of CustomTypeDescriptor
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
         public override TypeConverter GetConverter ( )
         {
-            return new WpfInstanceInfoConverter ( ) ;
+            return EnableConverter ? new WpfInstanceInfoConverter ( ) : base.GetConverter() ;
         }
+
+        private bool EnableConverter { get { return _enableConverter ; } set { _enableConverter = value ; } }
         #endregion
     }
 }

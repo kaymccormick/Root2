@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:ProjInterface"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Home">
+      Title="Home" x:ClassModifier="internal">
 
   <Grid />
 </Page>

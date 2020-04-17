@@ -23,7 +23,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
-    public sealed class WpfInstanceInfoConverter : InstanceInfoTypeConverter
+    internal sealed class WpfInstanceInfoConverter : InstanceInfoTypeConverter
     {
         /// <summary>
         /// 
@@ -38,7 +38,6 @@ namespace KayMcCormick.Lib.Wpf
         /// <inheritdoc />
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
-            return false ;
             if ( destinationType == typeof ( UIElement ) )
             {
                 return true ;

@@ -89,14 +89,14 @@ namespace KayMcCormick.Dev
         {
             get
             {
-                if ( ! _isChildrenLoaded.HasValue
-                     || _isChildrenLoaded.Value != false )
+                if ( _isChildrenLoaded != false )
                 {
                     return _children ;
                 }
 
                 DebugUtils.WriteLine ( "Expanding children" ) ;
                 _children = Enumerable.ToList < ResourceNodeInfo > (
+                                                                    // ReSharper disable once AssignNullToNotNullAttribute
                                                                     _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
                                                                                                   DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
                                                                                                   var r = CreateNodeFunc (

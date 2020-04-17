@@ -7,7 +7,8 @@
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
   xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
-  xmlns:projInterface="clr-namespace:ProjInterface">
+  xmlns:projInterface="clr-namespace:ProjInterface"
+  x:ClassModifier="internal">
 
   <kmWpf:BaseApp.Resources>
     <ResourceDictionary>

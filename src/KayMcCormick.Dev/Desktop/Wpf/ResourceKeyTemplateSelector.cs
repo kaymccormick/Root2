@@ -3,7 +3,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ResourceKeyTemplateSelector: ResourceTemplateSelector
+    internal sealed class ResourceKeyTemplateSelector: ResourceTemplateSelector
     {
         private string _templatePartName = "Key" ;
         #region Overrides of ResourceTemplateSelector

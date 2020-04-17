@@ -4,7 +4,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public sealed class ResourcePreviewTemplateSelector : ResourceTemplateSelector
+    internal sealed class ResourcePreviewTemplateSelector : ResourceTemplateSelector
     {
         #region Overrides of ResourceTemplateSelector
         /// <summary>
