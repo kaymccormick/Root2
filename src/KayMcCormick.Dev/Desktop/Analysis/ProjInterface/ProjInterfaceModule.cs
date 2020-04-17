@@ -11,13 +11,19 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.Linq ;
+using System.Reflection ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Input ;
 using AnalysisAppLib ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Core.Activators.Delegate ;
+using Autofac.Core.Lifetime ;
+using Autofac.Core.Registration ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
 #if EXPLORER
@@ -31,6 +37,7 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
+using Microsoft.VisualStudio.Threading ;
 using NLog ;
 
 #if MIGRADOC
@@ -57,10 +64,11 @@ namespace ProjInterface
     public sealed class ProjInterfaceModule : IocModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private bool _registerControlViewCommandAdapters ;
+        private bool _registerControlViewCommandAdapters = true ;
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterSource < MySource > ( ) ;
             Logger.Trace (
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
@@ -126,7 +134,21 @@ if(RegiserExplorerTypes){
                    .AsSelf ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( )
+                   .WithMetadata < IViewMetadata > (
+                                                    m => {
+
+                                                        m.For (
+                                                               am => am.Title
+                                                             , "Resources View"
+                                                              ) ;
+                                                        m.For (
+                                                               am => am.Description
+                                                             , "View resources in application"
+                                                              ) ;
+                                                    }
+                                                   )
                    .WithCallerMetadata ( ) ;
+            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ).WithCallerMetadata() ;
             builder.RegisterType < WorkspaceControl > ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( )
@@ -236,16 +258,19 @@ if(RegiserExplorerTypes){
             [ NotNull ] LambdaAppCommand command
         )
         {
+            //await JoinableTaskFactory.SwitchToMainThreadAsync (  ) ;
             var (viewFunc1 , pane1) =
                 ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
                 command.Argument ;
 
+            DebugUtils.WriteLine ( $"Calling viewfunc ({command})" ) ;
             var n = DateTime.Now ;
             var view = viewFunc1 ( pane1 ) ;
             DebugUtils.WriteLine ( ( DateTime.Now - n ).ToString ( ) ) ;
             var doc = new LayoutDocument { Content = view } ;
             pane1.Children.Add ( doc ) ;
             pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
+            DebugUtils.WriteLine ( "returning success" ) ;
             return AppCommandResult.Success ;
         }
 
@@ -294,5 +319,67 @@ if(RegiserExplorerTypes){
     internal interface IResourceResolver
     {
         object ResolveResource ( object resourceKey ) ;
+    }
+
+    public class MySource : IRegistrationSource
+    {
+        public MySource ( )
+        {
+            commands = new List < CommandInfo > ( ) ;
+            foreach ( var fieldInfo in typeof ( WpfAppCommands ).GetFields (
+                                                                            BindingFlags.Public
+                                                                            | BindingFlags.Static
+                                                                           ) )
+            {
+                var cmd = fieldInfo.GetValue ( null ) ;
+                if ( cmd is RoutedUICommand ri )
+                {
+                    commands.Add ( new CommandInfo { Command = ri } ) ;
+                }
+            }
+        }
+
+        private bool _isAdapterForIndividualComponents ;
+        private List < CommandInfo > commands ;
+        #region Implementation of IRegistrationSource
+        public IEnumerable < IComponentRegistration > RegistrationsFor (
+            Service                                                   service
+          , Func < Service , IEnumerable < IComponentRegistration > > registrationAccessor
+        )
+        {
+            DebugUtils.WriteLine($"{service}");
+            var swt = service as IServiceWithType ;
+            if ( swt != null && swt.ServiceType == typeof ( RoutedUICommand ) )
+            {
+                var reg = new ComponentRegistration (
+                                                     Guid.NewGuid ( )
+                                                   , new DelegateActivator (
+                                                                            swt.ServiceType
+                                                                          , ( c , p ) => {
+                                                                                return commands
+                                                                                    [ 0 ] ;
+                                                                            }
+                                                                           )
+                                                   , new CurrentScopeLifetime ( )
+                                                   , InstanceSharing.None
+                                                   , InstanceOwnership.OwnedByLifetimeScope
+                                                   , new[] { service }
+                                                   , new Dictionary < string , object > ( )
+                                                    ) ;
+                return new IComponentRegistration[] { reg } ;
+
+            }
+
+            return Enumerable.Empty<IComponentRegistration>();
+        }
+
+        public bool IsAdapterForIndividualComponents { get { return _isAdapterForIndividualComponents ; } }
+        #endregion
+    }
+
+    public class CommandInfo
+    {
+        private RoutedUICommand _command ;
+        public RoutedUICommand Command { get { return _command ; } set { _command = value ; } }
     }
 }

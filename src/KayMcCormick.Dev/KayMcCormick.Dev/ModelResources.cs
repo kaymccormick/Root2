@@ -65,7 +65,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
-        public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider, bool test=false )
+        public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider, bool test=true )
         {
             _lifetimeScope = lifetimeScope ;
             _idProvider    = idProvider ;
@@ -190,6 +190,12 @@ namespace KayMcCormick.Dev
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="createNode"></param>
+        /// <returns></returns>
         [ NotNull ]
         public IEnumerable < ResourceNodeInfo > FlatObjectsChildrenFunc (
             ResourceNodeInfo                            node
@@ -204,8 +210,8 @@ namespace KayMcCormick.Dev
                                                     .Select (
                                                              reg1 => new ComponentInfo
                                                                      {
-                                                                         Id = rootNode,
-                                                                         Metadata = reg1.Metadata
+                                                                         Id       = rootNode
+                                                                       , Metadata = reg1.Metadata
                                                                        , InstanceEnumeration =
                                                                              _idProvider
                                                                                 .GetComponentInfo (
@@ -228,7 +234,18 @@ namespace KayMcCormick.Dev
                                                                                         )
                                                                      }
                                                             )
-                                        ).Select (xx => createNode(xx.Id, xx)  ) ;
+                                        )
+                            .SelectMany (
+                                         x11 => x11
+                                               .Instances
+                                               .Select (
+                                                        ii1 => new
+                                                            Flattened < ComponentInfo , InstanceInfo
+                                                            > ( x11 , ii1 )
+                                                       )
+                                               .Select ( xx => createNode ( xx , xx ) )
+                                        ) ;
+
         }
 
         [ NotNull ]
@@ -260,7 +277,7 @@ namespace KayMcCormick.Dev
                                                               Instance = inst.Instance
                                                             , Metadata = reg.Metadata
                                                           } ;
-                                                 myInfo.Instances.Add ( ii ) ;
+                                                 //myInfo.Instances.Add ( ii ) ;
                                              }
 
                                              componentInfo.Metadata = reg.Metadata ;
@@ -482,7 +499,8 @@ namespace KayMcCormick.Dev
                     // ignored
                 }
 
-                var exported = CreateNode ( anode , "Exported Types" , null , false ) ;
+                var exported = CreateNode ( anode , "Exported Types" , assembly, false ) ;
+                exported.GetChildrenFunc = AssemblyTypes;
 
                 foreach ( var typ in assembly.ExportedTypes )
                 {
@@ -560,6 +578,15 @@ namespace KayMcCormick.Dev
             }
         }
 
+        private IEnumerable < ResourceNodeInfo > AssemblyTypes (
+            ResourceNodeInfo                            arg1
+          , Func < object , object , ResourceNodeInfo > arg2
+        )
+        {
+            
+            yield break ;
+        }
+
         #region Implementation of ISupportInitialize
         /// <summary>
         /// </summary>
@@ -588,6 +615,9 @@ namespace KayMcCormick.Dev
         /// <inheritdoc />
         public bool IsInitialized { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ResourceNodeInfo ObjectsNode
         {
             get { return _objects_node ; }
@@ -596,6 +626,33 @@ namespace KayMcCormick.Dev
 
         /// <inheritdoc />
         public event EventHandler Initialized ;
+        #endregion
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T1"></typeparam>
+    public sealed class Flattened < T , T1 > : IProvidesKey
+    {
+        private readonly T _arg1 ;
+        private readonly T1 _arg2 ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x11"></param>
+        /// <param name="i11"></param>
+        public Flattened ( T arg1 , T1 arg2 )
+        {
+            _arg1 = arg1 ;
+            _arg2 = arg2 ;
+        }
+
+        #region Implementation of IProvidesKey
+        /// <inheritdoc />
+        public object GetKey ( ) { return _arg1 ; }
         #endregion
     }
 }

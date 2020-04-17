@@ -46,30 +46,31 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         /// <returns></returns>
         [ ItemCanBeNull ]
-        public async Task < IAppCommandResult > ExecuteAsync ( )
+        public  Task < IAppCommandResult > ExecuteAsync ( )
         {
+            return _wrappedCommand.ExecuteAsync ( ) ;
             DebugUtils.WriteLine ( "Executing command" ) ;
-            IAppCommandResult r = null ;
-            try
-            {
-                r = await _wrappedCommand.ExecuteAsync ( )
-                                         .ContinueWith (
-                                                        ( task , o ) => AppCommandResult.Cancelled
-                                                      , this
-                                                      , CancellationToken.None
-                                                      , TaskContinuationOptions.None
-                                                      , TaskScheduler
-                                                           .FromCurrentSynchronizationContext ( )
-                                                       ) ;
+            // IAppCommandResult r = null ;
+            // try
+            // {
+                // r = await _wrappedCommand.ExecuteAsync ( )
+                                         // .ContinueWith (
+                                                        // ( task , o ) => AppCommandResult.Cancelled
+                                                      // , this
+                                                      // , CancellationToken.None
+                                                      // , TaskContinuationOptions.None
+                                                      // , TaskScheduler
+                                                           // .FromCurrentSynchronizationContext ( )
+                                                       // ) ;
 
-            }
-            catch ( Exception ex )
-            {
-                DebugUtils.WriteLine (ex.ToString()  );
-            }
+            // }
+            // catch ( Exception ex )
+            // {
+                // DebugUtils.WriteLine (ex.ToString()  );
+            // }
 
-            DebugUtils.WriteLine ( "Complete" ) ;
-            return r ;
+            // DebugUtils.WriteLine ( "Complete" ) ;
+            // return r ;
         }
 
         /// <summary>

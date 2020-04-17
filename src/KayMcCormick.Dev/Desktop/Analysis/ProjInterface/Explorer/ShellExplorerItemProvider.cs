@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+namespace ProjInterface.Explorer
+{
 #if USE_SHELL
 using System ;
 using System.Collections.Generic ;
@@ -50,3 +52,4 @@ namespace ProjInterface
     }
 }
 #endif
+}

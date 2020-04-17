@@ -31,7 +31,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <DefineConstants>MSBUILDLOCATOR</DefineConstants>
+    <DefineConstants>MSBUILDLOCATOR;ANALYSISCONTROLS</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -96,6 +96,7 @@
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DockWindowViewModel.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
@@ -110,9 +111,9 @@
     <Compile Include="NoMessageParameterException.cs" />
     <Compile Include="ProjInterfaceModule.cs" />
     <Compile Include="RegSource.cs" />
-    <Compile Include="Shell.cs" />
-    <Compile Include="ShellExplorerItem.cs" />
-    <Compile Include="ShellExplorerItemProvider.cs" />
+    <Compile Include="Explorer\Shell.cs" />
+    <Compile Include="Explorer\ShellExplorerItem.cs" />
+    <Compile Include="Explorer\ShellExplorerItemProvider.cs" />
     <Compile Include="SynchronizationContextAwaiter.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>

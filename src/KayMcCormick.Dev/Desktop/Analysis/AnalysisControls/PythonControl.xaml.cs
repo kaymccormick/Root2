@@ -9,6 +9,7 @@ using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
 {
+#if PYTHON
     /// <summary>
     ///     Interaction logic for PythonControl.xaml
     /// </summary>
@@ -40,12 +41,12 @@ namespace AnalysisControls
             ViewModel.FlowDOcument = flow ;
         }
 
-        #region Implementation of IView<out PythonViewModel>
+    #region Implementation of IView<out PythonViewModel>
         /// <summary>
         /// 
         /// </summary>
         public PythonViewModel ViewModel { get ; }
-        #endregion
+    #endregion
 
         private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
@@ -78,4 +79,5 @@ namespace AnalysisControls
             }
         }
     }
+#endif
 }

@@ -110,6 +110,11 @@
               </ListView>
             </StackPanel>
           </DataTemplate>
+          <DataTemplate x:Key="treeViewNodeComponentInfo" DataType="{x:Type dev:ComponentInfo}">
+            <WrapPanel>
+              <TextBlock FontStyle="Italic" Text="{Binding Path=Id}"></TextBlock>
+            </WrapPanel>
+          </DataTemplate>
           <DataTemplate DataType="{x:Type FontFamily}"
                         x:Key="PreviewFontFamily">
             <TextBlock FontFamily="{Binding}"
@@ -194,24 +199,29 @@
           <HierarchicalDataTemplate
             DataType="{x:Type Style}"
             ItemsSource="{Binding Path=Children}">
-            <ContentControl Focusable="False"
-                            Content="{Binding Key}">
-              <ContentControl.ToolTip>
-                <Binding Path="Key"
+            <Border BorderBrush="Green" BorderThickness="1" Padding="1">
+              <ContentControl Focusable="False"
+                                     Content="{Binding Key}">
+                <ContentControl.ToolTip>
+                  <Binding Path="Key"
                          Converter="{StaticResource GetTypeConverter}" />
-              </ContentControl.ToolTip>
-            </ContentControl>
+                </ContentControl.ToolTip>
+              </ContentControl>
+            </Border>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
             DataType="{x:Type dev:ResourceNodeInfo}"
             ItemsSource="{Binding Path=Children}">
-            <ContentControl Focusable="False"
-                            Content="{Binding Key}">
+            <Border BorderBrush="Green" BorderThickness="1" Padding="1">
+              <ContentControl Focusable="False"
+                              ContentTemplateSelector="{StaticResource HierarchicalTemplateSelector}"
+                              Content="{Binding Key}">
               <ContentControl.ToolTip>
                 <Binding Path="Key"
                          Converter="{StaticResource GetTypeConverter}" />
               </ContentControl.ToolTip>
             </ContentControl>
+              </Border>
           </HierarchicalDataTemplate>
           <DataTemplate x:Key="WindowTemplate">
             <Image HorizontalAlignment="Left"

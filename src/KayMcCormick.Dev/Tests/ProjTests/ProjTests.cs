@@ -954,7 +954,7 @@ namespace ProjTests
             var c = new ColorConverter ( ) ;
         }
 
-
+#if PYTHON
         [ Fact ]
         public void TestPython1 ( )
         {
@@ -990,7 +990,7 @@ namespace ProjTests
                 Assert.Equal ( pInputLine , p.InputLine ) ;
             }
         }
-
+#endif
         public void Dispose ( )
         {
             // _loggingFixture?.Dispose ( ) ;
@@ -1293,14 +1293,14 @@ namespace ProjTests
 
     public class TestApp1 : System.Windows.Application
     {
-        #region Overrides of Application
+#region Overrides of Application
         protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
-        #endregion
+#endregion
     }
 
     public class XamlWriter1 : XamlObjectWriter
     {
-        #region Overrides of XamlObjectWriter
+#region Overrides of XamlObjectWriter
         protected override void OnAfterBeginInit ( object value ) { base.OnAfterBeginInit ( value ) ; }
 
         protected override void OnBeforeProperties ( object value ) { base.OnBeforeProperties ( value ) ; }
@@ -1326,7 +1326,7 @@ namespace ProjTests
         public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration ) { base.WriteNamespace ( namespaceDeclaration ) ; }
 
         protected override void Dispose ( bool disposing ) { base.Dispose ( disposing ) ; }
-        #endregion
+#endregion
 
         public XamlWriter1 ( [ NotNull ] XamlSchemaContext schemaContext ) : base ( schemaContext )
         {

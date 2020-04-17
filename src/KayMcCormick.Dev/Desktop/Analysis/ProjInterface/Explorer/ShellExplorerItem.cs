@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+namespace ProjInterface.Explorer
+{
 #if USE_SHELL
 using System ;
 using System.Collections.Generic ;
@@ -187,10 +189,10 @@ namespace ProjInterface
 
         public ShellExplorerItem (
             ShellExplorerItem parent
-      , ShellItem         shellItem
-      , ImageSource       icon1
-      , User32.SafeHICON  smallIcon
-      , User32.SafeHICON  largeIcon
+  , ShellItem         shellItem
+  , ImageSource       icon1
+  , User32.SafeHICON  smallIcon
+  , User32.SafeHICON  largeIcon
         ) : this (parent, shellItem )
         {
             this.icon1 = icon1 ;
@@ -278,16 +280,16 @@ namespace ProjInterface
 
         private bool PopulateChildren (
             ShellFolder                 f
-      , [ CallerFilePath ]   string callerFilePath = null
-      , [ CallerLineNumber ] int    callerLineNumber = 0
-      , [ CallerMemberName ] string callerMemberName = null
+  , [ CallerFilePath ]   string callerFilePath = null
+  , [ CallerLineNumber ] int    callerLineNumber = 0
+  , [ CallerMemberName ] string callerMemberName = null
         )
         {
             LB (  ).Message( "{method} {caller}:{line} ({callerMethod})"
-                       , nameof ( PopulateChildren )
-                       , callerFilePath
-                       , callerLineNumber
-                       , callerMemberName
+                   , nameof ( PopulateChildren )
+                   , callerFilePath
+                   , callerLineNumber
+                   , callerMemberName
                         ).Write() ;
             var win32Parent = new NativeWindow ( ) ;
             win32Parent.AssignHandle (
@@ -314,7 +316,7 @@ namespace ProjInterface
                 {
                     view = f.GetChildrenUIObjects < Shell32.IExtractIcon > (
                                                                             win32Parent
-                                                                      , children
+                                                                  , children
                                                                            ) ;
                 }
                 catch ( NotImplementedException )
@@ -343,9 +345,9 @@ namespace ProjInterface
 
         public static ShellExplorerItem MakeItem (
             ShellExplorerItem    parent
-      , Shell32.IExtractIcon view
-      , ShellItem            child
-      , ImageSource          fileInfoSmallIcon = null
+  , Shell32.IExtractIcon view
+  , ShellItem            child
+  , ImageSource          fileInfoSmallIcon = null
         )
         {
             User32.SafeHICON smallIcon = null , largeIcon = null ;
@@ -357,10 +359,10 @@ namespace ProjInterface
                     var sb = new StringBuilder ( 256 ) ;
                     var hr = view.GetIconLocation (
                                                    Shell32.GetIconLocationFlags.GIL_FORSHELL
-                                             , sb
-                                             , 256
-                                             , out var index2
-                                             , out var flags
+                                         , sb
+                                         , 256
+                                         , out var index2
+                                         , out var flags
                                                   ) ;
 
                     // Logger.Trace (
@@ -396,10 +398,10 @@ namespace ProjInterface
 
                         var hr2 = view.Extract (
                                                 sb.ToString ( )
-                                          , ( uint ) index2
-                                          , out largeIcon
-                                          , out smallIcon
-                                          , 16 + 128 * 256
+                                      , ( uint ) index2
+                                      , out largeIcon
+                                      , out smallIcon
+                                      , 16 + 128 * 256
                                                ) ;
                         if ( hr2.Succeeded )
                         {
@@ -434,7 +436,7 @@ namespace ProjInterface
         public static ShellExplorerItem MakeItem (
             ShellExplorerItem parent,
             ShellItem   child
-      , ImageSource fileInfoSmallIcon = null
+  , ImageSource fileInfoSmallIcon = null
         )
         {
             return new ShellExplorerItem ( parent, child , fileInfoSmallIcon ) ;
@@ -447,9 +449,9 @@ namespace ProjInterface
             var hbitmap = bmp.GetHbitmap ( ) ;
             icon1 = Imaging.CreateBitmapSourceFromHBitmap (
                                                            hbitmap
-                                                     , IntPtr.Zero
-                                                     , Int32Rect.Empty
-                                                     , BitmapSizeOptions.FromEmptyOptions ( )
+                                                 , IntPtr.Zero
+                                                 , Int32Rect.Empty
+                                                 , BitmapSizeOptions.FromEmptyOptions ( )
                                                           ) ;
             return icon1 ;
         }
@@ -479,3 +481,4 @@ namespace ProjInterface
     }
 }
 #endif
+}

@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Threading.Tasks ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
 
 namespace KayMcCormick.Lib.Wpf.Command
@@ -62,6 +63,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <returns></returns>
         public override Task < IAppCommandResult > ExecuteAsync ( )
         {
+            DebugUtils.WriteLine ( "exxecuteAsync" ) ;
             return CommandFunc ( this ) ;
         }
 

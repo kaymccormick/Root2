@@ -6,4 +6,6 @@
   <wpf:MethodInfoConverter x:Key="MethodInfoConverter" />
   <wpf:CustomDataTemplateSelector
     x:Key="CustomDataTemplateSelector" />
+  <wpf:HierarchicalTemplateSelector
+    x:Key="HierarchicalTemplateSelector" />
 </ResourceDictionary>

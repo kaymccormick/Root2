@@ -66,7 +66,8 @@ namespace KayMcCormick.Lib.Wpf.Command
                                   var appCommand = ( AppCommand ) state ;
                                   if ( task.IsFaulted )
                                   {
-                                      DebugUtils.WriteLine ( task.Exception ) ;
+                                      // ReSharper disable once PossibleNullReferenceException
+                                      DebugUtils.WriteLine ( task.Exception.ToString() ) ;
                                       appCommand.OnFault ( task.Exception ) ;
                                       return AppCommandResult.Faulted ( task.Exception ) ;
                                   }

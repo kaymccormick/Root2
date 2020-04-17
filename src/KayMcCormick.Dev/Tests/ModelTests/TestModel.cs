@@ -390,16 +390,6 @@ namespace ModelTests
         }
 
 
-        [ Fact ]
-        public void Test1 ( )
-        {
-            using ( var ls = _app.GetLifetimeScope ( ).BeginLifetimeScope ( ) )
-            {
-                var model = ls.Resolve < DockWindowViewModel > ( ) ;
-                Assert.NotNull ( model ) ;
-            }
-        }
-
 
         [ Fact ]
         public void Test11 ( )
@@ -496,17 +486,6 @@ namespace ModelTests
             }
         }
 
-        [ Fact ]
-        public void Test2 ( )
-        {
-            using ( var ls = _app.GetLifetimeScope ( ).BeginLifetimeScope ( ) )
-            {
-                var model = ls.Resolve < DockWindowViewModel > ( ) ;
-                Assert.NotNull ( model ) ;
-                Assert.NotNull ( model.DefaultInputPath ) ;
-                Assert.True ( Directory.Exists ( model.DefaultInputPath ) ) ;
-            }
-        }
 
         [ Fact ]
         public void TestAppStartup ( )

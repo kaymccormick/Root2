@@ -1055,7 +1055,19 @@
           </RibbonApplicationMenu>
         </Ribbon.ApplicationMenu>
         <RibbonTab Header="Views">
-</RibbonTab>
+          <RibbonGroup
+            ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+            <RibbonGroup.ItemTemplate>
+              <DataTemplate
+                DataType="command:IDisplayableAppCommand">
+                <RibbonButton
+                  Label="{Binding DisplayName}"
+                  LargeImageSource="{Binding LargeImageSourceKey}"
+                  Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
+              </DataTemplate>
+            </RibbonGroup.ItemTemplate>
+          </RibbonGroup>
+        </RibbonTab>
 
       </Ribbon>
 
@@ -1095,17 +1107,6 @@
                 <avalondock:LayoutDocument Title="Browsex"
                                            IconSource="{StaticResource BrowserIcon}"
                                            x:Name="FrameDxocument" >
-                  <anal:CustomControl1 DataContext=""  d:DataContext="{d:DesignData /TypesViewModel.xaml}" RootItemsSource="{Binding Root.SubTypeInfos}"/>
-                </avalondock:LayoutDocument>
-                <avalondock:LayoutDocument IsActive="True">
-                  <Grid>
-                    <kmWpf:ResolveUiComponent ComponentType="{x:Type kmWpf:AllResourcesTree}" />
-                  </Grid>
-                </avalondock:LayoutDocument>
-                <avalondock:LayoutDocument IsActive="True">
-                  <Grid>
-                    <kmWpf:ResolveUiComponent ComponentType="{x:Type kmWpf:AllResourcesView}" />
-                  </Grid>
                 </avalondock:LayoutDocument>
                   <avalondock:LayoutDocument Title="Browser"
                                            IconSource="{StaticResource BrowserIcon}"
@@ -1114,35 +1115,6 @@
                          Navigating="BrowserFrame_OnNavigating"
                          x:Name="BrowserFrame"
                          Source="Home.xaml" />
-                </avalondock:LayoutDocument>
-                <avalondock:LayoutDocument>
-                  <Grid>
-                    <Grid.CommandBindings>
-                      <CommandBinding
-                        Command="kmWpf:WpfAppCommands.Execute"
-                        Executed="ExecutePythonCode" />
-                    </Grid.CommandBindings>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="Auto" />
-                      <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <ToolBarTray>
-                      <ToolBar Band="1" BandIndex="1">
-                        <Button Content="Run"
-                                Command="kmWpf:WpfAppCommands.Execute" />
-                      </ToolBar>
-                    </ToolBarTray>
-                    <avalonEdit:TextEditor Grid.Row="1"
-                                           Grid.Column="1"
-                                           xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-                                           Name="textEditor"
-                                           SyntaxHighlighting="C#"
-                                           FontFamily="Consolas"
-                                           FontSize="10pt" />
-                  </Grid>
                 </avalondock:LayoutDocument>
                 <avalondock:LayoutAnchorable Title="Files"
                                              IconSource="{StaticResource FilesIcon}"
@@ -1171,18 +1143,6 @@
           <avalondock:LayoutRoot.LeftSide>
             <avalondock:LayoutAnchorSide>
               <avalondock:LayoutAnchorGroup>
-                <avalondock:LayoutAnchorable
-                  Title="Components">
-                  <ListBox Name="viewList"
-                           ItemsSource="{Binding Path=Views}"
-                           ItemTemplate="{StaticResource Template1}">
-                    <ListBox.InputBindings>
-                      <KeyBinding Key="Enter"
-                                  Command="Open"
-                                  CommandParameter="{Binding ElementName=viewList,Path=SelectedItem}" />
-                    </ListBox.InputBindings>
-                  </ListBox>
-                </avalondock:LayoutAnchorable>
               </avalondock:LayoutAnchorGroup>
             </avalondock:LayoutAnchorSide>
           </avalondock:LayoutRoot.LeftSide>

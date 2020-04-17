@@ -145,7 +145,8 @@ namespace TestApp
         public void Dispose ( ) { _testAppApp?.Dispose ( ) ; }
         #endregion
 
-        private void UIElement_OnKeyDown ( object sender , KeyEventArgs e )
+        // ReSharper disable once UnusedMember.Local
+        private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
             if ( e.Key == Key.Enter )
             {
@@ -182,6 +183,8 @@ namespace TestApp
             IntPtr   lpReserved
         );
 #endif
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private void CommandBinding_OnExecuted ( object sender , ExecutedRoutedEventArgs e )
         {
             DebugUtils.WriteLine ( "Persisting" ) ;
@@ -202,6 +205,8 @@ namespace TestApp
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable twice UnusedParameter.Local
         private void CommandBinding_OnExecuted2 ( object sender , ExecutedRoutedEventArgs e )
         {
             try
@@ -211,6 +216,7 @@ namespace TestApp
                 options.Converters.Add ( new JsonTypeInfoConverter ( ) ) ;
 
                 options.WriteIndented = true ;
+                // ReSharper disable once UnusedVariable
                 var model =
                     JsonSerializer.Deserialize < TypesViewModel > (
                                                                    File.ReadAllText (

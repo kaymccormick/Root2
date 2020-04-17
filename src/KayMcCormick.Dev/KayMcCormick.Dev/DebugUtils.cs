@@ -3,6 +3,8 @@ using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Runtime.CompilerServices ;
+using System.Threading ;
+using System.Threading.Tasks ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
 
@@ -22,7 +24,9 @@ namespace KayMcCormick.Dev
 
         {
             var fn = Path.GetFileNameWithoutExtension ( filename ) ;
-            Debug.WriteLine ( $"<KM> {fn}:{lineno}[{callerMemberName}] {line}" ) ;
+            var id = Thread.CurrentThread.ManagedThreadId ;
+            var taskId = Task.CurrentId ;
+            Debug.WriteLine ( $"<KM> [{id};{taskId}]{fn}:{lineno}[{callerMemberName}] {line}" ) ;
         }
         /// <summary>Debugs the format.</summary>
         /// <param name="reg">The reg.</param>

@@ -17,7 +17,7 @@ using System.Windows.Interop ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Lib.Wpf ;
 
-namespace ProjInterface
+namespace ProjInterface.Explorer
 {
     /// <summary>
     ///     Interaction logic for Window1.xaml

@@ -157,7 +157,7 @@ namespace KayMcCormick.Dev.Logging
             typeof(IEnumerable).IsAssignableFrom(reg.Activator.LimitType) || reg.Activator.LimitType==typeof(ILifetimeScope)||
                                          reg.Activator.LimitType == typeof(LifetimeScope);
                 if(!withoutMetadata && !hasMetadata) {
-                throw new InvalidOperationException ( "Need metadata" ) ;
+                // throw new InvalidOperationException ( "Need metadata for " + reg ) ;
             }
             var activatorLimitType = reg.Activator.LimitType ;
             Logger.Trace ( "Registered {limitType} {activator}", activatorLimitType , args.ComponentRegistration.Activator) ;

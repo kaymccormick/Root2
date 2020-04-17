@@ -54,7 +54,15 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         [ JsonIgnore ]
-        public virtual object Key { get { return _key ; } set { _key = value ; } }
+        public virtual object Key {
+            get
+            {
+                if ( _key is IProvidesKey pk )
+                {
+                    return pk.GetKey ( ) ;
+                }
+                return _key ;
+            } set { _key = value ; } }
 
         /// <summary>
         /// </summary>
@@ -108,8 +116,9 @@ namespace KayMcCormick.Dev
                 if ( _isChildrenLoaded.HasValue
                      && _isChildrenLoaded.Value == false )
                 {
+                    DebugUtils.WriteLine ( "Expanding children" ) ;
                     _children = _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
-                                                              DebugUtils.WriteLine ( $"{o} {o1}" ) ;
+                                                              DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
                                                   var r = CreateNodeFunc (
                                                                                          this
                                                                                        , o
@@ -121,8 +130,14 @@ namespace KayMcCormick.Dev
                                                   return r ;
                                               }
                                              ).ToList() ;
+                    // ReSharper disable once PossibleNullReferenceException
+                    foreach ( var resourceNodeInfo in _children )
+                    {
+                        DebugUtils.WriteLine($"{resourceNodeInfo}");
+                    }
                 }
 
+                // ReSharper disable once AssignNullToNotNullAttribute
                 return _children ;
             }
             set { _children = value ; }
@@ -182,5 +197,18 @@ namespace KayMcCormick.Dev
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IProvidesKey
+    {
+        /// <summary>
+        ///
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        object GetKey ( ) ;
     }
 }

@@ -104,6 +104,7 @@
     <Compile Include="ExceptionUserControl.xaml.cs">
       <DependentUpon>ExceptionUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HierarchicalTemplateSelector.cs" />
     <Compile Include="ImageMetadataAttribute.cs" />
     <Compile Include="InstanceInfoProvider.cs" />
     <Compile Include="InstanceInfoTypeDescriptor.cs" />

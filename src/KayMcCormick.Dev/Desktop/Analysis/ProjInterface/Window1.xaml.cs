@@ -38,7 +38,11 @@ namespace ProjInterface
         private const string _viewTitle = "Docking window" ;
         private          DockWindowViewModel _viewModel ;
 
-        public Window1 ( ) { InitializeComponent ( ) ; }
+        public Window1 ( )
+        {
+            DebugUtils.WriteLine ( "Warning, no scope" ) ;
+            InitializeComponent ( ) ;
+        }
 
         public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this ( lifetimeScope , null )
         {

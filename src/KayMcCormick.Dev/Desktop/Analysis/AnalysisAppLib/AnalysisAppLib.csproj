@@ -155,7 +155,6 @@
     <Compile Include="ISemanticModelContext.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
     <Compile Include="Syntax\SyntaxItem.cs" />
-    <Compile Include="ViewModel\DockWindowViewModel.cs" />
     <Compile Include="IAppState.cs" />
     <Compile Include="ViewModel\ILogUsageAnalysisViewModel.cs" />
     <Compile Include="LogInvocationCollection.cs" />

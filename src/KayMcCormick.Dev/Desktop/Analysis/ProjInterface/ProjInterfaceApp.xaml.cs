@@ -39,6 +39,7 @@ namespace ProjInterface
                  )
 
         {
+            return ;
             var b = new SqlConnectionStringBuilder
                     {
                         IntegratedSecurity = true

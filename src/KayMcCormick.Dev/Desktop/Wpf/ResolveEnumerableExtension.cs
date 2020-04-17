@@ -137,6 +137,7 @@ namespace KayMcCormick.Lib.Wpf
 
                     if ( scope != null )
                     {
+                        DebugUtils.WriteLine($"Scope is {scope}");
                         var funcType =
                             typeof ( Func < , > ).MakeGenericType (
                                                                    ParameterType
@@ -150,8 +151,10 @@ namespace KayMcCormick.Lib.Wpf
                         {
                             try
                             {
+                                DebugUtils.WriteLine($"{x}");
                                 var x1 = ( Delegate ) x ;
                                 var result = x1.DynamicInvoke ( ParameterValue ) ;
+                                DebugUtils.WriteLine($"{result}");
                                 l.Add ( result ) ;
                             }
                             catch ( Exception ex )
@@ -160,6 +163,7 @@ namespace KayMcCormick.Lib.Wpf
                             }
                         }
 
+                        DebugUtils.WriteLine ($"Count is {l.Count}");
                         return l ;
                         var provideValue = scope.Resolve (
                                                           typeof ( IEnumerable <> )

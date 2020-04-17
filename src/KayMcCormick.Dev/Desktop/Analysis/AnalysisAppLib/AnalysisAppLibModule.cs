@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Threading.Tasks ;
@@ -57,6 +58,8 @@ namespace AnalysisAppLib
           , IComponentRegistration registration
         )
         {
+            var svc = string.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
+            DebugUtils.WriteLine($"{nameof(AttachToComponentRegistration)}: {registration.Id} {registration.Lifetime} {svc}");
             registration.Activating += ( sender , args ) => {
                 var inst = args.Instance ;
                 DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
