@@ -25,9 +25,9 @@ namespace KayMcCormick.Dev
     ///     in that Key and Data refer to instances of type 'object' or in other
     ///     words any chosen type.
     /// </summary>
-    public class ResourceNodeInfo : INotifyPropertyChanged
+    public sealed class ResourceNodeInfo : ResourceNodeInfoBase
+      , INotifyPropertyChanged
       , IEnumerable < ResourceNodeInfo >
-      , IHierarchicalNode
     {
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
 
@@ -48,49 +48,6 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ]
-        public virtual object Data { get { return _data ; } set { _data = value ; } }
-
-        /// <summary>
-        /// </summary>
-        [ JsonIgnore ]
-        public virtual object Key {
-            get
-            {
-                if ( _key is IProvidesKey pk )
-                {
-                    return pk.GetKey ( ) ;
-                }
-                return _key ;
-            } set { _key = value ; } }
-
-        /// <summary>
-        /// </summary>
-        public virtual object TemplateKey
-        {
-            get { return _templateKey ; }
-            set { _templateKey = value ; }
-        }
-
-        /// <summary>
-        /// </summary>
-        [ UsedImplicitly ] public object StyleKey
-        {
-            get { return _styleKey ; }
-            set { _styleKey = value ; }
-        }
-
-        /// <summary>
-        /// </summary>
-        public bool ? IsValueChildren
-        {
-            // ReSharper disable once UnusedMember.Global
-            get { return _isValueChildren ; }
-            set { _isValueChildren = value ; }
-        }
-
-        /// <summary>
-        /// </summary>
         public Func < ResourceNodeInfo , object , object , bool ? , bool, ResourceNodeInfo >
             CreateNodeFunc { get { return _createNodeFunc ; } set { _createNodeFunc = value ; } }
 
@@ -108,6 +65,25 @@ namespace KayMcCormick.Dev
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool ? IsChildrenLoaded
+        {
+            get { return _isChildrenLoaded ; }
+            set { _isChildrenLoaded = value ; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
+            IEnumerable < ResourceNodeInfo > > GetChildrenFunc
+        {
+            get { return _getChildrenFunc ; }
+            set { _getChildrenFunc = value ; }
+        }
+
+        /// <summary>
         /// </summary>
         [ JsonIgnore ] [ NotNull ] public List < ResourceNodeInfo > Children
         {
@@ -120,19 +96,21 @@ namespace KayMcCormick.Dev
                 }
 
                 DebugUtils.WriteLine ( "Expanding children" ) ;
-                _children = _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
-                                                          DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
-                                                          var r = CreateNodeFunc (
-                                                                                  this
-                                                                                , o
-                                                                                , o1
-                                                                                , false
-                                                                         ,        false
-                                                                                 ) ;
+                _children = Enumerable.ToList < ResourceNodeInfo > (
+                                                                    _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
+                                                                                                  DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
+                                                                                                  var r = CreateNodeFunc (
+                                                                                                                          this
+                                                                                                                        , o
+                                                                                                                        , o1
+                                                                                                                        , false
+                                                                                                                 ,        false
+                                                                                                                         ) ;
 
-                                                          return r ;
-                                                      }
-                                                     ).ToList() ;
+                                                                                                  return r ;
+                                                                                              }
+                                                                                             )
+                                                                   ) ;
                 // ReSharper disable once PossibleNullReferenceException
                 foreach ( var resourceNodeInfo in _children )
                 {
@@ -143,40 +121,6 @@ namespace KayMcCormick.Dev
                 return _children ;
             }
             set { _children = value ; }
-        }
-
-        /// <summary>
-        /// </summary>
-        public virtual bool IsExpanded
-        {
-            // ReSharper disable once UnusedMember.Global
-            get { return _internalIsExpanded.GetValueOrDefault ( ) ; }
-            set
-            {
-                DebugUtils.WriteLine ( $"isExpanded = {value} for {Key}" ) ;
-                _internalIsExpanded = value ;
-                OnPropertyChanged ( ) ;
-            }
-        }
-
-        /// <inheritdoc />
-        public virtual bool ? IsChildrenLoaded
-        {
-            get { return _isChildrenLoaded ; }
-            set { _isChildrenLoaded = value ; }
-        }
-
-        /// <summary>
-        ///     Depth of node. 0 for a top-level node.
-        /// </summary>
-        public int Depth { get { return _depth ; } set { _depth = value ; } }
-
-        /// <inheritdoc />
-        public Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
-            IEnumerable < ResourceNodeInfo > > GetChildrenFunc
-        {
-            get { return _getChildrenFunc ; }
-            set { _getChildrenFunc = value ; }
         }
 
         /// <summary>

@@ -2137,12 +2137,12 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             DebugOut ( "Applying assembly done" ) ;
             var project = workspace.CurrentSolution.Projects.First ( ) ;
 
-            var compilation = await project.GetCompilationAsync ( ) ;
+            var comp1 = await project.GetCompilationAsync ( ) ;
             using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )
             {
-                if ( compilation != null )
+                if ( comp1!= null )
                 {
-                    foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
+                    foreach ( var diagnostic in comp1.GetDiagnostics ( ) )
                     {
                         if ( diagnostic.IsSuppressed )
                         {
@@ -2176,7 +2176,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                 }
             }
 
-            var errors = compilation?.GetDiagnostics ( )
+            var errors = comp1?.GetDiagnostics ( )
                                      .Where ( d => d.Severity == DiagnosticSeverity.Error )
                                      .ToList ( ) ;
             if ( errors?.Any ( ) == true )
@@ -2187,7 +2187,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             DebugOut ( "attempting emit" ) ;
 
             var result =
-                ( compilation ?? throw new InvalidOperationException ( ) ).Emit (
+                ( comp1?? throw new InvalidOperationException ( ) ).Emit (
                                                                                  @"C:\data\logs\output.dll"
                                                                                 ) ;
             if ( result.Success )

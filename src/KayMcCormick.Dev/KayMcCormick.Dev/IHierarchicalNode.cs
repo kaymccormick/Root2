@@ -9,7 +9,6 @@
 // 
 // ---
 #endregion
-using System ;
 using System.Collections.Generic ;
 
 namespace KayMcCormick.Dev
@@ -35,14 +34,5 @@ namespace KayMcCormick.Dev
         ///     Depth of node. 0 for a top-level node.
         /// </summary>
         int Depth { get ; set ; }
-
-        /// <summary>
-        /// </summary>
-        Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > , IEnumerable < ResourceNodeInfo > > GetChildrenFunc { get ; set ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        bool? IsChildrenLoaded { get ; set ; }
     }
 }
