@@ -25,7 +25,7 @@ namespace KayMcCormick.Dev
         private object _templateKey ;
         private object _styleKey ;
         private bool? _isValueChildren ;
-        private List < ResourceNodeInfo > _children ;
+        private List < ResourceNodeInfo > _children= new List < ResourceNodeInfo > ();
         private int _depth ;
 
         /// <summary>
