@@ -394,6 +394,7 @@ namespace AnalysisAppLib.Syntax
         /// <inheritdoc />
         public bool Contains ( SyntaxFieldInfo item ) { return _generic.Contains ( item ) ; }
 
+        /// <inheritdoc />
         public void CopyTo ( SyntaxFieldInfo[] array , int arrayIndex )
         {
             _generic.CopyTo ( array , arrayIndex ) ; }
@@ -418,8 +419,10 @@ namespace AnalysisAppLib.Syntax
         /// <param name="value"></param>
         public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
 
+        /// <inheritdoc />
         public int IndexOf ( SyntaxFieldInfo item ) { return _generic.IndexOf (item  ); }
 
+        /// <inheritdoc />
         public void Insert ( int index , SyntaxFieldInfo item ) { _generic.Insert ( index , item ) ; }
 
         /// <summary>
