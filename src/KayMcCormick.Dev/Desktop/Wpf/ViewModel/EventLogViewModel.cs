@@ -216,22 +216,24 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 
             try
             {
-                if ( int.TryParse ( _logEntry.ReplacementStrings[ 3 ] , out var nbytes ) )
+                if ( ! int.TryParse ( _logEntry.ReplacementStrings[ 3 ] , out var nbytes ) )
                 {
-                    if ( item4.Length == nbytes * 2 )
-                    {
-                        var bytes = new byte[ item4.Length / 2 ] ;
-                        for ( var i = 0 ; i < item4.Length ; i += 2 )
-                        {
-                            bytes[ i / 2 ] =
-                                Convert.ToByte ( item4.Substring ( i , 2 ) , 16 ) ;
-                        }
+                    return ;
+                }
 
-                        var ms = new MemoryStream ( bytes ) ;
-                        IFormatter f = new BinaryFormatter ( ) ;
-                        var exception = f.Deserialize ( ms ) ;
-                        Exception1 = ( Exception ) exception ;
+                if ( item4.Length == nbytes * 2 )
+                {
+                    var bytes = new byte[ item4.Length / 2 ] ;
+                    for ( var i = 0 ; i < item4.Length ; i += 2 )
+                    {
+                        bytes[ i / 2 ] =
+                            Convert.ToByte ( item4.Substring ( i , 2 ) , 16 ) ;
                     }
+
+                    var ms = new MemoryStream ( bytes ) ;
+                    IFormatter f = new BinaryFormatter ( ) ;
+                    var exception = f.Deserialize ( ms ) ;
+                    Exception1 = ( Exception ) exception ;
                 }
             }
             catch ( Exception ex )

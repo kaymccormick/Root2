@@ -238,12 +238,14 @@ namespace ProjInterface
                 return ;
             }
 
-            if ( BrowserFrame.Content is TypeInfoControl tic )
+            if ( ! ( BrowserFrame.Content is TypeInfoControl tic ) )
             {
-                tic.DataContext              = t ;
-                docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
-                e.Cancel                     = true ;
+                return ;
             }
+
+            tic.DataContext              = t ;
+            docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+            e.Cancel                     = true ;
         }
 
         // ReSharper disable once UnusedMember.Local

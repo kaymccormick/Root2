@@ -547,16 +547,17 @@ namespace AnalysisAppLib.Syntax
                 return base.ConvertToString ( value , context ) ;
             }
 
-            if ( t.IsGenericType )
+            if ( ! t.IsGenericType )
             {
-                var t2 = t.GetGenericTypeDefinition ( ) ;
-                // ReSharper disable once PossibleNullReferenceException
-                var nt = t2.FullName.Replace ( "`1" , "" ) ;
-                var x = t.GetGenericArguments ( )[ 0 ].FullName ;
-                return $"{nt}<{x}>" ;
+                return t.FullName ;
             }
 
-            return t.FullName ;
+            var t2 = t.GetGenericTypeDefinition ( ) ;
+            // ReSharper disable once PossibleNullReferenceException
+            var nt = t2.FullName.Replace ( "`1" , "" ) ;
+            var x = t.GetGenericArguments ( )[ 0 ].FullName ;
+            return $"{nt}<{x}>" ;
+
         }
         #endregion
     }
@@ -580,7 +581,10 @@ namespace AnalysisAppLib.Syntax
         }
 
         /// <inheritdoc />
-        public object SyncRoot => _list.SyncRoot ;
+        public object SyncRoot
+        {
+            get { return _list.SyncRoot ; }
+        }
 
         /// <inheritdoc />
         public bool IsSynchronized

@@ -133,13 +133,13 @@ namespace KayMcCormick.Lib.Wpf
             }
 
             Logger.Debug ( "Found resource of type {resourceType}" , resource.GetType ( ) ) ;
-            if ( resource is HierarchicalDataTemplate )
+            if ( ! ( resource is HierarchicalDataTemplate ) )
             {
-                Logger.Debug ( "suppressing heirarchicala data template" ) ;
-                return null ;
+                return resource as DataTemplate ;
             }
 
-            return resource as DataTemplate ;
+            Logger.Debug ( "suppressing heirarchicala data template" ) ;
+            return null ;
 
         }
     }

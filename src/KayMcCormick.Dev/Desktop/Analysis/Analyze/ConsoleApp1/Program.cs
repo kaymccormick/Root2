@@ -467,68 +467,70 @@ namespace ConsoleApp1
                     }
 
 
-                    if ( r.Next ( 9 ) == 1
-                         && set.Contains ( o.GetType ( ) ) )
+                    if ( r.Next ( 9 ) != 1
+                         || ! set.Contains ( o.GetType ( ) ) )
                     {
-                        var doc = new XDocument (
-                                                 new XElement (
-                                                               XName.Get ( "Tokens" )
-                                                             , o.DescendantTokens ( )
-                                                                .Select (
-                                                                         ( token , i )
-                                                                             => new XElement (
-                                                                                              XName
-                                                                                                 .Get (
-                                                                                                       token
-                                                                                                          .Kind ( )
-                                                                                                          .ToString ( )
-                                                                                                      )
-                                                                                            , new
-                                                                                                  XText (
-                                                                                                         token
-                                                                                                            .ToString ( )
-                                                                                                        )
-                                                                                             )
-                                                                        )
-                                                              )
-                                                ) ;
-                        if ( ! syntaxdict.TryGetValue ( o.GetType ( ) , out var l ) )
-                        {
-                            l = Tuple.Create (
-                                              new X ( )
-                                            , new List < Tuple < SyntaxNode , string > > ( )
-                                             ) ;
-                            syntaxdict[ o.GetType ( ) ] = l ;
-                        }
+                        continue ;
+                    }
 
-                        l.Item1.len += o.ToString ( ).Length ;
-                        l.Item2.Add ( Tuple.Create ( o , o.ToString ( ) ) ) ;
-                        var example1 = o.NormalizeWhitespace ( ).ToString ( ) ;
+                    var doc = new XDocument (
+                                             new XElement (
+                                                           XName.Get ( "Tokens" )
+                                                         , o.DescendantTokens ( )
+                                                            .Select (
+                                                                     ( token , i )
+                                                                         => new XElement (
+                                                                                          XName
+                                                                                             .Get (
+                                                                                                   token
+                                                                                                      .Kind ( )
+                                                                                                      .ToString ( )
+                                                                                                  )
+                                                                                        , new
+                                                                                              XText (
+                                                                                                     token
+                                                                                                        .ToString ( )
+                                                                                                    )
+                                                                                         )
+                                                                    )
+                                                          )
+                                            ) ;
+                    if ( ! syntaxdict.TryGetValue ( o.GetType ( ) , out var l ) )
+                    {
+                        l = Tuple.Create (
+                                          new X ( )
+                                        , new List < Tuple < SyntaxNode , string > > ( )
+                                         ) ;
+                        syntaxdict[ o.GetType ( ) ] = l ;
+                    }
 
-                        bb2.Parameters.Clear ( ) ;
-                        bb2.Parameters.AddWithValue ( "@example" ,  example1 ) ;
-                        bb2.Parameters.AddWithValue ( "@kind" ,     o.RawKind ) ;
-                        bb2.Parameters.AddWithValue ( "@typename" , o.GetType ( ).Name ) ;
-                        bb2.Parameters.Add (
-                                            new SqlParameter ( "@tokens" , SqlDbType.Xml )
-                                            {
-                                                Value = new SqlXml ( doc.CreateReader ( ) )
-                                            }
-                                           ) ;
+                    l.Item1.len += o.ToString ( ).Length ;
+                    l.Item2.Add ( Tuple.Create ( o , o.ToString ( ) ) ) ;
+                    var example1 = o.NormalizeWhitespace ( ).ToString ( ) ;
 
-                        try
-                        {
-                            await bb2.ExecuteNonQueryAsync ( ) ;
-                        }
-                        catch ( Exception ex )
-                        {
-                            DebugUtils.WriteLine ( ex.ToString ( ) ) ;
-                        }
+                    bb2.Parameters.Clear ( ) ;
+                    bb2.Parameters.AddWithValue ( "@example" ,  example1 ) ;
+                    bb2.Parameters.AddWithValue ( "@kind" ,     o.RawKind ) ;
+                    bb2.Parameters.AddWithValue ( "@typename" , o.GetType ( ).Name ) ;
+                    bb2.Parameters.Add (
+                                        new SqlParameter ( "@tokens" , SqlDbType.Xml )
+                                        {
+                                            Value = new SqlXml ( doc.CreateReader ( ) )
+                                        }
+                                       ) ;
 
-                        if ( l.Item2.Count >= 100 )
-                        {
-                            set.Remove ( o.GetType ( ) ) ;
-                        }
+                    try
+                    {
+                        await bb2.ExecuteNonQueryAsync ( ) ;
+                    }
+                    catch ( Exception ex )
+                    {
+                        DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                    }
+
+                    if ( l.Item2.Count >= 100 )
+                    {
+                        set.Remove ( o.GetType ( ) ) ;
                     }
                 }
 
@@ -2055,32 +2057,34 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                 {
                     foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
                     {
-                        if ( ! diagnostic.IsSuppressed )
+                        if ( diagnostic.IsSuppressed )
                         {
-                            // ReSharper disable once UnusedVariable
-                            var line = source
-                                      .Skip (
-                                             diagnostic
-                                                .Location.GetLineSpan ( )
-                                                .StartLinePosition.Line
-                                             - 1
-                                            )
-                                      .Take (
-                                             diagnostic
-                                                .Location.GetLineSpan ( )
-                                                .EndLinePosition.Line
-                                             - diagnostic
-                                              .Location.GetLineSpan ( )
-                                              .StartLinePosition.Line
-                                            ) ;
-                            await f.WriteLineAsync (
-                                                    string.Join (
-                                                                 "\n"
-                                                               , diagnostic.ToString ( )
-                                                               , line
-                                                                )
-                                                   ) ;
+                            continue ;
                         }
+
+                        // ReSharper disable once UnusedVariable
+                        var line = source
+                                  .Skip (
+                                         diagnostic
+                                            .Location.GetLineSpan ( )
+                                            .StartLinePosition.Line
+                                         - 1
+                                        )
+                                  .Take (
+                                         diagnostic
+                                            .Location.GetLineSpan ( )
+                                            .EndLinePosition.Line
+                                         - diagnostic
+                                          .Location.GetLineSpan ( )
+                                          .StartLinePosition.Line
+                                        ) ;
+                        await f.WriteLineAsync (
+                                                string.Join (
+                                                             "\n"
+                                                           , diagnostic.ToString ( )
+                                                           , line
+                                                            )
+                                               ) ;
                     }
                 }
             }
