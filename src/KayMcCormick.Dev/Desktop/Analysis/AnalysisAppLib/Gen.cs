@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.ComponentModel;
-
+#if POCO1
 namespace PocoSyntax
 {
     public class PocoAccessorDeclarationSyntaxCollection : IList, IEnumerable, ICollection
@@ -16512,3 +16512,4 @@ namespace PocoSyntax
         }
     }
 }
+#endif

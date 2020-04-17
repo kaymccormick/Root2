@@ -39,8 +39,13 @@ namespace AnalysisControls.Converters
                     return null ;
                 }
 
+#if POCO
                 var r = GenTransforms.Transform_CSharp_Node(( CSharpSyntaxNode ) value ) ;
                 return JsonSerializer.Serialize ( r ) ;
+#else
+                throw new NotImplementedException();
+#endif
+
             }
             catch ( Exception ex )
             {
@@ -66,6 +71,6 @@ namespace AnalysisControls.Converters
         {
             return null ;
         }
-        #endregion
+#endregion
     }
 }

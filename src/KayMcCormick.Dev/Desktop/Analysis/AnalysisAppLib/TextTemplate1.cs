@@ -1,4 +1,5 @@
-﻿using System ;
+﻿#if POCO
+using System ;
 
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -2434,3 +2435,5 @@ public static class GenTransforms {
         }
 
 }
+#endif
+

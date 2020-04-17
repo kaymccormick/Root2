@@ -53,10 +53,10 @@ namespace ConsoleApp1
     {
         [ NotNull ] private static string ModelXamlFilename
         {
-            get { return Path.Combine ( _dataOutputPath , ModelXamlFilenamePart ) ; }
+            get { return Path.Combine ( DATA_OUTPUT_PATH , ModelXamlFilenamePart ) ; }
         }
 
-        private const string _dataOutputPath = @"C:\data\logs" ;
+        private const string DATA_OUTPUT_PATH = @"C:\data\logs" ;
         private const           string TypesJsonFilename     = "types.json" ;
         private const           string ModelXamlFilenamePart = "model.xaml" ;
 
@@ -237,7 +237,13 @@ namespace ConsoleApp1
           , [ NotNull ] Options    options
         )
         {
-            var cmds = context.Scope.Resolve < IEnumerable < IDisplayableAppCommand > > ( ) ;
+            // using ( var db = new AppDbContext ( ) )
+            // {
+            //     var x = new AppTypeInfo ( ) ;
+            //     db.AppTypeInfos.Add ( x ) ;
+            //     await db.SaveChangesAsync ( ) ;
+            // }
+            var cmds = context.Scope.Resolve<IEnumerable<IDisplayableAppCommand>>();
             if ( ! string.IsNullOrEmpty ( options.Action )
                  && cmds.All ( a => a.DisplayName != options.Action ) )
             {
@@ -344,7 +350,7 @@ namespace ConsoleApp1
             DumpModelToJson (
                              context
                            , typesViewModel
-                           , Path.Combine ( _dataOutputPath , TypesJsonFilename )
+                           , Path.Combine ( DATA_OUTPUT_PATH , TypesJsonFilename )
                             ) ;
         }
 
@@ -363,16 +369,75 @@ namespace ConsoleApp1
                                  ) ;
             typesViewModel.LoadTypeInfo ( ) ;
 
+            WriteModelToDatabase ( typesViewModel ) ;
             WriteThisTypesViewModel (
                                      typesViewModel
-                                   , model => Path.Combine ( _dataOutputPath , "model-v1.xaml" )
+                                   , model => Path.Combine ( DATA_OUTPUT_PATH , "model-v1.xaml" )
                                     ) ;
             DumpModelToJson (
                              context
                            , typesViewModel
-                           , Path.Combine ( _dataOutputPath , "types-v1.json" )
+                           , Path.Combine ( DATA_OUTPUT_PATH , "types-v1.json" )
                             ) ;
             return typesViewModel ;
+        }
+
+        private static void WriteModelToDatabase ( TypesViewModel typesViewModel )
+        {
+            using ( var db = new AppDbContext ( ) )
+            {
+                db.AppClrType.RemoveRange(db.AppClrType);
+                db.AppTypeInfos.RemoveRange ( db.AppTypeInfos ) ;
+                var appTypeInfos = typesViewModel.Map.dict.Values ;
+                foreach ( var appTypeInfo in appTypeInfos )
+                {
+                    var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
+
+                    appTypeInfo.AppClrType = clr ;
+                }
+                db.AppTypeInfos.AddRange(appTypeInfos);
+                db.SaveChanges ( ) ;
+            }
+        }
+
+        [ NotNull ]
+        private static AppClrType FindOrAddClrType ( AppDbContext db , Type type )
+        {
+            DebugUtils.WriteLine($"Finding or adding clr type {type.AssemblyQualifiedName}");
+            var clr = db.AppClrType.SingleOrDefault (
+                                                     c => c.AssemblyQualifiedName
+                                                          == type.AssemblyQualifiedName
+                                                    ) ;
+            if ( clr == null )
+            {
+                clr = AddClrType ( db , type ) ;
+            }
+
+            return clr ;
+        }
+
+        [ NotNull ]
+        private static AppClrType AddClrType ( AppDbContext db , Type type )
+        {
+            AppClrType appClrType = new AppClrType
+                                    {
+                                        AssemblyQualifiedName    = type.AssemblyQualifiedName
+                                      , FullName                 = type.FullName
+                                      , IsAbstract               = type.IsAbstract
+                                      , IsClass                  = type.IsClass
+                                      , IsConstructedGenericType = type.IsConstructedGenericType
+                                      , IsGenericType            = type.IsGenericType
+                                      , IsGenericTypeDefinition  = type.IsGenericTypeDefinition
+                                    } ;
+            if ( type.BaseType != null )
+            {
+                appClrType.BaseType = FindOrAddClrType( db , type.BaseType ) ;
+            }
+
+            db.AppClrType.Add ( appClrType ) ;
+            db.SaveChanges ( ) ;
+
+            return appClrType ;
         }
 
         [ TitleMetadata ( "Load Syntax Examples" ) ]
@@ -1894,11 +1959,11 @@ namespace ConsoleApp1
             var source = tree2.ToString ( ).Split ( new[] { "\r\n" } , StringSplitOptions.None ) ;
 
             //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
-            var adhoc = new AdhocWorkspace ( ) ;
+            var workspace = new AdhocWorkspace ( ) ;
             var projectId = ProjectId.CreateNewId ( ) ;
             DebugOut ( "Add solution" ) ;
 
-            var s = adhoc.AddSolution (
+            var s = workspace.AddSolution (
                                        SolutionInfo.Create (
                                                             SolutionId.CreateNewId ( )
                                                           , VersionStamp.Create ( )
@@ -2019,7 +2084,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                                         .Add ( document2 )
                                     ) ;
 
-            var rb1 = adhoc.TryApplyChanges ( s2 ) ;
+            var rb1 = workspace.TryApplyChanges ( s2 ) ;
             if ( ! rb1 )
             {
                 throw new InvalidOperationException ( ) ;
@@ -2035,12 +2100,12 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                                                      ) )
 
             {
-                var s3 = adhoc.CurrentSolution.AddMetadataReference (
+                var s3 = workspace.CurrentSolution.AddMetadataReference (
                                                                      projectId
                                                                    , MetadataReference
                                                                         .CreateFromFile ( ref1 )
                                                                     ) ;
-                var rb = adhoc.TryApplyChanges ( s3 ) ;
+                var rb = workspace.TryApplyChanges ( s3 ) ;
                 if ( ! rb )
                 {
                     throw new InvalidOperationException ( ) ;
@@ -2048,7 +2113,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             }
 
             DebugOut ( "Applying assembly done" ) ;
-            var project = adhoc.CurrentSolution.Projects.First ( ) ;
+            var project = workspace.CurrentSolution.Projects.First ( ) ;
 
             var compilation = await project.GetCompilationAsync ( ) ;
             using ( var f = new StreamWriter ( @"C:\data\logs\errors.txt" ) )

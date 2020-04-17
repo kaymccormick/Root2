@@ -3,6 +3,7 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
+using System.ComponentModel.DataAnnotations.Schema ;
 using System.Globalization ;
 using System.Linq ;
 using System.Reflection ;
@@ -25,15 +26,13 @@ namespace AnalysisAppLib.Syntax
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
+        private int _id ;
         private DateTime _createdDateTime= DateTime.Now;
         private DateTime _updatedDateTime;
         private string _elementName;
         private readonly SyntaxFieldCollection _fields = new SyntaxFieldCollection();
         private AppTypeInfoCollection _subTypeInfos;
         private uint? _colorValue;
-
-        private SyntaxComponentCollection _components =
-            new SyntaxComponentCollection();
 
         private ObservableCollection<AppMethodInfo> _factoryMethods =
             new ObservableCollection<AppMethodInfo>();
@@ -66,8 +65,11 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public AppTypeInfo( ) : this(null) { }
 
+        public AppClrType AppClrType { get ; set ; }
+
         /// <summary>
         /// </summary>
+        [NotMapped]
         public Type Type
         {
             get { return _type; }
@@ -143,20 +145,6 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore]
-        public SyntaxComponentCollection Components
-        {
-            get { return _components; }
-            set
-            {
-                _components = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [JsonIgnore]
         public AppTypeInfo ParentInfo
         {
             get { return _parentInfo; }
@@ -183,6 +171,7 @@ namespace AnalysisAppLib.Syntax
 
         /// <summary>
         /// </summary>
+        [NotMapped]
         public TypeDocumentation DocInfo { get; set; }
 
         /// <summary>
@@ -224,12 +213,18 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// Key for the Type that isn't the object itself.
         /// </summary>
+        [NotMapped]
         public object KeyValue { get { return _keyValue ; } set { _keyValue = value ; } }
 
         /// <summary>
         /// 
         /// </summary>
         public int Version { get { return _version ; } set { _version = value ; } }
+
+        /// <summary>
+        /// Primary key
+        /// </summary>
+        public int Id { get { return _id ; } set { _id = value ; } }
 
         /// <summary>
         /// </summary>
@@ -241,6 +236,36 @@ namespace AnalysisAppLib.Syntax
             UpdatedDateTime = DateTime.Now;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    /// <summary>
+    /// Representation of CLR type.
+    /// </summary>
+    public class AppClrType
+    {
+        private int _id ;
+
+        public int Id { get { return _id ; } set { _id = value ; } }
+
+        public string FullName { get ; set ; }
+        public string AssemblyQualifiedName { get ; set ; }
+
+        public AppAssembly Assembly { get ; set ; }
+        public AppClrType BaseType { get ; set ; }
+
+        public bool IsAbstract { get ; set ; }
+        public bool IsClass { get ; set ; }
+        public bool IsConstructedGenericType { get; set; }
+        public bool IsGenericTypeDefinition { get; set; }
+        public bool IsGenericType { get; set; }
+    }
+
+    public class AppAssembly
+    {
+        private int _id ;
+
+
+        public int Id { get { return _id ; } set { _id = value ; } }
     }
 
     /// <summary>
@@ -432,6 +457,7 @@ namespace AnalysisAppLib.Syntax
         [ValueSerializer(typeof(SyntaxFieldTypeValueSerializer))]
         [TypeConverter(typeof(SyntaxFieldTypeTypeConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [NotMapped]
         public Type Type
         {
             get { return _type ; }
@@ -454,6 +480,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         // ReSharper disable once UnusedMember.Global
         [NotNull]
+        [NotMapped]
         public IEnumerable<Type> ClrTypes
         {
             get { return Types.Select(typ => typ.Type); }
@@ -707,32 +734,29 @@ namespace AnalysisAppLib.Syntax
     }
 
     /// <summary>
-    /// 
-    /// </summary>
-    public sealed class SyntaxComponentCollection : ObservableCollection < ComponentInfo >
-    {
-    }
-
-    /// <summary>
     /// Wrapper class around <see cref="MethodInfo"/>. Supplies extra information if necessary and other potentially =
     /// useful information and facilities. Method parameters are individually wrapped in <see cref="AppParameterInfo"/>
     /// </summary>
     public sealed class AppMethodInfo
     {
         private MethodInfo _methodInfo;
-
+        private int _id ;
         /// <summary>
         /// </summary>
         [JsonIgnore]
+        [NotMapped]
         public MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value; } }
 
         /// <summary>
         /// </summary>
+        /// 
+        [NotMapped]
         [CanBeNull] [ UsedImplicitly ] public Type ReflectedType { get { return MethodInfo.ReflectedType; } }
 
         /// <summary>
         /// </summary>
         // ReSharper disable once UnusedMember.Global
+        [NotMapped]
         [ CanBeNull ] public Type DeclaringType { get { return MethodInfo.DeclaringType; } }
 
         /// <summary>
@@ -770,7 +794,13 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// </summary>
         [JsonIgnore]
+        [NotMapped]
         public MethodDocumentation XmlDoc { get; set; }
+
+        /// <summary>
+        /// Primary key
+        /// </summary>
+        public int Id { get { return _id ; } set { _id = value ; } }
     }
 
     /// <summary>
@@ -778,6 +808,7 @@ namespace AnalysisAppLib.Syntax
     /// </summary>
     public sealed class AppParameterInfo
     {
+        private int _id ;
         private int    _index;
         private bool   _isOptional;
         private string _name;
@@ -786,6 +817,7 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// Type of parameter.
         /// </summary>
+        [NotMapped]
         public Type ParameterType
         {
             [ UsedImplicitly ] get { return _parameterType; }
@@ -807,6 +839,11 @@ namespace AnalysisAppLib.Syntax
         /// Zero-based index of parameter.
         /// </summary>
         public int Index { [ UsedImplicitly ] get { return _index; } set { _index = value; } }
+
+        /// <summary>
+        /// Public key
+        /// </summary>
+        public int Id { get { return _id ; } set { _id = value ; } }
     }
 
     /// <summary>
