@@ -42,33 +42,31 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        private readonly ILifetimeScope _lifetimeScope ;
+        private ILifetimeScope _lifetimeScope ;
 
         // ReSharper disable once RedundantDefaultMemberInitializer
-        private bool _doPopulateAppContext = false ;
-        private ResourceNodeInfo _objects_node ;
-        private readonly bool _flatten_objects_node ;
+        private          bool             _doPopulateAppContext = false ;
+        private          ResourceNodeInfo _objects_node ;
+        private readonly bool             _flatten_objects_node ;
 
 
         /// <summary>
         /// </summary>
-        public ModelResources ( bool test )
-        {
-            if ( test )
-            {
-                DebugUtils.WriteLine ( "eek" ) ;
-            }
-        }
+        public ModelResources ( ) { }
 
         /// <summary>
         /// </summary>
         /// <param name="lifetimeScope"></param>
         /// <param name="idProvider"></param>
         /// <param name="test"></param>
-        public ModelResources ( ILifetimeScope lifetimeScope , IObjectIdProvider idProvider, bool test=true )
+        public ModelResources (
+            ILifetimeScope    lifetimeScope
+          , IObjectIdProvider idProvider
+          , bool              test = true
+        )
         {
-            _lifetimeScope = lifetimeScope ;
-            _idProvider    = idProvider ;
+            _lifetimeScope        = lifetimeScope ;
+            _idProvider           = idProvider ;
             _flatten_objects_node = test ;
         }
 
@@ -109,11 +107,10 @@ namespace KayMcCormick.Dev
         /// </summary>
         private void PopulateObjects ( )
         {
-
             ObjectsNode = _flatten_objects_node
                               ? CreateNode ( Objects_Key , FlatObjectsChildrenFunc )
                               : CreateNode ( Objects_Key , ObjectsChildrenFunc ) ;
-            
+
             // foreach ( var rootNode in _idProvider.GetRootNodes ( ) )
             // {
             // var c = _idProvider.GetComponentInfo ( rootNode ) ;
@@ -204,7 +201,7 @@ namespace KayMcCormick.Dev
         {
             var rootNodes = _idProvider.GetRootNodes ( ).ToList ( ) ;
             return rootNodes.SelectMany (
-                                         rootNode => _lifetimeScope
+                                         rootNode => LifetimeScope
                                                     .ComponentRegistry.Registrations
                                                     .Where ( reg1 => reg1.Id == rootNode )
                                                     .Select (
@@ -245,7 +242,6 @@ namespace KayMcCormick.Dev
                                                        )
                                                .Select ( xx => createNode ( xx , xx ) )
                                         ) ;
-
         }
 
         [ NotNull ]
@@ -260,10 +256,10 @@ namespace KayMcCormick.Dev
                                          var componentInfo =
                                              _idProvider.GetComponentInfo ( rootNode ) ;
                                          var regs =
-                                             _lifetimeScope.ComponentRegistry.Registrations.Where (
-                                                                                                   r => r.Id
-                                                                                                        == rootNode
-                                                                                                  ) ;
+                                             LifetimeScope.ComponentRegistry.Registrations.Where (
+                                                                                                  r => r.Id
+                                                                                                       == rootNode
+                                                                                                 ) ;
                                          var componentRegistrations =
                                              regs as IComponentRegistration[] ?? regs.ToArray ( ) ;
                                          if ( componentRegistrations.Any ( ) )
@@ -368,7 +364,7 @@ namespace KayMcCormick.Dev
         /// <param name="node"></param>
         private void PopulateLifetimeScope (
             [ NotNull ] IComponentContext lifetimeScope
-          , ResourceNodeInfo           node
+          , ResourceNodeInfo              node
         )
         {
             var regs = CreateNode (
@@ -424,10 +420,13 @@ namespace KayMcCormick.Dev
                 PopulateObjects ( ) ;
             }
 
-            PopulateLifetimeScope (
-                                   _lifetimeScope
-                                 , CreateNode ( null , "LifetimeScope" , _lifetimeScope , true )
-                                  ) ;
+            if ( LifetimeScope != null )
+            {
+                PopulateLifetimeScope (
+                                       LifetimeScope
+                                     , CreateNode ( null , "LifetimeScope" , LifetimeScope , true )
+                                      ) ;
+            }
 
             if ( DoPopulateAppContext )
             {
@@ -501,8 +500,8 @@ namespace KayMcCormick.Dev
                     // ignored
                 }
 
-                var exported = CreateNode ( anode , "Exported Types" , assembly, false ) ;
-                exported.GetChildrenFunc = AssemblyTypes;
+                var exported = CreateNode ( anode , "Exported Types" , assembly , false ) ;
+                exported.GetChildrenFunc = AssemblyTypes ;
 
                 foreach ( var typ in assembly.ExportedTypes )
                 {
@@ -585,7 +584,6 @@ namespace KayMcCormick.Dev
           , Func < object , object , ResourceNodeInfo > arg2
         )
         {
-            
             yield break ;
         }
 
@@ -626,6 +624,14 @@ namespace KayMcCormick.Dev
             set { _objects_node = value ; }
         }
 
+        /// <summary>
+        /// </summary>
+        public ILifetimeScope LifetimeScope
+        {
+            get { return _lifetimeScope ; }
+            set { _lifetimeScope = value ; }
+        }
+
         /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
@@ -639,6 +645,7 @@ namespace KayMcCormick.Dev
     public sealed class Flattened < T , T1 > : IProvidesKey
     {
         private readonly T _arg1 ;
+
         // ReSharper disable once NotAccessedField.Local
         private readonly T1 _arg2 ;
 

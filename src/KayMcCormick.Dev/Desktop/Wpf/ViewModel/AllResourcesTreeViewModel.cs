@@ -26,9 +26,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
     /// </summary>
+    [ContentProperty("ModelResources")]
     public sealed class AllResourcesTreeViewModel : IViewModel , ISupportInitializeNotification
     {
-        private readonly ModelResources _modelResources ;
+
+        private ModelResources _modelResources ;
 
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
@@ -327,7 +329,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// <inheritdoc />
         public void EndInit ( )
         {
-            foreach ( var resourceNodeInfo in _modelResources.AllResourcesCollection )
+            foreach ( var resourceNodeInfo in ModelResources.AllResourcesCollection )
             {
                 AllResourcesCollection.Add ( resourceNodeInfo ) ;
             }
@@ -344,6 +346,16 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         #region Implementation of ISupportInitializeNotification
         /// <inheritdoc />
         public bool IsInitialized { get ; private set ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public ModelResources ModelResources
+        {
+            get { return _modelResources ; }
+            set { _modelResources = value ; }
+        }
 
         /// <inheritdoc />
         public event EventHandler Initialized ;

@@ -85,6 +85,10 @@ namespace ProjInterface
                         builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > ( Adapter ) ;
 #endif
 
+            builder.RegisterType < ResourcesTreeView > ( )
+                   .AsSelf ( )
+                   .AsImplementedInterfaces ( )
+                   .WithCallerMetadata ( ) ;
 
             builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
             builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;

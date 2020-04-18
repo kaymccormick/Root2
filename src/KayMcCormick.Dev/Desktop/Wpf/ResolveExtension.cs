@@ -28,7 +28,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        public Type ComponentType { get ; }
+        public Type ComponentType { get ; set ; }
 
         #region Overrides of MarkupExtension
         /// <summary>

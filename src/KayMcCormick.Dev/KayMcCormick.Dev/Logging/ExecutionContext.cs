@@ -3,9 +3,7 @@
     /// <summary>
     ///     Execution context of application.
     /// </summary>
-    public interface ExecutionContext
-
-
+    internal interface ExecutionContext
     {
         /// <summary>
         ///     Application execution context.

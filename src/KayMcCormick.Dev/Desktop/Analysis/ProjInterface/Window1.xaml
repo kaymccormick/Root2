@@ -1099,6 +1099,9 @@
             <avalondock:LayoutAnchorablePane
               x:Name="leftAnchorablePane"
               DockWidth="200">
+              <avalondock:LayoutAnchorable>
+                <ContentControl Content="{kmWpf:Resolve kmWpf:ResourcesTreeView}"/>
+              </avalondock:LayoutAnchorable>
             </avalondock:LayoutAnchorablePane>
               <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane

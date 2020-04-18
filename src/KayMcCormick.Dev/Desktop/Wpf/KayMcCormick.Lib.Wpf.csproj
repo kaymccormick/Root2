@@ -120,6 +120,9 @@
     <Compile Include="MethodInfoConverter.cs" />
     <Compile Include="PaneService.cs" />
     <Compile Include="ResourceKeyTemplateSelector.cs" />
+    <Compile Include="ResourcesTreeView.xaml.cs">
+      <DependentUpon>ResourcesTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\EventLogViewModel.cs" />
     <Compile Include="View\EventLogView.xaml.cs">
       <DependentUpon>EventLogView.xaml</DependentUpon>
@@ -232,6 +235,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ExceptionUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourcesTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
