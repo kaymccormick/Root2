@@ -4,7 +4,6 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:local="clr-namespace:KayMcCormick.Lib.Wpf"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   mc:Ignorable="d"
   d:DesignHeight="450" d:DesignWidth="800">
@@ -48,15 +47,18 @@
     <ItemsControl ItemsSource="{Binding ParsedExceptions}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <ItemsControl ItemsSource="{Binding ParsedList}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <StackPanel>
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Type" />
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                     <TextBlock
                       Text="{Binding Path=TypeName}" />
                   </StackPanel>
+                  <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                   <ItemsControl
                     ItemsSource="{Binding StackTraceEntries}">
                     <ItemsControl.ItemTemplate>
@@ -64,16 +66,21 @@
                         <StackPanel
                           Orientation="Horizontal">
                           <TextBlock Text="Stack Frame: " />
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <TextBlock
                             Text="{Binding Path=Type.Text}" />
                           <TextBlock Text="." />
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <TextBlock
                             Text="{Binding Path=Method.Text}" />
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <TextBlock FontStyle="Italic"
                                      Text="{Binding Path=ParameterList.Text}" />
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <TextBlock
                             Text="{Binding Path=File.Text}" />
                           <TextBlock>:</TextBlock>
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <TextBlock
                             Text="{Binding Path=Line.Text}" />
                         </StackPanel>

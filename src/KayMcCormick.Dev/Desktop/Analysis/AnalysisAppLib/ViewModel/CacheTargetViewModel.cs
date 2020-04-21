@@ -53,15 +53,13 @@ namespace AnalysisAppLib.ViewModel
                          .ObserveOnDispatcher ( DispatcherPriority.Background )
                          .Subscribe (
                                      infos => {
-                                         foreach ( var json in infos )
+                                         foreach ( var i in infos.Select ( json => JsonSerializer
+                                                                              .Deserialize < LogEventInstance > (
+                                                                                                                 json
+                                                                                                               , new
+                                                                                                                     JsonSerializerOptions ( )
+                                                                                                                ) ) )
                                          {
-                                             var i = JsonSerializer
-                                                .Deserialize < LogEventInstance > (
-                                                                                   json
-                                                                                 , new
-                                                                                       JsonSerializerOptions ( )
-                                                                                  ) ;
-
                                              Events.Add ( i ) ;
                                          }
                                      }

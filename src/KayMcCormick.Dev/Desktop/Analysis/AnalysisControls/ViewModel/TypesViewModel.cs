@@ -59,7 +59,7 @@ namespace AnalysisControls.ViewModel
             new Dictionary < Type , TypeDocInfo > ( ) ;
 
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
-        [ CanBeNull ] private object _docInfo = null ;
+        [ CanBeNull ] private readonly object _docInfo = null ;
 
         /// <summary>
         /// 

@@ -43,7 +43,7 @@ namespace AnalysisAppLib
         AppTypeInfoCollection StructureRoot { get ; set ; }
 
         /// <summary>
-        /// 
+        /// `
         /// </summary>
         object DocInfo { get ; }
 

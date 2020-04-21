@@ -25,7 +25,7 @@ using Microsoft.Identity.Client ;
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// Autofac module for the base Analysis App Lib
+    ///     Autofac module for the base Analysis App Lib.
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
@@ -33,12 +33,12 @@ namespace AnalysisAppLib
         private bool _registerExplorerTypes = false ;
 
         /// <summary>
-        /// Parameterless constructor.
+        ///     Parameterless constructor.
         /// </summary>
         public AnalysisAppLibModule ( ) { DebugUtils.WriteLine ( "here" ) ; }
 
         /// <summary>
-        /// 
+        ///     Boolean indicating whether or not to register the "File explorer" types.
         /// </summary>
         // ReSharper disable once UnusedMember.Global
         public bool RegisterExplorerTypes
@@ -47,9 +47,7 @@ namespace AnalysisAppLib
             set { _registerExplorerTypes = value ; }
         }
 
-        #region Overrides of Module
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="componentRegistry"></param>
         /// <param name="registration"></param>
@@ -60,7 +58,9 @@ namespace AnalysisAppLib
         )
         {
             var svc = string.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
-            DebugUtils.WriteLine($"{nameof(AttachToComponentRegistration)}: {registration.Id} {registration.Lifetime} {svc}");
+            DebugUtils.WriteLine (
+                                  $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
+                                 ) ;
             registration.Activating += ( sender , args ) => {
                 var inst = args.Instance ;
                 DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
@@ -90,10 +90,8 @@ namespace AnalysisAppLib
                 }
             } ;
         }
-        #endregion
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
@@ -262,7 +260,6 @@ namespace AnalysisAppLib
     }
 
     /// <summary>
-    /// 
     /// </summary>
     [ TitleMetadata ( "Find and analyze usages of NLog logging." ) ]
     // ReSharper disable once UnusedType.Global
@@ -271,7 +268,6 @@ namespace AnalysisAppLib
         private Type _dataflowOutputType = typeof ( ILogInvocation ) ;
 
         /// <summary>
-        /// 
         /// </summary>
         public Type DataflowOutputType
         {
@@ -281,14 +277,12 @@ namespace AnalysisAppLib
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <typeparam name="TOutput"></typeparam>
     // ReSharper disable once UnusedTypeParameter
     public interface IAnalysisDefinition < TOutput >
     {
         /// <summary>
-        /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
         Type DataflowOutputType { get ; set ; }

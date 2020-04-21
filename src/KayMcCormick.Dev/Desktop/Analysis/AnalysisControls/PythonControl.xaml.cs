@@ -38,7 +38,7 @@ namespace AnalysisControls
             ViewModel = viewModel ;
             InitializeComponent ( ) ;
 
-            ViewModel.FlowDocument = flow ;
+            ViewModel.FlowDocument = Flow ;
         }
 
         #region Implementation of IView<out PythonViewModel>

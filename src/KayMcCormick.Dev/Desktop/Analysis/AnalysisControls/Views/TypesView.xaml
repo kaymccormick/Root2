@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="typesView"
+﻿<UserControl x:Name="TypesViewControl"
              x:Class="AnalysisControls.Views.TypesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
@@ -6,7 +6,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
-             xmlns:analysisControls="clr-namespace:AnalysisControls"
              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
@@ -163,6 +162,7 @@
                       <ColumnDefinition MinWidth="19"
                                         Width="Auto" />
                       <ColumnDefinition Width="*" />
+                      <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                       <RowDefinition Height="Auto" />
@@ -274,7 +274,7 @@
                  TargetType="Border">
             <Style.Triggers>
               <DataTrigger
-                Binding="{Binding ElementName=typesView,Path=ViewModel.ShowBordersIsChecked}"
+                Binding="{Binding ElementName=TypesViewControl,Path=ViewModel.ShowBordersIsChecked}"
                 Value="true">
                 <Setter Property="BorderBrush"
                         Value="#a00000ff" />
@@ -283,7 +283,7 @@
                 <Setter Property="Padding" Value="1" />
               </DataTrigger>
               <DataTrigger
-                Binding="{Binding ElementName=typesView,Path=ViewModel.ShowBordersIsChecked}"
+                Binding="{Binding ElementName=TypesViewControl,Path=ViewModel.ShowBordersIsChecked}"
                 Value="false">
                 <Setter Property="BorderBrush"
                         Value="Transparent" />
