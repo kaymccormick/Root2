@@ -91,6 +91,42 @@ namespace AnalysisAppLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} = {1}.
+        /// </summary>
+        public static string Program_LoadSyntaxExamplesAsync_ {
+            get {
+                return ResourceManager.GetString("Program_LoadSyntaxExamplesAsync_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        public static string Program_LoadSyntaxExamplesAsync__0_ {
+            get {
+                return ResourceManager.GetString("Program_LoadSyntaxExamplesAsync__0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logger async complete..
+        /// </summary>
+        public static string Program_Main_Logger_async_complete_ {
+            get {
+                return ResourceManager.GetString("Program_Main_Logger_async_complete_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please contact your administrator for assistance..
+        /// </summary>
+        public static string Program_Main_Please_contact_your_administrator_for_assistance_ {
+            get {
+                return ResourceManager.GetString("Program_Main_Please_contact_your_administrator_for_assistance_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to using System;
         ///using System.Collections.Generic;
         ///using System.Linq;

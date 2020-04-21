@@ -18,6 +18,7 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
+using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.XmlDoc ;
 using AnalysisControls ;
@@ -42,6 +43,7 @@ using NLog ;
 using NLog.Targets ;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
+using ProjectInfo = Microsoft.CodeAnalysis.ProjectInfo ;
 
 // ReSharper disable RedundantOverriddenMember
 
@@ -53,20 +55,29 @@ namespace ConsoleApp1
     {
         [ NotNull ] private static string ModelXamlFilename
         {
-            get { return Path.Combine ( DATA_OUTPUT_PATH , ModelXamlFilenamePart ) ; }
+            get { return Path.Combine ( DataOutputPath , ModelXamlFilenamePart ) ; }
         }
 
-        private const string DATA_OUTPUT_PATH      = @"C:\data\logs" ;
+        private const string DataOutputPath      = @"C:\data\logs" ;
         private const string TypesJsonFilename     = "types.json" ;
         private const string ModelXamlFilenamePart = "model.xaml" ;
 
         private const string SolutionFilePath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
+        // ReSharper disable once InconsistentNaming
         private const string _pocoPrefix          = "Poco" ;
+        // ReSharper disable once InconsistentNaming
         private const string _collectionSuffix    = "Collection" ;
-        private const string _pocosyntaxnamespace = "PocoSyntax" ;
-        private const string _icollection         = "ICollection" ;
+        private const string PocoSyntaxNamespace = "PocoSyntax" ;
+        // ReSharper disable once InconsistentNaming
+        private const string ICollection_typename         = "ICollection" ;
+        // ReSharper disable once InconsistentNaming
+        private const string IList_typename                 = "IList";
+        // ReSharper disable once InconsistentNaming
+        private const string List_typename        = "List";
+        // ReSharper disable once InconsistentNaming
+        private const string IEnumerable_typename = "IEnumerable";
 
         private static readonly string[] AssemblyRefs =
         {
@@ -89,14 +100,11 @@ namespace ConsoleApp1
         } ;
 
         // ReSharper disable once NotAccessedField.Local
-        private static ILogger Logger ;
+        private static ILogger _logger ;
 
-        private static ApplicationInstance _appinst ;
-        private const  string              _ilist       = "IList" ;
-        private const  string              _list        = "List" ;
-        private const  string              _ienumerable = "IEnumerable" ;
+        private static ApplicationInstance _appInstance ;
 
-        static Program ( ) { Logger = null ; }
+        static Program ( ) { _logger = null ; }
 
         [ NotNull ] public static string PocoPrefix { get { return _pocoPrefix ; } }
 
@@ -136,16 +144,16 @@ namespace ConsoleApp1
         // ReSharper disable once UnusedParameter.Local
         private static async Task < int > Main ( string[] args )
         {
-            var ConsoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
+            var consoleAnalysisProgramGuid = ApplicationInstanceIds.ConsoleAnalysisProgramGuid ;
             var subject = new Subject < ILogger > ( ) ;
             subject.Subscribe (
                                logger => {
                                    logger.Warn ( "Received logger" ) ;
                                    DebugUtils.WriteLine ( "got logger" ) ;
-                                   Logger = logger ;
-                                   if ( _appinst != null )
+                                   _logger = logger ;
+                                   if ( _appInstance != null )
                                    {
-                                       _appinst.Logger = logger ;
+                                       _appInstance.Logger = logger ;
                                    }
                                }
                               ) ;
@@ -163,36 +171,36 @@ namespace ConsoleApp1
                                                          , subject
                                                           )
 #pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
-                            .ContinueWith ( task => Console.WriteLine ( "Logger async complete." ) )
+                            .ContinueWith ( task => Console.WriteLine ( Resources.Program_Main_Logger_async_complete_ ) )
 #pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
                      ) ;
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 
-            _appinst = new ApplicationInstance (
+            _appInstance = new ApplicationInstance (
                                                 new ApplicationInstance.
                                                     ApplicationInstanceConfiguration (
                                                                                       message => {
                                                                                       }
-                                                                                    , ConsoleAnalysisProgramGuid
+                                                                                    , consoleAnalysisProgramGuid
                                                                                      )
                                                ) ;
-            using ( _appinst )
+            using ( _appInstance )
 
             {
-                _appinst.AddModule ( new AppModule ( ) ) ;
-                _appinst.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                _appinst.AddModule ( new AnalysisControlsModule ( ) ) ;
+                _appInstance.AddModule ( new AppModule ( ) ) ;
+                _appInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
+                _appInstance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 PopulateJsonConverters ( false ) ;
                 ILifetimeScope scope ;
                 try
                 {
-                    scope = _appinst.GetLifetimeScope ( ) ;
+                    scope = _appInstance.GetLifetimeScope ( ) ;
                 }
                 catch ( ContainerBuildException buildException )
                 {
                     Console.WriteLine ( buildException.Message ) ;
-                    Console.WriteLine ( "Please contact your administrator for assistance." ) ;
+                    Console.WriteLine ( Resources.Program_Main_Please_contact_your_administrator_for_assistance_ ) ;
                     return 1 ;
                 }
 
@@ -201,9 +209,9 @@ namespace ConsoleApp1
                 {
                     context = scope.Resolve < AppContext > ( ) ;
                 }
-                catch ( DependencyResolutionException depex )
+                catch ( DependencyResolutionException dependencyResolutionException )
                 {
-                    Exception ex1 = depex ;
+                    Exception ex1 = dependencyResolutionException ;
                     while ( ex1 != null )
                     {
                         ex1 = ex1.InnerException ;
@@ -369,7 +377,7 @@ namespace ConsoleApp1
             DumpModelToJson (
                              context
                            , typesViewModel
-                           , Path.Combine ( DATA_OUTPUT_PATH , TypesJsonFilename )
+                           , Path.Combine ( DataOutputPath , TypesJsonFilename )
                             ) ;
         }
 
@@ -391,12 +399,12 @@ namespace ConsoleApp1
             WriteModelToDatabase ( typesViewModel ) ;
             WriteThisTypesViewModel (
                                      typesViewModel
-                                   , model => Path.Combine ( DATA_OUTPUT_PATH , "model-v1.xaml" )
+                                   , model => Path.Combine ( DataOutputPath , "model-v1.xaml" )
                                     ) ;
             DumpModelToJson (
                              context
                            , typesViewModel
-                           , Path.Combine ( DATA_OUTPUT_PATH , "types-v1.json" )
+                           , Path.Combine ( DataOutputPath , "types-v1.json" )
                             ) ;
             return typesViewModel ;
         }
@@ -446,11 +454,8 @@ namespace ConsoleApp1
             var clr = db.AppClrType.SingleOrDefault (
                                                      c => c.AssemblyQualifiedName
                                                           == type.AssemblyQualifiedName
-                                                    ) ;
-            if ( clr == null )
-            {
-                clr = AddClrType ( db , type ) ;
-            }
+                                                    )
+                      ?? AddClrType ( db , type ) ;
 
             return clr ;
         }
@@ -482,6 +487,7 @@ namespace ConsoleApp1
 
         [ TitleMetadata ( "Load Syntax Examples" ) ]
         [ UsedImplicitly ]
+        // ReSharper disable once FunctionComplexityOverflow
         public static async Task LoadSyntaxExamplesAsync ( AppContext context , SqlConnection c )
         {
             var bb2 = new SqlCommand (
@@ -647,17 +653,17 @@ namespace ConsoleApp1
 
             foreach ( var k in xxx1 )
             {
-                Console.WriteLine ( $"{k.Key} = {k.Value.Len}" ) ;
+                Console.WriteLine ( Resources.Program_LoadSyntaxExamplesAsync_ , k.Key , k.Value.Len ) ;
             }
 
             foreach ( var k in xxx )
             {
-                Console.WriteLine ( $"{k.Key} = {k.Value.Len}" ) ;
+                Console.WriteLine ( Resources.Program_LoadSyntaxExamplesAsync_ , k.Key , k.Value.Len ) ;
             }
 
             foreach ( var keyValuePair in syntaxDict )
             {
-                Console.WriteLine ( $"{keyValuePair.Key.Name}" ) ;
+                Console.WriteLine ( Resources.Program_LoadSyntaxExamplesAsync__0_ , keyValuePair.Key.Name ) ;
                 Console.WriteLine (
                                    ( double ) keyValuePair.Value.Item1.Len
                                    / keyValuePair.Value.Item2.Count
@@ -881,6 +887,7 @@ namespace ConsoleApp1
         // ReSharper disable once UnusedMember.Local
         [ TitleMetadata ( "Process solution" ) ]
         [ UsedImplicitly ]
+        // ReSharper disable once FunctionComplexityOverflow
         public async Task ProcessSolutionAsync (
             IBaseLibCommand        command
           , [ NotNull ] AppContext context
@@ -1220,6 +1227,7 @@ namespace ConsoleApp1
         }
 
 #pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
+        // ReSharper disable once FunctionComplexityOverflow
         private async Task CodeGen (
 #pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
             [ NotNull ] IBaseLibCommand command
@@ -1265,16 +1273,18 @@ namespace ConsoleApp1
                 // ReSharper disable once UnusedVariable
                 var classDecl1Type =
                     curComp.GetTypeByMetadataName ( classDecl1.Identifier.ValueText ) ;
-                var Ilist1 = SimpleBaseType ( ParseTypeName ( _ilist ) ) ;
-                var IEnumerable1 = SimpleBaseType ( ParseTypeName ( _ienumerable ) ) ;
-                var ICollectionType = SimpleBaseType ( ParseTypeName ( _icollection ) ) ;
+                // ReSharper disable once IdentifierTypo
+                var simplebaseType_ilist1 = SimpleBaseType ( ParseTypeName ( IList_typename ) ) ;
+                var enumerable1 = SimpleBaseType ( ParseTypeName ( IEnumerable_typename ) ) ;
+                // ReSharper disable once InconsistentNaming
+                var simpleBaseType_ICollection = SimpleBaseType ( ParseTypeName ( ICollection_typename ) ) ;
                 var classContainerDecl = ClassDeclaration ( colTypeClassName )
                                         .WithBaseList (
                                                        BaseList ( )
                                                           .AddTypes (
-                                                                     Ilist1
-                                                                   , IEnumerable1
-                                                                   , ICollectionType
+                                                                     simplebaseType_ilist1
+                                                                   , enumerable1
+                                                                   , simpleBaseType_ICollection
                                                                     )
                                                       )
                                         .WithModifiers (
@@ -1292,26 +1302,31 @@ namespace ConsoleApp1
                                                 + ( ( QualifiedNameSyntax ) typeSyntax2 )
                                                  .Right.Identifier
                                                ) ;
-                var genericinternalListType = GenericName (
-                                                           Identifier ( _ilist )
-                                                         , TypeArgumentList (
-                                                                             SeparatedList <
-                                                                                     TypeSyntax
-                                                                                 > ( )
-                                                                                .Add ( typeSyntax )
-                                                                            )
-                                                          ) ;
-                var genericinternalListType2 = GenericName (
-                                                            Identifier ( _list )
-                                                          , TypeArgumentList (
-                                                                              SeparatedList <
-                                                                                      TypeSyntax
-                                                                                  > ( )
-                                                                                 .Add ( typeSyntax )
-                                                                             )
-                                                           ) ;
+                // ReSharper disable once InconsistentNaming
+                var internal_genericIList = GenericName (
+                                                         Identifier ( IList_typename )
+                                                       , TypeArgumentList (
+                                                                           SeparatedList <
+                                                                                   TypeSyntax
+                                                                               > ( )
+                                                                              .Add ( typeSyntax )
+                                                                          )
+                                                        ) ;
+                // ReSharper disable once InconsistentNaming
+                var internal_genericList = GenericName (
+                                                        Identifier ( List_typename )
+                                                      , TypeArgumentList (
+                                                                          SeparatedList <
+                                                                                  TypeSyntax
+                                                                              > ( )
+                                                                             .Add ( typeSyntax )
+                                                                         )
+                                                       ) ;
+                // ReSharper disable once InconsistentNaming
                 var IListRuntimeType = typeof ( IList ) ;
+                // ReSharper disable once InconsistentNaming
                 var ICollectionRuntimeType = typeof ( ICollection ) ;
+                // ReSharper disable once InconsistentNaming
                 var IEnumerableRuntimeType = typeof ( IEnumerable ) ;
                 foreach ( var type1 in new[]
                                        {
@@ -1506,7 +1521,7 @@ namespace ConsoleApp1
                                                     }
                                                    ) ;
 
-                    var memb1 = generic1.GetMembers ( )
+                    var members1 = generic1.GetMembers ( )
                                         .OfType < IMethodSymbol > ( )
                                         .Where (
                                                 x22 => x22.Kind          == SymbolKind.Method
@@ -1605,7 +1620,7 @@ namespace ConsoleApp1
                                                                                                                                                                                                        .SpecialType
                                                                                                                                                                                                     == SpecialType
                                                                                                                                                                                                        .System_Object
-                                                                                                                                                                                                        ? genericinternalListType
+                                                                                                                                                                                                        ? internal_genericIList
                                                                                                                                                                                                          .TypeArgumentList
                                                                                                                                                                                                          .Arguments
                                                                                                                                                                                                               [
@@ -1640,7 +1655,7 @@ namespace ConsoleApp1
                                                                          List (
                                                                                classContainerDecl
                                                                                   .Members
-                                                                                  .Concat ( memb1 )
+                                                                                  .Concat ( members1 )
                                                                                   .Concat ( props1 )
                                                                                   .Concat (
                                                                                            indexers
@@ -1665,7 +1680,7 @@ namespace ConsoleApp1
                                                                      .SimpleMemberAccessExpression
                                                                 , ParenthesizedExpression (
                                                                                            CastExpression (
-                                                                                                           genericinternalListType2
+                                                                                                           internal_genericList
                                                                                                          , IdentifierName (
                                                                                                                            "_list"
                                                                                                                           )
@@ -1692,7 +1707,7 @@ namespace ConsoleApp1
                                                       , Token ( SyntaxKind.CloseParenToken )
                                                        )
                                          ) ;
-                var typeArgument = genericinternalListType.TypeArgumentList.Arguments[ 0 ] ;
+                var typeArgument = internal_genericIList.TypeArgumentList.Arguments[ 0 ] ;
 
                 var constructor = ConstructorDeclaration ( classContainerDecl.Identifier.ValueText )
                                  .WithParameterList (
@@ -1771,7 +1786,7 @@ namespace ConsoleApp1
                                                    , default
                                                     ) ;
                 var fds = FieldDeclaration (
-                                            VariableDeclaration ( ParseTypeName ( _ilist ) )
+                                            VariableDeclaration ( ParseTypeName ( IList_typename ) )
                                                .WithVariables (
                                                                SeparatedList <
                                                                        VariableDeclaratorSyntax
@@ -1823,6 +1838,7 @@ namespace ConsoleApp1
                         continue ;
                     }
 
+                    // ReSharper disable once IdentifierTypo
                     var acdsl = new SyntaxList < AccessorDeclarationSyntax > (
                                                                               new[]
                                                                               {
@@ -1970,7 +1986,7 @@ namespace ConsoleApp1
                                                    new SyntaxList < MemberDeclarationSyntax > (
                                                                                                NamespaceDeclaration (
                                                                                                                      ParseName (
-                                                                                                                                _pocosyntaxnamespace
+                                                                                                                                PocoSyntaxNamespace
                                                                                                                                )
                                                                                                                     )
                                                                                                   .WithMembers (
@@ -2427,7 +2443,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
     public sealed class SyntaxWalker2 : CSharpSyntaxWalker
     {
-        private readonly SemanticModel model ;
+        private readonly SemanticModel _model ;
 
         #region Overrides of CSharpSyntaxVisitor
         public SyntaxWalker2 (
@@ -2435,19 +2451,19 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
           , SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node
         ) : base ( depth )
         {
-            this.model = model ;
+            this._model = model ;
         }
 
         public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
         {
             // ReSharper disable once UnusedVariable
-            var nsSymbol = model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( ) ;
+            var nsSymbol = _model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( ) ;
             base.VisitNamespaceDeclaration ( node ) ;
         }
 
         public override void VisitClassDeclaration ( ClassDeclarationSyntax node )
         {
-            var classSymbol = model.GetDeclaredSymbol ( node ) ;
+            var classSymbol = _model.GetDeclaredSymbol ( node ) ;
             if ( classSymbol == null )
             {
                 throw new InvalidOperationException ( "No class symbol" ) ;
@@ -2482,7 +2498,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                                                                                            .Select (
                                                                                                     md
                                                                                                         => new
-                                                                                                            CustommodifierInfo (
+                                                                                                            CustomModifierInfo (
                                                                                                                                 md
                                                                                                                                    .IsOptional
                                                                                                                               , md
@@ -2538,7 +2554,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         public override void VisitMethodDeclaration ( MethodDeclarationSyntax node )
         {
-            var symbol = model.GetDeclaredSymbol ( node ) ;
+            var symbol = _model.GetDeclaredSymbol ( node ) ;
             if ( symbol               != null
                  && symbol.MethodKind != MethodKind.Ordinary )
             {
@@ -2561,7 +2577,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         public override void VisitParameter ( ParameterSyntax node )
         {
-            var symbol = model.GetDeclaredSymbol ( node ) ;
+            var symbol = _model.GetDeclaredSymbol ( node ) ;
             if ( symbol != null )
             {
                 foreach ( var symbolDisplayPart in symbol.ToDisplayParts ( ) )
@@ -2657,14 +2673,14 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public string TypeFullName { get ; }
 
         // ReSharper disable once CollectionNeverQueried.Global
-        public readonly List < CustommodifierInfo > custommodifiers =
-            new List < CustommodifierInfo > ( ) ;
+        public readonly List < CustomModifierInfo > CustomModifiers =
+            new List < CustomModifierInfo > ( ) ;
 
         public ParameterInfo (
             string name
             // ReSharper disable once SuggestBaseTypeForParameter
           , ITypeSymbol                        typeSymbol
-          , IEnumerable < CustommodifierInfo > select
+          , IEnumerable < CustomModifierInfo > select
           , string                             typeDisplayString
         )
         {
@@ -2673,20 +2689,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             TypeFullName = typeSymbol.ContainingNamespace.MetadataName
                            + '.'
                            + typeSymbol.MetadataName ;
-            custommodifiers.AddRange ( select ) ;
-        }
-    }
-
-    public sealed class CustommodifierInfo
-    {
-        public bool IsOptional { get ; }
-
-        public string DisplayString { get ; }
-
-        public CustommodifierInfo ( bool isOptional , string displayString )
-        {
-            IsOptional    = isOptional ;
-            DisplayString = displayString ;
+            CustomModifiers.AddRange ( select ) ;
         }
     }
 }

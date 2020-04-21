@@ -73,6 +73,7 @@
     <Compile Include="AppContext.cs" />
     <Compile Include="AppDbContext.cs" />
     <Compile Include="AppModule.cs" />
+    <Compile Include="CustomModifierInfo.cs" />
     <Compile Include="ElementWrapper.cs" />
     <Compile Include="ExampleDict.cs" />
     <Compile Include="ExampleSyntax.cs" />

@@ -88,6 +88,8 @@
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />
     <Compile Include="MethodDocInfo.cs" />
+    <Compile Include="Project\ProjectInfo.cs" />
+    <Compile Include="Project\ProjectLanguage.cs" />
     <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />
     <Compile Include="SyntaxTypesService.cs" />
     <Compile Include="TextTemplate1.cs">
@@ -124,7 +126,7 @@
     <Compile Include="Project\IBrowserNodeCollection.cs" />
     <Compile Include="Project\IProjectBrowserNode.cs" />
     <Compile Include="Project\IProjectBrowserViewModel.cs" />
-    <Compile Include="Project\ProjectBrowserNode.cs" />
+    <Compile Include="Project\Project.cs" />
     <Compile Include="Project\ProjectBrowserViewModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

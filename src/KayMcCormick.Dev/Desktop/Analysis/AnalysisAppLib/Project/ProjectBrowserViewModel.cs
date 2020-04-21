@@ -30,7 +30,7 @@ namespace AnalysisAppLib.Project
         {
             var browserNodeCollection = new BrowserNodeCollection ( ) ;
             _rootCollection = browserNodeCollection ;
-            var projectBrowserNode = new ProjectBrowserNode
+            var projectBrowserNode = new Project
                                      {
                                          Name          = "LogTest"
                                        , RepositoryUrl = new Uri ( "none:" )
@@ -38,7 +38,7 @@ namespace AnalysisAppLib.Project
                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
                                      } ;
             browserNodeCollection.Add ( projectBrowserNode ) ;
-            var projectBrowserNode2 = new ProjectBrowserNode
+            var projectBrowserNode2 = new Project
                                       {
                                           Name = "My Project (root2)"
                                         , RepositoryUrl =
@@ -50,7 +50,7 @@ namespace AnalysisAppLib.Project
                                         , Platform = "x86"
                                       } ;
             browserNodeCollection.Add ( projectBrowserNode2 ) ;
-            var projectBrowserNode3 = new ProjectBrowserNode
+            var projectBrowserNode3 = new Project
                                       {
                                           Name = "My Project (root)"
                                         , RepositoryUrl =

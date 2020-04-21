@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using AnalysisAppLib.Project ;
 using AnalysisAppLib.Syntax ;
 using KayMcCormick.Dev ;
 using Microsoft.EntityFrameworkCore ;
@@ -19,6 +20,8 @@ namespace ProjInterface
     {
         public DbSet<AppTypeInfo> AppTypeInfos { get; set; }
         public DbSet<AppClrType>  AppClrType   { get; set; }
+        public DbSet <ProjectInfo> Project { get ; set ; }
+        public DbSet < ProjectLanguage> ProjectLanguage { get ; set ; }
         #region Overrides of DbContext
         // ReSharper disable once AnnotateNotNullParameter
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
