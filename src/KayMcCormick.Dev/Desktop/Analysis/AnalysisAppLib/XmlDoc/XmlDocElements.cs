@@ -34,7 +34,7 @@ namespace AnalysisAppLib.XmlDoc
     {
         private static readonly string _pocoPrefix = "Poco" ;
 #pragma warning disable 414
-        private static readonly string _collectionSuffix = "Collection" ;
+        private static readonly string CollectionSuffix = "Collection" ;
 #pragma warning restore 414
 
         private static readonly Dictionary < SyntaxKind , Type > KindType =

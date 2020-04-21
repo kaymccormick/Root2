@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Generic ;
 using System.Linq ;
 using System.Runtime.Serialization ;
 
@@ -30,15 +31,19 @@ namespace AnalysisAppLib.Project
         {
             var browserNodeCollection = new BrowserNodeCollection ( ) ;
             _rootCollection = browserNodeCollection ;
-            var projectBrowserNode = new Project
+            // ReSharper disable once CollectionNeverQueried.Local
+            List <ProjectInfo> projects = new List < ProjectInfo > ();
+            var projectBrowserNode = new ProjectInfo
                                      {
                                          Name          = "LogTest"
                                        , RepositoryUrl = new Uri ( "none:" )
                                        , SolutionPath =
+                                             // ReSharper disable once StringLiteralTypo
                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
                                      } ;
-            browserNodeCollection.Add ( projectBrowserNode ) ;
-            var projectBrowserNode2 = new Project
+            projects.Add ( projectBrowserNode ) ;
+            //browserNodeCollection.Add ( projectBrowserNode ) ;
+            var projectBrowserNode2 = new ProjectInfo
                                       {
                                           Name = "My Project (root2)"
                                         , RepositoryUrl =
@@ -46,11 +51,14 @@ namespace AnalysisAppLib.Project
                                                        "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
                                                       )
                                         , SolutionPath =
+                                              // ReSharper disable once StringLiteralTypo
+
                                               @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\ManagedProd.sln"
                                         , Platform = "x86"
                                       } ;
-            browserNodeCollection.Add ( projectBrowserNode2 ) ;
-            var projectBrowserNode3 = new Project
+            //browserNodeCollection.Add ( projectBrowserNode2 ) ;
+            projects.Add ( projectBrowserNode2 ) ;
+            var projectBrowserNode3 = new ProjectInfo
                                       {
                                           Name = "My Project (root)"
                                         , RepositoryUrl =
@@ -58,10 +66,13 @@ namespace AnalysisAppLib.Project
                                                        "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
                                                       )
                                         , SolutionPath =
+                                              // ReSharper disable once StringLiteralTypo
+
                                               @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\work2\src\KayMcCormick.Dev\ManagedProd.sln"
                                         , Platform = "x86"
                                       } ;
-            browserNodeCollection.Add ( projectBrowserNode3 ) ;
+            //browserNodeCollection.Add ( projectBrowserNode3 ) ;
+            projects.Add (projectBrowserNode3  );
         }
 
         #region Implementation of IProjectBrowserViewModoel
