@@ -44,8 +44,6 @@ namespace AnalysisAppLib
             var model = await document.GetSemanticModelAsync ( cancellationToken ) ;
             if ( model != null )
             {
-                // var query = Common.Query1 ( root 
-                // , model ) ;
             }
         }
     }

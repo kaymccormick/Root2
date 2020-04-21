@@ -15,7 +15,6 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Text.Json ;
 using System.Windows.Threading ;
-using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib.ViewModel
@@ -56,21 +55,14 @@ namespace AnalysisAppLib.ViewModel
                                      infos => {
                                          foreach ( var json in infos )
                                          {
-                                             try
-                                             {
-                                                 var i = JsonSerializer
-                                                    .Deserialize < LogEventInstance > (
-                                                                                       json
-                                                                                     , new
-                                                                                           JsonSerializerOptions ( )
-                                                                                      ) ;
+                                             var i = JsonSerializer
+                                                .Deserialize < LogEventInstance > (
+                                                                                   json
+                                                                                 , new
+                                                                                       JsonSerializerOptions ( )
+                                                                                  ) ;
 
-                                                 Events.Add ( i ) ;
-                                             }
-                                             catch ( Exception ex )
-                                             {
-                                                 throw ;
-                                             }
+                                             Events.Add ( i ) ;
                                          }
                                      }
                                     ) ;

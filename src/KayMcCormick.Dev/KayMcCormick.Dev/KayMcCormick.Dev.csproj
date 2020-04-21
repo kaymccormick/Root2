@@ -120,6 +120,7 @@
     <Compile Include="Container\IocExt.cs" />
     <Compile Include="IBaseLibCommand.cs" />
     <Compile Include="IHierarchicalNode.cs" />
+    <Compile Include="IProvidesKey.cs" />
     <Compile Include="IViewModel.cs" />
     <Compile Include="Logging\ExecutionContextImpl.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />

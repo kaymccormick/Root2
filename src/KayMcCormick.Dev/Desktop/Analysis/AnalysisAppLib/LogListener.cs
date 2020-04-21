@@ -32,9 +32,9 @@ namespace AnalysisAppLib
 
 
     {
-        private const string LOG4_J_NS_PREFIX      = "log4j" ;
-        private const string NLOG_NS_PREFIX        = "nlog" ;
-        private const string LOGGER_ATTRIBUTE_NAME = "logger" ;
+        private const string Log4JNsPrefix      = "log4j" ;
+        private const string NlogNsPrefix        = "nlog" ;
+        private const string LoggerAttributeName = "logger" ;
 
         private readonly int          _port ;
         private readonly LogViewModel _viewModel ;
@@ -163,17 +163,17 @@ namespace AnalysisAppLib
         {
             var xmlNameTable = new NameTable ( ) ;
 
-            xmlNameTable.Add ( LOG4_J_NS_PREFIX ) ;
+            xmlNameTable.Add ( Log4JNsPrefix ) ;
             var nameTable = new NameTable ( ) ;
-            nameTable.Add ( LOG4_J_NS_PREFIX ) ;
+            nameTable.Add ( Log4JNsPrefix ) ;
             var xmlNamespaceManager = new XmlNamespaceManager ( xmlNameTable ) ;
             xmlNamespaceManager.AddNamespace (
-                                              LOG4_J_NS_PREFIX
+                                              Log4JNsPrefix
                                             , "http://kaymccormick.com/xmlns/log4j"
                                              ) ;
 
             xmlNamespaceManager.AddNamespace (
-                                              NLOG_NS_PREFIX
+                                              NlogNsPrefix
                                             , "http://kaymccormick.com/xmlns/nlog"
                                              ) ;
             var xmlParserContext = new XmlParserContext (
@@ -201,7 +201,7 @@ namespace AnalysisAppLib
                 var elem = document.DocumentElement ;
                 if ( elem != null )
                 {
-                    var logger = elem.GetAttribute ( LOGGER_ATTRIBUTE_NAME ) ;
+                    var logger = elem.GetAttribute ( LoggerAttributeName ) ;
                     var level = elem.GetAttribute ( "level" ) ;
                     var levelOrdinal = Levels.ToList ( ).IndexOf ( level ) ;
                     var timestamp = elem.GetAttribute ( "timestamp" ) ;

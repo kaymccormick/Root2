@@ -10,6 +10,8 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using System.ComponentModel ;
+using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
@@ -18,7 +20,7 @@ namespace KayMcCormick.Dev
     /// <summary>
     /// 
     /// </summary>
-    public class ResourceNodeInfoBase : IHierarchicalNode
+    public class ResourceNodeInfoBase : IHierarchicalNode, INotifyPropertyChanged
     {
         private object _data ;
         private object _key ;
@@ -82,5 +84,20 @@ namespace KayMcCormick.Dev
         ///     Depth of node. 0 for a top-level node.
         /// </summary>
         public int Depth { get { return _depth ; } set { _depth = value ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
+        [ NotifyPropertyChangedInvocator ]
+        protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        {
+            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;  
+        }
     }
 }

@@ -127,4 +127,7 @@
   <data name="Program_Parse" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Program-Parse.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="AnalysisService_Parse_Empty_code_supplied" xml:space="preserve">
+    <value>Empty code supplied</value>
+  </data>
 </root>

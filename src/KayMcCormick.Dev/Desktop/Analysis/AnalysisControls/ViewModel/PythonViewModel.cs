@@ -112,7 +112,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ JsonIgnore ]
-        public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument ( ) ;
+        public FlowDocument FlowDocument { get ; set ; } = new FlowDocument ( ) ;
 
         /// <summary>
         /// 
@@ -280,7 +280,7 @@ namespace AnalysisControls.ViewModel
 
         private void FlowWrite ( string eValue )
         {
-            FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( eValue ) ) ) ;
+            FlowDocument.Blocks.Add ( new Paragraph ( new Run ( eValue ) ) ) ;
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace AnalysisControls.ViewModel
         {
             Lines.Add ( "" ) ;
             LinesCollectionView.MoveCurrentToLast ( ) ;
-            FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
+            FlowDocument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
             string strRep = null ;
             dynamic result = null ;
             try
@@ -326,7 +326,7 @@ namespace AnalysisControls.ViewModel
 
             if ( strRep != null )
             {
-                FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( strRep ) ) ) ;
+                FlowDocument.Blocks.Add ( new Paragraph ( new Run ( strRep ) ) ) ;
             }
         }
 

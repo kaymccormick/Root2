@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:AnalysisControls"
              xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
              xmlns:syntax="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
              xmlns:converters="clr-namespace:AnalysisControls.Converters"
@@ -46,7 +45,7 @@
       <TextBlock
         Text="{Binding Path=/,Source={StaticResource AllNodes},Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
     </StackPanel>
-    <TreeView x:Name="tv" Grid.Column="0" Grid.Row="1"
+    <TreeView x:Name="Tv" Grid.Column="0" Grid.Row="1"
               ItemsSource="{Binding Source={StaticResource Compilation}}"
               SelectedItemChanged="tv_SelectedItemChanged">
       <TreeView.Resources>

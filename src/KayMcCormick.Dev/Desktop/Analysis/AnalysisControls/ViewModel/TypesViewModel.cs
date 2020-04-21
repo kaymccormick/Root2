@@ -31,8 +31,8 @@ namespace AnalysisControls.ViewModel
       , ISupportInitializeNotification
     {
         private readonly        JsonSerializerOptions _options ;
-        private const string POCO_PREFIX = "Poco" ;
-        private const string COLLECTION_SUFFIX = "Collection" ;
+        private const string PocoPrefix = "Poco" ;
+        private const string CollectionSuffix = "Collection" ;
 
         private DateTime _initializationDateTime ;
         private bool     _showBordersIsChecked ;
@@ -59,6 +59,7 @@ namespace AnalysisControls.ViewModel
             new Dictionary < Type , TypeDocInfo > ( ) ;
 
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
+        [ CanBeNull ] private object _docInfo = null ;
 
         /// <summary>
         /// 
@@ -139,6 +140,11 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [ CanBeNull ] public object DocInfo { get { return _docInfo ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
         [ CanBeNull ]
@@ -162,7 +168,7 @@ namespace AnalysisControls.ViewModel
                 key = new AppTypeInfoKey ( unqualifiedTypeName ) ;
             }
 
-            if ( Map.dict.TryGetValue ( key , out var typeInfo ) )
+            if ( Map.Dict.TryGetValue ( key , out var typeInfo ) )
             {
                 return typeInfo ;
             }
@@ -224,7 +230,7 @@ namespace AnalysisControls.ViewModel
                 appTypeInfo.SubTypeInfos.Add ( CollectTypeInfos ( subType , appTypeInfo , level + 1 ) ) ;
             }
 
-            Map.dict[ appTypeInfoKey ] = appTypeInfo ;
+            Map.Dict[ appTypeInfoKey ] = appTypeInfo ;
             return appTypeInfo ;
         }
 
@@ -269,7 +275,7 @@ namespace AnalysisControls.ViewModel
             Logger.Info ( nameof ( EndInit ) ) ;
             foreach ( var keyValuePair in Map2.Dict )
             {
-                Map.dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
+                Map.Dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
             }
 
             var mapCount = Map.Count ;
@@ -300,11 +306,10 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public void DetailFields ( )
         {
-            foreach ( var rField in Map.dict.SelectMany (
+            foreach ( var rField in Map.Dict.SelectMany (
                                                          keyValuePair
                                                              => keyValuePair
                                                                .Value.Fields
-                                                               .Cast < SyntaxFieldInfo > ( )
                                                         ) )
             {
                 if ( rField.Type == null )
@@ -324,7 +329,7 @@ namespace AnalysisControls.ViewModel
                         continue ;
                     }
 
-                    var ati = Map.dict[ new AppTypeInfoKey ( tz ) ] ;
+                    var ati = Map.Dict[ new AppTypeInfoKey ( tz ) ] ;
                     var types = new List < AppTypeInfo > ( ) ;
                     Collect ( ati , types ) ;
                     foreach ( var appTypeInfo in types )
@@ -337,7 +342,7 @@ namespace AnalysisControls.ViewModel
                     if ( rField.Type != null
                          && Map.Contains ( rField.Type ) )
                     {
-                        rField.Types.Add ( Map.dict[ new AppTypeInfoKey ( rField.Type ) ] ) ;
+                        rField.Types.Add ( Map.Dict[ new AppTypeInfoKey ( rField.Type ) ] ) ;
                     }
                 }
             }
@@ -370,13 +375,13 @@ namespace AnalysisControls.ViewModel
             // }
 
 //            CollectDoc(docNode);
-            if ( ! Map.dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
+            if ( ! Map.Dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
             {
                 throw new InvalidOperationException ( ) ;
             }
 
             DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
-            var r = Map.dict[ new AppTypeInfoKey ( rootR ) ] ;
+            var r = Map.Dict[ new AppTypeInfoKey ( rootR ) ] ;
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             r.ColorValue     = HierarchyColors[ level ] ;
@@ -538,11 +543,11 @@ namespace AnalysisControls.ViewModel
         {
             DebugUtils.WriteLine ( "Populating collectionMap" ) ;
             var collectionMap = new Dictionary < string , object > ( ) ;
-            foreach ( var kvp in Map.dict )
+            foreach ( var kvp in Map.Dict )
             {
                 var mapKey = kvp.Key ;
                 var t = ( AppTypeInfo ) Map[ mapKey ] ;
-                var colType = $"{POCO_PREFIX}{t.Type.Name}{COLLECTION_SUFFIX}" ;
+                var colType = $"{PocoPrefix}{t.Type.Name}{CollectionSuffix}" ;
                 collectionMap[ t.Type.Name ] = colType ;
             }
 
@@ -556,7 +561,7 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public IEnumerable < AppTypeInfo > GetAppTypeInfos ( )
         {
-            return Map.dict.Values ;
+            return Map.Dict.Values ;
         }
     }
 }

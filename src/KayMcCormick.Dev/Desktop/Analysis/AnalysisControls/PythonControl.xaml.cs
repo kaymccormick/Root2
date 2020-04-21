@@ -1,15 +1,14 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
-using AnalysisControls.ViewModel;
-using Autofac;
+﻿using System.Windows.Controls ;
+using System.Windows.Input ;
+using AnalysisControls.ViewModel ;
+using Autofac ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev;
-using KayMcCormick.Dev.Attributes;
-using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Lib.Wpf ;
 
 namespace AnalysisControls
 {
-#if PYTHON
     /// <summary>
     ///     Interaction logic for PythonControl.xaml
     /// </summary>
@@ -32,45 +31,48 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="viewModel"></param>
+        [UsedImplicitly]
         public PythonControl ( ILifetimeScope scope , PythonViewModel viewModel )
         {
             _scope    = scope ;
             ViewModel = viewModel ;
             InitializeComponent ( ) ;
 
-            ViewModel.FlowDOcument = flow ;
+            ViewModel.FlowDocument = flow ;
         }
 
-    #region Implementation of IView<out PythonViewModel>
+        #region Implementation of IView<out PythonViewModel>
         /// <summary>
-        /// 
+        /// Retreive the view model.
         /// </summary>
         public PythonViewModel ViewModel { get ; }
-    #endregion
+        #endregion
 
-    // ReSharper disable once UnusedMember.Local
-    private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
-    {
-        switch ( e.Key )
+        // ReSharper disable once UnusedMember.Local
+        private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
-            case Key.Enter :
+            switch ( e.Key )
             {
-                DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
-                var textBox = ( TextBox ) sender ;
-                ViewModel.TakeLine ( textBox.Text ) ;
-                textBox.Text = "" ;
-                break ;
+                case Key.Enter :
+                {
+                    DebugUtils.WriteLine ( $"received key {e.Key}" ) ;
+                    var textBox = ( TextBox ) sender ;
+                    ViewModel.TakeLine ( textBox.Text ) ;
+                    textBox.Text = "" ;
+                    break ;
+                }
+                case Key.Up :
+                    ViewModel.HistoryUp ( ) ;
+                    break ;
             }
-            case Key.Up : ViewModel.HistoryUp ( ) ;
-                break ;
         }
-    }
 
-    // ReSharper disable once UnusedMember.Local
-    // ReSharper disable once UnusedParameter.Local
-    private void UIElement_OnPreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        private void UIElement_OnPreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
-            DebugUtils.WriteLine ( "rceived key " + e.Key ) ;
+            DebugUtils.WriteLine ( $"received key {e.Key}" ) ;
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch ( e.Key )
             {
                 case Key.Up :
@@ -84,5 +86,4 @@ namespace AnalysisControls
             }
         }
     }
-#endif
 }

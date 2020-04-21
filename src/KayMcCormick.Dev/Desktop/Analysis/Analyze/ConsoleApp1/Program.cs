@@ -869,7 +869,7 @@ namespace ConsoleApp1
                                            xamlFilename
                                          , new XmlWriterSettings { Indent = true , Async = true }
                                           ) ;
-            foreach ( var keyValuePair in model.Map.dict )
+            foreach ( var keyValuePair in model.Map.Dict )
             {
                 model.Map2.Dict[ keyValuePair.Key.StringValue ] = keyValuePair.Value ;
             }
@@ -1252,9 +1252,9 @@ namespace ConsoleApp1
             var types = new SyntaxList < MemberDeclarationSyntax > ( ) ;
             outputFunc ( $"{model1.Map.Count} Entries in Type map" ) ;
             var rewriter1 = new SyntaxRewriter1 ( model1 ) ;
-            foreach ( var mapKey1 in model1.Map.dict.Keys )
+            foreach ( var mapKey1 in model1.Map.Dict.Keys )
             {
-                var t = model1.Map.dict[ mapKey1 ] ;
+                var t = model1.Map.Dict[ mapKey1 ] ;
                 // ReSharper disable once UnusedVariable
                 var curIterAppTypeInfo = t ;
                 var colTypeClassName = $"{PocoPrefix}{t.Type.Name}{_collectionSuffix}" ;

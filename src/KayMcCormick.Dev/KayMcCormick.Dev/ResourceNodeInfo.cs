@@ -14,7 +14,6 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
-using System.Runtime.CompilerServices ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
@@ -29,9 +28,19 @@ namespace KayMcCormick.Dev
       , INotifyPropertyChanged
       , IEnumerable < ResourceNodeInfo >
     {
+        /// <summary>
+        /// Create ResourceNodeInfo instance.
+        /// </summary>
+        /// <returns></returns>
+        [ NotNull ] public static ResourceNodeInfo CreateInstance ( ) { return new ResourceNodeInfo ( ) ; }
+
+        private ResourceNodeInfo ( ) {
+        }
+
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
 
-        private Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo > _createNodeFunc ;
+        private Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
+            _createNodeFunc ;
 
         private object _data ;
         private int    _depth ;
@@ -48,25 +57,12 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        public Func < ResourceNodeInfo , object , object , bool ? , bool, ResourceNodeInfo >
+        public Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
             CreateNodeFunc { get { return _createNodeFunc ; } set { _createNodeFunc = value ; } }
 
         /// <summary>
         /// </summary>
-        /// <returns></returns>
-        public IEnumerator < ResourceNodeInfo > GetEnumerator ( )
-        {
-            return _children.GetEnumerator ( ) ;
-        }
 
-        IEnumerator IEnumerable.GetEnumerator ( )
-        {
-            return ( ( IEnumerable ) _children ).GetEnumerator ( ) ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public bool ? IsChildrenLoaded
         {
             get { return _isChildrenLoaded ; }
@@ -74,7 +70,6 @@ namespace KayMcCormick.Dev
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
             IEnumerable < ResourceNodeInfo > > GetChildrenFunc
@@ -95,29 +90,37 @@ namespace KayMcCormick.Dev
                 }
 
                 DebugUtils.WriteLine ( "Expanding children" ) ;
-                _children = Enumerable.ToList < ResourceNodeInfo > (
-                                                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                                                    _getChildrenFunc?.Invoke ( this , ( o , o1 ) => {
-                                                                                                  DebugUtils.WriteLine ( $"creating node for {o} {o1}" ) ;
-                                                                                                  var r = CreateNodeFunc (
-                                                                                                                          this
-                                                                                                                        , o
-                                                                                                                        , o1
-                                                                                                                        , false
-                                                                                                                 ,        false
-                                                                                                                         ) ;
-
-                                                                                                  return r ;
-                                                                                              }
-                                                                                             )
-                                                                   ) ;
-                // ReSharper disable once PossibleNullReferenceException
-                foreach ( var resourceNodeInfo in _children )
+                // ReSharper disable once AssignNullToNotNullAttribute
+                if ( _getChildrenFunc == null )
                 {
-                    DebugUtils.WriteLine($"{resourceNodeInfo}");
+                    _children = new List < ResourceNodeInfo > ();
+                }
+                else
+                {
+                    _children = ( _getChildrenFunc.Invoke (
+                                                           this
+                                                         , ( o , o1 ) => {
+                                                               DebugUtils.WriteLine (
+                                                                                     $"creating node for {o} {o1}"
+                                                                                    ) ;
+                                                               var r = CreateNodeFunc (
+                                                                                       this
+                                                                                     , o
+                                                                                     , o1
+                                                                                     , false
+                                                                                     , false
+                                                                                      ) ;
+
+                                                               return r ;
+                                                           }
+                                                          ) ).ToList ( ) ;
                 }
 
-                // ReSharper disable once AssignNullToNotNullAttribute
+                foreach ( var resourceNodeInfo in _children )
+                {
+                    DebugUtils.WriteLine ( $"collected child {resourceNodeInfo}" ) ;
+                }
+
                 return _children ;
             }
             set { _children = value ; }
@@ -125,7 +128,16 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged ;
+        /// <returns></returns>
+        public IEnumerator < ResourceNodeInfo > GetEnumerator ( )
+        {
+            return _children.GetEnumerator ( ) ;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator ( )
+        {
+            return ( ( IEnumerable ) _children ).GetEnumerator ( ) ;
+        }
 
         /// <summary>
         /// </summary>
@@ -134,27 +146,5 @@ namespace KayMcCormick.Dev
         {
             return $"{new string ( ' ' , Depth )}Key: {_key}; Data: {_data}" ;
         }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="propertyName"></param>
-        [ NotifyPropertyChangedInvocator ]
-        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
-        {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IProvidesKey
-    {
-        /// <summary>
-        ///
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        object GetKey ( ) ;
     }
 }

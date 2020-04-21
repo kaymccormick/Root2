@@ -45,6 +45,11 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        object DocInfo { get ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
         AppTypeInfo GetAppTypeInfo ( object identifier ) ;

@@ -21,7 +21,6 @@ using System.Xml ;
 using System.Xml.Linq ;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.Xaml ;
-using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
@@ -56,12 +55,12 @@ namespace AnalysisAppLib
           , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\netstandard.dll"
         } ;
 
-        private const string _predefinedNodeElementName = "PredefinedNode" ;
-        private const string _abstractNodeElementName   = "AbstractNode" ;
-        private const string _nodeElementName           = "Node" ;
+        private const string PredefinedNodeElementName = "PredefinedNode" ;
+        private const string AbstractNodeElementName   = "AbstractNode" ;
+        private const string NodeElementName           = "Node" ;
 
-        private const string _pocoPrefix       = "Poco" ;
-        private const string _collectionSuffix = "Collection" ;
+        private const string PocoPrefix       = "Poco" ;
+        private const string CollectionSuffix = "Collection" ;
 
         private Type          _cSharpSyntaxNodeClrType ;
         private List < Type > _nodeTypes ;
@@ -95,7 +94,7 @@ namespace AnalysisAppLib
                 key = new AppTypeInfoKey ( unqualifiedTypeName ) ;
             }
 
-            if ( Map.dict.TryGetValue ( key , out var typeInfo ) )
+            if ( Map.Dict.TryGetValue ( key , out var typeInfo ) )
             {
                 return typeInfo ;
             }
@@ -115,16 +114,7 @@ namespace AnalysisAppLib
                                                             .IsAssignableFrom ( t )
                                                         )
                                                  .ToList ( ) ;
-            AppTypeCSharpSyntaxNode = CollectTypeInfos2 ( null , _cSharpSyntaxNodeClrType ) ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public AppTypeInfo AppTypeCSharpSyntaxNode
-        {
-            get { return _appTypeCSharpSyntaxNode ; }
-            set { _appTypeCSharpSyntaxNode = value ; }
+            CollectTypeInfos2 ( null , _cSharpSyntaxNodeClrType ) ;
         }
 
         [ NotNull ]
@@ -136,13 +126,13 @@ namespace AnalysisAppLib
         {
             DebugUtils.WriteLine ( $"{rootR}" ) ;
 
-            if ( ! Map.dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
+            if ( ! Map.Dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
             {
                 throw new InvalidOperationException ( ) ;
             }
 
             DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
-            var r = Map.dict[ new AppTypeInfoKey ( rootR ) ] ;
+            var r = Map.Dict[ new AppTypeInfoKey ( rootR ) ] ;
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             //r.ColorValue     = HierarchyColors[level];
@@ -157,11 +147,10 @@ namespace AnalysisAppLib
         /// <summary>
         /// -
         /// </summary>
-        public TypeMapDictionary Map { get { return _map ; } set { _map = value ; } }
+        private TypeMapDictionary Map { get { return _map ; } }
 
-        private TypeMapDictionary _map = new TypeMapDictionary ( ) ;
+        private readonly TypeMapDictionary _map = new TypeMapDictionary ( ) ;
         private bool              _isInitialized ;
-        private AppTypeInfo       _appTypeCSharpSyntaxNode ;
         #region Implementation of ISupportInitialize
         /// <summary>
         /// 
@@ -181,7 +170,7 @@ namespace AnalysisAppLib
         public bool IsInitialized
         {
             get { return _isInitialized ; }
-            set { _isInitialized = value ; }
+            private set { _isInitialized = value ; }
         }
 
         /// <summary>
@@ -233,12 +222,13 @@ namespace AnalysisAppLib
             return typeSyntax ;
         }
 
+        // ReSharper disable once UnusedMember.Global
         internal void LoadFactoryMethodSignaturesAndDocumentation (
             ISyntaxTypesService       sts
-          , [ NotNull ] IDocInterface docface
+          , [ NotNull ] IDocInterface docInterface
         )
         {
-            var si = docface.GetTypeDocumentation ( typeof ( SyntaxFactory ) ) ;
+            var si = docInterface.GetTypeDocumentation ( typeof ( SyntaxFactory ) ) ;
             var methodInfos = typeof ( SyntaxFactory )
                              .GetMethods ( BindingFlags.Static | BindingFlags.Public )
                              .ToList ( ) ;
@@ -252,7 +242,7 @@ namespace AnalysisAppLib
                 var info = sts.GetAppTypeInfo ( key ) ;
                 var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
                 if ( si != null
-                     && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var mdoc ) )
+                     && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var methodDoc ) )
                 {
                     var p = string.Join (
                                          ","
@@ -264,7 +254,7 @@ namespace AnalysisAppLib
                                                 )
                                         ) ;
                     //DebugUtils.WriteLine ( $"xx: {p}" ) ;
-                    foreach ( var methodDocumentation in mdoc )
+                    foreach ( var methodDocumentation in methodDoc )
                     {
                         //  DebugUtils.WriteLine ( methodDocumentation.Parameters ) ;
                         if ( methodDocumentation.Parameters != p )
@@ -274,7 +264,7 @@ namespace AnalysisAppLib
 
                         //    DebugUtils.WriteLine ( $"Docs for {methodInfo}" ) ;
                         appMethodInfo.XmlDoc = methodDocumentation ;
-                        docface.CollectDoc ( methodDocumentation ) ;
+                        docInterface.CollectDoc ( methodDocumentation ) ;
                     }
                 }
 
@@ -282,7 +272,7 @@ namespace AnalysisAppLib
                 //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
             }
 
-            foreach ( var pair in Map.dict.Where (
+            foreach ( var pair in Map.Dict.Where (
                                                   v => ! v.Key.Equals (
                                                                        new AppTypeInfoKey (
                                                                                            typeof (
@@ -313,17 +303,17 @@ namespace AnalysisAppLib
                         if ( t.IsGenericType )
                         {
                             DebugUtils.WriteLine ( $"{t} is Generic" ) ;
-                            var targ = t.GenericTypeArguments[ 0 ] ;
-                            DebugUtils.WriteLine ( $"{targ}" ) ;
-                            if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
+                            var typeArg = t.GenericTypeArguments[ 0 ] ;
+                            DebugUtils.WriteLine ( $"{typeArg}" ) ;
+                            if ( typeof ( SyntaxNode ).IsAssignableFrom ( typeArg )
                                  && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
                             {
-                                typeInfo = ( AppTypeInfo ) Map[ targ ] ;
+                                typeInfo = ( AppTypeInfo ) Map[ typeArg ] ;
                             }
                         }
                         else
                         {
-                            if ( ! Map.dict.TryGetValue (
+                            if ( ! Map.Dict.TryGetValue (
                                                          new AppTypeInfoKey ( t )
                                                        , out typeInfo
                                                         ) )
@@ -341,21 +331,17 @@ namespace AnalysisAppLib
                             continue ;
                         }
 
-                        PropertyDocumentation propDoc = null ;
-                        var info = docface.GetTypeDocumentation ( type ) ;
-                        if ( type != null )
+                        var info = docInterface.GetTypeDocumentation ( type ) ;
+                        if ( info.PropertyDocumentation.TryGetValue (
+                                                                     propertyInfo.Name
+                                                                   , out var propDoc
+                                                                    ) )
                         {
-                            if ( info.PropertyDocumentation.TryGetValue (
-                                                                         propertyInfo.Name
-                                                                       , out propDoc
-                                                                        ) )
-                            {
-                            }
                         }
 
                         if ( propDoc != null )
                         {
-                            docface.CollectDoc ( propDoc ) ;
+                            docInterface.CollectDoc ( propDoc ) ;
                             // pair.Value.Components.Add (
                             // new ComponentInfo
                             // {
@@ -378,11 +364,6 @@ namespace AnalysisAppLib
 
         private Type GetTypeInfo ( [ NotNull ] AppTypeInfo pairValue ) { return pairValue.Type ; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
-
         private readonly Dictionary < Type , AppTypeInfo > _otherTyps =
             new Dictionary < Type , AppTypeInfo > ( ) ;
 
@@ -395,11 +376,11 @@ namespace AnalysisAppLib
         {
             DebugUtils.WriteLine ( "Populating collectionMap" ) ;
             var collectionMap = new Dictionary < string , object > ( ) ;
-            foreach ( var kvp in Map.dict )
+            foreach ( var kvp in Map.Dict )
             {
                 var mapKey = kvp.Key ;
                 var t = ( AppTypeInfo ) Map[ mapKey ] ;
-                var colType = $"{_pocoPrefix}{t.Type.Name}{_collectionSuffix}" ;
+                var colType = $"{PocoPrefix}{t.Type.Name}{CollectionSuffix}" ;
                 collectionMap[ ( string ) t.KeyValue ] = colType ;
             }
 
@@ -435,32 +416,29 @@ namespace AnalysisAppLib
                     }
 
                     var rootType = syntax.Root.Attribute ( XName.Get ( "Root" ) )?.Value ;
-                    if ( model1.Map.Values != null )
+                    var result =
+                        model1.Map.Dict.Where ( pair => pair.Value.Type.Name == rootType ) ;
+                    // var result = (valueCollection.Where ( t => {
+                    // DebugUtils.WriteLine(t.Type.Name);
+                    // var b = t.Type.Name
+                    // == rootType ;
+                    // if ( b )
+                    // DebugUtils
+                    // .WriteLine ( "true" ) ;
+                    // return b ;
+                    // }
+                    // )) ;
+                    var keyValuePairs =
+                        result as KeyValuePair < AppTypeInfoKey , AppTypeInfo >[]
+                        ?? result.ToArray ( ) ;
+                    if ( ! keyValuePairs.Any ( ) )
                     {
-                        var result =
-                            model1.Map.dict.Where ( pair => pair.Value.Type.Name == rootType ) ;
-                        // var result = (valueCollection.Where ( t => {
-                        // DebugUtils.WriteLine(t.Type.Name);
-                        // var b = t.Type.Name
-                        // == rootType ;
-                        // if ( b )
-                        // DebugUtils
-                        // .WriteLine ( "true" ) ;
-                        // return b ;
-                        // }
-                        // )) ;
-                        var keyValuePairs =
-                            result as KeyValuePair < AppTypeInfoKey , AppTypeInfo >[]
-                            ?? result.ToArray ( ) ;
-                        if ( ! keyValuePairs.Any ( ) )
-                        {
-                            DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
-                        }
-                        else
-                        {
-                            var ati = keyValuePairs.First ( ).Value ;
-                            DebugUtils.WriteLine ( $"{ati}" ) ;
-                        }
+                        DebugUtils.WriteLine ( $"No results for {rootType}" ) ;
+                    }
+                    else
+                    {
+                        var ati = keyValuePairs.First ( ).Value ;
+                        DebugUtils.WriteLine ( $"{ati}" ) ;
                     }
 
                     foreach ( var xElement in syntax.Root.Elements ( ) )
@@ -469,7 +447,7 @@ namespace AnalysisAppLib
                         var xElementNameElementNameLocalName = xElement.Name.LocalName ;
                         switch ( xElementNameElementNameLocalName )
                         {
-                            case _predefinedNodeElementName :
+                            case PredefinedNodeElementName :
                                 var xNameName = XName.Get ( "Name" ) ;
                                 var typeName = xElement.Attribute ( xNameName )?.Value ;
                                 switch ( typeName )
@@ -499,10 +477,10 @@ namespace AnalysisAppLib
                                 }
 
                                 break ;
-                            case _abstractNodeElementName :
+                            case AbstractNodeElementName :
                                 ParseNodeBasics ( model1 , xElement , collectionMap ) ;
                                 break ;
-                            case _nodeElementName :
+                            case NodeElementName :
                                 ParseNodeBasics ( model1 , xElement , collectionMap ) ;
                                 break ;
 
@@ -534,7 +512,7 @@ namespace AnalysisAppLib
 
             else
             {
-                var typ2 = model1.Map.dict[ new AppTypeInfoKey ( t2 ) ] ;
+                var typ2 = model1.Map.Dict[ new AppTypeInfoKey ( t2 ) ] ;
                 typ2.ElementName = xElement.Name.LocalName ;
                 var kinds1 = xElement.Elements ( XName.Get ( "Kind" ) ) ;
                 var xElements = kinds1 as XElement[] ?? kinds1.ToArray ( ) ;
@@ -830,7 +808,7 @@ namespace AnalysisAppLib
           , string                      typeName2
         )
         {
-            return model1.Map.dict.First ( k => k.Value.Type.Name == typeName2 ).Value.Type ;
+            return model1.Map.Dict.First ( k => k.Value.Type.Name == typeName2 ).Value.Type ;
         }
 
         /// <summary>

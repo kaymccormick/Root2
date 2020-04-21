@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
-// ReSharper disable UnusedVariable
 
 namespace AnalysisControls.Converters
 {
@@ -21,8 +20,9 @@ namespace AnalysisControls.Converters
         /// <summary>
         /// 
         /// </summary>
-        public static readonly  HierarchyConverter Default = new HierarchyConverter ( ) ;
-        private static readonly Logger             Logger  = LogManager.GetCurrentClassLogger ( ) ;
+        public static readonly HierarchyConverter Default = new HierarchyConverter ( ) ;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Implementation of IValueConverter
         /// <summary>Converts the specified value.</summary>
         /// <param name="value">The value.</param>

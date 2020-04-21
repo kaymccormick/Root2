@@ -2,7 +2,6 @@
 using System.Collections ;
 using System.Collections.Generic ;
 using AnalysisAppLib.Syntax ;
-using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Xaml
 {
@@ -14,13 +13,13 @@ namespace AnalysisAppLib.Xaml
         /// <summary>
         /// 
         /// </summary>
-        public readonly Dictionary < AppTypeInfoKey , AppTypeInfo > dict = new Dictionary < AppTypeInfoKey , AppTypeInfo > ( ) ;
+        public readonly Dictionary < AppTypeInfoKey , AppTypeInfo > Dict = new Dictionary < AppTypeInfoKey , AppTypeInfo > ( ) ;
 
         private readonly IDictionary _dict ;
         /// <summary>
         /// 
         /// </summary>
-        public TypeMapDictionary ( ) { _dict = dict ; }
+        public TypeMapDictionary ( ) { _dict = Dict ; }
         #region Implementation of IEnumerable
         /// <summary>
         /// 
@@ -111,21 +110,5 @@ namespace AnalysisAppLib.Xaml
         /// </summary>
         public bool IsSynchronized { get { return _dict.IsSynchronized ; } }
         #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeKey"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public AppTypeInfo GetAppTypeInfoForType ( [ NotNull ] AppTypeInfoKey typeKey )
-        {
-            if (! dict.ContainsKey ( typeKey ) )
-            {
-                throw new InvalidOperationException ( "No such type" ) ;
-            }
-
-            return dict[ typeKey ] ;
-        }
     }
 }

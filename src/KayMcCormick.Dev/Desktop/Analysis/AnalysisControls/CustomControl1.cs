@@ -103,6 +103,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override void OnApplyTemplate ( )
         {
+            // ReSharper disable once UnusedVariable
             var treeView = GetTemplateChild ( "treeView" ) as TreeView ;
         }
 

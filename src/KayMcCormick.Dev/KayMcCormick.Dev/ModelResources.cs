@@ -332,13 +332,11 @@ namespace KayMcCormick.Dev
         )
         {
             var wrapped = WrapValue ( data ) ;
-            var r = new ResourceNodeInfo
-                    {
-                        Key             = key
-                      , Data            = wrapped
-                      , IsValueChildren = isValueChildren
-                      , CreateNodeFunc  = CreateNode
-                    } ;
+            var r = ResourceNodeInfo.CreateInstance ( ) ;
+            r.Key = key ;
+            r.Data = wrapped ;
+            r.IsValueChildren = isValueChildren ;
+            r.CreateNodeFunc = CreateNode ;
             if ( parent == null )
             {
                 AllResourcesCollection.Add ( r ) ;

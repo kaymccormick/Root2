@@ -11,6 +11,7 @@
 // ---
 #endregion
 using System ;
+using AnalysisAppLib.Properties ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
@@ -122,7 +123,7 @@ namespace AnalysisAppLib
 
             if ( string.IsNullOrWhiteSpace ( code ) )
             {
-                throw new ArgumentOutOfRangeException ( nameof ( code ) , "Empty code supplied" ) ;
+                throw new ArgumentOutOfRangeException ( nameof ( code ) , Resources.AnalysisService_Parse_Empty_code_supplied ) ;
             }
 
             if ( assemblyName == null )

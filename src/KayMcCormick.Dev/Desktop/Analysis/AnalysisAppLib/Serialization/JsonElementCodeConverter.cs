@@ -9,14 +9,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 namespace AnalysisAppLib.Serialization
 {
     /// <summary>
-    /// 
     /// </summary>
     [ UsedImplicitly ]
     public class JsonElementCodeConverter
     {
         // ReSharper disable once UnusedMember.Global
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
@@ -34,7 +32,7 @@ namespace AnalysisAppLib.Serialization
                     break ;
                 case JsonValueKind.Object :
                     elementSyntax = AnonymousObject ( element ) ;
-                    
+
 
                     break ;
                 case JsonValueKind.Array :
@@ -119,34 +117,36 @@ namespace AnalysisAppLib.Serialization
         [ NotNull ]
         private static ExpressionSyntax AnonymousObject ( JsonElement element )
         {
-            var anon = new SeparatedSyntaxList < AnonymousObjectMemberDeclaratorSyntax > ( ).AddRange (
-                                                                                                       element
-                                                                                                          .EnumerateObject ( )
-                                                                                                          .Where (
-                                                                                                                  p => p.Value
-                                                                                                                        .ValueKind
-                                                                                                                       != JsonValueKind
-                                                                                                                          .Null
-                                                                                                                 )
-                                                                                                          .Select (
-                                                                                                                   p
-                                                                                                                       => SyntaxFactory
-                                                                                                                          .AnonymousObjectMemberDeclarator (
-                                                                                                                                                            SyntaxFactory
-                                                                                                                                                               .NameEquals (
-                                                                                                                                                                            p.Name
-                                                                                                                                                                           )
-                                                                                                                                                          , ConvertJsonElementToCode (
-                                                                                                                                                                                      p.Value
-                                                                                                                                                                                     )
-                                                                                                                                                           )
-                                                                                                                  )
-                                                                                                      ) ;
+            var anon =
+                new SeparatedSyntaxList < AnonymousObjectMemberDeclaratorSyntax > ( ).AddRange (
+                                                                                                element
+                                                                                                   .EnumerateObject ( )
+                                                                                                   .Where (
+                                                                                                           p => p.Value
+                                                                                                                 .ValueKind
+                                                                                                                != JsonValueKind
+                                                                                                                   .Null
+                                                                                                          )
+                                                                                                   .Select (
+                                                                                                            p
+                                                                                                                => SyntaxFactory
+                                                                                                                   .AnonymousObjectMemberDeclarator (
+                                                                                                                                                     SyntaxFactory
+                                                                                                                                                        .NameEquals (
+                                                                                                                                                                     p.Name
+                                                                                                                                                                    )
+                                                                                                                                                   , ConvertJsonElementToCode (
+                                                                                                                                                                               p.Value
+                                                                                                                                                                              )
+                                                                                                                                                    )
+                                                                                                           )
+                                                                                               ) ;
             ExpressionSyntax elementSyntax = SyntaxFactory.AnonymousObjectCreationExpression (
                                                                                               // ReSharper disable once RedundantArgumentDefaultValue
-                                                                                              new SeparatedSyntaxList <
-                                                                                                  AnonymousObjectMemberDeclaratorSyntax
-                                                                                              > ( )
+                                                                                              new
+                                                                                                  SeparatedSyntaxList
+                                                                                                  < AnonymousObjectMemberDeclaratorSyntax
+                                                                                                  > ( )
                                                                                              ) ;
             return elementSyntax ;
         }

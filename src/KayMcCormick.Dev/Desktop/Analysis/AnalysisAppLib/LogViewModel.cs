@@ -101,10 +101,8 @@ namespace AnalysisAppLib
             var strings = loggerName.Split ( '.' ) ;
             int i ;
             var logger = RootLogger ;
-            var loggerName1 = "" ;
             for ( i = 0 ; i < strings.Length ; i ++ )
             {
-                loggerName1 += strings[ i ] ;
                 if ( ! logger.ChildrenLoggers.TryGetValue ( strings[ i ] , out var child ) )
                 {
                     child = new ViewerLoggerInfo
@@ -118,7 +116,6 @@ namespace AnalysisAppLib
                 }
 
                 logger      = child ;
-                loggerName1 += "." ;
             }
         }
 

@@ -1,7 +1,7 @@
-﻿<UserControl x:Name="py"
+﻿<UserControl x:Name="Py"
              x:Class="AnalysisControls.PythonControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             DataContext="{Binding ElementName=py,Path=ViewModel}"
+             DataContext="{Binding ElementName=Py,Path=ViewModel}"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -23,14 +23,15 @@
 
       <FlowDocumentScrollViewer.Document>
         <FlowDocument Background="DarkOliveGreen"
-                      Name="flow" />
+                      x:Name="Flow" />
       </FlowDocumentScrollViewer.Document>
     </FlowDocumentScrollViewer>
     <Border Padding="20" Grid.Row="2" Grid.Column="0"
             Grid.ColumnSpan="2" Background="CadetBlue">
-      <TextBox Name="input"
+      <!-- ReSharper disable once UnusedMember.Global -->
+      <TextBox x:Name="Input"
                PreviewKeyDown="UIElement_OnPreviewKeyDown"
-               Text="{Binding ElementName=py,Path=ViewModel.TextInput,Mode=TwoWay}"
+               Text="TextInput,Mode=TwoWay}"
                KeyDown="UIElement_OnKeyDown" Height="60" />
     </Border>
     <ListBox Grid.Row="0" Grid.Column="1" MinWidth="200"

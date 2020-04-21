@@ -15,7 +15,7 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
-  <StackPanel Name="rootPanel" Orientation="Vertical">
-    <TextBlock Name="main" />
+  <StackPanel Name="RootPanel" Orientation="Vertical">
+    <TextBlock Name="Main" />
   </StackPanel>
 </UserControl>

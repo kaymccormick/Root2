@@ -25,17 +25,20 @@ using KayMcCormick.Dev ;
 namespace KayMcCormick.Lib.Wpf.ViewModel
 {
     /// <summary>
+    /// A View model representing all of the resources in the application, building on
+    ///<see cref="ModelResources"/>
     /// </summary>
-    [ContentProperty("ModelResources")]
+    [ ContentProperty ( "ModelResources" ) ]
     public sealed class AllResourcesTreeViewModel : IViewModel , ISupportInitializeNotification
     {
-
         private ModelResources _modelResources ;
 
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;
 
         private ResourceNodeInfo _appNode ;
+        // ReSharper disable once RedundantDefaultMemberInitializer
+        private bool _doPopulateXamlSchema = false;
 
         /// <summary>
         /// 
@@ -64,7 +67,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
 #if false
         private void PopulateInstances (
             ResourceNodeInfo       res
-  , IComponentRegistration registration
+, IComponentRegistration registration
         )
         {
             var n = CreateNode ( res , "Instances" , null , false ) ;
@@ -74,9 +77,9 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 var key = _idProvider.GetObjectInstanceIdentifier ( instanceInfo.Instance ) ;
                 CreateNode (
                             n
-                  , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
-                  , instanceInfo.Parameters
-                  , true
+          , new CompositeResourceNodeKey ( key , instanceInfo.Instance )
+          , instanceInfo.Parameters
+          , true
                            ) ;
             }
         }
@@ -84,16 +87,16 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         [ NotNull ]
         private ResourceNodeInfo CreateNode (
             [ CanBeNull ] IHierarchicalNode parent
-          , object                         key
-          , object                         data
-          , bool ?                         isValueChildren = null
+          , object                          key
+          , object                          data
+          , bool ?                          isValueChildren = null
         )
         {
             var wrapped = WrapValue ( data ) ;
-            var r = new ResourceNodeInfo
-                    {
-                        Key = key , Data = wrapped , IsValueChildren = isValueChildren
-                    } ;
+            var r = ResourceNodeInfo.CreateInstance ( ) ;
+            r.Key = key ;
+            r.Data = wrapped ;
+            r.IsValueChildren = isValueChildren ;
             if ( parent == null )
             {
                 AllResourcesCollection.Add ( r ) ;
@@ -114,9 +117,10 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             var current = Application.Current ;
             _appNode = CreateNode ( null , "Application" , current , false ) ;
 
-            var schemaContext = XamlReader.GetWpfSchemaContext ( ) ;
-            var scmNode = CreateNode ( _appNode , schemaContext , schemaContext , false ) ;
-            foreach ( var member1 in from ns in schemaContext.GetAllXamlNamespaces ( ) let ns1 = CreateNode ( scmNode , ns , ns , false ) from allXamlType in schemaContext.GetAllXamlTypes ( ns) let t1 = CreateNode ( ns1 , allXamlType , allXamlType , false ) from xamlMember in allXamlType.GetAllMembers ( ) select CreateNode ( t1 , xamlMember , xamlMember , false ) ) { }
+            if ( DoPopulateXamlSchema )
+            {
+                PopulateXamlSchema ( ) ;
+            }
 
             if ( current == null )
             {
@@ -130,6 +134,30 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             foreach ( Window currentWindow in current.Windows )
             {
                 HandleWindow ( currentWindow ) ;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not to populate the tree with XAML Schema related nodes.
+        /// </summary>
+        public bool DoPopulateXamlSchema { get { return _doPopulateXamlSchema ; } set { _doPopulateXamlSchema = value ; } }
+
+        private void PopulateXamlSchema ( )
+        {
+            var schemaContext = XamlReader.GetWpfSchemaContext ( ) ;
+            var scmNode = CreateNode ( _appNode , schemaContext , schemaContext , false ) ;
+            foreach ( var member1 in
+                from ns in schemaContext.GetAllXamlNamespaces ( )
+                let ns1 = CreateNode ( scmNode , ns , ns , false )
+                from allXamlType in schemaContext.GetAllXamlTypes ( ns )
+                let t1 = CreateNode ( ns1 , allXamlType , allXamlType , false )
+                from xamlMember in allXamlType.GetAllMembers ( )
+                select new { node = CreateNode ( t1 , xamlMember , xamlMember , false ) , xamlMember } )
+            {
+                var n = member1.xamlMember.DeclaringType.Name ;
+                var n2 = member1.xamlMember.Name ;
+
+                DebugUtils.WriteLine ( $"{n} {n2}" ) ;
             }
         }
 
@@ -162,7 +190,10 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             DebugUtils.WriteLine ( w.ToString ( ) ) ;
             var children = LogicalTreeHelper.GetChildren ( w ) ;
-            foreach ( var child in from object child in children let logChild = CreateNode ( log , child.ToString() , null , false ) select child )
+            foreach ( var child in
+                from object child in children
+                let logChild = CreateNode ( log , child.ToString ( ) , null , false )
+                select child )
             {
                 // ReSharper disable once UnusedVariable
                 if ( child is DependencyObject @do )
@@ -194,7 +225,14 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                 return ;
             }
 
-            foreach ( var mdr in res.MergedDictionaries.Select ( md => CreateNode ( resNode , md.Source , md , true ) ) )
+            foreach ( var mdr in res.MergedDictionaries.Select (
+                                                                md => CreateNode (
+                                                                                  resNode
+                                                                                , md.Source
+                                                                                , md
+                                                                                , true
+                                                                                 )
+                                                               ) )
             {
                 AddResourceNodeInfos ( mdr ) ;
             }
@@ -239,8 +277,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                     {
                         case FrameworkTemplate ft :
                         {
-                            var resourcesNode =
-                                CreateNode ( resourceInfo , "Resources" , ft.Resources ) ;
+                            var resourcesNode = CreateNode (
+                                                            resourceInfo
+                                                          , "Resources"
+                                                          , ft.Resources
+                                                           ) ;
                             AddResourceNodeInfos ( resourcesNode ) ;
                             break ;
                         }
@@ -254,7 +295,11 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                                 {
                                     case EventSetter _ : break ;
                                     case Setter setter1 :
-                                        CreateNode ( settersNode , setter1.Property , setter1.Value ) ;
+                                        CreateNode (
+                                                    settersNode
+                                                  , setter1.Property
+                                                  , setter1.Value
+                                                   ) ;
 
                                         break ;
                                     default : throw new InvalidOperationException ( ) ;
@@ -350,7 +395,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Content ) ]
         public ModelResources ModelResources
         {
             get { return _modelResources ; }

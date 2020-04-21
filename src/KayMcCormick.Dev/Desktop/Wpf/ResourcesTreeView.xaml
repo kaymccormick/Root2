@@ -21,6 +21,7 @@
                             ContentTemplateSelector="{StaticResource HierarchicalTemplateSelector}"
                             Content="{Binding Key}">
               <ContentControl.ToolTip>
+                <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
                 <Binding Path="Key"
                          Converter="{StaticResource GetTypeConverter}" />
               </ContentControl.ToolTip>

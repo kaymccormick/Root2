@@ -31,6 +31,7 @@
       <xcad:LayoutPanel Orientation="Horizontal">
         <xcad:LayoutAnchorablePane DockWidth="200">
           <xcad:LayoutAnchorable>
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <ListView
               ItemsSource="{Binding Source={kmWpf:Resolve viewModel1:ISyntaxTokenViewModel},Path=SyntaxItems}">
               <ListView.View>

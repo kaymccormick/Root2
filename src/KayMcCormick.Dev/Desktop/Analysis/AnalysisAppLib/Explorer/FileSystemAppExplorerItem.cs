@@ -97,14 +97,14 @@ namespace AnalysisAppLib.Explorer
             get { return ( _fileAttributes & FileAttributes.Hidden ) == FileAttributes.Hidden ; }
         }
 
-        private const bool canOpen = true ;
+        private const bool CanOpen = true ;
 
         /// <summary>
         /// 
         /// </summary>
         public bool GetCanOpen()
         {
-            return canOpen;
+            return CanOpen;
         }
 
         #region Implementation of INotifyPropertyChanged

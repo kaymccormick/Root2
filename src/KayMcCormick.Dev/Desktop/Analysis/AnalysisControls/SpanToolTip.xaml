@@ -15,6 +15,7 @@
     <StatusBar DockPanel.Dock="Bottom">
       <StatusBarItem Content="{Binding Path=Location}" />
     </StatusBar>
+    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
     <ItemsControl
       ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=analysisControls:SpanTT}, Path=Spans}" />
   </DockPanel>

@@ -61,6 +61,15 @@ namespace AnalysisAppLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty code supplied.
+        /// </summary>
+        public static string AnalysisService_Parse_Empty_code_supplied {
+            get {
+                return ResourceManager.GetString("AnalysisService_Parse_Empty_code_supplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;doc&gt;
         ///    &lt;assembly&gt;
