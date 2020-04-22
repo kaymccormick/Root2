@@ -24,6 +24,7 @@ namespace ProjInterface
 
         public ProjInterfaceApp ( ) : this ( null ) { }
 
+        [UsedImplicitly]
         public ProjInterfaceApp (
             ApplicationInstanceBase applicationInstance         = null
           , bool                    disableLogging              = false
@@ -167,7 +168,7 @@ namespace ProjInterface
                 ShowErrorDialog (
                                  ProjInterface.Properties.Resources
                                               .ProjInterfaceApp_OnStartup_Application_Error
-                               , "Error in compile-time configuration. Please contact your local administrator."
+                               , ProjInterface.Properties.Resources.ProjInterfaceApp_OnStartup_Compile_time_configuration_error
                                 ) ;
                 Current.Shutdown ( 255 ) ;
             }
@@ -204,8 +205,15 @@ namespace ProjInterface
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" ) )
             {
                 AppDomain.CurrentDomain.ProcessExit += ( sender , args ) => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
-                var app = new ProjInterfaceApp ( ) ;
-                app.Run ( ) ;
+                try
+                {
+                    var app = new ProjInterfaceApp ( ) ;
+                    app.Run ( ) ;
+                }
+                catch ( Exception ex )
+                {
+                    MessageBox.Show ( ex.ToString ( ) , "error" ) ;
+                }
             }
         }
     }

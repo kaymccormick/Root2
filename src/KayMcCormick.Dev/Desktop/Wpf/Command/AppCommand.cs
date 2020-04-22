@@ -136,12 +136,13 @@ namespace KayMcCormick.Lib.Wpf.Command
         [ NotNull ]
         public override PropertyDescriptorCollection GetProperties(object component, Attribute[] attributes)
         {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             var props = attributes == null ? TypeDescriptor.GetProperties(component) : TypeDescriptor.GetProperties(component, attributes) ;
 
             var propArray = new PropertyDescriptor[props.Count];
             for (var i = 0; i < props.Count; i++)
             {
-                // Create a new PropertyDescriptor from the old one, with 
+                // Create a new PropertyDescriptor from the old one, with
                 // a CategoryAttribute matching the name of the type.
                 propArray[i] = TypeDescriptor.CreateProperty(props[i].ComponentType, props[i], new CategoryAttribute(props[i].PropertyType.Name));
             }
@@ -180,6 +181,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         // This method can be used to retrieve an Image from a block of Base64-encoded text.
         private Image DeserializeFromBase64Text([ NotNull ] string text)
         {
+            // ReSharper disable once RedundantAssignment
             Image deserializeFromBase64Text = null;
             var memBytes = Convert.FromBase64String(text);
             IFormatter formatter = new BinaryFormatter();

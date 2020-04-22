@@ -37,25 +37,6 @@
               Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
 
           </DataTemplate>
-          <!-- ReSharper disable once Xaml.RedundantResource -->
-          <!-- ReSharper disable once InconsistentNaming -->
-          <ContextMenu x:Key="itemContextMenu">
-            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-            <MenuItem Header="Open"
-                      IsEnabled="{Binding CanOpen}" />
-            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-            <MenuItem Header="Delete"
-                      IsEnabled="{Binding CanDelete}" />
-            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-            <MenuItem Header="Rename"
-                      IsEnabled="{Binding CanRename}" />
-          </ContextMenu>
-          <ContextMenu x:Key="listContextMenu">
-            <MenuItem Header="New Folder"
-                      IsEnabled="{Binding CanCreateFolder}" />
-            <MenuItem Header="New Link"
-                      IsEnabled="{Binding CanCreateLink}" />
-          </ContextMenu>
           <ControlTemplate x:Key="ControlTemplate1">
             <Border BorderThickness="50" BorderBrush="Red">
               <ContentPresenter />

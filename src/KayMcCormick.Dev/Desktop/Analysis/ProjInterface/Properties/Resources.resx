@@ -125,4 +125,7 @@
     <value>Application Error</value>
     <comment>"Application Error" dialog title.</comment>
   </data>
+  <data name="ProjInterfaceApp_OnStartup_Compile_time_configuration_error" xml:space="preserve">
+    <value>Error in compile-time configuration. Please contact your local administrator.</value>
+  </data>
 </root>

@@ -723,6 +723,7 @@ namespace ModelTests
             if ( comp.ObjectType == null )
                 // ReSharper disable once HeuristicUnreachableCode
             {
+                // ReSharper disable once HeuristicUnreachableCode
                 return ;
             }
 
