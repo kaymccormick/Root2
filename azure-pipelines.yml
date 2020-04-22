@@ -29,6 +29,15 @@ steps:
   submodules: true
   persistCredentials: true
   clean: true
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'xx1'
+    sourceFolder: 'c:\third-party'
+    contents: '**'
+    targetFolder: '$(Build.SourcesDirectory)\third-party'
+    readyTimeout: '20000'
+    failOnEmptySource: true
     
 - task: NuGetToolInstaller@1
 
