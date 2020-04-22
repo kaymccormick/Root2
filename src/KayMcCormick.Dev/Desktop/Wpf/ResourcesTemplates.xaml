@@ -150,6 +150,7 @@
                       Storyboard.TargetName="Bd"
                       Storyboard.TargetProperty="(Panel.Background).
                     (SolidColorBrush.Color)">
+                      <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
                       <EasingColorKeyFrame KeyTime="0"
                                            Value="{StaticResource SelectedBackgroundColor}" />
                     </ColorAnimationUsingKeyFrames>
@@ -162,6 +163,7 @@
                       Storyboard.TargetName="Bd"
                       Storyboard.TargetProperty="(Panel.Background).
                     (SolidColorBrush.Color)">
+                      <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
                       <EasingColorKeyFrame KeyTime="0"
                                            Value="{StaticResource SelectedUnfocusedColor}" />
                     </ColorAnimationUsingKeyFrames>
@@ -188,7 +190,7 @@
                           IsChecked="{Binding IsExpanded, 
             RelativeSource={RelativeSource TemplatedParent}}" />
             <Border x:Name="Bd"
-                    Grid.Column="1"
+                    Grid.Row="0" Grid.Column="1"
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"

@@ -7,6 +7,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     public sealed class InstanceInfoTypeDescriptor : CustomTypeDescriptor
     {
+        // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _enableConverter = false ;
         #region Overrides of CustomTypeDescriptor
         /// <summary>
@@ -18,7 +19,7 @@ namespace KayMcCormick.Lib.Wpf
             return EnableConverter ? new WpfInstanceInfoConverter ( ) : base.GetConverter() ;
         }
 
-        private bool EnableConverter { get { return _enableConverter ; } set { _enableConverter = value ; } }
+        private bool EnableConverter { get { return _enableConverter ; } }
         #endregion
     }
 }

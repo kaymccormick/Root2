@@ -314,6 +314,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.RowSpan="2"
                            Text="{Binding Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFilePath}" />
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <TextBlock Grid.Row="2"
                            Text="{Binding Path=Data}" />
               </Grid>
@@ -332,6 +333,7 @@
             DataType="{x:Type registration:ComponentRegistration}"
             x:Key="KeyComponentRegistration">
             <WrapPanel>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding Path=Services[0].Description}"/></WrapPanel>
           </DataTemplate>
           <DataTemplate
@@ -380,7 +382,7 @@
             BorderThickness="3" CornerRadius="2"
             Grid.Row="1" Grid.Column="0"
             Grid.RowSpan="3">
-      <wpf:TreeView1 x:Name="tv"
+      <wpf:TreeView1 x:Name="Tv"
                      x:FieldModifier="public"
                      VerticalAlignment="Stretch"
                      ItemContainerStyleSelector="{StaticResource ResourceViewItemContainerStyleSelector}"
@@ -390,7 +392,7 @@
     </Border>
 
     <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"
-          DataContext="{Binding ElementName=tv,Path=SelectedItem}">
+          DataContext="{Binding ElementName=Tv,Path=SelectedItem}">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -399,7 +401,7 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <ScrollViewer>
-        <Grid Margin="10" Grid.Column="0" Grid.Row="1">
+        <Grid Margin="10" Grid.Row="1">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
@@ -418,7 +420,7 @@
             <RowDefinition Height="*" />
           </Grid.RowDefinitions>
           <ToolBarTray>
-            <ToolBar Grid.Row="0" Band="1" BandIndex="1">
+            <ToolBar Band="1" BandIndex="1">
               <Button Content="JSON Converter"
                       Click="ButtonBase_OnClick" />
             </ToolBar>
@@ -426,6 +428,7 @@
           <TextBlock Style="{StaticResource DetailHeader}"
                      Margin="0,0,20,0" Text="Key Type"
                      Grid.Row="1" Grid.Column="0" />
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <ContentControl
             Style="{StaticResource DetailValue}"
             Margin="20,0,0,0" Grid.Row="2" Grid.Column="0"
@@ -433,6 +436,7 @@
           <TextBlock Style="{StaticResource DetailHeader}"
                      Margin="0,5,20,0" Text="Key"
                      Grid.Row="3" Grid.Column="0" />
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <ContentControl Margin="20,0,0,0" Grid.Row="4"
                           Style="{StaticResource DetailValue}"
                           Grid.Column="0"
@@ -446,6 +450,7 @@
             Grid.Column="0"
             Style="{StaticResource DetailValue}">
             <wpf:AttachedProperties.RenderedType>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <Binding Path="Data"
                        Converter="{StaticResource GetTypeConverter}" />
             </wpf:AttachedProperties.RenderedType>
@@ -454,18 +459,20 @@
           <TextBlock Style="{StaticResource DetailHeader}"
                      Margin="0,0,20,0" Text="Value"
                      Grid.Row="7" Grid.Column="0" />
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <ContentControl
             Style="{StaticResource DetailValue}"
             x:FieldModifier="public"
-            x:Name="details"
+            x:Name="Details"
             ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
             Grid.Row="8" Grid.Column="0"
             Content="{Binding Data}" />
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <ContentControl Margin="0,40,0,0" Grid.Row="9"
                           Grid.Column="0"
                           ContentTemplateSelector="{StaticResource ResourcePreviewTemplateSelector}"
                           Content="{Binding Data}" />
-          <TextBlock Grid.Row="10" x:Name="textBlock"
+          <TextBlock Grid.Row="10" x:Name="TextBlock"
                      x:FieldModifier="private" />
         </Grid>
       </ScrollViewer>

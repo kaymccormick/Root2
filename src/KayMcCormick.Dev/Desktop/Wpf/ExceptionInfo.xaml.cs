@@ -43,19 +43,6 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         #region Overrides of FrameworkElement
-        /// <summary>
-        /// </summary>
-        public override void OnApplyTemplate ( )
-        {
-            base.OnApplyTemplate ( ) ;
-
-
-
-            // foreach (var x in result)
-            // {
-            // DebugUtils.WriteLine ( x ) ;
-            // }
-        }
         #endregion
 
         private void ButtonBase_OnClick ( object sender , RoutedEventArgs e )

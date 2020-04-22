@@ -173,9 +173,6 @@
     <Compile Include="TypeControl.xaml.cs">
       <DependentUpon>TypeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TypeControl2.xaml.cs">
-      <DependentUpon>TypeControl2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="TypeInfoControl.xaml.cs">
       <DependentUpon>TypeInfoControl.xaml</DependentUpon>
     </Compile>
@@ -259,10 +256,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SystemParametersControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="TypeControl2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -782,15 +782,15 @@ namespace KayMcCormick.Lib.Wpf
 
         private void ButtonBase_OnClick ( object sender , RoutedEventArgs e )
         {
-            var o = (ResourceNodeInfo)tv.SelectedItem ;
+            var o = (ResourceNodeInfo)Tv.SelectedItem ;
 
             try
             {
-                textBlock.Text = JsonSerializer.Serialize ( o.Data , _options ) ;
+                TextBlock.Text = JsonSerializer.Serialize ( o.Data , _options ) ;
             }
             catch ( Exception ex )
             {
-                textBlock.Text = ex.ToString ( ) ;
+                TextBlock.Text = ex.ToString ( ) ;
             }
         }
     }

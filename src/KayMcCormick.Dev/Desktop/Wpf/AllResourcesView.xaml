@@ -56,6 +56,7 @@
             <TextBlock Text="Application" />
           </DataTemplate>
           <Style TargetType="{x:Type TreeViewItem}">
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <Setter Property="IsExpanded"
                     Value="{Binding IsExpanded, Mode=TwoWay}" />
           </Style>
@@ -64,8 +65,10 @@
               <ListView ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
 <ListView.View>
                   <GridView>
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                     <GridViewColumn DisplayMemberBinding="{Binding Path=ParameterType}"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Name}"/>
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                     <GridViewColumn DisplayMemberBinding="{Binding Path=HasDefaultValue}"/>
                   </GridView>
 </ListView.View>
@@ -94,8 +97,10 @@
             DataType="{x:Type Color}">
             <Border Margin="10,0,10,0" IsEnabled="False">
               <Border.Background>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <SolidColorBrush Color="{Binding Data}" />
               </Border.Background>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <TextBlock Margin="10" Padding="6"
                          Background="White"
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
@@ -104,7 +109,9 @@
           <HierarchicalDataTemplate
             DataType="{x:Type ImageSource}">
             <WrapPanel>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <Image MaxHeight="32" Source="{Binding Data}" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <TextBlock VerticalAlignment="Center"
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </WrapPanel>
@@ -112,26 +119,33 @@
           <HierarchicalDataTemplate
             DataType="{x:Type BitmapImage}">
             <WrapPanel>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <Image MaxHeight="32" Source="{Binding Data}" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <TextBlock VerticalAlignment="Center"
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </WrapPanel>
           </HierarchicalDataTemplate>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <HierarchicalDataTemplate
             DataType="{x:Type core:IComponentRegistration}"
             ItemsSource="{Binding Children}">
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <TextBlock
               Text="{Binding Path=Data.Services[0].Description}" />
           </HierarchicalDataTemplate>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <HierarchicalDataTemplate
             DataType="{x:Type core:TypedService}"
             ItemsSource="{Binding Children}">
             <wpf:TypeControl>
               <wpf:AttachedProperties.RenderedType>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Binding Path="Data.ServiceType" />
               </wpf:AttachedProperties.RenderedType>
             </wpf:TypeControl>
           </HierarchicalDataTemplate>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <HierarchicalDataTemplate
             DataType="{x:Type dev:ComponentInfo}"
             ItemsSource="{Binding Children}">
@@ -139,12 +153,15 @@
               <TextBlock Text="{Binding Key}"/>
             </StackPanel>
           </HierarchicalDataTemplate>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <HierarchicalDataTemplate
             DataType="{x:Type Style}"
             ItemsSource="{Binding Path=Children}">
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <ContentControl Focusable="False"
                             Content="{Binding Key}">
               <ContentControl.ToolTip>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Binding Path="Key"
                          Converter="{StaticResource GetTypeConverter}" />
               </ContentControl.ToolTip>
@@ -161,27 +178,32 @@
               </ContentControl.ToolTip>
             </ContentControl>
           </HierarchicalDataTemplate>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <DataTemplate x:Key="WindowTemplate">
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <Image HorizontalAlignment="Left"
                    VerticalAlignment="Bottom"
                    Source="{Binding Path=Image}" />
           </DataTemplate>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <wpf:ResourceTreeViewItemTemplateSelector
             x:Key="ResourceTreeViewItemTemplateSelector" />
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <wpf:ResourceViewItemContainerStyleSelector
-            x:Key="ResourcereeViewItemContainerStyleSelector" />
+            x:Key="ResourceTreeViewItemContainerStyleSelector" />
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <Style x:Key="DefaultResourceNodeInfoStyle"
                  BasedOn="{StaticResource {x:Type TreeViewItem}}"
                  TargetType="TreeViewItem">
-            <Setter Property="Control.BorderThickness"
+            <Setter Property="BorderThickness"
                     Value="0.5" />
-            <Setter Property="Control.BorderBrush"
+            <Setter Property="BorderBrush"
                     Value="#80aaaaaa" />
             <Setter Property="Background"
                     Value="Beige" />
-            <Setter Property="Control.Margin"
+            <Setter Property="Margin"
                     Value="-5,0,0,0" />
-            <Setter Property="Control.Padding" Value="0" />
+            <Setter Property="Padding" Value="0" />
           </Style>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
@@ -205,7 +227,8 @@
             BorderThickness="3" CornerRadius="2"
             Grid.Row="1" Grid.Column="0"
             Grid.RowSpan="3">
-      <ListView x:Name="lv"
+      <!-- ReSharper disable once UnusedMember.Global -->
+      <ListView x:Name="Lv"
                 x:FieldModifier="public"
                 VerticalAlignment="Stretch"
                 ItemsSource="{Binding Path=AllResourcesItemList}"
@@ -274,6 +297,9 @@
         <TextBlock Style="{StaticResource DetailHeader}"
                    Margin="0,0,20,0" Text="Value"
                    Grid.Row="6" Grid.Column="0" />
+        <!-- ReSharper disable once UnusedMember.Global -->
+        <!-- ReSharper disable once InconsistentNaming -->
+        <!-- ReSharper disable once UnusedMember.Global -->
         <ContentControl
           Style="{StaticResource DetailValue}"
           x:FieldModifier="public"

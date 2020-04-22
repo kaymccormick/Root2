@@ -160,19 +160,6 @@ namespace KayMcCormick.Lib.Wpf
 
                         DebugUtils.WriteLine ($"Count is {l.Count}");
                         return l ;
-                        var provideValue = scope.Resolve (
-                                                          typeof ( IEnumerable <> )
-                                                             .MakeGenericType ( ComponentType )
-                                                         ) ;
-                        if ( provideValue is IEnumerable e )
-                        {
-                            foreach ( var o in e )
-                            {
-                                l.Add ( o ) ;
-                            }
-                        }
-
-                        return l ;
                     }
                     else
                     {
