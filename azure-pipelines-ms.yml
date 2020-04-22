@@ -6,6 +6,8 @@
 trigger:
   branches:
     include:
+    - addin
+    - master
     - reanalyze
   paths:
     include:
