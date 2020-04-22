@@ -511,11 +511,14 @@ namespace AnalysisAppLib.XmlDoc
 
             throw new InvalidOperationException ( "No collection type in the map." ) ;
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable 162
+            // ReSharper disable once HeuristicUnreachableCode
             return SyntaxTypesService.FieldPocoCollectionType (
                                                                candidateTypeSyntax
                                                              , collectionMap
                                                              , appTypeInfo
                                                               ) ;
+#pragma warning restore 162
         }
     }
 

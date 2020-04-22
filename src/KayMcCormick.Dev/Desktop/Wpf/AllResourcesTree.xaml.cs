@@ -783,7 +783,7 @@ namespace KayMcCormick.Lib.Wpf
         private void ButtonBase_OnClick ( object sender , RoutedEventArgs e )
         {
             var o = (ResourceNodeInfo)tv.SelectedItem ;
-            
+
             try
             {
                 textBlock.Text = JsonSerializer.Serialize ( o.Data , _options ) ;

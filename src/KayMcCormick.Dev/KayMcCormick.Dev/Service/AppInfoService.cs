@@ -1,4 +1,5 @@
 ﻿using System ;
+using System.Linq ;
 using System.ServiceModel ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
@@ -36,9 +37,8 @@ namespace KayMcCormick.Dev.Service
         {
             var appInstanceInfo = new AppInstanceInfo { StartupTime = _startupTime } ;
 
-            foreach ( var target in LogManager.Configuration.AllTargets )
+            foreach ( var logInfo in LogManager.Configuration.AllTargets.Select ( target => new LoggerInfo { TargetName = target.Name } ) )
             {
-                var logInfo = new LoggerInfo { TargetName = target.Name } ;
                 appInstanceInfo.LoggerInfos.Add ( logInfo ) ;
             }
 

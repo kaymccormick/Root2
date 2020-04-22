@@ -68,6 +68,7 @@ using File = System.IO.File ;
 using Process = System.Diagnostics.Process ;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
+// ReSharper disable InconsistentNaming
 
 // ReSharper disable UnusedVariable
 // ReSharper disable RedundantOverriddenMember

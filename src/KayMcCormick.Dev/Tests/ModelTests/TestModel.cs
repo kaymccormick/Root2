@@ -29,6 +29,7 @@ using Microsoft.CodeAnalysis.Text ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
+// ReSharper disable InconsistentNaming
 
 namespace ModelTests
 {

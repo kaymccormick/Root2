@@ -1,5 +1,4 @@
 ﻿<kmWpf:AppWindow
-  xmlns:kayWpfLib="http://kaymccormick.com/xaml/wpflib"
   x:Class="AnalysisControls.Views.Window1"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,10 +7,7 @@
 
   xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-  xmlns:analysisControls="clr-namespace:AnalysisControls"
-  xmlns:interfaces="clr-namespace:AnalysisControls.Interfaces"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
   xmlns:viewModel1="clr-namespace:AnalysisAppLib.ViewModel;assembly=AnalysisAppLib"
   xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
   mc:Ignorable="d" FontSize="18.0"
@@ -27,7 +23,7 @@
     </DataTemplate>
   </kmWpf:AppWindow.Resources>
   <xcad:DockingManager AllowMixedOrientation="True">
-    <xcad:LayoutRoot x:Name="_layoutRoot">
+    <xcad:LayoutRoot x:Name="LayoutRoot">
       <xcad:LayoutPanel Orientation="Horizontal">
         <xcad:LayoutAnchorablePane DockWidth="200">
           <xcad:LayoutAnchorable>

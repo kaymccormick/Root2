@@ -1,4 +1,5 @@
-﻿<RibbonWindow x:Class="ProjInterface.Window1"
+﻿<!-- ReSharper disable once Xaml.RedundantNamespaceAlias -->
+<RibbonWindow x:Class="ProjInterface.Window1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,12 +9,8 @@
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
-              xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
-              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
               xmlns:command="clr-namespace:KayMcCormick.Lib.Wpf.Command;assembly=KayMcCormick.Lib.Wpf"
-              xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
               xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
-              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
               xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
@@ -33,14 +30,19 @@
                     Value="True" />
             <Setter Property="Background" Value="Olive" />
           </Style>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <DataTemplate x:Key="Template1">
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <TextBlock
               Text="{Binding Metadata,Mode=OneWay,Converter={StaticResource DictionaryConverter},ConverterParameter=Title}" />
 
           </DataTemplate>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <ContextMenu x:Key="itemContextMenu">
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <MenuItem Header="Open"
                       IsEnabled="{Binding CanOpen}" />
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <MenuItem Header="Delete"
                       IsEnabled="{Binding CanDelete}" />
             <MenuItem Header="Rename"
@@ -902,6 +904,7 @@
                   </Binding>
                 </MenuItem.Visibility>
               </MenuItem>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <MenuItem
                 Command="{Binding NewVerticalTabGroupCommand}"
                 Header="New Vertical Tab Group">
@@ -914,6 +917,7 @@
                   </Binding>
                 </MenuItem.Visibility>
               </MenuItem>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <MenuItem
                 Command="{Binding MoveToNextTabGroupCommand}"
                 Header="Move To Next Tab Group">
@@ -926,6 +930,7 @@
                   </Binding>
                 </MenuItem.Visibility>
               </MenuItem>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <MenuItem
                 Command="{Binding MoveToPreviousTabGroupCommand}"
                 Header="Move To Previous Tab Group">
@@ -945,6 +950,7 @@
           Property="DocumentPaneMenuItemHeaderTemplate">
           <Setter.Value>
             <DataTemplate>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <TextBlock Text="{Binding Title}"
                          TextTrimming="CharacterEllipsis" />
             </DataTemplate>
@@ -955,6 +961,7 @@
             <DataTemplate>
               <Image Stretch="Uniform">
                 <Image.Source>
+                  <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                   <Binding Path="IconSource">
                     <Binding.Converter>
                       <avalondock:NullToDoNothingConverter />
@@ -1016,8 +1023,13 @@
           </Setter.Value>
         </Setter>
       </Style>
+      <!-- ReSharper disable once Xaml.RedundantResource -->
       <local:ImageSourceConverter x:Key="ImageSourceConverter" />
+      <!-- ReSharper disable once Xaml.RedundantResource -->
       <CollectionViewSource x:Key="RibbonCommands" Source=""></CollectionViewSource>
+      <!-- ReSharper disable once Xaml.RedundantResource -->
+      <!-- ReSharper disable once InconsistentNaming -->
+      <!-- ReSharper disable once InconsistentNaming -->
       <x:Array Type="{x:Type syntax:AppTypeInfo}"  x:Key="types">
         <syntax:AppTypeInfo Type="cSharp:CSharpSyntaxNode" Title="CSharp Node" ColorValue="4288462688" ElementName="{x:Null}"/>
       </x:Array>
@@ -1056,7 +1068,7 @@
         </Ribbon.ApplicationMenu>
         <RibbonTab Header="Views">
           <RibbonGroup
-            ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=docpane}}">
+            ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=Docpane}}">
             <RibbonGroup.ItemTemplate>
               <DataTemplate
                 DataType="command:IDisplayableAppCommand">
@@ -1105,7 +1117,7 @@
             </avalondock:LayoutAnchorablePane>
               <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane
-                x:Name="docpane">
+                x:Name="Docpane">
 
                 <avalondock:LayoutDocument Title="Browsex"
                                            IconSource="{StaticResource BrowserIcon}"
@@ -1128,13 +1140,14 @@
                       <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
-                             x:Name="pathTextBox"
+                             x:Name="PathTextBox"
                              Margin="3"
-                             Text="{Binding ElementName=explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                             Text="{Binding ElementName=Explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                              anal:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                     <Explorer
                       ItemsSource="{Binding RootCollection}"
-                      Grid.Row="1" x:Name="explorer"
+                      Grid.Row="1" x:Name="Explorer"
                       Margin="3,0,3,0"
                       ItemContextMenu="{StaticResource itemContextMenu}"
                       ListContextMenu="{StaticResource listContextMenu}" />

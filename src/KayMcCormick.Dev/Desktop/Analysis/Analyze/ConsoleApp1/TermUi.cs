@@ -17,7 +17,7 @@ namespace ConsoleApp1
     internal sealed class TermUi
     {
         private readonly TaskFactory                            _factory ;
-        private const    string                                 FRAME_TITLE = "Details" ;
+        private const    string                                 FrameTitle = "Details" ;
         private readonly IEnumerable < IDisplayableAppCommand > _commands ;
 #pragma warning disable 649
         private readonly ModelResources                         _modelResources ;
@@ -122,7 +122,7 @@ namespace ConsoleApp1
                                       ) ;
 
 
-            _frame = new FrameView ( textViewRect , FRAME_TITLE ) ;
+            _frame = new FrameView ( textViewRect , FrameTitle ) ;
 
             _textView = new TextView
                         {

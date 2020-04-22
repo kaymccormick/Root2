@@ -1,13 +1,8 @@
 ﻿<kmWpf:BaseApp
-  xmlns:kayWpfLib="http://kaymccormick.com/xaml/wpflib"
   x:Class="ProjInterface.ProjInterfaceApp"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:anal="http://kaymccormick.com/xaml/analysis"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
-  xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
-  xmlns:projInterface="clr-namespace:ProjInterface"
   x:ClassModifier="internal">
 
   <kmWpf:BaseApp.Resources>

@@ -117,6 +117,7 @@ namespace AnalysisAppLib.Serialization
         [ NotNull ]
         private static ExpressionSyntax AnonymousObject ( JsonElement element )
         {
+            // ReSharper disable once UnusedVariable
             var anon =
                 new SeparatedSyntaxList < AnonymousObjectMemberDeclaratorSyntax > ( ).AddRange (
                                                                                                 element

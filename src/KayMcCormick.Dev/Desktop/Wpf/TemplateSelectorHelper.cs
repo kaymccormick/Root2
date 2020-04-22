@@ -142,8 +142,7 @@ namespace KayMcCormick.Lib.Wpf
 
             DebugUtils.WriteLine ( $"Found resource of type {resource.GetType ( )}" ) ;
             var dt = ( DataTemplate ) resource ;
-            if ( predicate == null
-                 || predicate ( dt ) )
+            if ( predicate?.Invoke ( dt ) != false )
             {
                 return resource as DataTemplate ;
             }

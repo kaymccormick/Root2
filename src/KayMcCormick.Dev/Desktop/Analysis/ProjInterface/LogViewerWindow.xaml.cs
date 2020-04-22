@@ -54,6 +54,7 @@ namespace ProjInterface
 
         private void ButtonBase_OnClick2 ( object sender , RoutedEventArgs e )
         {
+            // ReSharper disable once InconsistentNaming
             var port_ = int.Parse ( this.port.Text ) ;
             var logViewModel = new LogViewModel ( ) ;
             var x = new LogListener ( port_ , logViewModel ) ;

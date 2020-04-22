@@ -299,6 +299,7 @@ namespace KayMcCormick.Dev.Logging
             ConsoleTargetName  = "consoleTarget" ;
         }
 
+        // ReSharper disable once FunctionComplexityOverflow
         private static async Task < LogFactory > PerformConfigurationAsync (
             LogDelegates.LogMethod logMethod
           , bool                   proxyLogging
@@ -454,9 +455,7 @@ namespace KayMcCormick.Dev.Logging
                             } ;
             _dict[ LogLevel.Trace ].Add ( networkT1 ) ;
 
-            if ( config1.IsEnabledConsoleTarget.HasValue
-                 && config1.IsEnabledConsoleTarget.Value
-                 && ! disabled.Contains ( ConsoleTargetName ) )
+            if ( config1.IsEnabledConsoleTarget == true && ! disabled.Contains ( ConsoleTargetName ) )
             {
                 var consoleTarget = new ConsoleTarget ( ConsoleTargetName )
                                     {
@@ -545,7 +544,7 @@ namespace KayMcCormick.Dev.Logging
                 byType[ type ] =  count ;
 
                 if ( target.Name == null
-                     || usedNames != null && usedNames.Contains ( target.Name ) )
+                     || usedNames?.Contains ( target.Name ) == true )
                 {
                     target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
@@ -557,21 +556,16 @@ namespace KayMcCormick.Dev.Logging
                 lConf.AddTarget ( target ) ;
             }
 
-            foreach ( var result in _dict.Select (
-                                                  pair => LoggingRule (
-                                                                       pair
-                                                                     , _minLogLevel
-                                                                     , config1
-                                                                      )
-                                                 ) )
+            foreach ( var loggingRule in _dict.Select (
+                                                       pair => LoggingRule (
+                                                                            pair
+                                                                          , _minLogLevel
+                                                                          , config1
+                                                                           )
+                                                      ).SelectMany ( result => result ) )
             {
-                foreach ( var loggingRule in result )
-                {
-                    logMethod ( $"Adding logging rule {loggingRule}" ) ;
-                    lConf.LoggingRules.Add ( loggingRule ) ;
-                }
-
-                // ((List<LoggingRule>lConf.LoggingRules)).AddRange ( result ) ;
+                logMethod ( $"Adding logging rule {loggingRule}" ) ;
+                lConf.LoggingRules.Add ( loggingRule ) ;
             }
 
             if ( oldTargets != null )

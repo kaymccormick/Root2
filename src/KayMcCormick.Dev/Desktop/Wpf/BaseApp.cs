@@ -82,6 +82,7 @@ namespace KayMcCormick.Lib.Wpf
                                                                                                                                                                                       ) ;
 #endif
                                                                                                                                                 }
+                                                                                                                                                // ReSharper disable once VirtualMemberCallInConstructor
                                                                                                                                               , ApplicationGuid
                                                                                                                                               , null
                                                                                                                                               , disableLogging

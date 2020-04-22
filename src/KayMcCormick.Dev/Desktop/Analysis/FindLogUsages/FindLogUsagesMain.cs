@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PropertyToken = MessageTemplates.Parsing.PropertyToken;
+// ReSharper disable InconsistentNaming
 
 
 namespace FindLogUsages
@@ -98,7 +99,7 @@ namespace FindLogUsages
         /// <param name="model"></param>
         /// <param name="tree"></param>
         /// <param name="root"></param>
-        /// <param name="RejectAction"></param>
+        /// <param name="rejectAction"></param>
         /// <returns></returns>
 #pragma warning disable 1998
         [ ItemNotNull ]
@@ -108,7 +109,7 @@ namespace FindLogUsages
           , [ NotNull ] SemanticModel                model
           , SyntaxTree                   tree
           , SyntaxNode                   root
-          , Func < RejectedItem , bool > RejectAction
+          , Func < RejectedItem , bool > rejectAction
         )
         {
             var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
@@ -153,7 +154,7 @@ namespace FindLogUsages
                                                       ).ProcessInvocation ( invocationFactory )
                     select result is ILogInvocation inv
                                ? inv
-                               : ( object ) RejectAction (
+                               : ( object ) rejectAction (
                                                           result is RejectedItem rj
                                                               ? rj
                                                               : new RejectedItem ( statement )
@@ -368,13 +369,12 @@ namespace FindLogUsages
             private INamedTypeSymbol NamedTypeSymbol { get ; }
 
             [ CanBeNull ]
+            // ReSharper disable once FunctionComplexityOverflow
             internal object ProcessInvocation ( Func < ILogInvocation > invocationFactory )
             {
                 // ReSharper disable once NotAccessedVariable
                 var exceptionArg = false ;
-                if ( NamedTypeSymbol != null
-                     && MethodSymbol != null
-                     && MethodSymbol.Parameters.Any ( ) )
+                if ( NamedTypeSymbol != null && MethodSymbol?.Parameters.Any ( ) == true )
                 {
                     // ReSharper disable once RedundantAssignment
                     exceptionArg = IsException (
@@ -478,7 +478,8 @@ namespace FindLogUsages
                     }
                     else
                     {
-                        
+
+
                         //invocation.WithArgumentList(invocation.ArgumentList.)
                         if ( msgArgExpr is InterpolatedStringExpressionSyntax interp )
                         {
@@ -520,7 +521,7 @@ namespace FindLogUsages
                 object t1 ;
                 try
                 {
-                    t1 = GenTransforms.Transform_CSharp_Node (( CSharpSyntaxNode ) relevantNode);         
+                    t1 = GenTransforms.Transform_CSharp_Node (( CSharpSyntaxNode ) relevantNode);
                 }
                 catch ( UnsupportedExpressionTypeSyntaxException unsupported )
                 {
@@ -535,12 +536,9 @@ namespace FindLogUsages
                                               + "."
                                               + methodSymbol.MetadataName ;
                 debugInvo.TransformedRelevantNode = t1 ;
-                if ( relevantNode.Parent != null )
-                {
-                    var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
-                    // ReSharper disable once UnusedVariable
-                    var i2 = sourceContext.IndexOf ( relevantNode ) ;
-                }
+                var sourceContext = relevantNode.Parent?.ChildNodes ( ).ToList ( ) ;
+                // ReSharper disable once UnusedVariable
+                var i2 = sourceContext?.IndexOf ( relevantNode ) ;
 
                 var p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
                 try

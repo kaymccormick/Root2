@@ -5,7 +5,9 @@ namespace FindLogUsages
 {
     internal sealed class LogInvocationArgument : ILogInvocationArgument
     {
-        private string jSON ;
+#pragma warning disable 649
+        private string _jSon ;
+#pragma warning restore 649
 
         public LogInvocationArgument ( [ NotNull ] ArgumentSyntax syntax )
         {
@@ -17,7 +19,7 @@ namespace FindLogUsages
         // ReSharper disable once UnusedMember.Global
         public LogInvocationArgument ( ) { }
 
-        public string GetJSON ( ILogInvocationArgument arg ) { return jSON ; }
+        public string GetJSON ( ILogInvocationArgument arg ) { return _jSon ; }
 
         public object Pojo { get ; set ; }
     }

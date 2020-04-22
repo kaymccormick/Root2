@@ -7,16 +7,18 @@
                  xmlns:projInterface="clr-namespace:ProjInterface"
                  xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
                  xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
-                 x:Name="logViewerWindow"
+                 x:Name="LogViewerWindowControl"
                  mc:Ignorable="d"
                  Title="Log Viewer Window" Height="450"
                  Width="800">
   <Window.Resources>
     <!--Control colors.-->
+    <!-- ReSharper disable once Xaml.RedundantResource -->
     <Color x:Key="WindowColor">#FFE8EDF9</Color>
     <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
     <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
 
+    <!-- ReSharper disable once Xaml.RedundantResource -->
     <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
     <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
     <Color x:Key="DisabledForegroundColor">#FF888888</Color>
@@ -286,7 +288,7 @@
     <Menu Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
       <MenuItem Header="File" />
       <MenuItem Header="Receivers"
-                ItemsSource="{Binding ElementName=logViewerWindow,Path=ViewModel.LogViewModels}"
+                ItemsSource="{Binding ElementName=LogViewerWindowControl,Path=ViewModel.LogViewModels}"
                 ItemTemplate="{StaticResource MenuTemplate1}" />
     </Menu>
     <ToolBarTray Grid.Row="1" Grid.Column="0"
@@ -302,7 +304,7 @@
                 ContentTemplate="{StaticResource Selected}"
                 Grid.Row="2" Grid.ColumnSpan="2"
                 Grid.Column="0"
-                ItemsSource="{Binding ElementName=logViewerWindow,Path=ViewModel.LogViewModels}"
+                ItemsSource="{Binding ElementName=LogViewerWindowControl,Path=ViewModel.LogViewModels}"
                 d:DataContext="{d:DesignInstance {x:Type analysisAppLib1:LogViewerAppViewModel}, IsDesignTimeCreatable=True}" />
     <StatusBar Grid.Row="3" Grid.Column="0"
                Grid.ColumnSpan="2">

@@ -42,13 +42,14 @@ namespace ProjInterface
             //ExploreAssemblies ( ) ;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void ExploreAssemblies ( )
         {
             var resourceLocator = new Uri (
                                            "/ProjInterface;component/AppResources.xaml"
-                                         , System.UriKind.Relative
+                                         , UriKind.Relative
                                           ) ;
-            var rs = GetResourceStream ( resourceLocator ) ;
+            GetResourceStream ( resourceLocator ) ;
             foreach ( var referencedAssembly in Assembly
                                                .GetExecutingAssembly ( )
                                                .GetReferencedAssemblies ( ).Where ( referencedAssembly => referencedAssembly.Name == "WindowsBase" ) )

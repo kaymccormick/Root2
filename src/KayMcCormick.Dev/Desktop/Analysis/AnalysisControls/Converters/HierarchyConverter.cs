@@ -54,7 +54,7 @@ namespace AnalysisControls.Converters
                 throw new ArgumentNullException ( nameof ( targetType ) ) ;
             }
 
-            Logger.Debug ( "{type} {type2}" , value?.GetType ( ).FullName , targetType.FullName ) ;
+            Logger.Debug ( "{type} {type2}" , value.GetType ( ).FullName , targetType.FullName ) ;
             var cs = ( CSharpSyntaxNode ) value ;
             {
                 if ( targetType == typeof ( string ) )
@@ -104,12 +104,6 @@ namespace AnalysisControls.Converters
                                        : accessorDeclarationSyntax.ExpressionBody != null
                                            ? new[] { accessorDeclarationSyntax.ExpressionBody }
                                            : Array.Empty < SyntaxNode > ( ) ;
-                            break ;
-                    }
-
-                    if ( cs == null )
-                    {
-                        return null ;
                     }
 
                     return cs.ChildNodes ( ) ;

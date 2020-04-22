@@ -23,7 +23,7 @@ namespace KayMcCormick.Dev
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter ( ) ;
+        private static readonly BinaryFormatter BinaryFormatter = new BinaryFormatter ( ) ;
 
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace KayMcCormick.Dev
                 TextWriter s = stringWriter ;
                 try
                 {
-                    void doLog ( Exception exception )
+                    void DoLog ( Exception exception )
                     {
                         new LogBuilder ( logger ?? Logger )
                            .Level ( level ?? LogLevel.Debug )
@@ -68,7 +68,7 @@ namespace KayMcCormick.Dev
                     while ( inner != null
                             && ! seen.Contains ( inner ) )
                     {
-                        doLog ( inner ) ;
+                        DoLog ( inner ) ;
                         seen.Add ( inner ) ;
                         inner = inner.InnerException ;
                     }
@@ -197,8 +197,7 @@ namespace KayMcCormick.Dev
             if ( eException is FileLoadException
                  || eException is TargetInvocationException
                  || eException is FormatException
-                 || eException.StackTrace != null
-                 && eException.StackTrace.Contains ( "CurrentDomain_FirstChanceException" ) )
+                 || eException.StackTrace?.Contains ( "CurrentDomain_FirstChanceException" ) == true )
             {
                 return ;
             }
@@ -206,7 +205,7 @@ namespace KayMcCormick.Dev
             var s = new MemoryStream ( ) ;
             try
             {
-                _binaryFormatter.Serialize ( s , eException ) ;
+                BinaryFormatter.Serialize ( s , eException ) ;
                 s.Flush ( ) ;
                 s.Seek ( 0 , SeekOrigin.Begin ) ;
 

@@ -25,6 +25,7 @@
         <ResourceDictionary
           Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/ResourcesMisc.xaml" />
         <ResourceDictionary>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <Style x:Key="{x:Type TreeView}"
                  TargetType="TreeView">
             <Setter Property="OverridesDefaultStyle"
@@ -138,6 +139,7 @@
               </Setter.Value>
             </Setter>
           </Style>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <Style x:Key="{x:Type TreeViewItem}"
                  TargetType="{x:Type TreeViewItem}">
             <Setter Property="Background"
@@ -220,7 +222,7 @@
                                   IsChecked="{Binding IsExpanded, 
             RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border x:Name="Bd"
-                            Grid.Column="1"
+                            Grid.Row="0" Grid.Column="1"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
@@ -294,6 +296,7 @@
             </Style.Triggers>
 
           </Style>
+          <!-- ReSharper disable once Xaml.RedundantResource -->
           <Style x:Key="{x:Type ToolTip}"
                  TargetType="ToolTip">
             <Setter Property="OverridesDefaultStyle"
@@ -365,9 +368,11 @@
             <Style.Triggers>
               <DataTrigger Binding="{Binding Path=DocInfo}"
                            Value="{x:Null}" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <DataTrigger
                 Binding="{Binding Path=Type.IsAbstract}"
                 Value="True">
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Setter Property="Background"
                         Value="{Binding ColorValue,Converter={StaticResource ColorConverter}}" />
               </DataTrigger>
@@ -607,7 +612,7 @@
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
-    <TreeView Grid.Column="0" Grid.Row="0" x:Name="tv"
+    <TreeView Grid.Column="0" Grid.Row="0" x:Name="Tv"
               Grid.RowSpan="3"
               ItemsSource="{Binding Root.SubTypeInfos}" />
     <StackPanel Orientation="Horizontal" Grid.Row="0"
@@ -618,9 +623,10 @@
                 Content="Show Content Borders"
                 IsChecked="{Binding ShowBordersIsChecked}" Foreground="#FF873BBC" />
     </StackPanel>
+    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
     <ItemsControl Grid.Row="1" Grid.Column="1" Margin="10"
-                  x:Name="factoryMethods"
-                  ItemsSource="{Binding ElementName=tv,Path=SelectedItem.FactoryMethods}"
+                  x:Name="FactoryMethods"
+                  ItemsSource="{Binding ElementName=Tv,Path=SelectedItem.FactoryMethods}"
                   ItemTemplateSelector="{StaticResource CustomDataTemplateSelector}">
       <ItemsControl.Template>
         <ControlTemplate TargetType="ItemsControl">
@@ -630,7 +636,8 @@
         </ControlTemplate>
       </ItemsControl.Template>
     </ItemsControl>
+    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
     <ListBox Grid.Row="2" Grid.Column="1" Margin="10"
-             ItemsSource="{Binding ElementName=tv,Path=SelectedItem.Fields}" />
+             ItemsSource="{Binding ElementName=Tv,Path=SelectedItem.Fields}" />
   </Grid>
 </UserControl>

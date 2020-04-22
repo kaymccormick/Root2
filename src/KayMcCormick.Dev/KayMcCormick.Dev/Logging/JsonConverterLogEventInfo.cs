@@ -33,6 +33,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="options"></param>
         /// <returns></returns>
         /// <exception cref="JsonException"></exception>
+        // ReSharper disable once FunctionComplexityOverflow
         public override LogEventInfo Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

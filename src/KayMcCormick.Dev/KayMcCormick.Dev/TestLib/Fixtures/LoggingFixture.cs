@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Diagnostics ;
 using System.IO ;
+using System.Linq ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib.Logging ;
@@ -125,12 +126,10 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
 
             var fUpdated = false ;
             var context = new LoggingAttributeContext { Target = _xunitTarget } ;
-            foreach ( LoggingAttribute o in att )
+            // ReSharper disable once UnusedVariable
+            foreach ( var o in from LoggingAttribute o in att where o.Apply ( context ) select o )
             {
-                if ( o.Apply ( context ) )
-                {
-                    fUpdated = true ;
-                }
+                fUpdated = true ;
             }
 
 

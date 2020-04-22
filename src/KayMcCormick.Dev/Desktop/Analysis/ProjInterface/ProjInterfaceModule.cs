@@ -222,7 +222,7 @@ if(RegiserExplorerTypes){
             metaFunc.Metadata.TryGetValue ( "Title" ,       out var titleo ) ;
             metaFunc.Metadata.TryGetValue ( "ImageSource" , out var imageSource ) ;
             // object res = r.ResolveResource ( imageSource ) ;
-            // var im = res as ImageSource ; 
+            // var im = res as ImageSource ;
 
             var title = ( string ) titleo ?? "no title" ;
 
@@ -334,16 +334,15 @@ if(RegiserExplorerTypes){
     {
         public MySource ( )
         {
-            commands = new List < CommandInfo > ( ) ;
-            foreach ( var fieldInfo in typeof ( WpfAppCommands ).GetFields (
-                                                                            BindingFlags.Public
-                                                                            | BindingFlags.Static
-                                                                           ) )
+            _commands = new List < CommandInfo > ( ) ;
+            foreach ( var cmd in typeof ( WpfAppCommands ).GetFields (
+                                                                      BindingFlags.Public
+                                                                      | BindingFlags.Static
+                                                                     ).Select ( fieldInfo => fieldInfo.GetValue ( null ) ) )
             {
-                var cmd = fieldInfo.GetValue ( null ) ;
                 if ( cmd is RoutedUICommand ri )
                 {
-                    commands.Add ( new CommandInfo { Command = ri } ) ;
+                    _commands.Add ( new CommandInfo { Command = ri } ) ;
                 }
             }
         }
@@ -351,7 +350,7 @@ if(RegiserExplorerTypes){
 #pragma warning disable 649
         private bool _isAdapterForIndividualComponents ;
 #pragma warning restore 649
-        private readonly List < CommandInfo > commands ;
+        private readonly List < CommandInfo > _commands ;
         #region Implementation of IRegistrationSource
         // ReSharper disable once AnnotateNotNullTypeMember
         public IEnumerable < IComponentRegistration > RegistrationsFor (
@@ -370,7 +369,7 @@ if(RegiserExplorerTypes){
                                                  Guid.NewGuid ( )
                                                , new DelegateActivator (
                                                                         swt.ServiceType
-                                                                      , ( c , p ) => commands
+                                                                      , ( c , p ) => _commands
                                                                             [ 0 ]
                                                                        )
                                                , new CurrentScopeLifetime ( )

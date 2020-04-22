@@ -22,6 +22,7 @@ using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
+// ReSharper disable InconsistentNaming
 
 namespace KayMcCormick.Dev
 {
@@ -266,16 +267,12 @@ namespace KayMcCormick.Dev
                                          {
                                              var reg = componentRegistrations.First ( ) ;
                                              var myInfo = new ComponentInfo ( ) ;
-                                             foreach ( var inst in componentInfo.Instances )
-                                             {
-                                                 // ReSharper disable once UnusedVariable
-                                                 var ii = new InstanceInfo
-                                                          {
-                                                              Instance = inst.Instance
-                                                            , Metadata = reg.Metadata
-                                                          } ;
-                                                 //myInfo.Instances.Add ( ii ) ;
-                                             }
+                                             // ReSharper disable once UnusedVariable
+                                             foreach ( var ii in componentInfo.Instances.Select ( inst => new InstanceInfo
+                                                                                                          {
+                                                                                                              Instance = inst.Instance
+                                                                                                            , Metadata = reg.Metadata
+                                                                                                          } ) ) { }
 
                                              componentInfo.Metadata = reg.Metadata ;
                                              componentInfo          = myInfo ;
@@ -440,6 +437,7 @@ namespace KayMcCormick.Dev
             }
         }
 
+        // ReSharper disable once FunctionComplexityOverflow
         private void PopulateAppContext (
             [ NotNull ] AppDomain currentDomain
           , ResourceNodeInfo      createNode
@@ -523,16 +521,8 @@ namespace KayMcCormick.Dev
                     var atts = CreateNode ( typnode ,  "Attributes" , null , false ) ;
                     try
                     {
-                        foreach ( var c in typ.CustomAttributes )
-                        {
-                            // ReSharper disable once UnusedVariable
-                            var at1 = CreateNode ( atts , c.AttributeType.FullName , c , false ) ;
-                            // for ( var i = 0 ; i < c.Constructor.GetParameters ( ).Length ; i ++ )
-                            // {
-                            // var ci = c.Constructor.GetParameters ( )[ i ] ;
-                            // CreateNode ( at1 , ci.Name , c.ConstructorArguments[ i ] , false ) ;
-                            // }
-                        }
+                        // ReSharper disable once UnusedVariable
+                        foreach ( var at1 in typ.CustomAttributes.Select ( c => CreateNode ( atts , c.AttributeType.FullName , c , false ) ) ) { }
                     }
                     catch
                     {
@@ -548,31 +538,25 @@ namespace KayMcCormick.Dev
                     }
 
                     var props = CreateNode ( typnode , "Properties" , null , false ) ;
-                    foreach ( var propertyInfo in typ.GetProperties (
-                                                                     BindingFlags.Instance
-                                                                     | BindingFlags.Public
-                                                                    ) )
-                    {
-                        // ReSharper disable once UnusedVariable
-                        var p = CreateNode ( props , propertyInfo.Name , propertyInfo , true ) ;
-                    }
+                    // ReSharper disable once UnusedVariable
+                    foreach ( var p in typ.GetProperties (
+                                                          BindingFlags.Instance
+                                                          | BindingFlags.Public
+                                                         ).Select ( propertyInfo => CreateNode ( props , propertyInfo.Name , propertyInfo , true ) ) ) { }
 
                     var methods = CreateNode ( typnode , "Methods" , null , false ) ;
-                    foreach ( var methodInfo in typ
-                                               .GetMethods (
-                                                            BindingFlags.Instance
-                                                            | BindingFlags.Public
-                                                           )
-                                               .Where ( m => ! m.IsSpecialName ) )
-                    {
-                        // ReSharper disable once UnusedVariable
-                        var p = CreateNode (
-                                            methods
-                                          , methodInfo.ToString ( )
-                                          , methodInfo
-                                          , true
-                                           ) ;
-                    }
+                    // ReSharper disable once UnusedVariable
+                    foreach ( var p in typ
+                                      .GetMethods (
+                                                   BindingFlags.Instance
+                                                   | BindingFlags.Public
+                                                  )
+                                      .Where ( m => ! m.IsSpecialName ).Select ( methodInfo => CreateNode (
+                                                                                                           methods
+                                                                                                         , methodInfo.ToString ( )
+                                                                                                         , methodInfo
+                                                                                                         , true
+                                                                                                          ) ) ) { }
                 }
             }
         }

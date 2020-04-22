@@ -125,7 +125,7 @@ namespace ProjInterface
                         case Control c :
                         {
                             var doc = new LayoutDocument { Content = c , Title = val.ViewTitle } ;
-                            docpane.Children.Add ( doc ) ;
+                            Docpane.Children.Add ( doc ) ;
                             break ;
                         }
                     }
@@ -249,7 +249,7 @@ namespace ProjInterface
             }
 
             tic.DataContext              = t ;
-            docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+            Docpane.SelectedContentIndex = Docpane.Children.IndexOf ( FrameDocument ) ;
             e.Cancel                     = true ;
         }
 
@@ -293,7 +293,7 @@ namespace ProjInterface
                                                      }
                                                     ) ;
 
-            docpane.SelectedContentIndex = docpane.Children.IndexOf ( FrameDocument ) ;
+            Docpane.SelectedContentIndex = Docpane.Children.IndexOf ( FrameDocument ) ;
             DebugUtils.WriteLine ( e.ActivatedType.FullName ) ;
         }
 

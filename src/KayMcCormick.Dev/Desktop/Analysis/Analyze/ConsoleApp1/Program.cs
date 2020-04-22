@@ -44,6 +44,7 @@ using NLog.Targets ;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 using ProjectInfo = Microsoft.CodeAnalysis.ProjectInfo ;
+// ReSharper disable LocalizableElement
 
 // ReSharper disable RedundantOverriddenMember
 
@@ -1090,6 +1091,7 @@ namespace ConsoleApp1
                             // ReSharper disable once UnusedVariable
                             var o = new
                                     {
+                                        // ReSharper disable once RedundantAnonymousTypePropertyName
                                         docId    = docId
                                       , xml      = xml1
                                       , declared = declared.ToDisplayString ( )
@@ -1274,6 +1276,7 @@ namespace ConsoleApp1
                 var classDecl1Type =
                     curComp.GetTypeByMetadataName ( classDecl1.Identifier.ValueText ) ;
                 // ReSharper disable once IdentifierTypo
+                // ReSharper disable once InconsistentNaming
                 var simplebaseType_ilist1 = SimpleBaseType ( ParseTypeName ( IList_typename ) ) ;
                 var enumerable1 = SimpleBaseType ( ParseTypeName ( IEnumerable_typename ) ) ;
                 // ReSharper disable once InconsistentNaming

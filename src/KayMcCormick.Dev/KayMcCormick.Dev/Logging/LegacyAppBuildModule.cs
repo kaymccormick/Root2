@@ -214,7 +214,7 @@ namespace KayMcCormick.Dev.Logging
             e.ResolveOperation.CurrentOperationEnding += ResolveOperationOnCurrentOperationEnding ;
             e.ResolveOperation.InstanceLookupBeginning +=
                 ResolveOperationOnInstanceLookupBeginning ;
-            
+
             Logger.Info ( $"{nameof ( SetupContainerOnResolveOperationBeginning )} " ) ;
         }
 
@@ -462,7 +462,7 @@ namespace KayMcCormick.Dev.Logging
             )
             {
                 var inst = e.Instance ;
-                
+
                 Logger.Trace (
                               $"{nameof ( RegistrationOnActivating )} {e.Component.DebugFormat ( )}"
                              ) ;
@@ -507,7 +507,7 @@ namespace KayMcCormick.Dev.Logging
 
             private void RegistrationOnPreparing ( object sender , PreparingEventArgs e )
             {
-                
+
             }
         }
     }

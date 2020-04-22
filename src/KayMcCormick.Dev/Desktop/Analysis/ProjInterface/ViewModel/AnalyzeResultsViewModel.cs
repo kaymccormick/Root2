@@ -12,6 +12,7 @@
 using System.Runtime.Serialization ;
 using AnalysisAppLib ;
 using KayMcCormick.Dev ;
+// ReSharper disable UnassignedGetOnlyAutoProperty
 
 namespace ProjInterface.ViewModel
 {
