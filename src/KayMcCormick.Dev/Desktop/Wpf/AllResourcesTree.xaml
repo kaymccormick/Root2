@@ -154,6 +154,7 @@
             <WrapPanel>
               <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <Image MaxHeight="32" Source="{Binding Data}" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <TextBlock VerticalAlignment="Center"
                          Text="{Binding Key,Converter={StaticResource KeyConverter}}" />
             </WrapPanel>
@@ -292,8 +293,10 @@
                 <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <TextBlock Grid.Row="2"
                            Text="{Binding Path=Data}" />
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <TextBlock Grid.Row="3" Grid.RowSpan="2"
                            Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerFileLine}" />
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <TextBlock Grid.Row="4" Grid.RowSpan="2"
                            Text="{Binding Path=Data.Metadata,Converter={StaticResource DictionaryConverter},ConverterParameter=CallerMemberName}" />
               </Grid>
@@ -401,7 +404,7 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <ScrollViewer>
-        <Grid Margin="10" Grid.Row="1">
+        <Grid Margin="10">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>

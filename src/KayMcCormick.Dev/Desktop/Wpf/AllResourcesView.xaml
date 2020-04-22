@@ -303,7 +303,7 @@
         <ContentControl
           Style="{StaticResource DetailValue}"
           x:FieldModifier="public"
-          x:Name="details"
+          x:Name="Details"
           ContentTemplateSelector="{StaticResource ResourceDetailTemplateSelector}"
           Grid.Row="7" Grid.Column="0"
           Content="{Binding Data}" />

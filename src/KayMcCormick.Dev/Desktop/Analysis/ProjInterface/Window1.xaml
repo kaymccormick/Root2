@@ -38,6 +38,7 @@
 
           </DataTemplate>
           <!-- ReSharper disable once Xaml.RedundantResource -->
+          <!-- ReSharper disable once InconsistentNaming -->
           <ContextMenu x:Key="itemContextMenu">
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <MenuItem Header="Open"
@@ -45,6 +46,7 @@
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <MenuItem Header="Delete"
                       IsEnabled="{Binding CanDelete}" />
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <MenuItem Header="Rename"
                       IsEnabled="{Binding CanRename}" />
           </ContextMenu>

@@ -42,7 +42,7 @@ namespace TestApp
 
             _instance = this ;
 
-            
+
 #if ENABLE_CONSOLE
             var allocConsole = Kernel32.AllocConsole ( ) ;
             if ( !allocConsole )

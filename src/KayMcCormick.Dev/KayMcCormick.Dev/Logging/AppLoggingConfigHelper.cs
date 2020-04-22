@@ -29,6 +29,9 @@ using NLog.LayoutRenderers ;
 using NLog.Layouts ;
 using NLog.Targets ;
 // ReSharper disable InconsistentNaming
+// ReSharper disable RedundantAssignment
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
+// ReSharper disable ExpressionIsAlwaysNull
 
 #if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
@@ -1229,6 +1232,7 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>Removes a target by name from the current NLog configuration.</summary>
         /// <param name="name">The name of the target to remove.</param>
+        // ReSharper disable once MemberCanBeInternal
         public static void RemoveTarget ( string name )
         {
             if ( LogManager.Configuration == null )

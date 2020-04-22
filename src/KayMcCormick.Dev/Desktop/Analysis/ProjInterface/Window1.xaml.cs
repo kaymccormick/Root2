@@ -33,7 +33,7 @@ namespace ProjInterface
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private const string              VIEW_TITLE = "Docking window" ;
+        private const string              WindowViewTitle = "Docking window" ;
         private       DockWindowViewModel _viewModel ;
 
         public Window1 ( )
@@ -98,7 +98,7 @@ namespace ProjInterface
         }
 
 
-        [ NotNull ] public string ViewTitle { get { return VIEW_TITLE ; } }
+        [ NotNull ] public string ViewTitle { get { return WindowViewTitle ; } }
 
 
         private async void CommandBinding_OnExecuted (

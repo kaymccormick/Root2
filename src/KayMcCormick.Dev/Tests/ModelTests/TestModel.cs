@@ -30,6 +30,8 @@ using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
 // ReSharper disable InconsistentNaming
+// ReSharper disable UnusedVariable
+// ReSharper disable RedundantAssignment
 
 namespace ModelTests
 {
@@ -162,6 +164,7 @@ namespace ModelTests
                 tasks.RemoveAt ( waitAnyResult ) ;
             }
 
+            // ReSharper disable once SuspiciousTypeConversion.Global
             if ( f is IHaveRejectBlock r )
             {
                 var rj = r.GetRejectBlock ( ) ;
@@ -716,7 +719,9 @@ namespace ModelTests
                 }
             }
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if ( comp.ObjectType == null )
+                // ReSharper disable once HeuristicUnreachableCode
             {
                 return ;
             }
@@ -832,7 +837,7 @@ namespace ModelTests
                         {
                             var name = f.GetProperty ( "Name" ).GetString ( ) ;
 
-                            if ( ( typeFullName.EndsWith ( "StatementSyntax" )
+                            if ( ( typeFullName.EndsWith ( "StatementSyntax" , StringComparison.Ordinal )
                                    || pocoClassName == PocoBlockSyntaxClassName )
                                  && name == "AttributeLists" )
                             {
@@ -855,6 +860,7 @@ namespace ModelTests
 
                                 if ( dict.TryGetValue ( k , out var method ) )
                                 {
+                                    // ReSharper disable once RedundantAssignment
                                     value = $"Transform_{method}(node.{name})" ;
                                 }
                                 else
@@ -863,6 +869,7 @@ namespace ModelTests
                                     if ( f.GetProperty ( typeNamePropertyName ).GetString ( )
                                          == "SyntaxToken" )
                                     {
+                                        // ReSharper disable once RedundantAssignment
                                         value =
                                             $"new {PocoSyntaxTokenTypeName} {{RawKind = node.{name}.RawKind, Kind = node.{name}.Kind().ToString(), Value = node.{name}.Value, ValueText = node.{name}.ValueText }}" ;
                                     }
@@ -885,6 +892,7 @@ namespace ModelTests
                                 var lastPeriod = t2.LastIndexOf ( '.' ) ;
                                 var part = lastPeriod >= 0 ? t2.Substring ( lastPeriod + 1 ) : t2 ;
                                 var key = part ;
+                                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                                 if ( key != null )
                                 {
                                     var m2 = dict[ key ] ;

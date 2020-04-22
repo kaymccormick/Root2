@@ -134,6 +134,7 @@ namespace ProjTests
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if ( ! _disableLogging )
 #pragma warning disable 162
+                // ReSharper disable once HeuristicUnreachableCode
             {
                 // loggingFixture?.SetOutputHelper ( output , this ) ;
 
@@ -301,6 +302,7 @@ namespace ProjTests
 
         //[WpfFact ]
         // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once FunctionComplexityOverflow
         public void TestJsonSerialization ( )
         {
             var w = new Window ( ) ;

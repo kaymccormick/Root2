@@ -82,6 +82,7 @@ namespace ProjTests
 
         public override string LookupPrefix ( string ns ) { return null ; }
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public override WriteState WriteState { get ; }
         #endregion
     }
