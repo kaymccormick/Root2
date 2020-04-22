@@ -15,7 +15,7 @@ namespace KayMcCormick.Dev
 {
     /// <summary>
     /// </summary>
-    public interface IHierarchicalNode 
+    public interface IHierarchicalNode
     {
         /// <summary>
         /// </summary>

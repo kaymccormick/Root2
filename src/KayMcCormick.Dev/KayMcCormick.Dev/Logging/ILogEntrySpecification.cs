@@ -6,6 +6,6 @@
 
         CrosscuttingConcern GetCrosscuttingConcern ( ) ;
 
-        ExecutionContext GetExecutionContext ( ) ;
+        IExecutionContext GetExecutionContext ( ) ;
     }
 }

@@ -398,7 +398,7 @@ namespace KayMcCormick.Dev.Application
             {
                 builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ).WithCallerMetadata (  ) ;
             }
-            
+
             //builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
             builder.Register (
                               ( context , parameters ) => {
@@ -466,6 +466,7 @@ namespace KayMcCormick.Dev.Application
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        // ReSharper disable once FunctionComplexityOverflow
         protected override IEnumerable LoadConfiguration ( Action < string > logMethod2 )
         {
             if ( logMethod2 == null )

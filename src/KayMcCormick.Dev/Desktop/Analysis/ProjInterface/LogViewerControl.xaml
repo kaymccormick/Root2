@@ -1,12 +1,9 @@
-﻿<UserControl x:Name="logViewer"
+﻿<UserControl x:Name="LogViewer"
              x:Class="ProjInterface.LogViewerControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-             xmlns:projInterface="clr-namespace:ProjInterface"
-             xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
              xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              mc:Ignorable="d"
@@ -64,7 +61,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <TreeView Grid.RowSpan="3"
-              Name="tv" Grid.Column="0"
+              x:Name="Tv" Grid.Column="0"
               ItemsSource="{Binding Path=RootNodes}">
       <TreeView.ItemContainerStyle>
         <Style TargetType="TreeViewItem">
@@ -76,7 +73,7 @@
     <StackPanel Orientation="Horizontal" Grid.Row="0"
                 Grid.Column="1">
       <ItemsControl
-        ItemsSource="{Binding ElementName=logViewer,Path=DefView.Groups}">
+        ItemsSource="{Binding ElementName=LogViewer,Path=DefView.Groups}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <TextBlock Text="{Binding}" />
@@ -84,7 +81,7 @@
         </ItemsControl.ItemTemplate>
       </ItemsControl>
     </StackPanel>
-    <ListView Name="lv"
+    <ListView x:Name="Lv"
               ItemsSource="{Binding Source=
 {StaticResource EntriesCollectionView}}"
               Grid.Column="1" Grid.Row="1">

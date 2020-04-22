@@ -19,8 +19,9 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public sealed class Token : UIElement
+    internal sealed class Token : UIElement
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly bool _newLine ;
 
         private readonly Size          _desiredSize ;
@@ -35,7 +36,8 @@ namespace AnalysisControls
         /// <param name="solidColorBrush"></param>
         /// <param name="newLine"></param>
         // ReSharper disable once UnusedParameter.Local
-        public Token ( int rawKind , string text , [ CanBeNull ] SolidColorBrush solidColorBrush , bool newLine )
+        // ReSharper disable once MemberCanBeInternal
+        internal Token ( int rawKind , string text , [ CanBeNull ] SolidColorBrush solidColorBrush , bool newLine )
         {
             _newLine  = newLine ;
             var typeface = new Typeface ( "Courier New" ) ;

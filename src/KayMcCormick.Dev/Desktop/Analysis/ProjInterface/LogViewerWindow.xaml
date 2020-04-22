@@ -5,11 +5,9 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:projInterface="clr-namespace:ProjInterface"
-                 xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-                 xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
                  xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
                  xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
-                 Name="logViewerWindow"
+                 x:Name="logViewerWindow"
                  mc:Ignorable="d"
                  Title="Log Viewer Window" Height="450"
                  Width="800">

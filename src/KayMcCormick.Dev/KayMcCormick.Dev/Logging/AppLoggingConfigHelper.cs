@@ -28,6 +28,7 @@ using NLog.Config ;
 using NLog.LayoutRenderers ;
 using NLog.Layouts ;
 using NLog.Targets ;
+// ReSharper disable InconsistentNaming
 
 #if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
@@ -85,6 +86,7 @@ namespace KayMcCormick.Dev.Logging
         // ReSharper disable once UnusedMember.Local
         private const string PublicFacingHostAddress   = "xx1.mynetgear.com:" ;
         private const int    DefaultProtoLogUdpPort    = 4445 ;
+        // ReSharper disable once InconsistentNaming
         private const string EnvVarName_MINLOGLEVEL    = "MINLOGLEVEL" ;
         private const string DefaultEventLogTargetName = "eventLogTarget" ;
         private const string LogRootPath               = @"c:\data\logs\" ;
@@ -438,7 +440,7 @@ namespace KayMcCormick.Dev.Logging
      ,
                                 } ;
             }
-                
+
             // var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";

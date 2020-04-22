@@ -68,7 +68,7 @@ namespace ProjInterface
             DebugUtils.WriteLine ( DataContext.ToString() ) ;
             DebugUtils.WriteLine ( _defView.ToString() ) ;
             var groupDescription = new PropertyGroupDescription { PropertyName = "LoggerName" } ;
-            DefView = CollectionViewSource.GetDefaultView ( lv.ItemsSource ) ;
+            DefView = CollectionViewSource.GetDefaultView ( Lv.ItemsSource ) ;
             if ( DefView == null )
             {
                 return ;
@@ -168,7 +168,7 @@ namespace ProjInterface
         protected override void OnInitialized ( EventArgs e )
         {
             base.OnInitialized ( e ) ;
-            lv.SelectionChanged += LvOnSelectionChanged ;
+            Lv.SelectionChanged += LvOnSelectionChanged ;
         }
 
         private void LvOnSelectionChanged ( object sender , SelectionChangedEventArgs e ) { }

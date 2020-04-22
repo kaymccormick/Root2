@@ -123,6 +123,7 @@
     <Compile Include="IProvidesKey.cs" />
     <Compile Include="IViewModel.cs" />
     <Compile Include="Logging\ExecutionContextImpl.cs" />
+    <Compile Include="Logging\IExecutionContext.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />
     <Compile Include="AppBuild\ILoggerTracker.cs" />
     <Compile Include="Application\ApplicationInstance.cs" />
@@ -174,7 +175,6 @@
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
-    <Compile Include="Logging\ExecutionContext.cs" />
     <Compile Include="Logging\IConfigSource.cs" />
     <Compile Include="Logging\ILogEntrySpecification.cs" />
     <Compile Include="Logging\ILoggingConfiguration.cs" />
