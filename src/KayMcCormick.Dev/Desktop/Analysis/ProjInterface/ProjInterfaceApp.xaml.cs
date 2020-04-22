@@ -173,9 +173,32 @@ namespace ProjInterface
                 Current.Shutdown ( 255 ) ;
             }
 
-            var mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
-            mainWindow.Show ( ) ;
+            Window1 mainWindow = null ;
+            try
+            {
+                mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
+            }
+            catch ( Exception ex )
+            {
+                MessageBox.Show ( ex.ToString ( ) , "error" ) ;
+            }
+
+            if ( mainWindow == null )
+            {
+                MessageBox.Show("Unable to resolve Main window", "error");
+                return ;
+            }
+            try
+            {
+
+
+                mainWindow.Show ( ) ;
+            }
+            catch ( Exception ex )
+            {
+                    MessageBox.Show(ex.ToString(), "error");
         }
+    }
 
         private void ShowErrorDialog ( string applicationError , string messageText )
         {
