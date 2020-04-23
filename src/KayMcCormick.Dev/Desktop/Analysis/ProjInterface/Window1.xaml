@@ -1095,7 +1095,7 @@
               x:Name="leftAnchorablePane"
               DockWidth="200">
               <avalondock:LayoutAnchorable>
-                <ContentControl Content="{kmWpf:Resolve kmWpf:ResourcesTreeView}"/>
+                <ContentControl Content="{kmWpf:Resolve kmWpf:ResourcesTreeView,Argument={x:Reference FrameDoc1}}"/>
               </avalondock:LayoutAnchorable>
             </avalondock:LayoutAnchorablePane>
               <avalondock:LayoutDocumentPaneGroup>
@@ -1104,7 +1104,8 @@
 
                 <avalondock:LayoutDocument Title="Browsex"
                                            IconSource="{StaticResource BrowserIcon}"
-                                           x:Name="FrameDxocument" >
+                                           >
+                  <Frame Source="Home.xaml" x:Name="FrameDoc1" />
                 </avalondock:LayoutDocument>
                   <avalondock:LayoutDocument Title="Browser"
                                            IconSource="{StaticResource BrowserIcon}"

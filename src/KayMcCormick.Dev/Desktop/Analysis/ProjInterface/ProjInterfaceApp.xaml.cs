@@ -18,13 +18,13 @@ using static NLog.LogManager ;
 
 namespace ProjInterface
 {
-    internal sealed partial class ProjInterfaceApp : BaseApp, IResourceResolver
+    internal sealed partial class ProjInterfaceApp : BaseApp , IResourceResolver
     {
         private new static readonly Logger Logger = GetCurrentClassLogger ( ) ;
 
         public ProjInterfaceApp ( ) : this ( null ) { }
 
-        [UsedImplicitly]
+        [ UsedImplicitly ]
         public ProjInterfaceApp (
             ApplicationInstanceBase applicationInstance         = null
           , bool                    disableLogging              = false
@@ -53,11 +53,19 @@ namespace ProjInterface
             GetResourceStream ( resourceLocator ) ;
             foreach ( var referencedAssembly in Assembly
                                                .GetExecutingAssembly ( )
-                                               .GetReferencedAssemblies ( ).Where ( referencedAssembly => referencedAssembly.Name == "WindowsBase" ) )
+                                               .GetReferencedAssemblies ( )
+                                               .Where (
+                                                       referencedAssembly
+                                                           => referencedAssembly.Name
+                                                              == "WindowsBase"
+                                                      ) )
             {
                 DebugUtils.WriteLine ( referencedAssembly.ToString ( ) ) ;
                 var assembly = AppDomain.CurrentDomain.GetAssemblies ( ) ;
-                foreach ( var assembly1 in assembly.Where ( assembly1 => assembly1.GetName ( ).Name == "WindowsBase" ) )
+                foreach ( var assembly1 in assembly.Where (
+                                                           assembly1 => assembly1.GetName ( ).Name
+                                                                        == "WindowsBase"
+                                                          ) )
                 {
                     DebugUtils.WriteLine ( assembly1.FullName ) ;
                     foreach ( var type in assembly1.GetTypes ( ) )
@@ -101,11 +109,15 @@ namespace ProjInterface
             {
                 return ;
             }
-            var nonPublicFields = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+
+            var nonPublicFields = val.GetType ( )
+                                     .GetFields ( BindingFlags.Instance | BindingFlags.NonPublic ) ;
             // ReSharper disable once UnusedVariable
-            var publicProperties = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+            var publicProperties =
+                val.GetType ( ).GetFields ( BindingFlags.Instance | BindingFlags.Public ) ;
             // ReSharper disable once UnusedVariable
-            var nonPublicProperties = val.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+            var nonPublicProperties =
+                val.GetType ( ).GetFields ( BindingFlags.Instance | BindingFlags.NonPublic ) ;
             foreach ( var nonPublicField in nonPublicFields )
             {
                 object v = null ;
@@ -118,13 +130,15 @@ namespace ProjInterface
                     DebugUtils.WriteLine ( "Unable to get field value" ) ;
                 }
 
-                if ( v == null)
+                if ( v == null )
                 {
                     continue ;
                 }
 
                 var t = v.GetType ( ) ;
-                DebugUtils.WriteLine($"nonpublic field {nonPublicField.Name} is of type {t.FullName} and value {v}");
+                DebugUtils.WriteLine (
+                                      $"nonpublic field {nonPublicField.Name} is of type {t.FullName} and value {v}"
+                                     ) ;
             }
         }
 
@@ -133,9 +147,9 @@ namespace ProjInterface
             if ( ! disableLogging )
             {
                 foreach ( var myJsonLayout in Configuration.AllTargets
-                                             .OfType < TargetWithLayout > ( )
-                                             .Select ( t => t.Layout )
-                                             .OfType < MyJsonLayout > ( ) )
+                                                           .OfType < TargetWithLayout > ( )
+                                                           .Select ( t => t.Layout )
+                                                           .OfType < MyJsonLayout > ( ) )
                 {
                     var options = new JsonSerializerOptions ( ) ;
                     foreach ( var optionsConverter in myJsonLayout.Options.Converters )
@@ -168,7 +182,9 @@ namespace ProjInterface
                 ShowErrorDialog (
                                  ProjInterface.Properties.Resources
                                               .ProjInterfaceApp_OnStartup_Application_Error
-                               , ProjInterface.Properties.Resources.ProjInterfaceApp_OnStartup_Compile_time_configuration_error
+                               , ProjInterface
+                                .Properties.Resources
+                                .ProjInterfaceApp_OnStartup_Compile_time_configuration_error
                                 ) ;
                 Current.Shutdown ( 255 ) ;
             }
@@ -185,20 +201,19 @@ namespace ProjInterface
 
             if ( mainWindow == null )
             {
-                MessageBox.Show("Unable to resolve Main window", "error");
+                MessageBox.Show ( "Unable to resolve Main window" , "error" ) ;
                 return ;
             }
+
             try
             {
-
-
                 mainWindow.Show ( ) ;
             }
             catch ( Exception ex )
             {
-                    MessageBox.Show(ex.ToString(), "error");
+                MessageBox.Show ( ex.ToString ( ) , "error" ) ;
+            }
         }
-    }
 
         private void ShowErrorDialog ( string applicationError , string messageText )
         {
@@ -211,7 +226,10 @@ namespace ProjInterface
         }
 
         #region Implementation of IResourceResolver
-        public object ResolveResource ( [ NotNull ] object resourceKey ) { return TryFindResource(resourceKey) ; }
+        public object ResolveResource ( [ NotNull ] object resourceKey )
+        {
+            return TryFindResource ( resourceKey ) ;
+        }
         #endregion
     }
 
@@ -223,11 +241,12 @@ namespace ProjInterface
         [ STAThreadAttribute ]
         public static void Main ( )
         {
-            EnsureLoggingConfiguredAsync ( Console.WriteLine ) ;
+            EnsureLoggingConfigured ( Console.WriteLine ) ;
 
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" ) )
             {
-                AppDomain.CurrentDomain.ProcessExit += ( sender , args ) => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
+                AppDomain.CurrentDomain.ProcessExit += ( sender , args )
+                    => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
                 try
                 {
                     var app = new ProjInterfaceApp ( ) ;

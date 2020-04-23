@@ -85,6 +85,7 @@
     <Compile Include="FindLogUsagesMain.cs" />
     <Compile Include="Gen.cs" />
     <Compile Include="ILogInvocation.cs" />
+    <Compile Include="ILogInvocation2.cs" />
     <Compile Include="ILogInvocationArgument.cs" />
     <Compile Include="LogInvocation2.cs" />
     <Compile Include="LogInvocationArgument.cs" />
@@ -109,10 +110,10 @@
       <Version>1.0.0-rc-00275</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-      <Version>3.5.0</Version>
+      <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-      <Version>3.5.0</Version>
+      <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>

@@ -87,6 +87,7 @@
     <Compile Include="IDocInterface.cs" />
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />
+    <Compile Include="LogInvocation2.cs" />
     <Compile Include="MethodDocInfo.cs" />
     <Compile Include="Project\ProjectInfo.cs" />
     <Compile Include="Project\ProjectLanguage.cs" />
@@ -169,7 +170,6 @@
     <Compile Include="PipelineResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultStatus.cs" />
-    <Compile Include="Auth\TokenCacheHelper.cs" />
     <Compile Include="UnableToInitializeWorkspace.cs" />
     <Compile Include="ViewerLoggerInfo.cs" />
     <Compile Include="ViewModel\ISpanToolTipViewModel.cs" />
@@ -214,13 +214,13 @@
       <Version>1.0.0-rc-00275</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
-      <Version>3.5.0</Version>
+      <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-      <Version>3.5.0</Version>
+      <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-      <Version>3.5.0</Version>
+      <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
       <Version>3.1.3</Version>
@@ -229,7 +229,7 @@
       <Version>3.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Graph.Beta">
-      <Version>0.14.0-preview</Version>
+      <Version>0.17.0-preview</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client">
       <Version>4.11.0</Version>
@@ -265,7 +265,9 @@
   <ItemGroup>
     <None Include="doc.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Auth\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Syntax.xml">
       <SubType>Designer</SubType>

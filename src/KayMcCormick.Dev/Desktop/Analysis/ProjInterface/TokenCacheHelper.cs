@@ -15,7 +15,7 @@ using System.Security.Cryptography ;
 using JetBrains.Annotations ;
 using Microsoft.Identity.Client ;
 
-namespace AnalysisAppLib.Auth
+namespace ProjInterface
 {
     internal static class TokenCacheHelper
     {
@@ -64,7 +64,7 @@ namespace AnalysisAppLib.Auth
 
             lock ( FileLock )
             {
-                // reflect changesgs in the persistent store
+                // reflect changes in the persistent store
                 File.WriteAllBytes (
                                     CacheFilePath
                                   , ProtectedData.Protect (

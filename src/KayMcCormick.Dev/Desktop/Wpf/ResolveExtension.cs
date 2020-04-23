@@ -10,12 +10,29 @@ using JetBrains.Annotations ;
 
 namespace KayMcCormick.Lib.Wpf
 {
+    public class NamedParameterExtension : ParameterExtension
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get ; set ; }
+    }
+    public class ParameterExtension :MarkupExtension
+    {
+        public string Value { get ; set ; }
+
+        #region Overrides of MarkupExtension
+        public override object ProvideValue ( IServiceProvider serviceProvider ) { return null ; }
+        #endregion
+    }
     /// <summary>
     /// </summary>
     [ TypeConverter ( typeof ( ResolveTypeConverter ) ) ]
     [ MarkupExtensionReturnType ( typeof ( object ) ) ]
     public sealed class ResolveExtension : MarkupExtension
     {
+        
+        public object Argument { get ; set ; }
         /// <summary>
         /// </summary>
         // ReSharper disable once UnusedMember.Global
@@ -83,6 +100,10 @@ namespace KayMcCormick.Lib.Wpf
 
             if ( scope != null )
             {
+                if ( Argument != null )
+                {
+                    return scope.Resolve(ComponentType, new PositionalParameter(1, Argument));
+                }
                 return scope.Resolve ( ComponentType ) ;
             }
 

@@ -18,6 +18,7 @@ namespace AnalysisAppLib.Project
     /// </summary>
     public class ProjectInfo
     {
+        public int Id { get ; set ; }
         /// <summary>
         /// Project language
         /// </summary>

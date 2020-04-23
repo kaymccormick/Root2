@@ -23,6 +23,7 @@ namespace AnalysisAppLib.Project
     public class ProjectBrowserViewModel : IProjectBrowserViewModel
     {
         private readonly IBrowserNodeCollection _rootCollection ;
+        private List < ProjectInfo > _projects = new List < ProjectInfo > () ;
 
         /// <summary>
         /// 
@@ -32,7 +33,6 @@ namespace AnalysisAppLib.Project
             var browserNodeCollection = new BrowserNodeCollection ( ) ;
             _rootCollection = browserNodeCollection ;
             // ReSharper disable once CollectionNeverQueried.Local
-            List <ProjectInfo> projects = new List < ProjectInfo > ();
             var projectBrowserNode = new ProjectInfo
                                      {
                                          Name          = "LogTest"
@@ -41,7 +41,7 @@ namespace AnalysisAppLib.Project
                                              // ReSharper disable once StringLiteralTypo
                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
                                      } ;
-            projects.Add ( projectBrowserNode ) ;
+            Projects.Add ( projectBrowserNode ) ;
             //browserNodeCollection.Add ( projectBrowserNode ) ;
             var projectBrowserNode2 = new ProjectInfo
                                       {
@@ -57,7 +57,7 @@ namespace AnalysisAppLib.Project
                                         , Platform = "x86"
                                       } ;
             //browserNodeCollection.Add ( projectBrowserNode2 ) ;
-            projects.Add ( projectBrowserNode2 ) ;
+            Projects.Add ( projectBrowserNode2 ) ;
             var projectBrowserNode3 = new ProjectInfo
                                       {
                                           Name = "My Project (root)"
@@ -72,7 +72,7 @@ namespace AnalysisAppLib.Project
                                         , Platform = "x86"
                                       } ;
             //browserNodeCollection.Add ( projectBrowserNode3 ) ;
-            projects.Add (projectBrowserNode3  );
+            Projects.Add (projectBrowserNode3  );
         }
 
         #region Implementation of IProjectBrowserViewModoel
@@ -80,6 +80,12 @@ namespace AnalysisAppLib.Project
         /// 
         /// </summary>
         public IBrowserNodeCollection RootCollection { get { return _rootCollection ; } }
+
+        public List < ProjectInfo > Projects
+        {
+            get { return _projects ; }
+            set { _projects = value ; }
+        }
         #endregion
         #region Implementation of ISerializable
         /// <summary>

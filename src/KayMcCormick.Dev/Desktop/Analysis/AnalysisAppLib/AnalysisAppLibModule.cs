@@ -5,7 +5,6 @@ using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
 using System.Threading.Tasks ;
-using AnalysisAppLib.Auth ;
 using AnalysisAppLib.Command ;
 using AnalysisAppLib.Dataflow ;
 using Autofac ;
@@ -230,7 +229,7 @@ namespace AnalysisAppLib
                                                  )
                    .WithAuthority ( AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount )
                    .Build ( ) ;
-            TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
+            //TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
             return a ;
         }
 

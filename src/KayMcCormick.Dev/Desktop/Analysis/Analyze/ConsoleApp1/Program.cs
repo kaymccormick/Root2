@@ -1228,6 +1228,19 @@ namespace ConsoleApp1
             await Task.Run ( ( ) => CodeGen ( command , context ) ) ;
         }
 
+        [TitleMetadata( "DB Populate")]
+        [UsedImplicitly]
+        public async Task PopuldateDbAync(IBaseLibCommand command, [NotNull] AppContext context)
+        {
+            using ( var db = new AppDbContext ( ) )
+            {
+                ProjectBrowserViewModel p = new ProjectBrowserViewModel();
+                await db.Projects.AddRangeAsync(p.Projects);
+                await db.SaveChangesAsync ( ) ;
+            }
+        }
+
+
 #pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
         // ReSharper disable once FunctionComplexityOverflow
         private async Task CodeGen (
