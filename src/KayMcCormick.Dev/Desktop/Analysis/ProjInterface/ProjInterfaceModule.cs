@@ -164,7 +164,7 @@ if(RegiserExplorerTypes){
                    .WithCallerMetadata ( ) ;
 
             builder.RegisterType < AllResourcesTreeViewModel > ( )
-                   .AsSelf ( )
+                   .AsSelf ( ).As<IAddRuntimeResource> (  )
                    .SingleInstance ( )
                    .WithCallerMetadata ( ) ;
             builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ).WithCallerMetadata();

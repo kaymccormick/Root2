@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.Data ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Threading ;
@@ -32,12 +33,21 @@ namespace AnalysisAppLib
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly Pipeline                      _pipeline ;
+        private readonly IAddRuntimeResource _add ;
+        private readonly Func < object , DataTable > _op ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
+        private ResourceNodeInfo resulstsNode ;
+
         /// <summary>
         /// Constructor. Takes pipeline instanace.
         /// </summary>
         /// <param name="pipeline"></param>
-        public AnalyzeCommand ( Pipeline pipeline ) { _pipeline = pipeline ; }
+        public AnalyzeCommand ( Pipeline pipeline , IAddRuntimeResource add, Func<object, DataTable> op)
+        {
+            _pipeline = pipeline ;
+            _add = add ;
+            _op = op ;
+        }
 
         #region Implementation of IAnalyzeCommand
         /// <summary>
@@ -52,10 +62,15 @@ namespace AnalysisAppLib
           , ITargetBlock < RejectedItem > rejectTarget
         )
         {
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance() ;
+            resourceNodeInfo.Key = "Analyze command" ;
+            _add.AddResource(resourceNodeInfo);
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Command" , "AnalyzeCommand" ) )
             {
                 Logger.Debug("run command");
                 var pipeline = _pipeline ;
+                var dt = _op ( pipeline ) ;
+
                 if ( pipeline == null )
                 {
                     throw new AnalyzeException ( "Pipeline is null" ) ;
@@ -63,6 +78,10 @@ namespace AnalysisAppLib
 
                 pipeline.BuildPipeline ( ) ;
                 var pInstance = pipeline.PipelineInstance ;
+                var nodeInfo = ResourceNodeInfo.CreateInstance() ;
+                nodeInfo.Key = "Pipeline" ;
+                nodeInfo.Data = dt ;
+                resourceNodeInfo.Children.Add (nodeInfo  );
                 if ( pInstance == null )
                 {
                     throw new AnalyzeException ( "pipeline instance is null" ) ;
@@ -90,6 +109,14 @@ namespace AnalysisAppLib
                 var t   = Task.Run (
                                     () => Function(), cancellationToken
                                    ) ;
+                var instance = ResourceNodeInfo.CreateInstance();
+                instance.Key  = "Task " + t.Id;
+                instance.Data = t;
+                resourceNodeInfo.Children.Add(instance);
+                resulstsNode = ResourceNodeInfo.CreateInstance() ;
+                resulstsNode.Key = "Results" ;
+                resourceNodeInfo.Children.Add(resulstsNode);
+
                 var req = new AnalysisRequest { Info = projectNode } ;
                 if ( ! pInstance.Post ( req ) )
                 {
@@ -152,6 +179,10 @@ namespace AnalysisAppLib
             Console.WriteLine ( JsonSerializer.Serialize ( invocation ) ) ;
 #endif
             LogInvocations.Add ( invocation ) ;
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance() ;
+            resourceNodeInfo.Key = invocation ;
+            resourceNodeInfo.Data = invocation ;
+            resulstsNode.Children.Add (resourceNodeInfo );
         }
 
         /// <summary>

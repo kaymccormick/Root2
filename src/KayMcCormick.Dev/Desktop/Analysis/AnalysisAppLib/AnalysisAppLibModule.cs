@@ -240,6 +240,7 @@ namespace AnalysisAppLib
         private DataTable DataAdapter ( IComponentContext c , IEnumerable < Parameter > p , object o )
         {
             var r = new DataTable ( o.GetType ( ).Name ) ;
+            ArrayList values = new ArrayList();
             foreach ( var p1 in o.GetType ( ).GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
             {
                 Prop px = new Prop { Name = p1.Name } ;
@@ -247,9 +248,16 @@ namespace AnalysisAppLib
                 try { rr1 = p1.GetValue ( o ) ; }
                 catch { }
 
+                if ( p1.GetMethod.GetParameters ( ).Any ( ) )
+                {
+                    continue ;
+                }
                 r.Columns.Add ( new DataColumn ( p1.Name , p1.PropertyType ) ) ;
+                values.Add ( rr1 ) ;
+                
             }
 
+            r.LoadDataRow ( values.ToArray(), LoadOption.OverwriteChanges ) ;
             return r ;
         }
 

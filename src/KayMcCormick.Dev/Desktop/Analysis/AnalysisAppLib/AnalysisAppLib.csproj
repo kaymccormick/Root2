@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalysisAppLibModule.cs" />
+    <Compile Include="AnalysisIntermediate.cs" />
     <Compile Include="AnalysisRequest.cs" />
     <Compile Include="AnalysisService.cs" />
     <Compile Include="AnalyzeCommand.cs" />
@@ -85,10 +86,17 @@
     <Compile Include="Explorer\IExplorerItemProvider.cs" />
     <Compile Include="Gen2.cs" />
     <Compile Include="IDocInterface.cs" />
+    <Compile Include="IEventMisc.cs" />
+    <Compile Include="IEventMisc2.cs" />
+    <Compile Include="InvocationMisc.cs" />
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />
+    <Compile Include="Log1.cs" />
+    <Compile Include="LogEventMisc.cs" />
     <Compile Include="LogInvocation2.cs" />
     <Compile Include="MethodDocInfo.cs" />
+    <Compile Include="MiscLevel.cs" />
+    <Compile Include="MSBuildEventMisc.cs" />
     <Compile Include="Project\ProjectInfo.cs" />
     <Compile Include="Project\ProjectLanguage.cs" />
     <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />

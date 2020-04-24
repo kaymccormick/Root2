@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
+    <Compile Include="IAddRuntimeResource.cs" />
     <Compile Include="ICommandMetadata.cs" />
     <Compile Include="Command\AppCommandResult.cs" />
     <Compile Include="Command\IAppCommandResult.cs" />

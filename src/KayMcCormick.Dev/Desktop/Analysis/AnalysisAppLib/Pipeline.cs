@@ -1,8 +1,8 @@
 using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
-using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using Buildalyzer ;
@@ -11,21 +11,15 @@ using Buildalyzer.Workspaces ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Logging ;
-using Microsoft.Build.Framework ;
-using Microsoft.Build.Logging.StructuredLogger ;
 using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.VisualBasic.Symbols ;
 using Microsoft.Extensions.Logging ;
 using Newtonsoft.Json ;
 using NLog ;
 using NLog.Fluent ;
 using ILogger = Microsoft.Extensions.Logging.ILogger ;
-using JsonSerializer = System.Text.Json.JsonSerializer ;
 using LogLevel = NLog.LogLevel ;
-using ProjectEvaluationFinishedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationFinishedEventArgs ;
-using ProjectEvaluationStartedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationStartedEventArgs ;
-using ProjectImportedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectImportedEventArgs ;
-using TargetSkippedEventArgs = Microsoft.Build.Logging.StructuredLogger.TargetSkippedEventArgs ;
 using Task = System.Threading.Tasks.Task ;
 
 namespace AnalysisAppLib
@@ -38,17 +32,25 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        public Pipeline ( ILoggerFactory  loggerProvider, Action <string> outAct )
+        public Pipeline (
+            ILoggerFactory      loggerProvider
+          , Action < string >   outAct
+          , IAddRuntimeResource add
+        )
         {
             this.loggerProvider = loggerProvider ;
-            _outAct = outAct ;
+            _outAct             = outAct ;
+            _add                = add ;
         }
 
         private readonly Func < ILogInvocation > _invocationFactory ;
-        private readonly IEnumerable < Action < Tuple < Workspace , Document > > > _documentAction1 ;
-        private readonly IEnumerable < Action < Document > > _documentAction ;
+
+        private readonly IEnumerable < Action < Tuple < Workspace , Document > > >
+            _documentAction1 ;
+
+        private readonly IEnumerable < Action < Document > >       _documentAction ;
         private readonly IEnumerable < Action < ILogInvocation > > _invocActions ;
-        private readonly ILoggerFactory _loggerProvider ;
+        private readonly ILoggerFactory                            _loggerProvider ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -71,12 +73,13 @@ namespace AnalysisAppLib
 #pragma warning disable 649
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
 #pragma warning restore 649
-        private BufferBlock < RejectedItem >                           _rejectBlock ;
-        private ILoggerFactory loggerProvider ;
-        private readonly Action < string > _outAct ;
+        private          BufferBlock < RejectedItem >          _rejectBlock ;
+        private          ILoggerFactory                        loggerProvider ;
+        private readonly Action < string >                     _outAct ;
+        private readonly IAddRuntimeResource                   _add ;
         private readonly IEnumerable < Action < IEventMisc > > _miscs ;
-        private WriteOnceBlock < AnalysisRequest > _input ;
-        private BufferBlock < Document > _bufferBlock ;
+        private          WriteOnceBlock < AnalysisRequest >    _input ;
+        private          BufferBlock < Document >              _bufferBlock ;
 
         /// <summary>
         /// 
@@ -105,18 +108,25 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         /// <param name="invocationFactory"></param>
-        public Pipeline ( Func < ILogInvocation > invocationFactory , IEnumerable<Action<Tuple<Workspace, Document>>> documentAction1 ,
-                          IEnumerable<Action<Document>> documentAction, IEnumerable <Action <ILogInvocation> > invocActions , ILoggerFactory loggerProvider , Action <string> outAct,
-                          IEnumerable<Action<IEventMisc>> miscs
-                          )
+        public Pipeline (
+            Func < ILogInvocation >                                   invocationFactory
+          , IEnumerable < Action < Tuple < Workspace , Document > > > documentAction1
+          , IEnumerable < Action < Document > >                       documentAction
+          , IEnumerable < Action < ILogInvocation > >                 invocActions
+          , ILoggerFactory                                            loggerProvider
+          , Action < string >                                         outAct
+          , IEnumerable < Action < IEventMisc > >                     miscs
+          , IAddRuntimeResource                                       add
+        )
         {
-            _outAct = outAct ;
-            _miscs = miscs ;
+            _outAct            = outAct ;
+            _miscs             = miscs ;
+            _add               = add ;
             _invocationFactory = invocationFactory ;
-            _documentAction1 = documentAction1 ;
-            _documentAction = documentAction ;
-            _invocActions = invocActions ;
-            _loggerProvider = loggerProvider ;
+            _documentAction1   = documentAction1 ;
+            _documentAction    = documentAction ;
+            _invocActions      = invocActions ;
+            _loggerProvider    = loggerProvider ;
 
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
@@ -127,14 +137,27 @@ namespace AnalysisAppLib
         /// </summary>
         public virtual void BuildPipeline ( )
         {
-            
-            var initWorkspace = Register ( Workspaces.InitializeWorkspace2Block (loggerProvider ,_outAct, _miscs) ) ;
+            var initWorkspace = Register (
+                                          Workspaces.InitializeWorkspace2Block (
+                                                                                loggerProvider
+                                                                              , _outAct
+                                                                              , _miscs
+                                                                               )
+                                         ) ;
             var cur = CurrentBlock ?? Register ( ConfigureInput ( ) ) ;
             cur.LinkTo ( initWorkspace , LinkOptions ) ;
 
-            var toDocuments = Register ( Workspaces.SolutionDocumentsBlock (_documentAction,_documentAction1 ) ) ;
-            IPropagatorBlock <Document,Document> prop = new BroadcastBlock < Document > ( document => document );
-            prop.LinkTo ( new ActionBlock < Document > ( d => Logger.Info("pop {name}", d.Name)), LinkOptions);
+            var toDocuments = Register (
+                                        Workspaces.SolutionDocumentsBlock (
+                                                                           _documentAction
+                                                                         , _documentAction1
+                                                                          )
+                                       ) ;
+            IPropagatorBlock < Document , Document > prop =
+                new BroadcastBlock < Document > ( document => document ) ;
+            var actionBlock = new ActionBlock < Document > ( Action ) ;
+            prop.LinkTo ( actionBlock , LinkOptions ) ;
+
             toDocuments.LinkTo ( prop , LinkOptions ) ;
             RejectBlock = new BufferBlock < RejectedItem > ( ) ;
 
@@ -142,7 +165,8 @@ namespace AnalysisAppLib
             var findLogUsages = Register (
                                           DataflowBlocks.FindLogUsages1 (
                                                                          _invocationFactory
-                                                                       , RejectBlock, _invocActions
+                                                                       , RejectBlock
+                                                                       , _invocActions
                                                                         )
                                          ) ;
             prop.LinkTo ( findLogUsages , LinkOptions ) ;
@@ -155,6 +179,153 @@ namespace AnalysisAppLib
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
         }
 
+        private async Task Action ( Document d )
+        {
+            
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
+            resourceNodeInfo.Key  = d.Name ;
+            resourceNodeInfo.Data = d ;
+            resourceNodeInfo.CreateNodeFunc = CreateNodeFunc;
+            var sem = await d.GetSemanticModelAsync ( ) ;
+            var tree = await d.GetSyntaxTreeAsync ( ) ;
+            var n = ResourceNodeInfo.CreateInstance ( ) ;
+            n.Key = "Syntax Tree" ;
+            n.Data = tree ;
+            var instance = ResourceNodeInfo.CreateInstance(CreateNodeFunc) ;
+            instance.Key = "Root" ;
+            var syntaxNode = await tree.GetRootAsync ( ) ;
+            instance.Data = new AnalysisContext { Node = syntaxNode , Model = sem } ;
+            n.Children.Add(instance);
+            instance.GetChildrenFunc = InstanceGetChildrenFunc ;
+            var nodeInfo = ResourceNodeInfo.CreateInstance (CreateNodeFunc ) ;
+            nodeInfo.Key = "compilation" ;
+
+            if ( sem == null ) { }
+            else
+            {
+                var comp = sem.Compilation ;
+                nodeInfo.Data = comp ;
+                var glob = comp.SourceModule.GlobalNamespace ;
+                var collection = glob.GetNamespaceMembers (  ).Select (
+                                                                    cn => Func (
+                                                                                cn
+                                                                              , ( o , o1 ) => {
+                                                                                    var x1 =
+                                                                                        ResourceNodeInfo
+                                                                                           .CreateInstance ( CreateNodeFunc) ;
+                                                                                    x1.Key  = o ;
+                                                                                    x1.Data = o1 ;
+                                                                                    x1
+                                                                                           .GetChildrenFunc
+                                                                                        = (info, func11) => cn
+                                                                                         .GetMembers().Select(symbol => Func (symbol, func11  ));
+                                                                                    return x1 ;
+                                                                                }
+                                                                               )
+                                                                   ) ;
+                nodeInfo.Children.AddRange(collection);
+                nodeInfo.Children.AddRange(comp.References.Select (r=>nodeInfo.CreateNodeFunc(nodeInfo,r.Display, r, true, false)  ));
+            }
+
+            resourceNodeInfo.Children.Add(nodeInfo);
+            resourceNodeInfo.Children.Add(n);
+            _add.AddResource ( resourceNodeInfo ) ;
+            Logger.Info ( "pop {name}" , d.Name ) ;
+        }
+
+        private IEnumerable < ResourceNodeInfo > GetChildrenFunc ( ResourceNodeInfo arg1 , Func < object , object , ResourceNodeInfo > arg2 ) { yield break ; }
+
+        private ResourceNodeInfo CreateNodeFunc (
+            ResourceNodeInfo arg1
+          , object           arg2
+          , object           arg3
+          , bool ?           arg4
+          , bool             arg5
+        )
+        {
+            var r =ResourceNodeInfo.CreateInstance();
+            r.CreateNodeFunc = CreateNodeFunc ;
+            r.Key = arg2 ;
+            r.Data = arg3 ;
+            r.IsValueChildren = arg4 ;
+            if ( arg5 )
+            {
+                arg1?.Children.Add ( r ) ;
+            }
+
+            return r ;
+        }
+
+        private IEnumerable < ResourceNodeInfo > InstanceGetChildrenFunc ( ResourceNodeInfo info , Func < object , object , ResourceNodeInfo > func )
+        {
+            AnalysisContext infoData = ( AnalysisContext ) info.Data ;
+            var syntaxNodes = ( ( SyntaxNode ) infoData.Node ).ChildNodes ( ) ;
+            return syntaxNodes
+                                               .Select (
+                                                        xx => {
+                                                            var resourceNodeInfo1 = func ( xx.Kind ( ).ToString ( ) , new AnalysisContext
+                                                                                                                      {
+                                                                                                                          Node = xx,
+                                                                                                                          Model = infoData.Model,
+                                                                                                                      }) ;
+                                                            resourceNodeInfo1.GetChildrenFunc =
+                                                                InstanceGetChildrenFunc ;
+                                                            return resourceNodeInfo1 ;
+                                                        }
+                                                       ) ;
+        }
+
+        private ResourceNodeInfo Func (
+            ISymbol                            cn
+          , Func < object , object , ResourceNodeInfo > func1
+        )
+        {
+            var rr = func1 ( cn.Name , cn ) ;
+            rr.GetChildrenFunc = ( info , func )
+                => {
+                var arg1Data = info.Data as ISymbol ;
+                IEnumerable < object > enumm = new object[] { } ;
+                switch ( arg1Data )
+                {
+                    case IAliasSymbol aliasSymbol : break ;
+                    case IArrayTypeSymbol arrayTypeSymbol : break ;
+                    case ISourceAssemblySymbol sourceAssemblySymbol :
+                        break ;
+                    case IAssemblySymbol assemblySymbol : break ;
+                    case IDiscardSymbol discardSymbol : break ;
+                    case IDynamicTypeSymbol dynamicTypeSymbol : break ;
+                    case IErrorTypeSymbol errorTypeSymbol : break ;
+                    case IEventSymbol eventSymbol : break ;
+                    case IFieldSymbol fieldSymbol : break ;
+                    case ILabelSymbol labelSymbol : break ;
+                    case ILocalSymbol localSymbol : break ;
+                    case IMethodSymbol methodSymbol :
+                        enumm = methodSymbol.Parameters ;
+                        break ;
+                    case IModuleSymbol moduleSymbol : break ;
+                    case INamedTypeSymbol namedTypeSymbol :
+                        enumm = namedTypeSymbol.GetMembers();
+                        break ;
+                    case INamespaceSymbol namespaceSymbol :
+                        enumm = namespaceSymbol.GetMembers ( ) ;
+                        break ;
+                    case IPointerTypeSymbol pointerTypeSymbol : break ;
+                    case ITypeParameterSymbol typeParameterSymbol : break ;
+                    case ITypeSymbol typeSymbol :
+                        enumm = typeSymbol.GetMembers ( ) ;
+                        break ;
+                    case INamespaceOrTypeSymbol namespaceOrTypeSymbol : break ;
+                    case IParameterSymbol parameterSymbol : break ;
+                    case IPreprocessingSymbol preprocessingSymbol : break ;
+                    case IPropertySymbol propertySymbol : break ;
+                    case IRangeVariableSymbol rangeVariableSymbol : break ;
+                    default : throw new ArgumentOutOfRangeException ( nameof ( arg1Data ) ) ;
+                }
+                return enumm.OfType<ISymbol> (  ).Select ( xxx => Func ( xxx , func ) ) ;
+            } ;
+            return rr ;
+        }
+
         [ NotNull ]
         private T Register < T > ( [ NotNull ] T block )
             where T : IDataflowBlock
@@ -164,14 +335,17 @@ namespace AnalysisAppLib
             return block ;
         }
 
-        private static Task Continuation ( [ NotNull ] IDataflowBlock block , string writeOnceBlockName )
+        private static Task Continuation (
+            [ NotNull ] IDataflowBlock block
+          , string                     writeOnceBlockName
+        )
         {
             return block.Completion.ContinueWith (
-                                           task => ContinuationFunction (
-                                                                         task
-                                                                       , writeOnceBlockName
-                                                                        )
-                                          ) ;
+                                                  task => ContinuationFunction (
+                                                                                task
+                                                                              , writeOnceBlockName
+                                                                               )
+                                                 ) ;
         }
 
         private static void ContinuationFunction ( [ NotNull ] Task task , string logName )
@@ -203,7 +377,7 @@ namespace AnalysisAppLib
         protected virtual IPropagatorBlock < AnalysisRequest , AnalysisRequest > ConfigureInput ( )
         {
             Input = new WriteOnceBlock < AnalysisRequest > ( s => s ) ;
-            Head = Input ;
+            Head  = Input ;
             return Input ;
         }
 
@@ -243,12 +417,20 @@ namespace AnalysisAppLib
 
             [ NotNull ]
             public static TransformBlock < AnalysisRequest , Workspace > InitializeWorkspace2Block (
-                ILoggerFactory provider, Action<string> outAct,
-                IEnumerable<Action <IEventMisc> > miscs
+                ILoggerFactory                        provider
+              , Action < string >                     outAct
+              , IEnumerable < Action < IEventMisc > > miscs
             )
             {
                 var makeWs =
-                    new TransformBlock < AnalysisRequest , Workspace > ( req => MakeWorkspace2Async ( req , provider,outAct,miscs ) ) ;
+                    new TransformBlock < AnalysisRequest , Workspace > (
+                                                                        req => MakeWorkspace2Async (
+                                                                                                    req
+                                                                                                  , provider
+                                                                                                  , outAct
+                                                                                                  , miscs
+                                                                                                   )
+                                                                       ) ;
                 return makeWs ;
             }
 
@@ -257,9 +439,10 @@ namespace AnalysisAppLib
             [ ItemNotNull ]
             private static async Task < Workspace > MakeWorkspace2Async (
 #pragma warning restore 1998
-                [ NotNull ] AnalysisRequest req
-              , ILoggerFactory              lo, [ NotNull ] Action <string> outAct,
-                IEnumerable<Action<IEventMisc>> misc
+                [ NotNull ] AnalysisRequest           req
+              , ILoggerFactory                        lo
+              , [ NotNull ] Action < string >         outAct
+              , IEnumerable < Action < IEventMisc > > misc
             )
 
             {
@@ -289,7 +472,7 @@ namespace AnalysisAppLib
                             var b = keyValuePair.Value.Build ( ) ;
                             foreach ( var analyzerResult in b.Results )
                             {
-                                Logger.Info ( "{r}" , analyzerResult.ToString() ) ;
+                                Logger.Info ( "{r}" , analyzerResult.ToString ( ) ) ;
                             }
 
                             if ( ! b.OverallSuccess )
@@ -303,7 +486,6 @@ namespace AnalysisAppLib
                         }
 
                         return workspace ;
-
                     }
                     catch ( Exception ex )
                     {
@@ -355,42 +537,48 @@ namespace AnalysisAppLib
                                                                                                 return
                                                                                                     true ;
                                                                                             }
+                                                                                           )
+                                                                                    .Select (
+                                                                                             xx1
+                                                                                                 => {
+                                                                                                 foreach
+                                                                                                 ( var
+                                                                                                       f in
+                                                                                                     documentAction1
+                                                                                                 )
+                                                                                                 {
+                                                                                                     f (
+                                                                                                        Tuple
+                                                                                                           .Create (
+                                                                                                                    workspace
+                                                                                                                  , xx1
+                                                                                                                   )
+                                                                                                       ) ;
+                                                                                                 }
 
-                                                                                           ).Select(
-                                                                                                    xx1
-                                                                                                        => {
-                                                                                                        foreach
-                                                                                                        (var
-                                                                                                             f in
-                                                                                                            documentAction1
-                                                                                                        )
-                                                                                                        {
-                                                                                                            f(
-                                                                                                             Tuple.Create(workspace, xx1)
-                                                                                                             );
-                                                                                                        }
+                                                                                                 return
+                                                                                                     xx1 ;
+                                                                                             }
+                                                                                            )
+                                                                                    .Select (
+                                                                                             xx1
+                                                                                                 => {
+                                                                                                 foreach
+                                                                                                 ( var
+                                                                                                       f in
+                                                                                                     documentAction
+                                                                                                 )
+                                                                                                 {
+                                                                                                     f (
+                                                                                                        xx1
+                                                                                                       ) ;
+                                                                                                 }
 
-                                                                                                        return
-                                                                                                            xx1;
-                                                                                                    })
-                                                                                           .Select(
-                                                                                                    xx1
-                                                                                                        => {
-                                                                                                        foreach
-                                                                                                        ( var
-                                                                                                              f in
-                                                                                                            documentAction
-                                                                                                        )
-                                                                                                        {
-                                                                                                            f (
-                                                                                                               xx1
-                                                                                                              ) ;
-                                                                                                        }
-
-                                                                                                        return
-                                                                                                            xx1 ;
-                                                                                                    }));
-                    
+                                                                                                 return
+                                                                                                     xx1 ;
+                                                                                             }
+                                                                                            )
+                                                                       ) ;
             }
         }
 
@@ -406,7 +594,10 @@ namespace AnalysisAppLib
                 Logger.Trace ( "Constructing FindUsagesBlock" ) ;
                 var flu = new FindLogUsagesMain ( invocationFactory ) ;
 
-                Task < IEnumerable < ILogInvocation > > Transform ( Document document ) => flu.FindUsagesFuncAsync ( document , rejectBlock, invocActions ) ;
+                Task < IEnumerable < ILogInvocation > > Transform ( Document document )
+                {
+                    return flu.FindUsagesFuncAsync ( document , rejectBlock , invocActions ) ;
+                }
 
                 var findLogUsagesBlock =
                     new TransformManyBlock < Document , ILogInvocation > (
@@ -457,281 +648,15 @@ namespace AnalysisAppLib
 #endif
     }
 
-    public interface IEventMisc
+    public class AnalysisContext
     {
-        int ThreadId { get ; }
-        object    Obj     { get; }
-        string    Message { get; }
-        MiscLevel Level   { get; set; }
-        string    RawJson { get; set; }
+        private SemanticModel _model ;
+        private SyntaxNode _node ;
+        public SemanticModel Model { get { return _model ; } set { _model = value ; } }
 
-        string File { get  ; }
-
-        string PropKeys { get ; }
+        public SyntaxNode Node { get { return _node ; } set { _node = value ; } }
     }
 
-    class MSBuildEventMisc : IEventMisc
-    {
-        private int _threadId ;
-        private object _obj ;
-        private string _message ;
-        private MiscLevel _level ;
-        private string _rawJson ;
-        private string _propKeys ;
-        private string _file ;
-
-        public MSBuildEventMisc ( BuildEventArgs args , MiscLevel level )
-        {
-            _level = level ;
-            Obj = args ;
-        }
-
-        #region Implementation of IEventMisc
-        public int ThreadId { get { return _threadId ; } }
-
-        public object Obj
-        {
-            get { return _obj ; }
-            set { _obj = value ; }
-        }
-
-        public string Message { get { return _message ; } }
-
-        public MiscLevel Level { get { return _level ; } set { _level = value ; } }
-
-        public string RawJson { get { return _rawJson ; } set { _rawJson = value ; } }
-
-        public string PropKeys { get { return _propKeys ; } }
-
-        public string File { get { return _file ; } set { _file = value ; } }
-        #endregion
-    }
-
-    public class InvocationMisc : IEventMisc2 <ILogInvocation>
-    {
-        public InvocationMisc ( string rawJson , ILogInvocation instance )
-        {
-            _rawJson = rawJson ;
-            _instance = instance ;
-        }
-
-        private int _threadId ;
-        private object _obj ;
-        private string _message ;
-        private MiscLevel _level ;
-        private string _rawJson ;
-        private ILogInvocation _instance ;
-        private string _propKeys ;
-        private string _file ;
-        #region Implementation of IEventMisc
-        public int ThreadId { get { return _threadId ; } }
-
-        public object Obj => Instance ;
-
-        public string Message { get { return _message ; } }
-
-        public MiscLevel Level { get { return _level ; } set { _level = value ; } }
-
-        public string RawJson { get { return _rawJson ; } set { _rawJson = value ; } }
-
-        public string PropKeys { get { return _propKeys ; } }
-
-        public string File => _instance.SourceLocation ;
-        #endregion
-
-        #region Implementation of IEventMisc2<out ILogInvocation>
-        public ILogInvocation Instance { get { return _instance ; } }
-        #endregion
-    }
-
-    public class LogEventMisc : IEventMisc
-    {
-        public int ThreadId => _inst.ManagedThreadId ;
-
-        public string PropKeys
-        {
-            get
-            {
-                var o = JsonSerializer.Deserialize < JsonElement > ( RawJson ) ;
-                List <string> ks=new List < string > ();
-                if ( o.TryGetProperty ( "Properties" , out var props ) )
-                {
-                    foreach ( var keyValuePair in props.EnumerateObject ( ) )
-                    {
-                        if ( keyValuePair.NameEquals ( "CallerFilePath" )
-                             || keyValuePair.NameEquals ( "CallerMemberName" )
-                             || keyValuePair.NameEquals("CallerLineNumber"))
-                        {
-                            continue ;
-                        }
-                        ks.Add ( keyValuePair .ToString()) ;
-                    }
-                }
-                if (o.TryGetProperty("MDLC", out var mdlc))
-                {
-                    foreach (var keyValuePair in mdlc.EnumerateObject())
-                    {
-                        ks.Add(keyValuePair.ToString());
-                    }
-                }
-                return string.Join (
-                                    ";",ks);
-            }
-        }
-
-        public string File => _inst.CallerFilePath ;
-
-        private readonly LogEventInstance _inst ;
-        private MiscLevel _level = MiscLevel.INFO ;
-        private string _rawJson ;
-        private string _file ;
-        #region Implementation of IEventMisc
-        public LogEventMisc (LogEventInstance inst , string rawJson)
-        {
-            _inst = inst ;
-            _rawJson = rawJson ;
-        }
-
-        public object Obj => _inst ;
-
-        public string Message => _inst.FormattedMessage ;
-
-        public MiscLevel Level { get { return _level ; } set { _level = value ; } }
-
-        public string RawJson { get { return _rawJson ; } set { _rawJson = value ; } }
-        #endregion
-    }
-
-
-    public interface IEventMisc2< out T>:IEventMisc
-    {
-        T Instance { get ; }
-    }
-
-    public class Log1 : Microsoft.Build.Framework.ILogger
-    {
-        private readonly Action < string > _outAct ;
-        private readonly IProjectAnalyzer _value ;
-        private readonly IEnumerable < Action < IEventMisc > > _misc ;
-
-        public Log1 (
-            Action < string >                     outAct
-          , IProjectAnalyzer                      value
-          , IEnumerable < Action < IEventMisc > > misc
-        )
-        {
-            _outAct = outAct ;
-            _value = value ;
-            _misc = misc ;
-        }
-
-        private LoggerVerbosity _verbosity ;
-        private string _parameters ;
-        #region Implementation of ILogger
-        public void Initialize ( IEventSource eventSource )
-        {
-            
-            eventSource.AnyEventRaised += EventSourceOnAnyEventRaised;
-            eventSource.ErrorRaised += EventSource_ErrorRaised;
-        }
-
-        private void EventSourceOnAnyEventRaised ( object sender , BuildEventArgs e )
-        {
-            bool? succeeded ;
-            MiscLevel level = MiscLevel.DEBUG;
-            int imp ;
-            string file="" ;
-            if ( e is BuildMessageEventArgs xx1 )
-            {
-                file = xx1.File ;
-            }
-            switch ( e )
-            {
-                
-                case BuildFinishedEventArgs buildFinishedEventArgs :
-                    level = MiscLevel.INFO ;
-                    succeeded = buildFinishedEventArgs.Succeeded ;break;
-                case CriticalBuildMessageEventArgs criticalBuildMessageEventArgs :
-                    level = MiscLevel.CRIT ;
-                    imp = 2 - ( int ) criticalBuildMessageEventArgs.Importance ;
-                    break ;
-                case MetaprojectGeneratedEventArgs metaprojectGeneratedEventArgs : break ;
-                case ProjectImportedEventArgs projectImportedEventArgs : break ;
-                case TargetSkippedEventArgs targetSkippedEventArgs : break ;
-                case TaskCommandLineEventArgs taskCommandLineEventArgs : break ;
-                
-                case BuildStartedEventArgs buildStartedEventArgs :
-                    level = MiscLevel.INFO ;
-                    break ;
-                case ProjectEvaluationFinishedEventArgs projectEvaluationFinishedEventArgs : break ;
-                
-                case ProjectEvaluationStartedEventArgs projectEvaluationStartedEventArgs : break ;
-                case ProjectFinishedEventArgs projectFinishedEventArgs : level = MiscLevel.INFO;
-                    break ;
-                case ProjectStartedEventArgs projectStartedEventArgs :
-                    level = MiscLevel.INFO;
-                    break ;
-                case TargetFinishedEventArgs targetFinishedEventArgs : break ;
-                case TargetStartedEventArgs2 targetStartedEventArgs2 : break ;
-                case TargetStartedEventArgs targetStartedEventArgs : break ;
-                case TaskFinishedEventArgs taskFinishedEventArgs : break ;
-                case TaskStartedEventArgs taskStartedEventArgs : break ;
-                case BuildStatusEventArgs buildStatusEventArgs :
-                    level = MiscLevel.DEBUG;
-                    break ;
-                case BuildWarningEventArgs buildWarningEventArgs :
-                    level = MiscLevel.INFO;
-                    break ;
-                case ExternalProjectFinishedEventArgs externalProjectFinishedEventArgs : break ;
-                case ExternalProjectStartedEventArgs externalProjectStartedEventArgs : break ;
-                case CustomBuildEventArgs customBuildEventArgs :
-                    level = MiscLevel.INFO;
-                    break ;
-                case BuildMessageEventArgs buildMessageEventArgs:
-                    break;
-                case BuildErrorEventArgs buildErrorEventArgs :
-                    level=MiscLevel.ERROR ;
-                    break ;
-                case LazyFormattedBuildEventArgs lazyFormattedBuildEventArgs : break ;
-                case TelemetryEventArgs telemetryEventArgs : break ;
-                default : throw new ArgumentOutOfRangeException ( nameof ( e ) ) ;
-            }
-
-            var msBuildEventMisc = new MSBuildEventMisc(e, level) ;
-            msBuildEventMisc.File = file ;
-            IEventMisc eventMisc = msBuildEventMisc;
-            foreach (var action in _misc)
-            {
-                action(eventMisc);
-            }
-        }
-
-        private void EventSource_ErrorRaised(object sender, LazyFormattedBuildEventArgs e)
-        {
-            var n1 = _value.ProjectInSolution.ProjectName ;
-           // _outAct?.Invoke ( n1 + ":" +e.Message ) ;
-            foreach ( var action in _misc )
-            {
-                // action ( new Misc ( e ) ) ;
-            }
-        }
-
-        public void Shutdown ( ) { }
-
-        public LoggerVerbosity Verbosity { get { return _verbosity ; } set { _verbosity = value ; } }
-
-        public string Parameters { get { return _parameters ; } set { _parameters = value ; } }
-        #endregion
-    }
-
-    public enum MiscLevel
-    {
-        INFO = 3,
-        WARN = 4,
-        ERROR = 5
-       , CRIT
-        , DEBUG
-    }
 
     public class F : ILoggerFactory
     {
@@ -744,14 +669,15 @@ namespace AnalysisAppLib
         public void AddProvider ( ILoggerProvider provider ) { }
         #endregion
     }
+
     public class Myw : ILoggerProvider
     {
         private readonly Action < string > _unknown ;
 
-        public Myw ( Action<string> unknown ) { _unknown = unknown ; }
+        public Myw ( Action < string > unknown ) { _unknown = unknown ; }
 
         #region Implementation of ILoggerProvider
-        public ILogger CreateLogger ( string categoryName ) { return new MyL(_unknown) ; }
+        public ILogger CreateLogger ( string categoryName ) { return new MyL ( _unknown ) ; }
         #endregion
         #region Implementation of IDisposable
         public void Dispose ( ) { }
@@ -766,11 +692,11 @@ namespace AnalysisAppLib
 
         #region Implementation of ILogger
         public void Log < TState > (
-            Microsoft.Extensions.Logging.LogLevel  logLevel
-          , EventId   eventId
-          , TState    state
-          , Exception exception
-          , Func < TState , Exception , string > formatter
+            Microsoft.Extensions.Logging.LogLevel logLevel
+          , EventId                               eventId
+          , TState                                state
+          , Exception                             exception
+          , Func < TState , Exception , string >  formatter
         )
         {
             _unknown ( formatter ( state , exception ) ) ;

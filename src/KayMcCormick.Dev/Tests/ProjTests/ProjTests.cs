@@ -1286,8 +1286,9 @@ namespace ProjTests
                 var lifetimeScope = instance.GetLifetimeScope ( ) ;
                 
                 var t1 = new UiElementTypeConverter ( lifetimeScope ) ;
-                var t = t1.ControlForValue ( Process.GetCurrentProcess ( ) , 1 ) ;
-                Window w1 = new Window { Content = t } ;
+                var t = t1.ControlForValue ( typeof ( ProjTests ) , 1 ) ;
+                ScrollViewer ff = new ScrollViewer ( ) { Content = t } ;
+                Window w1 = new Window { Content = ff } ;
                 w1.ShowDialog ( ) ;
             }
         }

@@ -31,11 +31,16 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// Create ResourceNodeInfo instance.
         /// </summary>
+        /// <param name="createNodeFunc"></param>
         /// <returns></returns>
-        [ NotNull ] public static ResourceNodeInfo CreateInstance ( ) { return new ResourceNodeInfo ( ) ; }
+        [ NotNull ] public static ResourceNodeInfo CreateInstance ( Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo > createNodeFunc =null) { return new ResourceNodeInfo ( ) {CreateNodeFunc = createNodeFunc}; }
 
-        private ResourceNodeInfo ( ) {
+        private ResourceNodeInfo ( )
+        {
+            CreatedDatetime = DateTime.Now ;
         }
+
+        public DateTime CreatedDatetime { get { return _createdDatetime ; } set { _createdDatetime = value ; } }
 
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
 
@@ -54,6 +59,7 @@ namespace KayMcCormick.Dev
         private object _key ;
         private object _styleKey ;
         private object _templateKey ;
+        private DateTime _createdDatetime ;
 
         /// <summary>
         /// </summary>
@@ -84,7 +90,7 @@ namespace KayMcCormick.Dev
         {
             get
             {
-                if ( _isChildrenLoaded != false )
+                if ( _isChildrenLoaded.GetValueOrDefault())
                 {
                     return _children ;
                 }
@@ -121,6 +127,7 @@ namespace KayMcCormick.Dev
                     DebugUtils.WriteLine ( $"collected child {resourceNodeInfo}" ) ;
                 }
 
+                _isChildrenLoaded = true ;
                 return _children ;
             }
             set { _children = value ; }

@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="KayMcCormick.Lib.Wpf.ResourcesTreeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:KayMcCormick.Lib.Wpf"
+             xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+             xmlns:dev1="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+      <ResourceDictionary Source="SharedResources.xaml"></ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <TreeView Name="MainTree" SelectedItemChanged="TreeView_OnSelectedItemChanged" ItemsSource="{Binding AllResourcesCollection}">
+      <TreeView.Resources>
+        <local:HierarchicalTemplateSelector
+          x:Key="HierarchicalTemplateSelector" />
+        <HierarchicalDataTemplate
+          DataType="{x:Type dev1:ResourceNodeInfo}"
+          ItemsSource="{Binding Path=Children}">
+          <Border BorderBrush="Green" BorderThickness="1" Padding="1">
+            <ContentControl Focusable="False"
+                            ContentTemplateSelector="{StaticResource HierarchicalTemplateSelector}"
+                            Content="{Binding Key}">
+              <ContentControl.ToolTip>
+                <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
+                <Binding Path="Key"
+                         Converter="{StaticResource GetTypeConverter}" />
+              </ContentControl.ToolTip>
+            </ContentControl>
+          </Border>
+        </HierarchicalDataTemplate>
+      </TreeView.Resources>
+    </TreeView>
+  </Grid>
+</UserControl>
