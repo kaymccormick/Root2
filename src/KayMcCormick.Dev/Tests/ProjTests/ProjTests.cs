@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.Data ;
 using System.Diagnostics ;
 using System.Globalization ;
 using System.IO ;
@@ -155,7 +156,35 @@ namespace ProjTests
         }
 
         [ Fact ]
-        public void TestSubstituteType ( )
+        public void TestSubstituteType()
+        {
+            using (var instance = new ApplicationInstance(
+                                                          new ApplicationInstance.
+                                                              ApplicationInstanceConfiguration(
+                                                                                               _output
+                                                                                                  .WriteLine
+                                                                                             , ApplicationGuid
+                                                                                              )
+                                                         ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                var model = lifetimeScope.Resolve<TypesViewModel>();
+                var sts = lifetimeScope.Resolve<ISyntaxTypesService>();
+                var cMap = sts.CollectionMap();
+                var appTypeInfo = sts.GetAppTypeInfo(typeof(AssignmentExpressionSyntax));
+                var field = (SyntaxFieldInfo)appTypeInfo.Fields[0];
+                var typeSyntax =
+                    SyntaxFactory.ParseTypeName(typeof(ArgumentSyntax).FullName);
+                var substType =
+                    XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
+            }
+        }
+
+        [WpfFact]
+        public void TestSubstituteTyp11e()
         {
             using ( var instance = new ApplicationInstance (
                                                             new ApplicationInstance.
@@ -170,19 +199,16 @@ namespace ProjTests
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimeScope = instance.GetLifetimeScope ( ) ;
-                var model = lifetimeScope.Resolve < TypesViewModel > ( ) ;
-                var sts = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
-                var cMap = sts.CollectionMap ( ) ;
-                var appTypeInfo = sts.GetAppTypeInfo ( typeof ( AssignmentExpressionSyntax ) ) ;
-                var field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
-                var typeSyntax =
-                    SyntaxFactory.ParseTypeName ( typeof ( ArgumentSyntax ).FullName ) ;
-                var substType =
-                    XmlDocElements.SubstituteType ( field , typeSyntax , cMap , model ) ;
+                var model = lifetimeScope.Resolve < Func < object , DataTable > > ( ) ;
+                if ( model != null )
+                {
+                    var xo = model ( AppDomain.CurrentDomain ) ;
+                    DebugUtils.WriteLine ( $"{xo}" ) ;
+                }
             }
         }
 
-        [ WpfFact ]
+        [WpfFact ]
         public void TestXaml2 ( )
         {
             var model = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
@@ -1240,6 +1266,30 @@ namespace ProjTests
             // }
             // }
             // }
+        }
+
+        [ WpfFact ]
+        public void TestControl111 ( )
+        {
+            using ( var instance = new ApplicationInstance (
+                                                            new ApplicationInstance.
+                                                                ApplicationInstanceConfiguration (
+                                                                                                  _output
+                                                                                                     .WriteLine
+                                                                                                , ApplicationGuid
+                                                                                                 )
+                                                           ) )
+            {
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
+                instance.Initialize ( ) ;
+                var lifetimeScope = instance.GetLifetimeScope ( ) ;
+                
+                var t1 = new UiElementTypeConverter ( lifetimeScope ) ;
+                var t = t1.ControlForValue ( Process.GetCurrentProcess ( ) , 1 ) ;
+                Window w1 = new Window { Content = t } ;
+                w1.ShowDialog ( ) ;
+            }
         }
 
         [ WpfFact ]

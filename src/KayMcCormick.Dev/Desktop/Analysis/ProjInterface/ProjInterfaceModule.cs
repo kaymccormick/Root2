@@ -37,6 +37,7 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
+using Microsoft.Extensions.Logging ;
 using NLog ;
 
 #if MIGRADOC
@@ -67,6 +68,7 @@ namespace ProjInterface
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType < Myw > ( ).As < ILoggerProvider > ( ) ;
             builder.RegisterSource < MySource > ( ) ;
             Logger.Trace (
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
@@ -170,6 +172,7 @@ if(RegiserExplorerTypes){
             builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
             builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
 
+            builder.RegisterType < UiElementTypeConverter > ( ).AsSelf ( ) ;
             if(RegisterControlViewCommandAdapters)
             {
                 builder
@@ -199,19 +202,19 @@ if(RegiserExplorerTypes){
                    .As < IDisplayable > ( ) ;
 #endif
 
-            builder.Register (
-                              ( context , parameters )
-                                  => new LogViewerControl ( new LogViewerConfig ( 0 ) )
-                             )
-                   .As < IViewWithTitle > ( )
-                   .As < LogViewerControl > ( )
-                   .WithCallerMetadata ( ) ;
+            // builder.Register (
+                              // ( context , parameters )
+                                  // => new LogViewerControl ( new LogViewerConfig ( 0 ) )
+                             // )
+                   // .As < IViewWithTitle > ( )
+                   // .As < LogViewerControl > ( )
+                   // .WithCallerMetadata ( ) ;
         }
 
         public bool RegisterControlViewCommandAdapters { get { return _registerControlViewCommandAdapters ; } set { _registerControlViewCommandAdapters = value ; } }
 
         [ NotNull ]
-        private static Func < LayoutDocumentPane , IDisplayableAppCommand >
+        public static Func < LayoutDocumentPane , IDisplayableAppCommand >
             ControlViewCommandAdapter (
                 [ NotNull ] IComponentContext                                   c
               , IEnumerable < Parameter >                                       p
@@ -260,7 +263,7 @@ if(RegiserExplorerTypes){
         }
 #endif
 #pragma warning disable 1998
-        private static async Task < IAppCommandResult > CommandFuncAsync (
+        public static async Task < IAppCommandResult > CommandFuncAsync (
 #pragma warning restore 1998
             [ NotNull ] LambdaAppCommand command
         )

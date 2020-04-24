@@ -496,7 +496,7 @@ namespace KayMcCormick.Dev.Logging
             {
                 _cacheTarget = new MyCacheTarget ( ) ;
                 _dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
-                CacheTarget2 = new MyCacheTarget2 { Layout = SetupJsonLayout ( ) } ;
+                CacheTarget2 = new MyCacheTarget2 { Layout = new MyJsonLayout (  ) } ;
                 _dict[ LogLevel.Debug ].Add ( CacheTarget2 ) ;
             }
             #endregion

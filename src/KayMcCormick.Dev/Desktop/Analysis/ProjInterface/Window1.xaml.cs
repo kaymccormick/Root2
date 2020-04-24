@@ -1,16 +1,22 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
+using System.Reactive.Concurrency ;
+using System.Reactive.Linq ;
+using System.Text.Json ;
 using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon ;
 using System.Windows.Input ;
 using System.Windows.Navigation ;
+using System.Windows.Threading ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
+using AnalysisControls ;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
@@ -19,7 +25,14 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Container ;
+using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.CodeAnalysis ;
+using Microsoft.CodeAnalysis.Classification ;
+using Microsoft.CodeAnalysis.CSharp ;
+using Microsoft.CodeAnalysis.Text ;
+using Microsoft.Extensions.Logging ;
+using Microsoft.VisualStudio.Threading ;
 using Microsoft.Win32 ;
 using NLog ;
 using Application = System.Windows.Application ;
@@ -31,10 +44,13 @@ namespace ProjInterface
       , IViewWithTitle
       , IView < DockWindowViewModel >
     {
+        private readonly UiElementTypeConverter _converter ;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private const string              WindowViewTitle = "Docking window" ;
         private       DockWindowViewModel _viewModel ;
+        private ILifetimeScope _beginLifetimeScope ;
+        private MyCacheTarget2 _cacheTarget ;
 
         public Window1 ( )
         {
@@ -42,42 +58,248 @@ namespace ProjInterface
             InitializeComponent ( ) ;
         }
 
-        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this ( lifetimeScope , null )
+        #region Overrides of FrameworkElement
+        protected override void OnInitialized ( EventArgs e )
+        {
+            base.OnInitialized ( e ) ;
+            var z = _beginLifetimeScope.Resolve < IAnalyzeCommand > ( ) ;
+            z.AnalyzeCommandAsync (
+                                   new ProjectBrowserNode ( )
+                                   {
+                                       SolutionPath =
+                                           @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
+                                   }, new ActionBlock < RejectedItem > ( item => { } )
+                                  ) ;
+        }
+        #endregion
+
+        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this ( lifetimeScope , null,null )
         {
         }
 
-        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope , DockWindowViewModel viewModel )
+        public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope , DockWindowViewModel viewModel, UiElementTypeConverter converter )
         {
             if ( lifetimeScope == null )
             {
                 throw new ArgumentNullException ( nameof ( lifetimeScope ) ) ;
             }
 
-            //SetValue ( AttachedProperties.LifetimeScopeProperty , (ILifetimeScope)lifetimeScope ) ;
-            var lf = lifetimeScope.BeginLifetimeScope (
-                                                       builder => {
-                                                           builder.RegisterInstance (
-                                                                                     new
-                                                                                         LayoutService (
-                                                                                                        leftAnchorablePane
-                                                                                                       )
-                                                                                    )
-                                                                  .SingleInstance ( )
-                                                                  .WithCallerMetadata ( ) ;
-                                                           builder.RegisterInstance (
-                                                                                     new
-                                                                                         PaneService ( )
-                                                                                    )
-                                                                  .SingleInstance ( )
-                                                                  .WithCallerMetadata ( ) ;
-                                                           builder
-                                                              .RegisterType < HandleExceptionImpl
-                                                               > ( )
-                                                              .As < IHandleException > ( )
-                                                              .InstancePerLifetimeScope ( )
-                                                              .WithCallerMetadata ( ) ;
-                                                       }
-                                                      ) ;
+            if ( lifetimeScope.IsRegistered ( typeof ( MyCacheTarget2 ) ) )
+            {
+                _cacheTarget = lifetimeScope.Resolve < MyCacheTarget2 > ( ) ;
+            }
+
+            _converter = converter ;
+            _cacheTarget?.Cache.SubscribeOn(Scheduler.Default)
+                         .Buffer(TimeSpan.FromMilliseconds(100))
+                         .Where(x => x.Any())
+                         .ObserveOnDispatcher(DispatcherPriority.Background)
+                         .Subscribe(
+                                    infos => {
+                                        foreach ( var json in infos )
+                                        {
+                                            var i = JsonSerializer.Deserialize < LogEventInstance > ( json , new JsonSerializerOptions ( ) ) ;
+                                            List1.Items.Add ( new LogEventMisc ( i , json ) ) ;
+                                        }
+                                    }
+                                   );
+        
+
+            
+        //SetValue ( AttachedProperties.LifetimeScopeProperty , (ILifetimeScope)lifetimeScope ) ;
+        _beginLifetimeScope = lifetimeScope.BeginLifetimeScope (
+                                                                builder => {
+
+                                                                    builder.Register (
+                                                                                      ( r , p )
+                                                                                          => new
+                                                                                              Myw (
+                                                                                                   x => {
+                                                                                                       List1
+                                                                                                          .Dispatcher
+                                                                                                          .Invoke (
+                                                                                                                   ( )
+                                                                                                                       => {
+
+                                                                                                                       List1
+                                                                                                                          .Items
+                                                                                                                          .Add (
+                                                                                                                                x
+                                                                                                                               ) ;
+
+                                                                                                                   }
+                                                                                                                  ) ;
+                                                                                                   }
+                                                                                                  )
+                                                                                     )
+                                                                           .As < ILoggerProvider
+                                                                            > ( ) ;
+                                                                    builder.RegisterType < MyL > ( )
+                                                                           .AsImplementedInterfaces ( ) ;
+                                                                    builder.Register
+                                                                    <Action<Tuple<Workspace,
+                                                                        Document>>>(x => Action);
+
+
+
+                                                                    builder.Register
+                                                                    <Action<IEventMisc>>(x => Action2);
+                                                                    builder
+                                                                       .Register <
+                                                                                                       Action < Document >
+                                                                                                   > (
+                                                                                                      x => d => {
+                                                                                                          List1.Dispatcher
+                                                                                                               .Invoke ( 
+                                                                                                                        ( )
+                                                                                                                            => {
+                                                                                                                            d.TryGetSyntaxTree(out var st);
+                                                                                                                            if ( st != null )
+                                                                                                                            {
+                                                                                                                                List <UIElement> l = new List < UIElement > ();
+
+                                                                                                                                var
+                                                                                                                                    textBlocks
+                                                                                                                                        = st
+                                                                                                                                         .GetCompilationUnitRoot ( )
+                                                                                                                                         .ToFullString ( ) ;
+                                                                                                                                // do
+                                                                                                                                // {
+                                                                                                                                //     textBlocks
+                                                                                                                                //         = textBlocks
+                                                                                                                                //            .GetNextToken ( ) ;
+                                                                                                                                //     l.Add (
+                                                                                                                                //            new
+                                                                                                                                //            TextBlock
+                                                                                                                                //            {
+                                                                                                                                //                Text
+                                                                                                                                //                    = textBlocks
+                                                                                                                                //                       .ToFullString ( )
+                                                                                                                                //            }
+                                                                                                                                //           ) ;
+                                                                                                                                // }
+                                                                                                                                // while
+                                                                                                                                // ( textBlocks
+                                                                                                                                //      .Kind ( )
+                                                                                                                                //   != SyntaxKind
+                                                                                                                                //      .EndOfFileToken
+                                                                                                                                // ) ;
+                                                                                                                                d.TryGetSemanticModel (
+                                                                                                                                                       out
+                                                                                                                                                       var
+                                                                                                                                                           sm
+                                                                                                                                                      ) ;
+                                                                                                                                d.TryGetText (
+                                                                                                                                              out
+                                                                                                                                              var
+                                                                                                                                                  st1
+                                                                                                                                             ) ;
+                                                                                                                                // var cc = Classifier
+                                                                                                                                   // .GetClassifiedSpans (
+                                                                                                                                                        // sm
+                                                                                                                                                      // , TextSpan
+                                                                                                                                                           // .FromBounds (
+                                                                                                                                                                        // 0
+                                                                                                                                                                      // , st1
+                                                                                                                                                                           // .Length
+                                                                                                                                                                       // )
+                                                                                                                                                      // , new
+                                                                                                                                                            // AdhocWorkspace ( )
+                                                                                                                                                       // ) ;
+                                                                                                                                // foreach
+                                                                                                                                // ( var
+                                                                                                                                      // classifiedSpan
+                                                                                                                                    // in
+                                                                                                                                    // cc
+                                                                                                                                // )
+                                                                                                                                // {
+                                                                                                             
+                                                                                                                                // }
+                                                                                                                                WrapPanel pp = new WrapPanel();
+                                                                                                                                l.Add(new TextBlock() { Text=textBlocks});
+                                                                                                                                foreach
+                                                                                                                                ( var
+                                                                                                                                      textBlock
+                                                                                                                                    in
+                                                                                                                                    l )
+                                                                                                                                {
+                                                                                                                                    pp
+                                                                                                                                       .Children
+                                                                                                                                       .Add (
+                                                                                                                                             textBlock
+                                                                                                                                            ) ;
+                                                                                                                                }
+                                                                                                         
+                                                                                                                                Docpane
+                                                                                                                                   .Children
+                                                                                                                                   .Add(
+                                                                                                                                        new
+                                                                                                                                        LayoutDocument
+                                                                                                                                        { Title=d.Name,
+                                                                                                                                            Content
+                                                                                                                                                = pp
+                                                                                                                                        }
+                                                                                                                                       );
+                                                                                                                            }
+
+                                                                                                                        }
+                                                                                                                       ) ;
+                                                                                                      }
+                                                                                                     ) ;
+                                                                                  builder
+                                                                                     .Register<
+                                                                                          Action<string>
+                                                                                      >(
+                                                                                        x => d => {
+                                                                                        }
+                                                                                       );
+                                                                                  builder
+                                                                                     .Register<
+                                                                                          Action<ILogInvocation>
+                                                                                      >(
+                                                                                        x => d => {
+                                                                                            List1.Dispatcher
+                                                                                                 .Invoke(
+                                                                                                         ()
+                                                                                                             => {
+
+                                                                                                             List1
+                                                                                                                .Items
+                                                                                                                .Add (
+                                                                                                                      new
+                                                                                                                          InvocationMisc (
+                                                                                                                                          null
+                                                                                                                                        , d
+                                                                                                                                         )
+                                                                                                                     ) ;
+
+                                                                                                         }
+                                                                                                        );
+                                                                                        }
+                                                                                       );
+                                                                                  builder.RegisterInstance (
+                                                                                                            new
+                                                                                                                LayoutService (
+                                                                                                                               leftAnchorablePane
+                                                                                                                              )
+                                                                                                           )
+                                                                                         .SingleInstance ( )
+                                                                                         .WithCallerMetadata ( ) ;
+                                                                                  builder.RegisterInstance (
+                                                                                                            new
+                                                                                                                PaneService ( )
+                                                                                                           )
+                                                                                         .SingleInstance ( )
+                                                                                         .WithCallerMetadata ( ) ;
+                                                                                  builder
+                                                                                     .RegisterType < HandleExceptionImpl
+                                                                                      > ( )
+                                                                                     .As < IHandleException > ( )
+                                                                                     .InstancePerLifetimeScope ( )
+                                                                                     .WithCallerMetadata ( ) ;
+                                                                              }
+                                                                             ) ;
+            var lf = _beginLifetimeScope ;
             SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
             // lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
             // throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
@@ -88,6 +310,37 @@ namespace ProjInterface
             // var hWnd = wih.Handle ;
             // viewModel.SethWnd ( hWnd ) ;
             InitializeComponent ( ) ;
+        }
+
+        private void Action2 ( IEventMisc obj )
+        {
+//            if ( obj.Level == MiscLevel.DEBUG ) return ;
+            List1.Dispatcher.Invoke (
+                                     ( ) => {
+                                         List1.Items.Add ( obj ) ;
+                                     }
+                                    ) ;
+        }
+
+        private void Action ( Tuple < Workspace , Document > d )
+        {
+            List1.Dispatcher.InvokeAsync(
+                                     async ( ) => {
+                                         var w = d.Item1 ;
+                                         var d2 = d.Item2 ;
+                                         var sm = await d2.GetSemanticModelAsync ( ) ;
+                                         var st1 = await d2.GetTextAsync ( ) ;
+
+                                         if ( sm != null && st1 != null)
+                                         {
+                                             var cc = Classifier.GetClassifiedSpans ( sm , TextSpan.FromBounds ( 0 , st1.Length ) , w ) ;
+                                             foreach ( var classifiedSpan in cc )
+                                             {
+                                                 //List1.Items.Add ( classifiedSpan ) ;
+                                             }
+                                         }
+                                     }
+                                    ) ;
         }
 
 
@@ -179,11 +432,13 @@ namespace ProjInterface
                 var filename = dlg.FileName ;
                 if ( Path.GetExtension ( filename ).ToLowerInvariant ( ) == ".sln" )
                 {
-                    var analyzeCommand = scope.Resolve < IAnalyzeCommand > ( ) ;
+                    var analyzeCommand = _beginLifetimeScope.Resolve < IAnalyzeCommand > ( ) ;
+
                     var node = new ProjectBrowserNode
                                {
                                    Name = "Loaded solution" , SolutionPath = filename
                                } ;
+                    DebugUtils.WriteLine("await command");
                     await analyzeCommand.AnalyzeCommandAsync (
                                                               node
                                                             , new ActionBlock < RejectedItem > (
@@ -193,7 +448,8 @@ namespace ProjInterface
                                                                                                                 .ToString ( )
                                                                                                               )
                                                                                                )
-                                                             ) ;
+                                                             ).ConfigureAwait(false) ;
+                    DebugUtils.WriteLine("herecommand");
                     return ;
                 }
 
@@ -212,6 +468,23 @@ namespace ProjInterface
         {
             Application.Current.Shutdown ( ) ;
         }
+
+        #region Overrides of RibbonWindow
+        public override void OnApplyTemplate ( ) { base.OnApplyTemplate ( ) ;
+            FrameDoc1.NavigationService.Navigating += ( sender , args ) => {
+
+                DebugUtils.WriteLine ( args.Content ) ;
+                if ( args.Content is ResourceNodeInfo node )
+                {
+                    
+                    var ctl = _converter.ControlForValue(node, 1);
+                    FrameDoc1.Content = ctl ;
+                    args.Cancel = true ;
+                    return;
+                }
+            } ;
+        }
+        #endregion
 
         private void BrowserFrame_OnNavigating (
             object                                sender

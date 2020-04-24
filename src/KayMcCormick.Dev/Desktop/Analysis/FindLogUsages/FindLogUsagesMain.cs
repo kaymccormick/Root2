@@ -39,12 +39,14 @@ namespace FindLogUsages
         /// </summary>
         /// <param name="d"></param>
         /// <param name="rejectBlock"></param>
+        /// <param name="invocActions"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         [ItemNotNull]
-        public async Task<IEnumerable<ILogInvocation>> FindUsagesFuncAsync(
-            [NotNull] Document d
-          , BufferBlock<RejectedItem> rejectBlock
+        public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
+            [ NotNull ] Document                      d
+          , BufferBlock < RejectedItem >              rejectBlock
+          , IEnumerable < Action < ILogInvocation > > invocActions
         )
         {
             using (
@@ -68,7 +70,7 @@ namespace FindLogUsages
                     var root = (tree ?? throw new InvalidOperationException())
                        .GetCompilationUnitRoot();
                     var model = await d.GetSemanticModelAsync().ConfigureAwait(true);
-
+                    
                     if (model != null)
                     {
                         return await Process(
@@ -76,7 +78,7 @@ namespace FindLogUsages
                                             , model
                                             , tree
                                             , root
-                       , rejectBlock.Post
+                       , rejectBlock.Post, invocActions
                                              );
                     }
                 }
@@ -100,16 +102,18 @@ namespace FindLogUsages
         /// <param name="tree"></param>
         /// <param name="root"></param>
         /// <param name="rejectAction"></param>
+        /// <param name="invocActions"></param>
         /// <returns></returns>
 #pragma warning disable 1998
         [ ItemNotNull ]
         public static async Task < IEnumerable < ILogInvocation > > Process (
 #pragma warning restore 1998
-            Func < ILogInvocation >      invocationFactory
-          , [ NotNull ] SemanticModel                model
-          , SyntaxTree                   tree
-          , SyntaxNode                   root
-          , Func < RejectedItem , bool > rejectAction
+            Func < ILogInvocation >                   invocationFactory
+          , [ NotNull ] SemanticModel                 model
+          , SyntaxTree                                tree
+          , SyntaxNode                                root
+          , Func < RejectedItem , bool >              rejectAction
+          , IEnumerable < Action < ILogInvocation > > invocActions
         )
         {
             var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
@@ -126,7 +130,7 @@ namespace FindLogUsages
             }
 
             var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
-            return (from node in root.DescendantNodes ( ) //.AsParallel ( )
+            return (from node in root.DescendantNodes ( ).AsParallel ( )
                     let t_ = t
                     let t2_ = t2
                     let builderSymbol = logBuilderSymbol
@@ -151,7 +155,7 @@ namespace FindLogUsages
                                                      , statement
                                                      , @out
                                                      , exType
-                                                      ).ProcessInvocation ( invocationFactory )
+                                                      ).ProcessInvocation ( invocationFactory, invocActions )
                     select result is ILogInvocation inv
                                ? inv
                                : ( object ) rejectAction (
@@ -370,7 +374,10 @@ namespace FindLogUsages
 
             [ CanBeNull ]
             // ReSharper disable once FunctionComplexityOverflow
-            internal object ProcessInvocation ( Func < ILogInvocation > invocationFactory )
+            internal object ProcessInvocation (
+                Func < ILogInvocation >                   invocationFactory
+              , IEnumerable < Action < ILogInvocation > > invocActions
+            )
             {
                 // ReSharper disable once NotAccessedVariable
                 var exceptionArg = false ;
@@ -576,6 +583,10 @@ namespace FindLogUsages
 #if TRACE && DOLOG
                 Logger.Trace ( "{t}" , transformed ) ;
 #endif
+                foreach ( var invocAction in invocActions )
+                {
+                    invocAction ( debugInvo ) ;
+                }
                 return debugInvo ;
             }
 

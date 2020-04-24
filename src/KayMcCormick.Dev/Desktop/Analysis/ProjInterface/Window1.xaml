@@ -7,11 +7,13 @@
               xmlns:local="clr-namespace:ProjInterface"
               xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
-              xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=KayMcCormick.Lib.Wpf"
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
-              xmlns:command="clr-namespace:KayMcCormick.Lib.Wpf.Command;assembly=KayMcCormick.Lib.Wpf"
               xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
               xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
+              xmlns:xaml="clr-namespace:KayMcCormick.Lib.Wpf.Xaml;assembly=WpfLib"
+              xmlns:command="clr-namespace:KayMcCormick.Lib.Wpf.Command;assembly=WpfLib"
+              xmlns:classification="clr-namespace:Microsoft.CodeAnalysis.Classification;assembly=Microsoft.CodeAnalysis.Workspaces"
+              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
               Foreground="DarkOrange"
               mc:Ignorable="d"
@@ -22,7 +24,8 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
         <ResourceDictionary>
           <Style TargetType="Window">
             <Setter Property="WindowStyle" Value="None" />
@@ -30,6 +33,10 @@
                     Value="True" />
             <Setter Property="Background" Value="Olive" />
           </Style>
+          <DataTemplate DataType="{x:Type classification:ClassifiedSpan}">
+            <TextBlock Text="{Binding ClassificationType,Mode=OneWay}"/>
+          </DataTemplate>
+
           <!-- ReSharper disable once Xaml.RedundantResource -->
           <DataTemplate x:Key="Template1">
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
@@ -1098,7 +1105,7 @@
                 <ContentControl Content="{kmWpf:Resolve kmWpf:ResourcesTreeView,Argument={x:Reference FrameDoc1}}"/>
               </avalondock:LayoutAnchorable>
             </avalondock:LayoutAnchorablePane>
-              <avalondock:LayoutDocumentPaneGroup>
+            <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane
                 x:Name="Docpane">
 
@@ -1107,7 +1114,7 @@
                                            >
                   <Frame Source="Home.xaml" x:Name="FrameDoc1" />
                 </avalondock:LayoutDocument>
-                  <avalondock:LayoutDocument Title="Browser"
+                <avalondock:LayoutDocument Title="Browser"
                                            IconSource="{StaticResource BrowserIcon}"
                                            x:Name="FrameDocument">
                   <Frame Background="{x:Null}"
@@ -1117,25 +1124,26 @@
                 </avalondock:LayoutDocument>
                 <avalondock:LayoutAnchorable Title="Files"
                                              IconSource="{StaticResource FilesIcon}"
-                                             ContentId="fileBrowser">
-                  <Grid Opacity="1.0">
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="Auto" />
-                      <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBox Grid.Row="0"
-                             x:Name="PathTextBox"
-                             Margin="3"
-                             Text="{Binding ElementName=Explorer, Path=SelectedPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                             anal:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
-                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                    <Explorer
-                      ItemsSource="{Binding RootCollection}"
-                      Grid.Row="1" x:Name="Explorer"
-                      Margin="3,0,3,0"
-                      ItemContextMenu="{StaticResource itemContextMenu}"
-                      ListContextMenu="{StaticResource listContextMenu}" />
-                  </Grid>
+                                             ContentId="xx1r">
+                </avalondock:LayoutAnchorable>
+                <avalondock:LayoutAnchorable Title="Files"
+                                             IconSource="{StaticResource FilesIcon}"
+                                             ContentId="xxx1r">
+                  <ListView x:Name="List1"
+                            >
+                    <ListView.View>
+                      <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Level}"></GridViewColumn><GridViewColumn DisplayMemberBinding="{Binding Args.Message}"></GridViewColumn>
+                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Obj,Converter={StaticResource GetTypeConverter}}"></GridViewColumn>
+                        <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"></GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding ThreadId}"></GridViewColumn>
+                        <GridViewColumn Header="PropKeys" DisplayMemberBinding="{Binding PropKeys}"></GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding File}"></GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Obj.SenderName}"></GridViewColumn>
+                        <GridViewColumn Header="RawJson" DisplayMemberBinding="{Binding RawJson}"></GridViewColumn>
+                      </GridView>
+                    </ListView.View>
+                  </ListView>
                 </avalondock:LayoutAnchorable>
               </avalondock:LayoutDocumentPane>
             </avalondock:LayoutDocumentPaneGroup>

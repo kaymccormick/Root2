@@ -19,11 +19,11 @@
 
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/ResourcesTemplates.xaml" />
+          Source="pack://application:,,,/WpfLib;component/Resourcestemplates.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/ResourcesMisc.xaml" />
+          Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
         <ResourceDictionary>
           <!-- ReSharper disable once Xaml.RedundantResource -->
           <Style x:Key="{x:Type TreeView}"

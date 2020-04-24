@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic ;
+﻿using System ;
+using System.Collections.Generic ;
 using System.Runtime.Serialization ;
 using Autofac ;
 using JetBrains.Annotations ;
@@ -20,7 +21,7 @@ namespace ProjInterface
 
         public DockWindowViewModel ([ NotNull ] ILifetimeScope scope )
         {
-             var views = scope.Resolve < IEnumerable < IControlView > > ( ) ;
+             var views = scope.Resolve < IEnumerable < Lazy<IControlView> > > ( ) ;
             foreach ( var controlView in views )
             {
                 DebugUtils.WriteLine(controlView.ToString());

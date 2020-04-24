@@ -1,10 +1,12 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev
 {
     /// <summary>Container for registered instances with the IOC container.</summary>
+
     public sealed class ComponentInfo
     {
         /// <summary>

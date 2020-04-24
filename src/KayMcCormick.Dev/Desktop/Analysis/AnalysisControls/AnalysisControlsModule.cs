@@ -58,6 +58,7 @@ namespace AnalysisControls
                                                               }              ).AsImplementedInterfaces().AsSelf().WithAttributedMetadata();
 
 #else
+            
             builder.RegisterAdapter < IBaseLibCommand , IAppCommand > (
                                                                        (
                                                                            context

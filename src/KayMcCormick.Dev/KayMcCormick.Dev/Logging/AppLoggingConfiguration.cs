@@ -65,7 +65,11 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        public bool ? IsEnabledCacheTarget { get { return _isEnabledCacheTarget ; } }
+        public bool ? IsEnabledCacheTarget
+        {
+            get { return _isEnabledCacheTarget ; }
+            set { _isEnabledCacheTarget = value ; }
+        }
 
         /// <summary>Gets or sets the is enabled debugger target.</summary>
         /// <value>The is enabled debugger target.</value>

@@ -71,7 +71,7 @@ namespace KayMcCormick.Dev
         [Obsolete]
         public static void WriteLine ( [ NotNull ] object obj )
         {
-            WriteLine ( obj.ToString ( ) ) ;
+            WriteLine ( obj?.ToString ( ) ) ;
         }
     }
 }

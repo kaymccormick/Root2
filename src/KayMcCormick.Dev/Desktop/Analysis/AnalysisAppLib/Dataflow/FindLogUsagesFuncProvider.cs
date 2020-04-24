@@ -4,6 +4,7 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
@@ -22,12 +23,16 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <param name="invocationFactory"></param>
-        public FindLogUsagesFuncProvider ( Func < ILogInvocation > invocationFactory )
+        /// <param name="invocActions"></param>
+        public FindLogUsagesFuncProvider (
+            Func < ILogInvocation >                   invocationFactory
+          , IEnumerable < Action < ILogInvocation > > invocActions
+        )
         {
 
             var findusages = new FindLogUsagesMain( invocationFactory ) ;
             RejectBlock    = new BufferBlock < RejectedItem > ( ) ;
-            _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock ) ;
+            _transformFunc = document => findusages.FindUsagesFuncAsync ( document , RejectBlock , invocActions) ;
         }
 
         /// <summary>
@@ -62,9 +67,12 @@ namespace AnalysisAppLib.Dataflow
 
                 if ( task.Exception != null )
                 {
+
+                    DebugUtils.WriteLine($"{task.Exception.ToString()}");
                     throw task.Exception ;
                 }
 
+                DebugUtils.WriteLine($"faulted");
                 throw new InvalidOperationException ( "Faulted transform" ) ;
 
             } ;

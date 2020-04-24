@@ -114,6 +114,7 @@
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="JsonConverters.cs" />
+    <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
@@ -154,9 +155,6 @@
       <DependentUpon>TypesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Visitor3.cs" />
-    <Compile Include="Views\Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Visitor4.cs" />
     <Page Include="AnalysisControls.xaml">
       <SubType>Designer</SubType>
@@ -229,10 +227,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Window1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -271,9 +265,9 @@
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wpf\KayMcCormick.Lib.Wpf.csproj">
-      <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
-      <Name>KayMcCormick.Lib.Wpf</Name>
+    <ProjectReference Include="..\..\WpfLib\WpfLib.csproj">
+      <Project>{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}</Project>
+      <Name>WpfLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLib.csproj">
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>

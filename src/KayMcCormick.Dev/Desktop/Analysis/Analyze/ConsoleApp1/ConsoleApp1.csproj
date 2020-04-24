@@ -138,9 +138,9 @@
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Wpf\KayMcCormick.Lib.Wpf.csproj">
-      <Project>{3434E74C-D7B5-4315-A8E1-51DBCE878199}</Project>
-      <Name>KayMcCormick.Lib.Wpf</Name>
+    <ProjectReference Include="..\..\..\WpfLib\WpfLib.csproj">
+      <Project>{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}</Project>
+      <Name>WpfLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AnalysisAppLib\AnalysisAppLib.csproj">
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>

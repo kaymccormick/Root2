@@ -107,6 +107,7 @@ namespace TestApp
         #region Overrides of FrameworkElement
         public override void OnApplyTemplate ( )
         {
+            
             var p = new PaneService ( ) ;
             var pane = p.GetPane ( ) ;
             var b = new ExceptionUserControl

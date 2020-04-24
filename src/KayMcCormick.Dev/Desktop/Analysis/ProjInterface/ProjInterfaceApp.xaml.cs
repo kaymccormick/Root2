@@ -241,7 +241,10 @@ namespace ProjInterface
         [ STAThreadAttribute ]
         public static void Main ( )
         {
-            EnsureLoggingConfigured ( Console.WriteLine ) ;
+            var loggingConfiguration = AppLoggingConfiguration.Default ;
+            loggingConfiguration.IsEnabledCacheTarget = true ;
+            loggingConfiguration.MinLogLevel=LogLevel.Trace;
+            EnsureLoggingConfigured ( Console.WriteLine, loggingConfiguration ) ;
 
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" ) )
             {

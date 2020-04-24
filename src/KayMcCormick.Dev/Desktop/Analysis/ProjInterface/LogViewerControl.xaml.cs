@@ -22,17 +22,20 @@ namespace ProjInterface
     public partial class LogViewerControl : UserControl
       , INotifyPropertyChanged
       , IViewWithTitle
-      , IControlView
+      , IControlView, IView <LogViewerViewModel>
     {
         // ReSharper disable once NotAccessedField.Local
+        private readonly LogViewerViewModel _model ;
         private readonly LogViewerConfig _config ;
         private          ICollectionView _defView ;
         private          string          _viewTitle ;
+        private LogViewerViewModel _viewModel ;
 
         public LogViewerControl ( ) { InitializeComponent ( ) ; }
 
-        public LogViewerControl ( [ NotNull ] LogViewerConfig config )
+        public LogViewerControl (LogViewerViewModel model,  [ NotNull ] LogViewerConfig config )
         {
+            _model = model ;
             _config = config ?? throw new ArgumentNullException ( nameof ( config ) ) ;
             InitializeComponent ( ) ;
         }
@@ -173,5 +176,13 @@ namespace ProjInterface
 
         private void LvOnSelectionChanged ( object sender , SelectionChangedEventArgs e ) { }
         #endregion
+
+        #region Implementation of IView<out LogViewerViewModel>
+        public LogViewerViewModel ViewModel { get { return _viewModel ; } }
+        #endregion
+    }
+
+    public class LogViewerViewModel
+    {
     }
 }

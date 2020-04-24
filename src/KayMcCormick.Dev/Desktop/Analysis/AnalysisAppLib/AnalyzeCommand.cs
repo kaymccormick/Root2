@@ -18,6 +18,7 @@ using System.Threading.Tasks.Dataflow ;
 using AnalysisAppLib.Project ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.StackTrace ;
 using NLog ;
 
@@ -51,41 +52,94 @@ namespace AnalysisAppLib
           , ITargetBlock < RejectedItem > rejectTarget
         )
         {
-            var pipeline = _pipeline ;
-            if ( pipeline == null )
+            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Command" , "AnalyzeCommand" ) )
             {
-                throw new AnalyzeException ( "Pipeline is null" ) ;
-            }
+                Logger.Debug("run command");
+                var pipeline = _pipeline ;
+                if ( pipeline == null )
+                {
+                    throw new AnalyzeException ( "Pipeline is null" ) ;
+                }
 
-            pipeline.BuildPipeline ( ) ;
-            var pInstance = pipeline.PipelineInstance ;
-            if ( pInstance == null )
+                pipeline.BuildPipeline ( ) ;
+                var pInstance = pipeline.PipelineInstance ;
+                if ( pInstance == null )
+                {
+                    throw new AnalyzeException ( "pipeline instance is null" ) ;
+                }
+
+                RejectDestination = rejectTarget ;
+                var actionBlock = new ActionBlock < ILogInvocation > ( LogInvocationAction ) ;
+                if ( RejectDestination != null )
+                {
+                    _pipeline.RejectBlock.LinkTo (
+                                                  RejectDestination
+                                                , new DataflowLinkOptions
+                                                  {
+                                                      PropagateCompletion = true
+                                                  }
+                                                 ) ;
+                }
+
+                pInstance.LinkTo (
+                                  actionBlock
+                                , new DataflowLinkOptions { PropagateCompletion = true }
+                                 ) ;
+                var tcs = new CancellationTokenSource();
+                var cancellationToken = tcs.Token ;
+                var t   = Task.Run (
+                                    () => Function(), cancellationToken
+                                   ) ;
+                var req = new AnalysisRequest { Info = projectNode } ;
+                if ( ! pInstance.Post ( req ) )
+                {
+                    throw new AnalyzeException ( "Post failed" ) ;
+                }
+
+                DebugUtils.WriteLine ( "await pipeline" ) ;
+                await HandlePipelineResultAsync ( actionBlock ) ;
+
+                if ( cancellationToken.CanBeCanceled )
+                {
+                    tcs.Cancel();
+                }
+            }
+        }
+
+        private int Function ( Task task =null)
+        {
+            for ( ; ; )
             {
-                throw new AnalyzeException ( "pipeline instance is null" ) ;
+                var blockCount = _pipeline.Block.Count ;
+                if ( blockCount != 0 )
+                {
+                    Logger.Info ( blockCount ) ;
+                }
+
+                Logger.Info($"{_pipeline.Input.Completion.IsCompleted}");
+
+                var dataflowBlocks = _pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ) ;
+                if ( dataflowBlocks.Any ( ) == false )
+                {
+                    return 1 ;
+                }
+
+                foreach ( var dataflowBlock in dataflowBlocks )
+                {
+                    Logger.Info ( dataflowBlock.ToString ) ;
+
+                    continue ;
+                    var gt = dataflowBlock.GetType ( ).GetGenericTypeDefinition ( ) ;
+                    if ( gt == typeof ( System.Threading.Tasks.Dataflow.TransformBlock < , > ) )
+                    {
+                        var ic = dataflowBlock.GetType ( ).GetProperty ( "InputCount" ) ;
+                        int input = ( int ) ic.GetValue ( dataflowBlock ) ;
+                        Logger.Info ( "input count is {input}" , input ) ;
+                    }
+                }
+
+                Thread.Sleep ( 100 ) ;
             }
-
-            RejectDestination = rejectTarget ;
-            var actionBlock = new ActionBlock < ILogInvocation > ( LogInvocationAction ) ;
-            if ( RejectDestination != null )
-            {
-                _pipeline.RejectBlock.LinkTo (
-                                              RejectDestination
-                                            , new DataflowLinkOptions { PropagateCompletion = true }
-                                             ) ;
-            }
-
-            pInstance.LinkTo (
-                              actionBlock
-                            , new DataflowLinkOptions { PropagateCompletion = true }
-                             ) ;
-
-            var req = new AnalysisRequest { Info = projectNode } ;
-            if ( ! pInstance.Post ( req ) )
-            {
-                throw new AnalyzeException ( "Post failed" ) ;
-            }
-
-            await HandlePipelineResultAsync ( actionBlock ) ;
         }
 
         private void LogInvocationAction ( [ NotNull ] ILogInvocation invocation )
@@ -120,6 +174,7 @@ namespace AnalysisAppLib
             PipelineResult result ;
             try
             {
+                DebugUtils.WriteLine("await completion");
                 await actionBlock.Completion.ConfigureAwait ( true ) ;
                 result = new PipelineResult ( ResultStatus.Success ) ;
             }

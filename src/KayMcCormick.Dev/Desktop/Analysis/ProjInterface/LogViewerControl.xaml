@@ -7,6 +7,7 @@
              xmlns:logging="clr-namespace:KayMcCormick.Dev.Logging;assembly=KayMcCormick.Dev"
              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              mc:Ignorable="d"
+             DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <CollectionViewSource x:Key="EntriesCollectionView"

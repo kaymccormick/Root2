@@ -1,6 +1,8 @@
 ﻿using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.Data ;
 using System.Linq ;
 using System.Net.Http.Headers ;
 using System.Reflection ;
@@ -18,6 +20,8 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
+using Microsoft.EntityFrameworkCore ;
+using Microsoft.Extensions.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 
@@ -95,6 +99,21 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.Register (
+                              ( c , p ) => {
+                                  var loggerProviders =
+                                      c.Resolve < IEnumerable < ILoggerProvider > > ( ) ;
+                                  return new LoggerFactory ( loggerProviders ) ;
+                              }
+                             )
+                   .As < ILoggerFactory > ( ) ;
+            builder.RegisterType < Myw > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.Register<Func<object, DataTable>> ( ( c , p ) => ( object o ) => DataAdapter ( c , p , o ) ).As<Func <object, DataTable> > (  ) ;
+            builder.RegisterAdapter<object, DataTable>(
+                                                       DataAdapter);
+            builder.RegisterAdapter<object, IDictionary>(
+                                                       DictAdapter);
+            builder.RegisterType<AppDbContext>().As<DbContext>();
             builder.RegisterType < SyntaxTypesService > ( )
                    .As < ISyntaxTypesService > ( )
                    .WithCallerMetadata ( ) ;
@@ -154,6 +173,13 @@ namespace AnalysisAppLib
                    .InstancePerLifetimeScope ( )
                    .WithCallerMetadata ( ) ;
 
+            builder.Register < Action <Microsoft.CodeAnalysis.Document> > (
+                                                                                   (c, p) => (Microsoft.CodeAnalysis.Document doc) => {
+                                                                                       DebugUtils.WriteLine ( doc.FilePath ) ;
+                                                                                       
+                                                                                   }
+                                                                                  ) ;
+
             builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
                    .As ( typeof ( IAnalysisBlockProvider < , , > ) )
                    .WithAttributeFiltering ( )
@@ -211,7 +237,39 @@ namespace AnalysisAppLib
 #endif
         }
 
-        [ NotNull ]
+        private DataTable DataAdapter ( IComponentContext c , IEnumerable < Parameter > p , object o )
+        {
+            var r = new DataTable ( o.GetType ( ).Name ) ;
+            foreach ( var p1 in o.GetType ( ).GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
+            {
+                Prop px = new Prop { Name = p1.Name } ;
+                object rr1 = null ;
+                try { rr1 = p1.GetValue ( o ) ; }
+                catch { }
+
+                r.Columns.Add ( new DataColumn ( p1.Name , p1.PropertyType ) ) ;
+            }
+
+            return r ;
+        }
+
+        private Dictionary < string , object > DictAdapter(IComponentContext c, IEnumerable<Parameter> p, object o)
+        {
+            var r = new Dictionary < string , object > ( ) ;
+            foreach (var p1 in o.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                
+                Prop px = new Prop { Name = p1.Name };
+                object rr1 = null;
+                try { rr1 = p1.GetValue(o); }
+                catch { }
+
+                r[ p1.Name ] = rr1 ;
+            }
+
+            return r;
+        }
+        [NotNull ]
         private static IPublicClientApplication MakePublicClientApplication (
             IComponentContext                     context
           , [ NotNull ] IEnumerable < Parameter > p
@@ -256,6 +314,12 @@ namespace AnalysisAppLib
                 return Task.FromResult ( 0 ) ;
             } ;
         }
+    }
+
+    internal class Prop
+    {
+        private string _name ;
+        public string Name { get { return _name ; } set { _name = value ; } }
     }
 
     /// <summary>

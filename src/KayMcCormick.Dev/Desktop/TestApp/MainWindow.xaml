@@ -4,8 +4,8 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-                 xmlns:viewModel="clr-namespace:KayMcCormick.Lib.Wpf.ViewModel;assembly=KayMcCormick.Lib.Wpf"
                  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+                 xmlns:viewModel="clr-namespace:KayMcCormick.Lib.Wpf.ViewModel;assembly=WpfLib"
                  mc:Ignorable="d"
                  Title="MainWindow" Height="450"
                  Width="800">
@@ -13,7 +13,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
+          Source="pack://application:,,,/../WpfLib/SharedResources.xaml" />
         <ResourceDictionary>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
