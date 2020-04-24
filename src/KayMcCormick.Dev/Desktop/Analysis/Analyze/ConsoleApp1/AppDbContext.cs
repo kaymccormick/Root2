@@ -23,6 +23,7 @@ namespace ConsoleApp1
         public DbSet<AppTypeInfo> AppTypeInfos { get; set; }
         public DbSet <AppClrType> AppClrType { get ; set ; }
         public DbSet<ProjectInfo> Projects { get ; set ; }
+        public DbSet <SyntaxFieldInfo> SyntaxFieldInfo { get ; set ; }
         public DbSet <LogInvocation2<string>> LogInvocation { get ; set ; }
         #region Overrides of DbContext
         // ReSharper disable once AnnotateNotNullParameter
@@ -34,6 +35,7 @@ namespace ConsoleApp1
         // ReSharper disable once AnnotateNotNullParameter
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity < SyntaxFieldInfo > ( ).HasOne ( s => s.AppTypeInfo ) ;
             modelBuilder.Entity < AppTypeInfo > ( ).HasMany ( t => t.Fields ) ;
             foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())
             {

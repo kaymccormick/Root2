@@ -762,7 +762,8 @@ namespace AnalysisAppLib
 
             var syntaxFieldInfo = new SyntaxFieldInfo ( fieldName , fieldType , kinds.ToArray ( ) )
                                   {
-                                      Override = @override , Optional = optional
+                                      Override = @override , Optional = optional,
+                                      AppTypeInfo = typ2
                                   } ;
             if ( enumerable )
             {

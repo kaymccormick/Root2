@@ -68,6 +68,7 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// CLR Type
         /// </summary>
+        [JsonIgnore]
         public AppClrType AppClrType { get ; set ; }
 
         /// <summary>
@@ -508,6 +509,7 @@ namespace AnalysisAppLib.Syntax
         private Type _type;
         private string _elementTypeMetadataName ;
         private bool _isCollection ;
+        private AppTypeInfo _appTypeInfo ;
 
         /// <summary>
         /// 
@@ -595,6 +597,9 @@ namespace AnalysisAppLib.Syntax
         /// Primary key
         /// </summary>
         public int Id { get { return _id ; } set { _id = value ; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AppTypeInfo AppTypeInfo { get { return _appTypeInfo ; } set { _appTypeInfo = value ; } }
 
         /// <inheritdoc />
         public override string ToString()

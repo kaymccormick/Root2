@@ -238,7 +238,7 @@
       <Version>4.13.1</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI.WPF">
-      <Version>11.3.1</Version>
+      <Version>11.3.7</Version>
     </PackageReference>
     <PackageReference Include="Simple.Wpf.Terminal">
       <Version>2.3.15</Version>

@@ -154,8 +154,8 @@ namespace ProjInterface
                                                     }
                                                    )
                              )
-                   .As < ILoggerProvider > ( ) ;
-            builder.RegisterType < MyL > ( ).AsImplementedInterfaces ( ) ;
+                   .As < ILoggerProvider > ( ) .SingleInstance();
+            builder.RegisterType < MyL > ( ).AsImplementedInterfaces ( ).SingleInstance() ;
             builder.Register < Action < Tuple < Workspace , Document > > > ( x => Action ) ;
 
             builder.Register < Action < IEventMisc > > ( x => Action2 ) ;

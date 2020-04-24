@@ -344,14 +344,14 @@ namespace ConsoleApp1
 
             DebugUtils.WriteLine ( "Begin initialize TypeViewModel" ) ;
 
-            using ( var db = new AppDbContext ( ) )
+            var db = new AppDbContext ( ) ;
             {
                 db.AppClrType.RemoveRange ( db.AppClrType ) ;
                 db.AppTypeInfos.RemoveRange ( db.AppTypeInfos ) ;
+                    db.SyntaxFieldInfo.RemoveRange ( db.SyntaxFieldInfo );
                 await db.SaveChangesAsync ( ) ;
             }
 
-            using ( var db = new AppDbContext ( ) )
             {
                 if ( db.AppTypeInfos.Any ( )
                      || db.AppClrType.Any ( ) )
@@ -360,8 +360,10 @@ namespace ConsoleApp1
                 }
             }
 
-            var typesViewModel = TypesViewModel_Stage1 ( context ) ;
-
+            var r = TypesViewModel_Stage1 ( context, out var typesViewModel, db ) ;
+            TypesViewModel t2 = new TypesViewModel(r);
+            t2.BeginInit();
+            t2.EndInit();
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = sts.CollectionMap ( ) ;
 
@@ -373,7 +375,7 @@ namespace ConsoleApp1
 
             typesViewModel.DetailFields ( ) ;
 
-            WriteModelToDatabase ( typesViewModel ) ;
+            WriteModelToDatabase ( typesViewModel , db ) ;
             WriteThisTypesViewModel ( typesViewModel ) ;
             DumpModelToJson (
                              context
@@ -383,7 +385,11 @@ namespace ConsoleApp1
         }
 
         [ NotNull ]
-        private static TypesViewModel TypesViewModel_Stage1 ( [ NotNull ] AppContext context )
+        private static List < AppTypeInfo > TypesViewModel_Stage1 (
+            [ NotNull ] AppContext     context
+          , out         TypesViewModel unknown
+          , AppDbContext               db
+        )
         {
             if ( context == null )
             {
@@ -397,7 +403,43 @@ namespace ConsoleApp1
                                  ) ;
             typesViewModel.LoadTypeInfo ( ) ;
 
-            WriteModelToDatabase ( typesViewModel ) ;
+            if ( typesViewModel == null )
+            {
+                throw new ArgumentNullException ( nameof ( typesViewModel ) ) ;
+            }
+
+            List < AppTypeInfo > r = null ;
+            
+            {
+                var appTypeInfos = typesViewModel.GetAppTypeInfos ( ) ;
+                var typeInfos = appTypeInfos as AppTypeInfo[] ?? appTypeInfos.ToArray ( ) ;
+                foreach ( var appTypeInfo in typeInfos )
+                {
+                    DebugUtils.WriteLine(
+                                         $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
+                                        );
+                    
+                    if ( appTypeInfo.AppClrType != null )
+                    {
+                        continue ;
+                    }
+                    
+                    var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
+                    appTypeInfo.AppClrType = clr ;
+                    if ( appTypeInfo.Id != 0 )
+                    {
+                        db.AppTypeInfos.Update ( appTypeInfo ) ;
+                    }
+                    else
+                    {
+                        db.AppTypeInfos.Add ( appTypeInfo ) ;
+                    }
+                }
+
+                db.SaveChanges ( ) ;
+                r = db.AppTypeInfos.ToList ( ) ;
+            }
+            
             WriteThisTypesViewModel (
                                      typesViewModel
                                    , model => Path.Combine ( DataOutputPath , "model-v1.xaml" )
@@ -407,17 +449,17 @@ namespace ConsoleApp1
                            , typesViewModel
                            , Path.Combine ( DataOutputPath , "types-v1.json" )
                             ) ;
-            return typesViewModel ;
+            unknown = typesViewModel ;
+            return r ;
         }
 
-        private static void WriteModelToDatabase ( [ NotNull ] TypesViewModel typesViewModel )
+        private static void WriteModelToDatabase ( [ NotNull ] TypesViewModel typesViewModel , AppDbContext db )
         {
             if ( typesViewModel == null )
             {
                 throw new ArgumentNullException ( nameof ( typesViewModel ) ) ;
             }
 
-            using ( var db = new AppDbContext ( ) )
             {
                 var appTypeInfos = typesViewModel.GetAppTypeInfos ( ) ;
                 var typeInfos = appTypeInfos as AppTypeInfo[] ?? appTypeInfos.ToArray ( ) ;
@@ -427,13 +469,24 @@ namespace ConsoleApp1
                                          $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
                                         );
                     appTypeInfo.Version ++ ;
-                    if ( appTypeInfo.AppClrType != null )
+                    var syntaxFieldCollection = appTypeInfo.Fields ;
+                    foreach ( SyntaxFieldInfo o in syntaxFieldCollection )
                     {
-                        continue ;
+                        db.SyntaxFieldInfo.Add ( o ) ;
+                    }
+                    // if ( appTypeInfo.AppClrType != null )
+                    // {
+                        // continue ;
+                    // }
+
+
+                    if ( appTypeInfo.AppClrType == null )
+                    {
+                        var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
+                        appTypeInfo.AppClrType = clr ;
                     }
 
-                    var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
-                    appTypeInfo.AppClrType = clr ;
+                    continue ;
                     if ( appTypeInfo.Id != 0 )
                     {
                         db.AppTypeInfos.Update ( appTypeInfo ) ;

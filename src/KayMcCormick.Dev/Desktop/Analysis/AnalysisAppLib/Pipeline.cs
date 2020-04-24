@@ -1,21 +1,16 @@
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
-using System.IO ;
 using System.Linq ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using Buildalyzer ;
-using Buildalyzer.Logging ;
 using Buildalyzer.Workspaces ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.VisualBasic.Symbols ;
 using Microsoft.Extensions.Logging ;
-using Newtonsoft.Json ;
 using NLog ;
 using NLog.Fluent ;
 using ILogger = Microsoft.Extensions.Logging.ILogger ;
@@ -33,12 +28,12 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         public Pipeline (
-            ILoggerFactory      loggerProvider
+            ILoggerFactory      loggerFactory
           , Action < string >   outAct
           , IAddRuntimeResource add
         )
         {
-            this.loggerProvider = loggerProvider ;
+            this._loggerFactory = loggerFactory ;
             _outAct             = outAct ;
             _add                = add ;
         }
@@ -50,7 +45,6 @@ namespace AnalysisAppLib
 
         private readonly IEnumerable < Action < Document > >       _documentAction ;
         private readonly IEnumerable < Action < ILogInvocation > > _invocActions ;
-        private readonly ILoggerFactory                            _loggerProvider ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -74,7 +68,7 @@ namespace AnalysisAppLib
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
 #pragma warning restore 649
         private          BufferBlock < RejectedItem >          _rejectBlock ;
-        private          ILoggerFactory                        loggerProvider ;
+        private readonly ILoggerFactory                        _loggerFactory ;
         private readonly Action < string >                     _outAct ;
         private readonly IAddRuntimeResource                   _add ;
         private readonly IEnumerable < Action < IEventMisc > > _miscs ;
@@ -108,12 +102,14 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         /// <param name="invocationFactory"></param>
+        /// <param name="documentAction1"></param>
+        /// <param name="documentAction"></param>
+        /// <param name="invocActions"></param>
         public Pipeline (
             Func < ILogInvocation >                                   invocationFactory
           , IEnumerable < Action < Tuple < Workspace , Document > > > documentAction1
           , IEnumerable < Action < Document > >                       documentAction
           , IEnumerable < Action < ILogInvocation > >                 invocActions
-          , ILoggerFactory                                            loggerProvider
           , Action < string >                                         outAct
           , IEnumerable < Action < IEventMisc > >                     miscs
           , IAddRuntimeResource                                       add
@@ -126,7 +122,6 @@ namespace AnalysisAppLib
             _documentAction1   = documentAction1 ;
             _documentAction    = documentAction ;
             _invocActions      = invocActions ;
-            _loggerProvider    = loggerProvider ;
 
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
@@ -139,7 +134,7 @@ namespace AnalysisAppLib
         {
             var initWorkspace = Register (
                                           Workspaces.InitializeWorkspace2Block (
-                                                                                loggerProvider
+                                                                                _loggerFactory
                                                                               , _outAct
                                                                               , _miscs
                                                                                )

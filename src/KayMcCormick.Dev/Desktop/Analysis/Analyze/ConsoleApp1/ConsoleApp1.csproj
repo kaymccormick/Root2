@@ -107,6 +107,10 @@
     <Compile Include="Migrations\20200423051804_loginvocation.designer.cs">
       <DependentUpon>20200423051804_loginvocation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20200424104814_field.cs" />
+    <Compile Include="Migrations\20200424104814_field.designer.cs">
+      <DependentUpon>20200424104814_field.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

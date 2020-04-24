@@ -30,6 +30,10 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
+        public TypesViewModel ( ) {
+        }
+
+        private readonly List < AppTypeInfo > _typeInfos ;
         private readonly        JsonSerializerOptions _options ;
         private const string PocoPrefix = "Poco" ;
         private const string CollectionSuffix = "Collection" ;
@@ -64,8 +68,8 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public TypesViewModel ( ) {
-        }
+        /// <param name="options"></param>
+        public TypesViewModel ( List < AppTypeInfo > typeInfos =null) { _typeInfos = typeInfos ; }
 
         /// <summary>
         /// </summary>
@@ -223,7 +227,7 @@ namespace AnalysisControls.ViewModel
                       , Version        = version
                       , KeyValue       = appTypeInfoKey.StringValue
                     } ;
-            DebugUtils.WriteLine ( $"{JsonSerializer.Serialize ( appTypeInfo , _options )}" ) ;
+            //DebugUtils.WriteLine ( $"{JsonSerializer.Serialize ( appTypeInfo , _options )}" ) ;
             /* Descend into related subtypes to populate complete syntax node structure. */
             foreach ( var subType in _nodeTypes.Where ( type => type.BaseType == clrSyntaxNodeType ) )
             {
@@ -273,9 +277,20 @@ namespace AnalysisControls.ViewModel
         public void EndInit ( )
         {
             Logger.Info ( nameof ( EndInit ) ) ;
-            foreach ( var keyValuePair in Map2.Dict )
+            if ( _typeInfos != null && _typeInfos.Any ( ) )
             {
-                Map.Dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
+                foreach ( var appTypeInfo in _typeInfos )
+                {
+                    var keyValue = ( string ) appTypeInfo.KeyValue ;
+                    Map2.Dict[ keyValue ] = appTypeInfo ;
+                }
+            }
+            else
+            {
+                foreach ( var keyValuePair in Map2.Dict )
+                {
+                    Map.Dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
+                }
             }
 
             var mapCount = Map.Count ;
@@ -561,7 +576,7 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public IEnumerable < AppTypeInfo > GetAppTypeInfos ( )
         {
-            return Map.Dict.Values ;
+            return ( IEnumerable < AppTypeInfo > ) _typeInfos ?? Map.Dict.Values ;
         }
     }
 }
