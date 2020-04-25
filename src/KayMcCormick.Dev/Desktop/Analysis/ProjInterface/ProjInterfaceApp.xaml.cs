@@ -1,6 +1,7 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.IdentityModel ;
 using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
@@ -9,6 +10,8 @@ using AnalysisAppLib ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Core.Lifetime ;
+using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
@@ -18,6 +21,7 @@ using KayMcCormick.Lib.Wpf ;
 using Microsoft.CodeAnalysis.Host ;
 using NLog ;
 using NLog.Targets ;
+using ProjInterface ;
 using static KayMcCormick.Dev.Logging.AppLoggingConfigHelper ;
 using static NLog.LogManager ;
 
@@ -180,8 +184,8 @@ namespace ProjInterface
         {
             base.OnStartup ( e ) ;
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
-            var lifetimeScope = Scope ;
-            if ( lifetimeScope?.UiPrIsRegistered < Window1 > ( ) == false )
+            
+
             {
                 ShowErrorDialog (
                                  ProjInterface.Properties.Resources
@@ -192,47 +196,6 @@ namespace ProjInterface
                                 ) ;
                 Current.Shutdown ( 255 ) ;
             }
-
-            Window1 mainWindow = null ;
-            try
-            {
-                if ( lifetimeScope != null )
-                {
-                    var test1 = Scope.Resolve < Test1 > ( ) ;
-
-                    Scope.Resolve(new[] {new ResolvedParameter(Func<p, c, ), }
-
-                public delegate TypeServices<T> Test
-                    var scoop =
-                                                                                          LifetimeScope
-                 private MyStartupParams params = Scope.Resolve<IEnumerable<<Lazy<TypeService, TypeServiceMetadata>
-
-                private RyanFriend IEnumerable<Lazy<T, MetadataType>>*  tes1 = Scope.Resolve < Meta ( ) ;
-                Test1 t = Scope.Resolve<IEnumerable <>
-                One<T>().WithMetadata<M2>(m11 => IEnumerable <Meta <MyInfo2>() >());
-
-
-                                                                                          "UiConversion"
-                                                                                        , true
-                                                                                         ) ;
-                    //     DebugUtils.WriteLine(typeDesc1Type.FullName);
-                    //     TypeDescriptor.AddProvider(typeDesc1, typeDesc1Type);
-                    // }
-                    mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
-                }
-            }
-            catch ( Exception ex )
-            {
-                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
-                MessageBox.Show ( ex.ToString ( ) , "error" ) ;
-            }
-
-            if ( mainWindow == null )
-            {
-                MessageBox.Show ( "Unable to resolve Main window" , "error" ) ;
-                return ;
-            }
-
             try
             {
                 mainWindow.Show ( ) ;
@@ -283,12 +246,7 @@ namespace ProjInterface
             }
             catch ( Exception ex )
             {
-                MessageBox.Show ( ex.ToString ( ) , "
-
-
-
-
-error" ) ;
+                
             }
         }
     }

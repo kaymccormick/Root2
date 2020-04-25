@@ -517,6 +517,10 @@ if(RegiserExplorerTypes){
         }
     }
 
+    internal class MyInfo
+    {
+    }
+
     internal interface IResourceResolver
     {
         object ResolveResource ( object resourceKey ) ;

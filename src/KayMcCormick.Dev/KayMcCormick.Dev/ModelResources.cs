@@ -32,8 +32,6 @@ using KayMcCormick.Dev.Metadata ;
 
 namespace KayMcCormick.Dev
 {
-    publicc
-
     /// <summary>
     ///     ViewModel designed to expose a hierarchy of resources in an application.
     /// </summary>
@@ -54,12 +52,12 @@ namespace KayMcCormick.Dev
         private ILifetimeScope _lifetimeScope ;
 
         // ReSharper disable once RedundantDefaultMemberInitializer
-        private          bool                                   _doPopulateAppContext = false ;
-        private          ResourceNodeInfo                       _objects_node ;
-        private readonly bool                                   _flatten_objects_node ;
-        private readonly IObservable < IComponentRegistration > _regObservable ;
+        private          bool                                    _doPopulateAppContext = false ;
+        private          ResourceNodeInfo                        _objects_node ;
+        private readonly bool                                    _flatten_objects_node ;
+        private readonly IObservable < IComponentRegistration >  _regObservable ;
         private readonly ConcurrentDictionary < Type , MyInfo2 > _activators ;
-        private          bool                                   _regSubscribed ;
+        private          bool                                    _regSubscribed ;
 
 
         /// <summary>
@@ -72,18 +70,18 @@ namespace KayMcCormick.Dev
         /// <param name="idProvider"></param>
         /// <param name="test"></param>
         public ModelResources (
-            ILifetimeScope                         lifetimeScope
-          , IObjectIdProvider                      idProvider
-          , bool                                   test          = true
-          , IObservable < IComponentRegistration > regObservable = null
-            , ConcurrentDictionary <Type, MyInfo2> activators = null
+            ILifetimeScope                          lifetimeScope
+          , IObjectIdProvider                       idProvider
+          , bool                                    test          = true
+          , IObservable < IComponentRegistration >  regObservable = null
+          , ConcurrentDictionary < Type , MyInfo2 > activators    = null
         )
         {
             _lifetimeScope        = lifetimeScope ;
             _idProvider           = idProvider ;
             _flatten_objects_node = test ;
             _regObservable        = regObservable ;
-            _activators = activators ;
+            _activators           = activators ;
             DebugUtils.WriteLine (
                                   string.Join (
                                                ", "

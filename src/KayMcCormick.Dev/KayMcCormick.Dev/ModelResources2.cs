@@ -13,7 +13,7 @@ using System.Runtime.Serialization ;
 
 namespace KayMcCormick.Dev
 {
-    [ Serialization ]
+
     internal sealed class ModelResources2 : IViewModel
     {
         public ModelResources2 ( ) { }

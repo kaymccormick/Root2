@@ -23,7 +23,6 @@ namespace ProjInterface
         public Test1 (
             [ MetadataFilter ( "UiConversion" , true ) ]
             IEnumerable < Type > types,
-            [ MetadataFilter ( "" , true ) ]
             IEnumerable < Type > types
         )
         {
