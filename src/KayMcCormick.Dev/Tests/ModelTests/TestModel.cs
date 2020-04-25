@@ -612,34 +612,51 @@ namespace ModelTests
                           ) ;
             if ( true )
             {
-                b.Register < TransformFunc < Document , Task < IEnumerable < NodeInfo > > > > (
-                                                                                               c => doc
-                                                                                                   => Task
-                                                                                                      .FromResult (
-                                                                                                                   Enumerable
-                                                                                                                      .Empty
-                                                                                                                       < NodeInfo
-                                                                                                                       > ( )
-                                                                                                                  )
-                                                                                              ) ;
-            }
+                b.Register < TransformManyFunc < Document , NodeInfo > > (
+                                                                          c => doc => {
 
-            if ( false )
-            {
-                b.Register (
-                            ( c , p )
-                                => c.Resolve < BlockFactory < Document , NodeInfo ,
-                                    TransformManyBlock < Document , NodeInfo > > > ( ) (
-                                                                                        p.Positional
-                                                                                        < Func <
-                                                                                            Document
-                                                                                          , Task <
-                                                                                                IEnumerable
-                                                                                                < NodeInfo
-                                                                                                > >
-                                                                                        > > ( 0 )
-                                                                                       )
-                           ) ;
+                                                                              if ( doc
+                                                                                 .TryGetSyntaxRoot (
+                                                                                                    out
+                                                                                                    var
+                                                                                                        root
+                                                                                                   ) )
+                                                                              {
+                                                                                  return root
+                                                                                     .DescendantNodes ( )
+                                                                                     .Select (
+                                                                                              x => new
+                                                                                                   NodeInfo
+                                                                                                   {
+                                                                                                       Node
+                                                                                                           = x
+                                                                                                   }
+                                                                                             ) ;
+                                                                              }
+
+                                                                              return null ;
+                                                                          }
+                                                                         ) ;
+
+                if ( false )
+                {
+                    b.Register (
+                                ( c , p )
+                                    => c.Resolve < BlockFactory < Document , NodeInfo ,
+                                        TransformManyBlock < Document , NodeInfo > > > ( ) (
+                                                                                            p.Positional
+                                                                                            < Func
+                                                                                                < Document
+                                                                                                  , Task
+                                                                                                    < IEnumerable
+                                                                                                        < NodeInfo
+                                                                                                        > >
+                                                                                                > > (
+                                                                                                     0
+                                                                                                    )
+                                                                                           )
+                               ) ;
+                }
             }
         }
 
@@ -1039,7 +1056,4 @@ namespace ModelTests
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class NodeInfo
-    {
-    }
 }

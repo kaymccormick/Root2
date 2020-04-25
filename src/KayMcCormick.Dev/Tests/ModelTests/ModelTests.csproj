@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InClassName.cs" />
+    <Compile Include="NodeInfo.cs" />
     <Compile Include="NodeInfoTransformFuncProvider.cs" />
     <Compile Include="TestModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

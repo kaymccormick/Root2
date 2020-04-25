@@ -38,7 +38,7 @@ namespace ModelTests
         public override Func < Document , Task < IEnumerable < NodeInfo > > >
             GetAsyncTransformFunction ( )
         {
-            return async ( doc ) => _func ( doc ) ;
+            return ( doc ) => Task.Run ( ( ) => _func ( doc ) ) ;
         }
         #endregion
         #region Implementation of IHaveRejectBlock
