@@ -74,6 +74,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// </summary>
 
+        // ReSharper disable once InconsistentNaming
         public long SequenceID { get { return _sequenceId ; } set { _sequenceId = value ; } }
 
         /// <summary>
@@ -115,10 +116,12 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public IDictionary < string , object > GDC { get { return _gdc ; } set { _gdc = value ; } }
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public IDictionary < string , object > MDLC
         {
             get { return _mdlc ; }

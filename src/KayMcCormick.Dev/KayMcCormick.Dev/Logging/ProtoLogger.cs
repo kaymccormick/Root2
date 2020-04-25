@@ -75,7 +75,7 @@ namespace KayMcCormick.Dev.Logging
             _udpClient.Send ( bytes , nBytes , _ipEndPoint ) ;
         }
 
-        public static readonly Action < LogEventInfo > _protoLogAction = Instance.LogAction ;
+        public static readonly Action < LogEventInfo > ProtoLogAction = Instance.LogAction ;
 
         /// <summary>
         /// </summary>
@@ -83,7 +83,7 @@ namespace KayMcCormick.Dev.Logging
 
         private static void ProtoLogMessage ( string message )
         {
-            _protoLogAction (
+            ProtoLogAction (
                              LogEventInfo.Create (
                                                   LogLevel.Warn
                                                 , typeof ( AppLoggingConfigHelper ).FullName

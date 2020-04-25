@@ -348,7 +348,7 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         /// <returns></returns>
         [ NotNull ]
-        public override ILifetimeScope GetLifetimeScope ( )
+        public override ILifetimeScope GetLifetimeScope ()
         {
             if ( _lifetimeScope != null )
             {
@@ -360,8 +360,35 @@ namespace KayMcCormick.Dev.Application
                 Container1 = BuildContainer ( ) ;
             }
 
-            _lifetimeScope = Container1.BeginLifetimeScope ( ) ;
+            _lifetimeScope = Container1.BeginLifetimeScope () ;
             return _lifetimeScope ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        [ NotNull ]
+        public override ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> action)
+        {
+            if (_lifetimeScope != null)
+            {
+                // if (action != null)
+                // {
+                    // throw new InvalidOperationException();
+                // }
+                return _lifetimeScope;
+            }
+
+            if (Container1 == null)
+            {
+                Container1 = BuildContainer();
+            }
+
+            _lifetimeScope = Container1.BeginLifetimeScope(action);
+            return _lifetimeScope;
         }
 
         /// <summary>

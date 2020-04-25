@@ -60,13 +60,16 @@ namespace AnalysisAppLib.Serialization
                 {
                     writer.WriteStringValue( dp.ToString (  )  );
                     writer.WriteNumberValue ( (int)dp.Kind );
-                    writer.WriteStringValue(dp.Symbol.MetadataName);
-                    if ( dp.Symbol?.ContainingAssembly?.Identity != null )
+                    if ( dp.Symbol != null )
                     {
-                        writer.WriteStringValue (
-                                                 dp.Symbol.ContainingAssembly.Identity
-                                                   .GetDisplayName ( )
-                                                ) ;
+                        writer.WriteStringValue ( dp.Symbol.MetadataName ) ;
+                        if ( dp.Symbol?.ContainingAssembly?.Identity != null )
+                        {
+                            writer.WriteStringValue (
+                                                     dp.Symbol.ContainingAssembly.Identity
+                                                       .GetDisplayName ( )
+                                                    ) ;
+                        }
                     }
                 }
                 writer.WriteEndArray();

@@ -101,6 +101,11 @@
     <Compile Include="Project\ProjectLanguage.cs" />
     <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />
     <Compile Include="SyntaxTypesService.cs" />
+    <Compile Include="TextTemplate1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextTemplate1.tt</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\LoginAuthenticationViewModel.cs" />
     <Compile Include="ViewModel\MicrosoftUserViewModel.cs" />
     <Compile Include="Syntax\AppTypeInfo.cs" />
@@ -279,12 +284,7 @@
   <ItemGroup>
     <Content Include="TextTemplate1.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TextTemplate1.txt</LastGenOutput>
-    </Content>
-    <Content Include="TextTemplate1.txt">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TextTemplate1.tt</DependentUpon>
+      <LastGenOutput>TextTemplate1.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

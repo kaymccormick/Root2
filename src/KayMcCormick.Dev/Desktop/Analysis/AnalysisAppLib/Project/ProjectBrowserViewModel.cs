@@ -81,6 +81,9 @@ namespace AnalysisAppLib.Project
         /// </summary>
         public IBrowserNodeCollection RootCollection { get { return _rootCollection ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List < ProjectInfo > Projects
         {
             get { return _projects ; }

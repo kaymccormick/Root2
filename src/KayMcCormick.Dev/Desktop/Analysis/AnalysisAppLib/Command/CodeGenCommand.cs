@@ -194,6 +194,7 @@ namespace AnalysisAppLib.Command
                                                                                                 .ToArray ( )
                                                                                             )
                                                                             , typeSyntax
+                                                                              // ReSharper disable once AssignNullToNotNullAttribute
                                                                             , null
                                                                             , SyntaxFactory
                                                                                  .Identifier (

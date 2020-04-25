@@ -177,7 +177,7 @@ namespace ProjTests
                 var appTypeInfo = sts.GetAppTypeInfo(typeof(AssignmentExpressionSyntax));
                 var field = (SyntaxFieldInfo)appTypeInfo.Fields[0];
                 var typeSyntax =
-                    SyntaxFactory.ParseTypeName(typeof(ArgumentSyntax).FullName);
+                    SyntaxFactory.ParseTypeName(typeof(ArgumentSyntax).FullName ?? throw new InvalidOperationException ( ));
                 var substType =
                     XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
             }

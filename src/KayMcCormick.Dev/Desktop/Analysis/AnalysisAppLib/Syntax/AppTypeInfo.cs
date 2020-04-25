@@ -69,6 +69,7 @@ namespace AnalysisAppLib.Syntax
         /// CLR Type
         /// </summary>
         [JsonIgnore]
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public AppClrType AppClrType { get ; set ; }
 
         /// <summary>
@@ -598,7 +599,11 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public int Id { get { return _id ; } set { _id = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [JsonIgnore]
         public AppTypeInfo AppTypeInfo { get { return _appTypeInfo ; } set { _appTypeInfo = value ; } }
 
         /// <inheritdoc />

@@ -38,11 +38,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
         public JsonFrameworkElementConverter ( ) {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="output"></param>
-        
         #region Overrides of JsonConverter
         /// <summary>
         /// 

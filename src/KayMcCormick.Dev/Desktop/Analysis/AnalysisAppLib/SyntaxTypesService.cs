@@ -187,6 +187,7 @@ namespace AnalysisAppLib
         /// <param name="appTypeInfo"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [ NotNull ]
         public static TypeSyntax FieldPocoCollectionType (
             [ NotNull ] TypeSyntax                              typeSyntax
           , [ NotNull ] IReadOnlyDictionary < string , object > collectionMap
@@ -590,7 +591,7 @@ namespace AnalysisAppLib
             }
 
 
-            var fTypeP = SyntaxFactory.ParseTypeName ( fieldType ) ;
+            var fTypeP = SyntaxFactory.ParseTypeName ( fieldType ?? throw new InvalidOperationException ( ) ) ;
             var enumerable = false ;
 
             ITypeSymbol arg = null ;

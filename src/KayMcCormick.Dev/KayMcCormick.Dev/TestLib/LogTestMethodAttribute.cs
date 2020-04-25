@@ -17,7 +17,7 @@ namespace KayMcCormick.Dev.TestLib
 
         // ReSharper disable once NotAccessedField.Local
         private readonly LogLevel _level ;
-        private          LogLevel LogLevel ;
+        private          LogLevel _logLevel ;
 
         /// <summary>
         /// </summary>
@@ -26,7 +26,7 @@ namespace KayMcCormick.Dev.TestLib
         /// <summary>
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public LogLevel Level { get { return LogLevel ; } set { LogLevel = value ; } }
+        public LogLevel Level { get { return _logLevel ; } set { _logLevel = value ; } }
 
         /// <summary>
         ///     This method is called after the test method is executed.

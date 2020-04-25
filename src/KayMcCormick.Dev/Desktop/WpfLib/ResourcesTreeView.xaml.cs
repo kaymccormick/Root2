@@ -1,4 +1,5 @@
-﻿using System.Windows ;
+﻿using System ;
+using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Navigation ;
 using KayMcCormick.Dev ;
@@ -27,6 +28,7 @@ namespace KayMcCormick.Lib.Wpf
         /// 
         /// </summary>
         /// <param name="viewModel"></param>
+        /// <param name="frameDoc"></param>
         public ResourcesTreeView ( AllResourcesTreeViewModel viewModel, object frameDoc )
         {
             _viewModel = viewModel ;
@@ -63,9 +65,17 @@ namespace KayMcCormick.Lib.Wpf
                 Page npage= new Page();
                 var grid = new Grid ( ) ;
                 DebugUtils.WriteLine($"{node}");
-                var navigate = TargetFrame.NavigationService.Navigate ( node.Data ) ;
-                DebugUtils.WriteLine ( $"{navigate}" ) ;
-                    return;
+                try
+                {
+                    var navigate = TargetFrame.NavigationService.Navigate ( node.Data ) ;
+                    DebugUtils.WriteLine ( $"{navigate}" ) ;
+                }
+                catch ( Exception ex )
+                {
+                    DebugUtils.WriteLine(ex.ToString());
+                }
+
+                return;
 
 
 

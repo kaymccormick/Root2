@@ -51,34 +51,4 @@ namespace KayMcCormick.Lib.Wpf
             return new PaneWrapper ( pane ) ;
         }
     }
-
-    /// <summary>
-    /// </summary>
-    public sealed class LayoutService
-    {
-        private readonly LayoutAnchorablePane _anchorablePane ;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="anchorablePane"></param>
-        public LayoutService ( [ NotNull ] LayoutAnchorablePane anchorablePane )
-        {
-            _anchorablePane = anchorablePane ;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="wrapper"></param>
-        /// <param name="makeActive"></param>
-        // ReSharper disable once UnusedMember.Global
-        public void AddToLayout ( [ NotNull ] PaneWrapper wrapper , bool makeActive = true )
-        {
-            _anchorablePane.Children.Add ( wrapper.Anchorable ) ;
-            if ( makeActive )
-            {
-                _anchorablePane.SelectedContentIndex =
-                    _anchorablePane.IndexOf ( wrapper.Anchorable ) ;
-            }
-        }
-    }
 }

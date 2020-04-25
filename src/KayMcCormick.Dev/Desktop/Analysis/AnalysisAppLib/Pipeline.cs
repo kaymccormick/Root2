@@ -17,6 +17,8 @@ using ILogger = Microsoft.Extensions.Logging.ILogger ;
 using LogLevel = NLog.LogLevel ;
 using Task = System.Threading.Tasks.Task ;
 
+// ReSharper disable UnusedVariable
+
 namespace AnalysisAppLib
 {
     /// <summary>
@@ -33,9 +35,9 @@ namespace AnalysisAppLib
           , IAddRuntimeResource add
         )
         {
-            this._loggerFactory = loggerFactory ;
-            _outAct             = outAct ;
-            _add                = add ;
+            _loggerFactory = loggerFactory ;
+            _outAct        = outAct ;
+            _add           = add ;
         }
 
         private readonly Func < ILogInvocation > _invocationFactory ;
@@ -105,6 +107,9 @@ namespace AnalysisAppLib
         /// <param name="documentAction1"></param>
         /// <param name="documentAction"></param>
         /// <param name="invocActions"></param>
+        /// <param name="outAct"></param>
+        /// <param name="miscs"></param>
+        /// <param name="add"></param>
         public Pipeline (
             Func < ILogInvocation >                                   invocationFactory
           , IEnumerable < Action < Tuple < Workspace , Document > > > documentAction1
@@ -174,25 +179,28 @@ namespace AnalysisAppLib
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
         }
 
-        private async Task Action ( Document d )
+        private async Task Action ( [ NotNull ] Document d )
         {
-            
             var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
-            resourceNodeInfo.Key  = d.Name ;
-            resourceNodeInfo.Data = d ;
-            resourceNodeInfo.CreateNodeFunc = CreateNodeFunc;
+            resourceNodeInfo.Key            = d.Name ;
+            resourceNodeInfo.Data           = d ;
+            resourceNodeInfo.CreateNodeFunc = CreateNodeFunc ;
             var sem = await d.GetSemanticModelAsync ( ) ;
             var tree = await d.GetSyntaxTreeAsync ( ) ;
             var n = ResourceNodeInfo.CreateInstance ( ) ;
-            n.Key = "Syntax Tree" ;
+            n.Key  = "Syntax Tree" ;
             n.Data = tree ;
-            var instance = ResourceNodeInfo.CreateInstance(CreateNodeFunc) ;
+            var instance = ResourceNodeInfo.CreateInstance ( CreateNodeFunc ) ;
             instance.Key = "Root" ;
-            var syntaxNode = await tree.GetRootAsync ( ) ;
-            instance.Data = new AnalysisContext { Node = syntaxNode , Model = sem } ;
-            n.Children.Add(instance);
+            if ( tree != null )
+            {
+                var syntaxNode = await tree.GetRootAsync ( ) ;
+                instance.Data = new AnalysisContext { Node = syntaxNode , Model = sem } ;
+            }
+
+            n.Children.Add ( instance ) ;
             instance.GetChildrenFunc = InstanceGetChildrenFunc ;
-            var nodeInfo = ResourceNodeInfo.CreateInstance (CreateNodeFunc ) ;
+            var nodeInfo = ResourceNodeInfo.CreateInstance ( CreateNodeFunc ) ;
             nodeInfo.Key = "compilation" ;
 
             if ( sem == null ) { }
@@ -201,47 +209,63 @@ namespace AnalysisAppLib
                 var comp = sem.Compilation ;
                 nodeInfo.Data = comp ;
                 var glob = comp.SourceModule.GlobalNamespace ;
-                var collection = glob.GetNamespaceMembers (  ).Select (
-                                                                    cn => Func (
-                                                                                cn
-                                                                              , ( o , o1 ) => {
-                                                                                    var x1 =
-                                                                                        ResourceNodeInfo
-                                                                                           .CreateInstance ( CreateNodeFunc) ;
-                                                                                    x1.Key  = o ;
-                                                                                    x1.Data = o1 ;
-                                                                                    x1
-                                                                                           .GetChildrenFunc
-                                                                                        = (info, func11) => cn
-                                                                                         .GetMembers().Select(symbol => Func (symbol, func11  ));
-                                                                                    return x1 ;
-                                                                                }
-                                                                               )
-                                                                   ) ;
-                nodeInfo.Children.AddRange(collection);
-                nodeInfo.Children.AddRange(comp.References.Select (r=>nodeInfo.CreateNodeFunc(nodeInfo,r.Display, r, true, false)  ));
+                var collection = glob.GetNamespaceMembers ( )
+                                     .Select (
+                                              cn => Func (
+                                                          cn
+                                                        , ( o , o1 ) => {
+                                                              var x1 = ResourceNodeInfo
+                                                                 .CreateInstance (
+                                                                                  CreateNodeFunc
+                                                                                 ) ;
+                                                              x1.Key  = o ;
+                                                              x1.Data = o1 ;
+                                                              x1.GetChildrenFunc = ( info , func11 )
+                                                                  => cn.GetMembers ( )
+                                                                       .Select (
+                                                                                symbol => Func (
+                                                                                                symbol
+                                                                                              , func11
+                                                                                               )
+                                                                               ) ;
+                                                              return x1 ;
+                                                          }
+                                                         )
+                                             ) ;
+                nodeInfo.Children.AddRange ( collection ) ;
+                nodeInfo.Children.AddRange (
+                                            comp.References.Select (
+                                                                    r => nodeInfo.CreateNodeFunc (
+                                                                                                  nodeInfo
+                                                                                                , r
+                                                                                                     .Display
+                                                                                                , r
+                                                                                                , true
+                                                                                                , false
+                                                                                                 )
+                                                                   )
+                                           ) ;
             }
 
-            resourceNodeInfo.Children.Add(nodeInfo);
-            resourceNodeInfo.Children.Add(n);
+            resourceNodeInfo.Children.Add ( nodeInfo ) ;
+            resourceNodeInfo.Children.Add ( n ) ;
             _add.AddResource ( resourceNodeInfo ) ;
             Logger.Info ( "pop {name}" , d.Name ) ;
         }
 
-        private IEnumerable < ResourceNodeInfo > GetChildrenFunc ( ResourceNodeInfo arg1 , Func < object , object , ResourceNodeInfo > arg2 ) { yield break ; }
-
+        [ NotNull ]
         private ResourceNodeInfo CreateNodeFunc (
-            ResourceNodeInfo arg1
-          , object           arg2
-          , object           arg3
-          , bool ?           arg4
-          , bool             arg5
+            [ CanBeNull ] ResourceNodeInfo arg1
+          , object                         arg2
+          , object                         arg3
+          , bool ?                         arg4
+          , bool                           arg5
         )
         {
-            var r =ResourceNodeInfo.CreateInstance();
-            r.CreateNodeFunc = CreateNodeFunc ;
-            r.Key = arg2 ;
-            r.Data = arg3 ;
+            var r = ResourceNodeInfo.CreateInstance ( ) ;
+            r.CreateNodeFunc  = CreateNodeFunc ;
+            r.Key             = arg2 ;
+            r.Data            = arg3 ;
             r.IsValueChildren = arg4 ;
             if ( arg5 )
             {
@@ -251,72 +275,79 @@ namespace AnalysisAppLib
             return r ;
         }
 
-        private IEnumerable < ResourceNodeInfo > InstanceGetChildrenFunc ( ResourceNodeInfo info , Func < object , object , ResourceNodeInfo > func )
+        [ NotNull ]
+        private IEnumerable < ResourceNodeInfo > InstanceGetChildrenFunc (
+            [ NotNull ] ResourceNodeInfo                info
+          , Func < object , object , ResourceNodeInfo > func
+        )
         {
-            AnalysisContext infoData = ( AnalysisContext ) info.Data ;
-            var syntaxNodes = ( ( SyntaxNode ) infoData.Node ).ChildNodes ( ) ;
-            return syntaxNodes
-                                               .Select (
-                                                        xx => {
-                                                            var resourceNodeInfo1 = func ( xx.Kind ( ).ToString ( ) , new AnalysisContext
-                                                                                                                      {
-                                                                                                                          Node = xx,
-                                                                                                                          Model = infoData.Model,
-                                                                                                                      }) ;
-                                                            resourceNodeInfo1.GetChildrenFunc =
-                                                                InstanceGetChildrenFunc ;
-                                                            return resourceNodeInfo1 ;
-                                                        }
-                                                       ) ;
+            var infoData = ( AnalysisContext ) info.Data ;
+            var syntaxNodes = infoData.Node.ChildNodes ( ) ;
+            return syntaxNodes.Select (
+                                       xx => {
+                                           var resourceNodeInfo1 = func (
+                                                                         xx.Kind ( ).ToString ( )
+                                                                       , new AnalysisContext
+                                                                         {
+                                                                             Node  = xx
+                                                                           , Model = infoData.Model
+                                                                         }
+                                                                        ) ;
+                                           resourceNodeInfo1.GetChildrenFunc =
+                                               InstanceGetChildrenFunc ;
+                                           return resourceNodeInfo1 ;
+                                       }
+                                      ) ;
         }
 
+        [ NotNull ]
         private ResourceNodeInfo Func (
-            ISymbol                            cn
-          , Func < object , object , ResourceNodeInfo > func1
+            [ NotNull ] ISymbol                                     cn
+          , [ NotNull ] Func < object , object , ResourceNodeInfo > func1
         )
         {
             var rr = func1 ( cn.Name , cn ) ;
-            rr.GetChildrenFunc = ( info , func )
-                => {
+            rr.GetChildrenFunc = ( info , func ) => {
                 var arg1Data = info.Data as ISymbol ;
-                IEnumerable < object > enumm = new object[] { } ;
+                IEnumerable < object > @enum = new object[] { } ;
                 switch ( arg1Data )
                 {
-                    case IAliasSymbol aliasSymbol : break ;
-                    case IArrayTypeSymbol arrayTypeSymbol : break ;
-                    case ISourceAssemblySymbol sourceAssemblySymbol :
-                        break ;
-                    case IAssemblySymbol assemblySymbol : break ;
-                    case IDiscardSymbol discardSymbol : break ;
-                    case IDynamicTypeSymbol dynamicTypeSymbol : break ;
-                    case IErrorTypeSymbol errorTypeSymbol : break ;
-                    case IEventSymbol eventSymbol : break ;
-                    case IFieldSymbol fieldSymbol : break ;
-                    case ILabelSymbol labelSymbol : break ;
-                    case ILocalSymbol localSymbol : break ;
+                    case IAliasSymbol aliasSymbol :                   break ;
+                    case IArrayTypeSymbol arrayTypeSymbol :           break ;
+                    case ISourceAssemblySymbol sourceAssemblySymbol : break ;
+                    case IAssemblySymbol assemblySymbol :             break ;
+                    case IDiscardSymbol discardSymbol :               break ;
+                    case IDynamicTypeSymbol dynamicTypeSymbol :       break ;
+                    case IErrorTypeSymbol errorTypeSymbol :           break ;
+                    case IEventSymbol eventSymbol :                   break ;
+                    case IFieldSymbol fieldSymbol :                   break ;
+                    case ILabelSymbol labelSymbol :                   break ;
+                    case ILocalSymbol localSymbol :                   break ;
                     case IMethodSymbol methodSymbol :
-                        enumm = methodSymbol.Parameters ;
+                        @enum = methodSymbol.Parameters ;
                         break ;
                     case IModuleSymbol moduleSymbol : break ;
                     case INamedTypeSymbol namedTypeSymbol :
-                        enumm = namedTypeSymbol.GetMembers();
+                        @enum = namedTypeSymbol.GetMembers ( ) ;
                         break ;
                     case INamespaceSymbol namespaceSymbol :
-                        enumm = namespaceSymbol.GetMembers ( ) ;
+                        @enum = namespaceSymbol.GetMembers ( ) ;
                         break ;
-                    case IPointerTypeSymbol pointerTypeSymbol : break ;
+                    case IPointerTypeSymbol pointerTypeSymbol :     break ;
                     case ITypeParameterSymbol typeParameterSymbol : break ;
                     case ITypeSymbol typeSymbol :
-                        enumm = typeSymbol.GetMembers ( ) ;
+                        @enum = typeSymbol.GetMembers ( ) ;
                         break ;
                     case INamespaceOrTypeSymbol namespaceOrTypeSymbol : break ;
-                    case IParameterSymbol parameterSymbol : break ;
-                    case IPreprocessingSymbol preprocessingSymbol : break ;
-                    case IPropertySymbol propertySymbol : break ;
-                    case IRangeVariableSymbol rangeVariableSymbol : break ;
-                    default : throw new ArgumentOutOfRangeException ( nameof ( arg1Data ) ) ;
+                    case IParameterSymbol parameterSymbol :             break ;
+                    case IPreprocessingSymbol preprocessingSymbol :     break ;
+                    case IPropertySymbol propertySymbol :               break ;
+                    case IRangeVariableSymbol rangeVariableSymbol :     break ;
+                    default :
+                        throw new ArgumentOutOfRangeException ( nameof ( arg1Data ) ) ;
                 }
-                return enumm.OfType<ISymbol> (  ).Select ( xxx => Func ( xxx , func ) ) ;
+
+                return @enum.OfType < ISymbol > ( ).Select ( xxx => Func ( xxx , func ) ) ;
             } ;
             return rr ;
         }
@@ -330,6 +361,7 @@ namespace AnalysisAppLib
             return block ;
         }
 
+        [ NotNull ]
         private static Task Continuation (
             [ NotNull ] IDataflowBlock block
           , string                     writeOnceBlockName
@@ -353,12 +385,12 @@ namespace AnalysisAppLib
                     return ;
                 }
 
-                var faultReaon = task.Exception.Message ;
+                var faultReason = task.Exception.Message ;
                 new LogBuilder ( Logger )
                    .LoggerName ( $"{Logger.Name}.{logName}" )
                    .Level ( LogLevel.Trace )
                    .Exception ( task.Exception )
-                   .Message ( "fault is {ex}" , faultReaon )
+                   .Message ( "fault is {ex}" , faultReason )
                    .Write ( ) ;
             }
             else { Logger.Trace ( $"{logName} complete - not faulted" ) ; }
@@ -390,14 +422,23 @@ namespace AnalysisAppLib
             set { _rejectBlock = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List < IDataflowBlock > Blocks { get { return _dataflowBlocks ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public WriteOnceBlock < AnalysisRequest > Input
         {
             get { return _input ; }
             set { _input = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public BufferBlock < Document > Block
         {
             get { return _bufferBlock ; }
@@ -434,20 +475,15 @@ namespace AnalysisAppLib
             [ ItemNotNull ]
             private static async Task < Workspace > MakeWorkspace2Async (
 #pragma warning restore 1998
-                [ NotNull ] AnalysisRequest           req
-              , ILoggerFactory                        lo
-              , [ NotNull ] Action < string >         outAct
-              , IEnumerable < Action < IEventMisc > > misc
+                [ NotNull ] AnalysisRequest                         req
+              , ILoggerFactory                                      lo
+              , [ NotNull ]   Action < string >                     outAct
+              , [ CanBeNull ] IEnumerable < Action < IEventMisc > > misc
             )
 
             {
                 using ( MappedDiagnosticsLogicalContext.SetScoped ( "Workspace" , req.Info ) )
                 {
-                    if ( outAct == null )
-                    {
-                        throw new ArgumentNullException ( nameof ( outAct ) ) ;
-                    }
-
                     try
                     {
                         var manager = new AnalyzerManager ( req.Info.SolutionPath ) ;
@@ -457,13 +493,17 @@ namespace AnalysisAppLib
                         foreach ( var keyValuePair in manager.Projects )
                         {
                             Logger.Debug ( keyValuePair.Key ) ;
-                            keyValuePair.Value.AddBuildLogger (
-                                                               new Log1 (
-                                                                         outAct
-                                                                       , keyValuePair.Value
-                                                                       , misc
-                                                                        )
-                                                              ) ;
+                            if ( misc != null )
+                            {
+                                keyValuePair.Value.AddBuildLogger (
+                                                                   new Log1 (
+                                                                             outAct
+                                                                           , keyValuePair.Value
+                                                                           , misc
+                                                                            )
+                                                                  ) ;
+                            }
+
                             var b = keyValuePair.Value.Build ( ) ;
                             foreach ( var analyzerResult in b.Results )
                             {
@@ -581,9 +621,9 @@ namespace AnalysisAppLib
         {
             [ NotNull ]
             public static TransformManyBlock < Document , ILogInvocation > FindLogUsages1 (
-                Func < ILogInvocation >                   invocationFactory
-              , BufferBlock < RejectedItem >              rejectBlock
-              , IEnumerable < Action < ILogInvocation > > invocActions
+                Func < ILogInvocation >                                 invocationFactory
+              , BufferBlock < RejectedItem >                            rejectBlock
+              , [ CanBeNull ] IEnumerable < Action < ILogInvocation > > invocActions
             )
             {
                 Logger.Trace ( "Constructing FindUsagesBlock" ) ;
@@ -643,62 +683,103 @@ namespace AnalysisAppLib
 #endif
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AnalysisContext
     {
         private SemanticModel _model ;
-        private SyntaxNode _node ;
+        private SyntaxNode    _node ;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public SemanticModel Model { get { return _model ; } set { _model = value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxNode Node { get { return _node ; } set { _node = value ; } }
     }
 
 
-    public class F : ILoggerFactory
+    /// <summary>
+    /// 
+    /// </summary>
+    public class LoggerFactory : ILoggerFactory
     {
         #region Implementation of IDisposable
+        /// <inheritdoc />
         public void Dispose ( ) { }
         #endregion
         #region Implementation of ILoggerFactory
+        /// <inheritdoc />
+        [ CanBeNull ]
         public ILogger CreateLogger ( string categoryName ) { return null ; }
 
+        /// <inheritdoc />
         public void AddProvider ( ILoggerProvider provider ) { }
         #endregion
     }
 
+    /// <inheritdoc />
     public class Myw : ILoggerProvider
     {
         private readonly Action < string > _unknown ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unknown"></param>
         public Myw ( Action < string > unknown ) { _unknown = unknown ; }
 
         #region Implementation of ILoggerProvider
+        /// <inheritdoc />
+        [ NotNull ]
         public ILogger CreateLogger ( string categoryName ) { return new MyL ( _unknown ) ; }
         #endregion
         #region Implementation of IDisposable
+        /// <inheritdoc />
         public void Dispose ( ) { }
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class MyL : ILogger
     {
         private readonly Action < string > _unknown ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unknown"></param>
         public MyL ( Action < string > unknown ) { _unknown = unknown ; }
 
         #region Implementation of ILogger
+        /// <inheritdoc />
         public void Log < TState > (
-            Microsoft.Extensions.Logging.LogLevel logLevel
-          , EventId                               eventId
-          , TState                                state
-          , Exception                             exception
-          , Func < TState , Exception , string >  formatter
+            Microsoft.Extensions.Logging.LogLevel            logLevel
+          , EventId                                          eventId
+          , TState                                           state
+          , Exception                                        exception
+          , [ NotNull ] Func < TState , Exception , string > formatter
         )
         {
             _unknown ( formatter ( state , exception ) ) ;
         }
 
+        /// <inheritdoc />
         public bool IsEnabled ( Microsoft.Extensions.Logging.LogLevel logLevel ) { return false ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        /// <typeparam name="TState"></typeparam>
+        /// <returns></returns>
+        [ CanBeNull ]
         public IDisposable BeginScope < TState > ( TState state ) { return null ; }
         #endregion
     }

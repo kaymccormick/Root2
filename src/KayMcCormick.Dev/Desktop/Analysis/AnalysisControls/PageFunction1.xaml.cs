@@ -20,6 +20,9 @@ namespace AnalysisControls
     /// </summary>
     public partial class PageFunction1 : PageFunction<String>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public PageFunction1()
         {
             InitializeComponent();

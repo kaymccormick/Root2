@@ -4,8 +4,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
-  xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
-  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
   xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   xmlns:core1="clr-namespace:Autofac.Core;assembly=Autofac"
   xmlns:core2="clr-namespace:Autofac.Core;assembly=Autofac"

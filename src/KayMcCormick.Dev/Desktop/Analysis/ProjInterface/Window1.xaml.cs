@@ -141,6 +141,20 @@ namespace ProjInterface
         private void ConfigurationAction ( ContainerBuilder builder )
         {
             builder.Register (
+                              ( c , p ) => new UiElementTypeConverter (
+                                                                       c.Resolve < ILifetimeScope
+                                                                       > ( )
+                                                                      )
+                             )
+                   .SingleInstance ( )
+                   .WithCallerMetadata ( ) ;
+            builder.Register ( ( c , p )
+                                   => new ComponentRegistrationTypeDescriptor (
+                                                                               c.Resolve <
+                                                                                ILifetimeScope
+                                                                               > ( )
+                                                                              )).SingleInstance().WithCallerMetadata (  );
+            builder.Register (
                               ( r , p ) => new Myw (
                                                     x => {
                                                         List1.Dispatcher.Invoke (
@@ -396,7 +410,7 @@ namespace ProjInterface
                     return ;
                 }
 
-                var ctl = _converter.ControlForValue ( args.Content , 1 ) ;
+                var ctl = _converter.ControlForValue ( args.Content , 0 ) ;
                 FrameDoc1.Content = ctl ;
                 args.Cancel       = true ;
                 // }

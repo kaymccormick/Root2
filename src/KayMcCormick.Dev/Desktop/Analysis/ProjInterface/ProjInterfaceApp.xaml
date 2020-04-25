@@ -9,9 +9,18 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/KayMcCormick.Lib.Wpf;component/SharedResources.xaml" />
-</ResourceDictionary.MergedDictionaries>
+          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+        <Glyphs
+          FontUri             = "C:\WINDOWS\Fonts\cour.TTF"
+          FontRenderingEmSize = "22"
+          StyleSimulations    = "BoldSimulation"
+          UnicodeString       = "Hello World!"
+          Fill                = "Black"
+          OriginX             = "0"
+          OriginY             = "0"
+          x:Key="Glyphs"
+        />
       </ResourceDictionary>
-
   </kmWpf:BaseApp.Resources>
 </kmWpf:BaseApp>

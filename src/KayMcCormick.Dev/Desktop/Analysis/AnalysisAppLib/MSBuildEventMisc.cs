@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using JetBrains.Annotations ;
 using Microsoft.Build.Framework ;
 
 namespace AnalysisAppLib
@@ -16,7 +17,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class MSBuildEventMisc : IEventMisc2<BuildEventArgs>
+    internal sealed class MSBuildEventMisc : IEventMisc2<BuildEventArgs>
     {
         private int            _threadId ;
         private object         _obj ;
@@ -26,7 +27,12 @@ namespace AnalysisAppLib
         private string         _file ;
         private BuildEventArgs _instance ;
 
-        public MSBuildEventMisc ( BuildEventArgs args , MiscLevel level )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="level"></param>
+        public MSBuildEventMisc ( [ NotNull ] BuildEventArgs args , MiscLevel level )
         {
             _instance = args ;
             _level    = level ;
@@ -35,26 +41,34 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of IEventMisc
+        /// <inheritdoc />
         public int ThreadId { get { return _threadId ; } }
 
+        /// <inheritdoc />
         public object Obj
         {
             get { return _obj ; }
             set { _obj = value ; }
         }
 
+        /// <inheritdoc />
         public string Message { get ; set ; }
 
+        /// <inheritdoc />
         public MiscLevel Level { get { return _level ; } set { _level = value ; } }
 
+        /// <inheritdoc />
         public string RawJson { get { return _rawJson ; } set { _rawJson = value ; } }
 
+        /// <inheritdoc />
         public string PropKeys { get { return _propKeys ; } }
 
+        /// <inheritdoc />
         public string File { get { return _file ; } set { _file = value ; } }
         #endregion
 
         #region Implementation of IEventMisc2<out BuildEventArgs>
+        /// <inheritdoc />
         public BuildEventArgs Instance { get { return _instance ; } }
         #endregion
     }

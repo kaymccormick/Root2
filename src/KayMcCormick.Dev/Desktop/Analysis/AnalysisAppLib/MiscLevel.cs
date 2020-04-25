@@ -11,12 +11,34 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum MiscLevel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         INFO  = 3,
-        WARN  = 4,
+        /// <summary>
+        /// 
+        /// </summary>
+        Warn  = 4,
+        /// <summary>
+        /// 
+        /// </summary>
         ERROR = 5
-      , CRIT
-      , DEBUG
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       CRIT
+      ,
+
+       /// <summary>
+       /// 
+       /// </summary>
+       DEBUG
     }
 }

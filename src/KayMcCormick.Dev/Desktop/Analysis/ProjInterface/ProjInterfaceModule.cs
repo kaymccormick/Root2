@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Linq ;
 using System.Reflection ;
 using System.Threading.Tasks ;
@@ -63,11 +64,30 @@ namespace ProjInterface
 
     public sealed class ProjInterfaceModule : IocModule
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger =
+            LogManager.GetCurrentClassLogger ( ) ;
+
         private bool _registerControlViewCommandAdapters = true ;
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType < MiscInstanceInfoProvider > ( )
+                   .AsSelf ( )
+                   .As < TypeDescriptionProvider > ( )
+                   .WithCallerMetadata ( )
+                   .OnActivating (
+                                  args => {
+                                      foreach ( var type in new[]
+                                                            {
+                                                                typeof ( IComponentRegistration )
+                                                              , typeof ( ComponentRegistration )
+                                                            } )
+                                      {
+                                          TypeDescriptor.AddProvider ( args.Instance , type ) ;
+                                      }
+                                  }
+                                 ) ;
+
             builder.RegisterType < Myw > ( ).As < ILoggerProvider > ( ) ;
             builder.RegisterSource < MySource > ( ) ;
             Logger.Trace (
@@ -76,7 +96,7 @@ namespace ProjInterface
 #if PYTHON
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
-                                                                        , new Uri(
+                                                                    , new Uri(
                                                                                       "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
                                                                                      )
                                                                              )
@@ -115,8 +135,8 @@ if(RegiserExplorerTypes){
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
                                                                          (
                                                                              context
-                                                                       , parameters
-                                                                       , item
+                                                                   , parameters
+                                                                   , item
                                                                          ) => {
                                                                              var r =
                                                                                  new
@@ -141,7 +161,6 @@ if(RegiserExplorerTypes){
                    .As < IControlView > ( )
                    .WithMetadata < IViewMetadata > (
                                                     m => {
-
                                                         m.For (
                                                                am => am.Title
                                                              , "Resources View"
@@ -153,7 +172,7 @@ if(RegiserExplorerTypes){
                                                     }
                                                    )
                    .WithCallerMetadata ( ) ;
-            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ).WithCallerMetadata() ;
+            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
             builder.RegisterType < WorkspaceControl > ( )
                    .As < IViewWithTitle > ( )
                    .As < IControlView > ( )
@@ -164,16 +183,25 @@ if(RegiserExplorerTypes){
                    .WithCallerMetadata ( ) ;
 
             builder.RegisterType < AllResourcesTreeViewModel > ( )
-                   .AsSelf ( ).As<IAddRuntimeResource> (  )
+                   .AsSelf ( )
+                   .As < IAddRuntimeResource > ( )
                    .SingleInstance ( )
                    .WithCallerMetadata ( ) ;
-            builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ).WithCallerMetadata();
+            builder.RegisterType < IconsSource > ( )
+                   .As < IIconsSource > ( )
+                   .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
-            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ).WithCallerMetadata();
+            builder.RegisterType < LogViewerWindow > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < LogViewerControl > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .WithCallerMetadata ( ) ;
 
             builder.RegisterType < UiElementTypeConverter > ( ).AsSelf ( ) ;
-            if(RegisterControlViewCommandAdapters)
+            if ( RegisterControlViewCommandAdapters )
             {
                 builder
                    .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
@@ -186,7 +214,7 @@ if(RegiserExplorerTypes){
 #if PYTHON
             builder.RegisterAssemblyTypes (
                                            Assembly.GetCallingAssembly ( )
-                                     , typeof ( PythonControl ).Assembly
+                                 , typeof ( PythonControl ).Assembly
                                           )
                    .Where (
                            type => {
@@ -203,15 +231,19 @@ if(RegiserExplorerTypes){
 #endif
 
             // builder.Register (
-                              // ( context , parameters )
-                                  // => new LogViewerControl ( new LogViewerConfig ( 0 ) )
-                             // )
-                   // .As < IViewWithTitle > ( )
-                   // .As < LogViewerControl > ( )
-                   // .WithCallerMetadata ( ) ;
+            // ( context , parameters )
+            // => new LogViewerControl ( new LogViewerConfig ( 0 ) )
+            // )
+            // .As < IViewWithTitle > ( )
+            // .As < LogViewerControl > ( )
+            // .WithCallerMetadata ( ) ;
         }
 
-        public bool RegisterControlViewCommandAdapters { get { return _registerControlViewCommandAdapters ; } set { _registerControlViewCommandAdapters = value ; } }
+        public bool RegisterControlViewCommandAdapters
+        {
+            get { return _registerControlViewCommandAdapters ; }
+            set { _registerControlViewCommandAdapters = value ; }
+        }
 
         [ NotNull ]
         public static Func < LayoutDocumentPane , IDisplayableAppCommand >
@@ -246,8 +278,8 @@ if(RegiserExplorerTypes){
         [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext                    c
-      , IEnumerable < Parameter >            p
-      , [ NotNull ] Meta < Lazy < object > > item
+  , IEnumerable < Parameter >            p
+  , [ NotNull ] Meta < Lazy < object > > item
         )
         {
             if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )
@@ -338,10 +370,9 @@ if(RegiserExplorerTypes){
         public MySource ( )
         {
             _commands = new List < CommandInfo > ( ) ;
-            foreach ( var cmd in typeof ( WpfAppCommands ).GetFields (
-                                                                      BindingFlags.Public
-                                                                      | BindingFlags.Static
-                                                                     ).Select ( fieldInfo => fieldInfo.GetValue ( null ) ) )
+            foreach ( var cmd in typeof ( WpfAppCommands )
+                                .GetFields ( BindingFlags.Public | BindingFlags.Static )
+                                .Select ( fieldInfo => fieldInfo.GetValue ( null ) ) )
             {
                 if ( cmd is RoutedUICommand ri )
                 {
@@ -361,7 +392,7 @@ if(RegiserExplorerTypes){
           , Func < Service , IEnumerable < IComponentRegistration > > registrationAccessor
         )
         {
-            DebugUtils.WriteLine($"{service}");
+            DebugUtils.WriteLine ( $"{service}" ) ;
             if ( ! ( service is IServiceWithType swt )
                  || swt.ServiceType != typeof ( RoutedUICommand ) )
             {
@@ -372,8 +403,7 @@ if(RegiserExplorerTypes){
                                                  Guid.NewGuid ( )
                                                , new DelegateActivator (
                                                                         swt.ServiceType
-                                                                      , ( c , p ) => _commands
-                                                                            [ 0 ]
+                                                                      , ( c , p ) => _commands[ 0 ]
                                                                        )
                                                , new CurrentScopeLifetime ( )
                                                , InstanceSharing.None
@@ -382,16 +412,18 @@ if(RegiserExplorerTypes){
                                                , new Dictionary < string , object > ( )
                                                 ) ;
             return new IComponentRegistration[] { reg } ;
-
         }
 
-        public bool IsAdapterForIndividualComponents { get { return _isAdapterForIndividualComponents ; } }
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return _isAdapterForIndividualComponents ; }
+        }
         #endregion
     }
 
     public sealed class CommandInfo
     {
         private RoutedUICommand _command ;
-        public RoutedUICommand Command { get { return _command ; } set { _command = value ; } }
+        public  RoutedUICommand Command { get { return _command ; } set { _command = value ; } }
     }
 }

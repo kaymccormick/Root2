@@ -18,6 +18,9 @@ namespace AnalysisAppLib.Project
     /// </summary>
     public class ProjectInfo
     {
+        /// <summary>
+        /// Primary key ID
+        /// </summary>
         public int Id { get ; set ; }
         /// <summary>
         /// Project language

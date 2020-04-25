@@ -55,7 +55,7 @@ namespace KayMcCormick.Dev.Serialization
             return ( JsonConverter ) Activator.CreateInstance ( ctype ) ;
         }
 
-        private sealed class InnerConverter<T, X> : JsonConverter <T> where T : Lazy<X>
+        private sealed class InnerConverter<T, TX> : JsonConverter <T> where T : Lazy<TX>
         {
                 #region Overrides of JsonConverter<T>
                 [ CanBeNull ] public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null; }

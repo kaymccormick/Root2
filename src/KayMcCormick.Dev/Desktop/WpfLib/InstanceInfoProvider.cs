@@ -40,7 +40,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( typeof ( ComponentRegistration ).IsAssignableFrom ( objectType ) )
             {
-                return new ComponentRegistrationTypeDescriptor(_scope);
+                return Scope.Resolve < ComponentRegistrationTypeDescriptor > ( ) ;
             }
 
             return base.GetTypeDescriptor ( objectType , instance ) ;

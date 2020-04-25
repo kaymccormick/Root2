@@ -15,10 +15,16 @@ using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
 {
-    public class LogEventMisc : IEventMisc
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class LogEventMisc : IEventMisc
     {
+        /// <inheritdoc />
+
         public int ThreadId => _inst.ManagedThreadId ;
 
+        /// <inheritdoc />
         public string PropKeys
         {
             get
@@ -50,6 +56,7 @@ namespace AnalysisAppLib
             }
         }
 
+        /// <inheritdoc />
         public string File => _inst.CallerFilePath ;
 
         private readonly LogEventInstance _inst ;
@@ -57,18 +64,27 @@ namespace AnalysisAppLib
         private          string           _rawJson ;
         private          string           _file ;
         #region Implementation of IEventMisc
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inst"></param>
+        /// <param name="rawJson"></param>
         public LogEventMisc (LogEventInstance inst , string rawJson)
         {
             _inst    = inst ;
             _rawJson = rawJson ;
         }
 
+        /// <inheritdoc />
         public object Obj => _inst ;
 
+        /// <inheritdoc />
         public string Message => _inst.FormattedMessage ;
 
+        /// <inheritdoc />
         public MiscLevel Level { get { return _level ; } set { _level = value ; } }
 
+        /// <inheritdoc />
         public string RawJson { get { return _rawJson ; } set { _rawJson = value ; } }
         #endregion
     }

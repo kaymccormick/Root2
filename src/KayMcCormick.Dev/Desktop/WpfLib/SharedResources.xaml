@@ -8,9 +8,20 @@
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:dev3="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
   xmlns:registration="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
-  xmlns:classification="clr-namespace:Microsoft.CodeAnalysis.Classification;assembly=Microsoft.CodeAnalysis.Workspaces"
   xmlns:data="clr-namespace:System.Data;assembly=System.Data"
   xmlns:tasks="clr-namespace:System.Threading.Tasks;assembly=mscorlib">
+
+  <Glyphs
+    FontUri             = "C:\WINDOWS\Fonts\TIMES.TTF"
+    FontRenderingEmSize = "100"
+    StyleSimulations    = "BoldSimulation"
+    UnicodeString       = "Hello World!"
+    Fill                = "Black"
+    OriginX             = "100"
+    OriginY             = "200"
+    x:Key="Glyphs"
+  />
+  <GlyphRun Characters="Kay" GlyphTypeface="file://system/fonts/cour.ttf" x:Key="KayM"/>
   <!--Control colors.-->
   <Color x:Key="WindowColor">#FFE8EDF9</Color>
   <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>

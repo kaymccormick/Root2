@@ -18,6 +18,7 @@ using ProjectEvaluationFinishedEventArgs = Microsoft.Build.Logging.StructuredLog
 using ProjectEvaluationStartedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationStartedEventArgs ;
 using ProjectImportedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectImportedEventArgs ;
 using TargetSkippedEventArgs = Microsoft.Build.Logging.StructuredLogger.TargetSkippedEventArgs ;
+#pragma warning disable 1591
 
 namespace AnalysisAppLib
 {

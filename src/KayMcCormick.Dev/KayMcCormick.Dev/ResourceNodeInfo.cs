@@ -40,6 +40,9 @@ namespace KayMcCormick.Dev
             CreatedDatetime = DateTime.Now ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime CreatedDatetime { get { return _createdDatetime ; } set { _createdDatetime = value ; } }
 
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;

@@ -1184,11 +1184,13 @@
                 x:Name="Docpane">
 
                 <avalondock:LayoutDocument Title="Browsex"
+                                           
                                            IconSource="{StaticResource BrowserIcon}"
                                            >
-                  <Frame Source="Home.xaml" x:Name="FrameDoc1" />
+                  <Frame Source="Home.xaml" x:Name="FrameDoc1" FontFamily="Lucida Console" FontSize="18" />
                 </avalondock:LayoutDocument>
                 <avalondock:LayoutDocument Title="Browser"
+                                           
                                            IconSource="{StaticResource BrowserIcon}"
                                            x:Name="FrameDocument">
                   <Frame Background="{x:Null}"

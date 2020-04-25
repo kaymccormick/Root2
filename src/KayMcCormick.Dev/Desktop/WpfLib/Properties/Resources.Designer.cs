@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace KayMcCormick.Lib.Qpf.Properties {
+namespace KayMcCormick.Lib.Wpf.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace KayMcCormick.Lib.Qpf.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KayMcCormick.Lib.Qpf.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KayMcCormick.Lib.Wpf.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,15 @@ namespace KayMcCormick.Lib.Qpf.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must be of type ResolveExtension.
+        /// </summary>
+        internal static string ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension {
+            get {
+                return ResourceManager.GetString("ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension", resourceCulture);
             }
         }
     }

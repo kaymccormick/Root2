@@ -14,6 +14,7 @@ using AnalysisAppLib.Project ;
 using AnalysisAppLib.Syntax ;
 using KayMcCormick.Dev ;
 using Microsoft.EntityFrameworkCore ;
+#pragma warning disable 1591
 
 namespace AnalysisAppLib
 {

@@ -32,12 +32,13 @@ namespace KayMcCormick.Lib.Wpf
 #endif
 
 
+        public virtual string DefaultTemplateName { get ; set ; }
+
         /// <summary>
         /// </summary>
         /// <param name="item"></param>
         /// <param name="container"></param>
         /// <returns></returns>
-public virtual string DefaultTemplateName  {get;set;}
         public override DataTemplate SelectTemplate ( object item , DependencyObject container )
         {
             if ( item == null )
@@ -62,7 +63,8 @@ public virtual string DefaultTemplateName  {get;set;}
                 resourceKeys.Add ( "WindowTemplate" ) ;
             }
 
-            if ( item?.GetType ( ).IsGenericType == true && item.GetType ( ).GetGenericTypeDefinition ( ) == typeof ( ControlWrap <> ) )
+            if ( item?.GetType ( ).IsGenericType                  == true
+                 && item.GetType ( ).GetGenericTypeDefinition ( ) == typeof ( ControlWrap <> ) )
             {
                 if ( item is IWrap1 w1 )
                 {
@@ -88,8 +90,9 @@ public virtual string DefaultTemplateName  {get;set;}
 
             if ( resourceKeys.Any ( ) )
             {
-                resourceKeys.Add(DefaultTemplateName);
-                returnVal = resourceKeys.Where(k => k!= null).Select ( k => TryFindDataTemplate ( fe , k ) )
+                resourceKeys.Add ( DefaultTemplateName ) ;
+                returnVal = resourceKeys.Where ( k => k != null )
+                                        .Select ( k => TryFindDataTemplate ( fe , k ) )
                                         .FirstOrDefault ( template => template != null ) ;
                 if ( returnVal != null )
                 {
@@ -103,12 +106,18 @@ public virtual string DefaultTemplateName  {get;set;}
                 return returnVal ;
             }
 
-            var templatex =
-                TemplateSelectorHelper.HelpSelectDataTemplate(item, container, base.SelectTemplate , TemplatePartName );
-            if ( templatex != null )
+            var template2 =
+                TemplateSelectorHelper.HelpSelectDataTemplate (
+                                                               item
+                                                             , container
+                                                             , base.SelectTemplate
+                                                             , TemplatePartName
+                                                              ) ;
+            if ( template2 != null )
             {
-                return templatex ;
+                return template2 ;
             }
+
             Logger.Info ( "Calling base method for template" ) ;
             returnVal = base.SelectTemplate ( item , container ) ;
             Logger.Info (
@@ -126,7 +135,10 @@ public virtual string DefaultTemplateName  {get;set;}
 
 
         [ CanBeNull ]
-        private static DataTemplate TryFindDataTemplate ( [ NotNull ] FrameworkElement fe , [ NotNull ] object resourceKey )
+        private static DataTemplate TryFindDataTemplate (
+            [ NotNull ] FrameworkElement fe
+          , [ NotNull ] object           resourceKey
+        )
         {
             Logger.Debug (
                           "Trying to find data template with resource key {resourceKey}"
@@ -146,7 +158,6 @@ public virtual string DefaultTemplateName  {get;set;}
 
             Logger.Debug ( "suppressing heirarchicala data template" ) ;
             return null ;
-
         }
     }
 }

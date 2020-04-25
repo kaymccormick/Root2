@@ -6,8 +6,8 @@ using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
 using Autofac ;
-using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Lib.Wpf.Properties ;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -70,7 +70,6 @@ namespace KayMcCormick.Lib.Wpf
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        [ NotNull ]
         public override object ProvideValue ( IServiceProvider serviceProvider )
         {
             if ( serviceProvider == null )
@@ -142,7 +141,7 @@ namespace KayMcCormick.Lib.Wpf
 
     /// <summary>
     /// </summary>
-    public sealed class ResolveTypeConverter : TypeConverter
+    internal sealed class ResolveTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
         /// <summary>
@@ -185,7 +184,7 @@ namespace KayMcCormick.Lib.Wpf
             if ( ! ( value is ResolveExtension resolveExtension ) )
             {
                 throw new ArgumentException (
-                                             $"{nameof ( value )} must be of type ResolveExtension"
+                                             string.Format ( Resources.ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension , nameof ( value ) )
                                            , nameof ( value )
                                             ) ;
             }

@@ -11,8 +11,15 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IEventMisc2< out T>:IEventMisc
     {
+        /// <summary>
+        /// 
+        /// </summary>
         T Instance { get ; }
     }
 }

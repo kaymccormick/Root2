@@ -54,9 +54,17 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public virtual ILifetimeScope GetLifetimeScope ( )
+        public virtual ILifetimeScope GetLifetimeScope()
         {
-            throw new NotImplementedException ( ) ;
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public virtual ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> config)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

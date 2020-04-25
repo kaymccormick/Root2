@@ -44,7 +44,9 @@ using NLog.Targets ;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory ;
 using JsonConverters = KayMcCormick.Dev.Serialization.JsonConverters ;
 using ProjectInfo = Microsoft.CodeAnalysis.ProjectInfo ;
+
 // ReSharper disable LocalizableElement
+// ReSharper disable MemberCanBePrivate.Global
 
 // ReSharper disable RedundantOverriddenMember
 
@@ -59,26 +61,31 @@ namespace ConsoleApp1
             get { return Path.Combine ( DataOutputPath , ModelXamlFilenamePart ) ; }
         }
 
-        private const string DataOutputPath      = @"C:\data\logs" ;
+        private const string DataOutputPath        = @"C:\data\logs" ;
         private const string TypesJsonFilename     = "types.json" ;
         private const string ModelXamlFilenamePart = "model.xaml" ;
 
         private const string SolutionFilePath =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\reanalyze2\src\KayMcCormick.Dev\ManagedProd.sln" ;
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\work2\src\KayMcCormick.Dev\ManagedProd.sln" ;
 
         // ReSharper disable once InconsistentNaming
-        private const string _pocoPrefix          = "Poco" ;
+        private const string _pocoPrefix = "Poco" ;
+
         // ReSharper disable once InconsistentNaming
-        private const string _collectionSuffix    = "Collection" ;
+        private const string _collectionSuffix   = "Collection" ;
         private const string PocoSyntaxNamespace = "PocoSyntax" ;
+
         // ReSharper disable once InconsistentNaming
-        private const string ICollection_typename         = "ICollection" ;
+        private const string ICollection_typename = "ICollection" ;
+
         // ReSharper disable once InconsistentNaming
-        private const string IList_typename                 = "IList";
+        private const string IList_typename = "IList" ;
+
         // ReSharper disable once InconsistentNaming
-        private const string List_typename        = "List";
+        private const string List_typename = "List" ;
+
         // ReSharper disable once InconsistentNaming
-        private const string IEnumerable_typename = "IEnumerable";
+        private const string IEnumerable_typename = "IEnumerable" ;
 
         private static readonly string[] AssemblyRefs =
         {
@@ -172,20 +179,26 @@ namespace ConsoleApp1
                                                          , subject
                                                           )
 #pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
-                            .ContinueWith ( task => Console.WriteLine ( Resources.Program_Main_Logger_async_complete_ ) )
+                            .ContinueWith (
+                                           task => Console.WriteLine (
+                                                                      Resources
+                                                                         .Program_Main_Logger_async_complete_
+                                                                     )
+                                          )
 #pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
                      ) ;
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 
             _appInstance = new ApplicationInstance (
-                                                new ApplicationInstance.
-                                                    ApplicationInstanceConfiguration (
-                                                                                      message => {
-                                                                                      }
-                                                                                    , consoleAnalysisProgramGuid
-                                                                                     )
-                                               ) ;
+                                                    new ApplicationInstance.
+                                                        ApplicationInstanceConfiguration (
+                                                                                          message
+                                                                                              => {
+                                                                                          }
+                                                                                        , consoleAnalysisProgramGuid
+                                                                                         )
+                                                   ) ;
             using ( _appInstance )
 
             {
@@ -201,7 +214,10 @@ namespace ConsoleApp1
                 catch ( ContainerBuildException buildException )
                 {
                     Console.WriteLine ( buildException.Message ) ;
-                    Console.WriteLine ( Resources.Program_Main_Please_contact_your_administrator_for_assistance_ ) ;
+                    Console.WriteLine (
+                                       Resources
+                                          .Program_Main_Please_contact_your_administrator_for_assistance_
+                                      ) ;
                     return 1 ;
                 }
 
@@ -348,7 +364,7 @@ namespace ConsoleApp1
             {
                 db.AppClrType.RemoveRange ( db.AppClrType ) ;
                 db.AppTypeInfos.RemoveRange ( db.AppTypeInfos ) ;
-                    db.SyntaxFieldInfo.RemoveRange ( db.SyntaxFieldInfo );
+                db.SyntaxFieldInfo.RemoveRange ( db.SyntaxFieldInfo ) ;
                 await db.SaveChangesAsync ( ) ;
             }
 
@@ -360,10 +376,10 @@ namespace ConsoleApp1
                 }
             }
 
-            var r = TypesViewModel_Stage1 ( context, out var typesViewModel, db ) ;
-            TypesViewModel t2 = new TypesViewModel(r);
-            t2.BeginInit();
-            t2.EndInit();
+            var r = TypesViewModel_Stage1 ( context , out var typesViewModel , db ) ;
+            var t2 = new TypesViewModel ( r ) ;
+            t2.BeginInit ( ) ;
+            t2.EndInit ( ) ;
             var sts = context.Scope.Resolve < ISyntaxTypesService > ( ) ;
             var collectionMap = sts.CollectionMap ( ) ;
 
@@ -408,22 +424,22 @@ namespace ConsoleApp1
                 throw new ArgumentNullException ( nameof ( typesViewModel ) ) ;
             }
 
-            List < AppTypeInfo > r = null ;
-            
+            List < AppTypeInfo > r ;
+
             {
                 var appTypeInfos = typesViewModel.GetAppTypeInfos ( ) ;
                 var typeInfos = appTypeInfos as AppTypeInfo[] ?? appTypeInfos.ToArray ( ) ;
                 foreach ( var appTypeInfo in typeInfos )
                 {
-                    DebugUtils.WriteLine(
-                                         $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
-                                        );
-                    
+                    DebugUtils.WriteLine (
+                                          $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
+                                         ) ;
+
                     if ( appTypeInfo.AppClrType != null )
                     {
                         continue ;
                     }
-                    
+
                     var clr = FindOrAddClrType ( db , appTypeInfo.Type ) ;
                     appTypeInfo.AppClrType = clr ;
                     if ( appTypeInfo.Id != 0 )
@@ -439,7 +455,7 @@ namespace ConsoleApp1
                 db.SaveChanges ( ) ;
                 r = db.AppTypeInfos.ToList ( ) ;
             }
-            
+
             WriteThisTypesViewModel (
                                      typesViewModel
                                    , model => Path.Combine ( DataOutputPath , "model-v1.xaml" )
@@ -453,7 +469,10 @@ namespace ConsoleApp1
             return r ;
         }
 
-        private static void WriteModelToDatabase ( [ NotNull ] TypesViewModel typesViewModel , AppDbContext db )
+        private static void WriteModelToDatabase (
+            [ NotNull ] TypesViewModel typesViewModel
+          , AppDbContext               db
+        )
         {
             if ( typesViewModel == null )
             {
@@ -465,9 +484,9 @@ namespace ConsoleApp1
                 var typeInfos = appTypeInfos as AppTypeInfo[] ?? appTypeInfos.ToArray ( ) ;
                 foreach ( var appTypeInfo in typeInfos )
                 {
-                    DebugUtils.WriteLine(
-                                         $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
-                                        );
+                    DebugUtils.WriteLine (
+                                          $"Synchronizing {appTypeInfo.Title} ({appTypeInfo.Fields.Count})"
+                                         ) ;
                     appTypeInfo.Version ++ ;
                     var syntaxFieldCollection = appTypeInfo.Fields ;
                     foreach ( SyntaxFieldInfo o in syntaxFieldCollection )
@@ -476,7 +495,7 @@ namespace ConsoleApp1
                     }
                     // if ( appTypeInfo.AppClrType != null )
                     // {
-                        // continue ;
+                    // continue ;
                     // }
 
 
@@ -707,17 +726,28 @@ namespace ConsoleApp1
 
             foreach ( var k in xxx1 )
             {
-                Console.WriteLine ( Resources.Program_LoadSyntaxExamplesAsync_ , k.Key , k.Value.Len ) ;
+                Console.WriteLine (
+                                   Resources.Program_LoadSyntaxExamplesAsync_
+                                 , k.Key
+                                 , k.Value.Len
+                                  ) ;
             }
 
             foreach ( var k in xxx )
             {
-                Console.WriteLine ( Resources.Program_LoadSyntaxExamplesAsync_ , k.Key , k.Value.Len ) ;
+                Console.WriteLine (
+                                   Resources.Program_LoadSyntaxExamplesAsync_
+                                 , k.Key
+                                 , k.Value.Len
+                                  ) ;
             }
 
             foreach ( var keyValuePair in syntaxDict )
             {
-                Console.WriteLine ( Resources.Program_LoadSyntaxExamplesAsync__0_ , keyValuePair.Key.Name ) ;
+                Console.WriteLine (
+                                   Resources.Program_LoadSyntaxExamplesAsync__0_
+                                 , keyValuePair.Key.Name
+                                  ) ;
                 Console.WriteLine (
                                    ( double ) keyValuePair.Value.Item1.Len
                                    / keyValuePair.Value.Item2.Count
@@ -1281,14 +1311,17 @@ namespace ConsoleApp1
             await Task.Run ( ( ) => CodeGen ( command , context ) ) ;
         }
 
-        [TitleMetadata( "DB Populate")]
-        [UsedImplicitly]
-        public async Task PopuldateDbAync(IBaseLibCommand command, [NotNull] AppContext context)
+        [ TitleMetadata ( "DB Populate" ) ]
+        [ UsedImplicitly ]
+        public async Task PopuldateDbAsync (
+            IBaseLibCommand        command
+          , [ NotNull ] AppContext context
+        )
         {
             using ( var db = new AppDbContext ( ) )
             {
-                ProjectBrowserViewModel p = new ProjectBrowserViewModel();
-                await db.Projects.AddRangeAsync(p.Projects);
+                var p = new ProjectBrowserViewModel ( ) ;
+                await db.Projects.AddRangeAsync ( p.Projects ) ;
                 await db.SaveChangesAsync ( ) ;
             }
         }
@@ -1346,7 +1379,8 @@ namespace ConsoleApp1
                 var simplebaseType_ilist1 = SimpleBaseType ( ParseTypeName ( IList_typename ) ) ;
                 var enumerable1 = SimpleBaseType ( ParseTypeName ( IEnumerable_typename ) ) ;
                 // ReSharper disable once InconsistentNaming
-                var simpleBaseType_ICollection = SimpleBaseType ( ParseTypeName ( ICollection_typename ) ) ;
+                var simpleBaseType_ICollection =
+                    SimpleBaseType ( ParseTypeName ( ICollection_typename ) ) ;
                 var classContainerDecl = ClassDeclaration ( colTypeClassName )
                                         .WithBaseList (
                                                        BaseList ( )
@@ -1365,7 +1399,8 @@ namespace ConsoleApp1
                                                                                )
                                                        ) ;
 
-                var typeSyntax2 = ParseTypeName ( t.Type.FullName ) ;
+                var typeSyntax2 =
+                    ParseTypeName ( t.Type.FullName ?? throw new InvalidOperationException ( ) ) ;
                 var typeSyntax = ParseTypeName (
                                                 PocoPrefix
                                                 + ( ( QualifiedNameSyntax ) typeSyntax2 )
@@ -1376,8 +1411,7 @@ namespace ConsoleApp1
                                                          Identifier ( IList_typename )
                                                        , TypeArgumentList (
                                                                            SeparatedList <
-                                                                                   TypeSyntax
-                                                                               > ( )
+                                                                                   TypeSyntax > ( )
                                                                               .Add ( typeSyntax )
                                                                           )
                                                         ) ;
@@ -1385,8 +1419,7 @@ namespace ConsoleApp1
                 var internal_genericList = GenericName (
                                                         Identifier ( List_typename )
                                                       , TypeArgumentList (
-                                                                          SeparatedList <
-                                                                                  TypeSyntax
+                                                                          SeparatedList < TypeSyntax
                                                                               > ( )
                                                                              .Add ( typeSyntax )
                                                                          )
@@ -1591,140 +1624,145 @@ namespace ConsoleApp1
                                                    ) ;
 
                     var members1 = generic1.GetMembers ( )
-                                        .OfType < IMethodSymbol > ( )
-                                        .Where (
-                                                x22 => x22.Kind          == SymbolKind.Method
-                                                       && x22.MethodKind == MethodKind.Ordinary
-                                               )
-                                        .Select (
-                                                 m => {
-                                                     var returnType =
-                                                         ParseTypeName (
-                                                                        m.ReturnType.MetadataName
-                                                                       ) ;
-                                                     var methodDeclarationSyntax =
-                                                         MethodDeclaration (
-                                                                            m.ReturnsVoid
-                                                                                ? PredefinedType (
-                                                                                                  Token (
-                                                                                                         SyntaxKind
-                                                                                                            .VoidKeyword
-                                                                                                        )
-                                                                                                 )
-                                                                                : returnType
-                                                                          , m.Name
-                                                                           ) ;
-
-                                                     ParameterSyntax Selector (
-                                                         IParameterSymbol p1
-                                                     )
-                                                     {
-                                                         if ( p1.Type.SpecialType
-                                                              == SpecialType.System_Object )
-                                                         {
-                                                             DebugUtils.WriteLine ( $"{p1.Type}" ) ;
-                                                         }
-
-                                                         return Parameter (
-                                                                           List <
-                                                                               AttributeListSyntax
-                                                                           > ( )
-                                                                         , new SyntaxTokenList ( )
-                                                                         , ParseTypeName (
-                                                                                          p1.Type
-                                                                                            .MetadataName
-                                                                                         )
-                                                                         , Identifier ( p1.Name )
-                                                                         , null
+                                           .OfType < IMethodSymbol > ( )
+                                           .Where (
+                                                   x22 => x22.Kind          == SymbolKind.Method
+                                                          && x22.MethodKind == MethodKind.Ordinary
+                                                  )
+                                           .Select (
+                                                    m => {
+                                                        var returnType =
+                                                            ParseTypeName (
+                                                                           m.ReturnType.MetadataName
                                                                           ) ;
-                                                     }
+                                                        var methodDeclarationSyntax =
+                                                            MethodDeclaration (
+                                                                               m.ReturnsVoid
+                                                                                   ? PredefinedType (
+                                                                                                     Token (
+                                                                                                            SyntaxKind
+                                                                                                               .VoidKeyword
+                                                                                                           )
+                                                                                                    )
+                                                                                   : returnType
+                                                                             , m.Name
+                                                                              ) ;
 
-                                                     var separatedSyntaxList =
-                                                         SeparatedList (
-                                                                        m.Parameters.Select (
-                                                                                             Selector
+                                                        ParameterSyntax Selector (
+                                                            IParameterSymbol p1
+                                                        )
+                                                        {
+                                                            if ( p1.Type.SpecialType
+                                                                 == SpecialType.System_Object )
+                                                            {
+                                                                DebugUtils.WriteLine (
+                                                                                      $"{p1.Type}"
+                                                                                     ) ;
+                                                            }
+
+                                                            return Parameter (
+                                                                              List <
+                                                                                  AttributeListSyntax
+                                                                              > ( )
+                                                                            , new
+                                                                                  SyntaxTokenList ( )
+                                                                            , ParseTypeName (
+                                                                                             p1.Type
+                                                                                               .MetadataName
                                                                                             )
-                                                                       ) ;
-                                                     return methodDeclarationSyntax
-                                                           .WithModifiers ( publicKeyword )
-                                                           .WithLeadingTrivia (
-                                                                               SyntaxTriviaList
-                                                                                  .Create (
-                                                                                           Comment (
-                                                                                                    $"// {typeByMetadataName.ToDisplayString ( )}"
-                                                                                                   )
-                                                                                          )
-                                                                              )
-                                                           .WithParameterList (
-                                                                               ParameterList (
-                                                                                              separatedSyntaxList
-                                                                                             )
-                                                                              )
-                                                           .WithExpressionBody (
-                                                                                ArrowExpressionClause (
-                                                                                                       InvocationExpression (
-                                                                                                                             MemberAccessExpression (
-                                                                                                                                                     SyntaxKind
-                                                                                                                                                        .SimpleMemberAccessExpression
-                                                                                                                                                   , listField
-                                                                                                                                                   , IdentifierName (
-                                                                                                                                                                     m.Name
-                                                                                                                                                                    )
-                                                                                                                                                    )
-                                                                                                                            )
-                                                                                                          .WithArgumentList (
-                                                                                                                             ArgumentList (
-                                                                                                                                           new
-                                                                                                                                                   SeparatedSyntaxList
-                                                                                                                                                   < ArgumentSyntax
-                                                                                                                                                   > ( )
-                                                                                                                                              .AddRange (
-                                                                                                                                                         m.Parameters
-                                                                                                                                                          .Select (
-                                                                                                                                                                   p
-                                                                                                                                                                       => Argument (
-                                                                                                                                                                                    CastExpression (
-                                                                                                                                                                                                    p
-                                                                                                                                                                                                       .Type
-                                                                                                                                                                                                       .SpecialType
-                                                                                                                                                                                                    == SpecialType
-                                                                                                                                                                                                       .System_Object
-                                                                                                                                                                                                        ? internal_genericIList
-                                                                                                                                                                                                         .TypeArgumentList
-                                                                                                                                                                                                         .Arguments
-                                                                                                                                                                                                              [
-                                                                                                                                                                                                               0 ]
-                                                                                                                                                                                                        : ParseTypeName (
-                                                                                                                                                                                                                         p
-                                                                                                                                                                                                                            .Type
-                                                                                                                                                                                                                            .MetadataName
-                                                                                                                                                                                                                        )
-                                                                                                                                                                                                  , IdentifierName (
-                                                                                                                                                                                                                    p
-                                                                                                                                                                                                                       .Name
-                                                                                                                                                                                                                   )
-                                                                                                                                                                                                   )
-                                                                                                                                                                                   )
-                                                                                                                                                                  )
-                                                                                                                                                        )
-                                                                                                                                          )
-                                                                                                                            )
+                                                                            , Identifier ( p1.Name )
+                                                                            , null
+                                                                             ) ;
+                                                        }
+
+                                                        var separatedSyntaxList =
+                                                            SeparatedList (
+                                                                           m.Parameters.Select (
+                                                                                                Selector
+                                                                                               )
+                                                                          ) ;
+                                                        return methodDeclarationSyntax
+                                                              .WithModifiers ( publicKeyword )
+                                                              .WithLeadingTrivia (
+                                                                                  SyntaxTriviaList
+                                                                                     .Create (
+                                                                                              Comment (
+                                                                                                       $"// {typeByMetadataName.ToDisplayString ( )}"
                                                                                                       )
-                                                                               )
-                                                           .WithSemicolonToken (
-                                                                                Token (
-                                                                                       SyntaxKind
-                                                                                          .SemicolonToken
-                                                                                      )
-                                                                               ) ;
-                                                 }
-                                                ) ;
+                                                                                             )
+                                                                                 )
+                                                              .WithParameterList (
+                                                                                  ParameterList (
+                                                                                                 separatedSyntaxList
+                                                                                                )
+                                                                                 )
+                                                              .WithExpressionBody (
+                                                                                   ArrowExpressionClause (
+                                                                                                          InvocationExpression (
+                                                                                                                                MemberAccessExpression (
+                                                                                                                                                        SyntaxKind
+                                                                                                                                                           .SimpleMemberAccessExpression
+                                                                                                                                                      , listField
+                                                                                                                                                      , IdentifierName (
+                                                                                                                                                                        m.Name
+                                                                                                                                                                       )
+                                                                                                                                                       )
+                                                                                                                               )
+                                                                                                             .WithArgumentList (
+                                                                                                                                ArgumentList (
+                                                                                                                                              new
+                                                                                                                                                      SeparatedSyntaxList
+                                                                                                                                                      < ArgumentSyntax
+                                                                                                                                                      > ( )
+                                                                                                                                                 .AddRange (
+                                                                                                                                                            m.Parameters
+                                                                                                                                                             .Select (
+                                                                                                                                                                      p
+                                                                                                                                                                          => Argument (
+                                                                                                                                                                                       CastExpression (
+                                                                                                                                                                                                       p
+                                                                                                                                                                                                          .Type
+                                                                                                                                                                                                          .SpecialType
+                                                                                                                                                                                                       == SpecialType
+                                                                                                                                                                                                          .System_Object
+                                                                                                                                                                                                           ? internal_genericIList
+                                                                                                                                                                                                            .TypeArgumentList
+                                                                                                                                                                                                            .Arguments
+                                                                                                                                                                                                                 [
+                                                                                                                                                                                                                  0 ]
+                                                                                                                                                                                                           : ParseTypeName (
+                                                                                                                                                                                                                            p
+                                                                                                                                                                                                                               .Type
+                                                                                                                                                                                                                               .MetadataName
+                                                                                                                                                                                                                           )
+                                                                                                                                                                                                     , IdentifierName (
+                                                                                                                                                                                                                       p
+                                                                                                                                                                                                                          .Name
+                                                                                                                                                                                                                      )
+                                                                                                                                                                                                      )
+                                                                                                                                                                                      )
+                                                                                                                                                                     )
+                                                                                                                                                           )
+                                                                                                                                             )
+                                                                                                                               )
+                                                                                                         )
+                                                                                  )
+                                                              .WithSemicolonToken (
+                                                                                   Token (
+                                                                                          SyntaxKind
+                                                                                             .SemicolonToken
+                                                                                         )
+                                                                                  ) ;
+                                                    }
+                                                   ) ;
 
                     classContainerDecl = classContainerDecl.WithMembers (
                                                                          List (
                                                                                classContainerDecl
                                                                                   .Members
-                                                                                  .Concat ( members1 )
+                                                                                  .Concat (
+                                                                                           members1
+                                                                                          )
                                                                                   .Concat ( props1 )
                                                                                   .Concat (
                                                                                            indexers
@@ -2015,6 +2053,7 @@ namespace ConsoleApp1
                                                                                            , collectionMap
                                                                                            , model1
                                                                                             )
+                                                                         // ReSharper disable once AssignNullToNotNullAttribute
                                                                        , null
                                                                        , propertyName
                                                                        , accessorListSyntax
@@ -2452,7 +2491,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             SourceSpanEnd              = sourceSpanEnd ;
         }
 
-        public LocationInfo (
+        internal LocationInfo (
             string fileName
           , int    charStart
           , int    lineStart
@@ -2480,7 +2519,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public int SourceSpanEnd { get ; }
     }
 
-    public sealed class CallerInfo
+    internal sealed class CallerInfo
     {
         private List < LocationInfo > _locations = new List < LocationInfo > ( ) ;
 
@@ -2490,7 +2529,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
         public bool IsDirect { get ; }
 
-        public CallerInfo (
+        internal CallerInfo (
             string                                   calledSymbol
           , string                                   callingSymbol
           , bool                                     isDirect
@@ -2510,23 +2549,24 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         }
     }
 
-    public sealed class SyntaxWalker2 : CSharpSyntaxWalker
+    internal sealed class SyntaxWalker2 : CSharpSyntaxWalker
     {
         private readonly SemanticModel _model ;
 
         #region Overrides of CSharpSyntaxVisitor
-        public SyntaxWalker2 (
+        internal SyntaxWalker2 (
             SemanticModel     model
           , SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node
         ) : base ( depth )
         {
-            this._model = model ;
+            _model = model ;
         }
 
         public override void VisitNamespaceDeclaration ( NamespaceDeclarationSyntax node )
         {
             // ReSharper disable once UnusedVariable
-            var nsSymbol = _model.GetDeclaredSymbol ( node ) ?? throw new ArgumentNullException ( ) ;
+            var nsSymbol = _model.GetDeclaredSymbol ( node )
+                           ?? throw new ArgumentNullException ( ) ;
             base.VisitNamespaceDeclaration ( node ) ;
         }
 
@@ -2625,7 +2665,8 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         {
             var symbol = _model.GetDeclaredSymbol ( node ) ;
             if ( symbol               != null
-                 && symbol.MethodKind != MethodKind.Ordinary )
+                 && symbol.MethodKind != MethodKind.Ordinary
+                 && symbol.MethodKind != MethodKind.ExplicitInterfaceImplementation )
             {
                 throw new InvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
             }
@@ -2713,12 +2754,12 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         #endregion
     }
 
-    public sealed class MethodInfo
+    internal sealed class MethodInfo
     {
         private string                 _name ;
         private List < ParameterInfo > _params = new List < ParameterInfo > ( ) ;
 
-        public MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > select )
+        internal MethodInfo ( string methodSymbolName , IEnumerable < ParameterInfo > select )
         {
             Name = methodSymbolName ;
             Parameters.AddRange ( select ) ;
@@ -2745,17 +2786,22 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         public readonly List < CustomModifierInfo > CustomModifiers =
             new List < CustomModifierInfo > ( ) ;
 
-        public ParameterInfo (
+        internal ParameterInfo (
             string name
             // ReSharper disable once SuggestBaseTypeForParameter
-          , ITypeSymbol                        typeSymbol
+          , [ NotNull ] ITypeSymbol            typeSymbol
           , IEnumerable < CustomModifierInfo > select
           , string                             typeDisplayString
         )
         {
+            if ( typeSymbol == null )
+            {
+                throw new ArgumentNullException ( nameof ( typeSymbol ) ) ;
+            }
+
             Name              = name ;
             TypeDisplayString = typeDisplayString ;
-            TypeFullName = typeSymbol.ContainingNamespace.MetadataName
+            TypeFullName = typeSymbol.ContainingNamespace?.MetadataName
                            + '.'
                            + typeSymbol.MetadataName ;
             CustomModifiers.AddRange ( select ) ;

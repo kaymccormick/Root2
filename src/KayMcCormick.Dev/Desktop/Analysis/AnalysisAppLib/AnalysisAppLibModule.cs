@@ -103,7 +103,7 @@ namespace AnalysisAppLib
                               ( c , p ) => {
                                   var loggerProviders =
                                       c.Resolve < IEnumerable < ILoggerProvider > > ( ) ;
-                                  return new LoggerFactory ( loggerProviders ) ;
+                                  return new Microsoft.Extensions.Logging.LoggerFactory ( loggerProviders ) ;
                               }
                              )
                    .As < ILoggerFactory > ( ) ;

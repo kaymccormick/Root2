@@ -50,7 +50,7 @@ namespace AnalysisAppLib.Span
                                             ", "
                                           , Instance.Arguments.Select (
                                                                        ( argument , i )
-                                                                           => argument.GetJSON (
+                                                                           => argument.GetJson (
                                                                                                 argument
                                                                                                )
                                                                       )

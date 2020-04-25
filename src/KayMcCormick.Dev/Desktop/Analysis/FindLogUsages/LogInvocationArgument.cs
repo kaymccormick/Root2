@@ -19,7 +19,7 @@ namespace FindLogUsages
         // ReSharper disable once UnusedMember.Global
         public LogInvocationArgument ( ) { }
 
-        public string GetJSON ( ILogInvocationArgument arg ) { return _jSon ; }
+        public string GetJson ( ILogInvocationArgument arg ) { return _jSon ; }
 
         public object Pojo { get ; set ; }
     }

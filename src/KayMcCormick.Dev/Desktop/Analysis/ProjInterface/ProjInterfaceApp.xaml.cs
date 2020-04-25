@@ -175,9 +175,8 @@ namespace ProjInterface
         {
             base.OnStartup ( e ) ;
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
-
             var lifetimeScope = Scope ;
-            if ( ! lifetimeScope.IsRegistered < Window1 > ( ) )
+            if ( lifetimeScope?.IsRegistered < Window1 > ( ) == false )
             {
                 ShowErrorDialog (
                                  ProjInterface.Properties.Resources
@@ -192,7 +191,10 @@ namespace ProjInterface
             Window1 mainWindow = null ;
             try
             {
-                mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
+                if ( lifetimeScope != null )
+                {
+                    mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
+                }
             }
             catch ( Exception ex )
             {
@@ -248,6 +250,7 @@ namespace ProjInterface
 
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" ) )
             {
+
                 AppDomain.CurrentDomain.ProcessExit += ( sender , args )
                     => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
                 try
@@ -257,6 +260,7 @@ namespace ProjInterface
                 }
                 catch ( Exception ex )
                 {
+
                     MessageBox.Show ( ex.ToString ( ) , "error" ) ;
                 }
             }

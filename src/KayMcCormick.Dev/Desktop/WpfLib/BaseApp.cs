@@ -3,12 +3,14 @@ using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Windows ;
+using System.Windows.Media ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
 using Application = System.Windows.Application ;
@@ -40,7 +42,7 @@ namespace KayMcCormick.Lib.Wpf
 
         private readonly ApplicationInstanceBase _applicationInstance ;
         private readonly ApplicationInstanceBase _createdAppInstance ;
-        private          ILifetimeScope          _scope ;
+        
         private MiscInstanceInfoProvider _miscInstanceInfoProvider ;
 
         /// <summary>
@@ -66,10 +68,6 @@ namespace KayMcCormick.Lib.Wpf
         )
         {
             _disableLogging = disableLogging ;
-            TypeDescriptor.AddProvider(new InstanceInfoProvider(), typeof(InstanceInfo));
-            _miscInstanceInfoProvider = new MiscInstanceInfoProvider() ;
-            TypeDescriptor.AddProvider(_miscInstanceInfoProvider, typeof(IComponentRegistration));
-            TypeDescriptor.AddProvider(_miscInstanceInfoProvider, typeof(ComponentRegistration));
 
             if ( applicationInstance != null )
             {
@@ -111,9 +109,9 @@ namespace KayMcCormick.Lib.Wpf
             // initAction?.Invoke ( ) ;
             _applicationInstance.Initialize ( ) ;
             _applicationInstance.Startup ( ) ;
-            _scope = _applicationInstance.GetLifetimeScope ( ) ;
+            Scope = _applicationInstance.GetLifetimeScope ( ) ;
+            TypeDescriptor.AddProvider(new InstanceInfoProvider(), typeof(InstanceInfo));
 
-            _miscInstanceInfoProvider.Scope = _scope ;
             //
             // foreach ( var myJsonLayout in LogManager
             //                              .Configuration.AllTargets.OfType < TargetWithLayout > ( )
@@ -157,7 +155,7 @@ namespace KayMcCormick.Lib.Wpf
 
         /// <summary>
         /// </summary>
-        protected virtual ILifetimeScope Scope { get { return _scope ; } set { _scope = value ; } }
+        protected virtual ILifetimeScope Scope { get ; set ; }
 
         /// <summary>Gets a value indicating whether [do tracing].</summary>
         /// <value>
