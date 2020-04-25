@@ -3,6 +3,7 @@ using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Windows ;
+using AnalysisAppLib ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
@@ -245,25 +246,21 @@ namespace ProjInterface
         {
             var loggingConfiguration = AppLoggingConfiguration.Default ;
             loggingConfiguration.IsEnabledCacheTarget = true ;
-            loggingConfiguration.MinLogLevel=LogLevel.Trace;
-            EnsureLoggingConfigured ( Console.WriteLine, loggingConfiguration ) ;
+            loggingConfiguration.MinLogLevel          = LogLevel.Trace ;
 
-            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Test" , "CustomAppEntry" ) )
+
+            AppDomain.CurrentDomain.ProcessExit += ( sender , args )
+                => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
+            try
             {
-
-                AppDomain.CurrentDomain.ProcessExit += ( sender , args )
-                    => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
-                try
-                {
-                    var app = new ProjInterfaceApp ( ) ;
-                    app.Run ( ) ;
-                }
-                catch ( Exception ex )
-                {
-
-                    MessageBox.Show ( ex.ToString ( ) , "error" ) ;
-                }
+                var app = new ProjInterfaceApp ( ) ;
+                app.Run ( ) ;
+            }
+            catch ( Exception ex )
+            {
+                MessageBox.Show ( ex.ToString ( ) , "error" ) ;
             }
         }
     }
 }
+

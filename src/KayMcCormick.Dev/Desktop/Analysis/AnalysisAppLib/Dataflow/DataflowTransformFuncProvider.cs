@@ -20,12 +20,6 @@ namespace AnalysisAppLib.Dataflow
         /// <returns></returns>
         public abstract Func < TSource , Task < IEnumerable < TDest > > >
             GetAsyncTransformFunction ( ) ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public abstract Func < TSource , IEnumerable < TDest > > GetTransformFunction ( ) ;
         #endregion
     }
 }

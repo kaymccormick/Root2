@@ -487,24 +487,24 @@ namespace AnalysisAppLib
                     try
                     {
                         var manager = new AnalyzerManager ( req.Info.SolutionPath ) ;
-                        var workspace = new AdhocWorkspace ( ) ;
+                        Workspace workspace = null ;
+                        try
+                        {
+                            workspace = new AdhocWorkspace ( ) ;
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
 
                         manager.LoggerFactory = lo ;
                         foreach ( var keyValuePair in manager.Projects )
                         {
                             Logger.Debug ( keyValuePair.Key ) ;
-                            if ( misc != null )
-                            {
-                                keyValuePair.Value.AddBuildLogger (
-                                                                   new Log1 (
-                                                                             outAct
-                                                                           , keyValuePair.Value
-                                                                           , misc
-                                                                            )
-                                                                  ) ;
-                            }
-
-                            var b = keyValuePair.Value.Build ( ) ;
+                            var projectAnalyzer = keyValuePair.Value ;
+                            var logger = new Log1 ( outAct , projectAnalyzer , misc ) ;
+                            projectAnalyzer.AddBuildLogger ( logger ) ;
+                            var b = projectAnalyzer.Build ( ) ;
                             foreach ( var analyzerResult in b.Results )
                             {
                                 Logger.Info ( "{r}" , analyzerResult.ToString ( ) ) ;
@@ -516,11 +516,16 @@ namespace AnalysisAppLib
                             }
                             else
                             {
-                                keyValuePair.Value.AddToWorkspace ( workspace ) ;
+                                projectAnalyzer.AddToWorkspace ( workspace ) ;
                             }
                         }
 
-                        return workspace ;
+                        if ( workspace != null )
+                        {
+                            return workspace ;
+                        }
+
+                        return null ;
                     }
                     catch ( Exception ex )
                     {

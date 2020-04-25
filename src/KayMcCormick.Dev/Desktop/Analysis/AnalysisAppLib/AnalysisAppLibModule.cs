@@ -110,14 +110,24 @@ namespace AnalysisAppLib
                              )
                    .As < ILoggerFactory > ( ) ;
             builder.RegisterType < Myw > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
-            builder.Register < Func < object , DataTable > > (
-                                                              ( c , p ) => ( object o )
-                                                                  => DataAdapter ( c , p , o )
-                                                             )
-                   .As < Func < object , DataTable > > ( ) ;
-            builder.RegisterAdapter < object , DataTable > ( DataAdapter ) ;
-            builder.RegisterAdapter < object , IDictionary > ( DictAdapter ) ;
-            builder.RegisterType < AppDbContext > ( ).As < DbContext > ( ) ;
+            if ( false )
+            {
+                builder.Register < Func < object , DataTable > > (
+                                                                  ( c , p ) => o
+                                                                      => DataAdapter ( c , p , o )
+                                                                 )
+                       .As < Func < object , DataTable > > ( ) ;
+
+
+                builder.RegisterAdapter < object , DataTable > ( DataAdapter ) ;
+                builder.RegisterAdapter < object , IDictionary > ( DictAdapter ) ;
+            }
+
+            builder.RegisterType < AppDbContext > ( )
+                   .AsSelf ( )
+                   .As < DbContext > ( )
+                   .WithCallerMetadata ( ) ;
+
             builder.RegisterType < SyntaxTypesService > ( )
                    .As < ISyntaxTypesService > ( )
                    .WithCallerMetadata ( ) ;
@@ -190,40 +200,46 @@ namespace AnalysisAppLib
                                                                                                ) ;
                                                                              }
                                                                             ) ;
+            if ( true )
+            {
+                builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
+                       .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithCallerMetadata ( )
+                       .WithMetadata ( "Purpose" , "Analysis" ) ;
+            }
 
-            builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
-                   .As ( typeof ( IAnalysisBlockProvider < , , > ) )
-                   .WithAttributeFiltering ( )
-                   .InstancePerLifetimeScope ( )
-                   .WithCallerMetadata ( )
-                   .WithMetadata ( "Purpose" , "Analysis" ) ;
-
-            builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
-                   .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-                   .WithAttributeFiltering ( )
-                   .InstancePerLifetimeScope ( )
-                   .WithCallerMetadata ( )
-                   .WithMetadata ( "Purpose" , "Analysis" ) ;
+            if ( false )
+            {
+                builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
+                       .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithCallerMetadata ( )
+                       .WithMetadata ( "Purpose" , "Analysis" ) ;
+            }
 
             builder.RegisterType < Example1TransformFuncProvider > ( )
                    .AsSelf ( )
                    .AsImplementedInterfaces ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider < , , > ) )
-                   .As ( typeof ( IAnalysisBlockProvider < , , > ) )
-                   .WithAttributeFiltering ( )
-                   .InstancePerLifetimeScope ( )
-                   .WithCallerMetadata ( )
-                   .WithMetadata ( "Purpose" , "Analysis" ) ;
-
-
-            builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider < , > ) )
-                   .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-                   .WithAttributeFiltering ( )
-                   .InstancePerLifetimeScope ( )
-                   .WithMetadata ( "Purpose" , "Analysis" )
-                   .WithCallerMetadata ( ) ;
+            if ( false )
+            {
+                builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider < , , > ) )
+                       .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithCallerMetadata ( )
+                       .WithMetadata ( "Purpose" , "Analysis" ) ;
+                builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider < , > ) )
+                       .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithMetadata ( "Purpose" , "Analysis" )
+                       .WithCallerMetadata ( ) ;
+            }
 
             #region MS LOGIN
             builder.Register ( MakePublicClientApplication )
@@ -239,19 +255,13 @@ namespace AnalysisAppLib
                    .AsSelf ( )
                    .WithCallerMetadata ( ) ;
             #endregion
-#if false
-            builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
-            builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
-            builder.Register ( ( c , p ) => new LogViewerConfig ( p.TypedAs < ushort > ( ) ) )
-                   .AsSelf ( ) ;
-            builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
-#endif
         }
 
-        private DataTable DataAdapter (
+        [ NotNull ]
+        private static DataTable DataAdapter (
             IComponentContext         c
           , IEnumerable < Parameter > p
-          , [ NotNull ] object                    o
+          , [ NotNull ] object        o
         )
         {
             var r = new DataTable ( o.GetType ( ).Name ) ;
@@ -259,10 +269,12 @@ namespace AnalysisAppLib
             foreach ( var p1 in o.GetType ( )
                                  .GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
             {
-                var px = new Prop { Name = p1.Name } ;
                 object rr1 = null ;
                 try { rr1 = p1.GetValue ( o ) ; }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
 
                 if ( p1.GetMethod.GetParameters ( ).Any ( ) )
                 {
@@ -281,7 +293,7 @@ namespace AnalysisAppLib
         private Dictionary < string , object > DictAdapter (
             IComponentContext         c
           , IEnumerable < Parameter > p
-          , [ NotNull ] object                    o
+          , [ NotNull ] object        o
         )
         {
             var r = new Dictionary < string , object > ( ) ;
@@ -348,10 +360,8 @@ namespace AnalysisAppLib
         }
     }
 
-    internal class Prop
+    public class TConf
     {
-        private string _name ;
-        public  string Name { get { return _name ; } set { _name = value ; } }
     }
 
     /// <summary>
@@ -375,7 +385,7 @@ namespace AnalysisAppLib
     /// </summary>
     /// <typeparam name="TOutput"></typeparam>
     // ReSharper disable once UnusedTypeParameter
-    public interface IAnalysisDefinition < TOutput >
+    internal interface IAnalysisDefinition < TOutput >
     {
         /// <summary>
         /// </summary>

@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Data ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Threading ;
@@ -33,22 +32,19 @@ namespace AnalysisAppLib
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly Pipeline                      _pipeline ;
-        private readonly IAddRuntimeResource _add ;
-        private readonly Func < object , DataTable > _op ;
+        private readonly IAddRuntimeResource           _add ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
-        private ResourceNodeInfo _resultsNode ;
+        private          ResourceNodeInfo              _resultsNode ;
 
         /// <summary>
         /// Constructor. Takes pipeline instance.
         /// </summary>
         /// <param name="pipeline"></param>
         /// <param name="add"></param>
-        /// <param name="op"></param>
-        public AnalyzeCommand ( Pipeline pipeline , IAddRuntimeResource add, Func<object, DataTable> op)
+        public AnalyzeCommand ( Pipeline pipeline , IAddRuntimeResource add )
         {
             _pipeline = pipeline ;
-            _add = add ;
-            _op = op ;
+            _add      = add ;
         }
 
         #region Implementation of IAnalyzeCommand
@@ -64,15 +60,13 @@ namespace AnalysisAppLib
           , ITargetBlock < RejectedItem > rejectTarget
         )
         {
-            var resourceNodeInfo = ResourceNodeInfo.CreateInstance() ;
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
             resourceNodeInfo.Key = "Analyze command" ;
-            _add.AddResource(resourceNodeInfo);
+            _add.AddResource ( resourceNodeInfo ) ;
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Command" , "AnalyzeCommand" ) )
             {
-                Logger.Debug("run command");
+                Logger.Debug ( "run command" ) ;
                 var pipeline = _pipeline ;
-                var dt = _op ( pipeline ) ;
-
                 if ( pipeline == null )
                 {
                     throw new AnalyzeException ( "Pipeline is null" ) ;
@@ -80,10 +74,10 @@ namespace AnalysisAppLib
 
                 pipeline.BuildPipeline ( ) ;
                 var pInstance = pipeline.PipelineInstance ;
-                var nodeInfo = ResourceNodeInfo.CreateInstance() ;
-                nodeInfo.Key = "Pipeline" ;
-                nodeInfo.Data = dt ;
-                resourceNodeInfo.Children.Add (nodeInfo  );
+                var nodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
+                nodeInfo.Key  = "Pipeline" ;
+                nodeInfo.Data =null ;
+                resourceNodeInfo.Children.Add ( nodeInfo ) ;
                 if ( pInstance == null )
                 {
                     throw new AnalyzeException ( "pipeline instance is null" ) ;
@@ -106,18 +100,16 @@ namespace AnalysisAppLib
                                   actionBlock
                                 , new DataflowLinkOptions { PropagateCompletion = true }
                                  ) ;
-                var tcs = new CancellationTokenSource();
+                var tcs = new CancellationTokenSource ( ) ;
                 var cancellationToken = tcs.Token ;
-                var t   = Task.Run (
-                                    () => Function(), cancellationToken
-                                   ) ;
-                var instance = ResourceNodeInfo.CreateInstance();
-                instance.Key  = "Task " + t.Id;
-                instance.Data = t;
-                resourceNodeInfo.Children.Add(instance);
-                _resultsNode = ResourceNodeInfo.CreateInstance() ;
+                var t = Task.Run ( ( ) => Function ( ) , cancellationToken ) ;
+                var instance = ResourceNodeInfo.CreateInstance ( ) ;
+                instance.Key  = "Task " + t.Id ;
+                instance.Data = t ;
+                resourceNodeInfo.Children.Add ( instance ) ;
+                _resultsNode     = ResourceNodeInfo.CreateInstance ( ) ;
                 _resultsNode.Key = "Results" ;
-                resourceNodeInfo.Children.Add(_resultsNode);
+                resourceNodeInfo.Children.Add ( _resultsNode ) ;
 
                 var req = new AnalysisRequest { Info = projectNode } ;
                 if ( ! pInstance.Post ( req ) )
@@ -130,7 +122,7 @@ namespace AnalysisAppLib
 
                 if ( cancellationToken.CanBeCanceled )
                 {
-                    tcs.Cancel();
+                    tcs.Cancel ( ) ;
                 }
             }
         }
@@ -145,7 +137,7 @@ namespace AnalysisAppLib
                     Logger.Info ( blockCount ) ;
                 }
 
-                Logger.Info($"{_pipeline.Input.Completion.IsCompleted}");
+                Logger.Info ( $"{_pipeline.Input.Completion.IsCompleted}" ) ;
 
                 var dataflowBlocks = _pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ) ;
                 if ( dataflowBlocks.Any ( ) == false )
@@ -159,10 +151,10 @@ namespace AnalysisAppLib
 
                     continue ;
                     var gt = dataflowBlock.GetType ( ).GetGenericTypeDefinition ( ) ;
-                    if ( gt == typeof ( System.Threading.Tasks.Dataflow.TransformBlock < , > ) )
+                    if ( gt == typeof ( TransformBlock < , > ) )
                     {
                         var ic = dataflowBlock.GetType ( ).GetProperty ( "InputCount" ) ;
-                        int input = ( int ) ic.GetValue ( dataflowBlock ) ;
+                        var input = ( int ) ic.GetValue ( dataflowBlock ) ;
                         Logger.Info ( "input count is {input}" , input ) ;
                     }
                 }
@@ -181,10 +173,10 @@ namespace AnalysisAppLib
             Console.WriteLine ( JsonSerializer.Serialize ( invocation ) ) ;
 #endif
             LogInvocations.Add ( invocation ) ;
-            var resourceNodeInfo = ResourceNodeInfo.CreateInstance() ;
-            resourceNodeInfo.Key = invocation ;
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
+            resourceNodeInfo.Key  = invocation ;
             resourceNodeInfo.Data = invocation ;
-            _resultsNode.Children.Add (resourceNodeInfo );
+            _resultsNode.Children.Add ( resourceNodeInfo ) ;
         }
 
         /// <summary>
@@ -207,7 +199,7 @@ namespace AnalysisAppLib
             PipelineResult result ;
             try
             {
-                DebugUtils.WriteLine("await completion");
+                DebugUtils.WriteLine ( "await completion" ) ;
                 await actionBlock.Completion.ConfigureAwait ( true ) ;
                 result = new PipelineResult ( ResultStatus.Success ) ;
             }
@@ -276,12 +268,12 @@ namespace AnalysisAppLib
                              ) ;
             }
 
-            Logger.Info(
-                          "{id} {result} {count}"
-                        , Thread.CurrentThread.ManagedThreadId
-                        , result.Status
-                        , LogInvocations.Count
-                         ) ;
+            Logger.Info (
+                         "{id} {result} {count}"
+                       , Thread.CurrentThread.ManagedThreadId
+                       , result.Status
+                       , LogInvocations.Count
+                        ) ;
         }
         #endregion
     }

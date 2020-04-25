@@ -4,7 +4,9 @@ using System.Collections.Immutable ;
 using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
+using System.Runtime.CompilerServices ;
 using System.Text.Json ;
+using System.Threading ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using System.Xaml ;
@@ -28,6 +30,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Microsoft.CodeAnalysis.MSBuild ;
 using Microsoft.CodeAnalysis.Text ;
 using Microsoft.Extensions.Primitives ;
+using Microsoft.VisualStudio.Threading ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
@@ -65,16 +68,17 @@ namespace ModelTests
         private const string LOG_TEST_SOLUTION =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln" ;
 
-        private const           string              PocoTypeNamePrefix       = "Poco" ;
-        private const           string              _pocoSyntaxNamespaceName = "PocoSyntax" ;
-        private readonly        string              _pocoBlockSyntaxClassName ;
-        private readonly        string              _pocoSyntaxTokenTypeName ;
-        private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
-        private readonly        ITestOutputHelper   _outputHelper ;
-        private readonly        LoggingFixture      _loggingFixture ;
-        private readonly        ApplicationInstance _app ;
-        private readonly        bool                _disableLogging ;
-        private IAnalysisBlockProvider _analysisBlockProvider ;
+        private const    string PocoTypeNamePrefix       = "Poco" ;
+        private const    string _pocoSyntaxNamespaceName = "PocoSyntax" ;
+        private readonly string _pocoBlockSyntaxClassName ;
+        private readonly string _pocoSyntaxTokenTypeName ;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        private readonly ITestOutputHelper   _outputHelper ;
+        private readonly LoggingFixture      _loggingFixture ;
+        private readonly ApplicationInstance _app ;
+        private readonly bool                _disableLogging ;
 
         public bool DisableLogging { get { return _disableLogging ; } }
 
@@ -112,184 +116,185 @@ namespace ModelTests
             _outputHelper.WriteLine ( message ) ;
         }
 
-        private void DoFlow < T > ( [ NotNull ] IComponentContext ls )
+        // ReSharper disable once FunctionComplexityOverflow
+#pragma warning disable 1998
+        private async Task DoFlowAsync < T > ( [ NotNull ] IComponentContext c )
+#pragma warning restore 1998
         {
-            try
+            Logger.Debug ( $"DoFlow: {typeof ( T ).FullName}" ) ;
+            Task < InClassName < T > > mainTask = null ;
+
+            mainTask = PerformTestAsync < T > ( c ) ;
+            var tasks = new List < Task > { mainTask } ;
+            LogManager.ThrowExceptions = true ;
+            TransformManyBlock < Document , T > transformManyBlock = null ;
+
+            while ( tasks.Any ( ) == true )
             {
-                var mainTask = PerformTest < T > ( ls ) ;
-                var tasks = new List < Task > { mainTask } ;
-                LogManager.ThrowExceptions = true ;
-
-                TransformManyBlock < Document , T > transformManyBlock = null ;
-                BufferBlock < T > bufferBlock = null ;
-                _analysisBlockProvider = null ;
-                //IAnalysisBlockProvider < Document , T , TransformManyBlock < Document , T > > f =
-                    //analysisBlockProvider.UnuseWhy() ;
-                while ( tasks.Any ( ) == true )
+                var message = string.Join ( "; " , tasks ) ;
+                LogMethod ( $"Tasks: {message}" ) ;
+                var waitAnyResult = Task.WaitAny ( tasks.ToArray ( ) , 300 ) ;
+                LogMethod ( waitAnyResult.ToString ( ) ) ;
+                if ( waitAnyResult < 0 )
                 {
-                    LogMethod ( string.Join ( "\n" , tasks ) ) ;
-                    var ct = new CancellationChangeToken ( ) ;
-                    ct.DisinfoTopia = "Cypherpunk stuff" ;
-                    CancellationChangeToken my =
-                        ct ;
-                    var waitAnyResult = ( tasks.Select (
-                                                        x1 => {
-                                                            return tasks.SelectMany ( ts1 => y1 ) ;
-                                                        }
-                                                       ) );
-                                                                              // x => Tuple.Create (
-                                                                                                 // x.Exception
-                                                                                               // , x
-                                                                                                    // .ConfigureAwait (
-                                                                                                                     // false
-                                                                                                                    // )
-                                                                                                // )
-                                                                             // )
-                                                            // return r ;
-                                                        // }
-                                                       // ) ) ;
-                    if ( mainTask != null
-                         && ( mainTask.IsCompleted || mainTask.IsFaulted || mainTask.IsCanceled ) )
+                }
+                else
+                {
+                    if ( tasks[ waitAnyResult ].IsCompleted )
                     {
-                        if ( mainTask.IsFaulted )
-                        {
-                            var mainTaskException = mainTask.Exception ;
-                            if ( mainTaskException != null )
-                            {
-                                Logger.Error (
-                                              string.Join (
-                                                           ", "
-                                                         , mainTaskException
-                                                          .Flatten ( )
-                                                          .InnerExceptions
-                                                          .Select ( x => x.ToString ( ) )
-                                                          .ToList ( )
-                                                          )
-                                             ) ;
-                                throw ( Exception ) mainTaskException
-                                      ?? new InvalidOperationException ( ) ;
-                            }
-                        }
-
-                        if ( mainTask.IsCompleted )
-                        {
-                            ( f , transformManyBlock , bufferBlock ) = mainTask.Result ;
-                            tasks.Add ( transformManyBlock.Completion ) ;
-                        }
-
-
-                        mainTask = null ;
+                        tasks.RemoveAt ( waitAnyResult ) ;
                     }
-
-                    if ( transformManyBlock != null )
+                    else if ( tasks[ waitAnyResult ].IsFaulted )
                     {
-                        LogMethod ( transformManyBlock.InputCount.ToString ( ) ) ;
-                        LogMethod ( transformManyBlock.OutputCount.ToString ( ) ) ;
+                        tasks.RemoveAt ( waitAnyResult ) ;
                     }
-
-                    LogMethod ( waitAnyResult.ToString ( ) ) ;
-                    if ( waitAnyResult < 0 )
+                    else if ( tasks[ waitAnyResult ].IsCanceled )
                     {
-                        continue ;
+                        tasks.RemoveAt ( waitAnyResult ) ;
                     }
-
-                    var task = tasks[ waitAnyResult ] ;
-                    if ( task.IsFaulted )
-                    {
-                        if ( task.Exception != null )
-                        {
-                            LogMethod ( "Task faulted with " + task.Exception ) ;
-                        }
-                    }
-
-                    LogMethod ( task.Status.ToString ( ) ) ;
-                    tasks.RemoveAt ( waitAnyResult ) ;
                 }
 
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                if ( f is IHaveRejectBlock r )
+                IDataflowTransformFuncProvider < Document , T > funcProvider = null ;
+                if ( mainTask != null
+                     && ( mainTask.IsCompleted || mainTask.IsFaulted || mainTask.IsCanceled ) )
                 {
-                    var rj = r.GetRejectBlock ( ) ;
-                    rj.LinkTo (
-                               new ActionBlock < RejectedItem > (
-                                                                 item => DebugUtils.WriteLine (
-                                                                                               "reject: "
-                                                                                               + item
-                                                                                              )
-                                                                )
-                              ) ;
+                    if ( mainTask.IsFaulted )
+                    {
+                        var mainTaskException = mainTask.Exception ;
+                        if ( mainTaskException != null )
+                        {
+                            Logger.Error (
+                                          string.Join (
+                                                       ", "
+                                                     , mainTaskException
+                                                      .Flatten ( )
+                                                      .InnerExceptions
+                                                      .Select ( x => x.ToString ( ) )
+                                                      .ToList ( )
+                                                      )
+                                         ) ;
+                            throw ( Exception ) mainTaskException
+                                  ?? new InvalidOperationException ( ) ;
+                        }
+                    }
+
+                    if ( mainTask.IsCompleted )
+                    {
+                        funcProvider       = mainTask.Result.FuncProvider ;
+                        transformManyBlock = mainTask.Result.TManyBlock ;
+                        var actionBlock = new ActionBlock < T > (
+                                                                 obj => Logger.Info (
+                                                                                     obj
+                                                                                        .ToString ( )
+                                                                                    )
+                                                                ) ;
+                        transformManyBlock.LinkTo (
+                                                   actionBlock
+                                                 , new DataflowLinkOptions ( )
+                                                   {
+                                                       PropagateCompletion = true
+                                                   }
+                                                  ) ;
+                        tasks.Add(transformManyBlock.Completion);
+                        tasks.Add(actionBlock.Completion);
+                    }
+
+                    mainTask = null ;
                 }
 
-                // while ( rj.Count != 0 )
+                LogMethod ( transformManyBlock.InputCount.ToString ( ) ) ;
+                LogMethod ( transformManyBlock.OutputCount.ToString ( ) ) ;
+                LogMethod ( waitAnyResult.ToString ( ) ) ;
+                if ( waitAnyResult < 0 )
+                {
+                    continue ;
+                }
+
+                // var task = tasks[ waitAnyResult ] ;
+                // if ( task.IsFaulted )
                 // {
-                // if ( x11.RejectBlock.TryReceive ( out var item1 ) )
+                // if ( task.Exception != null )
                 // {
-                // LogMethod ( "reject " + item1.GetType ( ).ToString ( ) ) ;
+                // LogMethod ( "Task faulted with " + task.Exception ) ;
                 // }
                 // }
 
-                Assert.NotNull ( bufferBlock ) ;
-                while ( bufferBlock.Count != 0 )
-                {
-                    if ( bufferBlock.TryReceive ( out var item ) )
-                    {
-                        LogMethod ( item.GetType ( ).ToString ( ) ) ;
-                    }
-                }
+                // LogMethod ( task.Status.ToString ( ) ) ;
+                //tasks.RemoveAt ( waitAnyResult ) ;
             }
-            catch(Exception ex)
-            {
-                DebugUtils.WriteLine(ex.ToString());
-            }
+
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            // if ( tBlockProvider is IHaveRejectBlock r )
+            // {
+            // var rj = r.GetRejectBlock ( ) ;
+            // var broadcastBlock = new BroadcastBlock < RejectedItem > ( item => item ) ;
+            // broadcastBlock.Completion.ContinueWith (
+            // ( task ) => Logger.Info (
+            // broadcastBlock
+            // .ToString ( )
+            // )
+            // ) ;
+            // var dataflowLinkOptions =
+            // new DataflowLinkOptions ( ) { PropagateCompletion = true } ;
+            // rj.LinkTo ( broadcastBlock , dataflowLinkOptions ) ;
+            // broadcastBlock.LinkTo ( , dataflowLinkOptions ) ;
+            // }
+
+            // Assert.NotNull ( bufferBlock ) ;
+            // while ( bufferBlock.Count != 0 )
+            // {
+            // if ( bufferBlock.TryReceive ( out var item ) )
+            // {
+            // LogMethod ( item.GetType ( ).ToString ( ) ) ;
+            // }
+            // }
         }
 
         [ ItemNotNull ]
-        private async
-            Task < Tuple <
-                IAnalysisBlockProvider < Document , T , TransformManyBlock < Document , T > > ,
-                TransformManyBlock < Document , T > , BufferBlock < T > > > PerformTest < T > (
-                [ NotNull ] IComponentContext ls
-            )
+        private async Task < InClassName < T > > PerformTestAsync < T > (
+            [ NotNull ] IComponentContext componentContext
+        )
         {
             var project = SetupAdHocWorkspace < T > ( ) ;
             //var project = await SetupMsBuildProject < T > ( ) ;
+            // IAnalysisBlockProvider < Document , T , TransformManyBlock < Document , T > >
+            //     analysisBlockProvider = null ;
+            // try
+            // {
+            //     analysisBlockProvider = componentContext
+            //        .Resolve < IAnalysisBlockProvider < Document , T ,
+            //             TransformManyBlock < Document , T > > > ( ) ;
+            // }
+            // catch(Exception ex)
+            // {
+            //     Logger.Warn (ex, "Something left behind" ) ;
+            // }
+            //
+            // Assert.NotNull ( analysisBlockProvider ) ;
+            // var transformManyBlock = analysisBlockProvider.GetDataflowBlock ( ) ;
 
+            var FuncProvider = componentContext
+               .Resolve < IDataflowTransformFuncProvider < Document , T > > ( ) ;
+            var transformManyBlock =
+                new TransformManyBlock < Document , T > (
+                                                         FuncProvider.GetAsyncTransformFunction ( )
+                                                        ) ;
 
-            var f = ls
-               .Resolve < IAnalysisBlockProvider < Document , T ,
-                    TransformManyBlock < Document , T > > > ( ) ;
-            Assert.NotNull ( f ) ;
-            var x = f.GetDataflowBlock ( ) ;
-            var bb = new BufferBlock < T > ( ) ;
-            x.LinkTo ( bb , new DataflowLinkOptions { PropagateCompletion = true } ) ;
-            //var pipeline = ls.Resolve<Pipeline>();
-            // ReSharper disable once UnusedVariable
+            Logger.Debug ( $"{transformManyBlock}" ) ;
             var continueWith =
-                x.Completion.ContinueWith ( task => LogMethod ( x.OutputCount.ToString ( ) ) ) ;
+                transformManyBlock.Completion.ContinueWith (
+                                                            task => LogMethod (
+                                                                               $"{transformManyBlock}{transformManyBlock.OutputCount}"
+                                                                              )
+                                                           ) ;
 
             var compilation = await project.GetCompilationAsync ( ) ;
             if ( compilation != null )
             {
                 foreach ( var diagnostic in compilation.GetDiagnostics ( ) )
                 {
-                    DebugUtils.WriteLine ( new DiagnosticFormatter ( ).Format ( diagnostic ) ) ;
-                }
-            }
-
-            foreach ( var @ref in project.MetadataReferences )
-            {
-                switch ( @ref )
-                {
-                    case CompilationReference compilationReference :
-                        DebugUtils.WriteLine ( compilationReference.Display ) ;
-                        break ;
-                    case PortableExecutableReference portableExecutableReference :
-                        DebugUtils.WriteLine ( portableExecutableReference.FilePath ) ;
-                        break ;
-                    case UnresolvedMetadataReference unresolvedMetadataReference :
-                        DebugUtils.WriteLine ( unresolvedMetadataReference.Display ) ;
-                        break ;
-                    default : throw new ArgumentOutOfRangeException ( nameof ( @ref ) ) ;
+                    var diagMessage = new DiagnosticFormatter ( ).Format ( diagnostic ) ;
+                    Logger.Debug ( diagMessage ) ;
                 }
             }
 
@@ -300,13 +305,13 @@ namespace ModelTests
                 LogMethod ( model.SyntaxTree.ToString ( ) ) ;
             }
 
-            if ( ! x.Post ( project.Documents.First ( ) ) )
+            if ( ! transformManyBlock.Post ( project.Documents.First ( ) ) )
             {
                 throw new InvalidOperationException ( "FAILED TO POST" ) ;
             }
 
-            x.Complete ( ) ;
-            return Tuple.Create ( f , x , bb ) ;
+            transformManyBlock.Complete ( ) ;
+            return new InClassName < T > ( FuncProvider , transformManyBlock ) ;
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -322,6 +327,7 @@ namespace ModelTests
         // ReSharper disable once UnusedTypeParameter
         private static Project SetupAdHocWorkspace < T > ( )
         {
+            Logger.Debug ( $"SetupAdHocWorkspace: {typeof ( T ).FullName}" ) ;
             var code = File.ReadAllText ( @"c:\temp\program-parse.cs" ) ;
 
             var workspace = new AdhocWorkspace ( ) ;
@@ -543,7 +549,7 @@ namespace ModelTests
             using ( var ls = _app.GetLifetimeScope ( ).BeginLifetimeScope ( ) )
 
             {
-                DoFlow < ILogInvocation > ( ls ) ;
+                DoFlowAsync < ILogInvocation > ( ls ) ;
             }
         }
 
@@ -553,88 +559,87 @@ namespace ModelTests
         [ Fact ]
         public void Test113 ( )
         {
-            using ( var ls = _app.GetLifetimeScope ( )
-                                 .BeginLifetimeScope (
-                                                      b => {
-                                                          b.RegisterType <
-                                                                NodeInfoTransformFuncProvider > ( )
-                                                           .AsSelf ( )
-                                                           .AsImplementedInterfaces ( )
-                                                           .WithCallerMetadata ( ) ;
-                                                          b.RegisterType < NodeInfo > ( ) ;
-                                                          b.Register (
-                                                                      ( c , p )
-                                                                          => new
-                                                                              ConcreteAnalysisBlockProvider
-                                                                              < Document , NodeInfo
-                                                                                , IPropagatorBlock <
-                                                                                      Document ,
-                                                                                      NodeInfo > > (
-                                                                                                    transform
-                                                                                                        => new
-                                                                                                            TransformManyBlock
-                                                                                                            < Document
-                                                                                                              , NodeInfo
-                                                                                                            > (
-                                                                                                               transform
-                                                                                                              )
-                                                                                                  , new
-                                                                                                        ConcreteDataflowTransformFuncProvider
-                                                                                                        < Document
-                                                                                                          , NodeInfo
-                                                                                                        > (
-                                                                                                           source
-                                                                                                               => Task
-                                                                                                                  .FromResult (
-                                                                                                                               Enumerable
-                                                                                                                                  .Empty
-                                                                                                                                   < NodeInfo
-                                                                                                                                   > ( )
-                                                                                                                              )
-                                                                                                          )
-                                                                                                   )
-                                                                     ) ;
-
-                                                          b.RegisterGeneric (
-                                                                             typeof ( BlockFactory <
-                                                                               , , > )
-                                                                            ).OnPreparing(args => DebugUtils.WriteLine(args.Component.Activator.ToString())) ;
-                                                          b.Register < TransformFunc < Document ,
-                                                                  Task < IEnumerable < NodeInfo > >
-                                                              >
-                                                          > (
-                                                             c => doc
-                                                                 => Task.FromResult (
-                                                                                     Enumerable
-                                                                                        .Empty <
-                                                                                             NodeInfo
-                                                                                         > ( )
-                                                                                    )
-                                                            ) ;
-                                                          b.Register (
-                                                                      ( c , p )
-                                                                          => c.Resolve <
-                                                                              BlockFactory <
-                                                                                  Document ,
-                                                                                  NodeInfo ,
-                                                                                  TransformManyBlock
-                                                                                  < Document ,
-                                                                                      NodeInfo > >
-                                                                          > ( ) (
-                                                                                 p.Positional <
-                                                                                     Func < Document
-                                                                                       , Task <
-                                                                                             IEnumerable
-                                                                                             < NodeInfo
-                                                                                             > > >
-                                                                                 > ( 0 )
-                                                                                )
-                                                                     ) ;
-                                                      }
-                                                     ) )
+            using ( var ls = _app.GetLifetimeScope ( ).BeginLifetimeScope ( ConfigurationAction ) )
 
             {
-                DoFlow < NodeInfo > ( ls ) ;
+                Task.WaitAll ( DoFlowAsync < NodeInfo > ( ls ) ) ;
+            }
+        }
+
+        private void ConfigurationAction ( [ NotNull ] ContainerBuilder b )
+        {
+            b.RegisterType < NodeInfoTransformFuncProvider > ( )
+             .AsSelf ( )
+             .AsImplementedInterfaces ( )
+             .WithCallerMetadata ( ) ;
+            b.RegisterType < NodeInfo > ( ) ;
+            if ( false )
+            {
+                b.Register (
+                            ( c , p )
+                                => new
+                                    ConcreteAnalysisBlockProvider < Document , NodeInfo ,
+                                        IPropagatorBlock < Document , NodeInfo > > (
+                                                                                    transform
+                                                                                        => new
+                                                                                            TransformManyBlock
+                                                                                            < Document
+                                                                                              , NodeInfo
+                                                                                            > (
+                                                                                               transform
+                                                                                              )
+                                                                                  , new
+                                                                                        ConcreteDataflowTransformFuncProvider
+                                                                                        < Document ,
+                                                                                            NodeInfo
+                                                                                        > (
+                                                                                           source
+                                                                                               => Task
+                                                                                                  .FromResult (
+                                                                                                               Enumerable
+                                                                                                                  .Empty
+                                                                                                                   < NodeInfo
+                                                                                                                   > ( )
+                                                                                                              )
+                                                                                          )
+                                                                                   )
+                           ) ;
+            }
+
+            b.RegisterGeneric ( typeof ( BlockFactory < , , > ) )
+             .OnPreparing (
+                           args => DebugUtils.WriteLine ( args.Component.Activator.ToString ( ) )
+                          ) ;
+            if ( true )
+            {
+                b.Register < TransformFunc < Document , Task < IEnumerable < NodeInfo > > > > (
+                                                                                               c => doc
+                                                                                                   => Task
+                                                                                                      .FromResult (
+                                                                                                                   Enumerable
+                                                                                                                      .Empty
+                                                                                                                       < NodeInfo
+                                                                                                                       > ( )
+                                                                                                                  )
+                                                                                              ) ;
+            }
+
+            if ( false )
+            {
+                b.Register (
+                            ( c , p )
+                                => c.Resolve < BlockFactory < Document , NodeInfo ,
+                                    TransformManyBlock < Document , NodeInfo > > > ( ) (
+                                                                                        p.Positional
+                                                                                        < Func <
+                                                                                            Document
+                                                                                          , Task <
+                                                                                                IEnumerable
+                                                                                                < NodeInfo
+                                                                                                > >
+                                                                                        > > ( 0 )
+                                                                                       )
+                           ) ;
             }
         }
 
@@ -1031,39 +1036,6 @@ namespace ModelTests
                                          ) ;
             Logger.Info ( @out ) ;
         }
-    }
-
-    public class NodeInfoTransformFuncProvider : DataflowTransformFuncProvider <
-            Document , NodeInfo >
-      , IHaveRejectBlock
-    {
-        private Func < Document , Task < IEnumerable < NodeInfo > > > _func ;
-
-        public NodeInfoTransformFuncProvider (
-            Func < Document , Task < IEnumerable < NodeInfo > > > func
-        )
-        {
-            _func = func ;
-        }
-
-        #region Overrides of DataflowTransformFuncProvider<Document,NodeInfo>
-        public override Func < Document , Task < IEnumerable < NodeInfo > > >
-            GetAsyncTransformFunction ( )
-        {
-            return _func ;
-        }
-
-        public override Func < Document , IEnumerable < NodeInfo > > GetTransformFunction ( )
-        {
-            return null ;
-        }
-        #endregion
-        #region Implementation of IHaveRejectBlock
-        public ISourceBlock < RejectedItem > GetRejectBlock ( )
-        {
-            return new BufferBlock < RejectedItem > ( ) ;
-        }
-        #endregion
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global

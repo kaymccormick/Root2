@@ -17,12 +17,6 @@ namespace AnalysisAppLib.Dataflow
         /// </summary>
         /// <returns></returns>
         Func < TSource , Task < IEnumerable < TDest > > > GetAsyncTransformFunction ( ) ;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        Func < TSource , IEnumerable < TDest > >          GetTransformFunction ( ) ;
     }
 
     /// <summary>
@@ -31,7 +25,15 @@ namespace AnalysisAppLib.Dataflow
     /// <param name="arg"></param>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public delegate TResult TransformFunc < in T , out TResult > ( T arg ) ;
+    public delegate TResult TransformFunc<in T, out TResult>(T arg);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="arg"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public delegate IEnumerable<TResult> TransformManyFunc<in T, out TResult>(T arg);
+
 
     /// <summary>
     /// 
@@ -65,13 +67,6 @@ namespace AnalysisAppLib.Dataflow
         {
             return x => _func ( x ) ;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [ CanBeNull ]
-        public Func < TSource , IEnumerable < TDest > > GetTransformFunction ( ) { return null ; }
         #endregion
     }
 }

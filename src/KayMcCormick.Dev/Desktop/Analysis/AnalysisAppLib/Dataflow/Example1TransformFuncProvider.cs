@@ -100,32 +100,6 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="AggregateException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ NotNull ]
-        public override Func < Document , IEnumerable < Example1Out > > GetTransformFunction ( )
-        {
-            return document => {
-                var task = _transformFunc ( document ) ;
-                task.Wait ( ) ;
-                if ( ! task.IsFaulted )
-                {
-                    return task.Result ;
-                }
-
-                if ( task.Exception != null )
-                {
-                    throw task.Exception ;
-                }
-
-                throw new InvalidOperationException ( "Faulted transform" ) ;
-            } ;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public override Func < Document , Task < IEnumerable < Example1Out > > >
             GetAsyncTransformFunction ( )
         {

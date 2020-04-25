@@ -3,8 +3,6 @@ using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
@@ -18,6 +16,8 @@ namespace AnalysisAppLib.Dataflow
     {
         private readonly Func < Document , Task < IEnumerable < ILogInvocation > > >
             _transformFunc ;
+
+        private Microsoft.CodeAnalysis.Project _teamProject ;
 
         /// <summary>
         /// 
@@ -47,36 +47,6 @@ namespace AnalysisAppLib.Dataflow
         /// <returns></returns>
         public ISourceBlock < RejectedItem > GetRejectBlock ( ) { return RejectBlock ; }
         #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="AggregateException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ NotNull ]
-        public override Func < Document , IEnumerable < ILogInvocation > > GetTransformFunction ( )
-        {
-            return document => {
-                var task = _transformFunc ( document ) ;
-                task.Wait ( ) ;
-                if ( ! task.IsFaulted )
-                {
-                    return task.Result ;
-                }
-
-                if ( task.Exception != null )
-                {
-
-                    DebugUtils.WriteLine($"{task.Exception}");
-                    throw task.Exception ;
-                }
-
-                DebugUtils.WriteLine($"faulted");
-                throw new InvalidOperationException ( "Faulted transform" ) ;
-
-            } ;
-        }
 
         /// <summary>
         /// 

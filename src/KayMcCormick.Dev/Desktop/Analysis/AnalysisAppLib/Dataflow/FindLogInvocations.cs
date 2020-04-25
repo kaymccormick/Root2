@@ -14,11 +14,12 @@ namespace AnalysisAppLib.Dataflow
       , IHaveRejectBlock
     {
         // ReSharper disable once NotAccessedField.Local
-        private readonly Func < ILogInvocation >                                      _factory ;
+        private readonly Func < ILogInvocation > _factory ;
 #pragma warning disable 169
-        private readonly Func < Document , IEnumerable < ILogInvocation > >           _func ;
+        private readonly Func < Document , IEnumerable < ILogInvocation > > _func ;
 #pragma warning restore 169
         private readonly IDataflowTransformFuncProvider < Document , ILogInvocation > _provider ;
+        private          Microsoft.CodeAnalysis.Project                               _teamProject ;
 
         public FindLogInvocations (
             [ NotNull ] IDataflowTransformFuncProvider < Document , ILogInvocation > provider
@@ -37,7 +38,6 @@ namespace AnalysisAppLib.Dataflow
         }
         #endregion
 
-
         [ NotNull ]
         public override TransformManyBlock < Document , ILogInvocation > GetDataflowBlock ( )
         {
@@ -50,18 +50,9 @@ namespace AnalysisAppLib.Dataflow
                                                                         ) ;
         }
 
-        [ NotNull ] public override IDataflowBlock GetDataflowBlockObj ( ) { return GetDataflowBlock() ; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IHaveRejectBlock
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        ISourceBlock < RejectedItem > GetRejectBlock ( ) ;
+        [ NotNull ] public override IDataflowBlock GetDataflowBlockObj ( )
+        {
+            return GetDataflowBlock ( ) ;
+        }
     }
 }

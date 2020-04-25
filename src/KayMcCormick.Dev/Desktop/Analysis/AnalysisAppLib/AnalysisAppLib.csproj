@@ -77,6 +77,8 @@
     <Compile Include="AnalyzeCommand.cs" />
     <Compile Include="AnalyzeException.cs" />
     <Compile Include="AppDbContext.cs" />
+    <Compile Include="Dataflow\IHaveRejectBlock.cs" />
+    <Compile Include="LConf.cs" />
     <Compile Include="Dataflow\Example1TransformFuncProvider.cs" />
     <Compile Include="DocInterface.cs" />
     <Compile Include="DocumentCollection.cs" />
