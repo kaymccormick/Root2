@@ -246,7 +246,7 @@ namespace AnalysisAppLib
         private static DataTable DataAdapter (
             IComponentContext         c
           , IEnumerable < Parameter > p
-          , [ NotNull ] object        o
+          , [NotNull ] object        o
         )
         {
             var r = new DataTable ( o.GetType ( ).Name ) ;

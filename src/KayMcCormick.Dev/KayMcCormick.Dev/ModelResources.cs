@@ -32,6 +32,8 @@ using KayMcCormick.Dev.Metadata ;
 
 namespace KayMcCormick.Dev
 {
+    publicc
+
     /// <summary>
     ///     ViewModel designed to expose a hierarchy of resources in an application.
     /// </summary>

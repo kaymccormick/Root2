@@ -153,6 +153,7 @@
     <Compile Include="Metadata\MyInfo2.cs" />
     <Compile Include="ModelResources.cs" />
     <Compile Include="Metadata\MyInfo.cs" />
+    <Compile Include="ModelResources2.cs" />
     <Compile Include="MyInfo3.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="ResourceNodeInfoBase.cs" />

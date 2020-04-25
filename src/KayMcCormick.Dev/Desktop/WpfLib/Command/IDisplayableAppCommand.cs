@@ -12,6 +12,7 @@
 namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>
+    /// A "Displayable" app command. Subinterface of <see cref="IAppIAppCommand"/> <see cref="IDisplayable"/>
     /// </summary>
     public interface IDisplayableAppCommand : IAppCommand , IDisplayable
     {
@@ -19,5 +20,6 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// 
         /// </summary>
         object LargeImageSourceKey { get ; set ; }
+        
     }
 }

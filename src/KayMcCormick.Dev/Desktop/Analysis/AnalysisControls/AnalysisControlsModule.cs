@@ -9,33 +9,33 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.ComponentModel ;
-using System.Linq ;
-using System.Reflection ;
-using System.Text.Json ;
-using System.Windows ;
-using System.Windows.Controls ;
-using System.Windows.Data ;
-using System.Windows.Markup ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.ViewModel ;
-using AnalysisControls.ViewModel ;
-using AnalysisControls.Views ;
-using Autofac ;
-using Autofac.Core ;
-using Autofac.Features.AttributeFilters ;
-using Autofac.Features.Metadata ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Container ;
-using KayMcCormick.Dev.Metadata ;
-using KayMcCormick.Lib.Wpf ;
-using KayMcCormick.Lib.Wpf.Command ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Module = Autofac.Module ;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
+using AnalysisAppLib.Syntax;
+using AnalysisAppLib.ViewModel;
+using AnalysisControls.ViewModel;
+using AnalysisControls.Views;
+using Autofac;
+using Autofac.Core;
+using Autofac.Features.AttributeFilters;
+using Autofac.Features.Metadata;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Container;
+using KayMcCormick.Dev.Metadata;
+using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Module = Autofac.Module;
 
 namespace AnalysisControls
 {
@@ -48,40 +48,44 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="builder"></param>
         // ReSharper disable once AnnotateNotNullParameter
-        protected override void Load ( ContainerBuilder builder )
+        protected override void Load(ContainerBuilder builder)
         {
-
-            var kayTypes = AppDomain.CurrentDomain.GetAssemblies ( )
-                                    .Where (
-                                            a => a
-                                                .GetCustomAttributes < AssemblyCompanyAttribute
-                                                 > ( )
-                                                .Any ( tx => tx.Company == "Kay McCormick" )
-                                           )
-                                    .SelectMany ( az => az.GetTypes ( ) )
-                                    .ToList ( ) ;
-            foreach ( var kayType in kayTypes ) 
-
+            foreach (var qq in typeof(AnalysisCommands).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
-                builder.RegisterType ( kayType )
-                       .WithMetadata < TypeUsageMetadata > ( m => 
-                    // m.For ( tm => tm.UiConversion = true ));
+                var t = qq.PropertyType;
+
+                q.GetValue(null)
+                        var kayTypes = AppDomain.CurrentDomain.GetAssemblies()
+                                    .Where(
+                                            a => a
+                                                .GetCustomAttributes<AssemblyCompanyAttribute
+                                                 >()
+                                                .Any(tx => tx.Company == "Kay McCormick")
+                                           )
+                                    .SelectMany(az => az.GetTypes())
+                                    .ToList();
+                foreach (var kayType in kayTypes)
+
+                {
+                    builder.RegisterType(kayType)
+                           .WithMetadata<TypeUsageMetadata>(m =>
+                        // m.For ( tm => tm.UiConversion = true ));
 }
 
-            builder.RegisterGeneric ( typeof ( TypeServices <> ) ) ;    
-            // builder.RegisterType <TypeConverter1> ( ).Where(a => a.As < TypeConverter > ( ) ;
-            var types = new[] { typeof ( AppTypeInfo ) , typeof ( SyntaxFieldInfo ) } ;
-            builder.RegisterInstance ( types )
-                   .WithMetadata ( "Custom" , true )
-                   .AsImplementedInterfaces ( )
-                   .AsSelf ( ) ;
-            builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ) ;
-            // .WithParameter (
-            // new NamedParameter ( "types" , types )
-            // ) .AsSelf (  ) ;
-            builder.RegisterType < AnalysisCustomTypeDescriptor > ( )
-                   .AsSelf ( )
-                   .AsImplementedInterfaces ( ) ;
+                builder.RegisterGeneric(typeof(TypeServices<>));
+                // builder.RegisterType <TypeConverter1> ( ).Where(a => a.As < TypeConverter > ( ) ;
+                var types = new[] { typeof(AppTypeInfo), typeof(SyntaxFieldInfo) };
+                builder.RegisterInstance(types)
+                       .WithMetadata("Custom", true)
+                       .AsImplementedInterfaces()
+                       .AsSelf();
+                builder.RegisterType<ControlsProvider>().WithAttributeFiltering();
+                // .WithParameter (
+                // new NamedParameter ( "types" , types )
+                // ) .AsSelf (  ) ;
+                builder.RegisterType<AnalysisCustomTypeDescriptor>()
+                       .AsSelf()
+                       .AsImplementedInterfaces();
 
 #if false
             builder.RegisterAssemblyTypes(ThisAssembly).Where(type => {
@@ -99,155 +103,159 @@ namespace AnalysisControls
 
 #else
 
-            builder.RegisterAdapter < IBaseLibCommand , IAppCommand > (
-                                                                       (
-                                                                           context
-                                                                         , parameters
-                                                                         , arg3
-                                                                       ) => new LambdaAppCommand (
-                                                                                                  arg3
-                                                                                                     .ToString ( )
-                                                                                                , command
-                                                                                                      => arg3
-                                                                                                         .ExecuteAsync ( )
-                                                                                                , arg3
-                                                                                                     .Argument
-                                                                                                , arg3
-                                                                                                     .OnFault
-                                                                                                 )
-                                                                      )
-                   .WithCallerMetadata ( ) ;
-            builder.RegisterType < TypesView > ( )
-                   .AsSelf ( )
-                   .As < IControlView > ( )
-                   .WithMetadata (
-                                  "ImageSource"
-                                , "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
-                                 )
-                   .WithMetadata ( "Ribbon" , true )
-                   .WithCallerMetadata ( ) ;
+                builder.RegisterAdapter<IBaseLibCommand, IAppCommand>(
+                                                                           (
+                                                                               context
+                                                                             , parameters
+                                                                             , arg3
+                                                                           ) => new LambdaAppCommand(
+                                                                                                      arg3
+                                                                                                         .ToString()
+                                                                                                    , command
+                                                                                                          => arg3
+                                                                                                             .ExecuteAsync()
+                                                                                                    , arg3
+                                                                                                         .Argument
+                                                                                                    , arg3
+                                                                                                         .OnFault
+                                                                                                     )
+                                                                          )
+                       .WithCallerMetadata();
+                builder.RegisterType<TypesView>()
+                       .AsSelf()
+                       .As<IControlView>()
+                       .WithMetadata(
+                                      "ImageSource"
+                                    , "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
+                                     )
+                       .WithMetadata("Ribbon", true)
+                       .WithCallerMetadata();
 
 
 
-            //
-            // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            // foreach ( var name in names )
-            // {
-            //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
-            //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
-            //
-            // }
+                //
+                // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+                // foreach ( var name in names )
+                // {
+                //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
+                //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
+                //
+                // }
 
-            builder.Register (
-                              ( context , parameters ) => {
-                                  try
+                builder.Register(
+                                  (context, parameters) =>
                                   {
-                                      if ( parameters.TypedAs < bool > ( ) == false )
-                                      {
-                                          return new TypesViewModel (
-                                                                     context
-                                                                        .Resolve <
-                                                                             JsonSerializerOptions
-                                                                         > ( )
-                                                                    ) ;
-                                      }
-                                  }
-                                  catch ( Exception ex )
-                                  {
-                                      DebugUtils.WriteLine ( ex.ToString ( ) ) ;
-                                  }
-
-                                  using ( var stream = Assembly
-                                                      .GetExecutingAssembly ( )
-                                                      .GetManifestResourceStream (
-                                                                                  "AnalysisControls.TypesViewModel.xaml"
-                                                                                 ) )
-                                  {
-                                      if ( stream == null )
-                                      {
-                                          DebugUtils.WriteLine ( "no stream" ) ;
-                                          return new TypesViewModel (
-                                                                     context
-                                                                        .Resolve <
-                                                                             JsonSerializerOptions
-                                                                         > ( )
-                                                                    ) ;
-                                      }
-
                                       try
                                       {
-                                          var v = ( TypesViewModel ) XamlReader.Load ( stream ) ;
-                                          stream.Close ( ) ;
-                                          return v ;
+                                          if (parameters.TypedAs<bool>() == false)
+                                          {
+                                              return new TypesViewModel(
+                                                                         context
+                                                                            .Resolve<
+                                                                                 JsonSerializerOptions
+                                                                             >()
+                                                                        );
+                                          }
                                       }
-                                      catch ( Exception )
+                                      catch (Exception ex)
                                       {
-                                          return new TypesViewModel (
-                                                                     context
-                                                                        .Resolve <
-                                                                             JsonSerializerOptions
-                                                                         > ( )
-                                                                    ) ;
+                                          DebugUtils.WriteLine(ex.ToString());
+                                      }
+
+                                      using (var stream = Assembly
+                                                          .GetExecutingAssembly()
+                                                          .GetManifestResourceStream(
+                                                                                      "AnalysisControls.TypesViewModel.xaml"
+                                                                                     ))
+                                      {
+                                          if (stream == null)
+                                          {
+                                              DebugUtils.WriteLine("no stream");
+                                              return new TypesViewModel(
+                                                                         context
+                                                                            .Resolve<
+                                                                                 JsonSerializerOptions
+                                                                             >()
+                                                                        );
+                                          }
+
+                                          try
+                                          {
+                                              var v = (TypesViewModel)XamlReader.Load(stream);
+                                              stream.Close();
+                                              return v;
+                                          }
+                                          catch (Exception)
+                                          {
+                                              return new TypesViewModel(
+                                                                         context
+                                                                            .Resolve<
+                                                                                 JsonSerializerOptions
+                                                                             >()
+                                                                        );
+                                          }
                                       }
                                   }
-                              }
-                             )
-                   .AsSelf ( )
-                   .AsImplementedInterfaces ( )
-                   .WithCallerMetadata ( ) ;
+                                 )
+                       .AsSelf()
+                       .AsImplementedInterfaces()
+                       .WithCallerMetadata();
 
 
-            builder.RegisterType < SyntaxPanel > ( )
-                   .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
-                   .AsSelf ( )
-                   .WithCallerMetadata ( ) ;
-            builder.RegisterType < SyntaxPanelViewModel > ( )
-                   .AsImplementedInterfaces ( )
-                   .AsSelf ( )
-                   .WithCallerMetadata ( ) ;
+                builder.RegisterType<SyntaxPanel>()
+                       .Keyed<IControlView>(typeof(CompilationUnitSyntax))
+                       .AsSelf()
+                       .WithCallerMetadata();
+                builder.RegisterType<SyntaxPanelViewModel>()
+                       .AsImplementedInterfaces()
+                       .AsSelf()
+                       .WithCallerMetadata();
 #endif
-        }
+            }
 
-        [ NotNull ]
+        [NotNull]
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
-        private FrameworkElement Func (
-            [ NotNull ] IComponentContext c1
-            // ReSharper disable once UnusedParameter.Local
-          , IEnumerable < Parameter > p1
+        private FrameworkElement Func(
+            [NotNull] IComponentContext c1
+          // ReSharper disable once UnusedParameter.Local
+          , IEnumerable<Parameter> p1
         )
         {
-            var gridView = new GridView ( ) ;
-            gridView.Columns.Add (
+            var gridView = new GridView();
+            gridView.Columns.Add(
                                   new GridViewColumn
                                   {
-                                      DisplayMemberBinding = new Binding ( "SyntaxKind" )
-                                    , Header               = "Kind"
+                                      DisplayMemberBinding = new Binding("SyntaxKind")
+                                    ,
+                                      Header = "Kind"
                                   }
-                                 ) ;
-            gridView.Columns.Add (
+                                 );
+            gridView.Columns.Add(
                                   new GridViewColumn
                                   {
-                                      DisplayMemberBinding = new Binding ( "Token" )
-                                    , Header               = "Token"
+                                      DisplayMemberBinding = new Binding("Token")
+                                    ,
+                                      Header = "Token"
                                   }
-                                 ) ;
-            gridView.Columns.Add (
+                                 );
+            gridView.Columns.Add(
                                   new GridViewColumn
                                   {
-                                      Header               = "Raw Kind"
-                                    , DisplayMemberBinding = new Binding ( "RawKind" )
+                                      Header = "Raw Kind"
+                                    ,
+                                      DisplayMemberBinding = new Binding("RawKind")
                                   }
-                                 ) ;
+                                 );
 
             var binding =
-                new Binding ( "SyntaxItems" )
+                new Binding("SyntaxItems")
                 {
-                    Source = c1.Resolve < ISyntaxTokenViewModel > ( )
-                } ;
-            var listView = new ListView { View = gridView } ;
-            listView.SetBinding ( ItemsControl.ItemsSourceProperty , binding ) ;
-            return listView ;
+                    Source = c1.Resolve<ISyntaxTokenViewModel>()
+                };
+            var listView = new ListView { View = gridView };
+            listView.SetBinding(ItemsControl.ItemsSourceProperty, binding);
+            return listView;
         }
     }
 }

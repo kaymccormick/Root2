@@ -10,12 +10,13 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using System.ComponentModel ;
 using Microsoft.CodeAnalysis ;
 
 namespace FindLogUsages
 {
     /// <summary>
-    /// 
+    ///  Representa a log invocation source code.
     /// </summary>
     public interface ILogInvocation
     {
@@ -68,6 +69,7 @@ namespace FindLogUsages
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
+        [Browsable(false)]
         Location Location { get ; set ; }
     }
 }
