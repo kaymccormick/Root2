@@ -18,6 +18,7 @@ using System.Windows.Navigation ;
 using System.Windows.Threading ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
+using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Features.Metadata ;
@@ -47,6 +48,7 @@ namespace ProjInterface
       , IView < DockWindowViewModel >
     {
         private readonly UiElementTypeConverter _converter ;
+        private readonly ITypesViewModel _typesViewModel ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -65,22 +67,22 @@ namespace ProjInterface
         protected override void OnInitialized ( EventArgs e )
         {
             base.OnInitialized ( e ) ;
-            var z = _beginLifetimeScope.Resolve < IAnalyzeCommand > ( ) ;
-            z.AnalyzeCommandAsync (
-                                   new ProjectBrowserNode ( )
-                                   {
-                                       SolutionPath =
-                                           @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
-                                   }
-                                 , new ActionBlock < RejectedItem > ( item => { } )
-                                  ) ;
+            // var z = _beginLifetimeScope.Resolve < IAnalyzeCommand > ( ) ;
+            // z.AnalyzeCommandAsync (
+                                   // new ProjectBrowserNode ( )
+                                   // {
+                                       // SolutionPath =
+                                           // @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
+                                   // }
+                                 // , new ActionBlock < RejectedItem > ( item => { } )
+                                  // ) ;
         }
         #endregion
 
         public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this (
                                                                             lifetimeScope
                                                                           , null
-                                                                          , null
+                                                                          , null, null
                                                                            )
         {
         }
@@ -88,7 +90,7 @@ namespace ProjInterface
         public Window1 (
             [ NotNull ] ILifetimeScope lifetimeScope
           , DockWindowViewModel        viewModel
-          , UiElementTypeConverter     converter
+          , UiElementTypeConverter     converter, ITypesViewModel typesViewModel
         )
         {
             if ( lifetimeScope == null )
@@ -102,6 +104,7 @@ namespace ProjInterface
             }
 
             _converter = converter ;
+            _typesViewModel = typesViewModel ;
             _cacheTarget?.Cache.SubscribeOn ( Scheduler.Default )
                          .Buffer ( TimeSpan.FromMilliseconds ( 100 ) )
                          .Where ( x => x.Any ( ) )
@@ -140,6 +143,11 @@ namespace ProjInterface
 
         private void ConfigurationAction ( ContainerBuilder builder )
         {
+            foreach ( var appTypeInfo in _typesViewModel.GetAppTypeInfos ( ) )
+            {
+                builder.RegisterInstance ( appTypeInfo )
+                       .WithMetadata ("KeyValue", ( string ) appTypeInfo.KeyValue ).As<AppTypeInfo> (  ) ;
+            }
             builder.Register (
                               ( c , p ) => new UiElementTypeConverter (
                                                                        c.Resolve < ILifetimeScope
@@ -402,7 +410,7 @@ namespace ProjInterface
         {
             base.OnApplyTemplate ( ) ;
             FrameDoc1.NavigationService.Navigating += ( sender , args ) => {
-                DebugUtils.WriteLine ( args.Content ) ;
+                DebugUtils.WriteLine ( args.Content.ToString() ) ;
                 // if ( args.Content is ResourceNodeInfo node )
                 // {
                 if ( args.Content is UIElement )

@@ -297,15 +297,14 @@ namespace KayMcCormick.Lib.Wpf
                         if ( val1 is IEnumerable ie1
                              && val1.GetType ( ) != typeof ( string ) )
                         {
-                            d = TreeViewValue ( ie1 , 0 ) ;
-                            //d = ControlForValueS(ie1, 0);
-//                            var controlForValue = new StackPanel ( ) ;
-//                            foreach ( var elem in ie1 )
-//                            {
-//                                controlForValue.Children.Add ( ControlForValue ( elem , 0 ) ) ;
-//                            }
-
-//                            d = controlForValue ;
+                            //d = TreeViewValue ( ie1 , 0 ) ;
+                            d = _ControlForValue(ie1, i + 1, false);
+                            // var controlForValue = new StackPanel ( ) ;
+                            // foreach ( var elem in ie1 )
+                            // {
+                                // controlForValue.Children.Add ( ControlForValue ( elem , 0 ) ) ;
+                            // }
+                         //  d = controlForValue ;
                         }
                         else
                         {
@@ -319,7 +318,6 @@ namespace KayMcCormick.Lib.Wpf
                                 Text = val1.ToString ( ) , TextWrapping = TextWrapping.NoWrap
                             } ;
                     }
-
                     g.Children.Add ( d ) ;
                     g.RowDefinitions.Add ( new RowDefinition { Height = GridLength.Auto } ) ;
                     g.RowDefinitions.Add ( new RowDefinition { Height = GridLength.Auto } ) ;

@@ -76,9 +76,9 @@ namespace AnalysisAppLib
                 {
                     case ISupportInitializeNotification xx :
                     {
-                        DebugUtils.WriteLine ( "calling init on instance" ) ;
                         if ( ! xx.IsInitialized )
                         {
+                            DebugUtils.WriteLine($"calling init on instance {xx}");
                             xx.BeginInit ( ) ;
                             xx.EndInit ( ) ;
                         }
@@ -86,7 +86,7 @@ namespace AnalysisAppLib
                         break ;
                     }
                     case ISupportInitialize x :
-                        DebugUtils.WriteLine ( "calling init on instance" ) ;
+                        DebugUtils.WriteLine($"calling init on instance {x}");
                         x.BeginInit ( ) ;
                         x.EndInit ( ) ;
                         break ;
@@ -209,21 +209,6 @@ namespace AnalysisAppLib
                        .WithCallerMetadata ( )
                        .WithMetadata ( "Purpose" , "Analysis" ) ;
             }
-
-            if ( false )
-            {
-                builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
-                       .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-                       .WithAttributeFiltering ( )
-                       .InstancePerLifetimeScope ( )
-                       .WithCallerMetadata ( )
-                       .WithMetadata ( "Purpose" , "Analysis" ) ;
-            }
-
-            builder.RegisterType < Example1TransformFuncProvider > ( )
-                   .AsSelf ( )
-                   .AsImplementedInterfaces ( )
-                   .WithCallerMetadata ( ) ;
 
             if ( false )
             {

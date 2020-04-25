@@ -33,25 +33,33 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="createNodeFunc"></param>
         /// <returns></returns>
-        [ NotNull ] public static ResourceNodeInfo CreateInstance ( Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo > createNodeFunc =null) { return new ResourceNodeInfo ( ) {CreateNodeFunc = createNodeFunc}; }
-
-        private ResourceNodeInfo ( )
+        [ NotNull ] public static ResourceNodeInfo CreateInstance (
+            Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
+                createNodeFunc = null
+        )
         {
-            CreatedDatetime = DateTime.Now ;
+            return new ResourceNodeInfo ( )
+                   {
+                       CreateNodeFunc = createNodeFunc,
+                       Id = Guid.NewGuid()
+                   } ;
         }
+
+        private ResourceNodeInfo ( ) { CreatedDatetime = DateTime.Now ; }
 
         /// <summary>
         /// 
         /// </summary>
-        public DateTime CreatedDatetime { get { return _createdDatetime ; } set { _createdDatetime = value ; } }
+        public DateTime CreatedDatetime
+        {
+            get { return _createdDatetime ; }
+            set { _createdDatetime = value ; }
+        }
 
         private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
 
         private Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
             _createNodeFunc ;
-
-        private object _data ;
-        private int    _depth ;
 
         private Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
             IEnumerable < ResourceNodeInfo > > _getChildrenFunc ;
@@ -59,10 +67,17 @@ namespace KayMcCormick.Dev
         private bool ? _internalIsExpanded ;
         private bool ? _isChildrenLoaded ;
         private bool ? _isValueChildren ;
-        private object _key ;
-        private object _styleKey ;
-        private object _templateKey ;
-        private DateTime _createdDatetime ;
+
+        private object           _styleKey ;
+        private object           _templateKey ;
+        private DateTime         _createdDatetime ;
+        private ResourceNodeInfo _parent ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public object KeyObject ;
+        private Guid _id ;
+        private int _ordinal ;
 
         /// <summary>
         /// </summary>
@@ -93,36 +108,37 @@ namespace KayMcCormick.Dev
         {
             get
             {
-                if ( _isChildrenLoaded.GetValueOrDefault())
+                if (IsChildrenLoaded.GetValueOrDefault ( ) )
                 {
                     return _children ;
                 }
 
-                DebugUtils.WriteLine ( "Expanding children" ) ;
+                DebugUtils.WriteLine ( $"Expanding children for {this}" ) ;
                 // ReSharper disable once AssignNullToNotNullAttribute
                 if ( _getChildrenFunc == null )
                 {
-                    _children = new List < ResourceNodeInfo > ();
+                    _children = new List < ResourceNodeInfo > ( ) ;
                 }
                 else
                 {
-                    _children = ( _getChildrenFunc.Invoke (
-                                                           this
-                                                         , ( o , o1 ) => {
-                                                               DebugUtils.WriteLine (
-                                                                                     $"creating node for {o} {o1}"
+                    _children = _getChildrenFunc.Invoke (
+                                                         this
+                                                       , ( o , o1 ) => {
+                                                             DebugUtils.WriteLine (
+                                                                                   $"creating node for {o} {o1}"
+                                                                                  ) ;
+                                                             var r = CreateNodeFunc (
+                                                                                     this
+                                                                                   , o
+                                                                                   , o1
+                                                                                   , false
+                                                                                   , false
                                                                                     ) ;
-                                                               var r = CreateNodeFunc (
-                                                                                       this
-                                                                                     , o
-                                                                                     , o1
-                                                                                     , false
-                                                                                     , false
-                                                                                      ) ;
 
-                                                               return r ;
-                                                           }
-                                                          ) ).ToList ( ) ;
+                                                             return r ;
+                                                         }
+                                                        )
+                                                .ToList ( ) ;
                 }
 
                 foreach ( var resourceNodeInfo in _children )
@@ -130,7 +146,7 @@ namespace KayMcCormick.Dev
                     DebugUtils.WriteLine ( $"collected child {resourceNodeInfo}" ) ;
                 }
 
-                _isChildrenLoaded = true ;
+                IsChildrenLoaded = true ;
                 return _children ;
             }
             set { _children = value ; }
@@ -149,12 +165,7 @@ namespace KayMcCormick.Dev
             return ( ( IEnumerable ) _children ).GetEnumerator ( ) ;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString ( )
-        {
-            return $"{new string ( ' ' , Depth )}Key: {_key}; Data: {_data}" ;
-        }
+
+        public int Ordinal { get ; set ; }
     }
 }

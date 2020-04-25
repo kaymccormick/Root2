@@ -26,12 +26,13 @@
               Title="Window1" Height="800" Width="1100">
   <RibbonWindow.Resources>
     <ResourceDictionary>
-
-      
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
           <Style TargetType="Window">
             <Setter Property="WindowStyle" Value="None" />
@@ -39,51 +40,59 @@
                     Value="True" />
             <Setter Property="Background" Value="Olive" />
           </Style>
-          <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
-
-          <local:SemanticConverter x:Key="SemanticConverter" />
-          <DataTemplate DataType="{x:Type operations:IBlockOperation}">
+          <converters:SyntaxNodeConverter
+            x:Key="SyntaxNodeConverter" />
+          <local:SemanticConverter
+            x:Key="SemanticConverter" />
+          <DataTemplate
+            DataType="{x:Type operations:IBlockOperation}">
             <WrapPanel>
-              <TextBlock Text="{Binding Kind}"/>
-              <TextBlock Text="{Binding Path=Type}"/>
+              <TextBlock Text="{Binding Kind}" />
+              <TextBlock Text="{Binding Path=Type}" />
               <ItemsControl ItemsSource="{Binding Locals}">
                 <ItemsControl.ItemTemplate>
-                  <DataTemplate DataType="{x:Type codeAnalysis:ILocalSymbol}">
-                    <TextBlock Text="{Binding Path=ConstantValue}"/>
+                  <DataTemplate
+                    DataType="{x:Type codeAnalysis:ILocalSymbol}">
+                    <TextBlock
+                      Text="{Binding Path=ConstantValue}" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
             </WrapPanel>
           </DataTemplate>
-
-          <DataTemplate DataType="{x:Type codeAnalysis:IOperation}">
+          <DataTemplate
+            DataType="{x:Type codeAnalysis:IOperation}">
             <WrapPanel>
-              <TextBlock Text="{Binding Kind}"/>
-              <TextBlock Text="{Binding Path=Type}"/>
+              <TextBlock Text="{Binding Kind}" />
+              <TextBlock Text="{Binding Path=Type}" />
             </WrapPanel>
           </DataTemplate>
-          <DataTemplate x:Key="PreviewNamespaceDeclarationSyntax" DataType="{x:Type syntax1:NamespaceDeclarationSyntax}">
-          </DataTemplate>
-          
-          <DataTemplate DataType="{x:Type cSharp:CSharpSyntaxNode}">
+          <DataTemplate
+            x:Key="PreviewNamespaceDeclarationSyntax"
+            DataType="{x:Type syntax1:NamespaceDeclarationSyntax}" />
+
+          <DataTemplate
+            DataType="{x:Type cSharp:CSharpSyntaxNode}">
             <WrapPanel>
-              <ItemsControl ItemsSource="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLeadingTrivia}}">
+              <ItemsControl
+                ItemsSource="{Binding Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.GetLeadingTrivia}}">
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                  <WrapPanel/>
+                    <WrapPanel />
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBlock Text="{Binding}"/>
+                    <TextBlock Text="{Binding}" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
             </WrapPanel>
           </DataTemplate>
-          
-          <DataTemplate DataType="{x:Type classification:ClassifiedSpan}">
-            <TextBlock Text="{Binding ClassificationType,Mode=OneWay}"/>
+          <DataTemplate
+            DataType="{x:Type classification:ClassifiedSpan}">
+            <TextBlock
+              Text="{Binding ClassificationType,Mode=OneWay}" />
           </DataTemplate>
 
           <!-- ReSharper disable once Xaml.RedundantResource -->
@@ -98,29 +107,35 @@
               <ContentPresenter />
             </Border>
           </ControlTemplate>
-          <DataTemplate DataType="{x:Type codeAnalysis:ISymbol}">
-            <TextBlock Text="{Binding Path=MetadataName}"></TextBlock>
+          <DataTemplate
+            DataType="{x:Type codeAnalysis:ISymbol}">
+            <TextBlock Text="{Binding Path=MetadataName}" />
           </DataTemplate>
-          <DataTemplate DataType="{x:Type codeAnalysis:ControlFlowAnalysis}">
+          <DataTemplate
+            DataType="{x:Type codeAnalysis:ControlFlowAnalysis}">
             <WrapPanel>
-              <ItemsControl ItemsSource="{Binding ReturnStatements}">
+              <ItemsControl
+                ItemsSource="{Binding ReturnStatements}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBlock Text="{Binding Path=Span}"></TextBlock>
+                    <TextBlock Text="{Binding Path=Span}" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-              <ItemsControl ItemsSource="{Binding EntryPoints}">
+              <ItemsControl
+                ItemsSource="{Binding EntryPoints}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBlock Text="{Binding Path=Span}"></TextBlock>
+                    <TextBlock Text="{Binding Path=Span}" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
             </WrapPanel>
           </DataTemplate>
-          <DataTemplate x:Key="PreviewAnalysisContext" DataType="{x:Type analysisAppLib:AnalysisContext}">
-            <ContentControl Content="{Binding Converter={StaticResource SemanticConverter}}"/>
+          <DataTemplate x:Key="PreviewAnalysisContext"
+                        DataType="{x:Type analysisAppLib:AnalysisContext}">
+            <ContentControl
+              Content="{Binding Converter={StaticResource SemanticConverter}}" />
           </DataTemplate>
           <DataTemplate x:Key="DataTemplate1">
             <Image
@@ -1087,14 +1102,20 @@
         </Setter>
       </Style>
       <!-- ReSharper disable once Xaml.RedundantResource -->
-      <local:ImageSourceConverter x:Key="ImageSourceConverter" />
+      <local:ImageSourceConverter
+        x:Key="ImageSourceConverter" />
       <!-- ReSharper disable once Xaml.RedundantResource -->
-      <CollectionViewSource x:Key="RibbonCommands" Source=""></CollectionViewSource>
+      <CollectionViewSource x:Key="RibbonCommands"
+                            Source="" />
       <!-- ReSharper disable once Xaml.RedundantResource -->
       <!-- ReSharper disable once InconsistentNaming -->
       <!-- ReSharper disable once InconsistentNaming -->
-      <x:Array Type="{x:Type syntax:AppTypeInfo}"  x:Key="types">
-        <syntax:AppTypeInfo Type="cSharp:CSharpSyntaxNode" Title="CSharp Node" ColorValue="4288462688" ElementName="{x:Null}"/>
+      <x:Array Type="{x:Type syntax:AppTypeInfo}"
+               x:Key="types">
+        <syntax:AppTypeInfo Type="cSharp:CSharpSyntaxNode"
+                            Title="CSharp Node"
+                            ColorValue="4288462688"
+                            ElementName="{x:Null}" />
       </x:Array>
     </ResourceDictionary>
   </RibbonWindow.Resources>
@@ -1176,7 +1197,16 @@
               x:Name="leftAnchorablePane"
               DockWidth="200">
               <avalondock:LayoutAnchorable>
-                <ContentControl Content="{kmWpf:Resolve kmWpf:ResourcesTreeView,Argument={x:Reference FrameDoc1}}"/>
+                <ContentControl
+                  Content="{kmWpf:Resolve kmWpf:ResourcesTreeView,Argument={x:Reference FrameDoc1}}" />
+              </avalondock:LayoutAnchorable>
+            </avalondock:LayoutAnchorablePane>
+            <avalondock:LayoutAnchorablePane
+              x:Name="pane2"
+              DockWidth="200">
+              <avalondock:LayoutAnchorable>
+                <ListBox
+                  ItemsSource="{kmWpf:Resolve local:AppTypeInfoObservableCollection}" />
               </avalondock:LayoutAnchorable>
             </avalondock:LayoutAnchorablePane>
             <avalondock:LayoutDocumentPaneGroup>
@@ -1184,13 +1214,15 @@
                 x:Name="Docpane">
 
                 <avalondock:LayoutDocument Title="Browsex"
-                                           
-                                           IconSource="{StaticResource BrowserIcon}"
-                                           >
-                  <Frame Source="Home.xaml" x:Name="FrameDoc1" FontFamily="Lucida Console" FontSize="18" />
+
+                                           IconSource="{StaticResource BrowserIcon}">
+                  <Frame Source="Home.xaml"
+                         x:Name="FrameDoc1"
+                         FontFamily="Lucida Console"
+                         FontSize="18" />
                 </avalondock:LayoutDocument>
                 <avalondock:LayoutDocument Title="Browser"
-                                           
+
                                            IconSource="{StaticResource BrowserIcon}"
                                            x:Name="FrameDocument">
                   <Frame Background="{x:Null}"
@@ -1200,23 +1232,29 @@
                 </avalondock:LayoutDocument>
                 <avalondock:LayoutAnchorable Title="Files"
                                              IconSource="{StaticResource FilesIcon}"
-                                             ContentId="xx1r">
-                </avalondock:LayoutAnchorable>
+                                             ContentId="xx1r" />
                 <avalondock:LayoutAnchorable Title="Files"
                                              IconSource="{StaticResource FilesIcon}"
                                              ContentId="xxx1r">
-                  <ListView x:Name="List1"
-                            >
+                  <ListView x:Name="List1">
                     <ListView.View>
                       <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Level}"></GridViewColumn>
-                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Obj,Converter={StaticResource GetTypeConverter}}"></GridViewColumn>
-                        <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"></GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding ThreadId}"></GridViewColumn>
-                        <GridViewColumn Header="PropKeys" DisplayMemberBinding="{Binding PropKeys}"></GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding File}"></GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding Obj.SenderName}"></GridViewColumn>
-                        <GridViewColumn Header="RawJson" DisplayMemberBinding="{Binding RawJson}"></GridViewColumn>
+                        <GridViewColumn
+                          DisplayMemberBinding="{Binding Level}" />
+                        <GridViewColumn Header="Type"
+                                        DisplayMemberBinding="{Binding Obj,Converter={StaticResource GetTypeConverter}}" />
+                        <GridViewColumn Header="Message"
+                                        DisplayMemberBinding="{Binding Message}" />
+                        <GridViewColumn
+                          DisplayMemberBinding="{Binding ThreadId}" />
+                        <GridViewColumn Header="PropKeys"
+                                        DisplayMemberBinding="{Binding PropKeys}" />
+                        <GridViewColumn
+                          DisplayMemberBinding="{Binding File}" />
+                        <GridViewColumn
+                          DisplayMemberBinding="{Binding Obj.SenderName}" />
+                        <GridViewColumn Header="RawJson"
+                                        DisplayMemberBinding="{Binding RawJson}" />
                       </GridView>
                     </ListView.View>
                   </ListView>
@@ -1226,14 +1264,12 @@
           </avalondock:LayoutPanel>
           <avalondock:LayoutRoot.LeftSide>
             <avalondock:LayoutAnchorSide>
-              <avalondock:LayoutAnchorGroup>
-              </avalondock:LayoutAnchorGroup>
+              <avalondock:LayoutAnchorGroup />
             </avalondock:LayoutAnchorSide>
           </avalondock:LayoutRoot.LeftSide>
         </avalondock:LayoutRoot>
       </avalondock:DockingManager>
-      <StatusBar Grid.Row="3" Grid.Column="0">
-      </StatusBar>
+      <StatusBar Grid.Row="3" Grid.Column="0" />
     </Grid>
   </Border>
 </RibbonWindow>

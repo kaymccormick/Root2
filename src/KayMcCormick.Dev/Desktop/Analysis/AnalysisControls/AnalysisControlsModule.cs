@@ -10,21 +10,28 @@
 // ---
 #endregion
 using System ;
+using System.Collections ;
 using System.Collections.Generic ;
+using System.ComponentModel ;
+using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
+using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Features.AttributeFilters ;
+using Autofac.Features.Metadata ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Container ;
+using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -43,6 +50,39 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load ( ContainerBuilder builder )
         {
+
+            var kayTypes = AppDomain.CurrentDomain.GetAssemblies ( )
+                                    .Where (
+                                            a => a
+                                                .GetCustomAttributes < AssemblyCompanyAttribute
+                                                 > ( )
+                                                .Any ( tx => tx.Company == "Kay McCormick" )
+                                           )
+                                    .SelectMany ( az => az.GetTypes ( ) )
+                                    .ToList ( ) ;
+            foreach ( var kayType in kayTypes ) 
+
+            {
+                builder.RegisterType ( kayType )
+                       .WithMetadata < TypeUsageMetadata > ( m => 
+                    // m.For ( tm => tm.UiConversion = true ));
+}
+
+            builder.RegisterGeneric ( typeof ( TypeServices <> ) ) ;    
+            // builder.RegisterType <TypeConverter1> ( ).Where(a => a.As < TypeConverter > ( ) ;
+            var types = new[] { typeof ( AppTypeInfo ) , typeof ( SyntaxFieldInfo ) } ;
+            builder.RegisterInstance ( types )
+                   .WithMetadata ( "Custom" , true )
+                   .AsImplementedInterfaces ( )
+                   .AsSelf ( ) ;
+            builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ) ;
+            // .WithParameter (
+            // new NamedParameter ( "types" , types )
+            // ) .AsSelf (  ) ;
+            builder.RegisterType < AnalysisCustomTypeDescriptor > ( )
+                   .AsSelf ( )
+                   .AsImplementedInterfaces ( ) ;
+
 #if false
             builder.RegisterAssemblyTypes(ThisAssembly).Where(type => {
                                                                   var isAssignableFrom =

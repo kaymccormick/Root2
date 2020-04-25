@@ -2,7 +2,9 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-  xmlns:findLogUsages="clr-namespace:FindLogUsages;assembly=FindLogUsages">
+  xmlns:findLogUsages="clr-namespace:FindLogUsages;assembly=FindLogUsages"
+  xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib">
+ 
   <DataTemplate
     DataType="{x:Type findLogUsages:ILogInvocation}">
     <Grid VerticalAlignment="Stretch"

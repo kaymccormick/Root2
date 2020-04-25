@@ -8,7 +8,7 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public interface IAnalysisBlockProvider < TSource , TDest , out TBlock > : IAnalysisBlockProvider1
+    interface IAnalysisBlockProvider < TSource , TDest , out TBlock > : IAnalysisBlockProvider1
         where TBlock : IPropagatorBlock < TSource , TDest >
     {
         /// <summary>

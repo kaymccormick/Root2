@@ -10,7 +10,7 @@ namespace AnalysisAppLib.Dataflow
     /// <summary>
     /// 
     /// </summary>
-    public sealed class FindLogUsagesFuncProvider : DataflowTransformFuncProvider <
+    internal sealed class FindLogUsagesFuncProvider : DataflowTransformFuncProvider <
             Document , ILogInvocation >
       , IHaveRejectBlock
     {
@@ -24,7 +24,7 @@ namespace AnalysisAppLib.Dataflow
         /// </summary>
         /// <param name="invocationFactory"></param>
         /// <param name="invocActions"></param>
-        public FindLogUsagesFuncProvider (
+        private FindLogUsagesFuncProvider (
             Func < ILogInvocation >                   invocationFactory
           , IEnumerable < Action < ILogInvocation > > invocActions
         )

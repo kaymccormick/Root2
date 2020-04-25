@@ -11,17 +11,23 @@
 #endregion
 using System ;
 using System.Collections ;
+using System.Collections.Concurrent ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Linq ;
+using System.Reactive.Concurrency ;
+using System.Reactive.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
+using System.Windows.Threading ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
+using KayMcCormick.Dev.Metadata ;
+
 // ReSharper disable InconsistentNaming
 
 namespace KayMcCormick.Dev
@@ -46,9 +52,12 @@ namespace KayMcCormick.Dev
         private ILifetimeScope _lifetimeScope ;
 
         // ReSharper disable once RedundantDefaultMemberInitializer
-        private          bool             _doPopulateAppContext = false ;
-        private          ResourceNodeInfo _objects_node ;
-        private readonly bool             _flatten_objects_node ;
+        private          bool                                   _doPopulateAppContext = false ;
+        private          ResourceNodeInfo                       _objects_node ;
+        private readonly bool                                   _flatten_objects_node ;
+        private readonly IObservable < IComponentRegistration > _regObservable ;
+        private readonly ConcurrentDictionary < Type , MyInfo2 > _activators ;
+        private          bool                                   _regSubscribed ;
 
 
         /// <summary>
@@ -61,14 +70,26 @@ namespace KayMcCormick.Dev
         /// <param name="idProvider"></param>
         /// <param name="test"></param>
         public ModelResources (
-            ILifetimeScope    lifetimeScope
-          , IObjectIdProvider idProvider
-          , bool              test = true
+            ILifetimeScope                         lifetimeScope
+          , IObjectIdProvider                      idProvider
+          , bool                                   test          = true
+          , IObservable < IComponentRegistration > regObservable = null
+            , ConcurrentDictionary <Type, MyInfo2> activators = null
         )
         {
             _lifetimeScope        = lifetimeScope ;
             _idProvider           = idProvider ;
             _flatten_objects_node = test ;
+            _regObservable        = regObservable ;
+            _activators = activators ;
+            DebugUtils.WriteLine (
+                                  string.Join (
+                                               ", "
+                                             , activators
+                                              .Values.Where ( x => x.Registrations.Count > 1 )
+                                              .Select ( x2 => x2.LimitType )
+                                              )
+                                 ) ;
         }
 
         /// <summary>
@@ -268,11 +289,21 @@ namespace KayMcCormick.Dev
                                              var reg = componentRegistrations.First ( ) ;
                                              var myInfo = new ComponentInfo ( ) ;
                                              // ReSharper disable once UnusedVariable
-                                             foreach ( var ii in componentInfo.Instances.Select ( inst => new InstanceInfo
-                                                                                                          {
-                                                                                                              Instance = inst.Instance
-                                                                                                            , Metadata = reg.Metadata
-                                                                                                          } ) ) { }
+                                             foreach ( var ii in componentInfo.Instances.Select (
+                                                                                                 inst
+                                                                                                     => new
+                                                                                                        InstanceInfo
+                                                                                                        {
+                                                                                                            Instance
+                                                                                                                = inst
+                                                                                                                   .Instance
+                                                                                                          , Metadata
+                                                                                                                = reg
+                                                                                                                   .Metadata
+                                                                                                        }
+                                                                                                ) )
+                                             {
+                                             }
 
                                              componentInfo.Metadata = reg.Metadata ;
                                              componentInfo          = myInfo ;
@@ -330,10 +361,11 @@ namespace KayMcCormick.Dev
         {
             var wrapped = WrapValue ( data ) ;
             var r = ResourceNodeInfo.CreateInstance ( ) ;
-            r.Key = key ;
-            r.Data = wrapped ;
+            r.Parent          = parent ;
+            r.Key             = key ;
+            r.Data            = wrapped ;
             r.IsValueChildren = isValueChildren ;
-            r.CreateNodeFunc = CreateNode ;
+            r.CreateNodeFunc  = CreateNode ;
             if ( parent == null )
             {
                 AllResourcesCollection.Add ( r ) ;
@@ -362,6 +394,7 @@ namespace KayMcCormick.Dev
           , ResourceNodeInfo              node
         )
         {
+            DebugUtils.WriteLine ( "Creating regs node" ) ;
             var regs = CreateNode (
                                    node
                                  , nameof ( lifetimeScope.ComponentRegistry.Registrations )
@@ -417,10 +450,31 @@ namespace KayMcCormick.Dev
 
             if ( LifetimeScope != null )
             {
-                PopulateLifetimeScope (
-                                       LifetimeScope
-                                     , CreateNode ( null , "LifetimeScope" , LifetimeScope , true )
-                                      ) ;
+                var resourceNodeInfo =
+                    CreateNode ( null , "LifetimeScope" , LifetimeScope , true ) ;
+                if ( ! _regSubscribed )
+                {
+                    _regObservable.SubscribeOn ( Scheduler.Default )
+                                  .ObserveOnDispatcher ( DispatcherPriority.Background )
+                                  .Subscribe (
+                                              registration => {
+                                                  DebugUtils.WriteLine ( "Adding registration" ) ;
+                                                  resourceNodeInfo.Children.Add (
+                                                                                 resourceNodeInfo
+                                                                                    .CreateNodeFunc (
+                                                                                                     resourceNodeInfo
+                                                                                                   , registration
+                                                                                                   , null
+                                                                                                   , true
+                                                                                                   , false
+                                                                                                    )
+                                                                                ) ;
+                                              }
+                                             ) ;
+                    _regSubscribed = true ;
+                }
+
+                PopulateLifetimeScope ( LifetimeScope , resourceNodeInfo ) ;
             }
 
             if ( DoPopulateAppContext )
@@ -522,7 +576,16 @@ namespace KayMcCormick.Dev
                     try
                     {
                         // ReSharper disable once UnusedVariable
-                        foreach ( var at1 in typ.CustomAttributes.Select ( c => CreateNode ( atts , c.AttributeType.FullName , c , false ) ) ) { }
+                        foreach ( var at1 in typ.CustomAttributes.Select (
+                                                                          c => CreateNode (
+                                                                                           atts
+                                                                                         , c
+                                                                                          .AttributeType
+                                                                                          .FullName
+                                                                                         , c
+                                                                                         , false
+                                                                                          )
+                                                                         ) ) { }
                     }
                     catch
                     {
@@ -539,24 +602,32 @@ namespace KayMcCormick.Dev
 
                     var props = CreateNode ( typnode , "Properties" , null , false ) ;
                     // ReSharper disable once UnusedVariable
-                    foreach ( var p in typ.GetProperties (
-                                                          BindingFlags.Instance
-                                                          | BindingFlags.Public
-                                                         ).Select ( propertyInfo => CreateNode ( props , propertyInfo.Name , propertyInfo , true ) ) ) { }
+                    foreach ( var p in typ
+                                      .GetProperties ( BindingFlags.Instance | BindingFlags.Public )
+                                      .Select (
+                                               propertyInfo
+                                                   => CreateNode (
+                                                                  props
+                                                                , propertyInfo.Name
+                                                                , propertyInfo
+                                                                , true
+                                                                 )
+                                              ) ) { }
 
                     var methods = CreateNode ( typnode , "Methods" , null , false ) ;
                     // ReSharper disable once UnusedVariable
                     foreach ( var p in typ
-                                      .GetMethods (
-                                                   BindingFlags.Instance
-                                                   | BindingFlags.Public
-                                                  )
-                                      .Where ( m => ! m.IsSpecialName ).Select ( methodInfo => CreateNode (
-                                                                                                           methods
-                                                                                                         , methodInfo.ToString ( )
-                                                                                                         , methodInfo
-                                                                                                         , true
-                                                                                                          ) ) ) { }
+                                      .GetMethods ( BindingFlags.Instance | BindingFlags.Public )
+                                      .Where ( m => ! m.IsSpecialName )
+                                      .Select (
+                                               methodInfo
+                                                   => CreateNode (
+                                                                  methods
+                                                                , methodInfo.ToString ( )
+                                                                , methodInfo
+                                                                , true
+                                                                 )
+                                              ) ) { }
                 }
             }
         }

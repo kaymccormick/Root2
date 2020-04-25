@@ -77,7 +77,9 @@ namespace AnalysisAppLib
                 var nodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
                 nodeInfo.Key  = "Pipeline" ;
                 nodeInfo.Data =null ;
-                resourceNodeInfo.Children.Add ( nodeInfo ) ;
+                
+                resourceNodeInfo.AddChild ( nodeInfo ) ;
+                
                 if ( pInstance == null )
                 {
                     throw new AnalyzeException ( "pipeline instance is null" ) ;

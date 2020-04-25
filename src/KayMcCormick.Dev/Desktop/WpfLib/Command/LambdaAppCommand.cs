@@ -64,7 +64,18 @@ namespace KayMcCormick.Lib.Wpf.Command
         public override Task < IAppCommandResult > ExecuteAsync ( )
         {
             DebugUtils.WriteLine ( "exxecuteAsync" ) ;
-            return CommandFunc ( this ) ;
+            return (CommandFunc ( this )).ContinueWith(
+                                                     (Task<IAppCommandResult> task) => {
+                                                         if ( task.IsFaulted )
+                                                         {
+                                                             DebugUtils.WriteLine (
+                                                                                   task.Exception
+                                                                                       .ToString ( )
+                                                                                  ) ;
+                                                         }
+
+                                                         return task.Result ;
+                                                     }) ;
         }
 
         /// <summary>

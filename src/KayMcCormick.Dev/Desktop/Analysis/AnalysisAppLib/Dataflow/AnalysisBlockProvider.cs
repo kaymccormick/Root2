@@ -12,7 +12,8 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public abstract class
+    /// unused
+    internal abstract class
         AnalysisBlockProvider < TSource , TDest , TBlock > : IAnalysisBlockProvider < TSource ,
             TDest , TBlock >
         where TBlock : IPropagatorBlock < TSource , TDest >
@@ -47,7 +48,8 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public sealed class
+    /// Unused right now
+    internal sealed class
         ConcreteAnalysisBlockProvider < TSource , TDest , TBlock > : AnalysisBlockProvider < TSource
           , TDest , TBlock >
         where TBlock : IPropagatorBlock < TSource , TDest >
@@ -61,7 +63,7 @@ namespace AnalysisAppLib.Dataflow
         /// </summary>
         /// <param name="factory"></param>
         /// <param name="funcProvider"></param>
-        public ConcreteAnalysisBlockProvider (
+        private ConcreteAnalysisBlockProvider (
             [ NotNull ] BlockFactory < TSource , TDest , TBlock >          factory
           , IDataflowTransformFuncProvider < TSource , TDest > funcProvider
         )

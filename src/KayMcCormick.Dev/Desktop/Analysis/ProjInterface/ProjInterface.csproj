@@ -117,6 +117,7 @@
     <Compile Include="SemanticConverter.cs" />
     <Compile Include="SemanticModel.cs" />
     <Compile Include="SynchronizationContextAwaiter.cs" />
+    <Compile Include="Test1.cs" />
     <Compile Include="TokenCacheHelper.cs" />
     <Compile Include="ViewModel\AnalyzeResultsViewModel.cs" />
     <Compile Include="Window1.xaml.cs">

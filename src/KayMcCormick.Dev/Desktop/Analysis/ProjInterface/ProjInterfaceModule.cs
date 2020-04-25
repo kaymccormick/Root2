@@ -10,22 +10,30 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Concurrent ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Linq ;
+using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Input ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Activators.Delegate ;
+using Autofac.Core.Activators.ProvidedInstance ;
+using Autofac.Core.Activators.Reflection ;
 using Autofac.Core.Lifetime ;
 using Autofac.Core.Registration ;
 using Autofac.Features.Metadata ;
+using Autofac.Features.ResolveAnything ;
+using Autofac.Features.Variance ;
 using AvalonDock.Layout ;
 #if EXPLORER
 using ExplorerCtrl ;
@@ -34,6 +42,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
 using KayMcCormick.Dev.Container ;
+using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
@@ -61,16 +70,154 @@ namespace ProjInterface
     }
 #else
 #endif
+    public class AppTypeInfoObservableCollection : ObservableCollection < AppTypeInfo >
+    {
+        public AppTypeInfoObservableCollection ( ) { }
+
+        public AppTypeInfoObservableCollection ( [ NotNull ] List < AppTypeInfo > list ) :
+            base ( list )
+        {
+        }
+
+        public AppTypeInfoObservableCollection (
+            [ NotNull ] IEnumerable < AppTypeInfo > collection
+        ) : base ( collection )
+        {
+        }
+    }
 
     public sealed class ProjInterfaceModule : IocModule
     {
-        private static readonly Logger Logger =
-            LogManager.GetCurrentClassLogger ( ) ;
+        #region Overrides of Module
+        protected override void AttachToRegistrationSource (
+            IComponentRegistryBuilder componentRegistry
+          , IRegistrationSource       registrationSource
+        )
+        {
+            DebugUtils.WriteLine ( $"{componentRegistry}:{registrationSource}" ) ;
+        }
+
+        private ConcurrentDictionary < Guid , MyInfo > _regs =
+            new ConcurrentDictionary < Guid , MyInfo > ( ) ;
+
+        protected override void AttachToComponentRegistration (
+            IComponentRegistryBuilder componentRegistry
+          , IComponentRegistration    registration
+        )
+        {
+            object guidFrom = null ;
+            if ( registration.Metadata.TryGetValue ( "SeenTimes" , out var times ) )
+            {
+                registration.Metadata[ "SeenTimes" ] = ( int ) times + 1 ;
+            }
+            else
+            {
+                registration.Metadata[ "SeenTimes" ] = 0 ;
+            }
+
+            if ( registration.Metadata.TryGetValue ( "RandomGuid" , out var guid ) )
+            {
+                guidFrom = registration.Metadata[ "GuidFrom" ] ;
+            }
+            else
+            {
+                registration.Metadata[ "RandomGuid" ] = Guid.NewGuid ( ) ;
+                guidFrom                              = GetType ( ).FullName ;
+                registration.Metadata[ "GuidFrom" ]   = guidFrom ;
+            }
+
+            registration.Preparing += ( sender , args ) => {
+            } ;
+            registration.Activating += ( sender , args ) => {
+            } ;
+            registration.Activated += ( sender , args ) => {
+            } ;
+            var registrationActivator = registration.Activator ;
+            var limitType = registrationActivator.LimitType ;
+            DebugUtils.WriteLine ( $"LimitType = {limitType}" ) ;
+            if ( _activators.TryGetValue ( limitType , out var info2 ) )
+            {
+            }
+            else
+            {
+                info2 = new MyInfo2 ( ) { LimitType = limitType } ;
+                _activators.TryAdd ( limitType , info2 ) ;
+            }
+
+            info2.Registrations.Add ( registration ) ;
+            if ( ! info2.Lifetimes.TryGetValue ( registration.Lifetime , out var info3 ) )
+            {
+                info3 = new MyInfo3 { LimitType = limitType , Lifetime = registration.Lifetime } ;
+                info2.Lifetimes.TryAdd ( registration.Lifetime , info3 ) ;
+            }
+
+            info3.Registrations.Add ( registration ) ;
+            info3.Ids.Add ( registration.Id ) ;
+            DebugUtils.WriteLine ( $"{registration.Id} {limitType.FullName}" ) ;
+            if ( _regs.TryGetValue ( registration.Id , out var info ) )
+            {
+            }
+            else
+            {
+                info = new MyInfo ( ) { Id = registration.Id } ;
+                _regs.TryAdd ( registration.Id , info ) ;
+            }
+
+            info.Registrations.Add ( registration ) ;
+            if ( info.Registrations.Count > 1 )
+            {
+                DebugUtils.WriteLine (
+                                      string.Join (
+                                                   ", "
+                                                 , info.Registrations.Select (
+                                                                              x => x
+                                                                                  .Lifetime
+                                                                                  .ToString ( )
+                                                                             )
+                                                  )
+                                     ) ;
+            }
+        }
+
+        private void OnComponentRegistryOnRegistered (
+            object                       sender
+          , ComponentRegisteredEventArgs args
+        )
+        {
+            DebugUtils.WriteLine (
+                                  $"{sender} Logging reg {args.ComponentRegistration} ({args.ComponentRegistration.Lifetime})"
+                                 ) ;
+            regs.OnNext ( args.ComponentRegistration ) ;
+        }
+        #endregion
+
+
+        private Subject < IComponentRegistration >
+            regs = new Subject < IComponentRegistration > ( ) ;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private bool _registerControlViewCommandAdapters = true ;
 
+        private ConcurrentDictionary < Type , MyInfo2 > _activators =
+            new ConcurrentDictionary < Type , MyInfo2 > ( ) ;
+
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.ComponentRegistryBuilder.Registered += ComponentRegistryBuilderOnRegistered ;
+            builder.RegisterInstance ( _activators ) ;
+            builder.Register < AppTypeInfoObservableCollection > (
+                                                                  ( c , p )
+                                                                      => new AppTypeInfoObservableCollection(
+                                                                                                    c.Resolve
+                                                                                                    < IEnumerable
+                                                                                                        < AppTypeInfo
+                                                                                                        > > ( )
+                                                                                                   )
+                                                                 ) ;
+            builder.RegisterInstance ( regs )
+                   .AsSelf ( )
+                   .As < IObservable < IComponentRegistration > > ( ) ;
             builder.RegisterType < MiscInstanceInfoProvider > ( )
                    .AsSelf ( )
                    .As < TypeDescriptionProvider > ( )
@@ -89,14 +236,14 @@ namespace ProjInterface
                                  ) ;
 
             builder.RegisterType < Myw > ( ).As < ILoggerProvider > ( ) ;
-            builder.RegisterSource < MySource > ( ) ;
+            //builder.RegisterSource < MySource > ( ) ;
             Logger.Trace (
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
 #if PYTHON
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
-                                                                    , new Uri(
+                                                                , new Uri(
                                                                                       "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
                                                                                      )
                                                                              )
@@ -135,8 +282,8 @@ if(RegiserExplorerTypes){
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
                                                                          (
                                                                              context
-                                                                   , parameters
-                                                                   , item
+                                                               , parameters
+                                                               , item
                                                                          ) => {
                                                                              var r =
                                                                                  new
@@ -214,7 +361,7 @@ if(RegiserExplorerTypes){
 #if PYTHON
             builder.RegisterAssemblyTypes (
                                            Assembly.GetCallingAssembly ( )
-                                 , typeof ( PythonControl ).Assembly
+                             , typeof ( PythonControl ).Assembly
                                           )
                    .Where (
                            type => {
@@ -237,6 +384,16 @@ if(RegiserExplorerTypes){
             // .As < IViewWithTitle > ( )
             // .As < LogViewerControl > ( )
             // .WithCallerMetadata ( ) ;
+        }
+
+        private void ComponentRegistryBuilderOnRegistered (
+            object                       sender
+          , ComponentRegisteredEventArgs e
+        )
+        {
+            DebugUtils.WriteLine (
+                                  $"{e.ComponentRegistration.Id}:{e.ComponentRegistryBuilder}:{e.ComponentRegistration}"
+                                 ) ;
         }
 
         public bool RegisterControlViewCommandAdapters
@@ -278,8 +435,8 @@ if(RegiserExplorerTypes){
         [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext                    c
-  , IEnumerable < Parameter >            p
-  , [ NotNull ] Meta < Lazy < object > > item
+, IEnumerable < Parameter >            p
+, [ NotNull ] Meta < Lazy < object > > item
         )
         {
             if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )

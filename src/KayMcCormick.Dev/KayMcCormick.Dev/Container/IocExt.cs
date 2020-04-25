@@ -1,4 +1,5 @@
-﻿using System.IO ;
+﻿using System ;
+using System.IO ;
 using System.Runtime.CompilerServices ;
 using Autofac.Builder ;
 using JetBrains.Annotations ;
@@ -30,8 +31,12 @@ namespace KayMcCormick.Dev.Container
                 [CallerMemberName] string                                                                callerMemberName = ""
             )
         {
-            return builder.WithMetadata("CallerFilePath", callerFilePath).WithMetadata("CallerFilename",Path.GetFileName(callerFilePath)).WithMetadata("CallerLineNumber",  callerLineNumber)
-                          .WithMetadata("CallerMemberName",  callerMemberName);
+            return builder.WithMetadata ( "CallerFilePath" , callerFilePath )
+                          .WithMetadata ( "CallerFilename" ,   Path.GetFileName ( callerFilePath ) )
+                          .WithMetadata ( "CallerLineNumber" , callerLineNumber )
+                          .WithMetadata ( "CallerMemberName" , callerMemberName )
+                          .WithMetadata ( "RandomGuid" ,       Guid.NewGuid ( ) )
+                          .WithMetadata ( "GuidFrom" ,         typeof ( IocExt ) ) ;
         }
     }
 }

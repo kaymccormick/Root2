@@ -1021,13 +1021,10 @@ namespace ModelTests
             DebugUtils.WriteLine ( serialize ) ;
         }
 
-
         [ Fact ]
         public void TestTypesService ( )
         {
             var sns = new SyntaxTypesService ( ) ;
-            sns.BeginInit ( ) ;
-            sns.EndInit ( ) ;
         }
 
         [ Fact ]

@@ -9,30 +9,63 @@
 // 
 // ---
 #endregion
+using System ;
 using System.Collections.Generic ;
 
 namespace KayMcCormick.Dev
 {
-    /// <summary>
-    /// </summary>
-    public interface IHierarchicalNode
+    public interface IHierarchicalContainmentNode : IHierarchicalNodeElement
     {
         /// <summary>
         /// </summary>
         List < ResourceNodeInfo > Children { get ; set ; }
 
         /// <summary>
+        /// 
         /// </summary>
-        bool IsExpanded
+        /// <param name="v"></param>
+        /// <returns></returns>
+        string ToString(bool v);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IHierarchicalNodeElement
+    {
+        /// <summary>
+        ///     Depth of node. 0 for a top-level node.
+        /// </summary>
+        int Depth { get ; set ; }
+
+        /// <summary>
+        /// </summary>
+        object Key { get ; set ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        IHierarchicalContainmentNode Parent { get ; set ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Guid Id { get ; set ; }
+    }
+
+    /// <summary>
+    /// </summary>
+    public interface IHierarchicalNode : IHierarchicalContainmentNode
+    {
+        /// <summary>
+        /// </summary>
+        bool ? IsExpanded
         {
             // ReSharper disable once UnusedMember.Global
             get ;
             set ;
         }
 
-        /// <summary>
-        ///     Depth of node. 0 for a top-level node.
-        /// </summary>
-        int Depth { get ; set ; }
+        int Ordinal { get ; set ; }
     }
 }

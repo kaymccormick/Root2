@@ -1,4 +1,6 @@
 ﻿using System ;
+using System.Collections.Generic ;
+using System.ComponentModel ;
 using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
@@ -11,7 +13,9 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
+using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.CodeAnalysis.Host ;
 using NLog ;
 using NLog.Targets ;
 using static KayMcCormick.Dev.Logging.AppLoggingConfigHelper ;
@@ -177,7 +181,7 @@ namespace ProjInterface
             base.OnStartup ( e ) ;
             Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
             var lifetimeScope = Scope ;
-            if ( lifetimeScope?.IsRegistered < Window1 > ( ) == false )
+            if ( lifetimeScope?.UiPrIsRegistered < Window1 > ( ) == false )
             {
                 ShowErrorDialog (
                                  ProjInterface.Properties.Resources
@@ -194,11 +198,32 @@ namespace ProjInterface
             {
                 if ( lifetimeScope != null )
                 {
+                    var test1 = Scope.Resolve < Test1 > ( ) ;
+
+                    Scope.Resolve(new[] {new ResolvedParameter(Func<p, c, ), }
+
+                public delegate TypeServices<T> Test
+                    var scoop =
+                                                                                          LifetimeScope
+                 private MyStartupParams params = Scope.Resolve<IEnumerable<<Lazy<TypeService, TypeServiceMetadata>
+
+                private RyanFriend IEnumerable<Lazy<T, MetadataType>>*  tes1 = Scope.Resolve < Meta ( ) ;
+                Test1 t = Scope.Resolve<IEnumerable <>
+                One<T>().WithMetadata<M2>(m11 => IEnumerable <Meta <MyInfo2>() >());
+
+
+                                                                                          "UiConversion"
+                                                                                        , true
+                                                                                         ) ;
+                    //     DebugUtils.WriteLine(typeDesc1Type.FullName);
+                    //     TypeDescriptor.AddProvider(typeDesc1, typeDesc1Type);
+                    // }
                     mainWindow = lifetimeScope.Resolve < Window1 > ( ) ;
                 }
             }
             catch ( Exception ex )
             {
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 MessageBox.Show ( ex.ToString ( ) , "error" ) ;
             }
 
@@ -258,9 +283,13 @@ namespace ProjInterface
             }
             catch ( Exception ex )
             {
-                MessageBox.Show ( ex.ToString ( ) , "error" ) ;
+                MessageBox.Show ( ex.ToString ( ) , "
+
+
+
+
+error" ) ;
             }
         }
     }
 }
-

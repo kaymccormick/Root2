@@ -21,7 +21,7 @@ namespace KayMcCormick.Dev.TestLib
             LogHelper.EnsureLoggingConfigured ( ) ;
             new LogBuilder ( Logger ).Level ( LogLevel.Trace )
                                      .Message (
-                                               "Fixture lifecycle event for {fixtureType}: {lifecycle}"
+                                               "Fixture  lifecycle event for {fixtureType}: {lifecycle}"
                                              , fixtureType
                                              , lifecycle
                                               )

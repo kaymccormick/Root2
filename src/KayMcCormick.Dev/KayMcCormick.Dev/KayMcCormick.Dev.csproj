@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="IAddRuntimeResource.cs" />
     <Compile Include="ICommandMetadata.cs" />
     <Compile Include="Command\AppCommandResult.cs" />
@@ -149,7 +150,10 @@
     <Compile Include="Logging\MyLayout.cs" />
     <Compile Include="Logging\MyLog4JXmlEventLayoutRenderer.cs" />
     <Compile Include="Logging\ProtoLogger.cs" />
+    <Compile Include="Metadata\MyInfo2.cs" />
     <Compile Include="ModelResources.cs" />
+    <Compile Include="Metadata\MyInfo.cs" />
+    <Compile Include="MyInfo3.cs" />
     <Compile Include="ResourceNodeInfo.cs" />
     <Compile Include="ResourceNodeInfoBase.cs" />
     <Compile Include="Serialization\ConverterUtil.cs" />
@@ -221,6 +225,7 @@
     <Compile Include="Tracing\ExtLib.cs" />
     <Compile Include="Tracing\KayMcCormickDevProvider.cs" />
     <Compile Include="Tracing\NLogTraceTarget.cs" />
+    <Compile Include="Metadata\TypeUsageMetadata.cs" />
     <Compile Include="UnableToDeserializeLogEventInfo.cs" />
     <Compile Include="UnableToRegisterObjectIdException.cs" />
     <Compile Include="Utils.cs" />
