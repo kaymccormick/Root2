@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
     {
         /// <summary>
         /// </summary>
-        public bool Detailed { get ; set ; }
+        internal bool Detailed { get ; set ; }
 
         /// <summary>
         /// </summary>

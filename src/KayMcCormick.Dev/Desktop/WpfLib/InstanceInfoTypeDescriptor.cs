@@ -5,7 +5,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// 
     /// </summary>
-    public sealed class InstanceInfoTypeDescriptor : CustomTypeDescriptor
+    internal sealed class InstanceInfoTypeDescriptor : CustomTypeDescriptor
     {
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _enableConverter = true ;

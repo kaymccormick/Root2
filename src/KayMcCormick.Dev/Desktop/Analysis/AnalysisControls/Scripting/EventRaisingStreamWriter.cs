@@ -7,7 +7,7 @@ namespace AnalysisControls.Scripting
     /* fOR PYTHON STUFF */
     /// <summary>
     /// </summary>
-    public sealed class EventRaisingStreamWriter : StreamWriter
+    internal sealed class EventRaisingStreamWriter : StreamWriter
     {
         /// <summary>
         /// 

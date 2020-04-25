@@ -7,7 +7,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public sealed class UnrecognizedElementException : Exception
+    internal sealed class UnrecognizedElementException : Exception
     {
         /// <summary>
         /// 

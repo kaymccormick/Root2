@@ -6,7 +6,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public sealed class ExceptionConverter : IValueConverter
+    internal sealed class ExceptionConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

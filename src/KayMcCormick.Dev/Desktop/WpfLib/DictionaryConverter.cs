@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public sealed class DictionaryConverter : IValueConverter
+    internal sealed class DictionaryConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

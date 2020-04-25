@@ -6,7 +6,7 @@ namespace KayMcCormick.Lib.Wpf
     /// </summary>
     /// <typeparam name="T"></typeparam>
     // ReSharper disable once UnusedTypeParameter
-    public interface IWrap < T >
+    internal interface IWrap < T >
         where T : UIElement
     {
     }

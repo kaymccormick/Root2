@@ -9,7 +9,7 @@ namespace TestApp
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public sealed partial class App : Application
+    internal sealed partial class App : Application
     {
         public App ( ) {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;

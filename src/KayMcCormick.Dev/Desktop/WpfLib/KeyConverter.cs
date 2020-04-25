@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
 {
     /// <summary>
     /// </summary>
-    public sealed class KeyConverter : IValueConverter
+    internal sealed class KeyConverter : IValueConverter
     {
 #if TRACE_TEMPLATES
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

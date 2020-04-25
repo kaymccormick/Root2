@@ -6,7 +6,7 @@ using JetBrains.Annotations ;
 
 namespace ProjInterface
 {
-    public sealed class ImageSourceConverter : IValueConverter
+    internal sealed class ImageSourceConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         [ NotNull ]
