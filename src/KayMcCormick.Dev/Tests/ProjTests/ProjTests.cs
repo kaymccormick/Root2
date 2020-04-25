@@ -71,7 +71,6 @@ using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
 
 // ReSharper disable InconsistentNaming
-
 // ReSharper disable UnusedVariable
 // ReSharper disable RedundantOverriddenMember
 
@@ -331,7 +330,7 @@ namespace ProjTests
                             ) ;
         }
 
-        //[WpfFact ]
+        [WpfFact ]
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once FunctionComplexityOverflow
         public void TestJsonSerialization ( )
