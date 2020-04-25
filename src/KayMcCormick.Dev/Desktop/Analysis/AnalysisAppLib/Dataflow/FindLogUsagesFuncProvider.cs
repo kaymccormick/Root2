@@ -68,7 +68,7 @@ namespace AnalysisAppLib.Dataflow
                 if ( task.Exception != null )
                 {
 
-                    DebugUtils.WriteLine($"{task.Exception.ToString()}");
+                    DebugUtils.WriteLine($"{task.Exception}");
                     throw task.Exception ;
                 }
 

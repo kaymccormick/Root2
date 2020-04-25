@@ -11,6 +11,7 @@
 #endregion
 using System.Collections.Generic ;
 using System.Text.Json ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Logging ;
 
 namespace AnalysisAppLib
@@ -25,7 +26,7 @@ namespace AnalysisAppLib
         public int ThreadId => _inst.ManagedThreadId ;
 
         /// <inheritdoc />
-        public string PropKeys
+        [ NotNull ] public string PropKeys
         {
             get
             {
@@ -62,7 +63,6 @@ namespace AnalysisAppLib
         private readonly LogEventInstance _inst ;
         private          MiscLevel        _level = MiscLevel.INFO ;
         private          string           _rawJson ;
-        private          string           _file ;
         #region Implementation of IEventMisc
         /// <summary>
         /// 

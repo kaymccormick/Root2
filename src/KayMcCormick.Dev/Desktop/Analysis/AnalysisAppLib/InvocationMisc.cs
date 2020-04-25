@@ -16,7 +16,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public class InvocationMisc : IEventMisc2 <ILogInvocation>
+    public sealed class InvocationMisc : IEventMisc2 <ILogInvocation>
     {
         /// <summary>
         /// 
@@ -29,21 +29,30 @@ namespace AnalysisAppLib
             _instance = instance ;
         }
 
+#pragma warning disable 649
         private int            _threadId ;
-        private object         _obj ;
+#pragma warning restore 649
         private MiscLevel      _level = MiscLevel.INFO;
         private string         _rawJson ;
-        private ILogInvocation _instance ;
+        private readonly ILogInvocation _instance ;
+#pragma warning disable 649
         private string         _propKeys ;
+#pragma warning restore 649
         #region Implementation of IEventMisc
         /// <inheritdoc />
         public int ThreadId { get { return _threadId ; } }
 
         /// <inheritdoc />
-        public object Obj => Instance ;
+        public object Obj
+        {
+            get { return Instance ; }
+        }
 
         /// <inheritdoc />
-        public string Message => _instance.MethodDisplayName ;
+        public string Message
+        {
+            get { return _instance.MethodDisplayName ; }
+        }
 
         /// <inheritdoc />
         public MiscLevel Level { get { return _level ; } set { _level = value ; } }
@@ -55,7 +64,10 @@ namespace AnalysisAppLib
         public string PropKeys { get { return _propKeys ; } }
 
         /// <inheritdoc />
-        public string File => _instance.SourceLocation ;
+        public string File
+        {
+            get { return _instance.SourceLocation ; }
+        }
         #endregion
 
         #region Implementation of IEventMisc2<out ILogInvocation>

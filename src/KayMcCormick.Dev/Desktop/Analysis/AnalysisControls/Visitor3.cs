@@ -71,7 +71,8 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="node"></param>
-        public override void Visit ( [ NotNull ] SyntaxNode node )
+        // ReSharper disable once AnnotateNotNullParameter
+        public override void Visit ( SyntaxNode node )
         {
             RecordLocation ( node.GetLocation ( ) ) ;
             var style = FindStyle ( node ) ;

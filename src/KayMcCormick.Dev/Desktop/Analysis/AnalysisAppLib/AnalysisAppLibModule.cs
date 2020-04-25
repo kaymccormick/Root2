@@ -103,17 +103,21 @@ namespace AnalysisAppLib
                               ( c , p ) => {
                                   var loggerProviders =
                                       c.Resolve < IEnumerable < ILoggerProvider > > ( ) ;
-                                  return new Microsoft.Extensions.Logging.LoggerFactory ( loggerProviders ) ;
+                                  return new Microsoft.Extensions.Logging.LoggerFactory (
+                                                                                         loggerProviders
+                                                                                        ) ;
                               }
                              )
                    .As < ILoggerFactory > ( ) ;
             builder.RegisterType < Myw > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
-            builder.Register<Func<object, DataTable>> ( ( c , p ) => ( object o ) => DataAdapter ( c , p , o ) ).As<Func <object, DataTable> > (  ) ;
-            builder.RegisterAdapter<object, DataTable>(
-                                                       DataAdapter);
-            builder.RegisterAdapter<object, IDictionary>(
-                                                       DictAdapter);
-            builder.RegisterType<AppDbContext>().As<DbContext>();
+            builder.Register < Func < object , DataTable > > (
+                                                              ( c , p ) => ( object o )
+                                                                  => DataAdapter ( c , p , o )
+                                                             )
+                   .As < Func < object , DataTable > > ( ) ;
+            builder.RegisterAdapter < object , DataTable > ( DataAdapter ) ;
+            builder.RegisterAdapter < object , IDictionary > ( DictAdapter ) ;
+            builder.RegisterType < AppDbContext > ( ).As < DbContext > ( ) ;
             builder.RegisterType < SyntaxTypesService > ( )
                    .As < ISyntaxTypesService > ( )
                    .WithCallerMetadata ( ) ;
@@ -173,12 +177,19 @@ namespace AnalysisAppLib
                    .InstancePerLifetimeScope ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.Register < Action <Microsoft.CodeAnalysis.Document> > (
-                                                                                   (c, p) => (Microsoft.CodeAnalysis.Document doc) => {
-                                                                                       DebugUtils.WriteLine ( doc.FilePath ) ;
-                                                                                       
-                                                                                   }
-                                                                                  ) ;
+            builder.Register < Action < Microsoft.CodeAnalysis.Document > > (
+                                                                             ( c , p ) => (
+                                                                                 Microsoft.
+                                                                                     CodeAnalysis.
+                                                                                     Document doc
+                                                                             ) => {
+                                                                                 DebugUtils
+                                                                                    .WriteLine (
+                                                                                                doc
+                                                                                                   .FilePath
+                                                                                               ) ;
+                                                                             }
+                                                                            ) ;
 
             builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
                    .As ( typeof ( IAnalysisBlockProvider < , , > ) )
@@ -237,13 +248,18 @@ namespace AnalysisAppLib
 #endif
         }
 
-        private DataTable DataAdapter ( IComponentContext c , IEnumerable < Parameter > p , object o )
+        private DataTable DataAdapter (
+            IComponentContext         c
+          , IEnumerable < Parameter > p
+          , [ NotNull ] object                    o
+        )
         {
             var r = new DataTable ( o.GetType ( ).Name ) ;
-            ArrayList values = new ArrayList();
-            foreach ( var p1 in o.GetType ( ).GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
+            var values = new ArrayList ( ) ;
+            foreach ( var p1 in o.GetType ( )
+                                 .GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
             {
-                Prop px = new Prop { Name = p1.Name } ;
+                var px = new Prop { Name = p1.Name } ;
                 object rr1 = null ;
                 try { rr1 = p1.GetValue ( o ) ; }
                 catch { }
@@ -252,32 +268,40 @@ namespace AnalysisAppLib
                 {
                     continue ;
                 }
+
                 r.Columns.Add ( new DataColumn ( p1.Name , p1.PropertyType ) ) ;
                 values.Add ( rr1 ) ;
-                
             }
 
-            r.LoadDataRow ( values.ToArray(), LoadOption.OverwriteChanges ) ;
+            r.LoadDataRow ( values.ToArray ( ) , LoadOption.OverwriteChanges ) ;
             return r ;
         }
 
-        private Dictionary < string , object > DictAdapter(IComponentContext c, IEnumerable<Parameter> p, object o)
+        [ NotNull ]
+        private Dictionary < string , object > DictAdapter (
+            IComponentContext         c
+          , IEnumerable < Parameter > p
+          , [ NotNull ] object                    o
+        )
         {
             var r = new Dictionary < string , object > ( ) ;
-            foreach (var p1 in o.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            foreach ( var p1 in o.GetType ( )
+                                 .GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
             {
-                
-                Prop px = new Prop { Name = p1.Name };
-                object rr1 = null;
-                try { rr1 = p1.GetValue(o); }
-                catch { }
+                object rr1 = null ;
+                try { rr1 = p1.GetValue ( o ) ; }
+                catch
+                {
+                    // ignored
+                }
 
                 r[ p1.Name ] = rr1 ;
             }
 
-            return r;
+            return r ;
         }
-        [NotNull ]
+
+        [ NotNull ]
         private static IPublicClientApplication MakePublicClientApplication (
             IComponentContext                     context
           , [ NotNull ] IEnumerable < Parameter > p
@@ -327,7 +351,7 @@ namespace AnalysisAppLib
     internal class Prop
     {
         private string _name ;
-        public string Name { get { return _name ; } set { _name = value ; } }
+        public  string Name { get { return _name ; } set { _name = value ; } }
     }
 
     /// <summary>

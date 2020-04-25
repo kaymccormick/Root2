@@ -36,12 +36,14 @@ namespace AnalysisAppLib
         private readonly IAddRuntimeResource _add ;
         private readonly Func < object , DataTable > _op ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
-        private ResourceNodeInfo resulstsNode ;
+        private ResourceNodeInfo _resultsNode ;
 
         /// <summary>
-        /// Constructor. Takes pipeline instanace.
+        /// Constructor. Takes pipeline instance.
         /// </summary>
         /// <param name="pipeline"></param>
+        /// <param name="add"></param>
+        /// <param name="op"></param>
         public AnalyzeCommand ( Pipeline pipeline , IAddRuntimeResource add, Func<object, DataTable> op)
         {
             _pipeline = pipeline ;
@@ -113,9 +115,9 @@ namespace AnalysisAppLib
                 instance.Key  = "Task " + t.Id;
                 instance.Data = t;
                 resourceNodeInfo.Children.Add(instance);
-                resulstsNode = ResourceNodeInfo.CreateInstance() ;
-                resulstsNode.Key = "Results" ;
-                resourceNodeInfo.Children.Add(resulstsNode);
+                _resultsNode = ResourceNodeInfo.CreateInstance() ;
+                _resultsNode.Key = "Results" ;
+                resourceNodeInfo.Children.Add(_resultsNode);
 
                 var req = new AnalysisRequest { Info = projectNode } ;
                 if ( ! pInstance.Post ( req ) )
@@ -133,7 +135,7 @@ namespace AnalysisAppLib
             }
         }
 
-        private int Function ( Task task =null)
+        private int Function ( )
         {
             for ( ; ; )
             {
@@ -182,7 +184,7 @@ namespace AnalysisAppLib
             var resourceNodeInfo = ResourceNodeInfo.CreateInstance() ;
             resourceNodeInfo.Key = invocation ;
             resourceNodeInfo.Data = invocation ;
-            resulstsNode.Children.Add (resourceNodeInfo );
+            _resultsNode.Children.Add (resourceNodeInfo );
         }
 
         /// <summary>

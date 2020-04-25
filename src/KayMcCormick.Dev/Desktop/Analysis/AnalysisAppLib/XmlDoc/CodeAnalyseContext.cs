@@ -102,7 +102,7 @@ namespace AnalysisAppLib.XmlDoc
 
         [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxNode (
-            SyntaxNode               node
+            [ NotNull ] SyntaxNode               node
           , [ NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )

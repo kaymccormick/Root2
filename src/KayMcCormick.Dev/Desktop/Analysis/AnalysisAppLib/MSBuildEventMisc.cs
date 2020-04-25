@@ -17,7 +17,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    internal sealed class MSBuildEventMisc : IEventMisc2<BuildEventArgs>
+    internal sealed class MsBuildEventMisc : IEventMisc2<BuildEventArgs>
     {
         private int            _threadId ;
         private object         _obj ;
@@ -32,7 +32,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="args"></param>
         /// <param name="level"></param>
-        public MSBuildEventMisc ( [ NotNull ] BuildEventArgs args , MiscLevel level )
+        public MsBuildEventMisc ( [ NotNull ] BuildEventArgs args , MiscLevel level )
         {
             _instance = args ;
             _level    = level ;

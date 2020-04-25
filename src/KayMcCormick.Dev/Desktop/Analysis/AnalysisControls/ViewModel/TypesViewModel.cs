@@ -37,7 +37,6 @@ namespace AnalysisControls.ViewModel
         }
 
         private readonly List < AppTypeInfo > _typeInfos ;
-        private readonly        JsonSerializerOptions _options ;
         private const string PocoPrefix = "Poco" ;
         private const string CollectionSuffix = "Collection" ;
 
@@ -79,8 +78,7 @@ namespace AnalysisControls.ViewModel
         // ReSharper disable once EmptyConstructor
         public TypesViewModel ( JsonSerializerOptions options )
         {
-            _options               = options ;
-            _options.WriteIndented = true ;
+            options.WriteIndented = true ;
         }
 
 
@@ -280,7 +278,7 @@ namespace AnalysisControls.ViewModel
         public void EndInit ( )
         {
             Logger.Info ( nameof ( EndInit ) ) ;
-            if ( _typeInfos != null && _typeInfos.Any ( ) )
+            if ( _typeInfos?.Any ( ) == true )
             {
                 foreach ( var appTypeInfo in _typeInfos )
                 {

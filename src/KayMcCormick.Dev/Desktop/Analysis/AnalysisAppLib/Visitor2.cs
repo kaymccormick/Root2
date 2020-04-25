@@ -12,7 +12,6 @@
 using System ;
 using System.Linq ;
 using AnalysisAppLib.Span ;
-using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -64,7 +63,8 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="node"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public override void DefaultVisit ( [ NotNull ] SyntaxNode node )
+        // ReSharper disable once AnnotateNotNullParameter
+        public override void DefaultVisit (  SyntaxNode node )
         {
             if ( node == null )
             {

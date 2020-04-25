@@ -426,6 +426,7 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
+        [ NotNull ]
         public static TypeSyntax TransformParsePocoType ( [ NotNull ] TypeSyntax type )
         {
             if ( type is PredefinedTypeSyntax )
@@ -473,6 +474,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="collectionMap"></param>
         /// <param name="model"></param>
         /// <returns></returns>
+        [ NotNull ]
         public static TypeSyntax SubstituteType (
             [ NotNull ]   SyntaxFieldInfo           tField
           , [ CanBeNull ] TypeSyntax                candidateTypeSyntax

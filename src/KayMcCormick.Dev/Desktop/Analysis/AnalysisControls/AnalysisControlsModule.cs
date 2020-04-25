@@ -58,7 +58,7 @@ namespace AnalysisControls
                                                               }              ).AsImplementedInterfaces().AsSelf().WithAttributedMetadata();
 
 #else
-            
+
             builder.RegisterAdapter < IBaseLibCommand , IAppCommand > (
                                                                        (
                                                                            context
@@ -75,7 +75,8 @@ namespace AnalysisControls
                                                                                                 , arg3
                                                                                                      .OnFault
                                                                                                  )
-                                                                      ).WithCallerMetadata();
+                                                                      )
+                   .WithCallerMetadata ( ) ;
             builder.RegisterType < TypesView > ( )
                    .AsSelf ( )
                    .As < IControlView > ( )
@@ -83,7 +84,8 @@ namespace AnalysisControls
                                   "ImageSource"
                                 , "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
                                  )
-                   .WithMetadata ( "Ribbon" , true ).WithCallerMetadata();
+                   .WithMetadata ( "Ribbon" , true )
+                   .WithCallerMetadata ( ) ;
 
 
 
@@ -102,7 +104,12 @@ namespace AnalysisControls
                                   {
                                       if ( parameters.TypedAs < bool > ( ) == false )
                                       {
-                                          return new TypesViewModel (context.Resolve<JsonSerializerOptions>()) ;
+                                          return new TypesViewModel (
+                                                                     context
+                                                                        .Resolve <
+                                                                             JsonSerializerOptions
+                                                                         > ( )
+                                                                    ) ;
                                       }
                                   }
                                   catch ( Exception ex )
@@ -119,7 +126,12 @@ namespace AnalysisControls
                                       if ( stream == null )
                                       {
                                           DebugUtils.WriteLine ( "no stream" ) ;
-                                          return new TypesViewModel (context.Resolve<JsonSerializerOptions>()) ;
+                                          return new TypesViewModel (
+                                                                     context
+                                                                        .Resolve <
+                                                                             JsonSerializerOptions
+                                                                         > ( )
+                                                                    ) ;
                                       }
 
                                       try
@@ -130,21 +142,29 @@ namespace AnalysisControls
                                       }
                                       catch ( Exception )
                                       {
-                                          return new TypesViewModel (context.Resolve<JsonSerializerOptions>() ) ;
+                                          return new TypesViewModel (
+                                                                     context
+                                                                        .Resolve <
+                                                                             JsonSerializerOptions
+                                                                         > ( )
+                                                                    ) ;
                                       }
                                   }
                               }
                              )
                    .AsSelf ( )
-                   .AsImplementedInterfaces ( ).WithCallerMetadata();
+                   .AsImplementedInterfaces ( )
+                   .WithCallerMetadata ( ) ;
 
 
             builder.RegisterType < SyntaxPanel > ( )
                    .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
-                   .AsSelf ( ).WithCallerMetadata();
+                   .AsSelf ( )
+                   .WithCallerMetadata ( ) ;
             builder.RegisterType < SyntaxPanelViewModel > ( )
                    .AsImplementedInterfaces ( )
-                   .AsSelf ( ).WithCallerMetadata();
+                   .AsSelf ( )
+                   .WithCallerMetadata ( ) ;
 #endif
         }
 
@@ -154,7 +174,7 @@ namespace AnalysisControls
         private FrameworkElement Func (
             [ NotNull ] IComponentContext c1
             // ReSharper disable once UnusedParameter.Local
-          , IEnumerable < Parameter >     p1
+          , IEnumerable < Parameter > p1
         )
         {
             var gridView = new GridView ( ) ;

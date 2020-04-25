@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+// ReSharper disable InconsistentNaming
 namespace AnalysisAppLib
 {
     /// <summary>

@@ -12,19 +12,22 @@
 using System ;
 using System.Collections.Generic ;
 using Buildalyzer ;
+using JetBrains.Annotations ;
 using Microsoft.Build.Framework ;
 using Microsoft.Build.Logging.StructuredLogger ;
-using ProjectEvaluationFinishedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationFinishedEventArgs ;
-using ProjectEvaluationStartedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationStartedEventArgs ;
+using ProjectEvaluationFinishedEventArgs =
+    Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationFinishedEventArgs ;
+using ProjectEvaluationStartedEventArgs =
+    Microsoft.Build.Logging.StructuredLogger.ProjectEvaluationStartedEventArgs ;
 using ProjectImportedEventArgs = Microsoft.Build.Logging.StructuredLogger.ProjectImportedEventArgs ;
 using TargetSkippedEventArgs = Microsoft.Build.Logging.StructuredLogger.TargetSkippedEventArgs ;
+
 #pragma warning disable 1591
 
 namespace AnalysisAppLib
 {
-    public class Log1 : Microsoft.Build.Framework.ILogger
+    public class Log1 : ILogger
     {
-        private readonly Action < string >                     _outAct ;
         private readonly IProjectAnalyzer                      _value ;
         private readonly IEnumerable < Action < IEventMisc > > _misc ;
 
@@ -34,37 +37,36 @@ namespace AnalysisAppLib
           , IEnumerable < Action < IEventMisc > > misc
         )
         {
-            _outAct = outAct ;
-            _value  = value ;
-            _misc   = misc ;
+            _value = value ;
+            _misc  = misc ;
         }
 
         private LoggerVerbosity _verbosity ;
         private string          _parameters ;
         #region Implementation of ILogger
-        public void Initialize ( IEventSource eventSource )
+        public void Initialize ( [ NotNull ] IEventSource eventSource )
         {
-            
-            eventSource.AnyEventRaised += EventSourceOnAnyEventRaised;
-            eventSource.ErrorRaised    += EventSource_ErrorRaised;
+            eventSource.AnyEventRaised += EventSourceOnAnyEventRaised ;
+            eventSource.ErrorRaised    += EventSource_ErrorRaised ;
         }
 
         private void EventSourceOnAnyEventRaised ( object sender , BuildEventArgs e )
         {
-            bool? succeeded ;
-            MiscLevel level = MiscLevel.DEBUG;
+            bool ? succeeded ;
+            var level = MiscLevel.DEBUG ;
             int imp ;
-            string file="" ;
+            var file = "" ;
             if ( e is BuildMessageEventArgs xx1 )
             {
                 file = xx1.File ;
             }
+
             switch ( e )
             {
-                
                 case BuildFinishedEventArgs buildFinishedEventArgs :
                     level     = MiscLevel.INFO ;
-                    succeeded = buildFinishedEventArgs.Succeeded ;break;
+                    succeeded = buildFinishedEventArgs.Succeeded ;
+                    break ;
                 case CriticalBuildMessageEventArgs criticalBuildMessageEventArgs :
                     level = MiscLevel.CRIT ;
                     imp   = 2 - ( int ) criticalBuildMessageEventArgs.Importance ;
@@ -73,17 +75,18 @@ namespace AnalysisAppLib
                 case ProjectImportedEventArgs projectImportedEventArgs :           break ;
                 case TargetSkippedEventArgs targetSkippedEventArgs :               break ;
                 case TaskCommandLineEventArgs taskCommandLineEventArgs :           break ;
-                
+
                 case BuildStartedEventArgs buildStartedEventArgs :
                     level = MiscLevel.INFO ;
                     break ;
                 case ProjectEvaluationFinishedEventArgs projectEvaluationFinishedEventArgs : break ;
-                
+
                 case ProjectEvaluationStartedEventArgs projectEvaluationStartedEventArgs : break ;
-                case ProjectFinishedEventArgs projectFinishedEventArgs : level = MiscLevel.INFO;
+                case ProjectFinishedEventArgs projectFinishedEventArgs :
+                    level = MiscLevel.INFO ;
                     break ;
                 case ProjectStartedEventArgs projectStartedEventArgs :
-                    level = MiscLevel.INFO;
+                    level = MiscLevel.INFO ;
                     break ;
                 case TargetFinishedEventArgs targetFinishedEventArgs : break ;
                 case TargetStartedEventArgs2 targetStartedEventArgs2 : break ;
@@ -91,37 +94,39 @@ namespace AnalysisAppLib
                 case TaskFinishedEventArgs taskFinishedEventArgs :     break ;
                 case TaskStartedEventArgs taskStartedEventArgs :       break ;
                 case BuildStatusEventArgs buildStatusEventArgs :
-                    level = MiscLevel.DEBUG;
+                    level = MiscLevel.DEBUG ;
                     break ;
                 case BuildWarningEventArgs buildWarningEventArgs :
-                    level = MiscLevel.INFO;
+                    level = MiscLevel.INFO ;
                     break ;
                 case ExternalProjectFinishedEventArgs externalProjectFinishedEventArgs : break ;
                 case ExternalProjectStartedEventArgs externalProjectStartedEventArgs :   break ;
                 case CustomBuildEventArgs customBuildEventArgs :
-                    level = MiscLevel.INFO;
+                    level = MiscLevel.INFO ;
                     break ;
-                case BuildMessageEventArgs buildMessageEventArgs:
-                    break;
+                case BuildMessageEventArgs buildMessageEventArgs : break ;
                 case BuildErrorEventArgs buildErrorEventArgs :
                     level = MiscLevel.ERROR ;
                     break ;
                 case LazyFormattedBuildEventArgs lazyFormattedBuildEventArgs : break ;
                 case TelemetryEventArgs telemetryEventArgs :                   break ;
-                default :                                                      throw new ArgumentOutOfRangeException ( nameof ( e ) ) ;
+                default :
+                    throw new ArgumentOutOfRangeException ( nameof ( e ) ) ;
             }
 
-            var msBuildEventMisc = new MSBuildEventMisc(e, level) ;
+            var msBuildEventMisc = new MsBuildEventMisc ( e , level ) ;
             msBuildEventMisc.File = file ;
-            IEventMisc eventMisc = msBuildEventMisc;
-            foreach (var action in _misc)
+            IEventMisc eventMisc = msBuildEventMisc ;
+            foreach ( var action in _misc )
             {
-                if(level != MiscLevel.DEBUG)
-                    action(eventMisc);
+                if ( level != MiscLevel.DEBUG )
+                {
+                    action ( eventMisc ) ;
+                }
             }
         }
 
-        private void EventSource_ErrorRaised(object sender, LazyFormattedBuildEventArgs e)
+        private void EventSource_ErrorRaised ( object sender , LazyFormattedBuildEventArgs e )
         {
             var n1 = _value.ProjectInSolution.ProjectName ;
             // _outAct?.Invoke ( n1 + ":" +e.Message ) ;
@@ -133,7 +138,11 @@ namespace AnalysisAppLib
 
         public void Shutdown ( ) { }
 
-        public LoggerVerbosity Verbosity { get { return _verbosity ; } set { _verbosity = value ; } }
+        public LoggerVerbosity Verbosity
+        {
+            get { return _verbosity ; }
+            set { _verbosity = value ; }
+        }
 
         public string Parameters { get { return _parameters ; } set { _parameters = value ; } }
         #endregion

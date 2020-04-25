@@ -69,6 +69,7 @@ using File = System.IO.File ;
 using Process = System.Diagnostics.Process ;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
+
 // ReSharper disable InconsistentNaming
 
 // ReSharper disable UnusedVariable
@@ -103,9 +104,10 @@ namespace ProjTests
         private const string INPUT_TYPES_VIEW_MODEL_XAML_PATH =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml" ;
 
-        private static readonly Logger Logger          = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
         // ReSharper disable once InconsistentNaming
-        private const           bool   _disableLogging = true ;
+        private const bool _disableLogging = true ;
 
         static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
 
@@ -156,35 +158,38 @@ namespace ProjTests
         }
 
         [ Fact ]
-        public void TestSubstituteType()
+        public void TestSubstituteType ( )
         {
-            using (var instance = new ApplicationInstance(
-                                                          new ApplicationInstance.
-                                                              ApplicationInstanceConfiguration(
-                                                                                               _output
-                                                                                                  .WriteLine
-                                                                                             , ApplicationGuid
-                                                                                              )
-                                                         ))
+            using ( var instance = new ApplicationInstance (
+                                                            new ApplicationInstance.
+                                                                ApplicationInstanceConfiguration (
+                                                                                                  _output
+                                                                                                     .WriteLine
+                                                                                                , ApplicationGuid
+                                                                                                 )
+                                                           ) )
             {
-                instance.AddModule(new AnalysisControlsModule());
-                instance.AddModule(new AnalysisAppLibModule());
-                instance.Initialize();
-                var lifetimeScope = instance.GetLifetimeScope();
-                var model = lifetimeScope.Resolve<TypesViewModel>();
-                var sts = lifetimeScope.Resolve<ISyntaxTypesService>();
-                var cMap = sts.CollectionMap();
-                var appTypeInfo = sts.GetAppTypeInfo(typeof(AssignmentExpressionSyntax));
-                var field = (SyntaxFieldInfo)appTypeInfo.Fields[0];
-                var typeSyntax =
-                    SyntaxFactory.ParseTypeName(typeof(ArgumentSyntax).FullName ?? throw new InvalidOperationException ( ));
+                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
+                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
+                instance.Initialize ( ) ;
+                var lifetimeScope = instance.GetLifetimeScope ( ) ;
+                var model = lifetimeScope.Resolve < TypesViewModel > ( ) ;
+                var sts = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
+                var cMap = sts.CollectionMap ( ) ;
+                var appTypeInfo = sts.GetAppTypeInfo ( typeof ( AssignmentExpressionSyntax ) ) ;
+                var field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
+                var typeSyntax = SyntaxFactory.ParseTypeName (
+                                                              typeof ( ArgumentSyntax ).FullName
+                                                              ?? throw new
+                                                                  InvalidOperationException ( )
+                                                             ) ;
                 var substType =
-                    XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
+                    XmlDocElements.SubstituteType ( field , typeSyntax , cMap , model ) ;
             }
         }
 
-        [WpfFact]
-        public void TestSubstituteTyp11e()
+        [ WpfFact ]
+        public void TestSubstituteTyp11e ( )
         {
             using ( var instance = new ApplicationInstance (
                                                             new ApplicationInstance.
@@ -208,7 +213,7 @@ namespace ProjTests
             }
         }
 
-        [WpfFact ]
+        [ WpfFact ]
         public void TestXaml2 ( )
         {
             var model = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
@@ -465,7 +470,7 @@ namespace ProjTests
                 Logger.Warn ( "in callback" ) ;
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
-                                                 , lifetimescope
+                                             , lifetimescope
                                                               .Resolve < IObjectIdProvider > ( )
                                                           ) ;
                 var tree = new AllResourcesTree ( model ) ;
@@ -622,7 +627,7 @@ namespace ProjTests
 
                 var model = new AllResourcesTreeViewModel (
                                                            lifetimescope
-                                                 , lifetimescope
+                                             , lifetimescope
                                                               .Resolve < IObjectIdProvider > ( )
                                                           ) ;
                 var tree = new AllResourcesTree ( model ) ;
@@ -1018,7 +1023,7 @@ namespace ProjTests
                                                                 ApplicationInstanceConfiguration (
                                                                                                   _output
                                                                                                      .WriteLine
-                                                                                            , ApplicationGuid
+                                                                                        , ApplicationGuid
                                                                                                  )
                                                            ) )
             {
@@ -1032,7 +1037,7 @@ namespace ProjTests
                 DebugUtils.WriteLine ( json ) ;
                 var vs = DependencyPropertyHelper.GetValueSource (
                                                                   p
-                                                            , PythonViewModel.InputLineProperty
+                                                        , PythonViewModel.InputLineProperty
                                                                  ) ;
                 Logger.Debug ( "Value source is {vs}" ,             vs ) ;
                 Logger.Debug ( "Current inputline is {inputLine}" , p.InputLine ) ;
@@ -1284,11 +1289,11 @@ namespace ProjTests
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimeScope = instance.GetLifetimeScope ( ) ;
-                
+
                 var t1 = new UiElementTypeConverter ( lifetimeScope ) ;
                 var t = t1.ControlForValue ( typeof ( ProjTests ) , 1 ) ;
-                ScrollViewer ff = new ScrollViewer ( ) { Content = t } ;
-                Window w1 = new Window { Content = ff } ;
+                var ff = new ScrollViewer ( ) { Content = t } ;
+                var w1 = new Window { Content           = ff } ;
                 w1.ShowDialog ( ) ;
             }
         }
