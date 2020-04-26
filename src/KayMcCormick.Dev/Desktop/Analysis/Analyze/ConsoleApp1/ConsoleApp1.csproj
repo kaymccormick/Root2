@@ -70,6 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AnalysisControls\ViewModel\PythonViewModel.cs">
+      <Link>PythonViewModel.cs</Link>
+    </Compile>
     <Compile Include="AppContext.cs" />
     <Compile Include="AppDbContext.cs" />
     <Compile Include="AppModule.cs" />

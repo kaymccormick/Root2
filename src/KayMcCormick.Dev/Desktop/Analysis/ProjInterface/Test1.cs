@@ -14,8 +14,10 @@ using System.Collections.Generic ;
 using Autofac.Features.AttributeFilters ;
 using KayMcCormick.Dev ;
 
-namespace ProjInterface
-{
+namespace ProjInterface/**
+* Conceptual model.
+class StreamlineModel.cs
+
     public class Test1
     {
         private readonly IEnumerable < Type > _types ;
@@ -23,7 +25,8 @@ namespace ProjInterface
         public Test1 (
             [ MetadataFilter ( "UiConversion" , true ) ]
             IEnumerable < Type > types,
-            IEnumerable < Type > types
+            IEnumerable < Type > 
+                types
         )
         {
             _types = types ;

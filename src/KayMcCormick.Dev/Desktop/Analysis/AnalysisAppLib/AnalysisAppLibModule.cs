@@ -109,7 +109,7 @@ namespace AnalysisAppLib
                               }
                              )
                    .As < ILoggerFactory > ( ) ;
-            builder.RegisterType < Myw > ( ).AsImplementedInterfaces ( ).AsSelf ( ) ;
+            builder.RegisterTypedir
             if ( false )
             {
                 builder.Register < Func < object , DataTable > > (

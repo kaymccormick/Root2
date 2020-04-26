@@ -92,6 +92,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\Analyze\ConsoleApp1\ListView2Base.cs">
+      <Link>ListView2Base.cs</Link>
+    </Compile>
     <Compile Include="AdaptedExplorerItem.cs" />
     <Compile Include="AnalyzeResults.xaml.cs">
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>

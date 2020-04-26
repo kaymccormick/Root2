@@ -102,6 +102,9 @@ namespace ConsoleApp1
                                            .Select ( x => new ItemData < T > { Container = e } )
                                            ) ;
 
+
+
+
                     Source       = _source ;
                     SelectedItem = selectedItem ;
                     // foreach ( var r in x.Children )

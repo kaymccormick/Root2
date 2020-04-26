@@ -130,7 +130,6 @@
     <Compile Include="PythonControl.xaml.cs">
       <DependentUpon>PythonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Scripting\EventRaisingStreamWriter.cs" />
     <Compile Include="Scripting\IPythonVariable.cs" />
     <Compile Include="Scripting\MyEvtArgs.cs" />
     <Compile Include="ViewModel\PythonViewModel.cs" />

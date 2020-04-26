@@ -1,14 +1,5 @@
-﻿#region header
-// Kay McCormick (mccor)
-// 
-// Analysis
-// KayMcCormick.Lib.Wpf
-// ModelResources.cs
-// 
-// 2020-03-30-3:32 AM
-// 
-// ---
-#endregion
+﻿Windowd1.xaml
+
 using System ;
 using System.Collections ;
 using System.Collections.Concurrent ;
@@ -37,6 +28,7 @@ namespace KayMcCormick.Dev
     /// </summary>
     public sealed class ModelResources : ISupportInitializeNotification , IViewModel
     {
+
         private const string Objects_Key    = "Objects" ;
         private const string Converters_Key = "Converters" ;
 
