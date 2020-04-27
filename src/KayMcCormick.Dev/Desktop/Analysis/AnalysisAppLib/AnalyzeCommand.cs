@@ -19,6 +19,7 @@ using AnalysisAppLib.Project ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.StackTrace ;
 using NLog;
@@ -29,6 +30,7 @@ namespace AnalysisAppLib
     /// Generic analyze command.
     /// </summary>
     [CategoryMetadata(Category.LogUsage)]
+    [TitleMetadata("Do it")]
     public sealed class AnalzyeCommandWrap : IBaseLibCommand
     {
         AnalyzeCommand _cmd;
@@ -50,6 +52,7 @@ namespace AnalysisAppLib
             throw new NotImplementedException();
         }
     }
+    [TitleMetadata("Find Log Usages")]
     public sealed class AnalyzeCommand : IAnalyzeCommand
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

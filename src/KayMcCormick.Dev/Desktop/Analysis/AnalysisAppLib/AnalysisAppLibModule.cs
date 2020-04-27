@@ -162,8 +162,9 @@ namespace AnalysisAppLib
                    .WithAttributedMetadata ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < AnalyzeCommand > ( )
-                   .As < IAnalyzeCommand > ( )
+            builder.RegisterType<AnalzyeCommandWrap>().AsImplementedInterfaces().WithCallerMetadata();
+            builder.RegisterType < AnalyzeCommand > ( ).AsSelf()
+                   .As < IAnalyzeCommand > ( ).AsImplementedInterfaces()
                    .WithCallerMetadata ( ) ;
 
             builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )

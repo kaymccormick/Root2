@@ -240,105 +240,107 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             {
                 AddResourceNodeInfos ( mdr ) ;
             }
-
-            try
+            if (false)
             {
-                foreach ( DictionaryEntry haveResourcesResource in res )
+                try
                 {
-                    if ( haveResourcesResource.Key      == null
-                         || haveResourcesResource.Value == null )
+                    foreach (DictionaryEntry haveResourcesResource in res)
                     {
-                        continue ;
-                    }
-
-                    var key = haveResourcesResource.Key ;
-                    if ( key is ResourceKey rkey )
-                    {
-                        switch ( rkey )
+                        if (haveResourcesResource.Key == null
+                             || haveResourcesResource.Value == null)
                         {
-                            // ReSharper disable once UnusedVariable
-                            case ComponentResourceKey componentResourceKey : break ;
-
-
-                            // ReSharper disable once UnusedVariable
-                            case ItemContainerTemplateKey itemContainerTemplateKey : break ;
-
-                            // ReSharper disable once UnusedVariable
-                            case DataTemplateKey dataTemplateKey : break ;
-
-                            // ReSharper disable once UnusedVariable
-                            case TemplateKey templateKey : break ;
-                            default :
-                                key = new ResourceKeyWrapper < ResourceKey > ( rkey ) ;
-                                break ;
+                            continue;
                         }
-                    }
 
-
-
-                    var resourceInfo = CreateNode ( resNode , key , haveResourcesResource.Value ) ;
-                    switch ( haveResourcesResource.Value )
-                    {
-                        case FrameworkTemplate ft :
+                        var key = haveResourcesResource.Key;
+                        if (key is ResourceKey rkey)
                         {
-                            var resourcesNode = CreateNode (
-                                                            resourceInfo
-                                                          , "Resources"
-                                                          , ft.Resources
-                                                           ) ;
-                            AddResourceNodeInfos ( resourcesNode ) ;
-                            break ;
-                        }
-                        case Style sty :
-                        {
-                            var settersNode = CreateNode ( resourceInfo , "Setters" , null ) ;
-                            settersNode.IsExpanded = true ;
-                            foreach ( var setter in sty.Setters )
+                            switch (rkey)
                             {
-                                switch ( setter )
-                                {
-                                    case EventSetter _ : break ;
-                                    case Setter setter1 :
-                                        CreateNode (
-                                                    settersNode
-                                                  , setter1.Property
-                                                  , setter1.Value
-                                                   ) ;
+                                // ReSharper disable once UnusedVariable
+                                case ComponentResourceKey componentResourceKey: break;
 
-                                        break ;
-                                    default : throw new InvalidOperationException ( ) ;
+
+                                // ReSharper disable once UnusedVariable
+                                case ItemContainerTemplateKey itemContainerTemplateKey: break;
+
+                                // ReSharper disable once UnusedVariable
+                                case DataTemplateKey dataTemplateKey: break;
+
+                                // ReSharper disable once UnusedVariable
+                                case TemplateKey templateKey: break;
+                                default:
+                                    key = new ResourceKeyWrapper<ResourceKey>(rkey);
+                                    break;
+                            }
+                        }
+
+
+
+                        var resourceInfo = CreateNode(resNode, key, haveResourcesResource.Value);
+                        switch (haveResourcesResource.Value)
+                        {
+                            case FrameworkTemplate ft:
+                                {
+                                    var resourcesNode = CreateNode(
+                                                                    resourceInfo
+                                                                  , "Resources"
+                                                                  , ft.Resources
+                                                                   );
+                                    AddResourceNodeInfos(resourcesNode);
+                                    break;
                                 }
+                            case Style sty:
+                                {
+                                    var settersNode = CreateNode(resourceInfo, "Setters", null);
+                                    settersNode.IsExpanded = true;
+                                    foreach (var setter in sty.Setters)
+                                    {
+                                        switch (setter)
+                                        {
+                                            case EventSetter _: break;
+                                            case Setter setter1:
+                                                CreateNode(
+                                                            settersNode
+                                                          , setter1.Property
+                                                          , setter1.Value
+                                                           );
+
+                                                break;
+                                            default: throw new InvalidOperationException();
+                                        }
+                                    }
+
+                                    break;
+                                }
+                        }
+
+                        if (haveResourcesResource.Value is IDictionary dict)
+                        {
+                            foreach (var key2 in dict.Keys)
+                            {
+                                CreateNode(resourceInfo, key2, dict[key2]);
+                            }
+                        }
+                        else
+                        {
+                            if (!(haveResourcesResource.Value is IEnumerable enumerable)
+                                 || haveResourcesResource.Value is string)
+                            {
+                                continue;
                             }
 
-                            break ;
-                        }
-                    }
-
-                    if ( haveResourcesResource.Value is IDictionary dict )
-                    {
-                        foreach ( var key2 in dict.Keys )
-                        {
-                            CreateNode ( resourceInfo , key2 , dict[ key2 ] ) ;
-                        }
-                    }
-                    else
-                    {
-                        if ( ! ( haveResourcesResource.Value is IEnumerable enumerable )
-                             || haveResourcesResource.Value is string )
-                        {
-                            continue ;
-                        }
-
-                        foreach ( var child in enumerable )
-                        {
-                            CreateNode ( resourceInfo , child , null ) ;
+                            foreach (var child in enumerable)
+                            {
+                                CreateNode(resourceInfo, child, null);
+                            }
                         }
                     }
                 }
-            }
-            catch ( Exception )
-            {
-                // ignored
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         }
 

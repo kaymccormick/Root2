@@ -16,6 +16,7 @@ using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
 using Autofac ;
+using Autofac.Features.Metadata;
 using KayMcCormick.Dev ;
 using NLog ;
 
@@ -26,6 +27,7 @@ namespace KayMcCormick.Lib.Wpf
     [ MarkupExtensionReturnType ( typeof ( IEnumerable ) ) ]
     public sealed class ResolveEnumerableExtension : MarkupExtension
     {
+        private bool _withMetadata;
         private readonly Type _componentType ;
 
         // public static readonly DependencyProperty ParameterProperty =
@@ -73,6 +75,8 @@ namespace KayMcCormick.Lib.Wpf
             get { return _parameterType ; }
             set { _parameterType = value ; }
         }
+
+        public bool WithMetadata { get => _withMetadata; set => _withMetadata = value; }
 
         #region Overrides of MarkupExtension
         /// <summary>
@@ -147,9 +151,14 @@ namespace KayMcCormick.Lib.Wpf
                         }
                         else
                         {
+                            var tt = ComponentType;
+                            if (WithMetadata)
+                            {
+                                tt = typeof(Meta<>).MakeGenericType(new[] { tt });
+                            }
                             var funcType =
-                                typeof(Func<>).MakeGenericType(
-                                                                       ComponentType
+                                typeof(Func<>).MakeGenericType(tt
+                                                                       
                                                                       );
                             var enumerablefuncType = 
                             typeof(IEnumerable<>).MakeGenericType(funcType);
@@ -169,7 +178,7 @@ namespace KayMcCormick.Lib.Wpf
                                 else
                                     result = x1.DynamicInvoke();
                                 DebugUtils.WriteLine($"{result}");
-                                l.Add ( result ) ;
+                                l.Add ( result) ;
                             }
                             catch ( Exception ex )
                             {

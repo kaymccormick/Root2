@@ -1156,8 +1156,8 @@
           <RibbonGroup
             ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=Docpane}}">
             <RibbonGroup.ItemTemplate>
-              <DataTemplate
-                DataType="command:IDisplayableAppCommand">
+
+              <DataTemplate DataType="command:IDisplayableAppCommand">
                 <RibbonButton
                   Label="{Binding DisplayName}"
                   LargeImageSource="{Binding LargeImageSourceKey}"
@@ -1165,15 +1165,21 @@
               </DataTemplate>
             </RibbonGroup.ItemTemplate>
           </RibbonGroup>
-          <RibbonGallery>
-            <RibbonGalleryCategory  ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand}}">
-            <RibbonGalleryCategory.ItemTemplate>
-              <DataTemplate DataType="classLib:IBaseLibCommand">
-                  <RibbonGalleryItem Content="{Binding Argument}"/>
-                </DataTemplate>
-            </RibbonGalleryCategory.ItemTemplate>
-            </RibbonGalleryCategory>
+          <RibbonComboBox Label="1">
+            <RibbonGallery ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
+                            SelectedValuePath="Content"
+                           >
+              <RibbonGallery.CategoryTemplate>
+              <DataTemplate DataType="{x:Type classLib:IBaseLibCommand}">
+                <RibbonGalleryCategory>
+                    <RibbonGalleryItem Content="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
+                  </RibbonGalleryCategory>
+              </DataTemplate>
+            </RibbonGallery.CategoryTemplate>
+        
+      
           </RibbonGallery>
+          </RibbonComboBox>
         </RibbonTab>
 
       </Ribbon>
