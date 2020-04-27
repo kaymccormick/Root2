@@ -16,7 +16,7 @@ trigger:
     - azure-pipelines-1-exo.yml
 
 pool:
-  name: exo
+  vmImage: windows-latesst
 
 variables:
   solution: 'src/KayMcCormick.Dev/KayMcCormick.Dev.sln'
