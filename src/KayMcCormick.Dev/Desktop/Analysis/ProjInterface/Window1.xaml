@@ -1165,23 +1165,38 @@
               </DataTemplate>
             </RibbonGroup.ItemTemplate>
           </RibbonGroup>
+          <RibbonControlGroup 
+                          ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
+                          >
+            <RibbonControlGroup.ItemTemplate>
+              <DataTemplate>
+                <RibbonRadioButton Label="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
+              </DataTemplate>
+            </RibbonControlGroup.ItemTemplate>
+          </RibbonControlGroup>
           <RibbonComboBox Label="1"
                           SelectionBoxWidth="62"
                   VerticalAlignment="Center" 
                   IsEditable="True"
+                          ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
                           >
-            <RibbonGallery ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
+            <RibbonComboBox.ItemTemplate>
+              <DataTemplate>
+                <RibbonGallery  ItemsSource="{Binding}"
                             SelectedValuePath="Content"
                            Command="{Binding Value}"
                            >
-              <RibbonGallery.ItemTemplate>
-              <DataTemplate DataType="{x:Type classLib:IBaseLibCommand}">
-                    <RibbonGalleryItem Selected="RibbonGalleryItem_Selected" Content="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
+                  <RibbonGallery.ItemTemplate>
+                    <DataTemplate DataType="{x:Type classLib:IBaseLibCommand}">
+                      <RibbonGalleryItem Selected="RibbonGalleryItem_Selected" Content="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
+                    </DataTemplate>
+                  </RibbonGallery.ItemTemplate>
+
+
+                </RibbonGallery>
+
               </DataTemplate>
-            </RibbonGallery.ItemTemplate>
-        
-      
-          </RibbonGallery>
+            </RibbonComboBox.ItemTemplate>
           </RibbonComboBox>
         </RibbonTab>
 
