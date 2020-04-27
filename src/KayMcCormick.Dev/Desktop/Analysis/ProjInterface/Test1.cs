@@ -14,25 +14,25 @@ using System.Collections.Generic ;
 using Autofac.Features.AttributeFilters ;
 using KayMcCormick.Dev ;
 
-namespace ProjInterface/**
-* Conceptual model.
-class StreamlineModel.cs
-
-    public class Test1
+namespace ProjInterface
+{
+    class StreamlineModel
     {
-        private readonly IEnumerable < Type > _types ;
 
-        public Test1 (
-            [ MetadataFilter ( "UiConversion" , true ) ]
-            IEnumerable < Type > types,
-            IEnumerable < Type > 
-                types
-        )
+        public class Test1
         {
-            _types = types ;
-            foreach ( var type in _types )
+            private readonly IEnumerable<Type> _types;
+
+            public Test1(
+                [ MetadataFilter ( "UiConversion" , true ) ]
+            IEnumerable < Type > types
+            )
             {
-                DebugUtils.WriteLine ( $"** {type.FullName}" ) ;
+                _types = types;
+                foreach (var type in _types)
+                {
+                    DebugUtils.WriteLine($"** {type.FullName}");
+                }
             }
         }
     }

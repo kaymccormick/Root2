@@ -519,6 +519,8 @@ if(RegiserExplorerTypes){
 
     internal class MyInfo
     {
+        public Guid Id { get; internal set; }
+        public List<IComponentRegistration> Registrations { get; internal set; } = new List<IComponentRegistration>();
     }
 
     internal interface IResourceResolver

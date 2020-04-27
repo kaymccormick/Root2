@@ -23,6 +23,7 @@ namespace ProjInterface
         public DbSet<AppClrType>  AppClrType   { get; set; }
         public DbSet <ProjectInfo> Project { get ; set ; }
         public DbSet < ProjectLanguage> ProjectLanguage { get ; set ; }
+
         public DbSet<LogInvocation2<string>> LogInvocation { get; set; }
         #region Overrides of DbContext
         // ReSharper disable once AnnotateNotNullParameter

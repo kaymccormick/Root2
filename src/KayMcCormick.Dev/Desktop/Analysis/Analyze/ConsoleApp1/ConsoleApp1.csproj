@@ -138,7 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\..\gui.cs\Terminal.Gui\Terminal.Gui.csproj">
-      <Project>{809fdf76-250b-4da9-9caf-e257e9e0e68a}</Project>
+      <Project>{a4f87345-3c09-4bf5-9b68-7e18e3154392}</Project>
       <Name>Terminal.Gui</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">

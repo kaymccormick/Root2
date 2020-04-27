@@ -6,6 +6,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
+             xmlns:classLib="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
              xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
@@ -572,7 +573,7 @@
           </DataTemplate>
 
           <DataTemplate
-            DataType="{x:Type analysisAppLib1:ComponentInfo}">
+            DataType="{x:Type classLib:ComponentInfo}">
             <TextBlock>
               <TextBlock.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />

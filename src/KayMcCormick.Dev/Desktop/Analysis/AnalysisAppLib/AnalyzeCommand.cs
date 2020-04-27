@@ -19,14 +19,37 @@ using AnalysisAppLib.Project ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.StackTrace ;
-using NLog ;
+using NLog;
 
 namespace AnalysisAppLib
 {
     /// <summary>
     /// Generic analyze command.
     /// </summary>
+    [CategoryMetadata(Category.LogUsage)]
+    public sealed class AnalzyeCommandWrap : IBaseLibCommand
+    {
+        AnalyzeCommand _cmd;
+
+        public AnalzyeCommandWrap(AnalyzeCommand cmd)
+        {
+            _cmd = cmd;
+        }
+
+        public object Argument { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public Task<IAppCommandResult> ExecuteAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnFault(AggregateException exception)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public sealed class AnalyzeCommand : IAnalyzeCommand
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

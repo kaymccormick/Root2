@@ -133,14 +133,29 @@ namespace KayMcCormick.Lib.Wpf
                     if ( scope != null )
                     {
                         DebugUtils.WriteLine($"Scope is {scope}");
-                        var funcType =
-                            typeof ( Func < , > ).MakeGenericType (
-                                                                   ParameterType
-                                                                 , ComponentType
-                                                                  ) ;
-                        var enumerablefuncType =
-                            typeof ( IEnumerable <> ).MakeGenericType ( funcType ) ;
-                        var p1 = ( IEnumerable ) scope.Resolve ( enumerablefuncType ) ;
+                        if (ComponentType ==null )
+                            return null;
+                        IEnumerable p1;
+                        if (ParameterType != null) {
+                            var funcType =
+                                typeof(Func<,>).MakeGenericType(
+                                                                       ParameterType
+                                                                     , ComponentType
+                                                                      );
+                            var enumerablefuncType =                             typeof(IEnumerable<>).MakeGenericType(funcType);
+                            p1 = (IEnumerable)scope.Resolve(enumerablefuncType);
+                        }
+                        else
+                        {
+                            var funcType =
+                                typeof(Func<>).MakeGenericType(
+                                                                       ComponentType
+                                                                      );
+                            var enumerablefuncType = 
+                            typeof(IEnumerable<>).MakeGenericType(funcType);
+                            p1 = (IEnumerable)scope.Resolve(enumerablefuncType);
+
+                        }
                         IList l = new ArrayList ( ) ;
                         foreach ( var x in p1 )
                         {
@@ -148,7 +163,11 @@ namespace KayMcCormick.Lib.Wpf
                             {
                                 DebugUtils.WriteLine($"{x}");
                                 var x1 = ( Delegate ) x ;
-                                var result = x1.DynamicInvoke ( ParameterValue ) ;
+                                object result = null;
+                                if (ParameterType != null)
+                                    result = x1.DynamicInvoke(ParameterValue);
+                                else
+                                    result = x1.DynamicInvoke();
                                 DebugUtils.WriteLine($"{result}");
                                 l.Add ( result ) ;
                             }

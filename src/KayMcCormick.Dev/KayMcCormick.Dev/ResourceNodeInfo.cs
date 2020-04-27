@@ -45,7 +45,7 @@ namespace KayMcCormick.Dev
                    } ;
         }
 
-        private ResourceNodeInfo ( ) { CreatedDatetime = DateTime.Now ; }
+        public ResourceNodeInfo ( ) { CreatedDatetime = DateTime.Now ; }
 
         /// <summary>
         /// 

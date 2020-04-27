@@ -8,6 +8,10 @@ namespace KayMcCormick.Dev
 
     public sealed class ComponentInfo
     {
+        public ComponentInfo()
+        {
+
+        }
         /// <summary>
         /// 
         /// </summary>

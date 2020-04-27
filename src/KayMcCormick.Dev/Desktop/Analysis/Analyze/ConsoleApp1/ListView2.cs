@@ -19,7 +19,7 @@ namespace ConsoleApp1
 {
     internal sealed class ListView2 : ListView2Base < ResourceNodeInfo >
     {
-        public ListView2 ( Rect rect , [ NotNull ] List < ReEsourceNodeInfo > list ) :
+        public ListView2 ( Rect rect , [ NotNull ] List < ResourceNodeInfo > list ) :
             base ( rect , list )
         {
         }

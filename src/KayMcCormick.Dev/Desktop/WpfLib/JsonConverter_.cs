@@ -8,7 +8,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public sealed class JsonConverter_ : IValueConverter
+    public sealed class JsonConverter1 : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>

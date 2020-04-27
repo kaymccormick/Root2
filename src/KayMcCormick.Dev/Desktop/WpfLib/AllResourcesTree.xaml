@@ -7,13 +7,9 @@
   xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   xmlns:xaml="clr-namespace:System.Xaml;assembly=System.Xaml"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
-  xmlns:dev1="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
+  xmlns:classLib="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
   xmlns:core1="clr-namespace:Autofac.Core;assembly=Autofac"
   xmlns:core2="clr-namespace:Autofac.Core;assembly=Autofac"
-  xmlns:dev2="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-  xmlns:dev3="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-  xmlns:dev4="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-  xmlns:dev5="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
   xmlns:registration1="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
   xmlns:registration2="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
   xmlns:registration3="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
@@ -122,7 +118,7 @@
               </ListView>
             </StackPanel>
           </DataTemplate>
-          <DataTemplate x:Key="TreeViewNodeComponentInfo" DataType="{x:Type dev1:ComponentInfo}">
+          <DataTemplate x:Key="TreeViewNodeComponentInfo" DataType="{x:Type classLib:ComponentInfo}">
             <WrapPanel>
               <TextBlock FontStyle="Italic" Text="{Binding Path=Id}"></TextBlock>
             </WrapPanel>
@@ -206,7 +202,7 @@
           </HierarchicalDataTemplate>
           <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <HierarchicalDataTemplate
-            DataType="{x:Type dev2:ComponentInfo}"
+            DataType="{x:Type classLib:ComponentInfo}"
             ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Text="{Binding Key}" />
@@ -237,7 +233,7 @@
             </Border>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate
-            DataType="{x:Type dev3:ResourceNodeInfo}"
+            DataType="{x:Type classLib:ResourceNodeInfo}"
             ItemsSource="{Binding Path=Children}">
             <Border BorderBrush="Green" BorderThickness="1" Padding="1">
               <ContentControl Focusable="False"
@@ -279,7 +275,7 @@
             <Setter Property="Padding" Value="3" />
           </Style>
           <DataTemplate
-            DataType="{x:Type dev4:InstanceInfo}"
+            DataType="{x:Type classLib:InstanceInfo}"
             x:Key="PreviewInstanceInfo">
             <Border>
               <Grid>
@@ -311,7 +307,7 @@
             </Border>
           </DataTemplate>
           <DataTemplate
-            DataType="{x:Type dev5:InstanceInfo}"
+            DataType="{x:Type classLib:InstanceInfo}"
             x:Key="DetailInstanceInfo">
             <Border>
               <Grid>

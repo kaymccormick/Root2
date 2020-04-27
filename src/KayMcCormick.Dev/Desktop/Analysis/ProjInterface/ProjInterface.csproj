@@ -110,6 +110,7 @@
     <Compile Include="BreakTraceListener.cs" />
     <Compile Include="IconsSource.cs" />
     <Compile Include="IIconsSource.cs" />
+    <Compile Include="IViewMetadata.cs" />
     <Compile Include="LogViewerControl.xaml.cs" />
     <Compile Include="LogViewerWindow.xaml.cs" />
     <Compile Include="ProjInterfaceModule.cs" />

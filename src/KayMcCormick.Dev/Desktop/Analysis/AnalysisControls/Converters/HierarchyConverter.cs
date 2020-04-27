@@ -23,6 +23,10 @@ namespace AnalysisControls.Converters
         public static readonly HierarchyConverter Default = new HierarchyConverter ( ) ;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+
+        public HierarchyConverter()
+        {
+        }
         #region Implementation of IValueConverter
         /// <summary>Converts the specified value.</summary>
         /// <param name="value">The value.</param>

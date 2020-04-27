@@ -180,31 +180,57 @@ namespace ProjInterface
         protected override Guid ApplicationGuid { get ; } =
             new Guid ( "9919c0fb-916c-4804-81de-f272a1b585f7" ) ;
 
-        protected override void OnStartup ( StartupEventArgs e )
-        {
-            base.OnStartup ( e ) ;
-            Logger.Trace ( "{methodName}" , nameof ( OnStartup ) ) ;
-            
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            Logger.Trace("{methodName}", nameof(OnStartup));
+            var lifetimeScope = Scope;
+            if (lifetimeScope?.IsRegistered<Window1>() == false)
             {
-                ShowErrorDialog (
+                ShowErrorDialog(
                                  ProjInterface.Properties.Resources
                                               .ProjInterfaceApp_OnStartup_Application_Error
                                , ProjInterface
                                 .Properties.Resources
                                 .ProjInterfaceApp_OnStartup_Compile_time_configuration_error
-                                ) ;
-                Current.Shutdown ( 255 ) ;
+                                );
+                Current.Shutdown(255);
             }
+
+            Window1 mainWindow = null;
             try
             {
-                mainWindow.Show ( ) ;
-            }
-            catch ( Exception ex )
+                if (lifetimeScope != null)
+                {
+                    //var test1 = Scope.Resolve<Test1>();
+
+                   mainWindow = lifetimeScope.Resolve<Window1>( ) ;
+                }
+}
+            catch (Exception ex )
             {
-                MessageBox.Show ( ex.ToString ( ) , "error" ) ;
+                DebugUtils.WriteLine(ex.ToString ( ) ) ;
+                MessageBox.Show(ex.ToString ( ) , "error" ) ;
+            }
+
+            if (mainWindow == null )
+            {
+                MessageBox.Show( "Unable to resolve Main window" , "error" ) ;
+                return ;
+            }
+
+            try
+            {
+                mainWindow.Show( ) ;
+            }
+            catch (Exception ex )
+            {
+                MessageBox.Show(ex.ToString ( ) , "error" ) ;
             }
         }
+
+
 
         private void ShowErrorDialog ( string applicationError , string messageText )
         {
@@ -222,6 +248,10 @@ namespace ProjInterface
             return TryFindResource ( resourceKey ) ;
         }
         #endregion
+    }
+
+    internal class Test1
+    {
     }
 
     internal static class CustomAppEntry
