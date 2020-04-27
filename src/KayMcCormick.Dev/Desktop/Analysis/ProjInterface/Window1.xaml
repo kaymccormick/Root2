@@ -1182,17 +1182,15 @@
                           >
             <RibbonComboBox.ItemTemplate>
               <DataTemplate>
-                <RibbonGallery  ItemsSource="{Binding}"
+                <RibbonGallery ItemsSource="{Binding Converter={StaticResource DictionaryConverter},Path=Metadata}"
                             SelectedValuePath="Content"
-                           Command="{Binding Value}"
+                           
                            >
                   <RibbonGallery.ItemTemplate>
                     <DataTemplate DataType="{x:Type classLib:IBaseLibCommand}">
-                      <RibbonGalleryItem Selected="RibbonGalleryItem_Selected" Content="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
+                      <RibbonGalleryItem Selected="RibbonGalleryItem_Selected" Content="{Binding}"/>
                     </DataTemplate>
                   </RibbonGallery.ItemTemplate>
-
-
                 </RibbonGallery>
 
               </DataTemplate>

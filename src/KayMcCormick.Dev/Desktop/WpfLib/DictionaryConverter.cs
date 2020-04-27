@@ -32,7 +32,10 @@ namespace KayMcCormick.Lib.Wpf
             {
                 return null ;
             }
-
+            if(parameter == null)
+            {
+                return d.Keys;
+            }
             if ( parameter == null
                  || ! d.Contains ( parameter ) )
             {
