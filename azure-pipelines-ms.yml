@@ -6,11 +6,9 @@
 trigger:
   branches:
     include:
-    - addin
-    - master
     - reanalyze
   paths:
-    include:
+    include:brokeit
     - '*'
     exclude:
     - azure-pipelines-1.yml
