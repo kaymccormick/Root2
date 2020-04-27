@@ -516,6 +516,11 @@ namespace ProjInterface
             return TryFindResource ( resourceKey ) ;
         }
         #endregion
+
+        private void RibbonGalleryItem_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public sealed class Filter

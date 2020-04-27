@@ -1165,17 +1165,20 @@
               </DataTemplate>
             </RibbonGroup.ItemTemplate>
           </RibbonGroup>
-          <RibbonComboBox Label="1">
+          <RibbonComboBox Label="1"
+                          SelectionBoxWidth="62"
+                  VerticalAlignment="Center" 
+                  IsEditable="True"
+                          >
             <RibbonGallery ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
                             SelectedValuePath="Content"
+                           Command="{Binding Value}"
                            >
-              <RibbonGallery.CategoryTemplate>
+              <RibbonGallery.ItemTemplate>
               <DataTemplate DataType="{x:Type classLib:IBaseLibCommand}">
-                <RibbonGalleryCategory>
-                    <RibbonGalleryItem Content="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
-                  </RibbonGalleryCategory>
+                    <RibbonGalleryItem Selected="RibbonGalleryItem_Selected" Content="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
               </DataTemplate>
-            </RibbonGallery.CategoryTemplate>
+            </RibbonGallery.ItemTemplate>
         
       
           </RibbonGallery>
