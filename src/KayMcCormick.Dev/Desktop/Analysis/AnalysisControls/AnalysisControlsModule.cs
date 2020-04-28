@@ -20,6 +20,7 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Markup ;
+using AnalysisAppLib;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
@@ -147,15 +148,88 @@ namespace AnalysisControls
 
 
 
-                //
-                // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-                // foreach ( var name in names )
-                // {
-                //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
-                //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
-                //
-                // }
+            //
+            // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            // foreach ( var name in names )
+            // {
+            //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
+            //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
+            //
+            // }
 
+            builder.RegisterCallback((x) =>
+            {
+                
+            });
+            builder.Register((c, p)=>
+            {
+
+                var cm = c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>();
+
+                Dictionary<Category, Info1> dict = new Dictionary<Category, Info1>();
+                foreach (var c1 in cm)
+                {
+                    foreach (var m1 in c1.Metadata)
+                    {
+                        DebugUtils.WriteLine($"{m1.Key} = {m1.Value}");
+                    }
+                    CommandInfo ci = new CommandInfo { Command = c1 };
+
+                    if (c1.Metadata.TryGetValue("Category", out var cv))
+                    {
+                    }
+                    Category cat = (Category)cv;
+
+                    c1.Metadata.TryGetValue("Group", out var group);
+                    if (group == null)
+                    {
+                        group = "no grop";
+                    }
+
+                    if (!dict.TryGetValue(cat, out var i1))
+                    {
+                        i1 = new Info1()
+                        {
+                            Category = (Category)cat,
+                        };
+                        dict[cat] = i1;
+                    }
+                    if (group == null)
+                    {
+                        i1.Ungrouped.Add(ci);
+                    }
+                    else
+                    {
+                        if (!i1.Infos.TryGetValue((string)group, out var i2))
+                        {
+
+                            i2 = new Info2 { Group = (string)group };
+                            i1.Infos[(string)group] = i2;
+                        }
+
+                        i2.Infos.Add(ci);
+                    }
+
+
+                }
+
+                DebugUtils.WriteLine("***");
+                foreach (var k in dict.Keys)
+                {
+                    DebugUtils.WriteLine(k.ToString());
+                    foreach (var cx in dict[k].Infos)
+                    {
+                        foreach (var cxx in cx.Value.Infos)
+                        {
+                            DebugUtils.WriteLine(cxx.Command.ToString());
+                        }
+
+                    }
+
+                }
+                return dict;
+
+            }).AsSelf().WithCallerMetadata().SingleInstance();
                 builder.Register (
                                   ( context , parameters ) => {
                                       try

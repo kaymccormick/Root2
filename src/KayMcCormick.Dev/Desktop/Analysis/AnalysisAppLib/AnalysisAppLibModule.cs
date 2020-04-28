@@ -14,6 +14,7 @@ using Autofac.Core ;
 using Autofac.Core.Registration ;
 using Autofac.Extras.AttributeMetadata ;
 using Autofac.Features.AttributeFilters ;
+using Autofac.Features.Metadata;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -99,16 +100,7 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-            builder.Register (
-                              ( c , p ) => {
-                                  var loggerProviders =
-                                      c.Resolve < IEnumerable < ILoggerProvider > > ( ) ;
-                                  return new Microsoft.Extensions.Logging.LoggerFactory (
-                                                                                         loggerProviders
-                                                                                        ) ;
-                              }
-                             )
-                   .As < ILoggerFactory > ( ) ;
+
             
             if ( false )
             {
@@ -122,6 +114,7 @@ namespace AnalysisAppLib
                 builder.RegisterAdapter < object , DataTable > ( DataAdapter ) ;
                 builder.RegisterAdapter < object , IDictionary > ( DictAdapter ) ;
             }
+            builder.RegisterType<TestModel>();
 
             builder.RegisterType < AppDbContext > ( )
                    .AsSelf ( )
@@ -162,7 +155,7 @@ namespace AnalysisAppLib
                    .WithAttributedMetadata ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.RegisterType<AnalzyeCommandWrap>().AsImplementedInterfaces().WithCallerMetadata();
+            builder.RegisterType<AnalyzeCommandWrap>().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType < AnalyzeCommand > ( ).AsSelf()
                    .As < IAnalyzeCommand > ( ).AsImplementedInterfaces()
                    .WithCallerMetadata ( ) ;
@@ -377,5 +370,15 @@ namespace AnalysisAppLib
         /// </summary>
         // ReSharper disable once UnusedMember.Global
         Type DataflowOutputType { get ; set ; }
+    }
+
+    public class TestModel
+    {
+        IEnumerable<Category> c;
+
+        public TestModel(IEnumerable<Category> c, IEnumerable<Meta<Lazy<IBaseLibCommand>>> cm)
+        {
+            this.c = c;
+        }
     }
 }

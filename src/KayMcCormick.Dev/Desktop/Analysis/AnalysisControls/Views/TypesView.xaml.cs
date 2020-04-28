@@ -16,6 +16,8 @@ namespace AnalysisControls.Views
     /// </summary>
     [ TitleMetadata ( "Syntax node types" ) ]
     [ ImageMetadata ( "helpStatusColor" ) ]
+    [CategoryMetadata(Category.Management)]
+    [GroupMetadata("Syntax")]
     public sealed partial class TypesView : UserControl
       , IView < ITypesViewModel >
       , IViewWithTitle

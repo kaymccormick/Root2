@@ -10,7 +10,8 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
-      </ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionary1.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
         <Glyphs
           FontUri             = "C:\WINDOWS\Fonts\cour.TTF"
           FontRenderingEmSize = "22"

@@ -4,13 +4,27 @@ using System.ComponentModel.Composition;
 namespace AnalysisAppLib
 {
     [MetadataAttribute]
-    internal class CategoryMetadataAttribute : Attribute
+    public class CategoryMetadataAttribute : Attribute
     {
-        private Category logUsage;
+        private Category category;
 
         public CategoryMetadataAttribute(Category logUsage)
         {
-            this.logUsage = logUsage;
+            this.Category = logUsage;
         }
+
+        public Category Category { get => category; set => category = value; }
+    }
+    [MetadataAttribute]
+    public class GroupMetadataAttribute : Attribute
+    {
+        private string group;
+
+        public GroupMetadataAttribute(string  logUsage)
+        {
+            this.Group = logUsage;
+        }
+
+        public string Group { get => group; set => group = value; }
     }
 }

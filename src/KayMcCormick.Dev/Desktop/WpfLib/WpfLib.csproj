@@ -100,6 +100,7 @@
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />
     <Compile Include="ColorConverter.cs" />
+    <Compile Include="Command\WrappedAppCommand2.cs" />
     <Compile Include="ComponentInfoTypeDescriptor.cs" />
     <Compile Include="CompositeResourceNodeKey.cs" />
     <Compile Include="ConsoleTest.cs" />

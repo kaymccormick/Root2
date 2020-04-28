@@ -20,6 +20,7 @@
               xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
               xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis"
               DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
+              
               Foreground="DarkOrange"
              
               FontSize="14.0"
@@ -35,6 +36,24 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
+          <TestConverter x:Key="TestConverter" />
+          <local:BaseAppCommandConverter x:Key="BaseAppCommandConverter"/>
+          <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:CommandInfo}">
+            <RibbonButton Label="{Binding Title}" Command="{Binding Path=Command.Value.Value,Converter={StaticResource BaseAppCommandConverter}}"></RibbonButton>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:TabInfo}" ItemsSource="{Binding Path=Groups,Converter={StaticResource TestConverter}}">
+            <TextBlock Text="{Binding Path=Category}"/>
+          </HierarchicalDataTemplate>
+
+          <HierarchicalDataTemplate DataType="{x:Type local:GroupInfo}" ItemsSource="{Binding Path=Commands,Converter={StaticResource TestConverter}}">
+            <TextBlock Text="{Binding Category}"/>
+          </HierarchicalDataTemplate>
+          <DataTemplate x:Key="t1">
+            <ContentControl Content="{Binding}"></ContentControl>
+          </DataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:GroupInfo2}" ItemsSource="{Binding Path=Items,Converter={StaticResource TestConverter}}" ItemTemplate="{StaticResource t1}">
+            <TextBlock Text="{Binding Group}" FontSize="24" BaselineOffset="-10"/>
+          </HierarchicalDataTemplate>
           <Style TargetType="Window">
             <Setter Property="WindowStyle" Value="None" />
             <Setter Property="AllowsTransparency"
@@ -209,6 +228,7 @@
             x:Key="AppCommandConverter" />
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
+      
       <Style x:Key="DockingManagerStyle1"
              TargetType="{x:Type avalondock:DockingManager}">
         <Setter Property="DocumentPaneControlStyle">
@@ -1139,66 +1159,11 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-
-      <Ribbon x:Name="Ribbon" Background="#76406A">
-        <Ribbon.ApplicationMenu>
-          <RibbonApplicationMenu
-            SmallImageSource="{StaticResource BrowserIcon}"
-            Background="#ECC8EC">
-            <RibbonApplicationMenuItem
-              Header="Open File"
-              Command="Open"
-              x:Name="OpenFileMenuItem" />
-          </RibbonApplicationMenu>
-        </Ribbon.ApplicationMenu>
-
-        <RibbonTab Header="Views">
-          <RibbonGroup
-            ItemsSource="{kmWpf:ResolveEnumerable command:IDisplayableAppCommand,ParameterType={x:Type avalondock:LayoutDocumentPane},ParameterValue={x:Reference Name=Docpane}}">
-            <RibbonGroup.ItemTemplate>
-
-              <DataTemplate DataType="command:IDisplayableAppCommand">
-                <RibbonButton
-                  Label="{Binding DisplayName}"
-                  LargeImageSource="{Binding LargeImageSourceKey}"
-                  Command="{Binding Converter={StaticResource AppCommandConverter},ConverterParameter={kmWpf:Resolve kmWpf:IHandleException}}" />
-              </DataTemplate>
-            </RibbonGroup.ItemTemplate>
-          </RibbonGroup>
-          <RibbonControlGroup 
-                          ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
-                          >
-            <RibbonControlGroup.ItemTemplate>
-              <DataTemplate>
-                <RibbonRadioButton Label="{Binding Converter={StaticResource DictionaryConverter},Mode=OneWay,ConverterParameter=Title,Path=Metadata}"/>
-              </DataTemplate>
-            </RibbonControlGroup.ItemTemplate>
-          </RibbonControlGroup>
-          <RibbonComboBox Label="1"
-                          SelectionBoxWidth="62"
-                  VerticalAlignment="Center" 
-                  IsEditable="True"
-                          ItemsSource="{kmWpf:ResolveEnumerable {x:Type classLib:IBaseLibCommand},WithMetadata=True}"
-                          >
-            <RibbonComboBox.ItemTemplate>
-              <DataTemplate>
-                <RibbonGallery ItemsSource="{Binding Converter={StaticResource DictionaryConverter},Path=Metadata}"
-                            SelectedValuePath="Content"
-                           
-                           >
-                  <RibbonGallery.ItemTemplate>
-                    <DataTemplate DataType="{x:Type classLib:IBaseLibCommand}">
-                      <RibbonGalleryItem Selected="RibbonGalleryItem_Selected" Content="{Binding}"/>
-                    </DataTemplate>
-                  </RibbonGallery.ItemTemplate>
-                </RibbonGallery>
-
-              </DataTemplate>
-            </RibbonComboBox.ItemTemplate>
-          </RibbonComboBox>
-        </RibbonTab>
-
+      <Ribbon Visibility="Visible" x:Name="Ribbon" Background="#76406A" ItemsSource="{Binding Path=Tabs,Converter={StaticResource TestConverter}}">
+        <Ribbon.Resources>
+        </Ribbon.Resources>
       </Ribbon>
+
 
       <avalondock:DockingManager BorderBrush="Black"
                                  BorderThickness="1"
@@ -1302,6 +1267,9 @@
         </avalondock:LayoutRoot>
       </avalondock:DockingManager>
       <StatusBar Grid.Row="3" Grid.Column="0" />
+      <RibbonContextualTabGroup HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100">
+        <RibbonContextualTabGroupItemsControl Height="100" Width="100"/>
+      </RibbonContextualTabGroup>
     </Grid>
   </Border>
 </RibbonWindow>

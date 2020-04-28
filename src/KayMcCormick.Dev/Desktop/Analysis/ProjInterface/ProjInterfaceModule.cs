@@ -10,9 +10,10 @@
 // ---
 #endregion
 using System ;
+using System.Collections;
 using System.Collections.Concurrent ;
 using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
+using System.Collections.ObjectModel;
 using System.ComponentModel ;
 using System.Linq ;
 using System.Reactive.Subjects ;
@@ -20,6 +21,7 @@ using System.Reflection ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Input ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Syntax ;
@@ -70,21 +72,6 @@ namespace ProjInterface
     }
 #else
 #endif
-    public class AppTypeInfoObservableCollection : ObservableCollection < AppTypeInfo >
-    {
-        public AppTypeInfoObservableCollection ( ) { }
-
-        public AppTypeInfoObservableCollection ( [ NotNull ] List < AppTypeInfo > list ) :
-            base ( list )
-        {
-        }
-
-        public AppTypeInfoObservableCollection (
-            [ NotNull ] IEnumerable < AppTypeInfo > collection
-        ) : base ( collection )
-        {
-        }
-    }
 
     public sealed class ProjInterfaceModule : IocModule
     {
@@ -215,6 +202,21 @@ namespace ProjInterface
                                                                                                         > > ( )
                                                                                                    )
                                                                  ) ;
+            builder.Register<IEnumerable<GroupInfo>>((c, p) =>
+            {
+                var t = p.TypedAs<TabInfo>();
+                var views = c.Resolve<IEnumerable<Meta<Lazy<IView1>>>>();
+                var groupInfo2 = new GroupInfo2() {Group="Views"};
+                foreach (var view in views)
+                {
+                    view.Metadata.TryGetValue("Title", out var title);
+                    RibbonToggleButton b = new RibbonToggleButton();
+                    b.Label = (string) title;
+                    groupInfo2.Items.Add(new RibbonControl(){Content = b});
+                }
+                
+                return new[] {groupInfo2};
+            });
             builder.RegisterInstance ( regs )
                    .AsSelf ( )
                    .As < IObservable < IComponentRegistration > > ( ) ;
@@ -347,6 +349,11 @@ if(RegiserExplorerTypes){
                    .As < IViewWithTitle > ( )
                    .WithCallerMetadata ( ) ;
 
+            // builder.RegisterAdapter<Meta<Lazy<IViewModel>>, IDisplayableAppCommand>((c, p, o) =>
+            // {
+                // var meta = o.Metadata;
+                
+            // })
             builder.RegisterType < UiElementTypeConverter > ( ).AsSelf ( ) ;
             if ( RegisterControlViewCommandAdapters )
             {
@@ -355,8 +362,11 @@ if(RegiserExplorerTypes){
                         Func < LayoutDocumentPane , IDisplayableAppCommand >
                     > ( ControlViewCommandAdapter )
                    .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( )
+                   .WithMetadata("Category", Category.Management)
+                   .WithMetadata("Group", "misc")
                    .WithCallerMetadata ( ) ;
             }
+
 
 #if PYTHON
             builder.RegisterAssemblyTypes (
@@ -532,14 +542,14 @@ if(RegiserExplorerTypes){
     {
         public MySource ( )
         {
-            _commands = new List < CommandInfo > ( ) ;
+            _commands = new List < CommandInfo2 > ( ) ;
             foreach ( var cmd in typeof ( WpfAppCommands )
                                 .GetFields ( BindingFlags.Public | BindingFlags.Static )
                                 .Select ( fieldInfo => fieldInfo.GetValue ( null ) ) )
             {
                 if ( cmd is RoutedUICommand ri )
                 {
-                    _commands.Add ( new CommandInfo { Command = ri } ) ;
+                    _commands.Add ( new CommandInfo2 { Command = ri } ) ;
                 }
             }
         }
@@ -547,7 +557,7 @@ if(RegiserExplorerTypes){
 #pragma warning disable 649
         private bool _isAdapterForIndividualComponents ;
 #pragma warning restore 649
-        private readonly List < CommandInfo > _commands ;
+        private readonly List < CommandInfo2 > _commands ;
         #region Implementation of IRegistrationSource
         // ReSharper disable once AnnotateNotNullTypeMember
         public IEnumerable < IComponentRegistration > RegistrationsFor (
@@ -584,9 +594,19 @@ if(RegiserExplorerTypes){
         #endregion
     }
 
-    public sealed class CommandInfo
+    public sealed class CommandInfo2
     {
         private RoutedUICommand _command ;
         public  RoutedUICommand Command { get { return _command ; } set { _command = value ; } }
+    }
+
+
+    public class GroupInfo2 : GroupInfo
+    {
+        public ObservableCollection<RibbonControl> Items { get; } = new ObservableCollection<RibbonControl>();
+
+        public GroupInfo2()
+        {
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
+using System.Globalization;
 using System.IO ;
 using System.Linq ;
 using System.Reactive.Concurrency ;
@@ -12,6 +13,7 @@ using System.Threading.Tasks.Dataflow ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon ;
+using System.Windows.Data;
 using System.Windows.Input ;
 using System.Windows.Media ;
 using System.Windows.Navigation ;
@@ -30,6 +32,7 @@ using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.Command;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.Classification ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -521,6 +524,11 @@ namespace ProjInterface
         {
 
         }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
     }
 
     public sealed class Filter
@@ -533,5 +541,19 @@ namespace ProjInterface
         public string Description { get { return _description ; } set { _description = value ; } }
 
         public Action < string > Handler { get ; set ; }
+    }
+
+    public class BaseAppCommandConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new WrappedAppCommand2((IBaseLibCommand) value, new HandleExceptionImpl());
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

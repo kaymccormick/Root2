@@ -6,6 +6,7 @@ using System.Linq ;
 using System.Threading.Tasks ;
 using AnalysisAppLib.Syntax ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -16,6 +17,8 @@ namespace AnalysisAppLib.Command
 {
     /// <summary>
     /// </summary>
+    [TitleMetadata("Code generation")]
+    [CategoryMetadata(Category.Infrastructure)]
     public sealed class CodeGenCommand : IBaseLibCommand
     {
         private static readonly string[] AssemblyRefs =
@@ -54,6 +57,7 @@ namespace AnalysisAppLib.Command
         public async Task < IAppCommandResult > ExecuteAsync ( )
         {
             var outputFunc = ( Action < string > ) Argument ;
+            outputFunc ??= OutputFunc;
 
             void DebugOut ( string s1 )
             {
@@ -421,6 +425,11 @@ namespace AnalysisAppLib.Command
 
             //File.WriteAllText ( @"C:\data\logs\gen.cs" , compl.ToString ( ) ) ;
             return AppCommandResult.Success ;
+        }
+
+        private void OutputFunc(string obj)
+        {
+            DebugUtils.WriteLine(obj);
         }
 
         /// <inheritdoc />

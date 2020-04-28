@@ -80,6 +80,9 @@
     <Compile Include="Category.cs" />
     <Compile Include="CategoryMetadataAttribute.cs" />
     <Compile Include="Dataflow\IHaveRejectBlock.cs" />
+    <Compile Include="Info1.cs" />
+    <Compile Include="Info2.cs" />
+    <Compile Include="Info3.cs" />
     <Compile Include="LConf.cs" />
     <Compile Include="Dataflow\Example1TransformFuncProvider.cs" />
     <Compile Include="DocInterface.cs" />

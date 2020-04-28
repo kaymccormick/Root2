@@ -203,7 +203,7 @@ namespace ProjInterface
             {
                 if (lifetimeScope != null)
                 {
-                    //var test1 = Scope.Resolve<Test1>();
+                    var test1 = Scope.Resolve<TestModel>();
 
                    mainWindow = lifetimeScope.Resolve<Window1>( ) ;
                 }

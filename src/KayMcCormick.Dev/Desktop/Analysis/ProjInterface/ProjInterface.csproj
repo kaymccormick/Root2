@@ -100,6 +100,8 @@
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppDbContext.cs" />
+    <Compile Include="AppTypeInfoObservableCollection.cs" />
+    <Compile Include="CommandObservableList.cs" />
     <Compile Include="DockWindowViewModel.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="Home.xaml.cs">
@@ -122,6 +124,7 @@
     <Compile Include="SemanticModel.cs" />
     <Compile Include="SynchronizationContextAwaiter.cs" />
     <Compile Include="Test1.cs" />
+    <Compile Include="TestModel.cs" />
     <Compile Include="TokenCacheHelper.cs" />
     <Compile Include="ViewModel\AnalyzeResultsViewModel.cs" />
     <Compile Include="Window1.xaml.cs">
@@ -136,6 +139,10 @@
     <Page Include="AppResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dictionary1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Home.xaml">
       <SubType>Designer</SubType>

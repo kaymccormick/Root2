@@ -1,7 +1,9 @@
 ﻿namespace AnalysisAppLib
 {
-    internal enum Category
+    public enum Category
     {
-        LogUsage
+        LogUsage,
+        Infrastructure,
+        Management
     }
 }

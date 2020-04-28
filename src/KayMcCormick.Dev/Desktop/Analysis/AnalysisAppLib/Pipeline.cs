@@ -30,13 +30,11 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         public Pipeline (
-            ILoggerFactory      loggerFactory
-          , Action < string >   outAct
-          , IAddRuntimeResource add
+            IAddRuntimeResource add
         )
         {
-            _loggerFactory = loggerFactory ;
-            _outAct        = outAct ;
+            
+            
             _add           = add ;
         }
 
@@ -70,8 +68,8 @@ namespace AnalysisAppLib
         private IPropagatorBlock < AnalysisRequest , AnalysisRequest > _currentBlock ;
 #pragma warning restore 649
         private          BufferBlock < RejectedItem >          _rejectBlock ;
-        private readonly ILoggerFactory                        _loggerFactory ;
-        private readonly Action < string >                     _outAct ;
+        
+        
         private readonly IAddRuntimeResource                   _add ;
         private readonly IEnumerable < Action < IEventMisc > > _miscs ;
         private          WriteOnceBlock < AnalysisRequest >    _input ;
@@ -115,12 +113,12 @@ namespace AnalysisAppLib
           , IEnumerable < Action < Tuple < Workspace , Document > > > documentAction1
           , IEnumerable < Action < Document > >                       documentAction
           , IEnumerable < Action < ILogInvocation > >                 invocActions
-          , Action < string >                                         outAct
+        
           , IEnumerable < Action < IEventMisc > >                     miscs
           , IAddRuntimeResource                                       add
         )
         {
-            _outAct            = outAct ;
+        
             _miscs             = miscs ;
             _add               = add ;
             _invocationFactory = invocationFactory ;
@@ -139,8 +137,8 @@ namespace AnalysisAppLib
         {
             var initWorkspace = Register (
                                           Workspaces.InitializeWorkspace2Block (
-                                                                                _loggerFactory
-                                                                              , _outAct
+                                                                                null
+                                                                              , null
                                                                               , _miscs
                                                                                )
                                          ) ;
@@ -512,7 +510,7 @@ namespace AnalysisAppLib
 
                             if ( ! b.OverallSuccess )
                             {
-                                outAct ( $"{keyValuePair.Key} failed" ) ;
+                                outAct?.Invoke ( $"{keyValuePair.Key} failed" ) ;
                             }
                             else
                             {
