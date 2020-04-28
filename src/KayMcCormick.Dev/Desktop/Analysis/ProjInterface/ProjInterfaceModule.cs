@@ -205,14 +205,17 @@ namespace ProjInterface
             builder.Register<IEnumerable<GroupInfo>>((c, p) =>
             {
                 var t = p.TypedAs<TabInfo>();
-                var views = c.Resolve<IEnumerable<Meta<Lazy<IView1>>>>();
+                var views = c.Resolve<IEnumerable<Meta<Lazy<IControlView>>>>();
                 var groupInfo2 = new GroupInfo2() {Group="Views"};
                 foreach (var view in views)
                 {
+                    foreach (var keyValuePair in view.Metadata)
+                    {
+                        DebugUtils.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
+                    }
+
                     view.Metadata.TryGetValue("Title", out var title);
-                    RibbonToggleButton b = new RibbonToggleButton();
-                    b.Label = (string) title;
-                    groupInfo2.Items.Add(new RibbonControl(){Content = b});
+                    groupInfo2.Items.Add(new RibbonItemInfo() {Content = view, Title=(string) title});
                 }
                 
                 return new[] {groupInfo2};
@@ -603,10 +606,17 @@ if(RegiserExplorerTypes){
 
     public class GroupInfo2 : GroupInfo
     {
-        public ObservableCollection<RibbonControl> Items { get; } = new ObservableCollection<RibbonControl>();
+        public ObservableCollection<RibbonItemInfo> Items { get; } = new ObservableCollection<RibbonItemInfo>();
 
         public GroupInfo2()
         {
         }
+    }
+
+    public class RibbonItemInfo
+    {
+        public bool? Checked { get; set; } 
+        public Meta<Lazy<IControlView>> Content { get; set; }
+        public string Title { get; set; }
     }
 }

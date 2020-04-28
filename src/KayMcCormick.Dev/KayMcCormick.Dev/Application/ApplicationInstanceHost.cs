@@ -52,6 +52,7 @@ namespace KayMcCormick.Dev.Application
         {
 #if NETFRAMEWORK
             var disposable = _host as IDisposable ;
+            
             disposable?.Dispose ( ) ;
 #endif
         }

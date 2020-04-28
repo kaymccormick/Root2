@@ -41,6 +41,9 @@
           <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:CommandInfo}">
             <RibbonButton Label="{Binding Title}" Command="{Binding Path=Command.Value.Value,Converter={StaticResource BaseAppCommandConverter}}"></RibbonButton>
           </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonItemInfo}">
+            <RibbonCheckBox Label="{Binding Title}" IsChecked="{Binding Checked,Mode=TwoWay}"></RibbonCheckBox>
+          </HierarchicalDataTemplate>
           <HierarchicalDataTemplate DataType="{x:Type local:TabInfo}" ItemsSource="{Binding Path=Groups,Converter={StaticResource TestConverter}}">
             <TextBlock Text="{Binding Path=Category}"/>
           </HierarchicalDataTemplate>
@@ -51,7 +54,7 @@
           <DataTemplate x:Key="t1">
             <ContentControl Content="{Binding}"></ContentControl>
           </DataTemplate>
-          <HierarchicalDataTemplate DataType="{x:Type local:GroupInfo2}" ItemsSource="{Binding Path=Items,Converter={StaticResource TestConverter}}" ItemTemplate="{StaticResource t1}">
+          <HierarchicalDataTemplate DataType="{x:Type local:GroupInfo2}" ItemsSource="{Binding Path=Items,Converter={StaticResource TestConverter}}">
             <TextBlock Text="{Binding Group}" FontSize="24" BaselineOffset="-10"/>
           </HierarchicalDataTemplate>
           <Style TargetType="Window">
@@ -1188,7 +1191,7 @@
             </StackPanel>
           </DataTemplate>
         </avalondock:DockingManager.DocumentHeaderTemplate>
-        <avalondock:LayoutRoot>
+        <avalondock:LayoutRoot x:Name="LayoutRoot">
           <avalondock:LayoutPanel Orientation="Horizontal">
             <avalondock:LayoutAnchorablePane
               x:Name="leftAnchorablePane"

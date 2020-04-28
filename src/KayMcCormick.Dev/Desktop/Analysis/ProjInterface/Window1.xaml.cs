@@ -412,6 +412,73 @@ namespace ProjInterface
         public override void OnApplyTemplate ( )
         {
             base.OnApplyTemplate ( ) ;
+            foreach (var layoutContent in Docpane.Children)
+            {
+                if (layoutContent is LayoutDocument d)
+                {
+                    DocInfo di = new DocInfo() {ContentId = d.ContentId, Title = d.Title};
+
+                }
+            }
+            foreach (var layoutRootChild in LayoutRoot.Children)
+            {
+                DebugUtils.WriteLine($"{layoutRootChild.GetType()}");
+                DebugUtils.WriteLine($"{layoutRootChild.Root.GetType()}");
+                switch (layoutRootChild)
+                {
+                    case LayoutAnchorablePane layoutAnchorablePane:
+                        break;
+                    case LayoutAnchorablePaneGroup layoutAnchorablePaneGroup:
+                        break;
+                    case ILayoutAnchorablePane layoutAnchorablePane1:
+                        break;
+                    case LayoutDocumentPane layoutDocumentPane:
+                        break;
+                    case LayoutDocumentPaneGroup layoutDocumentPaneGroup:
+                        foreach (var layoutDocumentPane in layoutDocumentPaneGroup.Children)
+                        {
+                            
+                        }
+                        break;
+                    case ILayoutDocumentPane layoutDocumentPane1:
+                        break;
+                    case LayoutPanel layoutPanel:
+                        break;
+                    case ILayoutOrientableGroup layoutOrientableGroup:
+                        break;
+                    case LayoutAnchorGroup layoutAnchorGroup:
+                        break;
+                    case LayoutAnchorSide layoutAnchorSide:
+                        break;
+                    case ILayoutGroup layoutGroup1:
+                        break;
+                    case ILayoutPane layoutPane:
+                        break;
+                    case LayoutAnchorableFloatingWindow layoutAnchorableFloatingWindow:
+                        break;
+                    case LayoutDocumentFloatingWindow layoutDocumentFloatingWindow:
+                        break;
+                    case LayoutFloatingWindow layoutFloatingWindow:
+                        break;
+                    case LayoutRoot layoutRoot:
+                        break;
+                    case ILayoutContainer layoutContainer:
+                        break;
+                    case ILayoutPanelElement layoutPanelElement:
+                        break;
+                    case LayoutAnchorable layoutAnchorable:
+                        break;
+                    case LayoutDocument layoutDocument:
+                        break;
+                    case LayoutContent layoutContent:
+                        break;
+                    case LayoutGroupBase layoutGroupBase:
+                        break;
+                    case LayoutElement layoutElement:
+                        break;
+
+                }
+            }
             FrameDoc1.NavigationService.Navigating += ( sender , args ) => {
                 DebugUtils.WriteLine ( args.Content.ToString() ) ;
                 // if ( args.Content is ResourceNodeInfo node )
@@ -529,6 +596,17 @@ namespace ProjInterface
         {
 
         }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DocInfo
+    {
+        public string ContentId { get; set; }
+        public string Title { get; set; }
     }
 
     public sealed class Filter
