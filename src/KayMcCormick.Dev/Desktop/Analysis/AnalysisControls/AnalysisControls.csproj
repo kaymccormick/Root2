@@ -118,6 +118,7 @@
     <Compile Include="AppRibbonTab.cs" />
     <Compile Include="AppRibbonTabSet.cs" />
     <Compile Include="CategoryInfo.cs" />
+    <Compile Include="ControlsProvider.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
+    <Compile Include="Filter.cs" />
     <Compile Include="IAppRibbon.cs" />
     <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="ICodeGenCommand.cs" />
@@ -140,6 +142,9 @@
     </Compile>
     <Compile Include="CodeGenCommand.cs" />
     <Compile Include="RibbonBuilder.cs" />
+    <Compile Include="RWindow.xaml.cs">
+      <DependentUpon>RWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StringObservableCollection - Copy.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxWalker2.cs" />
@@ -203,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="RWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WorkspaceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

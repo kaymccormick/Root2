@@ -149,6 +149,7 @@ namespace ProjInterface
             // var hWnd = wih.Handle ;
             // viewModel.SethWnd ( hWnd ) ;
             InitializeComponent ( ) ;
+            builder.DocPane = Docpane;
         }
 
         protected override void OnContentRendered(EventArgs e)
@@ -564,7 +565,7 @@ namespace ProjInterface
                 }
             }
             FrameDoc1.NavigationService.Navigating += ( sender , args ) => {
-                DebugUtils.WriteLine ( args.Content.ToString() ) ;
+                DebugUtils.WriteLine ( args.Content?.ToString() ) ;
                 // if ( args.Content is ResourceNodeInfo node )
                 // {
                 if ( args.Content is UIElement )
@@ -694,18 +695,6 @@ namespace ProjInterface
         public string Description { get; set; }
         public DateTime? LastActivationTimeStamp { get; set; }
         public bool IsVisible { get; set; }
-    }
-
-    public sealed class Filter
-    {
-        private string _extension ;
-        private string _description ;
-
-        public string Extension { get { return _extension ; } set { _extension = value ; } }
-
-        public string Description { get { return _description ; } set { _description = value ; } }
-
-        public Action < string > Handler { get ; set ; }
     }
 
     public class BaseAppCommandConverter : IValueConverter

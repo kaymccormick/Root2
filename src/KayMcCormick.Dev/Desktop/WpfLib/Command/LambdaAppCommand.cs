@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.ComponentModel;
 using System.Threading.Tasks ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command ;
@@ -18,6 +19,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>
     /// </summary>
+    [TypeConverter(typeof(LACConverter))]
     public sealed class LambdaAppCommand : AppCommand
     {
         private object                                                 _argument ;
@@ -104,5 +106,14 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         public override object LargeImageSourceKey { get ; set ; }
         #endregion
+    }
+
+    public class LACConverter : TypeConverter
+    {
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            DebugUtils.WriteLine($"{nameof(LACConverter)}: {destinationType.FullName}");
+            return base.CanConvertTo(context, destinationType);
+        }
     }
 }

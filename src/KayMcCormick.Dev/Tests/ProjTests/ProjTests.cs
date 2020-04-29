@@ -11,11 +11,15 @@
 #endregion
 using System ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel;
 using System.Data ;
 using System.Diagnostics ;
 using System.Globalization ;
 using System.IO ;
 using System.Linq ;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reflection ;
 using System.Resources ;
 using System.Runtime.ExceptionServices ;
@@ -31,8 +35,10 @@ using System.Windows.Automation ;
 using System.Windows.Baml2006 ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Data;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using System.Windows.Threading;
 using System.Xaml ;
 using System.Xml ;
 using System.Xml.Linq ;
@@ -45,6 +51,7 @@ using AnalysisControls.Properties ;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using AvalonDock ;
+using AvalonDock.Controls;
 using AvalonDock.Layout ;
 using Castle.DynamicProxy ;
 using JetBrains.Annotations ;
@@ -58,6 +65,7 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Moq ;
@@ -68,6 +76,7 @@ using ColorConverter = System.Windows.Media.ColorConverter ;
 using Condition = System.Windows.Automation.Condition ;
 using File = System.IO.File ;
 using MethodInfo = System.Reflection.MethodInfo;
+using Module = Autofac.Module;
 using Process = System.Diagnostics.Process ;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
@@ -530,7 +539,7 @@ namespace ProjTests
                 m.Layout = layout ;
                 Window w = new AppWindow ( lifetimeScope ) ;
                 w.Content = m ;
-
+                
                 foreach ( var func in funcAry )
                 {
                     try
@@ -1388,6 +1397,8 @@ namespace ProjTests
         [WpfFact]
         public void TestRibbonBuilder()
         {
+            var w2 = new RWindow();
+            w2.ShowDialog();
             using (var instance = new ApplicationInstance(
                                                             new ApplicationInstance.
                                                                 ApplicationInstanceConfiguration(
@@ -1399,18 +1410,171 @@ namespace ProjTests
             {
                 instance.AddModule(new AnalysisControlsModule());
                 instance.AddModule(new AnalysisAppLibModule());
+                
                 instance.Initialize();
-                var lifetimeScope = instance.GetLifetimeScope();
+                ReplaySubject<AdhocWorkspace> workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
+                ReplaySubject<CommandProgress> progress = new ReplaySubject<CommandProgress>();
+                var lifetimeScope = instance.GetLifetimeScope(containerBuilder =>
+                {
+                    containerBuilder.RegisterInstance(workspaceReplaySubject).AsSelf().AsImplementedInterfaces();
+                    containerBuilder.RegisterInstance(progress).AsSelf().AsImplementedInterfaces();
+                });
                 var builder = lifetimeScope.Resolve<RibbonBuilder>();
                 var ribbon = builder.Ribbon;
+                ribbon.SelectionChanged += (sender, args) => DebugUtils.WriteLine(args.AddedItems[0].ToString());
                 RibbonWindow w = new RibbonWindow();
                 var dp = new DockPanel();
+                ObservableCollection<CommandProgress> progresses = new ObservableCollection<CommandProgress>();
+                ListView lv = new ListView();
+                var gv = new GridView();
+                gv.Columns.Add(new GridViewColumn() { DisplayMemberBinding = new Binding("Content")});
+                lv.View = gv;
+                lv.ItemsSource = progresses;
+
+                progress.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
+                    commandProgress =>
+                    {
+                        var content = commandProgress.Content;
+                        progresses.Add(commandProgress);
+
+                    });
+                workspaceReplaySubject.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
+                    .Subscribe(
+
+                        workspace =>
+                        {
+                            workspace.WorkspaceFailed += (sender, args) =>
+                            {
+                                DebugUtils.WriteLine(args.Diagnostic.Message);
+
+                            };
+                            workspace.WorkspaceChanged += OnWorkspaceOnWorkspaceChanged;
+                        });
+
                 dp.Children.Add(ribbon);
+                ribbon.SetValue(DockPanel.DockProperty, Dock.Top);
+                var uiElement = new Grid();
+
+                var m = new DockingManager();
+
+                var pane = new LayoutDocumentPane();
+                pane.Children.Add(new LayoutDocument() { Content =  lv });
+
+                var group = new LayoutDocumentPaneGroup(pane);
+
+                var mLayoutRootPanel = new LayoutPanel(group);
+                var layout = new LayoutRoot { RootPanel = mLayoutRootPanel };
+                m.Layout = layout;
+
+                uiElement.Children.Add(m);
+                
+                dp.Children.Add(uiElement);
+
+                dp.LastChildFill = true;
+                w.Content = dp;
                 w.ShowDialog();
             }
         }
 
+        private async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
+        {
+            DebugUtils.WriteLine(args.Kind.ToString());
+            var project = args.NewSolution.GetProject(args.ProjectId);
+            switch (args.Kind)
+            {
+                case WorkspaceChangeKind.SolutionChanged:
+                    break;
+                case WorkspaceChangeKind.SolutionAdded:
+                    break;
+                case WorkspaceChangeKind.SolutionRemoved:
+                    break;
+                case WorkspaceChangeKind.SolutionCleared:
+                    break;
+                case WorkspaceChangeKind.SolutionReloaded:
+                    break;
+                case WorkspaceChangeKind.ProjectAdded:
+                    break;
+                case WorkspaceChangeKind.ProjectRemoved:
+                    break;
+                case WorkspaceChangeKind.ProjectChanged:
+                    var ch = args.NewSolution.GetChanges(args.OldSolution);
+                    var pcj = ch.GetProjectChanges();
+                    foreach (var ch1 in pcj)
+                    {
+                        var docChanges = ch1.GetChangedDocuments().Any();
+                        var metadata = ch1.GetAddedMetadataReferences().Any();
+                        foreach (var dc in ch1.GetChangedDocuments())
+                        {
+                            var oldDoc = args.OldSolution.GetDocument(dc);
+                            var newDoc = args.NewSolution.GetDocument(dc);
+                            var x = await newDoc.GetTextChangesAsync(oldDoc);
+                                foreach(var xx in x)
+                                {
+                                    DebugUtils.WriteLine(xx.NewText);
+                                }
+                        }
+                        DebugUtils.WriteLine(String.Join(", ", ch1.GetAddedMetadataReferences().Select(xxx=>xxx.Display)));
+                        if (!docChanges && !metadata)
+                        {
+                            DebugUtils.WriteLine(ch1.ToString());
+                        }
+                    }
+                    break;
+                case WorkspaceChangeKind.ProjectReloaded:
+                    break;
+                case WorkspaceChangeKind.DocumentAdded:
+                    if (project != null)
+                    {
+                        if (args.DocumentId != null)
+                        {
+                            var doc = project
+                                .GetDocument(args.DocumentId);
+                            if (doc != null)
+                            {
+                                var text = await doc.GetTextAsync();
+                                // DebugUtils.WriteLine(text.ToString());
+                            }
+                        }
+                    }
 
+                    
+                    break;
+                case WorkspaceChangeKind.DocumentRemoved:
+                    break;
+                case WorkspaceChangeKind.DocumentReloaded:
+                    break;
+                case WorkspaceChangeKind.DocumentChanged:
+                    break;
+                case WorkspaceChangeKind.AdditionalDocumentAdded:
+                    break;
+                case WorkspaceChangeKind.AdditionalDocumentRemoved:
+                    break;
+                case WorkspaceChangeKind.AdditionalDocumentReloaded:
+                    break;
+                case WorkspaceChangeKind.AdditionalDocumentChanged:
+                    break;
+                case WorkspaceChangeKind.DocumentInfoChanged:
+                    break;
+                case WorkspaceChangeKind.AnalyzerConfigDocumentAdded:
+                    break;
+                case WorkspaceChangeKind.AnalyzerConfigDocumentRemoved:
+                    break;
+                case WorkspaceChangeKind.AnalyzerConfigDocumentReloaded:
+                    break;
+                case WorkspaceChangeKind.AnalyzerConfigDocumentChanged:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
+    public class ProjTestsModule : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            
+        }
     }
 
     public class TestApp1 : System.Windows.Application

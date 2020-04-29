@@ -4,6 +4,7 @@
     {
         LogUsage,
         Infrastructure,
-        Management
+        Management,
+        None
     }
 }

@@ -142,7 +142,7 @@ namespace KayMcCormick.Lib.Wpf
                         IEnumerable p1;
                         if (ParameterType != null) {
                             var funcType =
-                                typeof(Func<,>).MakeGenericType(
+                                 typeof(Func<,>).MakeGenericType(
                                                                        ParameterType
                                                                      , ComponentType
                                                                       );

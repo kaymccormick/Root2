@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Reactive.Subjects;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using AnalysisAppLib;
@@ -38,9 +40,10 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="scope"></param>
-        public CodeGenCommand(ILifetimeScope scope)
+        public CodeGenCommand(ILifetimeScope scope, ReplaySubject<CommandProgress> progressReplaySubject)
         {
             Scope = scope;
+            _progressReplaySubject = progressReplaySubject;
         }
 
         [NotNull]
@@ -79,7 +82,7 @@ namespace AnalysisControls
         {
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll"
             , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll"
-            , @"C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\nlog\4.6.8\lib\net45\NLog.dll"
+            , @"C:\Users\mccor.LAPTOP-T6T0BN1K\.nuget\packages\nlog\4.7.0\lib\net45\NLog.dll"
             , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll"
             , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll"
             , @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll"
@@ -97,6 +100,7 @@ namespace AnalysisControls
 
         // ReSharper disable once NotAccessedField.Local
         private static ILogger _logger;
+        private ReplaySubject<CommandProgress> _progressReplaySubject;
 
 
         [NotNull] public  string PocoPrefix { get { return _pocoPrefix; } }
@@ -169,12 +173,12 @@ namespace AnalysisControls
             var x = CSharpCompilation.Create(
                 "test"
                 , new[] { SyntaxFactory.SyntaxTree(SyntaxFactory.CompilationUnit()) }
-                , AssemblyRefs.Select(
+                , AssemblyRefs.Where(File.Exists).Select(
                     r => MetadataReference
                         .CreateFromFile(r)
                 )
             );
-
+            DebugUtils.WriteLine("Missing refs: " + string.Join(";", AssemblyRefs.Where(f => !File.Exists(f))));
 
             var types = new SyntaxList<MemberDeclarationSyntax>();
             outputFunc($"{model1.Map.Count} Entries in Type map");
@@ -472,9 +476,9 @@ namespace AnalysisControls
                                     if (p1.Type.SpecialType
                                         == SpecialType.System_Object)
                                     {
-                                        DebugUtils.WriteLine(
-                                            $"{p1.Type}"
-                                        );
+                                        // DebugUtils.WriteLine(
+                                            // $"{p1.Type}"
+                                        // );
                                     }
 
                                     return SyntaxFactory.Parameter(
@@ -572,6 +576,10 @@ namespace AnalysisControls
                                     );
                             }
                         );
+                    foreach (var methodDeclarationSyntax in members1)
+                    {
+                        _progressReplaySubject.OnNext(new CommandProgress() { Content = methodDeclarationSyntax });
+                    }
 
                     classContainerDecl = classContainerDecl.WithMembers(
                         SyntaxFactory.List(
@@ -588,13 +596,16 @@ namespace AnalysisControls
                     );
 
                     classDecl1 = (ClassDeclarationSyntax)rewriter1.Visit(classDecl1);
-                    DebugUtils.WriteLine(
-                        "\n***\n"
-                        + classContainerDecl
-                            .NormalizeWhitespace()
-                            .ToFullString()
-                        + "\n****\n"
-                    );
+                    if (WriteDebug)
+                    {
+                        DebugUtils.WriteLine(
+                            "\n***\n"
+                            + classContainerDecl
+                                .NormalizeWhitespace()
+                                .ToFullString()
+                            + "\n****\n"
+                        );
+                    }
                 }
 
                 var invocationExpressionSyntax =
@@ -849,7 +860,7 @@ namespace AnalysisControls
                             )
                         )
                     );
-                    DebugUtils.WriteLine(attributeSyntax.ToFullString());
+                    // DebugUtils.WriteLine(attributeSyntax.ToFullString());
                     var separatedSyntaxList =
                         new SeparatedSyntaxList<AttributeSyntax>().Add(attributeSyntax);
                     var attributeListSyntaxes = SyntaxFactory.List(
@@ -875,11 +886,11 @@ namespace AnalysisControls
                         , propertyName
                         , accessorListSyntax
                     );
-                    DebugUtils.WriteLine(
-                        propertyDeclarationSyntax
-                            .NormalizeWhitespace()
-                            .ToFullString()
-                    );
+                    // DebugUtils.WriteLine(
+                        // propertyDeclarationSyntax
+                            // .NormalizeWhitespace()
+                            // .ToFullString()
+                    // );
                     members = members.Add(propertyDeclarationSyntax);
                 }
 
@@ -925,22 +936,44 @@ namespace AnalysisControls
             var tree = SyntaxFactory.SyntaxTree(compilation);
             var src = tree.ToString();
 
-            DebugOut("Reparsing text ??");
+            // DebugOut("Reparsing text ??");
 
-            var tree2 = CSharpSyntaxTree.Create(
-                compilation
-                , new CSharpParseOptions(
-                    LanguageVersion.CSharp7_3
-                )
-            );
+            // var tree2 = CSharpSyntaxTree.Create(
+                // compilation
+                // , new CSharpParseOptions(
+                    // LanguageVersion.CSharp7_3
+                // )
+            // );
 
-            File.WriteAllText(@"C:\data\logs\gen.cs", compilation.ToString());
+            // File.WriteAllText(@"C:\data\logs\gen.cs", compilation.ToString());
 
             //refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, false, "test", null, null, null, OptimizationLevel.Debug, false, false, null, null, default, default ,default, default, default,default, default, default, default, default, new MetadataReferenceResolver())
-            var source = tree2.ToString().Split(new[] { "\r\n" }, StringSplitOptions.None);
+            // var source = tree2.ToString().Split(new[] { "\r\n" }, StringSplitOptions.None);
 
             //var compilation = CSharpCompilation.Create ( "test" , new[] { tree2 } ) ;
-            var workspace = new AdhocWorkspace();
+            AdhocWorkspace workspace = null;
+            try
+            {
+                workspace = new AdhocWorkspace();
+                var replay = Scope.Resolve<ReplaySubject<AdhocWorkspace>>();
+                replay.OnNext(workspace);
+            }
+            catch (ReflectionTypeLoadException rex)
+            {
+                foreach (var rexLoaderException in rex.LoaderExceptions)
+                {
+                    DebugUtils.WriteLine(rexLoaderException.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            if (workspace == null)
+            {
+                return AppCommandResult.Failed;
+            }
             var projectId = ProjectId.CreateNewId();
             DebugOut("Add solution");
 
@@ -971,7 +1004,7 @@ namespace AnalysisControls
                 )
             );
 
-
+            
             var documentInfo = DocumentInfo.Create(
                 DocumentId.CreateNewId(projectId)
                 , "test"
@@ -1056,7 +1089,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                     )
                 )
             );
-
+            
             //todo investigate
             var s2 = s.AddDocuments(
                 ImmutableArray<DocumentInfo>
@@ -1095,7 +1128,8 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
 
             DebugOut("Applying assembly done");
             var project = workspace.CurrentSolution.Projects.First();
-
+            
+            
             var comp1 = await project.GetCompilationAsync();
             using (var f = new StreamWriter(@"C:\data\logs\errors.txt"))
             {
@@ -1109,7 +1143,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                         }
 
                         // ReSharper disable once UnusedVariable
-                        var line = source
+                        var line = src
                             .Skip(
                                 diagnostic.Location.GetLineSpan().StartLinePosition.Line
                                 - 1
@@ -1142,9 +1176,17 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             DebugOut("attempting emit");
 
             var result =
-                (comp1 ?? throw new InvalidOperationException()).Emit(
+                (comp1).Emit(
                     @"C:\data\logs\output.dll"
                 );
+            DebugUtils.WriteLine(result.Success.ToString());
+            foreach (var resultDiagnostic in result.Diagnostics)
+            {
+                if (resultDiagnostic.Severity >= DiagnosticSeverity.Info)
+                {
+                    DebugUtils.WriteLine(resultDiagnostic.ToString());
+                }
+            }
             if (result.Success)
             {
                 DebugOut("Success");
@@ -1153,11 +1195,14 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             else
             {
                 DebugUtils.WriteLine("Failure");
+                return AppCommandResult.Failed;
             }
 
             return AppCommandResult.Success;
             //File.WriteAllText ( @"C:\data\logs\gen.cs" , comp.ToString ( ) ) ;
         }
+
+        public bool WriteDebug { get; set; }
 
         [NotNull]
         private static CSharpCompilation ReplaceSyntaxTree(
@@ -1218,5 +1263,13 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         {
             throw new NotImplementedException();
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class CommandProgress
+    {
+        public object Content { get; set; }
     }
 }

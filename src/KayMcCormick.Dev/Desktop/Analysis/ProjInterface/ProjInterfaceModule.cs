@@ -226,22 +226,7 @@ namespace ProjInterface
             builder.RegisterInstance ( regs )
                    .AsSelf ( )
                    .As < IObservable < IComponentRegistration > > ( ) ;
-            builder.RegisterType < MiscInstanceInfoProvider > ( )
-                   .AsSelf ( )
-                   .As < TypeDescriptionProvider > ( )
-                   .WithCallerMetadata ( )
-                   .OnActivating (
-                                  args => {
-                                      foreach ( var type in new[]
-                                                            {
-                                                                typeof ( IComponentRegistration )
-                                                              , typeof ( ComponentRegistration )
-                                                            } )
-                                      {
-                                          TypeDescriptor.AddProvider ( args.Instance , type ) ;
-                                      }
-                                  }
-                                 ) ;
+        
 
             builder.RegisterType < Myw > ( ).As < ILoggerProvider > ( ) ;
             //builder.RegisterSource < MySource > ( ) ;
@@ -356,17 +341,6 @@ if(RegiserExplorerTypes){
                 
             // })
             builder.RegisterType < UiElementTypeConverter > ( ).AsSelf ( ) ;
-            if ( RegisterControlViewCommandAdapters )
-            {
-                builder
-                   .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                        Func < LayoutDocumentPane , IDisplayableAppCommand >
-                    > ( ControlViewCommandAdapter )
-                   .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( )
-                   .WithMetadata("Category", Category.Management)
-                   .WithMetadata("Group", "misc")
-                   .WithCallerMetadata ( ) ;
-            }
 
 
 #if PYTHON
@@ -413,35 +387,6 @@ if(RegiserExplorerTypes){
             set { _registerControlViewCommandAdapters = value ; }
         }
 
-        [ NotNull ]
-        public static Func < LayoutDocumentPane , IDisplayableAppCommand >
-            ControlViewCommandAdapter (
-                [ NotNull ] IComponentContext                                   c
-              , IEnumerable < Parameter >                                       p
-              , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView > > metaFunc
-            )
-        {
-            c.Resolve < IResourceResolver > ( ) ;
-            metaFunc.Metadata.TryGetValue ( "Title" ,       out var titleo ) ;
-            metaFunc.Metadata.TryGetValue ( "ImageSource" , out var imageSource ) ;
-            // object res = r.ResolveResource ( imageSource ) ;
-            // var im = res as ImageSource ;
-
-            var title = ( string ) titleo ?? "no title" ;
-
-            return pane => ( IDisplayableAppCommand ) new LambdaAppCommand (
-                                                                            title
-                                                                          , CommandFuncAsync
-                                                                          , Tuple.Create (
-                                                                                          metaFunc
-                                                                                             .Value
-                                                                                        , pane
-                                                                                         )
-                                                                           )
-                                                      {
-                                                          LargeImageSourceKey = imageSource
-                                                      } ;
-        }
 #if PYTHON
         [ NotNull ]
         private IPythonVariable Adapter (
@@ -463,26 +408,6 @@ if(RegiserExplorerTypes){
         }
 #endif
 #pragma warning disable 1998
-        public static async Task < IAppCommandResult > CommandFuncAsync (
-#pragma warning restore 1998
-            [ NotNull ] LambdaAppCommand command
-        )
-        {
-            //await JoinableTaskFactory.SwitchToMainThreadAsync (  ) ;
-            var (viewFunc1 , pane1) =
-                ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
-                command.Argument ;
-
-            DebugUtils.WriteLine ( $"Calling viewfunc ({command})" ) ;
-            var n = DateTime.Now ;
-            var view = viewFunc1 ( pane1 ) ;
-            DebugUtils.WriteLine ( ( DateTime.Now - n ).ToString ( ) ) ;
-            var doc = new LayoutDocument { Content = view } ;
-            pane1.Children.Add ( doc ) ;
-            pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
-            DebugUtils.WriteLine ( "returning success" ) ;
-            return AppCommandResult.Success ;
-        }
 
         [ NotNull ]
         // ReSharper disable once UnusedMember.Local

@@ -113,6 +113,7 @@
       <Link>RegSource.cs</Link>
     </Compile>
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
+    <Compile Include="BaseLibTypeConverter.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="IAddRuntimeResource.cs" />
     <Compile Include="ICommandMetadata.cs" />

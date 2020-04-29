@@ -46,6 +46,7 @@ namespace KayMcCormick.Lib.Wpf
           , Type                   destinationType
         )
         {
+            DebugUtils.WriteLine($"{context.Instance} {context.PropertyDescriptor?.Name} {context.Container} {value} {destinationType?.FullName}");
             if ( destinationType == typeof ( UIElement ) )
             {
                 return ConvertToUiElement ( value ) ;
@@ -417,6 +418,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of TypeConverter
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
+            DebugUtils.WriteLine($"{context.Instance} {context.PropertyDescriptor?.Name} {context.Container} {destinationType?.FullName}");
             if ( destinationType == typeof ( UIElement ) )
             {
                 return true ;

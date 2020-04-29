@@ -28,12 +28,4 @@ namespace KayMcCormick.Dev
         // ReSharper disable once UnusedMemberInSuper.Global
         void OnFault ( AggregateException exception ) ;
     }
-
-    public class BaseLibTypeConverter : TypeConverter
-    {
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return base.CanConvertTo(context, destinationType);
-        }
-    }
 }
