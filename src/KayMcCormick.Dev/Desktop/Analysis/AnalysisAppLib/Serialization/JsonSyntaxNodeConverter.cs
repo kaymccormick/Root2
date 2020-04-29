@@ -27,6 +27,10 @@ namespace AnalysisAppLib.Serialization
     /// </summary>
     public sealed class JsonSyntaxNodeConverter : JsonConverterFactory
     {
+        public JsonSyntaxNodeConverter()
+        {
+        }
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of JsonConverter
         /// <summary>

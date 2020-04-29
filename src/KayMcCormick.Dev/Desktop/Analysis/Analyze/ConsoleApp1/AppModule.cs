@@ -11,6 +11,7 @@
 #endregion
 using System.Reflection ;
 using System.Threading.Tasks.Dataflow ;
+using AnalysisAppLib;
 using Autofac ;
 using FindLogUsages ;
 using KayMcCormick.Dev.Attributes ;

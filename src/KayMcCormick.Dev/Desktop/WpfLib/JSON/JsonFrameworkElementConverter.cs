@@ -316,6 +316,8 @@ namespace KayMcCormick.Lib.Wpf.JSON
               , JsonSerializerOptions options
             )
             {
+                writer.WriteStringValue(value.GetType().FullName);
+                return;
                 // writer.WriteStartObject();
                 // writer.WriteString ( "FrameworkElement", value.GetType().AssemblyQualifiedName ) ;
                 var xamlSchemaContext = new XamlSchemaContext ( ) ;
@@ -349,6 +351,28 @@ namespace KayMcCormick.Lib.Wpf.JSON
     /// <summary>
     /// 
     /// </summary>
+    ///
+    public class AppConverterFactory : JsonConverterFactory
+    {
+        public AppConverterFactory()
+        {
+        }
+
+        public override bool CanConvert(Type typeToConvert)
+        {
+            if (typeof(Application).IsAssignableFrom(typeToConvert))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+        {
+            return new ProjInterfaceAppConverter();
+        }
+    }
     public class ProjInterfaceAppConverter : JsonConverter < Application>
     {
         #region Overrides of JsonConverter<ProjInterfaceApp>

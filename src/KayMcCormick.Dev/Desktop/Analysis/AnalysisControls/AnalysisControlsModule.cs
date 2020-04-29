@@ -51,6 +51,8 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load ( ContainerBuilder builder )
         {
+            builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
+                .WithCallerMetadata();
             foreach ( var qq in typeof ( AnalysisCommands ).GetProperties (
                                                                            BindingFlags.Static
                                                                            | BindingFlags.Public
@@ -146,9 +148,6 @@ namespace AnalysisControls
                        .WithMetadata ( "Ribbon" , true )
                        .WithCallerMetadata ( ) ;
 
-
-
-            //
             // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
             // foreach ( var name in names )
             // {
@@ -183,7 +182,7 @@ namespace AnalysisControls
                     c1.Metadata.TryGetValue("Group", out var group);
                     if (group == null)
                     {
-                        group = "no grop";
+                        group = "no group";
                     }
 
                     if (!dict.TryGetValue(cat, out var i1))
@@ -209,8 +208,6 @@ namespace AnalysisControls
 
                         i2.Infos.Add(ci);
                     }
-
-
                 }
 
                 DebugUtils.WriteLine("***");
@@ -307,7 +304,7 @@ namespace AnalysisControls
             private FrameworkElement Func (
                 [ NotNull ] IComponentContext c1
                 // ReSharper disable once UnusedParameter.Local
-              , IEnumerable < Parameter > p1
+              , IEnumerable<Parameter> p1
             )
             {
                 var gridView = new GridView ( ) ;
@@ -341,5 +338,5 @@ namespace AnalysisControls
                 listView.SetBinding ( ItemsControl.ItemsSourceProperty , binding ) ;
                 return listView ;
             }
-        }
     }
+}

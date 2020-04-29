@@ -9,11 +9,12 @@
 // 
 // ---
 #endregion
-using Microsoft.CodeAnalysis.CSharp ;
 
-namespace ConsoleApp1
+using Microsoft.CodeAnalysis.CSharp;
+
+namespace AnalysisAppLib
 {
-    internal sealed class SyntaxInfo
+    public sealed class SyntaxInfo
     {
         public SyntaxKind Kind { get ; set ; }
 

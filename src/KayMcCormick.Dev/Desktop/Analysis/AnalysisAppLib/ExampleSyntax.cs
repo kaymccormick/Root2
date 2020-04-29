@@ -9,12 +9,13 @@
 // 
 // ---
 #endregion
-using System.Collections.Generic ;
-using System.ComponentModel ;
-using System.Windows.Markup ;
-using JetBrains.Annotations ;
 
-namespace ConsoleApp1
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Markup;
+using JetBrains.Annotations;
+
+namespace AnalysisAppLib
 {
     [ ContentProperty ( "Example" ) ]
     public sealed class ExampleSyntax

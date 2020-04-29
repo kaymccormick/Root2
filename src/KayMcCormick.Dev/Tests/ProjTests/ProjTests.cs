@@ -66,6 +66,7 @@ using Xunit.Abstractions ;
 using ColorConverter = System.Windows.Media.ColorConverter ;
 using Condition = System.Windows.Automation.Condition ;
 using File = System.IO.File ;
+using MethodInfo = System.Reflection.MethodInfo;
 using Process = System.Diagnostics.Process ;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;

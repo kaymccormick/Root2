@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore ;
 
 namespace ConsoleApp1
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : DbContext, IAppDbContext1
     {
         public DbSet<AppTypeInfo> AppTypeInfos { get; set; }
         public DbSet <AppClrType> AppClrType { get ; set ; }

@@ -77,6 +77,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Implementation of IWrap1
         /// <summary>
         /// </summary>
+        [JsonIgnore]
         public object ControlObject { get { return Control ; } }
         #endregion
     }

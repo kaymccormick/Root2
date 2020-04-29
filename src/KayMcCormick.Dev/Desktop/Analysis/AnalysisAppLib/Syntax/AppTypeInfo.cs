@@ -832,13 +832,13 @@ namespace AnalysisAppLib.Syntax
     /// </summary>
     public sealed class AppMethodInfo
     {
-        private MethodInfo _methodInfo;
+        private System.Reflection.MethodInfo _methodInfo;
         private int _id ;
         /// <summary>
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        public MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value; } }
+        public System.Reflection.MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value; } }
 
         /// <summary>
         /// </summary>

@@ -335,7 +335,7 @@ namespace KayMcCormick.Dev.Logging
                 logMethod ( "Setting throwExceptions to false" ) ;
                 LogManager.ThrowExceptions = false ;
             }
-#if DEBUG
+#if LOGTHROW
             LogManager.ThrowExceptions = true ;
 #endif
             _dict = LogLevel.AllLoggingLevels.ToDictionary (

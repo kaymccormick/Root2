@@ -441,6 +441,11 @@ namespace KayMcCormick.Dev.Logging
                     foreach ( var p in value.Properties )
                     {
                         writer.WritePropertyName ( p.Key.ToString ( ) ) ;
+                        if (p.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
                         if ( p.Value is Type t )
                         {
                             JsonSerializer.Serialize ( writer , t , typeof ( Type ) , options ) ;

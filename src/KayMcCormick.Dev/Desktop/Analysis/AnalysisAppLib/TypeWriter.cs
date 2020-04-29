@@ -69,7 +69,7 @@ namespace AnalysisAppLib
         public static XmlElement MethodXmlElement (
             [ NotNull ] Func < string , XmlElement >          c
           , [ NotNull ] Func < string , string , XmlElement > c2
-          , [ NotNull ] MethodInfo                            m
+          , [ NotNull ] System.Reflection.MethodInfo                            m
           , WriteStyle                                        style
         )
         {
@@ -178,7 +178,7 @@ namespace AnalysisAppLib
 
         private static void AddMember ( XmlNode typElement , MemberInfo member )
         {
-            if ( member is MethodInfo mi
+            if ( member is System.Reflection.MethodInfo mi
                  && mi.IsSpecialName )
             {
                 return ;
@@ -212,7 +212,7 @@ namespace AnalysisAppLib
             switch ( o )
             {
                 case Type t : return "T:" + t.FullName ;
-                case MethodInfo m :
+                case System.Reflection.MethodInfo m :
                     return "M:"
                            + ( m.ReflectedType != null
                                && ! string.IsNullOrEmpty ( m.ReflectedType.Namespace )

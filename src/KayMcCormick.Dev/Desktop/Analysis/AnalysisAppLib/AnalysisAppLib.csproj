@@ -75,11 +75,22 @@
     <Compile Include="AnalysisRequest.cs" />
     <Compile Include="AnalysisService.cs" />
     <Compile Include="AnalyzeCommand.cs" />
+    <Compile Include="AnalyzeCommandWrap.cs" />
     <Compile Include="AnalyzeException.cs" />
+    <Compile Include="AppContext.cs" />
     <Compile Include="AppDbContext.cs" />
+    <Compile Include="AppDbContextHelper.cs" />
+    <Compile Include="CallerInfo.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="CategoryMetadataAttribute.cs" />
+    <Compile Include="CustomModifierInfo.cs" />
     <Compile Include="Dataflow\IHaveRejectBlock.cs" />
+    <Compile Include="ExampleDict.cs" />
+    <Compile Include="ExampleSyntax.cs" />
+    <Compile Include="ExampleTokens.cs" />
+    <Compile Include="FindLogUsagesAnalysisDefinition.cs" />
+    <Compile Include="IAnalysisDefinition.cs" />
+    <Compile Include="IAppDbContext1.cs" />
     <Compile Include="Info1.cs" />
     <Compile Include="Info2.cs" />
     <Compile Include="Info3.cs" />
@@ -98,16 +109,24 @@
     <Compile Include="InvocationMisc.cs" />
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />
+    <Compile Include="LocationInfo.cs" />
     <Compile Include="Log1.cs" />
     <Compile Include="LogEventMisc.cs" />
     <Compile Include="LogInvocation2.cs" />
+    <Compile Include="MetaHelper.cs" />
     <Compile Include="MethodDocInfo.cs" />
+    <Compile Include="MethodInfo.cs" />
     <Compile Include="MiscLevel.cs" />
     <Compile Include="MSBuildEventMisc.cs" />
+    <Compile Include="ParameterInfo.cs" />
     <Compile Include="Project\ProjectInfo.cs" />
     <Compile Include="Project\ProjectLanguage.cs" />
+    <Compile Include="Props.cs" />
     <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />
+    <Compile Include="SToken.cs" />
+    <Compile Include="SyntaxInfo.cs" />
     <Compile Include="SyntaxTypesService.cs" />
+    <Compile Include="TestModel.cs" />
     <Compile Include="TextTemplate1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -116,6 +135,7 @@
     <Compile Include="ViewModel\LoginAuthenticationViewModel.cs" />
     <Compile Include="ViewModel\MicrosoftUserViewModel.cs" />
     <Compile Include="Syntax\AppTypeInfo.cs" />
+    <Compile Include="X.cs" />
     <Compile Include="Xaml\TypeMapDictionary.cs" />
     <Compile Include="Xaml\TypeMapDictionary2.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />

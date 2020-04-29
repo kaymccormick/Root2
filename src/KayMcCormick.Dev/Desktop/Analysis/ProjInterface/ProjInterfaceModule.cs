@@ -26,6 +26,8 @@ using System.Windows.Input ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
+using AnalysisControls.Scripting;
+using AnalysisControls.ViewModel;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Activators.Delegate ;
@@ -191,6 +193,33 @@ namespace ProjInterface
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType<RibbonBuilder>();
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IRibbonComponent>().AsImplementedInterfaces();
+            //builder.RegisterAdapter<>()
+            builder.RegisterType<AppRibbon>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+            builder.RegisterType<AppRibbonTab>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+            foreach (Category enumValue in typeof(Category).GetEnumValues())
+            {
+                CategoryInfo cat = new CategoryInfo(enumValue);
+                builder.RegisterInstance(cat).As<CategoryInfo>();
+            }
+            builder.Register((c, p) =>
+            {
+                var r = new AppRibbonTabSet();
+                foreach (var ct in c.Resolve<IEnumerable<CategoryInfo>>())
+                {
+                    var tab = new AppRibbonTab();
+                    tab.Category = ct;
+                    r.TabSet.Add(tab);
+                }
+                foreach (var meta in c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>())
+                {
+                    DebugUtils.WriteLine(meta.ToString());
+                    var props = MetaHelper.GetProps(meta);
+                    DebugUtils.WriteLine(props.ToString());
+                }
+                return r;
+            });
             builder.ComponentRegistryBuilder.Registered += ComponentRegistryBuilderOnRegistered ;
             builder.RegisterInstance ( _activators ) ;
             builder.Register < AppTypeInfoObservableCollection > (
@@ -527,6 +556,16 @@ if(RegiserExplorerTypes){
                                          }
                                        , obj
                                         ) ;
+        }
+    }
+
+    public class CategoryInfo
+    {
+        public Category Category { get; }
+
+        public CategoryInfo(Category category)
+        {
+            Category = category;
         }
     }
 

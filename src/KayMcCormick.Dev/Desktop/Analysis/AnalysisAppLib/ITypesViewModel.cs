@@ -9,9 +9,12 @@
 // 
 // ---
 #endregion
+
+using System;
 using System.Collections.Generic ;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.Xaml ;
+using JetBrains.Annotations;
 using KayMcCormick.Dev ;
 
 namespace AnalysisAppLib
@@ -48,6 +51,17 @@ namespace AnalysisAppLib
         object DocInfo { get ; }
 
         /// <summary>
+        ///     An approximate time as to when the view model was initialized and/or
+        ///     populated with extended information.
+        /// </summary>
+        DateTime InitializationDateTime { [UsedImplicitly] get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        TypeMapDictionary2 Map2 { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="identifier"></param>
@@ -59,5 +73,12 @@ namespace AnalysisAppLib
         /// </summary>
         /// <returns></returns>
         IEnumerable < AppTypeInfo > GetAppTypeInfos ( ) ;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void LoadTypeInfo ( );
+
+        void DetailFields();
     }
 }

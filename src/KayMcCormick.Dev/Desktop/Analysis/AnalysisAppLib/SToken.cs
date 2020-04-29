@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace ConsoleApp1
+namespace AnalysisAppLib
 {
     public sealed class SToken
     {

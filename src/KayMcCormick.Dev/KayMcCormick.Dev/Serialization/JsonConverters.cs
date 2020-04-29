@@ -37,6 +37,7 @@ namespace KayMcCormick.Dev.Serialization
             jsonSerializerOptions.Converters.Add ( new JsonIViewModelConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonLazyConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+            jsonSerializerOptions.Converters.Add(new JsonResourceNodeConverterFactory());
         }
     }
 

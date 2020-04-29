@@ -22,7 +22,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>DEBUG;MSBUILDLOCATOR;ANALYSISCONTROLS</DefineConstants>
+    <DefineConstants>DEBUG;MSBUILDLOCATOR;ANALYSISCONTROLS;PYTHON</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -64,6 +64,17 @@
     <StartupObject>ProjInterface.CustomAppEntry</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPython, Version=2.7.10.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.2.3.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
@@ -100,13 +111,19 @@
       <DependentUpon>AnalyzeResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppDbContext.cs" />
+    <Compile Include="AppRibbon.cs" />
+    <Compile Include="AppRibbonTab.cs" />
+    <Compile Include="AppRibbonTabSet.cs" />
     <Compile Include="AppTypeInfoObservableCollection.cs" />
     <Compile Include="CommandObservableList.cs" />
     <Compile Include="DockWindowViewModel.cs" />
     <Compile Include="Ext.cs" />
+    <Compile Include="GroupInfo.cs" />
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IAppRibbon.cs" />
+    <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="ImageSourceConverter.cs" />
     <Compile Include="ITakesHwnd.cs" />
     <Compile Include="BreakTraceListener.cs" />
@@ -123,6 +140,7 @@
     <Compile Include="SemanticConverter.cs" />
     <Compile Include="SemanticModel.cs" />
     <Compile Include="SynchronizationContextAwaiter.cs" />
+    <Compile Include="TabInfo.cs" />
     <Compile Include="Test1.cs" />
     <Compile Include="TestModel.cs" />
     <Compile Include="TokenCacheHelper.cs" />

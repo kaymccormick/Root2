@@ -20,51 +20,11 @@ using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes;
-using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.StackTrace ;
 using NLog;
 
 namespace AnalysisAppLib
 {
-    /// <summary>
-    /// Generic analyze command.
-    /// </summary>
-    [CategoryMetadata(Category.LogUsage)]
-    [TitleMetadata("Do it")]
-    public sealed class AnalyzeCommandWrap : IBaseLibCommand
-    {
-        AnalyzeCommand _cmd;
-        private ITargetBlock<RejectedItem> rejectTarget;
-        private object _argument;
-        private IProjectBrowserNode projectNode;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cmd"></param>
-        /// <param name="projectNode"></param>
-        public AnalyzeCommandWrap(AnalyzeCommand cmd, IProjectBrowserNode projectNode)
-        {
-            _cmd = cmd;
-            this.projectNode = projectNode;
-        }
-
-        public object Argument
-        {
-            get => _argument;
-            set => _argument = value;
-        }
-
-        public Task<IAppCommandResult> ExecuteAsync()
-        {
-            return _cmd.AnalyzeCommandAsync(projectNode, rejectTarget).ContinueWith(task => AppCommandResult.Success);
-        }
-
-        public void OnFault(AggregateException exception)
-        {
-            throw new NotImplementedException();
-        }
-    }
     [TitleMetadata("Find Log Usages")]
     public sealed class AnalyzeCommand : IAnalyzeCommand
     {

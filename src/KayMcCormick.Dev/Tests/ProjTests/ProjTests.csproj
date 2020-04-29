@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContainerFixture.cs" />
+    <Compile Include="AppProjTests.cs" />
     <Compile Include="ContainerTests.cs" />
     <Compile Include="MyXmlWriter.cs" />
     <Compile Include="ProjectFixture.cs" />

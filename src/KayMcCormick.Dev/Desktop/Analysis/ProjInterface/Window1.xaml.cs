@@ -15,6 +15,7 @@ using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon ;
 using System.Windows.Data;
 using System.Windows.Input ;
+using System.Windows.Markup;
 using System.Windows.Media ;
 using System.Windows.Navigation ;
 using System.Windows.Threading ;
@@ -22,6 +23,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
 using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel;
 using Autofac ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout ;
@@ -29,10 +31,12 @@ using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command;
+using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.Classification ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -93,7 +97,7 @@ namespace ProjInterface
         public Window1 (
             [ NotNull ] ILifetimeScope lifetimeScope
           , DockWindowViewModel        viewModel
-          , UiElementTypeConverter     converter, ITypesViewModel typesViewModel
+          , UiElementTypeConverter     converter, ITypesViewModel typesViewModel, RibbonBuilder builder
         )
         {
             if ( lifetimeScope == null )
@@ -105,6 +109,8 @@ namespace ProjInterface
             {
                 _cacheTarget = lifetimeScope.Resolve < MyCacheTarget2 > ( ) ;
             }
+
+            
 
             _converter = converter ;
             _typesViewModel = typesViewModel ;
@@ -138,10 +144,76 @@ namespace ProjInterface
             // } ;
 
             ViewModel = viewModel ;
+            Builder = builder;
             // var wih = new WindowInteropHelper ( this ) ;
             // var hWnd = wih.Handle ;
             // viewModel.SethWnd ( hWnd ) ;
             InitializeComponent ( ) ;
+        }
+
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            if (CommandStr == "QUIT")
+            {
+                var m = _beginLifetimeScope.Resolve<AllResourcesTreeViewModel>();
+                var options = _beginLifetimeScope.Resolve<JsonSerializerOptions>();
+                List<string> jsonOut = new List<string>();
+
+                var out1 = JsonSerializer.Serialize(m.AllResourcesCollection.ToList(), options);
+
+                // Select(r => new { Key = r.Key, r.Data }).ToList(), options
+                    // );
+                DumpTree(m.AllResourcesCollection, options, 0, jsonOut);
+                File.WriteAllLines(@"C:\temp\json.txt", jsonOut);
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void DumpTree([NotNull] IEnumerable<ResourceNodeInfo> modelAllResourcesCollection,
+            JsonSerializerOptions options, int depth = 0, List<string> jsonOut = null)
+        {
+            foreach (var resourceNodeInfo in modelAllResourcesCollection)
+            {
+                try
+                {
+                    
+                    var json1 = JsonSerializer.Serialize(
+                                                          resourceNodeInfo.Key
+                                                        , options
+                                                         );
+
+                    jsonOut.Add(json1);
+                    Logger.Debug(json1);
+                    var json2 = JsonSerializer.Serialize(
+                                                          resourceNodeInfo.Data
+                                                        , options
+                                                         );
+                    Logger.Debug(json2);
+                    jsonOut.Add(json2);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, ex.Message);
+                }
+
+                // var selector = new ResourceDetailTemplateSelector();
+                // var dt = selector.SelectTemplate(resourceNodeInfo.Data, tree);
+                // if (dt != null)
+                // {
+                //     var xaml = XamlWriter.Save(dt);
+                //     DebugUtils.WriteLine(xaml);
+                // }
+
+                Logger.Info(
+                             "{x}{key} = {data}"
+                           , string.Concat(Enumerable.Repeat("  ", depth))
+                           , resourceNodeInfo.Key
+                           , resourceNodeInfo.Data
+                            );
+                // ReSharper disable once AssignNullToNotNullAttribute
+                DumpTree(resourceNodeInfo.Children, options, depth + 1, jsonOut);
+            }
         }
 
         private void ConfigurationAction ( ContainerBuilder builder )
@@ -288,8 +360,11 @@ namespace ProjInterface
             set { _viewModel = value ; }
         }
 
+        public RibbonBuilder Builder { get; }
+
 
         [ NotNull ] public string ViewTitle { get { return WindowViewTitle ; } }
+        public string CommandStr { get; set; }
 
 
         private async void CommandBinding_OnExecuted (
@@ -416,7 +491,14 @@ namespace ProjInterface
             {
                 if (layoutContent is LayoutDocument d)
                 {
-                    DocInfo di = new DocInfo() {ContentId = d.ContentId, Title = d.Title};
+                    DocInfo di = new DocInfo()
+                    {
+                        ContentId = d.ContentId, Title = d.Title,
+                        Description = d.Description,
+                        IsVisible = d.IsVisible,
+                        LastActivationTimeStamp = d.LastActivationTimeStamp,
+                    };
+                    
 
                 }
             }
@@ -443,12 +525,14 @@ namespace ProjInterface
                     case ILayoutDocumentPane layoutDocumentPane1:
                         break;
                     case LayoutPanel layoutPanel:
+                        DebugUtils.WriteLine(layoutPanel.Orientation.ToString());
                         break;
                     case ILayoutOrientableGroup layoutOrientableGroup:
                         break;
                     case LayoutAnchorGroup layoutAnchorGroup:
                         break;
                     case LayoutAnchorSide layoutAnchorSide:
+                        DebugUtils.WriteLine(layoutAnchorSide.Side.ToString());
                         break;
                     case ILayoutGroup layoutGroup1:
                         break;
@@ -543,7 +627,7 @@ namespace ProjInterface
 #if PYTHON
             var scope = ( ILifetimeScope ) GetValue ( AttachedProperties.LifetimeScopeProperty ) ;
             var model = scope.Resolve < PythonViewModel > ( ) ;
-            model.ExecutePythonScript ( textEditor.Text ) ;
+            //model.ExecutePythonScript ( textEditor.Text ) ;
 #endif
         }
 
@@ -607,6 +691,9 @@ namespace ProjInterface
     {
         public string ContentId { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime? LastActivationTimeStamp { get; set; }
+        public bool IsVisible { get; set; }
     }
 
     public sealed class Filter
@@ -625,6 +712,14 @@ namespace ProjInterface
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+            {
+                return new LambdaAppCommand("Null", async command =>
+                {
+                    MessageBox.Show("Command is null", "null");
+                    return AppCommandResult.Failed;
+                }, null);
+            }
             return new WrappedAppCommand2((IBaseLibCommand) value, new HandleExceptionImpl());
             throw new NotImplementedException();
         }
@@ -632,6 +727,29 @@ namespace ProjInterface
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class RibbonBuilder
+    {
+        private IAppRibbon appRibbon;
+
+        public RibbonBuilder(IAppRibbon appRibbon)
+        {
+            this.appRibbon = appRibbon;
+        }
+
+        public Ribbon BuildRibbon()
+        {
+            Ribbon r = new Ribbon();
+            foreach (var appRibbonTab in appRibbon.Tabs)
+            {
+                var ribbonTab = new RibbonTab();
+                ribbonTab.Header = appRibbonTab.Category.ToString();
+                r.Items.Add(ribbonTab);
+            }
+
+            return r;
         }
     }
 }

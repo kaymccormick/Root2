@@ -9,17 +9,19 @@
 // 
 // ---
 #endregion
-using System.Collections.Generic ;
-using AnalysisControls.ViewModel ;
-using KayMcCormick.Dev ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
+
+using System.Collections.Generic;
+using AnalysisControls.ViewModel;
+using KayMcCormick.Dev;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 // ReSharper disable RedundantOverriddenMember
 
-namespace ConsoleApp1
+namespace AnalysisControls
 {
-    internal sealed class SyntaxRewriter1 : CSharpSyntaxRewriter
+    public sealed class SyntaxRewriter1 : CSharpSyntaxRewriter
     {
         // ReSharper disable once NotAccessedField.Local
         private readonly IReadOnlyDictionary < string , object > _map ;

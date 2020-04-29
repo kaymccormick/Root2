@@ -39,7 +39,7 @@
           <TestConverter x:Key="TestConverter" />
           <local:BaseAppCommandConverter x:Key="BaseAppCommandConverter"/>
           <HierarchicalDataTemplate DataType="{x:Type analysisAppLib:CommandInfo}">
-            <RibbonButton Label="{Binding Title}" Command="{Binding Path=Command.Value.Value,Converter={StaticResource BaseAppCommandConverter}}"></RibbonButton>
+            <RibbonButton Label="{Binding Title}" Command="{Binding Path=TheCommand,Converter={StaticResource BaseAppCommandConverter}}"></RibbonButton>
           </HierarchicalDataTemplate>
           <HierarchicalDataTemplate DataType="{x:Type local:RibbonItemInfo}">
             <RibbonCheckBox Label="{Binding Title}" IsChecked="{Binding Checked,Mode=TwoWay}"></RibbonCheckBox>

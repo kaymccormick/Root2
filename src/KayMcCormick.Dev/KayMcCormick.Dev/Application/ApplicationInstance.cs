@@ -64,10 +64,12 @@ namespace KayMcCormick.Dev.Application
         /// Basic win forms app
         /// </summary>
         public static Guid BasicWinForms { get ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
+
+        public static Guid ProjTests { get; set; } = new Guid("{EEC2E4DC-A0BE-4472-A936-50CA7419B530}");
     }
 
     /// <summary>
-    /// </summary>
+    /// </  summary>
     public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
 #pragma warning disable 169
@@ -402,10 +404,27 @@ namespace KayMcCormick.Dev.Application
             builder.RegisterMetadataRegistrationSources ( ) ;
             builder.RegisterModule < NouveauAppModule > ( ) ;
 
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                DebugUtils.WriteLine(assembly.GetName().ToString());
+            }
+
+            Assembly loaded = null;
+            var entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly != null)
+                foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+                {
+                    DebugUtils.WriteLine("ref:" + assembly.Name);
+                    if (assembly.Name == "AnalysisAppLib")
+                    {
+                        loaded = Assembly.Load(assembly);
+                    }
+                }
+
             var yy = AppDomain.CurrentDomain.GetAssemblies ( )
                      .Where (
                              assembly => {
-                                 if ( assembly.GetName().Name == "KayMcCormick.Lib.Wpf")
+                                 if ( assembly.GetName().Name == "WpfLib" || assembly.GetName().Name == "AnalysisAppLib")
                                  {
                                      return true ;
                                  }

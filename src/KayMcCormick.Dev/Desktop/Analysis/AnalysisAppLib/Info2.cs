@@ -17,11 +17,15 @@ namespace AnalysisAppLib
         public Category Category { get => category; set => category = value; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [TypeConverter(typeof(CommandInfoTypeConverter))]
     public class CommandInfo : INotifyPropertyChanged
     {
         Meta<Lazy<IBaseLibCommand>> command;
         private string _title;
+        private IBaseLibCommand _theCommand;
 
         public string Title
         {
@@ -34,6 +38,28 @@ namespace AnalysisAppLib
             }
         }
 
+        public IBaseLibCommand TheCommand
+        {
+            get
+            {
+                if (command.Value.IsValueCreated)
+                {
+                    return command.Value.Value;
+                }
+
+                try
+                {
+                    _theCommand = command.Value.Value;
+                    return _theCommand;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+
+                return null;
+            }
+        }
         public Meta<Lazy<IBaseLibCommand>> Command
         {
             get => command; set

@@ -9,9 +9,9 @@
 // 
 // ---
 #endregion
-namespace ConsoleApp1
+namespace AnalysisAppLib
 {
-    internal sealed class X
+    public sealed class X
     {
         public int Len ;
     }

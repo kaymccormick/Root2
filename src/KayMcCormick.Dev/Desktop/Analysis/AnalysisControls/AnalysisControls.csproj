@@ -83,6 +83,12 @@
     <Reference Include="IronPython.Modules">
       <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\IronPython.Modules.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Locator">
+      <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.build.locator\1.2.6\lib\net46\Microsoft.Build.Locator.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild">
+      <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\3.6.0-3.final\lib\net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -114,15 +120,20 @@
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
+    <Compile Include="ICodeGenCommand.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
+    <Compile Include="MiscCommands.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CodeGenCommand.cs" />
     <Compile Include="StringObservableCollection - Copy.cs" />
+    <Compile Include="SyntaxRewriter1.cs" />
+    <Compile Include="SyntaxWalker2.cs" />
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
@@ -291,6 +302,9 @@
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.8.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Build.Locator">
+      <Version>1.2.6</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
       <Version>3.6.0-3.final</Version>
     </PackageReference>
@@ -298,6 +312,9 @@
       <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces">
+      <Version>3.6.0-3.final</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild">
       <Version>3.6.0-3.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading">

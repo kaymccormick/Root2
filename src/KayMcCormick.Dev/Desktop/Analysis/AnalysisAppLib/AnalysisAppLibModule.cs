@@ -5,6 +5,7 @@ using System.ComponentModel ;
 using System.Data ;
 using System.Linq ;
 using System.Net.Http.Headers ;
+using System.Reactive.Subjects;
 using System.Reflection ;
 using System.Threading.Tasks ;
 using AnalysisAppLib.Command ;
@@ -14,17 +15,16 @@ using Autofac.Core ;
 using Autofac.Core.Registration ;
 using Autofac.Extras.AttributeMetadata ;
 using Autofac.Features.AttributeFilters ;
-using Autofac.Features.Metadata;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using Microsoft.EntityFrameworkCore ;
 using Microsoft.Extensions.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
+using Document = Microsoft.CodeAnalysis.Document;
 
 namespace AnalysisAppLib
 {
@@ -61,7 +61,7 @@ namespace AnalysisAppLib
           , IComponentRegistration registration
         )
         {
-            var svc = string.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
+            var svc = String.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
             DebugUtils.WriteLine (
                                   $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
                                  ) ;
@@ -100,15 +100,16 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-
+            builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
+            builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
             
             if ( false )
             {
-                builder.Register < Func < object , DataTable > > (
+                builder.Register < Func<object, DataTable>> (
                                                                   ( c , p ) => o
                                                                       => DataAdapter ( c , p , o )
                                                                  )
-                       .As < Func < object , DataTable > > ( ) ;
+                       .As < Func<object, DataTable>> ( ) ;
 
 
                 builder.RegisterAdapter < object , DataTable > ( DataAdapter ) ;
@@ -160,8 +161,8 @@ namespace AnalysisAppLib
                    .As < IAnalyzeCommand > ( ).AsImplementedInterfaces()
                    .WithCallerMetadata ( ) ;
 
-            builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )
-                   .As ( typeof ( IAnalyzeCommand2 <> ) )
+            builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand<>) )
+                   .As ( typeof ( IAnalyzeCommand2<>) )
                    .WithCallerMetadata ( ) ;
             builder.RegisterType < Pipeline > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
 
@@ -181,11 +182,9 @@ namespace AnalysisAppLib
                    .InstancePerLifetimeScope ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.Register < Action < Microsoft.CodeAnalysis.Document > > (
+            builder.Register < Action<Document>> (
                                                                              ( c , p ) => (
-                                                                                 Microsoft.
-                                                                                     CodeAnalysis.
-                                                                                     Document doc
+                                                                                 Document doc
                                                                              ) => {
                                                                                  DebugUtils
                                                                                     .WriteLine (
@@ -196,8 +195,8 @@ namespace AnalysisAppLib
                                                                             ) ;
             if ( true )
             {
-                builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
-                       .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                builder.RegisterGeneric ( typeof ( AnalysisBlockProvider<,,>) )
+                       .As ( typeof ( IAnalysisBlockProvider<,,>) )
                        .WithAttributeFiltering ( )
                        .InstancePerLifetimeScope ( )
                        .WithCallerMetadata ( )
@@ -206,14 +205,14 @@ namespace AnalysisAppLib
 
             if ( false )
             {
-                builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider < , , > ) )
-                       .As ( typeof ( IAnalysisBlockProvider < , , > ) )
+                builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider<,,>) )
+                       .As ( typeof ( IAnalysisBlockProvider<,,>) )
                        .WithAttributeFiltering ( )
                        .InstancePerLifetimeScope ( )
                        .WithCallerMetadata ( )
                        .WithMetadata ( "Purpose" , "Analysis" ) ;
-                builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider < , > ) )
-                       .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
+                builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider<,>) )
+                       .As ( typeof ( IDataflowTransformFuncProvider<,>) )
                        .WithAttributeFiltering ( )
                        .InstancePerLifetimeScope ( )
                        .WithMetadata ( "Purpose" , "Analysis" )
@@ -239,7 +238,7 @@ namespace AnalysisAppLib
         [ NotNull ]
         private static DataTable DataAdapter (
             IComponentContext         c
-          , IEnumerable < Parameter > p
+          , IEnumerable<Parameter> p
           , [NotNull ] object        o
         )
         {
@@ -269,13 +268,13 @@ namespace AnalysisAppLib
         }
 
         [ NotNull ]
-        private Dictionary < string , object > DictAdapter (
+        private Dictionary<string, object> DictAdapter (
             IComponentContext         c
-          , IEnumerable < Parameter > p
+          , IEnumerable<Parameter> p
           , [ NotNull ] object        o
         )
         {
-            var r = new Dictionary < string , object > ( ) ;
+            var r = new Dictionary<string, object>( ) ;
             foreach ( var p1 in o.GetType ( )
                                  .GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
             {
@@ -295,7 +294,7 @@ namespace AnalysisAppLib
         [ NotNull ]
         private static IPublicClientApplication MakePublicClientApplication (
             IComponentContext                     context
-          , [ NotNull ] IEnumerable < Parameter > p
+          , [ NotNull ] IEnumerable<Parameter> p
         )
         {
             var typedAs = p.TypedAs < Guid > ( ) ;
@@ -339,46 +338,8 @@ namespace AnalysisAppLib
         }
     }
 
-    public class TConf
+    public class MiscCommands1
     {
-    }
 
-    /// <summary>
-    /// </summary>
-    [ TitleMetadata ( "Find and analyze usages of NLog logging." ) ]
-    // ReSharper disable once UnusedType.Global
-    public sealed class FindLogUsagesAnalysisDefinition : IAnalysisDefinition < ILogInvocation >
-    {
-        private Type _dataflowOutputType = typeof ( ILogInvocation ) ;
-
-        /// <summary>
-        /// </summary>
-        public Type DataflowOutputType
-        {
-            get { return _dataflowOutputType ; }
-            set { _dataflowOutputType = value ; }
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    /// <typeparam name="TOutput"></typeparam>
-    // ReSharper disable once UnusedTypeParameter
-    internal interface IAnalysisDefinition < TOutput >
-    {
-        /// <summary>
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        Type DataflowOutputType { get ; set ; }
-    }
-
-    public class TestModel
-    {
-        IEnumerable<Category> c;
-
-        public TestModel(IEnumerable<Category> c, IEnumerable<Meta<Lazy<IBaseLibCommand>>> cm)
-        {
-            this.c = c;
-        }
     }
 }

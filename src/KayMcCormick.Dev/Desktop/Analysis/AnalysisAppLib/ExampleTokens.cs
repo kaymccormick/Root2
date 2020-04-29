@@ -9,11 +9,12 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Collections ;
-using System.Collections.Generic ;
 
-namespace ConsoleApp1
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace AnalysisAppLib
 {
     public sealed class ExampleTokens : IList , ICollection , IEnumerable
     {

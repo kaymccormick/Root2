@@ -9,12 +9,13 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using Microsoft.CodeAnalysis.CSharp ;
 
-namespace ConsoleApp1
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp;
+
+namespace AnalysisAppLib
 {
     public sealed class ExampleDict : IDictionary , ICollection , IEnumerable
     {

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization ;
+using System.Windows.Controls.Ribbon;
 using AnalysisAppLib;
 using Autofac ;
 using JetBrains.Annotations ;
@@ -21,15 +22,17 @@ namespace ProjInterface
     public sealed class DockWindowViewModel : IViewModel, INotifyPropertyChanged
     {
         [NotNull] private readonly ILifetimeScope _scope;
+        private readonly IAppRibbon _appRibbon;
 
         // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private Dictionary<Category, Info1> _dict;
 
 
-        public DockWindowViewModel ([ NotNull ] ILifetimeScope scope, Dictionary<Category, Info1> dict )
+        public DockWindowViewModel ([ NotNull ] ILifetimeScope scope, Dictionary<Category, Info1> dict , IAppRibbon appRibbon, AppRibbonTabSet set)
         {
             _scope = scope;
+            _appRibbon = appRibbon;
             var views = scope.Resolve < IEnumerable < Lazy<IControlView> > > ( ) ;
             foreach ( var controlView in views )
             {
@@ -95,96 +98,29 @@ namespace ProjInterface
         }
     }
 
-    public class GroupInfo : INotifyPropertyChanged
-    {
-        private string _group;
-        private Category _category;
-        private CommandObservableCollection _commands = new CommandObservableCollection();
-
-        public string Group
-        {
-            get => _group;
-            set
-            {
-                if (value == _group) return;
-                _group = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Category Category
-        {
-            get => _category;
-            set
-            {
-                if (value == _category) return;
-                _category = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public CommandObservableCollection Commands
-        {
-            get => _commands;
-            internal set
-            {
-                if (Equals(value, _commands)) return;
-                _commands = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
     public class GroupInfoImpl : GroupInfo
     {
         
     }
 
-    public class TabInfo :INotifyPropertyChanged
+    public class AllCommands : IRibbonComponent
     {
-        private Category _category;
-        private ObservableCollection<GroupInfo> _groups = new ObservableCollection<GroupInfo>();
+        private IEnumerable<IBaseLibCommand> _commands;
 
-        public TabInfo()
+        public AllCommands(IEnumerable<IBaseLibCommand> commands)
         {
+            _commands = commands;
         }
 
-        public Category Category
+        public object GetComponent()
         {
-            get => _category;
-            set
-            {
-                if (value == _category) return;
-                _category = value;
-                OnPropertyChanged();
-            }
-        }
 
-        public ObservableCollection<GroupInfo> Groups
-        {
-            get => _groups;
-            internal set
-            {
-                if (Equals(value, _groups)) return;
-                _groups = value;
-                OnPropertyChanged();
-            }
+            return new RibbonComboBox() {ItemsSource = _commands};
         }
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    public interface IRibbonComponent
+    {
+        object GetComponent();
     }
 }

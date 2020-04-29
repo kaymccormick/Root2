@@ -2,6 +2,8 @@
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
+using System.Linq;
+using System.Text.Json;
 using System.Windows ;
 using System.Windows.Media ;
 using Autofac ;
@@ -13,6 +15,7 @@ using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using NLog ;
+using NLog.Targets;
 using Application = System.Windows.Application ;
 
 #if COMMANDLINE
@@ -110,23 +113,18 @@ namespace KayMcCormick.Lib.Wpf
             _applicationInstance.Initialize ( ) ;
             _applicationInstance.Startup ( ) ;
             Scope = _applicationInstance.GetLifetimeScope ( ) ;
+            var options = Scope.Resolve<JsonSerializerOptions>();
+            options.Converters.Add(new JsonConverterLogEventInfo());
             TypeDescriptor.AddProvider(new InstanceInfoProvider(), typeof(InstanceInfo));
 
-            //
-            // foreach ( var myJsonLayout in LogManager
-            //                              .Configuration.AllTargets.OfType < TargetWithLayout > ( )
-            //                              .Select ( t => t.Layout )
-            //                              .OfType < MyJsonLayout > ( ) )
-            // {
-            //     var options = new JsonSerializerOptions ( ) ;
-            //     foreach ( var optionsConverter in myJsonLayout.Options.Converters )
-            //     {
-            //         options.Converters.Add ( optionsConverter ) ;
-            //     }
-            //
-            //     options.Converters.Add ( new DataTemplateKeyConverter ( ) ) ;
-            //     myJsonLayout.Options = options ;
-            // }
+            
+            foreach ( var myJsonLayout in LogManager
+            .Configuration.AllTargets.OfType < TargetWithLayout > ( )
+            .Select ( t => t.Layout )
+            .OfType < MyJsonLayout > ( ) )
+            {
+                myJsonLayout.Options = options;
+             }
         }
 
         /// <summary>

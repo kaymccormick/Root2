@@ -184,6 +184,11 @@ namespace ProjInterface
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            string cmdStr = null;
+            if (e.Args.Any())
+            {
+                cmdStr = e.Args.First();
+            }
             Logger.Trace("{methodName}", nameof(OnStartup));
             var lifetimeScope = Scope;
             if (lifetimeScope?.IsRegistered<Window1>() == false)
@@ -206,6 +211,7 @@ namespace ProjInterface
                     var test1 = Scope.Resolve<TestModel>();
 
                    mainWindow = lifetimeScope.Resolve<Window1>( ) ;
+                   mainWindow.CommandStr = cmdStr;
                 }
 }
             catch (Exception ex )
@@ -266,6 +272,8 @@ namespace ProjInterface
             loggingConfiguration.IsEnabledCacheTarget = true ;
             loggingConfiguration.MinLogLevel          = LogLevel.Trace ;
 
+            AppLoggingConfigHelper.EnsureLoggingConfigured(message => DebugUtils.WriteLine(message),
+                loggingConfiguration);
 
             AppDomain.CurrentDomain.ProcessExit += ( sender , args )
                 => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
