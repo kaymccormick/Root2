@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization ;
-using System.Windows.Controls.Ribbon;
 using AnalysisAppLib;
+using AnalysisControls;
 using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -96,31 +96,5 @@ namespace ProjInterface
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class GroupInfoImpl : GroupInfo
-    {
-        
-    }
-
-    public class AllCommands : IRibbonComponent
-    {
-        private IEnumerable<IBaseLibCommand> _commands;
-
-        public AllCommands(IEnumerable<IBaseLibCommand> commands)
-        {
-            _commands = commands;
-        }
-
-        public object GetComponent()
-        {
-
-            return new RibbonComboBox() {ItemsSource = _commands};
-        }
-    }
-
-    public interface IRibbonComponent
-    {
-        object GetComponent();
     }
 }

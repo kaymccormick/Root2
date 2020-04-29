@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AnalysisAppLib;
 using Autofac.Features.Metadata;
 
-namespace ProjInterface
+namespace AnalysisControls
 {
     public class AppRibbon : IAppRibbon
     {

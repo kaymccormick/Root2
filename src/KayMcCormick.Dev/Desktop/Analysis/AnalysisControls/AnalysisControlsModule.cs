@@ -35,6 +35,7 @@ using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
+using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Module = Autofac.Module ;
 
@@ -51,6 +52,41 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load ( ContainerBuilder builder )
         {
+            builder.RegisterType<AllResourcesTreeViewModel>()
+                .AsSelf()
+                .As<IAddRuntimeResource>()
+                .SingleInstance()
+                .WithCallerMetadata();
+
+
+            builder.RegisterType<RibbonBuilder>();
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IRibbonComponent>().AsImplementedInterfaces();
+            //builder.RegisterAdapter<>()
+            builder.RegisterType<AppRibbon>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+            builder.RegisterType<AppRibbonTab>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+            foreach (Category enumValue in typeof(Category).GetEnumValues())
+            {
+                CategoryInfo cat = new CategoryInfo(enumValue);
+                builder.RegisterInstance(cat).As<CategoryInfo>();
+            }
+            builder.Register((c, p) =>
+            {
+                var r = new AppRibbonTabSet();
+                foreach (var ct in c.Resolve<IEnumerable<CategoryInfo>>())
+                {
+                    var tab = new AppRibbonTab();
+                    tab.Category = ct;
+                    r.TabSet.Add(tab);
+                }
+                foreach (var meta in c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>())
+                {
+                    DebugUtils.WriteLine(meta.ToString());
+                    var props = MetaHelper.GetProps(meta);
+                    DebugUtils.WriteLine(props.ToString());
+                }
+                return r;
+            });
+
             builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
                 .WithCallerMetadata();
             foreach ( var qq in typeof ( AnalysisCommands ).GetProperties (

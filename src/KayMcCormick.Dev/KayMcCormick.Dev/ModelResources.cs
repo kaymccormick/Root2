@@ -45,7 +45,7 @@ namespace KayMcCormick.Dev
         private          bool                                    _doPopulateAppContext = false ;
         private          ResourceNodeInfo                        _objects_node ;
         private readonly bool                                    _flatten_objects_node ;
-        private readonly IObservable < IComponentRegistration >  _regObservable ;
+        private IObservable < IComponentRegistration >  _regObservable ;
         private readonly ConcurrentDictionary < Type , MyInfo2 > _activators ;
         private          bool                                    _regSubscribed ;
 
@@ -72,14 +72,15 @@ namespace KayMcCormick.Dev
             _flatten_objects_node = test ;
             _regObservable        = regObservable ;
             _activators           = activators ;
-            DebugUtils.WriteLine (
-                                  string.Join (
-                                               ", "
-                                             , activators
-                                              .Values.Where ( x => x.Registrations.Count > 1 )
-                                              .Select ( x2 => x2.LimitType )
-                                              )
-                                 ) ;
+            if (activators != null)
+                DebugUtils.WriteLine(
+                    string.Join(
+                        ", "
+                        , activators
+                            .Values.Where(x => x.Registrations.Count > 1)
+                            .Select(x2 => x2.LimitType)
+                    )
+                );
         }
 
         /// <summary>
@@ -444,23 +445,25 @@ namespace KayMcCormick.Dev
                     CreateNode ( null , "LifetimeScope" , LifetimeScope , true ) ;
                 if ( ! _regSubscribed )
                 {
-                    _regObservable.SubscribeOn ( Scheduler.Default )
-                                  .ObserveOnDispatcher ( DispatcherPriority.Background )
-                                  .Subscribe (
-                                              registration => {
-                                                  DebugUtils.WriteLine ( "Adding registration" ) ;
-                                                  resourceNodeInfo.Children.Add (
-                                                                                 resourceNodeInfo
-                                                                                    .CreateNodeFunc (
-                                                                                                     resourceNodeInfo
-                                                                                                   , registration
-                                                                                                   , null
-                                                                                                   , true
-                                                                                                   , false
-                                                                                                    )
-                                                                                ) ;
-                                              }
-                                             ) ;
+                    if (_regObservable != null)
+                        _regObservable.SubscribeOn(Scheduler.Default)
+                            .ObserveOnDispatcher(DispatcherPriority.Background)
+                            .Subscribe(
+                                registration =>
+                                {
+                                    DebugUtils.WriteLine("Adding registration");
+                                    resourceNodeInfo.Children.Add(
+                                        resourceNodeInfo
+                                            .CreateNodeFunc(
+                                                resourceNodeInfo
+                                                , registration
+                                                , null
+                                                , true
+                                                , false
+                                            )
+                                    );
+                                }
+                            );
                     _regSubscribed = true ;
                 }
 

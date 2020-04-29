@@ -1,6 +1,4 @@
-﻿using AnalysisAppLib;
-
-namespace ProjInterface
+﻿namespace AnalysisControls
 {
     public interface IAppRibbonTab
     {

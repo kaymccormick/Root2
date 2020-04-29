@@ -89,7 +89,7 @@ namespace ProjInterface
         public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this (
                                                                             lifetimeScope
                                                                           , null
-                                                                          , null, null
+                                                                          , null, null, null
                                                                            )
         {
         }
@@ -727,29 +727,6 @@ namespace ProjInterface
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class RibbonBuilder
-    {
-        private IAppRibbon appRibbon;
-
-        public RibbonBuilder(IAppRibbon appRibbon)
-        {
-            this.appRibbon = appRibbon;
-        }
-
-        public Ribbon BuildRibbon()
-        {
-            Ribbon r = new Ribbon();
-            foreach (var appRibbonTab in appRibbon.Tabs)
-            {
-                var ribbonTab = new RibbonTab();
-                ribbonTab.Header = appRibbonTab.Category.ToString();
-                r.Items.Add(ribbonTab);
-            }
-
-            return r;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjInterface
+namespace AnalysisControls
 {
     public interface IAppRibbon
     {

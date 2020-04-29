@@ -30,6 +30,7 @@ using System.Windows ;
 using System.Windows.Automation ;
 using System.Windows.Baml2006 ;
 using System.Windows.Controls ;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using System.Xaml ;
@@ -1384,6 +1385,32 @@ namespace ProjTests
             DebugUtils.WriteLine ( @out ) ;
             Logger.Info ( @out ) ;
         }
+        [WpfFact]
+        public void TestRibbonBuilder()
+        {
+            using (var instance = new ApplicationInstance(
+                                                            new ApplicationInstance.
+                                                                ApplicationInstanceConfiguration(
+                                                                                                  _output
+                                                                                                     .WriteLine
+                                                                                                , ApplicationGuid
+                                                                                                 )
+                                                           ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                var builder = lifetimeScope.Resolve<RibbonBuilder>();
+                var ribbon = builder.Ribbon;
+                RibbonWindow w = new RibbonWindow();
+                var dp = new DockPanel();
+                dp.Children.Add(ribbon);
+                w.ShowDialog();
+            }
+        }
+
+
     }
 
     public class TestApp1 : System.Windows.Application

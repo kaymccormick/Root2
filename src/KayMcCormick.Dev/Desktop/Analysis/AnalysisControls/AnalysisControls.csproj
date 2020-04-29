@@ -110,9 +110,14 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AllCommands.cs" />
     <Compile Include="AnalysisCustomTypeDescriptor.cs" />
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
+    <Compile Include="AppRibbon.cs" />
+    <Compile Include="AppRibbonTab.cs" />
+    <Compile Include="AppRibbonTabSet.cs" />
+    <Compile Include="CategoryInfo.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
@@ -120,10 +125,13 @@
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
+    <Compile Include="IAppRibbon.cs" />
+    <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="ICodeGenCommand.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
+    <Compile Include="IRibbonComponent.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="MiscCommands.cs" />
@@ -131,6 +139,7 @@
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodeGenCommand.cs" />
+    <Compile Include="RibbonBuilder.cs" />
     <Compile Include="StringObservableCollection - Copy.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxWalker2.cs" />
