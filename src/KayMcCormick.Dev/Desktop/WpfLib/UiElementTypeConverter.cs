@@ -11,10 +11,13 @@
 #endregion
 using System ;
 using System.Collections ;
+using System.Collections.Generic;
 using System.ComponentModel ;
 using System.Data ;
 using System.Globalization ;
+using System.Linq;
 using System.Reflection ;
+using System.Threading.Tasks;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
@@ -27,6 +30,7 @@ using Autofac ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using NLog ;
+using Task = System.Threading.Tasks.Task;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -46,7 +50,7 @@ namespace KayMcCormick.Lib.Wpf
           , Type                   destinationType
         )
         {
-            DebugUtils.WriteLine($"{context.Instance} {context.PropertyDescriptor?.Name} {context.Container} {value} {destinationType?.FullName}");
+            DebugUtils.WriteLine($"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {value} {destinationType?.FullName}");
             if ( destinationType == typeof ( UIElement ) )
             {
                 return ConvertToUiElement ( value ) ;
@@ -79,11 +83,6 @@ namespace KayMcCormick.Lib.Wpf
             var r = new ListView ( ) ;
             var gv = new GridView ( ) ;
             r.View = gv ;
-            if ( value is DataSourceProvider dp )
-            {
-            }
-
-            var data = _scope.Resolve < Func < object , DataTable > > ( ) ;
 
             var enumerator = value.GetEnumerator ( ) ;
             if ( ! enumerator.MoveNext ( ) )
@@ -91,16 +90,16 @@ namespace KayMcCormick.Lib.Wpf
                 return new Grid ( ) ;
             }
 
-            var r2 = data ( enumerator.Current ) ;
-            foreach ( DataColumn r2Column in r2.Columns )
-            {
+            var elementType = value.GetType().GetInterfaces().Where(if1 => if1.IsGenericType && if1.GetGenericTypeDefinition() == typeof(IEnumerable<>)).Select(if1 => if1.GenericTypeArguments[0]).FirstOrDefault();
+	    foreach(var propInfo in elementType.GetProperties())
+	    {
                 var gridViewColumn = new GridViewColumn ( ) ;
-                gridViewColumn.Header = r2Column.ColumnName ;
-                gridViewColumn.DisplayMemberBinding = new Binding ( r2Column.ColumnName )
+                gridViewColumn.Header = propInfo.Name;
+                gridViewColumn.DisplayMemberBinding = new Binding ( propInfo.Name )
                                                       {
                                                           Mode               = BindingMode.OneWay
                                                         , Converter          = new BasicConverte ( )
-                                                        , ConverterParameter = r2Column
+                                                        , ConverterParameter = propInfo
                                                       } ;
                 gv.Columns.Add ( gridViewColumn ) ;
             }
@@ -139,6 +138,12 @@ namespace KayMcCormick.Lib.Wpf
             if ( value == null )
             {
                 return new StackPanel ( ) ;
+            }
+
+            if (value.GetType() == typeof(Task) || (value.GetType().IsGenericType &&
+                                                    value.GetType().GetGenericTypeDefinition() == typeof(Task<>)))
+            {
+                return new StackPanel();
             }
 
             if ( value is Type vt )
@@ -418,7 +423,7 @@ namespace KayMcCormick.Lib.Wpf
         #region Overrides of TypeConverter
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
         {
-            DebugUtils.WriteLine($"{context.Instance} {context.PropertyDescriptor?.Name} {context.Container} {destinationType?.FullName}");
+            DebugUtils.WriteLine($"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {destinationType?.FullName}");
             if ( destinationType == typeof ( UIElement ) )
             {
                 return true ;

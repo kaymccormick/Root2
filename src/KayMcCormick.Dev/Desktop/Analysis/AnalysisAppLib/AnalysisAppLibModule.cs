@@ -1,4 +1,5 @@
-﻿using System ;
+﻿
+using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
@@ -35,6 +36,7 @@ namespace AnalysisAppLib
     {
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _registerExplorerTypes = false ;
+        private ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
 
         /// <summary>
         ///     Parameterless constructor.
@@ -65,6 +67,18 @@ namespace AnalysisAppLib
             DebugUtils.WriteLine (
                                   $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
                                  ) ;
+
+            registration.Activated += (sender, args) =>
+            {
+                ActivationInfo x = new ActivationInfo()
+                {
+                    Instance = args.Instance,
+                    Component = args.Component,
+                    Parameters = args.Parameters,
+                    Context = args.Context
+                };
+                _activations.OnNext(x);
+            };
             registration.Activating += ( sender , args ) => {
                 var inst = args.Instance ;
                 DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
@@ -100,6 +114,7 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+builder.RegisterInstance(_activations);            
             builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
             builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
             
@@ -336,10 +351,5 @@ namespace AnalysisAppLib
                 return Task.FromResult ( 0 ) ;
             } ;
         }
-    }
-
-    public class MiscCommands1
-    {
-
     }
 }

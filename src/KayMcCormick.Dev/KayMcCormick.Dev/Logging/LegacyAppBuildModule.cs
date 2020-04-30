@@ -406,7 +406,7 @@ namespace KayMcCormick.Dev.Logging
         {
             /// <summary>Gets or sets the default object.</summary>
             /// <value>The default object.</value>
-            private DefaultObjectIdProvider DefaultObject { get ; set ; }
+            private IObjectIdProvider DefaultObject { get ; set ; }
 
             /// <summary>Gets or sets the generator.</summary>
             /// <value>The generator.</value>
@@ -494,6 +494,7 @@ namespace KayMcCormick.Dev.Logging
                                                                      , e.Component
                                                                      , e.Parameters
                                                                       ) ;
+
                     if ( inst is IHaveObjectId x )
                     {
                         x.InstanceObjectId = provideObjectInstanceIdentifier ;

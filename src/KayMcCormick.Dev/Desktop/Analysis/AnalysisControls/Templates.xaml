@@ -3,8 +3,59 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
   xmlns:findLogUsages="clr-namespace:FindLogUsages;assembly=FindLogUsages"
-  xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib">
- 
+  xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
+  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+  xmlns:analysisControls="clr-namespace:AnalysisControls"
+  xmlns:autofac="clr-namespace:Autofac;assembly=Autofac"
+  xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
+  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+  xmlns:reflection="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac">
+
+
+
+  <analysisControls:TestConverter2 x:Key="TestConverter1" />
+  <DataTemplate x:Key="ActivationInfo.Context" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <ContentControl Content="{Binding Context}"/>
+  </DataTemplate>
+  <DataTemplate x:Key="ActivationInfo.Instance" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <ContentControl Content="{Binding Instance}"/>
+  </DataTemplate>
+  <DataTemplate x:Key="ActivationInfo.Parameters" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <ItemsControl ItemsSource="{Binding Parameters}">
+      <ItemsControl.Resources>
+        <DataTemplate DataType="{x:Type autofac:TypedParameter}">
+          <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+            <kmWpf:TypeControl>
+              <kmWpf:AttachedProperties.RenderedType>
+                <Binding Path="Type"/>
+              </kmWpf:AttachedProperties.RenderedType>
+            </kmWpf:TypeControl>
+            <ContentControl Content="{Binding Value}"/>
+          </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type autofac:NamedParameter}">
+          <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+            <TextBlock Text="{Binding Name}"/>
+            <ContentControl Content="{Binding Value}"/>
+          </StackPanel>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type core:ConstantParameter}">
+            <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+              <ContentControl Content="{Binding Value}"/>
+            </StackPanel>
+        </DataTemplate>
+      </ItemsControl.Resources>
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+  </DataTemplate>
+  <DataTemplate x:Key="ActivationInfo.Component" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <ContentControl Content="{Binding Component}"/>
+  </DataTemplate>
+
   <DataTemplate
     DataType="{x:Type findLogUsages:ILogInvocation}">
     <Grid VerticalAlignment="Stretch"

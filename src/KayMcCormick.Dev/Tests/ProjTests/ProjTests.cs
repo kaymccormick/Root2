@@ -10,12 +10,16 @@
 // ---
 #endregion
 using System ;
+using System.Collections;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Data ;
 using System.Diagnostics ;
 using System.Globalization ;
 using System.IO ;
+using System.IO.Packaging;
 using System.Linq ;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -72,6 +76,7 @@ using Moq ;
 using NLog ;
 using Xunit ;
 using Xunit.Abstractions ;
+using Application = KayMcCormick.Dev.Logging.Application;
 using ColorConverter = System.Windows.Media.ColorConverter ;
 using Condition = System.Windows.Automation.Condition ;
 using File = System.IO.File ;
@@ -1397,8 +1402,26 @@ namespace ProjTests
         [WpfFact]
         public void TestRibbonBuilder()
         {
+            // var assembly = typeof(BaseApp).Assembly;
+            // var x = new ResourceManager(
+            //     "WpfLib.g"
+            //     , assembly
+            // );
+            // ReSharper disable once ResourceItemNotResolved
+            var assembly = typeof(AnalysisControlsModule).Assembly;
+             var x = new ResourceManager(
+                 "AnalysisControls.g"
+                 , assembly
+             );
+
+            var y = x.GetStream("templates.baml");
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var b = new Baml2006Reader(y, new XamlReaderSettings());
+            
+            ResourceDictionary oo = (ResourceDictionary) XamlReader.Load(b);
+
             var w2 = new RWindow();
-            w2.ShowDialog();
+            //w2.ShowDialog();
             using (var instance = new ApplicationInstance(
                                                             new ApplicationInstance.
                                                                 ApplicationInstanceConfiguration(
@@ -1412,6 +1435,8 @@ namespace ProjTests
                 instance.AddModule(new AnalysisAppLibModule());
                 
                 instance.Initialize();
+
+                
                 ReplaySubject<AdhocWorkspace> workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
                 ReplaySubject<CommandProgress> progress = new ReplaySubject<CommandProgress>();
                 var lifetimeScope = instance.GetLifetimeScope(containerBuilder =>
@@ -1419,25 +1444,32 @@ namespace ProjTests
                     containerBuilder.RegisterInstance(workspaceReplaySubject).AsSelf().AsImplementedInterfaces();
                     containerBuilder.RegisterInstance(progress).AsSelf().AsImplementedInterfaces();
                 });
+
+                var sourceDocs = new ObservableCollection<AppDoc>();
+
+                ControlsProvider provider = lifetimeScope.Resolve<ControlsProvider>();
+                foreach (var providerType in provider.Types)
+                {
+                    DebugUtils.WriteLine(providerType.FullName);
+                    TypeDescriptor.AddProvider(provider, providerType);
+                }
+
+                foreach (var displayableAppCommand in lifetimeScope.Resolve<IEnumerable<IDisplayableAppCommand>>())
+                {
+                    DebugUtils.WriteLine(displayableAppCommand.DisplayName);
+                }
                 var builder = lifetimeScope.Resolve<RibbonBuilder>();
                 var ribbon = builder.Ribbon;
                 ribbon.SelectionChanged += (sender, args) => DebugUtils.WriteLine(args.AddedItems[0].ToString());
                 RibbonWindow w = new RibbonWindow();
                 var dp = new DockPanel();
                 ObservableCollection<CommandProgress> progresses = new ObservableCollection<CommandProgress>();
-                ListView lv = new ListView();
-                var gv = new GridView();
-                gv.Columns.Add(new GridViewColumn() { DisplayMemberBinding = new Binding("Content")});
-                lv.View = gv;
-                lv.ItemsSource = progresses;
-
-                progress.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
-                    commandProgress =>
-                    {
-                        var content = commandProgress.Content;
-                        progresses.Add(commandProgress);
-
-                    });
+                var ais = lifetimeScope.Resolve < ReplaySubject<ActivationInfo>>();
+                ObservableCollection<ActivationInfo> ci = new ObservableCollection<ActivationInfo>();
+                object resources = null;
+                var lb = AnalysisControlsModule.ReplayListView(ci, ais, oo);
+                
+                var lv = AnalysisControlsModule.ReplayListView(progresses, progress, oo);
                 workspaceReplaySubject.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
                     .Subscribe(
 
@@ -1456,10 +1488,41 @@ namespace ProjTests
                 var uiElement = new Grid();
 
                 var m = new DockingManager();
+                
+                sourceDocs.CollectionChanged += (sender, args) =>
+                {
+                    switch (args.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            foreach (var argsNewItem in args.NewItems)
+                            {
+                                DebugUtils.WriteLine("added " + argsNewItem.ToString());
+                            }
 
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            foreach (var argsOldItem in args.OldItems)
+                            {
+                                DebugUtils.WriteLine($"removed " + argsOldItem.ToString());
+                            }
+                            break;
+                        case NotifyCollectionChangedAction.Replace:
+                            break;
+                        case NotifyCollectionChangedAction.Move:
+                            break;
+                        case NotifyCollectionChangedAction.Reset:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                };
+                m.DocumentsSource = sourceDocs;
+                sourceDocs.Add(new AppDoc() {Title = "test"});
                 var pane = new LayoutDocumentPane();
                 pane.Children.Add(new LayoutDocument() { Content =  lv });
 
+                pane.Children.Add(new LayoutDocument() { Content = lb, Title = "Activations" });
                 var group = new LayoutDocumentPaneGroup(pane);
 
                 var mLayoutRootPanel = new LayoutPanel(group);
@@ -1569,6 +1632,52 @@ namespace ProjTests
         }
     }
 
+    internal class MySel : DataTemplateSelector
+    {
+        private readonly ResourceDictionary _resources;
+        private readonly PropertyDescriptor _prop;
+
+        public MySel(ResourceDictionary resources, PropertyDescriptor prop)
+        {
+            _resources = resources;
+            _prop = prop;
+            
+        }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            var resourceDictionary = ((ResourceDictionary) _resources);
+            var dataTemplateKey = new DataTemplateKey(item.GetType());
+            DebugUtils.WriteLine($"{_prop.Name}: {item.GetType().FullName}");
+            
+            if (resourceDictionary.Contains(dataTemplateKey))
+            {
+                return (DataTemplate) resourceDictionary[dataTemplateKey];
+            }
+            return base.SelectTemplate(item, container);
+        }
+    }
+
+    internal class MyConverter1 : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            PropertyDescriptor p = (PropertyDescriptor) parameter;
+            if (value != null)
+            {
+                var val = p.GetValue(value);
+                return val;
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class ProjTestsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
@@ -1646,4 +1755,6 @@ namespace ProjTests
         {
         }
     }
+
+
 }

@@ -1169,7 +1169,7 @@
                                  BorderThickness="1"
                                  Grid.Row="2"
                                  Grid.Column="0"
-
+DocumentsSource="{Binding Documents}"
                                  AllowMixedOrientation="True"
                                  AnchorablePaneTemplate="{DynamicResource ControlTemplate1}"
                                  IconContentTemplate="{DynamicResource DataTemplate1}"
@@ -1208,7 +1208,7 @@
             </avalondock:LayoutAnchorablePane>
             <avalondock:LayoutDocumentPaneGroup>
               <avalondock:LayoutDocumentPane
-                x:Name="Docpane">
+                x:Name="Docpane" >
 
                 <avalondock:LayoutDocument Title="Browsex"
 

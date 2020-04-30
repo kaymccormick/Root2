@@ -80,6 +80,8 @@ namespace ProjInterface
             }
         }
 
+        public ObservableCollection<AppDoc> Documents { get; set; } = new ObservableCollection<AppDoc>();
+
         #region Implementation of ISerializable
         /// <summary>
         /// 

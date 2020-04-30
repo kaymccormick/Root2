@@ -114,6 +114,7 @@
     <Compile Include="AnalysisCustomTypeDescriptor.cs" />
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
+    <Compile Include="AppDoc.cs" />
     <Compile Include="AppRibbon.cs" />
     <Compile Include="AppRibbonTab.cs" />
     <Compile Include="AppRibbonTabSet.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Converters\TokenConverter.cs" />
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
+    <Compile Include="CustomTypes.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="IAppRibbon.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="MiscCommands.cs" />
+    <Compile Include="OpenFileCommand.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
@@ -148,6 +151,8 @@
     <Compile Include="StringObservableCollection - Copy.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxWalker2.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="TestConverter2.cs" />
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>

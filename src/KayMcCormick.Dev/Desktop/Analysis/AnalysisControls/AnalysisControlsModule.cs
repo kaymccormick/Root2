@@ -12,21 +12,22 @@
 using System ;
 using System.Collections ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel;
 using System.ComponentModel ;
-using System.Diagnostics;
-using System.IO;
 using System.Linq ;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
 using System.Windows.Input;
 using System.Windows.Markup ;
+using System.Windows.Threading;
 using AnalysisAppLib;
-using AnalysisAppLib.Project;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
@@ -37,7 +38,6 @@ using Autofac.Core.Registration;
 using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout;
-using FindLogUsages;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command;
@@ -47,7 +47,6 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Microsoft.Win32;
 using Module = Autofac.Module ;
 
 namespace AnalysisControls
@@ -85,6 +84,13 @@ namespace AnalysisControls
                     .RegisterAdapter<Meta<Func<LayoutDocumentPane, IControlView>>,
                         Func<LayoutDocumentPane, IDisplayableAppCommand>>(ControlViewCommandAdapter)
                     .As<Func<LayoutDocumentPane, IDisplayableAppCommand>>()
+                    .WithMetadata("Category", Category.Management)
+                    .WithMetadata("Group", "misc")
+                    .WithCallerMetadata();
+                builder
+                    .RegisterAdapter<Meta<Lazy<IControlView>>,
+                        IDisplayableAppCommand>(ControlViewCommandAdapter2)
+                    .As<IDisplayableAppCommand>()
                     .WithMetadata("Category", Category.Management)
                     .WithMetadata("Group", "misc")
                     .WithCallerMetadata();
@@ -146,6 +152,21 @@ namespace AnalysisControls
                                                )
                                         .SelectMany ( az => az.GetTypes ( ) )
                                         .ToList ( ) ;
+                var xx = new CustomTypes(kayTypes);
+                builder.RegisterInstance(xx);
+                //builder.Register((c, p) => { return kayTypes; }).Keyed<IEnumerable<Type>>("Custom");
+                builder.RegisterType<UiElementTypeConverter>();
+                builder.Register((c, p) =>
+                {
+                    var lifetimeScope = c.Resolve<ILifetimeScope>();
+                    Func<Type, TypeConverter> f = (t) =>
+                    {
+
+                        return new UiElementTypeConverter(lifetimeScope);
+                    };
+                    return f;
+                }).As < Func<Type, TypeConverter>>();
+                
                 foreach ( var kayType in kayTypes )
 
                 {
@@ -170,7 +191,7 @@ namespace AnalysisControls
                        .WithMetadata ( "Custom" , true )
                        .AsImplementedInterfaces ( )
                        .AsSelf ( ) ;
-                builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ) ;
+                builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ).SingleInstance();
                 // .WithParameter (
                 // new NamedParameter ( "types" , types )
                 // ) .AsSelf (  ) ;
@@ -367,6 +388,7 @@ namespace AnalysisControls
                                   }
                                  )
                        .AsSelf ( )
+                       .SingleInstance()
                        .AsImplementedInterfaces ( )
                        .WithCallerMetadata ( ) ;
 
@@ -381,6 +403,42 @@ namespace AnalysisControls
                        .WithCallerMetadata ( ) ;
 #endif
             }
+
+        private IDisplayableAppCommand ControlViewCommandAdapter2(IComponentContext arg1, IEnumerable<Parameter> arg2, Meta<Lazy<IControlView>> arg3)
+        {
+            LayoutDocumentPane pane = null;
+            arg3.Metadata.TryGetValue("Title", out var titleo);
+            arg3.Metadata.TryGetValue("ImageSource", out var imageSource);
+            // object res = r.ResolveResource ( imageSource ) ;
+            // var im = res as ImageSource ;
+
+            var title = (string)titleo ?? "no title";
+
+            return (IDisplayableAppCommand)new LambdaAppCommand(
+                title
+                , CommandFuncAsync2
+                , Tuple.Create(arg3, arg1.Resolve<ILifetimeScope>())
+                
+            )
+            {
+                LargeImageSourceKey = imageSource
+            };
+        }
+
+        private async Task<IAppCommandResult> CommandFuncAsync2(LambdaAppCommand command)
+        {
+            var x = (Tuple<Meta<Lazy<IControlView>>, ILifetimeScope>)command.Argument;
+            var view = x.Item1.Value;
+            DebugUtils.WriteLine($"Calling viewfunc ({command})");
+            var n = DateTime.Now;
+            var pane1 = x.Item2.Resolve<LayoutDocumentPane>();
+            DebugUtils.WriteLine((DateTime.Now - n).ToString());
+            var doc = new LayoutDocument { Content = view };
+            pane1.Children.Add(doc);
+            pane1.SelectedContentIndex = pane1.Children.IndexOf(doc);
+            DebugUtils.WriteLine("returning success");
+            return AppCommandResult.Success;
+        }
 
         public bool RegisterControlViewCommandAdapters { get; set; } = true;
 
@@ -426,8 +484,7 @@ namespace AnalysisControls
             }
 
             [NotNull]
-            public static Func<LayoutDocumentPane, IDisplayableAppCommand>
-                ControlViewCommandAdapter(
+            public static Func<LayoutDocumentPane, IDisplayableAppCommand> ControlViewCommandAdapter(
                     [NotNull] IComponentContext c
                     , IEnumerable<Parameter> p
                     , [NotNull] Meta<Func<LayoutDocumentPane, IControlView>> metaFunc
@@ -474,101 +531,43 @@ namespace AnalysisControls
                 return AppCommandResult.Success;
             }
 
-    }
-
-    public class OpenFileCommand : AppCommand
-    {
-        private IAnalyzeCommand analyzeCommand;
-
-        public OpenFileCommand(IAnalyzeCommand analyzeCommand) : base("Open File")
-        {
-            this.analyzeCommand = analyzeCommand;
-        }
-
-        public override object Argument { get; set; }
-
-        public override async Task<IAppCommandResult> ExecuteAsync()
-        {
-            var filters = new List<Filter>
+            public static ListView ReplayListView<T>(ObservableCollection<T> collection, ReplaySubject<T> observable,
+                ResourceDictionary resources)
             {
-                new Filter {Extension = ".sln", Description = "Solution Files"},
-                new Filter {Extension = ".xml", Description = "XML files"}, new Filter
+                ListView lv = new ListView() {Resources = resources};
+                var gv = new GridView();
+                gv.Columns.Add(new GridViewColumn() {DisplayMemberBinding = new Binding(".")});
+                lv.View = gv;
+                lv.ItemsSource = collection;
+                var props  = TypeDescriptor.GetProperties(typeof(T));
+                foreach (PropertyDescriptor prop in props)
                 {
-                    Extension = ".cs", Description = "CSharp source files",
-                    // ReSharper disable once UnusedAnonymousMethodSignature
-#pragma warning disable 1998
-                    Handler = async delegate(string filename1)
-                    {
-#pragma warning restore 1998
-                    }
+                    DebugUtils.WriteLine(prop.Name);
+                    var gridViewColumn = new GridViewColumn();
+                    gridViewColumn.Header = prop.DisplayName;
+                    gridViewColumn.CellTemplateSelector = new ListViewTestSel(prop);
+                    gv.Columns.Add(gridViewColumn);
                 }
-            };
-            var dlg = new OpenFileDialog
-            {
-                DefaultExt = ".cs",
-                Filter = string.Join(
-                    "|"
-                    , filters.Select(
-                        f => $"{f.Description} (*{f.Extension})|*{f.Extension}"
-                    )
-                )
-            };
 
-            var result = dlg.ShowDialog();
-
-            // Process open file dialog box results
-            if (result != true)
-            {
-                return AppCommandResult.Cancelled;
+                observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
+                    item =>
+                    {
+                        collection.Add(item);
+                    });
+                return lv;
             }
 
-            
+            private static ListBox ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
+            {
+                ListBox lb = new ListBox();
+                lb.ItemsSource = collection;
 
-                // Open document
-                var filename = dlg.FileName;
-                if (Path.GetExtension(filename).ToLowerInvariant() == ".sln")
-                {
-
-
-                    var node = new ProjectBrowserNode
+                observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
+                    item =>
                     {
-                        Name = "Loaded solution",
-                        SolutionPath = filename
-                    };
-                    DebugUtils.WriteLine("await command");
-                    await analyzeCommand.AnalyzeCommandAsync(
-                            node
-                            , new ActionBlock<RejectedItem>(
-                                x => Debug
-                                    .WriteLine(
-                                        x.Statement
-                                            .ToString()
-                                    )
-                            )
-                        )
-                        .ConfigureAwait(false);
-                    DebugUtils.WriteLine("herecommand");
-                    return AppCommandResult.Success;
-                }
-
-                return AppCommandResult.Failed;
-        }
-
-        public override void OnFault(AggregateException exception)
-        {
-            
-        }
-
-        public override object LargeImageSourceKey { get; set; }
-
-
-        public override bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        
-        
+                        collection.Add(item);
+                    });
+                return lb;
+            }
     }
-
 }

@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel;
 using System.ComponentModel ;
 using System.Diagnostics ;
 using System.Globalization;
@@ -7,6 +8,7 @@ using System.IO ;
 using System.Linq ;
 using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
+using System.Reactive.Subjects;
 using System.Text.Json ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
@@ -89,16 +91,14 @@ namespace ProjInterface
         public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this (
                                                                             lifetimeScope
                                                                           , null
-                                                                          , null, null, null
-                                                                           )
+                                                                          , null, null, null, null)
         {
         }
 
-        public Window1 (
-            [ NotNull ] ILifetimeScope lifetimeScope
-          , DockWindowViewModel        viewModel
-          , UiElementTypeConverter     converter, ITypesViewModel typesViewModel, RibbonBuilder builder
-        )
+        public Window1([NotNull] ILifetimeScope lifetimeScope
+            , DockWindowViewModel viewModel
+            , UiElementTypeConverter converter, ITypesViewModel typesViewModel, RibbonBuilder builder,
+            ReplaySubject<ActivationInfo> actSubject)
         {
             if ( lifetimeScope == null )
             {
@@ -150,6 +150,11 @@ namespace ProjInterface
             // viewModel.SethWnd ( hWnd ) ;
             InitializeComponent ( ) ;
             builder.DocPane = Docpane;
+            ObservableCollection<ActivationInfo> actList = new ObservableCollection<ActivationInfo>();
+            Docpane.Children.Add(new LayoutDocument() { Content = AnalysisControlsModule.ReplayListView(actList, actSubject, Resources )});
+
+
+            
         }
 
         protected override void OnContentRendered(EventArgs e)

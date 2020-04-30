@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.ComponentModel;
 using System.Text ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -82,5 +83,26 @@ namespace KayMcCormick.Lib.Wpf
             return template ;
         }
         #endregion
+    }
+
+    public class ListViewTestSel : CustomDataTemplateSelector
+    {
+        private readonly PropertyDescriptor _prop;
+
+        public ListViewTestSel(PropertyDescriptor prop)
+        {
+            _prop = prop;
+        }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            var selectTemplate = base.SelectTemplate(_prop.GetValue(item), container);
+            if (selectTemplate == null)
+            {
+                object resourceKey = $"{item.GetType().Name}.{_prop.Name}";
+                return ((FrameworkElement) container).TryFindResource(resourceKey) as DataTemplate;
+            }
+            return selectTemplate;
+        }
     }
 }

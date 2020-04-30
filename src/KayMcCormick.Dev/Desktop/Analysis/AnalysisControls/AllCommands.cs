@@ -17,14 +17,16 @@ namespace AnalysisControls
     public class AllCommands : IRibbonComponent
     {
         private IEnumerable<Meta<IAppCommand>> _commands;
+        private readonly IEnumerable<IDisplayableAppCommand> _dispCmds;
         private readonly IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>> _funcs;
         private List<Meta<IAppCommand>> _cmds;
 
-        public AllCommands(IEnumerable<Meta<IAppCommand>> commands, IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>> funcs)
+        public AllCommands(IEnumerable<Meta<IAppCommand>> commands, IEnumerable<IDisplayableAppCommand> dispCmds)
         {
             _commands = commands;
+            _dispCmds = dispCmds;
             _cmds = _commands.ToList();
-            _funcs = funcs;
+            
         
         }
 
@@ -52,15 +54,24 @@ namespace AnalysisControls
                 ribbonGalleryItem.Tag = baseLibCommand.Value;
                 items.Add(ribbonGalleryItem);
             }
-
-            foreach (var func in _funcs)
+            foreach (var cmd1 in _dispCmds)
             {
                 var ribbonGalleryItem = new RibbonGalleryItem();
-                var cmd = func(DocPane);
-                ribbonGalleryItem.Content = cmd.DisplayName;
-                ribbonGalleryItem.Tag = cmd;
+                var ribbonButtonContent = cmd1.DisplayName;
+                ribbonGalleryItem.Content = ribbonButtonContent;
+                ribbonGalleryItem.Tag = cmd1;
                 items.Add(ribbonGalleryItem);
             }
+
+            if (_funcs != null)
+                foreach (var func in _funcs)
+                {
+                    var ribbonGalleryItem = new RibbonGalleryItem();
+                    var cmd = func(DocPane);
+                    ribbonGalleryItem.Content = cmd.DisplayName;
+                    ribbonGalleryItem.Tag = cmd;
+                    items.Add(ribbonGalleryItem);
+                }
 
             galCat.ItemsSource = items;
             gallery.ItemsSource = new[]{galCat};
