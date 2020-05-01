@@ -95,6 +95,7 @@
 
   <local:AConverter x:Key="AConverter" />
   <kmWpf:MethodInfoConverter x:Key="MethodInfoConverter" />
+  <kmWpf:ParameterInfoConverter x:Key="ParameterInfoConverter" />
   <Style TargetType="{x:Type local:CustomControl2}">
     <Setter Property="Template">
       <Setter.Value>
@@ -383,7 +384,17 @@
                               
                               <DataTemplate DataType="{x:Type reflection:ParameterInfo}">
                                 <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-                                <kmWpf:TypeControl FontWeight="Bold" VerticalContentAlignment="Center">
+                                  <ItemsControl ItemsSource="{Binding Converter={StaticResource ParameterInfoConverter}}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate>
+                                      <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                      <DataTemplate>
+                                        <TextBlock Background="BurlyWood" Text="{Binding}"></TextBlock>
+                                      </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                  </ItemsControl>
+                                  <kmWpf:TypeControl FontWeight="Bold" VerticalContentAlignment="Center">
                                   <kmWpf:AttachedProperties.RenderedType><Binding Path="ParameterType"/></kmWpf:AttachedProperties.RenderedType>
                                 </kmWpf:TypeControl>
 
