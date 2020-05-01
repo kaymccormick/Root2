@@ -1,4 +1,5 @@
 using System ;
+using System.ComponentModel;
 using System.Globalization ;
 using System.Linq;
 using System.Windows.Data ;
@@ -57,6 +58,8 @@ namespace KayMcCormick.Lib.Wpf
             {
                 return source.GetProperties();
             }
+
+            
             return null ;
         }
 

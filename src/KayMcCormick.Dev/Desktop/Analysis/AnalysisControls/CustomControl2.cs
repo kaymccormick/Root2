@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,7 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using DependencyPropertyChangedEventHandler = System.Windows.DependencyPropertyChangedEventHandler;
 
 namespace AnalysisControls
 {
@@ -45,7 +49,7 @@ namespace AnalysisControls
     ///     <MyNamespace:CustomControl2/>
     ///
     /// </summary>
-    public class CustomControl2 : Control
+    public class CustomControl2 : Control, INotifyPropertyChanged
     {
 
 
@@ -62,6 +66,10 @@ namespace AnalysisControls
         {
             get
             {
+                if (Type == null)
+                {
+                    return Enumerable.Empty<string>();
+                }
                 List<string> r = new List<string>();
                 void a(string s)
                 {
@@ -160,10 +168,59 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty TypeProperty =
-            DependencyProperty.Register("Type", typeof(Type), typeof(CustomControl2), new PropertyMetadata(null));
+            DependencyProperty.Register("Type", typeof(Type), typeof(CustomControl2),
+                new PropertyMetadata(null, new PropertyChangedCallback(_OnTypeChanged), CoerceType));
+
+        private static object CoerceType(DependencyObject d, object basevalue)
+        {
+            return basevalue;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly RoutedEvent TypeChangedEvent =
+    EventManager.RegisterRoutedEvent(
+                                      "TypeChanged"
+                                    , RoutingStrategy.Bubble
+                                    , typeof(RoutedPropertyChangedEventHandler<
+                                          Type>)
+                                    , typeof(CustomControl2)
+                                     );
+
+        private static void _OnTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            CustomControl2 cc2 = (CustomControl2)d;
+            var newValue = (Type)e.NewValue;
+            cc2.OnTypeChanged(newValue);
+
+            // var evt = TypeChangedEvent;
+            // var ev = new RoutedPropertyChangedEventArgs<Type>((Type) e.OldValue, (Type) e.NewValue, evt);
+            // switch (d)
+            // {
+                // case UIElement uie:
+                    // uie.RaiseEvent(ev);
+                    // break;
+                // case ContentElement ce:
+                    // ce.RaiseEvent(ev);
+                    // break;
+                // default:
+                    // break;
+
+            
+        }
+
+        private void OnTypeChanged(Type newValue)
+        {
+            Descriptor = null;
+            PropertyDescriptorCollection = null;
+            Provider = null;
+        }
 
         private Border _border1;
-
+        private TypeDescriptionProvider _provider;
+        private ICustomTypeDescriptor _descriptor;
+        private PropertyDescriptorCollection _propertyDescriptorCollection;
 
         static CustomControl2()
         {
@@ -187,13 +244,80 @@ namespace AnalysisControls
         }
         public CustomControl2()
         {
-            
+            // AddHandler(TypeChangedEvent, new DependencyPropertyChangedEventHandler((sender, args) =>
+            // {
+                // Provider = null;
+                // Descriptor = null;
+                // PropertyDescriptorCollection = null;
+            // }));
         }
 
         public override void OnApplyTemplate()
         {
             _border1 = (Border)GetTemplateChild("border1");
             base.OnApplyTemplate();
+        }
+
+        public PropertyDescriptorCollection PropertyDescriptorCollection
+
+
+        {
+            get
+            {
+                if (_propertyDescriptorCollection == null && Descriptor != null)
+                {
+                    _propertyDescriptorCollection = Descriptor.GetProperties();
+                }
+                return _propertyDescriptorCollection;
+            }
+            set
+            {
+                if (Equals(value, _propertyDescriptorCollection)) return;
+                _propertyDescriptorCollection = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TypeDescriptionProvider Provider
+        {
+            get
+            {
+                if (_provider == null && Type != null)
+                {
+                    _provider = TypeDescriptor.GetProvider(Type);
+                }
+                return _provider;
+            }
+            set
+            {
+                if (Equals(value, _provider)) return;
+                _provider = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Descriptor));
+            }
+        }
+
+        public ICustomTypeDescriptor Descriptor
+        {
+            get
+            {
+                if (_descriptor == null && Type != null)
+                {
+                    _descriptor = Provider.GetTypeDescriptor(Type);
+                }
+
+                return _descriptor;
+            }
+            set
+            {
+                if (Equals(value, _descriptor)) return;
+                _descriptor = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PropertyDescriptorCollection));
+            }
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -212,6 +336,14 @@ namespace AnalysisControls
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             return base.ArrangeOverride(arrangeBounds);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));  
         }
     }
 }

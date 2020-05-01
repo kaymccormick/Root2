@@ -97,6 +97,8 @@
     </Compile>
     <Compile Include="ApplicationEntity.cs" />
     <Compile Include="AppWindow.cs" />
+    <Compile Include="AssemblyInfoConverter.cs" />
+    <Compile Include="AssemblyType.cs" />
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />
     <Compile Include="BasicConverte.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="LayoutService.cs" />
     <Compile Include="LifetimeScopeExtension.cs" />
     <Compile Include="MethodInfoConverter.cs" />
+    <Compile Include="NamespaceNode.cs" />
     <Compile Include="NavState.cs" />
     <Compile Include="PaneService.cs" />
     <Compile Include="ProxyUtils.cs" />

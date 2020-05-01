@@ -20,34 +20,54 @@
         <ResourceDictionary>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
+      <CollectionViewSource x:Key="AssemblyCollectionView" Source="{Binding ElementName=test1,Path=AssemblyCollection}"></CollectionViewSource>
+      <kmWpf:AssemblyInfoConverter x:Key="AssemblyInfoConverter" />
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
-  <TabControl SelectedIndex="1">
+  <TabControl SelectedIndex="1" DataContext="{Binding ElementName=test1}">
     <TabItem Header="1">
       <Grid>
         <Grid.RowDefinitions>
 
+          <RowDefinition Height="*"/>
+
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="*"/>
+          
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="0*"></ColumnDefinition>
-          <ColumnDefinition Width="27*"/>
-          <ColumnDefinition Width="761*"/>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ComboBox ItemsSource="{Binding ElementName=test1,Path=Types}" x:Name="typesel" SelectedIndex="1" Grid.ColumnSpan="3" Margin="0,0,0,0.4">
+        <ListBox VerticalAlignment="Stretch"  IsSynchronizedWithCurrentItem="True" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ElementName=test1,Path=AssemblyCollectionView}" SourceUpdated="FrameworkElement_OnSourceUpdated">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type reflection:Assembly}">
+              <TextBlock Text="{Binding FullName}"></TextBlock>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <TreeView  VerticalAlignment="Stretch" x:Name="tv" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=AssemblyCollectionView.CurrentItem,Converter={StaticResource AssemblyInfoConverter}}" SelectedItemChanged="TreeView_OnSelectedItemChanged">
+          <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type kmWpf:NamespaceNode}" ItemsSource="{Binding SubItems}">
+              <TextBlock Text="{Binding ElementName}"/>
+            </HierarchicalDataTemplate>
+          </TreeView.Resources>
+        </TreeView>
+        <GridSplitter Grid.Column="0" Height="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"  Grid.Row="1" ShowsPreview="True" Grid.ColumnSpan="3" ResizeBehavior="CurrentAndNext"></GridSplitter>
+        <ComboBox Margin="15,10,0,10"  Grid.Column="0" DataContext="{Binding ElementName=tv,Path=SelectedItem}" ItemsSource="{Binding SubItems}" x:Name="typesel" Grid.ColumnSpan="3"  Grid.Row="1" DataContextChanged="typesel_DataContextChanged">
           <ComboBox.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate DataType="{x:Type kmWpf:NamespaceNode}">
               <kmWpf:TypeControl MakeHyperlink="False" FontSize="18">
                 <kmWpf:AttachedProperties.RenderedType>
-                  <Binding/>
+                  <Binding Path="Entity"/>
                 </kmWpf:AttachedProperties.RenderedType>
               </kmWpf:TypeControl>
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <anal:CustomControl2 Grid.Row="1" Grid.Column="2"  Type="{Binding ElementName=typesel,Path=SelectedItem,FallbackValue={x:Type reflection:Assembly}}" HorizontalAlignment="Left" Margin="-26.2,-0.4,0,0"/>
+        <anal:CustomControl2 Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0"  Type="{Binding ElementName=typesel,Path=SelectedItem,FallbackValue={x:Type reflection:Assembly}}" HorizontalAlignment="Left" Margin="0"/>
 
       </Grid>
     </TabItem>
@@ -55,6 +75,18 @@
       <ScrollViewer  Margin="15" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="0" HorizontalScrollBarVisibility="Disabled" >
         <anal:CustomControl2 Type="{x:Type reflection:Assembly}" HorizontalAlignment="Right" Margin="0"/>
       </ScrollViewer>
+    </TabItem>
+    <TabItem Header="3">
+      <DataGrid ItemsSource="{Binding AssemblyCollection}"></DataGrid>
+    </TabItem>
+    <TabItem Header="4">
+      <TreeView ItemsSource="{Binding Path=NamespaceNodesRoot.Ns.Values}">
+<TreeView.Resources>
+  <HierarchicalDataTemplate DataType="{x:Type kmWpf:NamespaceNode}" ItemsSource="{Binding Ns.Values}">
+    <TextBlock Text="{Binding ElementName}"/>
+  </HierarchicalDataTemplate>
+</TreeView.Resources>
+      </TreeView>
     </TabItem>
   </TabControl>
 </kmWpf:AppWindow>

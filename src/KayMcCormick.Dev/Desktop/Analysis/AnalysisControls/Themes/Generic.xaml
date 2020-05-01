@@ -283,7 +283,7 @@
                           <TextBlock Grid.Row="2" Grid.Column="0" Text="AssemblyQualifiedName" />
 
                           <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Namespace}" Margin="10,5,0,0" />
-                          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Assembly.FullName}"
+                          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Assembly.FullName}" TextWrapping="Wrap"
                                      Margin="10,5,0,0" />
                           <WrapPanel Grid.Row="2" Grid.Column="1" Margin="10,5,0,0">
                             <TextBlock TextWrapping="Wrap">
@@ -469,6 +469,24 @@
                       </GridView>
                     </ListView.View>
                   </ListView>
+                </TabItem>
+                <TabItem Header="Properties2" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:CustomControl2}}">
+                  <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Provider}"/>
+                    <TextBlock Text="{Binding Descriptor}"/>
+                    <ListView ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:CustomControl2,Mode=FindAncestor},Path=PropertyDescriptorCollection}">
+                      <ListView.View>
+                        <GridView>
+                          <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name"></GridViewColumn>
+                          <GridViewColumn DisplayMemberBinding="{Binding DisplayName}" Header="Display Name"></GridViewColumn>
+                          <GridViewColumn DisplayMemberBinding="{Binding Category}" Header="Category"></GridViewColumn>
+                          <GridViewColumn DisplayMemberBinding="{Binding IsBrowsable}" Header="Browsable"/>
+                          <GridViewColumn DisplayMemberBinding="{Binding Description}" Header="Description"></GridViewColumn>
+                        </GridView>
+
+                      </ListView.View>
+                    </ListView>
+                  </StackPanel>
                 </TabItem>
               </TabControl>
             </Grid>

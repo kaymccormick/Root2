@@ -95,7 +95,7 @@ namespace KayMcCormick.Lib.Wpf
             RenderedTypeChanged += OnRenderedTypeChanged ;
             InitializeComponent ( ) ;
             var t = GetValue ( RenderedTypeProperty ) ;
-            DebugUtils.WriteLine ( "t: " + t ) ;
+            //DebugUtils.WriteLine ( "t: " + t ) ;
             PopulateControl ( ( Type ) t ) ;
         }
 
@@ -168,7 +168,7 @@ namespace KayMcCormick.Lib.Wpf
         private void PopulateControl ( [ CanBeNull ] Type myType )
         {
             IAddChild addChild ;
-            DebugUtils.WriteLine ( myType?.FullName ?? "null" ) ;
+            //DebugUtils.WriteLine ( myType?.FullName ?? "null" ) ;
             if ( Detailed )
             {
                 var paragraph = new Paragraph ( ) ;

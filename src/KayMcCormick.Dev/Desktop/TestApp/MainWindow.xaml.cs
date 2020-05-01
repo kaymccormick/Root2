@@ -1,11 +1,16 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO ;
 using System.Linq ;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Data;
 using System.Windows.Input ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
@@ -15,6 +20,7 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf ;
+using AppDomain = System.AppDomain;
 
 #if ENABLE_CONSOLE
 using Vanara.PInvoke ;
@@ -25,10 +31,15 @@ namespace TestApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public sealed partial class MainWindow : AppWindow , IDisposable
+    public sealed partial class MainWindow : AppWindow , IDisposable, INotifyPropertyChanged
     {
         private static   MainWindow _instance ;
         private readonly TestAppApp _testAppApp ;
+        private ICollectionView _typeViewSource;
+        private ICollectionView _assemblyCollectionView;
+        private ListCollectionView _assemblyListCollectionView;
+        private ObservableCollection<Assembly> _assemblyCollection = new ObservableCollection<Assembly>();
+        private List<NamespaceNode> _namespaceNodesRoot;
 #if ENABLE_CONSOLE
         private Kernel32.SafeHFILE _consoleScreenBuffer ;
         private HFILE _stdHandle ;
@@ -42,7 +53,6 @@ namespace TestApp
             }
 
             _instance = this ;
-
 
 #if ENABLE_CONSOLE
             var allocConsole = Kernel32.AllocConsole ( ) ;
@@ -80,13 +90,154 @@ namespace TestApp
             }
             _testAppApp = new TestAppApp ( config ) ;
             InitializeComponent ( ) ;
+            NamespaceNodesRoot = AssemblyInfoConverter.CreateNamespaceNodes(Assembly.GetExecutingAssembly());
+        }
+
+        public List<NamespaceNode> NamespaceNodesRoot
+        {
+            get { return _namespaceNodesRoot; }
+            set
+            {
+                if (Equals(value, _namespaceNodesRoot)) return;
+                _namespaceNodesRoot = value;
+                OnPropertyChanged();
+            }
         }
 
         public Guid ApplicationGuid { get ; } = new Guid ("50793c70-3902-4ba3-ad15-c28e2c9ca6a6");
 
         public static MainWindow Instance { get { return _instance ; } set { _instance = value ; } }
 
-        public ObservableCollection<Type> Types { get; set; } = new ObservableCollection<Type>();
+        public ObservableCollection<Type> Types { get; } = new ObservableCollection<Type>();
+
+        public ICollectionView TypeViewSource
+        {
+            get
+            {
+                if (_typeViewSource == null)
+                {
+                    var s = CollectionViewSource.GetDefaultView(Types);
+                    s.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+                    TypeViewSource = s;
+
+                }
+                return _typeViewSource;
+            }
+            set
+            {
+                if (Equals(value, _typeViewSource)) return;
+                _typeViewSource = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICollectionView AssemblyCollectionView
+        {
+            get
+            {
+                if (_assemblyCollectionView == null)
+                {
+                    DebugUtils.WriteLine("Creating assembly colleciton view");
+                    var v = CollectionViewSource.GetDefaultView(AssemblyCollection);
+                    v.CurrentChanged += V_CurrentChanged;
+                    v.CollectionChanged += AssemblyCollectionViewOnCollectionChanged;
+                    _assemblyListCollectionView = v as ListCollectionView;
+                    AssemblyCollectionView = v;
+
+                }
+                DebugUtils.WriteLine("*** " + nameof(AssemblyCollectionView) + ": Returning " + _assemblyListCollectionView);
+                return _assemblyCollectionView;
+            }
+            set
+            {
+                if (Equals(value, _assemblyCollectionView)) return;
+                _assemblyCollectionView = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void V_CurrentChanged(object sender, EventArgs e)
+        {
+            DebugUtils.WriteLine(AssemblyCollectionView.CurrentItem.ToString());
+        }
+
+        private void AssemblyCollectionViewOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{nameof(AssemblyCollectionOnCollectionChanged)} - {e.Action}");
+            var items = new List<Assembly>();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var eNewItem in e.NewItems)
+                    {
+                        items.Add((Assembly)eNewItem);
+                    }
+                    DebugUtils.WriteLine("*** Adding " + String.Join(", ", items.Select(x => x.FullName)));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    DebugUtils.WriteLine("Reset");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            
+            
+        }
+
+        public ObservableCollection<Assembly> AssemblyCollection { get; } = new ObservableLoadedAssembliesCollection();
+        //
+        // {
+        //     get
+        //     {
+        //         if (_assemblyCollection == null)
+        //         {
+        //             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        //             _assemblyCollection = new ObservableCollection<Assembly>(assemblies);
+        //             _assemblyCollection.CollectionChanged += AssemblyCollectionOnCollectionChanged;
+        //             foreach (var assembly in assemblies)
+        //             {
+        //                 _assemblyCollection.Add(assembly);
+        //             }
+        //         }
+        //         return _assemblyCollection;
+        //     }
+        // }
+        //
+        private void AssemblyCollectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{nameof(AssemblyCollectionOnCollectionChanged)} - {e.Action}");
+            var items = new List<Assembly>();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var eNewItem in e.NewItems)
+                    {
+                        items.Add((Assembly)eNewItem);
+                    }
+                    DebugUtils.WriteLine(nameof(AssemblyCollectionOnCollectionChanged) + ": *** Adding " + String.Join(", ", items.Select(x => x.FullName)));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    DebugUtils.WriteLine("Reset");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+        }
+
         public void LogMethod ( [ NotNull ] string message )
         {
             if ( string.IsNullOrEmpty ( message ) )
@@ -120,6 +271,11 @@ namespace TestApp
         #region Overrides of FrameworkElement
         public override void OnApplyTemplate ( )
         {
+
+            // foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            // {
+            //     AssemblyCollection.Add(assembly);
+            // }
             
             var p = new PaneService ( ) ;
             var pane = p.GetPane ( ) ;
@@ -240,6 +396,41 @@ namespace TestApp
             catch ( JsonException ex )
             {
                 MessageBox.Show ( "Json failure" , ex.Message ) ;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void FrameworkElement_OnSourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            DebugUtils.WriteLine("updated");
+        }
+
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            DebugUtils.WriteLine(e.NewValue.ToString());
+        }
+
+        private void typesel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine(nameof(DataContextChanged));
+            DebugUtils.WriteLine(e.NewValue?.ToString());
+        }
+    }
+
+    public class ObservableLoadedAssembliesCollection : ObservableCollection<Assembly>
+    {
+        public ObservableLoadedAssembliesCollection()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Add(assembly);
             }
         }
     }
