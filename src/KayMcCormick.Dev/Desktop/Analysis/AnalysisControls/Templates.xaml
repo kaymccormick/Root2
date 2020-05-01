@@ -11,8 +11,9 @@
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:reflection="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac"
   xmlns:system="clr-namespace:System;assembly=mscorlib">
-
-
+<DataTemplate DataType="{x:Type system:Type}">
+  <analysisControls:CustomControl2 Type="{Binding}"></analysisControls:CustomControl2>
+</DataTemplate>
   <DataTemplate DataType="{x:Type system:DateTime}">
     <TextBlock Text="{Binding}"/>
   </DataTemplate>

@@ -1617,8 +1617,17 @@ namespace ProjTests
         {
             var type = typeof(Generic2<Type>);
             var type2 = typeof(Dictionary<string, object>);
+            
+            
+            
             CustomControl2 c = new CustomControl2() { Type = type2 };
             Window w = new Window();
+            //w.Padding = new Thickness(10);
+            c.Margin = new Thickness(15);
+            w.Content = c;
+            w.ShowDialog();
+            return;
+
             StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
             StackPanel p2 = new StackPanel() { Orientation = Orientation.Horizontal };
             StackPanel p3 = new StackPanel() { Orientation = Orientation.Horizontal };

@@ -35,7 +35,8 @@ namespace KayMcCormick.Lib.Wpf
 
             if ( ( string ) parameter == "Parameters" )
             {
-                return methodInfo.GetParameters ( ) ;
+                var parameterInfos = methodInfo.GetParameters ( );
+                return parameterInfos ;
             }
 
             return "(undefined)" ;

@@ -241,6 +241,61 @@ namespace KayMcCormick.Lib.Wpf
 
 
             var myTypeName = myType.Name;
+            if (myType == typeof(Boolean))
+            {
+                myTypeName = "bool";
+            } else if (myType == typeof(Byte))
+            {
+                myTypeName = "byte";
+            } else if (myType == typeof(SByte))
+            {
+                myTypeName = "sbyte";
+            }
+            else if (myType == typeof(Char))
+            {
+                myTypeName = "char";
+            } else if (myType == typeof(Decimal))
+            {
+                myTypeName = "decimal";
+            } else if (myType == typeof(Double))
+            {
+                myTypeName = "double";
+            } else if (myType == typeof(Single))
+            {
+                myTypeName = "float";
+            } else if (myType == typeof(Int32))
+            {
+                myTypeName = "int";
+            } else if(myType == typeof(UInt32))
+            {
+                myTypeName = "uint";
+
+            } else if (myType == typeof(Int64))
+            {
+                myTypeName = "long";
+            } else if (myType == typeof(UInt64))
+            {
+
+                myTypeName = "ulongm";
+
+            } else if(myType == typeof(Int16))
+            {
+                myTypeName = "short";
+            }
+            else if (myType == typeof(UInt16))
+            {
+                myTypeName = "ushort";
+            }
+            else if (myType == typeof(Object))
+            {
+                myTypeName = "object";
+            } else if (myType == typeof(String))
+            {
+                myTypeName = "string";
+            } else if (myType == typeof(void))
+            {
+                myTypeName = "void";
+            }
             if (MakeHyperlink)
             {
                 

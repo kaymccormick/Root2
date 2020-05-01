@@ -44,9 +44,9 @@
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
-        <ScrollViewer  Margin="15" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="0" HorizontalScrollBarVisibility="Disabled" >
-          <anal:CustomControl2 Type="{Binding ElementName=typesel,Path=SelectedItem,FallbackValue={x:Type reflection:Assembly}}" HorizontalAlignment="Right" Margin="0"/>
-        </ScrollViewer>
+
+          <anal:CustomControl2 Grid.Row="1" Grid.Column="0"  Type="{Binding ElementName=typesel,Path=SelectedItem,FallbackValue={x:Type reflection:Assembly}}" HorizontalAlignment="Left" Margin="0"/>
+
       </Grid>
     </TabItem>
     <TabItem Header="2" IsSelected="True">

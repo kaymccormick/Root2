@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using KayMcCormick.Dev;
 
 namespace AnalysisControls
 {
@@ -161,6 +162,8 @@ namespace AnalysisControls
         public static readonly DependencyProperty TypeProperty =
             DependencyProperty.Register("Type", typeof(Type), typeof(CustomControl2), new PropertyMetadata(null));
 
+        private Border _border1;
+
 
         static CustomControl2()
         {
@@ -184,6 +187,31 @@ namespace AnalysisControls
         }
         public CustomControl2()
         {
+            
+        }
+
+        public override void OnApplyTemplate()
+        {
+            _border1 = (Border)GetTemplateChild("border1");
+            base.OnApplyTemplate();
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{constraint.Width}x{constraint.Height}");
+             _border1.Measure(constraint);
+             var dwidth = _border1.DesiredSize.Width
+                 ;
+             var dheight = _border1.DesiredSize.Height;
+             var measureOverride = new Size(dwidth, dheight);
+             DebugUtils.WriteLine(measureOverride.ToString());
+             return measureOverride;
+
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            return base.ArrangeOverride(arrangeBounds);
         }
     }
 }
