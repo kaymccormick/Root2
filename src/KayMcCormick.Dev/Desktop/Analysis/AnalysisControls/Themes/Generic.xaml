@@ -252,7 +252,7 @@
                         <ColumnDefinition Width="*" />
                       </Grid.ColumnDefinitions>
                       <ItemsControl DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                    Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Attributes}" >
+                                    Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Attributes}">
                         <ItemsControl.ItemsPanel>
                           <ItemsPanelTemplate>
                             <WrapPanel />
@@ -283,7 +283,8 @@
                           <TextBlock Grid.Row="2" Grid.Column="0" Text="AssemblyQualifiedName" />
 
                           <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Namespace}" Margin="10,5,0,0" />
-                          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Assembly.FullName}" Margin="10,5,0,0"/>
+                          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Assembly.FullName}"
+                                     Margin="10,5,0,0" />
                           <WrapPanel Grid.Row="2" Grid.Column="1" Margin="10,5,0,0">
                             <TextBlock TextWrapping="Wrap">
                               <Run
@@ -367,6 +368,27 @@
                     </Grid>
                   </ScrollViewer>
                 </TabItem>
+                <TabItem Header="Properties">
+                  <ListView ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Properties}">
+                    <ListView.View>
+                      <GridView>
+                        <GridViewColumn Header="Property Type">
+                          <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type reflection:PropertyInfo}">
+                              <kmWpf:TypeControl>
+                                <kmWpf:AttachedProperties.RenderedType>
+                                  <Binding Path="PropertyType"/>
+                                </kmWpf:AttachedProperties.RenderedType>
+                              </kmWpf:TypeControl>
+
+                            </DataTemplate>
+                          </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Property Name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                      </GridView>
+                    </ListView.View>
+                  </ListView>
+                </TabItem>
                 <TabItem Header="Methods">
                   <ListView
                     ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Methods}">
@@ -415,9 +437,9 @@
                                 <ItemsControl.ItemTemplate>
 
                                   <DataTemplate DataType="{x:Type reflection:ParameterInfo}">
-                                    <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                       <ItemsControl
-                                        ItemsSource="{Binding Converter={StaticResource ParameterInfoConverter}}">
+                                        ItemsSource="{Binding Converter={StaticResource ParameterInfoConverter},ConverterParameter=Tags}">
                                         <ItemsControl.ItemsPanel>
                                           <ItemsPanelTemplate>
                                             <StackPanel Orientation="Horizontal" />
@@ -425,7 +447,7 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                           <DataTemplate>
-                                            <TextBlock Background="BurlyWood" Text="{Binding}" />
+                                            <TextBlock Margin="3,0,3,0" Padding="5" Background="BurlyWood" Text="{Binding}" />
                                           </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                       </ItemsControl>
@@ -436,7 +458,7 @@
                                       </kmWpf:TypeControl>
                                       <TextBlock Text=" " />
                                       <TextBlock Text="{Binding Name}" />
-                                      <TextBlock Text=", " />
+                                      <TextBlock Text=", " Visibility="{Binding Converter={StaticResource ParameterInfoConverter},ConverterParameter=CommaVisibility}"/>
                                     </StackPanel>
                                   </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -446,7 +468,6 @@
                         </GridViewColumn>
                       </GridView>
                     </ListView.View>
-
                   </ListView>
                 </TabItem>
               </TabControl>

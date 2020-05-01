@@ -2,6 +2,7 @@ using System ;
 using System.Collections.Generic;
 using System.Globalization ;
 using System.Reflection ;
+using System.Windows;
 using System.Windows.Data ;
 using JetBrains.Annotations ;
 
@@ -88,6 +89,16 @@ namespace KayMcCormick.Lib.Wpf
                 }
 
                 return tags;
+            } else if ((string) parameter == "CommaVisibility")
+            {
+                if (p.Position < (p.Member as MethodInfo)?.GetParameters().Length - 1)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Hidden;
+                }
             }
 
             return null;

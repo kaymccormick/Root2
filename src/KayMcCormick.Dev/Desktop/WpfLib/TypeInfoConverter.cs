@@ -52,6 +52,11 @@ namespace KayMcCormick.Lib.Wpf
             {
                 return source.GetMethods().Where(m => m.IsSpecialName == false);
             }
+
+            if ((string) parameter == "Properties")
+            {
+                return source.GetProperties();
+            }
             return null ;
         }
 
