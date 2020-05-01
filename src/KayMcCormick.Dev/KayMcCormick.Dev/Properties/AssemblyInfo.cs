@@ -10,7 +10,7 @@ using System.Runtime.InteropServices ;
 [ assembly : AssemblyTitle ( "KayMcCormick.Dev" ) ]
 [ assembly : AssemblyDescription ( "" ) ]
 [ assembly : AssemblyConfiguration ( "" ) ]
-[ assembly : AssemblyCompany ( "" ) ]
+[ assembly : AssemblyCompany ( "Kay McCormick" ) ]
 [ assembly : AssemblyProduct ( "KayMcCormick.Dev" ) ]
 [ assembly : AssemblyCopyright ( "Copyright ©  2020" ) ]
 [ assembly : AssemblyTrademark ( "" ) ]

@@ -6,15 +6,19 @@ using System.Linq;
 using Autofac;
 using Autofac.Features.AttributeFilters;
 using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ControlsProvider : TypeDescriptionProvider
+    public class ControlsProvider : TypeDescriptionProvider, IControlsProvider
     {
         public IEnumerable < Type > Types { get ; }
+
+        [Browsable(false)]
+        public TypeDescriptionProvider Provider => this;
 
         private readonly IComponentContext                     _contex1T ;
         private readonly CustomTypes _customTypes;

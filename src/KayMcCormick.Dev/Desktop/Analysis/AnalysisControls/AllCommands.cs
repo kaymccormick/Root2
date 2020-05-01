@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Input;
 using System.Windows.Media;
 using AnalysisAppLib;
 using Autofac.Features.Metadata;
@@ -18,13 +20,16 @@ namespace AnalysisControls
     {
         private IEnumerable<Meta<IAppCommand>> _commands;
         private readonly IEnumerable<IDisplayableAppCommand> _dispCmds;
+        private readonly ReplaySubject<DocContent> _docContent;
         private readonly IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>> _funcs;
         private List<Meta<IAppCommand>> _cmds;
 
-        public AllCommands(IEnumerable<Meta<IAppCommand>> commands, IEnumerable<IDisplayableAppCommand> dispCmds)
+        public AllCommands(IEnumerable<Meta<IAppCommand>> commands, IEnumerable<IDisplayableAppCommand> dispCmds,
+            ReplaySubject<DocContent> docContent)
         {
             _commands = commands;
             _dispCmds = dispCmds;
+            _docContent = docContent;
             _cmds = _commands.ToList();
             
         
@@ -35,6 +40,21 @@ namespace AnalysisControls
         public object GetComponent()
         {
             RibbonGroup myGroup = new RibbonGroup();
+            var x = new RibbonTextBox();
+            x.PreviewKeyDown += (sender, args) =>
+            {
+                if (args.Key == Key.Enter)
+                {
+                    var type = Type.GetType(x.Text);
+                    if (type != null)
+                    {
+                        DebugUtils.WriteLine(type.ToString());
+                        DocContent doc = new DocContent() {Content = type};
+                        _docContent.OnNext(doc);
+                    }
+                }
+            };
+            myGroup.Items.Add(x);
             RibbonGallery gallery = new RibbonGallery();
             var galCat = new RibbonGalleryCategory();
             galCat.MaxColumnCount = 1;
@@ -61,7 +81,7 @@ namespace AnalysisControls
                 ribbonGalleryItem.Content = ribbonButtonContent;
                 ribbonGalleryItem.Tag = cmd1;
                 items.Add(ribbonGalleryItem);
-            }
+            }   
 
             if (_funcs != null)
                 foreach (var func in _funcs)

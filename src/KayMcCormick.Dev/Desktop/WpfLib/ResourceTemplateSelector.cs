@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+
+using System;
 using System.Collections.Generic ;
 using System.Linq ;
 using System.Windows ;
@@ -39,8 +41,9 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="item"></param>
         /// <param name="container"></param>
         /// <returns></returns>
-        public override DataTemplate SelectTemplate ( object item , DependencyObject container )
+        public override DataTemplate SelectTemplate ( object item , [NotNull] DependencyObject container )
         {
+            if (container == null) throw new ArgumentNullException(nameof(container));
             if ( item == null )
             {
                 Logger.Warn ( "Selecting detail template for NuLL item" ) ;
@@ -140,6 +143,7 @@ namespace KayMcCormick.Lib.Wpf
           , [ NotNull ] object           resourceKey
         )
         {
+            if (fe == null) throw new ArgumentNullException(nameof(fe));
             Logger.Debug (
                           "Trying to find data template with resource key {resourceKey}"
                         , resourceKey

@@ -19,7 +19,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>
     /// </summary>
-    [TypeConverter(typeof(LACConverter))]
+    [TypeConverter(typeof(LacConverter))]
     public sealed class LambdaAppCommand : AppCommand
     {
         private object                                                 _argument ;
@@ -65,14 +65,13 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <returns></returns>
         public override Task < IAppCommandResult > ExecuteAsync ( )
         {
-            DebugUtils.WriteLine ( "exxecuteAsync" ) ;
+            DebugUtils.WriteLine ( nameof(ExecuteAsync)) ;
             return (CommandFunc ( this )).ContinueWith(
-                                                     (Task<IAppCommandResult> task) => {
+                                                     task => {
                                                          if ( task.IsFaulted )
                                                          {
                                                              DebugUtils.WriteLine (
-                                                                                   task.Exception
-                                                                                       .ToString ( )
+                                                                                   task.Exception?.ToString ( )
                                                                                   ) ;
                                                          }
 
@@ -106,14 +105,5 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         public override object LargeImageSourceKey { get ; set ; }
         #endregion
-    }
-
-    public class LACConverter : TypeConverter
-    {
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            DebugUtils.WriteLine($"{nameof(LACConverter)}: {destinationType.FullName}");
-            return base.CanConvertTo(context, destinationType);
-        }
     }
 }

@@ -6,26 +6,53 @@
                  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
                  xmlns:viewModel="clr-namespace:KayMcCormick.Lib.Wpf.ViewModel;assembly=WpfLib"
+                 xmlns:anal="http://kaymccormick.com/xaml/analysis"
+                 xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
                  mc:Ignorable="d"
+                 x:Name="test1"
                  Title="MainWindow" Height="450"
                  Width="800">
   <kmWpf:AppWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/../WpfLib/SharedResources.xaml" />
+          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
         <ResourceDictionary>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </kmWpf:AppWindow.Resources>
-  <Grid>
-    <kmWpf:ResourcesTreeView>
-      <kmWpf:ResourcesTreeView.ViewModel>
-      <viewModel:AllResourcesTreeViewModel>
-        <dev:ModelResources LifetimeScope="{kmWpf:LifetimeScope}"/>
-      </viewModel:AllResourcesTreeViewModel>
-      </kmWpf:ResourcesTreeView.ViewModel>
-    </kmWpf:ResourcesTreeView>
-  </Grid>
+  <TabControl>
+    <TabItem Header="1">
+      <Grid>
+        <Grid.RowDefinitions>
+
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ComboBox ItemsSource="{Binding ElementName=test1,Path=Types}" x:Name="typesel" SelectedIndex="1">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <kmWpf:TypeControl MakeHyperlink="False" FontSize="18">
+                <kmWpf:AttachedProperties.RenderedType>
+                  <Binding/>
+                </kmWpf:AttachedProperties.RenderedType>
+              </kmWpf:TypeControl>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <ScrollViewer  Margin="15" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="0" HorizontalScrollBarVisibility="Disabled" >
+          <anal:CustomControl2 Type="{Binding ElementName=typesel,Path=SelectedItem,FallbackValue={x:Type reflection:Assembly}}" HorizontalAlignment="Right" Margin="0"/>
+        </ScrollViewer>
+      </Grid>
+    </TabItem>
+    <TabItem Header="2" IsSelected="True">
+      <ScrollViewer  Margin="15" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="0" HorizontalScrollBarVisibility="Disabled" >
+        <anal:CustomControl2 Type="{x:Type reflection:Assembly}" HorizontalAlignment="Right" Margin="0"/>
+        </ScrollViewer>
+    </TabItem>
+  </TabControl>
 </kmWpf:AppWindow>

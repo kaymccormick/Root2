@@ -112,6 +112,7 @@
     <Compile Include="..\Desktop\Analysis\ProjInterface\RegSource.cs">
       <Link>RegSource.cs</Link>
     </Compile>
+    <Compile Include="Attributes\CommandIdMetadataAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
     <Compile Include="BaseLibTypeConverter.cs" />
     <Compile Include="Class1.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="IHierarchicalNode.cs" />
     <Compile Include="IProvidesKey.cs" />
     <Compile Include="IViewModel.cs" />
+    <Compile Include="JsonResourceNodeConverterFactory.cs" />
     <Compile Include="Logging\ExecutionContextImpl.cs" />
     <Compile Include="Logging\IExecutionContext.cs" />
     <Compile Include="Logging\LegacyAppBuildModule.cs" />

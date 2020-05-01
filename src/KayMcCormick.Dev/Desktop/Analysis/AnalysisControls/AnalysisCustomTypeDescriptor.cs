@@ -2,40 +2,11 @@
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Reflection;
-using System.Text ;
-using System.Threading.Tasks ;
-using Autofac.Core ;
-using JetBrains.Annotations;
+using System.Threading;
 using KayMcCormick.Lib.Wpf ;
-using Microsoft.CodeAnalysis.Host ;
 
 namespace AnalysisControls
 {
-    public class TypeProvider : TypeDescriptionProvider
-    {
-        private IEnumerable < ICustomTypeDescriptor > _supported ;
-
-        public TypeProvider ( IEnumerable < ICustomTypeDescriptor > supported )
-        {
-            _supported = supported ;
-        }
-
-        #region Overrides of TypeDescriptionProvider
-        public override ICustomTypeDescriptor GetTypeDescriptor (
-            Type   objectType
-          , object instance
-        )
-        {
-            return base.GetTypeDescriptor ( objectType , instance ) ;
-        }
-
-        public override bool IsSupportedType ( Type type )
-        {
-            return base.IsSupportedType ( type ) ;
-        }
-        #endregion
-    }
-
     /// <summary>
     /// 
     /// </summary>
@@ -88,7 +59,10 @@ namespace AnalysisControls
             List<PropertyDescriptor> p = new List<PropertyDescriptor>();
             foreach (var propertyInfo in Type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
-                PropertyDescriptor xDescriptor = new MyXDescriptor(propertyInfo);
+                var ti = typeof(MyXDescriptor<,>).MakeGenericType(Type, propertyInfo.PropertyType);
+                var inst = Activator.CreateInstance(ti, BindingFlags.CreateInstance, null, new object[] {propertyInfo},
+                    Thread.CurrentThread.CurrentCulture);
+                PropertyDescriptor xDescriptor = (PropertyDescriptor) inst;
                 p.Add(xDescriptor);
             }
             PropertyDescriptorCollection coll = new PropertyDescriptorCollection(p.ToArray());
@@ -105,8 +79,17 @@ namespace AnalysisControls
             return base.GetPropertyOwner(pd);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type Type { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="funcConverter"></param>
+        /// <param name="uiElementTypeConverter"></param>
+        /// <param name="type"></param>
         public AnalysisCustomTypeDescriptor (
             Func < Type , TypeConverter > funcConverter
           , UiElementTypeConverter        uiElementTypeConverter
@@ -120,46 +103,11 @@ namespace AnalysisControls
 
         #region Overrides of CustomTypeDescriptor
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override TypeConverter GetConverter() => _uiElementTypeConverter;
         #endregion
-    }
-
-    public class MyXDescriptor : CustomPropertyDescriptor
-    {
-        private Func<object, object> _getValue;
-        private Type _type;
-        private readonly TypeConverter _converter = new TestConverter1();
-
-        public MyXDescriptor([NotNull] string name, Attribute[] attrs) : base(name, attrs)
-        {
-        }
-
-        public MyXDescriptor([NotNull] MemberDescriptor descr) : base(descr)
-        {
-        }
-
-        public MyXDescriptor([NotNull] MemberDescriptor descr, Attribute[] attrs) : base(descr, attrs)
-        {
-        }
-
-        public MyXDescriptor(PropertyInfo propertyInfo) : base(propertyInfo.Name, Array.Empty<Attribute>())
-        {
-            _getValue = propertyInfo.GetValue;
-            _type = propertyInfo.PropertyType;
-        }
-
-        public override object GetValue(object component) => _getValue(component);
-
-        public override TypeConverter Converter => _converter;
-
-        public override Type PropertyType => _type;
-    }
-
-    public class TestConverter1 : TypeConverter
-    {
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return base.CanConvertTo(context, destinationType);
-        }
     }
 }

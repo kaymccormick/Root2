@@ -1,5 +1,6 @@
 using System ;
 using System.Globalization ;
+using System.Linq;
 using System.Windows.Data ;
 
 namespace KayMcCormick.Lib.Wpf
@@ -35,6 +36,22 @@ namespace KayMcCormick.Lib.Wpf
                 return source.GetInterfaces ( ) ;
             }
 
+            if ((string) parameter == "GenericTypeDefinition" && source.IsGenericType)
+            {
+                var genericTypeDefinition = source.GetGenericTypeDefinition();
+                return genericTypeDefinition;
+            }
+
+            if ((string) parameter == "GetInterfaces")
+            {
+                return source.GetInterfaces();
+            }
+
+
+            if ((string)parameter == "Methods")
+            {
+                return source.GetMethods().Where(m => m.IsSpecialName == false);
+            }
             return null ;
         }
 

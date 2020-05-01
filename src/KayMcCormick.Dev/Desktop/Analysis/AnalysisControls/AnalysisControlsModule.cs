@@ -35,6 +35,7 @@ using AnalysisControls.Views ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving;
 using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout;
@@ -47,6 +48,8 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
+using Container = Autofac.Core.Container;
+using MethodInfo = AnalysisAppLib.MethodInfo;
 using Module = Autofac.Module ;
 
 namespace AnalysisControls
@@ -152,7 +155,15 @@ namespace AnalysisControls
                                                )
                                         .SelectMany ( az => az.GetTypes ( ) )
                                         .ToList ( ) ;
-                var xx = new CustomTypes(kayTypes);
+            kayTypes.Add(typeof(IInstanceLookup));
+            kayTypes.Add(typeof(Container));
+            kayTypes.Add(typeof(IResolveOperation));
+            kayTypes.Add(typeof(Type));
+            kayTypes.Add(typeof(MethodInfo));
+            kayTypes.Add(typeof(PropertyInfo));
+            kayTypes.Add(typeof(MemberInfo));
+
+            var xx = new CustomTypes(kayTypes);
                 builder.RegisterInstance(xx);
                 //builder.Register((c, p) => { return kayTypes; }).Keyed<IEnumerable<Type>>("Custom");
                 builder.RegisterType<UiElementTypeConverter>();
@@ -160,9 +171,7 @@ namespace AnalysisControls
                 {
                     var lifetimeScope = c.Resolve<ILifetimeScope>();
                     Func<Type, TypeConverter> f = (t) =>
-                    {
-
-                        return new UiElementTypeConverter(lifetimeScope);
+                    {                        return new UiElementTypeConverter(lifetimeScope);
                     };
                     return f;
                 }).As < Func<Type, TypeConverter>>();
@@ -191,7 +200,7 @@ namespace AnalysisControls
                        .WithMetadata ( "Custom" , true )
                        .AsImplementedInterfaces ( )
                        .AsSelf ( ) ;
-                builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ).SingleInstance();
+                builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ).SingleInstance().As<IControlsProvider>().AsSelf();
                 // .WithParameter (
                 // new NamedParameter ( "types" , types )
                 // ) .AsSelf (  ) ;
@@ -429,7 +438,7 @@ namespace AnalysisControls
         {
             var x = (Tuple<Meta<Lazy<IControlView>>, ILifetimeScope>)command.Argument;
             var view = x.Item1.Value;
-            DebugUtils.WriteLine($"Calling viewfunc ({command})");
+            DebugUtils.WriteLine($"Calling view func ({command})");
             var n = DateTime.Now;
             var pane1 = x.Item2.Resolve<LayoutDocumentPane>();
             DebugUtils.WriteLine((DateTime.Now - n).ToString());
@@ -536,12 +545,16 @@ namespace AnalysisControls
             {
                 ListView lv = new ListView() {Resources = resources};
                 var gv = new GridView();
-                gv.Columns.Add(new GridViewColumn() {DisplayMemberBinding = new Binding(".")});
+                //gv.Columns.Add(new GridViewColumn() {DisplayMemberBinding = new Binding(".")});
                 lv.View = gv;
                 lv.ItemsSource = collection;
                 var props  = TypeDescriptor.GetProperties(typeof(T));
                 foreach (PropertyDescriptor prop in props)
                 {
+                    if (!prop.IsBrowsable)
+                    {
+                        continue;
+                    }
                     DebugUtils.WriteLine(prop.Name);
                     var gridViewColumn = new GridViewColumn();
                     gridViewColumn.Header = prop.DisplayName;
@@ -557,7 +570,30 @@ namespace AnalysisControls
                 return lv;
             }
 
-            private static ListBox ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
+            public static ItemsControl ReplayItemsControl<T>(ObservableCollection<T> collection, ReplaySubject<T> observable,
+                ResourceDictionary resources)
+            {
+                ItemsControl itemsControl = new ItemsControl() {Resources = resources};
+                itemsControl.ItemsSource = collection;
+                var props = TypeDescriptor.GetProperties(typeof(T));
+                // foreach (PropertyDescriptor prop in props)
+                // {
+                //     DebugUtils.WriteLine(prop.Name);
+                //     var gridViewColumn = new GridViewColumn();
+                //     gridViewColumn.Header = prop.DisplayName;
+                //     gridViewColumn.CellTemplateSelector = new ListViewTestSel(prop);
+                //     gv.Columns.Add(gridViewColumn);
+                // }
+
+                observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
+                    item =>
+                    {
+                        collection.Add(item);
+                    });
+                return itemsControl;
+            }
+
+        private static ListBox ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
             {
                 ListBox lb = new ListBox();
                 lb.ItemsSource = collection;

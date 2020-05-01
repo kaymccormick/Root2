@@ -96,13 +96,19 @@ namespace KayMcCormick.Lib.Wpf
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var selectTemplate = base.SelectTemplate(_prop.GetValue(item), container);
-            if (selectTemplate == null)
-            {
+            // var selectTemplate = base.SelectTemplate(_prop.GetValue(item), container);
+            // if (selectTemplate == null)
+            
                 object resourceKey = $"{item.GetType().Name}.{_prop.Name}";
-                return ((FrameworkElement) container).TryFindResource(resourceKey) as DataTemplate;
+                DebugUtils.WriteLine(resourceKey.ToString());
+                var tryFindResource = ((FrameworkElement) container).TryFindResource(resourceKey) as DataTemplate;
+                if (tryFindResource == null)
+                {
+                    return ((FrameworkElement)container).TryFindResource("Fallback") as DataTemplate;
             }
-            return selectTemplate;
+                return tryFindResource;
+            
+            //return selectTemplate;
         }
-    }
+    }   
 }

@@ -18,11 +18,12 @@ using Microsoft.EntityFrameworkCore ;
 
 namespace AnalysisAppLib
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : DbContext, IAppDbContext1
     {
         public DbSet<AppTypeInfo>            AppTypeInfos  { get; set; }
         public DbSet<AppClrType>             AppClrType    { get; set; }
         public DbSet<ProjectInfo>            Projects      { get; set; }
+        public DbSet<SyntaxFieldInfo> SyntaxFieldInfo { get; set; }
         public DbSet<LogInvocation2<string>> LogInvocation { get; set; }
         #region Overrides of DbContext
         // ReSharper disable once AnnotateNotNullParameter

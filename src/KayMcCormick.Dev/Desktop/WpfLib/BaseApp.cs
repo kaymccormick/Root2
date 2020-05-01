@@ -117,7 +117,14 @@ namespace KayMcCormick.Lib.Wpf
             options.Converters.Add(new JsonConverterLogEventInfo());
             TypeDescriptor.AddProvider(new InstanceInfoProvider(), typeof(InstanceInfo));
 
-            
+            var provider = Scope.Resolve<IControlsProvider>();
+            foreach (var providerType in provider.Types)
+            {
+                DebugUtils.WriteLine(providerType.FullName);
+                TypeDescriptor.AddProvider(provider.Provider, providerType);
+            }
+
+
             foreach ( var myJsonLayout in LogManager
             .Configuration.AllTargets.OfType < TargetWithLayout > ( )
             .Select ( t => t.Layout )

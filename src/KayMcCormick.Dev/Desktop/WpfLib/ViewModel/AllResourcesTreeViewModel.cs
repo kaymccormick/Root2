@@ -401,6 +401,8 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        
+        [Browsable(false)]
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Content ) ]
         public ModelResources ModelResources
         {
@@ -408,6 +410,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
             set { _modelResources = value ; }
         }
 
+        [Browsable(false)]
         public Dispatcher Dispatcher { get; private set; }
 
         /// <inheritdoc />

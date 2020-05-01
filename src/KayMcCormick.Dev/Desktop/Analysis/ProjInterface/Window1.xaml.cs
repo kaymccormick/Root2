@@ -65,6 +65,7 @@ namespace ProjInterface
         private       DockWindowViewModel _viewModel ;
         private       ILifetimeScope      _beginLifetimeScope ;
         private       MyCacheTarget2      _cacheTarget ;
+        private ReplaySubject<DocContent> _docContent;
 
         public Window1 ( )
         {
@@ -154,7 +155,13 @@ namespace ProjInterface
             Docpane.Children.Add(new LayoutDocument() { Content = AnalysisControlsModule.ReplayListView(actList, actSubject, Resources )});
 
 
-            
+            _docContent = lifetimeScope.Resolve<ReplaySubject<DocContent>>();
+            _docContent.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
+                item =>
+                {
+                    var ld = new LayoutDocument {Content = item.Content};
+                    Docpane.Children.Add(ld);
+                });
         }
 
         protected override void OnContentRendered(EventArgs e)
@@ -264,6 +271,7 @@ namespace ProjInterface
             builder.Register < Action < IEventMisc > > ( x => Action2 ) ;
             builder.Register < Action < Document > > ( Delegate ) ;
             builder.Register < Action < string > > ( x => d => { } ) ;
+            
             builder.Register < Action < ILogInvocation > > (
                                                             x => d => {
                                                                 List1.Dispatcher.Invoke (

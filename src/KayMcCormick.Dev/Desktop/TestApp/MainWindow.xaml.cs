@@ -1,5 +1,6 @@
 ﻿using System ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel;
 using System.IO ;
 using System.Linq ;
 using System.Text.Json ;
@@ -66,6 +67,17 @@ namespace TestApp
             ApplicationInstance.LogMethodDelegate logMethod = LogMethod ;
             var config = new ApplicationInstance.ApplicationInstanceConfiguration ( logMethod , ApplicationGuid ) ;
 
+            void take(Type t)
+            {
+                Types.Add(t);
+            }
+
+            take(typeof(object));
+
+            foreach (var exportedType in typeof(object).Assembly.GetExportedTypes())
+            {
+                Types.Add(exportedType);
+            }
             _testAppApp = new TestAppApp ( config ) ;
             InitializeComponent ( ) ;
         }
@@ -74,6 +86,7 @@ namespace TestApp
 
         public static MainWindow Instance { get { return _instance ; } set { _instance = value ; } }
 
+        public ObservableCollection<Type> Types { get; set; } = new ObservableCollection<Type>();
         public void LogMethod ( [ NotNull ] string message )
         {
             if ( string.IsNullOrEmpty ( message ) )

@@ -39,7 +39,6 @@ using System.Windows.Automation ;
 using System.Windows.Baml2006 ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon;
-using System.Windows.Data;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using System.Windows.Threading;
@@ -62,6 +61,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Command ;
+using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.TestLib ;
 using KayMcCormick.Dev.TestLib.Fixtures ;
@@ -69,11 +69,13 @@ using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.JSON ;
 using KayMcCormick.Lib.Wpf.View ;
+using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Moq ;
 using NLog ;
+using NLog.Targets;
 using Xunit ;
 using Xunit.Abstractions ;
 using Application = KayMcCormick.Dev.Logging.Application;
@@ -610,7 +612,7 @@ namespace ProjTests
 
             return count ;
         }
-#if false
+
         [ WpfFact ]
         public void TestResourcesModel ( )
         {
@@ -619,38 +621,16 @@ namespace ProjTests
                                          new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
                                         ) )
             {
+                instance.AddModule(new AnalysisControlsModule());
                 instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 instance.Initialize ( ) ;
                 var lifetimescope = instance.GetLifetimeScope ( ) ;
 
-                foreach ( var myJsonLayout in LogManager
-                                             .Configuration.AllTargets
-                                             .OfType < TargetWithLayout > ( )
-                                             .Select ( t => t.Layout )
-                                             .OfType < MyJsonLayout > ( ) )
-                {
-                    var jsonSerializerOptions = myJsonLayout.Options ;
-                    var options = new JsonSerializerOptions ( ) ;
-                    foreach ( var jsonConverter in jsonSerializerOptions.Converters )
-                    {
-                        options.Converters.Add ( jsonConverter ) ;
-                    }
+                var model = lifetimescope.Resolve<AllResourcesTreeViewModel>();
 
-                    JsonConverters.AddJsonConverters ( options ) ;
-                    myJsonLayout.Options = options ;
-                }
-
-                var model = new AllResourcesTreeViewModel (
-                                                           lifetimescope
-                                             , lifetimescope
-                                                              .Resolve < IObjectIdProvider > ( )
-                                                          ) ;
-                var tree = new AllResourcesTree ( model ) ;
-
-                DumpTree ( tree , model.AllResourcesCollection ) ;
+                DumpTree ( null , model.AllResourcesCollection ) ;
             }
         }
-#endif
 
         [ WpfFact ( Timeout = 30000 ) ]
         public void Test123 ( )
@@ -724,11 +704,14 @@ namespace ProjTests
                 }
 
                 var selector = new ResourceDetailTemplateSelector ( ) ;
-                var dt = selector.SelectTemplate ( resourceNodeInfo.Data , tree ) ;
-                if ( dt != null )
+                if (tree != null)
                 {
-                    var xaml = XamlWriter.Save ( dt ) ;
-                    DebugUtils.WriteLine ( xaml ) ;
+                    var dt = selector.SelectTemplate ( resourceNodeInfo.Data , tree ) ;
+                    if ( dt != null )
+                    {
+                        var xaml = XamlWriter.Save ( dt ) ;
+                        DebugUtils.WriteLine ( xaml ) ;
+                    }
                 }
 
                 Logger.Info (
@@ -1436,7 +1419,6 @@ namespace ProjTests
                 
                 instance.Initialize();
 
-                
                 ReplaySubject<AdhocWorkspace> workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
                 ReplaySubject<CommandProgress> progress = new ReplaySubject<CommandProgress>();
                 var lifetimeScope = instance.GetLifetimeScope(containerBuilder =>
@@ -1461,7 +1443,7 @@ namespace ProjTests
                 var builder = lifetimeScope.Resolve<RibbonBuilder>();
                 var ribbon = builder.Ribbon;
                 ribbon.SelectionChanged += (sender, args) => DebugUtils.WriteLine(args.AddedItems[0].ToString());
-                RibbonWindow w = new RibbonWindow();
+                var w = new RibbonWindow();
                 var dp = new DockPanel();
                 ObservableCollection<CommandProgress> progresses = new ObservableCollection<CommandProgress>();
                 var ais = lifetimeScope.Resolve < ReplaySubject<ActivationInfo>>();
@@ -1630,51 +1612,32 @@ namespace ProjTests
                     throw new ArgumentOutOfRangeException();
             }
         }
-    }
-
-    internal class MySel : DataTemplateSelector
-    {
-        private readonly ResourceDictionary _resources;
-        private readonly PropertyDescriptor _prop;
-
-        public MySel(ResourceDictionary resources, PropertyDescriptor prop)
+        [WpfFact]
+        public void TestControl2()
         {
-            _resources = resources;
-            _prop = prop;
+            var type = typeof(Generic2<Type>);
+            var type2 = typeof(Dictionary<string, object>);
+            CustomControl2 c = new CustomControl2() { Type = type2 };
+            Window w = new Window();
+            StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
+            StackPanel p2 = new StackPanel() { Orientation = Orientation.Horizontal };
+            StackPanel p3 = new StackPanel() { Orientation = Orientation.Horizontal };
+            p1.Children.Add(p2);
+            p2.Children.Add(c);
+            CustomControl2 c2 = new CustomControl2() { Type = type };
+            p2.Children.Add(c2);
+            p1.Children.Add(p3);
             
-        }
+            Type type3 = typeof(object[]);
 
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-            var resourceDictionary = ((ResourceDictionary) _resources);
-            var dataTemplateKey = new DataTemplateKey(item.GetType());
-            DebugUtils.WriteLine($"{_prop.Name}: {item.GetType().FullName}");
-            
-            if (resourceDictionary.Contains(dataTemplateKey))
-            {
-                return (DataTemplate) resourceDictionary[dataTemplateKey];
-            }
-            return base.SelectTemplate(item, container);
-        }
-    }
+            CustomControl2 c3 = new CustomControl2() { Type = type3 };
 
-    internal class MyConverter1 : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            PropertyDescriptor p = (PropertyDescriptor) parameter;
-            if (value != null)
-            {
-                var val = p.GetValue(value);
-                return val;
-            }
-
-            return null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
+            Type type4 = typeof(IEnumerable<>);
+            CustomControl2 c4 = new CustomControl2() { Type = type };
+            p3.Children.Add(c3);
+            p3.Children.Add(c4);
+            w.Content = p1;
+            w.ShowDialog();
         }
     }
 
@@ -1693,68 +1656,13 @@ namespace ProjTests
         #endregion
     }
 
-    public class XamlWriter1 : XamlObjectWriter
+    class Generic1<TA>
     {
-        #region Overrides of XamlObjectWriter
-        protected override void OnAfterBeginInit ( object value )
-        {
-            base.OnAfterBeginInit ( value ) ;
-        }
 
-        protected override void OnBeforeProperties ( object value )
-        {
-            base.OnBeforeProperties ( value ) ;
-        }
-
-        protected override void OnAfterProperties ( object value )
-        {
-            base.OnAfterProperties ( value ) ;
-        }
-
-        protected override void OnAfterEndInit ( object value ) { base.OnAfterEndInit ( value ) ; }
-
-        protected override bool OnSetValue ( object eventSender , XamlMember member , object value )
-        {
-            return base.OnSetValue ( eventSender , member , value ) ;
-        }
-
-        public override void WriteGetObject ( ) { base.WriteGetObject ( ) ; }
-
-        public override void WriteStartObject ( XamlType xamlType )
-        {
-            base.WriteStartObject ( xamlType ) ;
-        }
-
-        public override void WriteEndObject ( ) { base.WriteEndObject ( ) ; }
-
-        public override void WriteStartMember ( XamlMember property )
-        {
-            base.WriteStartMember ( property ) ;
-        }
-
-        public override void WriteEndMember ( ) { base.WriteEndMember ( ) ; }
-
-        public override void WriteValue ( object value ) { base.WriteValue ( value ) ; }
-
-        public override void WriteNamespace ( NamespaceDeclaration namespaceDeclaration )
-        {
-            base.WriteNamespace ( namespaceDeclaration ) ;
-        }
-
-        protected override void Dispose ( bool disposing ) { base.Dispose ( disposing ) ; }
-        #endregion
-
-        public XamlWriter1 ( [ NotNull ] XamlSchemaContext schemaContext ) : base ( schemaContext )
-        {
-        }
-
-        public XamlWriter1 (
-            [ NotNull ] XamlSchemaContext schemaContext
-          , XamlObjectWriterSettings      settings
-        ) : base ( schemaContext , settings )
-        {
-        }
     }
 
+    class Generic2<TB> : Generic1<TB>
+    {
 
+    }
 }

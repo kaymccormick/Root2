@@ -14,7 +14,6 @@ using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Linq ;
-using System.Text.Json;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
@@ -82,12 +81,13 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
+        [Browsable(false)]
         public Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
             CreateNodeFunc { get { return _createNodeFunc ; } set { _createNodeFunc = value ; } }
 
         /// <summary>
         /// </summary>
-
+        [Browsable(false)]
         public bool ? IsChildrenLoaded
         {
             get { return _isChildrenLoaded ; }
@@ -96,6 +96,8 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
+        [Browsable(false)]
+
         public Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
             IEnumerable < ResourceNodeInfo > > GetChildrenFunc
         {
@@ -156,11 +158,13 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [Browsable(false)]
         public IEnumerator < ResourceNodeInfo > GetEnumerator ( )
         {
             return _children.GetEnumerator ( ) ;
         }
 
+        [Browsable(false)]
         IEnumerator IEnumerable.GetEnumerator ( )
         {
             return ( ( IEnumerable ) _children ).GetEnumerator ( ) ;
@@ -168,53 +172,5 @@ namespace KayMcCormick.Dev
 
 
         public int Ordinal { get ; set ; }
-    }
-
-    public class JsonResourceNodeConverterFactory : JsonConverterFactory
-    {
-        public override bool CanConvert(Type typeToConvert)
-        {
-            DebugUtils.WriteLine(typeToConvert.FullName);
-            if (typeof(ResourceNodeInfoBase).IsAssignableFrom(typeToConvert))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
-        {
-            return new InnerConverter(options);
-            throw new NotImplementedException();
-        }
-
-        public class InnerConverter : JsonConverter<ResourceNodeInfoBase>
-        {
-            private readonly JsonSerializerOptions _options;
-
-            public InnerConverter(JsonSerializerOptions options)
-            {
-                _options = options;
-                
-            }
-
-            public override ResourceNodeInfoBase Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void Write(Utf8JsonWriter writer, ResourceNodeInfoBase value, JsonSerializerOptions options)
-            {
-                writer.WriteStartObject();
-                writer.WritePropertyName("Key");
-                JsonSerializer.Serialize(writer, value.Key, options);
-                writer.WritePropertyName("Data");
-                JsonSerializer.Serialize(writer, value.Data, options);
-                writer.WritePropertyName("Children");
-                JsonSerializer.Serialize(writer, value.Children, options);
-                writer.WriteEndObject();
-            }
-        }
     }
 }

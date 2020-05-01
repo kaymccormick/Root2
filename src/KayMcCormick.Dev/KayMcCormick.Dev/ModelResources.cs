@@ -42,7 +42,7 @@ namespace KayMcCormick.Dev
         private ILifetimeScope _lifetimeScope ;
 
         // ReSharper disable once RedundantDefaultMemberInitializer
-        private          bool                                    _doPopulateAppContext = false ;
+        private          bool                                    _doPopulateAppContext = true;
         private          ResourceNodeInfo                        _objects_node ;
         private readonly bool                                    _flatten_objects_node ;
         private IObservable < IComponentRegistration >  _regObservable ;
@@ -493,6 +493,7 @@ namespace KayMcCormick.Dev
             // ReSharper disable once UnusedVariable
             var convNode = CreateNode ( createNode , Converters_Key , null , false ) ;
 
+            
             foreach ( var assembly in currentDomain.GetAssemblies ( ) )
             {
                 var anode = CreateNode (
@@ -545,7 +546,9 @@ namespace KayMcCormick.Dev
 
                 var exported = CreateNode ( anode , "Exported Types" , assembly , false ) ;
                 exported.GetChildrenFunc = AssemblyTypes ;
+                
 
+#if false
                 foreach ( var typ in assembly.ExportedTypes )
                 {
                     // var cc = typ.GetCustomAttribute < TypeConverterAttribute > ( ) ;
@@ -622,6 +625,7 @@ namespace KayMcCormick.Dev
                                                                  )
                                               ) ) { }
                 }
+#endif
             }
         }
 
@@ -630,10 +634,11 @@ namespace KayMcCormick.Dev
           , Func < object , object , ResourceNodeInfo > arg2
         )
         {
-            yield break ;
+            var a = (Assembly) arg1.Data;
+            return a.ExportedTypes.Select(t => arg2(t.FullName, t));
         }
 
-        #region Implementation of ISupportInitialize
+#region Implementation of ISupportInitialize
         /// <summary>
         /// </summary>
         public void BeginInit ( )
@@ -655,9 +660,9 @@ namespace KayMcCormick.Dev
             PopulateResourcesTree ( ) ;
             IsInitialized = true ;
         }
-        #endregion
+#endregion
 
-        #region Implementation of ISupportInitializeNotification
+#region Implementation of ISupportInitializeNotification
         /// <inheritdoc />
         public bool IsInitialized { get ; set ; }
 
@@ -680,7 +685,7 @@ namespace KayMcCormick.Dev
 
         /// <inheritdoc />
         public event EventHandler Initialized ;
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -704,9 +709,9 @@ namespace KayMcCormick.Dev
             _arg2 = arg2 ;
         }
 
-        #region Implementation of IProvidesKey
+#region Implementation of IProvidesKey
         /// <inheritdoc />
         public object GetKey ( ) { return _arg1 ; }
-        #endregion
+#endregion
     }
 }

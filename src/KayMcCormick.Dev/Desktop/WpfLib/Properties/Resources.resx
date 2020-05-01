@@ -117,4 +117,10 @@
   <data name="ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension" xml:space="preserve">
     <value>{0} must be of type ResolveExtension</value>
   </data>
+  <data name="UiElementTypeConverter__ControlForValue_Property_Name" xml:space="preserve">
+    <value>Property Name</value>
+  </data>
+  <data name="UiElementTypeConverter__ControlForValue_Property_Type" xml:space="preserve">
+    <value>Property Type</value>
+  </data>
 </root>

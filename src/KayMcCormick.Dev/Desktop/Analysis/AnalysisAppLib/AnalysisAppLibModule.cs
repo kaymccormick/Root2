@@ -22,7 +22,6 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using Microsoft.EntityFrameworkCore ;
-using Microsoft.Extensions.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using Document = Microsoft.CodeAnalysis.Document;
@@ -36,7 +35,7 @@ namespace AnalysisAppLib
     {
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _registerExplorerTypes = false ;
-        private ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
+        private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
 
         /// <summary>
         ///     Parameterless constructor.
@@ -114,7 +113,8 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-builder.RegisterInstance(_activations);            
+            builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
+            builder.RegisterInstance(_activations);            
             builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
             builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
             
@@ -198,9 +198,7 @@ builder.RegisterInstance(_activations);
                    .WithCallerMetadata ( ) ;
 
             builder.Register < Action<Document>> (
-                                                                             ( c , p ) => (
-                                                                                 Document doc
-                                                                             ) => {
+                                                                             ( c , p ) => doc => {
                                                                                  DebugUtils
                                                                                     .WriteLine (
                                                                                                 doc

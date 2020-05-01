@@ -74,6 +74,7 @@
     <Compile Include="AppContainerFixture.cs" />
     <Compile Include="AppProjTests.cs" />
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="MyConverter1.cs" />
     <Compile Include="MyXmlWriter.cs" />
     <Compile Include="ProjectFixture.cs" />
     <Compile Include="ProjTests.cs" />

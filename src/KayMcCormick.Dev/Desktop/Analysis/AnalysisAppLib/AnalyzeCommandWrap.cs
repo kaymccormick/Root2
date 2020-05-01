@@ -13,13 +13,15 @@ namespace AnalysisAppLib
     /// Generic analyze command.
     /// </summary>
     [CategoryMetadata(Category.LogUsage)]
-    [TitleMetadata("Do it")]
+    [TitleMetadata("Primary analyze command")]
+    [GroupMetadata("XX")]
+    [CommandIdMetadata("{D4D9671C-656B-41DA-B4B1-50C550394B59}")]
     public sealed class AnalyzeCommandWrap : IBaseLibCommand
     {
-        AnalyzeCommand _cmd;
-        private ITargetBlock<RejectedItem> rejectTarget;
+        readonly AnalyzeCommand _cmd;
+        private ITargetBlock<RejectedItem> _rejectTarget;
         private object _argument;
-        private IProjectBrowserNode projectNode;
+        private readonly IProjectBrowserNode projectNode;
 
         /// <summary>
         /// 
@@ -32,17 +34,20 @@ namespace AnalysisAppLib
             this.projectNode = projectNode;
         }
 
+        /// <inheritdoc />
         public object Argument
         {
             get => _argument;
             set => _argument = value;
         }
 
+        /// <inheritdoc />
         public Task<IAppCommandResult> ExecuteAsync()
         {
-            return _cmd.AnalyzeCommandAsync(projectNode, rejectTarget).ContinueWith(task => AppCommandResult.Success);
+            return _cmd.AnalyzeCommandAsync(projectNode, _rejectTarget).ContinueWith(task => AppCommandResult.Success);
         }
 
+        /// <inheritdoc />
         public void OnFault(AggregateException exception)
         {
             throw new NotImplementedException();

@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using AnalysisAppLib;
-using AnalysisAppLib.Project;
 using AnalysisAppLib.Syntax;
 using AnalysisAppLib.XmlDoc;
 using AnalysisControls.ViewModel;
@@ -18,7 +17,6 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command;
-using KayMcCormick.Lib.Wpf.Command;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -34,13 +32,12 @@ namespace AnalysisControls
     [TitleMetadata("Code Gen")]
     [CategoryMetadata(Category.Infrastructure)]
     [GroupMetadata("Tasks")]
+    [CommandIdMetadata("{50AD944E-B85F-4877-951B-FD3CCEC2C2ED}")]
     public sealed class CodeGenCommand : ICodeGenCommand, IBaseLibCommand
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="scope"></param>
+#pragma warning disable 1591
         public CodeGenCommand(ILifetimeScope scope, ReplaySubject<CommandProgress> progressReplaySubject)
+#pragma warning restore 1591
         {
             Scope = scope;
             _progressReplaySubject = progressReplaySubject;
@@ -99,10 +96,15 @@ namespace AnalysisControls
         };
 
         // ReSharper disable once NotAccessedField.Local
+#pragma warning disable 169
         private static ILogger _logger;
-        private ReplaySubject<CommandProgress> _progressReplaySubject;
+#pragma warning restore 169
+        private readonly ReplaySubject<CommandProgress> _progressReplaySubject;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         [NotNull] public  string PocoPrefix { get { return _pocoPrefix; } }
 
 
@@ -116,29 +118,8 @@ namespace AnalysisControls
         [UsedImplicitly]
         public async Task<IAppCommandResult> CodeGenAsync(IBaseLibCommand command, ILifetimeScope lifetimeScope)
         {
-            var result = await Task.Run<IAppCommandResult>(() =>
-            {
-                return CodeGen(command, lifetimeScope);
-            });
+            var result = await Task.Run(() => CodeGen(command, lifetimeScope));
             return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="db"></param>
-        /// <returns></returns>
-        [TitleMetadata("DB Populate")]
-        [UsedImplicitly]
-        public async Task PopulateDbAsync(
-            IBaseLibCommand command, IAppDbContext1 db
-        )
-        {
-            var p = new ProjectBrowserViewModel();
-            //await db.Projects.AddRangeAsync(p.Projects);
-            await db.SaveChangesAsync();
-            
         }
 
 
@@ -187,7 +168,7 @@ namespace AnalysisControls
             {
                 var t = model1.Map.Dict[mapKey1];
                 // ReSharper disable once UnusedVariable
-                var curIterAppTypeInfo = t;
+                var curType = t;
                 var colTypeClassName = $"{PocoPrefix}{t.Type.Name}{_collectionSuffix}";
 
                 var classDecl1 = CreatePoco(mapKey1, t);
@@ -967,7 +948,7 @@ namespace AnalysisControls
             }
             catch (Exception ex)
             {
-                
+                // ignored
             }
 
             if (workspace == null)
@@ -1202,6 +1183,9 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             //File.WriteAllText ( @"C:\data\logs\gen.cs" , comp.ToString ( ) ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool WriteDebug { get; set; }
 
         [NotNull]
@@ -1222,8 +1206,14 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mapKey"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
         [NotNull]
-        private  ClassDeclarationSyntax CreatePoco(
+        public ClassDeclarationSyntax CreatePoco(
             [NotNull] AppTypeInfoKey mapKey
             , [NotNull] AppTypeInfo t
         )
@@ -1251,25 +1241,32 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object Argument { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Task<IAppCommandResult> ExecuteAsync()
         {
             return CodeGenAsync(this, Scope);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ILifetimeScope Scope { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public void OnFault(AggregateException exception)
         {
             throw new NotImplementedException();
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class CommandProgress
-    {
-        public object Content { get; set; }
     }
 }

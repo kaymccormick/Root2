@@ -19,7 +19,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -66,6 +66,24 @@ namespace KayMcCormick.Lib.Wpf.Properties {
         internal static string ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension {
             get {
                 return ResourceManager.GetString("ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Name.
+        /// </summary>
+        internal static string UiElementTypeConverter__ControlForValue_Property_Name {
+            get {
+                return ResourceManager.GetString("UiElementTypeConverter__ControlForValue_Property_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Type.
+        /// </summary>
+        internal static string UiElementTypeConverter__ControlForValue_Property_Type {
+            get {
+                return ResourceManager.GetString("UiElementTypeConverter__ControlForValue_Property_Type", resourceCulture);
             }
         }
     }

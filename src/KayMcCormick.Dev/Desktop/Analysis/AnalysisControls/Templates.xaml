@@ -9,18 +9,42 @@
   xmlns:autofac="clr-namespace:Autofac;assembly=Autofac"
   xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:reflection="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac">
+  xmlns:reflection="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
 
 
-
+  <DataTemplate DataType="{x:Type system:DateTime}">
+    <TextBlock Text="{Binding}"/>
+  </DataTemplate>
   <analysisControls:TestConverter2 x:Key="TestConverter1" />
   <DataTemplate x:Key="ActivationInfo.Context" DataType="{x:Type analysisAppLib:ActivationInfo}">
-    <ContentControl Content="{Binding Context}"/>
+    <WrapPanel><ContentControl Content="{Binding Context.Tag}"/>
+      <ContentControl Content="{Binding Context.NewInstanceActivated}"/>
+    </WrapPanel>
   </DataTemplate>
   <DataTemplate x:Key="ActivationInfo.Instance" DataType="{x:Type analysisAppLib:ActivationInfo}">
     <ContentControl Content="{Binding Instance}"/>
   </DataTemplate>
-  <DataTemplate x:Key="ActivationInfo.Parameters" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <analysisControls:UiConverter x:Key="UiConverter" />
+  <DataTemplate x:Key="ActivationInfo.Metadata" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <ContentControl Content="{Binding Metadata,Converter={StaticResource UiConverter}}"/>
+  </DataTemplate>
+  <DataTemplate x:Key="ActivationInfo.InstanceType" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <kmWpf:TypeControl>
+      <kmWpf:AttachedProperties.RenderedType>
+        <Binding Path="InstanceType"/>
+      </kmWpf:AttachedProperties.RenderedType>
+    </kmWpf:TypeControl>
+  </DataTemplate>
+
+  <DataTemplate x:Key="ActivationInfo.CreatedDateTime" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <TextBlock Text="{Binding CreatedDateTime}"/>
+  </DataTemplate>
+  <DataTemplate x:Key="ActivationInfo.ManagedThreadId" DataType="{x:Type analysisAppLib:ActivationInfo}">
+    <TextBlock Text="{Binding ManagedThreadId}"/>
+  </DataTemplate>
+
+<DataTemplate x:Key="ActivationInfo.Parameters" DataType="{x:Type analysisAppLib:ActivationInfo}">
     <ItemsControl ItemsSource="{Binding Parameters}">
       <ItemsControl.Resources>
         <DataTemplate DataType="{x:Type autofac:TypedParameter}">
@@ -55,7 +79,6 @@
   <DataTemplate x:Key="ActivationInfo.Component" DataType="{x:Type analysisAppLib:ActivationInfo}">
     <ContentControl Content="{Binding Component}"/>
   </DataTemplate>
-
   <DataTemplate
     DataType="{x:Type findLogUsages:ILogInvocation}">
     <Grid VerticalAlignment="Stretch"

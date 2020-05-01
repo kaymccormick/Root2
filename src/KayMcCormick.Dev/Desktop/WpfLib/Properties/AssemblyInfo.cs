@@ -14,7 +14,7 @@ using System.Windows.Markup ;
 [assembly: AssemblyTitle("WpfLib")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Kay McCormick")]
 [assembly: AssemblyProduct("WpfLib")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

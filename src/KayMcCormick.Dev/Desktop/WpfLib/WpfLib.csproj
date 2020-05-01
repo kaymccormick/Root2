@@ -99,7 +99,9 @@
     <Compile Include="AppWindow.cs" />
     <Compile Include="AttachedProperties.cs" />
     <Compile Include="BaseApp.cs" />
+    <Compile Include="BasicConverte.cs" />
     <Compile Include="ColorConverter.cs" />
+    <Compile Include="Command\LacConverter.cs" />
     <Compile Include="Command\WrappedAppCommand2.cs" />
     <Compile Include="ComponentInfoTypeDescriptor.cs" />
     <Compile Include="CompositeResourceNodeKey.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="ControlWrap.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
     <Compile Include="DataTemplateKeyConverter.cs" />
+    <Compile Include="DevTypeControl.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="ExceptionContentTemplateSelector.cs" />
     <Compile Include="ExceptionConverter.cs" />
@@ -121,6 +124,7 @@
     <Compile Include="GetTypeConverter.cs" />
     <Compile Include="HandleExceptionImpl.cs" />
     <Compile Include="HierarchicalTemplateSelector.cs" />
+    <Compile Include="IControlsProvider.cs" />
     <Compile Include="IControlView.cs" />
     <Compile Include="IHandleException.cs" />
     <Compile Include="ImageMetadataAttribute.cs" />

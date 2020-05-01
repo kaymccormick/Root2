@@ -8,24 +8,38 @@ using System.Threading.Tasks.Dataflow;
 using AnalysisAppLib;
 using AnalysisAppLib.Project;
 using FindLogUsages;
+using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Command;
 using KayMcCormick.Lib.Wpf.Command;
 using Microsoft.Win32;
 
-namespace AnalysisControls
+namespace AnalysisControls.Commands
 {
+    /// <summary>
+    /// Open file command
+    /// </summary>
+    [UsedImplicitly]
     public class OpenFileCommand : AppCommand
     {
-        private IAnalyzeCommand analyzeCommand;
+        private readonly IAnalyzeCommand _analyzeCommand;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="analyzeCommand"></param>
         public OpenFileCommand(IAnalyzeCommand analyzeCommand) : base("Open File")
         {
-            this.analyzeCommand = analyzeCommand;
+            this._analyzeCommand = analyzeCommand;
         }
 
+        /// <inheritdoc />
         public override object Argument { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override async Task<IAppCommandResult> ExecuteAsync()
         {
             var filters = new List<Filter>
@@ -67,15 +81,13 @@ namespace AnalysisControls
             var filename = dlg.FileName;
             if (Path.GetExtension(filename).ToLowerInvariant() == ".sln")
             {
-
-
                 var node = new ProjectBrowserNode
                 {
                     Name = "Loaded solution",
                     SolutionPath = filename
                 };
                 DebugUtils.WriteLine("await command");
-                await analyzeCommand.AnalyzeCommandAsync(
+                await _analyzeCommand.AnalyzeCommandAsync(
                         node
                         , new ActionBlock<RejectedItem>(
                             x => Debug
@@ -86,27 +98,36 @@ namespace AnalysisControls
                         )
                     )
                     .ConfigureAwait(false);
-                DebugUtils.WriteLine("herecommand");
+                DebugUtils.WriteLine("here command");
                 return AppCommandResult.Success;
             }
 
             return AppCommandResult.Failed;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exception"></param>
         public override void OnFault(AggregateException exception)
         {
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override object LargeImageSourceKey { get; set; }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         public override bool CanExecute(object parameter)
         {
             return true;
         }
-
-        
-        
     }
 }

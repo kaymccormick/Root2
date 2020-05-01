@@ -31,6 +31,14 @@ namespace KayMcCormick.Lib.Wpf
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        public static readonly DependencyProperty MakeHyperlinkProperty = DependencyProperty.Register(
+            "MakeHyperlink", typeof(bool), typeof(TypeControl), new PropertyMetadata(default(bool)));
+
+        public bool MakeHyperlink
+        {
+            get { return (bool) GetValue(MakeHyperlinkProperty); }
+            set { SetValue(MakeHyperlinkProperty, value); }
+        }
         /// <summary>
         /// </summary>
         public static readonly RoutedEvent TypeActivatedEvent =
@@ -231,32 +239,45 @@ namespace KayMcCormick.Lib.Wpf
             // addChild = tb ;
 
 
-            var hyperLink = new Hyperlink ( new Run ( myType.Name ) ) ;
-            if ( typeof ( IEnumerator ).IsAssignableFrom ( myType ) )
+
+            var myTypeName = myType.Name;
+            if (MakeHyperlink)
             {
-                hyperLink.Foreground = new SolidColorBrush { Color = Colors.DarkOrange } ;
+                
+                var hyperLink = new Hyperlink(new Run(myTypeName));
+                if (typeof(IEnumerator).IsAssignableFrom(myType))
+                {
+                    hyperLink.Foreground = new SolidColorBrush {Color = Colors.DarkOrange};
+                }
+
+                Uri.TryCreate(
+                    "obj:///"
+                    + Uri.EscapeUriString(
+                        myType.AssemblyQualifiedName
+                        ?? throw new InvalidOperationException()
+                    )
+                    , UriKind.Absolute
+                    , out var res
+                );
+
+                hyperLink.NavigateUri = res;
+                // hyperLink.Command          = MyAppCommands.VisitTypeCommand ;
+                // hyperLink.CommandParameter = myType ;
+                if (toolTip)
+                {
+                    hyperLink.ToolTip = new ToolTip {Content = ToolTipContent(myType)};
+                }
+
+                hyperLink.RequestNavigate += HyperLinkOnRequestNavigate;
+                addChild.AddChild(hyperLink);
+            }
+            else
+            {
+                TextBlock tb = new TextBlock() {Text = myTypeName};
+                addChild.AddChild(tb);
             }
 
-            Uri.TryCreate (
-                           "obj:///"
-                           + Uri.EscapeUriString (
-                                                  myType.AssemblyQualifiedName
-                                                  ?? throw new InvalidOperationException ( )
-                                                 )
-                         , UriKind.Absolute
-                         , out var res
-                          ) ;
 
-            hyperLink.NavigateUri = res ;
-            // hyperLink.Command          = MyAppCommands.VisitTypeCommand ;
-            // hyperLink.CommandParameter = myType ;
-            if ( toolTip )
-            {
-                hyperLink.ToolTip = new ToolTip { Content = ToolTipContent ( myType ) } ;
-            }
-
-            hyperLink.RequestNavigate += HyperLinkOnRequestNavigate ;
-            addChild.AddChild ( hyperLink ) ;
             if ( ! myType.IsGenericType )
             {
                 return ;
