@@ -259,8 +259,6 @@ namespace AnalysisControls
         }
 
         public PropertyDescriptorCollection PropertyDescriptorCollection
-
-
         {
             get
             {
@@ -304,7 +302,7 @@ namespace AnalysisControls
         {
             get
             {
-                if (_descriptor == null && Type != null)
+                if (_descriptor == null && Provider != null && Type != null)
                 {
                     _descriptor = Provider.GetTypeDescriptor(Type);
                 }

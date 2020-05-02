@@ -12,6 +12,21 @@ namespace KayMcCormick.Lib.Wpf
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            Assembly a = (Assembly) value;
+            if (a == null)
+            {
+                return null;
+            }
+            if ((String) parameter == "Name")
+
+            {
+                return a.GetName();
+            }
+
+            if ((String) parameter == "Company")
+            {
+                return a.GetCustomAttribute < AssemblyCompanyAttribute>()?.Company;
+            }
             return CreateNamespaceNodes(value);
         }
 
@@ -23,7 +38,8 @@ namespace KayMcCormick.Lib.Wpf
 
             foreach (var aExportedType in a.ExportedTypes)
             {
-                var x = new Queue<string>(aExportedType.Namespace.Split('.'));
+                var ns = aExportedType.Namespace ?? "";
+                var x = new Queue<string>(ns.Split('.'));
                 int xi = 0;
                 string prefix = "";
                 NamespaceNode nsn = null;

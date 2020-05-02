@@ -40,13 +40,38 @@
           <ColumnDefinition Width="*"></ColumnDefinition>
           <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ListBox VerticalAlignment="Stretch"  IsSynchronizedWithCurrentItem="True" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ElementName=test1,Path=AssemblyCollectionView}" SourceUpdated="FrameworkElement_OnSourceUpdated">
-          <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type reflection:Assembly}">
-              <TextBlock Text="{Binding FullName}"></TextBlock>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+        <StackPanel Grid.Row="0" Grid.Column="0">
+          <WrapPanel Orientation="Horizontal" DataContext="{Binding AssemblyFilter}">
+            <CheckBox Content="GAC Installed" IsChecked="{Binding GacOnly}"></CheckBox>
+            
+          </WrapPanel>
+          <ListView VerticalAlignment="Stretch"  IsSynchronizedWithCurrentItem="True" Grid.Row="0" Grid.Column="0"
+                    ItemsSource="{Binding ElementName=test1,Path=AssemblyCollectionView}" SourceUpdated="FrameworkElement_OnSourceUpdated">
+          <ListView.View>
+            <GridView>
+              <GridViewColumn Header="Name">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate DataType="{x:Type reflection:Assembly}">
+                    <TextBlock DataContext="{Binding Converter={StaticResource AssemblyInfoConverter},ConverterParameter=Name}" Text="{Binding Path=Name}"></TextBlock>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="GAC" DisplayMemberBinding="{Binding GlobalAssemblyCache}">
+
+              </GridViewColumn>
+              <GridViewColumn Header="Company" DisplayMemberBinding="{Binding ConverterParameter=Company,Converter={StaticResource AssemblyInfoConverter}}">
+
+              </GridViewColumn>
+              <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Location}"/>
+
+
+            
+                </GridView>
+            </ListView.View>
+        </ListView>
+        </StackPanel>
+        </ScrollViewer>
         <TreeView  VerticalAlignment="Stretch" x:Name="tv" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=AssemblyCollectionView.CurrentItem,Converter={StaticResource AssemblyInfoConverter}}" SelectedItemChanged="TreeView_OnSelectedItemChanged">
           <TreeView.Resources>
             <HierarchicalDataTemplate DataType="{x:Type kmWpf:NamespaceNode}" ItemsSource="{Binding SubItems}">
@@ -55,7 +80,7 @@
           </TreeView.Resources>
         </TreeView>
         <GridSplitter Grid.Column="0" Height="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"  Grid.Row="1" ShowsPreview="True" Grid.ColumnSpan="3" ResizeBehavior="CurrentAndNext"></GridSplitter>
-        <ComboBox Margin="15,10,0,10"  Grid.Column="0" DataContext="{Binding ElementName=tv,Path=SelectedItem}" ItemsSource="{Binding SubItems}" x:Name="typesel" Grid.ColumnSpan="3"  Grid.Row="1" DataContextChanged="typesel_DataContextChanged">
+        <ComboBox Margin="15,10,0,10"  Grid.Column="0" DataContext="{Binding ElementName=tv,Path=SelectedItem}" ItemsSource="{Binding SubItems}" x:Name="typesel" Grid.ColumnSpan="3"  Grid.Row="1" SelectedItem="{Binding Type,Mode=TwoWay}" DataContextChanged="typesel_DataContextChanged" SelectionChanged="Typesel_OnSelectionChanged">
           <ComboBox.ItemTemplate>
             <DataTemplate DataType="{x:Type kmWpf:NamespaceNode}">
               <kmWpf:TypeControl MakeHyperlink="False" FontSize="18">
@@ -67,7 +92,7 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <anal:CustomControl2 Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0"  Type="{Binding ElementName=typesel,Path=SelectedItem,FallbackValue={x:Type reflection:Assembly}}" HorizontalAlignment="Left" Margin="0"/>
+        <anal:CustomControl2 Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0" Type="{Binding Type}" HorizontalAlignment="Left" Margin="0"/>
 
       </Grid>
     </TabItem>

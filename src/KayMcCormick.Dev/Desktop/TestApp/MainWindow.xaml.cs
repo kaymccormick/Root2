@@ -7,6 +7,7 @@ using System.IO ;
 using System.Linq ;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json ;
 using System.Windows ;
 using System.Windows.Controls ;
@@ -15,12 +16,13 @@ using System.Windows.Input ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
+using DynamicData;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf ;
-using AppDomain = System.AppDomain;
+using Microsoft.EntityFrameworkCore.Internal;
 
 #if ENABLE_CONSOLE
 using Vanara.PInvoke ;
@@ -40,6 +42,7 @@ namespace TestApp
         private ListCollectionView _assemblyListCollectionView;
         private ObservableCollection<Assembly> _assemblyCollection = new ObservableCollection<Assembly>();
         private List<NamespaceNode> _namespaceNodesRoot;
+        private Type _type;
 #if ENABLE_CONSOLE
         private Kernel32.SafeHFILE _consoleScreenBuffer ;
         private HFILE _stdHandle ;
@@ -54,6 +57,10 @@ namespace TestApp
 
             _instance = this ;
 
+            foreach (var referencedAssembly in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+            {
+                Assembly.Load(referencedAssembly.FullName);
+            }
 #if ENABLE_CONSOLE
             var allocConsole = Kernel32.AllocConsole ( ) ;
             if ( !allocConsole )
@@ -143,6 +150,11 @@ namespace TestApp
                     v.CollectionChanged += AssemblyCollectionViewOnCollectionChanged;
                     _assemblyListCollectionView = v as ListCollectionView;
                     AssemblyCollectionView = v;
+                    v.Filter += Filter;
+                    AssemblyFilter.PropertyChanged += (sender, args) =>
+                    {
+                        v.Refresh();
+                    };
 
                 }
                 DebugUtils.WriteLine("*** " + nameof(AssemblyCollectionView) + ": Returning " + _assemblyListCollectionView);
@@ -154,6 +166,17 @@ namespace TestApp
                 _assemblyCollectionView = value;
                 OnPropertyChanged();
             }
+        }
+
+        private bool Filter(object obj)
+        {
+            Assembly a = obj as Assembly;
+            if (AssemblyFilter.GacOnly && a.GlobalAssemblyCache == false)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void V_CurrentChanged(object sender, EventArgs e)
@@ -192,6 +215,9 @@ namespace TestApp
         }
 
         public ObservableCollection<Assembly> AssemblyCollection { get; } = new ObservableLoadedAssembliesCollection();
+
+        public AssemblyFilter AssemblyFilter { get; } = new AssemblyFilter();
+
         //
         // {
         //     get
@@ -414,7 +440,7 @@ namespace TestApp
 
         private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            DebugUtils.WriteLine(e.NewValue.ToString());
+            DebugUtils.WriteLine(e.NewValue?.ToString());
         }
 
         private void typesel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -422,16 +448,89 @@ namespace TestApp
             DebugUtils.WriteLine(nameof(DataContextChanged));
             DebugUtils.WriteLine(e.NewValue?.ToString());
         }
+
+#if false
+        public static IEnumerable<AssemblyName> GetGacAssemblyFullNames()
+        {
+            IApplicationContext applicationContext;
+            IAssemblyEnum assemblyEnum;
+            IAssemblyName assemblyName;
+
+            Fusion.CreateAssemblyEnum(out assemblyEnum, null, null, 2, 0);
+            while (assemblyEnum.GetNextAssembly(out applicationContext, out assemblyName, 0) == 0)
+            {
+                uint nChars = 0;
+                assemblyName.GetDisplayName(null, ref nChars, 0);
+
+                StringBuilder name = new StringBuilder((int)nChars);
+                assemblyName.GetDisplayName(name, ref nChars, 0);
+
+                AssemblyName a = null;
+                try
+                {
+                    a = new AssemblyName(name.ToString());
+                }
+                catch (Exception)
+                {
+                }
+
+                if (a != null)
+                {
+                    yield return a;
+                }
+            }
+        }
+#endif
+
+
+        public Type Type
+        {
+            get { return _type; }
+            set
+            {
+                if (Equals(value, _type)) return;
+                _type = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void Typesel_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Any())
+            {
+                var node = e.AddedItems[0] as NamespaceNode;
+                if (node != null)
+                {
+                    Type = node.Entity;
+                }
+            }
+
+        }
     }
 
-    public class ObservableLoadedAssembliesCollection : ObservableCollection<Assembly>
+    public class AssemblyFilter : INotifyPropertyChanged
     {
-        public ObservableLoadedAssembliesCollection()
+        private bool _gacOnly;
+
+        public bool GacOnly
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            get { return _gacOnly; }
+            set
             {
-                Add(assembly);
+                if (value == _gacOnly) return;
+                _gacOnly = value;
+                OnPropertyChanged();
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
+
+
