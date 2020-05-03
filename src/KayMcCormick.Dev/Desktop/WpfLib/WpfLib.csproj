@@ -113,7 +113,6 @@
     <Compile Include="ControlWrap.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
     <Compile Include="DataTemplateKeyConverter.cs" />
-    <Compile Include="DevTypeControl.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="ExceptionContentTemplateSelector.cs" />
     <Compile Include="ExceptionConverter.cs" />
@@ -141,6 +140,7 @@
     <Compile Include="NamespaceNode.cs" />
     <Compile Include="NavState.cs" />
     <Compile Include="PaneService.cs" />
+    <Compile Include="ParameterInfoConverter.cs" />
     <Compile Include="ProxyUtils.cs" />
     <Compile Include="ResolveEnumerableExtension.cs" />
     <Compile Include="ResolveExtension.cs" />

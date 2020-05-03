@@ -3,6 +3,7 @@ using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Reflection;
 using System.Threading;
+using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf ;
 
 namespace AnalysisControls
@@ -12,6 +13,7 @@ namespace AnalysisControls
     /// </summary>
     public class AnalysisCustomTypeDescriptor : CustomTypeDescriptor
     {
+
         private readonly Func < Type , TypeConverter > _funcConverter ;
         private readonly UiElementTypeConverter        _uiElementTypeConverter ;
         public override AttributeCollection GetAttributes()
@@ -56,6 +58,7 @@ namespace AnalysisControls
 
         public override PropertyDescriptorCollection GetProperties()
         {
+            var pp = base.GetProperties();
             List<PropertyDescriptor> p = new List<PropertyDescriptor>();
             foreach (var propertyInfo in Type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
@@ -94,8 +97,9 @@ namespace AnalysisControls
             Func < Type , TypeConverter > funcConverter
           , UiElementTypeConverter        uiElementTypeConverter
           , Type                          type
-        )
+        ) : base()
         {
+            DebugUtils.WriteLine("Constructor " + nameof(AnalysisCustomTypeDescriptor) + " " + type.FullName);
             _funcConverter          = funcConverter ;
             _uiElementTypeConverter = uiElementTypeConverter ;
             Type                    = type ;
@@ -107,7 +111,12 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <returns></returns>
-        public override TypeConverter GetConverter() => _uiElementTypeConverter;
+        public override TypeConverter GetConverter()
+        {
+            DebugUtils.WriteLine("Returning converter for " + Type.FullName);
+            return _uiElementTypeConverter;
+        }
+
         #endregion
     }
 }

@@ -11,6 +11,7 @@
 #endregion
 using System ;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -39,6 +40,8 @@ using System.Windows.Automation ;
 using System.Windows.Baml2006 ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
 using System.Windows.Threading;
@@ -85,6 +88,7 @@ using File = System.IO.File ;
 using MethodInfo = System.Reflection.MethodInfo;
 using Module = Autofac.Module;
 using Process = System.Diagnostics.Process ;
+using TextBlock = System.Windows.Controls.TextBlock;
 using XamlReader = System.Windows.Markup.XamlReader ;
 using XamlWriter = System.Windows.Markup.XamlWriter ;
 
@@ -1616,37 +1620,101 @@ namespace ProjTests
         public void TestControl2()
         {
             var type = typeof(Generic2<Type>);
-            var type2 = typeof(Dictionary<string, object>);
-            
-            
-            
-            CustomControl2 c = new CustomControl2() { Type = type2 };
+            var type2 = typeof(Dictionary<string, ConcurrentDictionary<object, Window>>);
+
+
+            DevTypeControl d = new DevTypeControl {Type = type2};
+            //CustomControl2 c = new CustomControl2() { Type = type2 };
             Window w = new Window();
             //w.Padding = new Thickness(10);
-            c.Margin = new Thickness(15);
-            w.Content = c;
+            //c.Margin = new Thickness(15);
+            w.Content = d;
+            w.Content = d;
             w.ShowDialog();
             return;
 
-            StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
-            StackPanel p2 = new StackPanel() { Orientation = Orientation.Horizontal };
-            StackPanel p3 = new StackPanel() { Orientation = Orientation.Horizontal };
-            p1.Children.Add(p2);
-            p2.Children.Add(c);
-            CustomControl2 c2 = new CustomControl2() { Type = type };
-            p2.Children.Add(c2);
-            p1.Children.Add(p3);
+            // StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
+            // StackPanel p2 = new StackPanel() { Orientation = Orientation.Horizontal };
+            // StackPanel p3 = new StackPanel() { Orientation = Orientation.Horizontal };
+            // p1.Children.Add(p2);
+            // p2.Children.Add(c);
+            // CustomControl2 c2 = new CustomControl2() { Type = type };
+            // p2.Children.Add(c2);
+            // p1.Children.Add(p3);
             
-            Type type3 = typeof(object[]);
+            // Type type3 = typeof(object[]);
 
-            CustomControl2 c3 = new CustomControl2() { Type = type3 };
+            // CustomControl2 c3 = new CustomControl2() { Type = type3 };
 
-            Type type4 = typeof(IEnumerable<>);
-            CustomControl2 c4 = new CustomControl2() { Type = type };
-            p3.Children.Add(c3);
-            p3.Children.Add(c4);
-            w.Content = p1;
+            // Type type4 = typeof(IEnumerable<>);
+            // CustomControl2 c4 = new CustomControl2() { Type = type };
+            // p3.Children.Add(c3);
+            // p3.Children.Add(c4);
+            // w.Content = p1;
+            // w.ShowDialog();
+        }
+        [WpfFact]
+        public void TestControl21()
+        {
+            var type = typeof(Generic2<Type>);
+            var type2 = typeof(Dictionary<string, ConcurrentDictionary<object, Window>>);
+            var ss = new StackPanel {Orientation = Orientation.Vertical};
+
+            var d = new FormattedTextControl() {BorderThickness = new Thickness(3), BorderBrush = Brushes.Pink};
+            var xb = new TextBlock();
+            xb.SetBinding(TextBlock.TextProperty, new Binding("HoverColumn") { Source = d });
+            var xy = new TextBlock();
+            xy.SetBinding(TextBlock.TextProperty, new Binding("HoverRow") { Source = d });
+            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal};
+            stackPanel.Children.Add(new TextBlock { Text = "( " });
+            stackPanel.Children.Add(xb);
+            stackPanel.Children.Add(new TextBlock { Text = ", " });
+            stackPanel.Children.Add(xy);
+            stackPanel.Children.Add(new TextBlock { Text = " )" });
+            ss.Children.Add(stackPanel);
+
+            //var textBlock = new TextBlock();
+            //textBlock.SetBinding(TextBlock.TextProperty, new Binding("SyntaxNode") {Source = d});
+            //ss.Children.Add(textBlock);
+            ss.Children.Add(d);
+            d.VerticalAlignment = VerticalAlignment.Stretch;
+            d.HorizontalAlignment = HorizontalAlignment.Stretch;
+	    var n = SyntaxFactory.ParseCompilationUnit(AnalysisAppLib.Properties.Resources.Program_Parse).NormalizeWhitespace("    ");
+        var stree = SyntaxFactory.SyntaxTree(n);
+d.Tree = stree;
+var compilation = AnalysisService.CreateCompilation("x", stree);
+d.Compilation = compilation;
+            d.Node = stree.GetRoot();
+    		
+		
+            //CustomControl2 c = new CustomControl2() { Type = type2 };
+            Window w = new Window();
+            //w.Padding = new Thickness(10);
+            //c.Margin = new Thickness(15);
+            w.Content = ss;
+            w.ShowActivated = true;
             w.ShowDialog();
+            return;
+
+            // StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
+            // StackPanel p2 = new StackPanel() { Orientation = Orientation.Horizontal };
+            // StackPanel p3 = new StackPanel() { Orientation = Orientation.Horizontal };
+            // p1.Children.Add(p2);
+            // p2.Children.Add(c);
+            // CustomControl2 c2 = new CustomControl2() { Type = type };
+            // p2.Children.Add(c2);
+            // p1.Children.Add(p3);
+
+            // Type type3 = typeof(object[]);
+
+            // CustomControl2 c3 = new CustomControl2() { Type = type3 };
+
+            // Type type4 = typeof(IEnumerable<>);
+            // CustomControl2 c4 = new CustomControl2() { Type = type };
+            // p3.Children.Add(c3);
+            // p3.Children.Add(c4);
+            // w.Content = p1;
+            // w.ShowDialog();
         }
     }
 

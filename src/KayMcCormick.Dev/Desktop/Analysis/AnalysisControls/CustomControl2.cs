@@ -3,20 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
-using DependencyPropertyChangedEventHandler = System.Windows.DependencyPropertyChangedEventHandler;
 
 namespace AnalysisControls
 {
@@ -51,17 +41,26 @@ namespace AnalysisControls
     /// </summary>
     public class CustomControl2 : Control, INotifyPropertyChanged
     {
-
-
         /// <summary>
         /// 
         /// </summary>
         public Type Type
         {
-            get { return (Type)GetValue(TypeProperty); }
-            set { SetValue(TypeProperty, value); }
+            get
+            {
+                var value = (Type)GetValue(TypeProperty);
+                return value;
+            }
+            set
+            {
+                SetValue(TypeProperty, value);
+                OnPropertyChanged();
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<string> Attributes
         {
             get
@@ -179,6 +178,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static readonly RoutedEvent TypeChangedEvent =
     EventManager.RegisterRoutedEvent(
                                       "TypeChanged"
@@ -215,6 +215,10 @@ namespace AnalysisControls
             Descriptor = null;
             PropertyDescriptorCollection = null;
             Provider = null;
+            var d = Descriptor;
+            var c = PropertyDescriptorCollection;
+            var p = Provider;
+
         }
 
         private Border _border1;
@@ -227,6 +231,9 @@ namespace AnalysisControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomControl2), new FrameworkPropertyMetadata(typeof(CustomControl2)));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<Type> Ancestors
         {
             get
@@ -242,6 +249,9 @@ namespace AnalysisControls
                 return ((IEnumerable<Type>)a).Reverse();
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public CustomControl2()
         {
             // AddHandler(TypeChangedEvent, new DependencyPropertyChangedEventHandler((sender, args) =>
@@ -252,19 +262,23 @@ namespace AnalysisControls
             // }));
         }
 
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             _border1 = (Border)GetTemplateChild("border1");
             base.OnApplyTemplate();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PropertyDescriptorCollection PropertyDescriptorCollection
         {
             get
             {
                 if (_propertyDescriptorCollection == null && Descriptor != null)
                 {
-                    _propertyDescriptorCollection = Descriptor.GetProperties();
+                    PropertyDescriptorCollection = Descriptor.GetProperties();
                 }
                 return _propertyDescriptorCollection;
             }
@@ -278,15 +292,22 @@ namespace AnalysisControls
 
         /// <summary>
         /// 
-        /// </summary>
+        /// </summarym
         public TypeDescriptionProvider Provider
         {
             get
             {
-                if (_provider == null && Type != null)
+                if (_provider == null)
                 {
-                    _provider = TypeDescriptor.GetProvider(Type);
+                    DebugUtils.WriteLine("Provider is null");
+                    if (Type != null)
+                    {
+                        DebugUtils.WriteLine("Type is " + Type.FullName);
+                        _provider = TypeDescriptor.GetProvider(Type);
+                        DebugUtils.WriteLine("PRovider is " + _provider);
+                    }
                 }
+                    DebugUtils.WriteLine("REturning provider " + _provider);
                 return _provider;
             }
             set
@@ -298,6 +319,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ICustomTypeDescriptor Descriptor
         {
             get
@@ -318,15 +342,16 @@ namespace AnalysisControls
             }
         }
 
+        /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
-            DebugUtils.WriteLine($"{constraint.Width}x{constraint.Height}");
+            //DebugUtils.WriteLine($"{constraint.Width}x{constraint.Height}");
              _border1.Measure(constraint);
-             var dwidth = _border1.DesiredSize.Width
-                 ;
+             var dwidth = _border1.DesiredSize.Width;
+             
              var dheight = _border1.DesiredSize.Height;
              var measureOverride = new Size(dwidth, dheight);
-             DebugUtils.WriteLine(measureOverride.ToString());
+             //DebugUtils.WriteLine(measureOverride.ToString());
              return measureOverride;
 
         }
@@ -336,8 +361,13 @@ namespace AnalysisControls
             return base.ArrangeOverride(arrangeBounds);
         }
 
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

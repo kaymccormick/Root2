@@ -122,6 +122,7 @@ namespace KayMcCormick.Lib.Wpf
             {
                 DebugUtils.WriteLine(providerType.FullName);
                 TypeDescriptor.AddProvider(provider.Provider, providerType);
+                
             }
 
 

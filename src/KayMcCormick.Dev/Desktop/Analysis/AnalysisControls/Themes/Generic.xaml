@@ -221,11 +221,7 @@
                 <RowDefinition Height="*" />
               </Grid.RowDefinitions>
               <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" TextElement.FontSize="18">
-                <kmWpf:TypeControl>
-                  <kmWpf:AttachedProperties.RenderedType>
-                    <Binding />
-                  </kmWpf:AttachedProperties.RenderedType>
-                </kmWpf:TypeControl>
+                <local:DevTypeControl Type="{Binding}"/>
                 <TextBlock Text=" (" />
                 <TextBlock Text="{Binding Namespace}" />
                 <TextBlock Text=")" />
@@ -304,11 +300,7 @@
                                         ItemsSource="{Binding Path=Ancestors}">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate DataType="{x:Type system:Type}">
-                                <kmWpf:TypeControl FontSize="14">
-                                  <kmWpf:AttachedProperties.RenderedType>
-                                    <Binding />
-                                  </kmWpf:AttachedProperties.RenderedType>
-                                </kmWpf:TypeControl>
+                                <local:DevTypeControl FontSize="14" Type="{Binding}"/>
                               </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
@@ -337,13 +329,7 @@
                           <TextBlock Text="Generic Type" />
                           <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Type.IsGenericType}" />
                           <TextBlock Grid.Row="1" Grid.Column="0" Text="Generic Type Definition" />
-                          <kmWpf:TypeControl Grid.Row="1" Grid.Column="1" FontSize="14">
-                            <kmWpf:AttachedProperties.RenderedType>
-                              <Binding ConverterParameter="GenericTypeDefinition"
-                                       Converter="{StaticResource TypeInfoConverter}" Path="Type" />
-                            </kmWpf:AttachedProperties.RenderedType>
-                          </kmWpf:TypeControl>
-
+                          <local:DevTypeControl Grid.Row="1" Grid.Column="1"  FontSize="14" Type="{Binding ConverterParameter=GenericTypeDefinition,Converter={StaticResource TypeInfoConverter},Path=Type}" />
                         </Grid>
                       </GroupBox>
                       <GroupBox Padding="3" Grid.Row="5" Grid.Column="0" Header="Interfaces">
@@ -351,11 +337,8 @@
                                       ItemsSource="{Binding Type,Converter={StaticResource TypeInfoConverter},ConverterParameter=Interfaces}">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type system:Type}">
-                              <kmWpf:TypeControl FontSize="14" Margin="5,0,0,5">
-                                <kmWpf:AttachedProperties.RenderedType>
-                                  <Binding />
-                                </kmWpf:AttachedProperties.RenderedType>
-                              </kmWpf:TypeControl>
+                              <local:DevTypeControl Grid.Row="1" Grid.Column="1"  FontSize="14" Type="{Binding}"
+                                Margin="5,0,0,5"/>
                             </DataTemplate>
                           </ItemsControl.ItemTemplate>
                           <ItemsControl.ItemsPanel>
@@ -375,11 +358,8 @@
                         <GridViewColumn Header="Property Type">
                           <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type reflection:PropertyInfo}">
-                              <kmWpf:TypeControl>
-                                <kmWpf:AttachedProperties.RenderedType>
-                                  <Binding Path="PropertyType"/>
-                                </kmWpf:AttachedProperties.RenderedType>
-                              </kmWpf:TypeControl>
+                              <local:DevTypeControl Type="{Binding PropertyType}"/>
+                              
 
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
@@ -397,22 +377,15 @@
                         <GridViewColumn Header="Return Type">
                           <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type reflection:MethodInfo}">
-                              <kmWpf:TypeControl VerticalAlignment="Top">
-                                <kmWpf:AttachedProperties.RenderedType>
-                                  <Binding Path="ReturnType" />
-                                </kmWpf:AttachedProperties.RenderedType>
-                              </kmWpf:TypeControl>
+                              <local:DevTypeControl VerticalAlignment="Top" Type="{Binding ReturnType}"/>
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Declaring Type">
                           <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type reflection:MethodInfo}">
-                              <kmWpf:TypeControl VerticalAlignment="Top">
-                                <kmWpf:AttachedProperties.RenderedType>
-                                  <Binding Path="DeclaringType" />
-                                </kmWpf:AttachedProperties.RenderedType>
-                              </kmWpf:TypeControl>
+                              <local:DevTypeControl Type="{Binding DeclaringType}"  VerticalAlignment="Top">
+                              </local:DevTypeControl>
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -451,11 +424,7 @@
                                           </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                       </ItemsControl>
-                                      <kmWpf:TypeControl FontWeight="Bold" VerticalContentAlignment="Center">
-                                        <kmWpf:AttachedProperties.RenderedType>
-                                          <Binding Path="ParameterType" />
-                                        </kmWpf:AttachedProperties.RenderedType>
-                                      </kmWpf:TypeControl>
+                                      <local:DevTypeControl FontWeight="Bold" VerticalContentAlignment="Center" Type="{Binding ParameterType}"/>
                                       <TextBlock Text=" " />
                                       <TextBlock Text="{Binding Name}" />
                                       <TextBlock Text=", " Visibility="{Binding Converter={StaticResource ParameterInfoConverter},ConverterParameter=CommaVisibility}"/>
@@ -471,25 +440,99 @@
                   </ListView>
                 </TabItem>
                 <TabItem Header="Properties2" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:CustomControl2}}">
-                  <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{Binding Provider}"/>
-                    <TextBlock Text="{Binding Descriptor}"/>
-                    <ListView ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:CustomControl2,Mode=FindAncestor},Path=PropertyDescriptorCollection}">
+                    <ListView ItemsSource="{Binding Path=PropertyDescriptorCollection}">
                       <ListView.View>
                         <GridView>
                           <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name"></GridViewColumn>
                           <GridViewColumn DisplayMemberBinding="{Binding DisplayName}" Header="Display Name"></GridViewColumn>
                           <GridViewColumn DisplayMemberBinding="{Binding Category}" Header="Category"></GridViewColumn>
                           <GridViewColumn DisplayMemberBinding="{Binding IsBrowsable}" Header="Browsable"/>
-                          <GridViewColumn DisplayMemberBinding="{Binding Description}" Header="Description"></GridViewColumn>
-                        </GridView>
+                        <GridViewColumn Header="Attributes">
+                          <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                              <ItemsControl ItemsSource="{Binding Attributes}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate><DataTemplate DataType="{x:Type system:Attribute}">
+                                  <TextBlock Text="{Binding}"/>
+                                </DataTemplate></ItemsControl.ItemTemplate>
+                              </ItemsControl>
+                              
+                            </DataTemplate>
+                          </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Description}" Header="Description"></GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding SerializationVisibility}" Header="SerializationVisibility"></GridViewColumn>
+                      </GridView>
 
                       </ListView.View>
                     </ListView>
-                  </StackPanel>
                 </TabItem>
               </TabControl>
             </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type local:FormattedTextControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:FormattedTextControl}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"></ColumnDefinition></Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Grid.Column="0" BorderBrush="BlueViolet" BorderThickness="3" x:Name="Border" VerticalAlignment="Stretch">
+              <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer">
+                  <Rectangle x:Name="Rectangle" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Rectangle.Fill>
+                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top">
+                        <DrawingBrush.Drawing>
+                          <DrawingGroup x:Name="TextDest"></DrawingGroup>
+                        </DrawingBrush.Drawing>
+                      </DrawingBrush>
+                    </Rectangle.Fill>
+                  </Rectangle>
+              </ScrollViewer>
+            </Border>
+            <ScrollBar  Grid.Column="1" Grid.Row="0" Orientation="Vertical" x:Name="scrollbar"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" TextElement.FontSize="18">
+              <TextBlock Text="{TemplateBinding HoverColumn}"></TextBlock>
+              <TextBlock Text=", "></TextBlock>
+                <TextBlock Text="{TemplateBinding HoverRow}"></TextBlock>
+              </StackPanel>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+      </Setter>
+    </Style>
+
+      <Style TargetType="{x:Type local:DevTypeControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:DevTypeControl}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Rectangle>
+              <Rectangle.Fill>
+                <DrawingBrush x:Name="myDrawingBrush" Stretch="None" 
+                              AlignmentY="Top" AlignmentX="Left" >
+                  <DrawingBrush.Drawing>
+                    <DrawingGroup x:Name="textDest" />
+                  </DrawingBrush.Drawing>
+                </DrawingBrush>
+              </Rectangle.Fill>
+            </Rectangle>
           </Border>
         </ControlTemplate>
       </Setter.Value>

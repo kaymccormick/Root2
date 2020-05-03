@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel;
 using System.ComponentModel ;
@@ -24,7 +23,6 @@ using System.Threading.Tasks;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data ;
-using System.Windows.Input;
 using System.Windows.Markup ;
 using System.Windows.Threading;
 using AnalysisAppLib;
@@ -43,7 +41,6 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Container ;
-using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.ViewModel;
@@ -122,8 +119,7 @@ namespace AnalysisControls
                 var r = new AppRibbonTabSet();
                 foreach (var ct in c.Resolve<IEnumerable<CategoryInfo>>())
                 {
-                    var tab = new AppRibbonTab();
-                    tab.Category = ct;
+                    var tab = new AppRibbonTab {Category = ct};
                     r.TabSet.Add(tab);
                 }
                 foreach (var meta in c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>())
@@ -570,6 +566,14 @@ namespace AnalysisControls
                 return lv;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="collection"></param>
+            /// <param name="observable"></param>
+            /// <param name="resources"></param>
+            /// <typeparam name="T"></typeparam>
+            /// <returns></returns>
             public static ItemsControl ReplayItemsControl<T>(ObservableCollection<T> collection, ReplaySubject<T> observable,
                 ResourceDictionary resources)
             {

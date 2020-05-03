@@ -46,6 +46,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>MSBUILDLOCATOR;MIGRADOC;PYTHON</DefineConstants>
@@ -131,10 +132,19 @@
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="CustomControl2.cs" />
+    <Compile Include="CustomTextCharacters.cs" />
+    <Compile Include="CustomTextSource.cs" />
+    <Compile Include="CustomTextSource2.cs" />
+    <Compile Include="CustomTextSource3.cs" />
     <Compile Include="CustomTypes.cs" />
+    <Compile Include="DevTypeControl.cs" />
     <Compile Include="DocContent.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="Filter.cs" />
+    <Compile Include="FontRendering.cs" />
+    <Compile Include="FormattedTextControl.cs" />
+    <Compile Include="GenericTextParagraphProperties.cs" />
+    <Compile Include="GenericTextRunProperties.cs" />
     <Compile Include="IAppRibbon.cs" />
     <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="ICodeGenCommand.cs" />
@@ -156,7 +166,9 @@
     </Compile>
     <Compile Include="StringObservableCollection - Copy.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
+    <Compile Include="SyntaxTokenTextCharacters.cs" />
     <Compile Include="SyntaxWalker2.cs" />
+    <Compile Include="SyntaxWalkerF.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="TestConverter1.cs" />
     <Compile Include="TestConverter2.cs" />
